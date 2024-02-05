@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\JenisprodukController;
+use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RoleController;
@@ -105,6 +108,32 @@ Route::middleware('auth')->group(function () {
         Route::get('/salesman/{kode_salesman}/edit', 'edit')->name('salesman.edit')->can('salesman.edit');
         Route::put('/salesman/{kode_salesman}', 'update')->name('salesman.update')->can('salesman.update');
         Route::delete('/salesman/{kode_salesman}', 'destroy')->name('salesman.delete')->can('salesman.delete');
+    });
+
+    Route::controller(KategoriprodukController::class)->group(function () {
+        Route::get('/kategoriproduk', 'index')->name('kategoriproduk.index')->can('kategoriproduk.index');
+        Route::get('/kategoriproduk/create', 'create')->name('kategoriproduk.create')->can('kategoriproduk.create');
+        Route::post('/kategoriproduk', 'store')->name('kategoriproduk.store')->can('kategoriproduk.store');
+        Route::get('/kategoriproduk/{kode_kategori_produk}/edit', 'edit')->name('kategoriproduk.edit')->can('kategoriproduk.edit');
+        Route::put('/kategoriproduk/{kode_kategori_produk}', 'update')->name('kategoriproduk.update')->can('kategoriproduk.update');
+        Route::delete('/kategoriproduk/{kode_kategori_produk}', 'destroy')->name('kategoriproduk.delete')->can('kategoriproduk.delete');
+    });
+
+    Route::controller(JenisprodukController::class)->group(function () {
+        Route::get('/jenisproduk', 'index')->name('jenisproduk.index')->can('jenisproduk.index');
+        Route::get('/jenisproduk/create', 'create')->name('jenisproduk.create')->can('jenisproduk.create');
+        Route::post('/jenisproduk', 'store')->name('jenisproduk.store')->can('jenisproduk.store');
+        Route::get('/jenisproduk/{kode_jenis_produk}/edit', 'edit')->name('jenisproduk.edit')->can('jenisproduk.edit');
+        Route::put('/jenisproduk/{kode_jenis_produk}', 'update')->name('jenisproduk.update')->can('jenisproduk.update');
+        Route::delete('/jenisproduk/{kode_jenis_produk}', 'destroy')->name('jenisproduk.delete')->can('jenisproduk.delete');
+    });
+    Route::controller(ProdukController::class)->group(function () {
+        Route::get('/produk', 'index')->name('produk.index')->can('produk.index');
+        Route::get('/produk/create', 'create')->name('produk.create')->can('produk.create');
+        Route::post('/produk', 'store')->name('produk.store')->can('produk.store');
+        Route::get('/produk/{kode_cabang}/edit', 'edit')->name('produk.edit')->can('produk.edit');
+        Route::put('/produk/{kode_cabang}', 'update')->name('produk.update')->can('produk.update');
+        Route::delete('/produk/{kode_cabang}', 'destroy')->name('produk.delete')->can('produk.delete');
     });
 });
 

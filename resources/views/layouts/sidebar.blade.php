@@ -20,7 +20,22 @@
      <ul class="menu-inner py-1">
          <!-- Dashboards -->
          <li
-             class="menu-item {{ request()->is(['regional', 'regional/*', 'cabang', 'cabang/*', 'salesman', 'salesman/*']) ? 'open' : '' }}">
+             class="menu-item {{ request()->is([
+                 'regional',
+                 'regional/*',
+                 'cabang',
+                 'cabang/*',
+                 'salesman',
+                 'salesman/*',
+                 'kategoriproduk',
+                 'kategoriproduk/*',
+                 'jenisproduk',
+                 'jenisproduk/*',
+                 'produk',
+                 'produk/*',
+             ])
+                 ? 'open'
+                 : '' }}">
              @if (auth()->user()->hasAnyPermission(['regional.index', 'cabang.index', 'salesman.index']))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-database"></i>
@@ -48,10 +63,23 @@
                              </a>
                          </li>
                      @endcan
-
-                     @can('salesman.index')
+                     @can('kategoriproduk.index')
+                         <li class="menu-item {{ request()->is(['kategoriproduk', 'kategoriproduk/*']) ? 'active' : '' }}">
+                             <a href="{{ route('kategoriproduk.index') }}" class="menu-link">
+                                 <div>Kategori Produk</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('jenisproduk.index')
+                         <li class="menu-item {{ request()->is(['jenisproduk', 'jenisproduk/*']) ? 'active' : '' }}">
+                             <a href="{{ route('jenisproduk.index') }}" class="menu-link">
+                                 <div>Jenis Produk</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('produk.index')
                          <li class="menu-item {{ request()->is(['produk', 'produk/*']) ? 'active' : '' }}">
-                             <a href="{{ route('salesman.index') }}" class="menu-link">
+                             <a href="{{ route('produk.index') }}" class="menu-link">
                                  <div>Produk</div>
                              </a>
                          </li>
