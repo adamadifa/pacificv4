@@ -84,6 +84,13 @@
                              </a>
                          </li>
                      @endcan
+                     @can('harga.index')
+                         <li class="menu-item {{ request()->is(['harga', 'harga/*']) ? 'active' : '' }}">
+                             <a href="{{ route('harga.index') }}" class="menu-link">
+                                 <div>Harga</div>
+                             </a>
+                         </li>
+                     @endcan
                  </ul>
              @endif
 

@@ -74,6 +74,7 @@
                                                             </form>
                                                         </div>
                                                     @endcan
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

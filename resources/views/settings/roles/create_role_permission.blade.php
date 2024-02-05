@@ -13,7 +13,7 @@
         @endphp
         @foreach ($permissions as $key => $d)
             <div class="col-lg-2 col-sm-12 col-xs-12">
-                <div class="card">
+                <div class="card mb-2">
                     <h5 class="card-header">
                         {{ $d->group_name }}
                     </h5>

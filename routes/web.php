@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\HargaController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\Permission_groupController;
@@ -131,9 +132,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/produk', 'index')->name('produk.index')->can('produk.index');
         Route::get('/produk/create', 'create')->name('produk.create')->can('produk.create');
         Route::post('/produk', 'store')->name('produk.store')->can('produk.store');
-        Route::get('/produk/{kode_cabang}/edit', 'edit')->name('produk.edit')->can('produk.edit');
-        Route::put('/produk/{kode_cabang}', 'update')->name('produk.update')->can('produk.update');
-        Route::delete('/produk/{kode_cabang}', 'destroy')->name('produk.delete')->can('produk.delete');
+        Route::get('/produk/{kode_produk}/edit', 'edit')->name('produk.edit')->can('produk.edit');
+        Route::put('/produk/{kode_produk}', 'update')->name('produk.update')->can('produk.update');
+        Route::delete('/produk/{kode_produk}', 'destroy')->name('produk.delete')->can('produk.delete');
+    });
+
+    Route::controller(HargaController::class)->group(function () {
+        Route::get('/harga', 'index')->name('harga.index')->can('harga.index');
+        Route::get('/harga/create', 'create')->name('harga.create')->can('harga.create');
+        Route::post('/harga', 'store')->name('harga.store')->can('harga.store');
+        Route::get('/harga/{kode_harga}/edit', 'edit')->name('harga.edit')->can('harga.edit');
+        Route::put('/harga/{kode_harga}', 'update')->name('harga.update')->can('harga.update');
+        Route::delete('/harga/{kode_harga}', 'destroy')->name('harga.delete')->can('harga.delete');
     });
 });
 

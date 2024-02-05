@@ -1,5 +1,5 @@
-<form action="{{ route('jenisproduk.update', Crypt::encrypt($jenisproduk->kode_jenis_produk)) }}"
-    id="formeditKategoriproduk" method="POST">
+<form action="{{ route('jenisproduk.update', Crypt::encrypt($jenisproduk->kode_jenis_produk)) }}" id="formeditJenisproduk"
+    method="POST">
     @csrf
     @method('PUT')
     <x-input-with-icon icon="ti ti-barcode" label="Kode Jenis Produk" name="kode_jenis_produk"
