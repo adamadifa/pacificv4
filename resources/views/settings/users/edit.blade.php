@@ -6,6 +6,10 @@
     <x-input-with-icon icon="ti ti-mail" label="Email" name="email" value="{{ $user->email }}" />
     <x-input-with-icon icon="ti ti-key" label="Password" name="password" type="password" />
     <x-select label="Role" name="role" :data="$roles" key="name" textShow="name" />
+    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+        selected="{{ $user->kode_cabang }}" />
+    <x-select label="Regional" name="kode_regional" :data="$regional" key="kode_regional" textShow="nama_regional"
+        selected="{{ $user->kode_regional }}" />
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
             <ion-icon name="repeat-outline" class="me-1"></ion-icon>

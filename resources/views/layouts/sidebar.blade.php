@@ -4,9 +4,9 @@
      <div class="app-brand demo">
          <a href="index.html" class="app-brand-link">
              <span class="app-brand-logo demo">
-                 <img src="{{ asset('assets/img/logo/hibah.png') }}" alt="" width="64">
+                 <img src="{{ asset('assets/img/logo/pcf.png') }}" alt="" width="32">
              </span>
-             <span class="app-brand-text demo menu-text fw-bold"><i><b>e</b></i>Hibah</span>
+             <span class="app-brand-text demo menu-text fw-bold"><i><b>P</b></i>acific</span>
          </a>
 
          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -19,6 +19,48 @@
 
      <ul class="menu-inner py-1">
          <!-- Dashboards -->
+         <li
+             class="menu-item {{ request()->is(['regional', 'regional/*', 'cabang', 'cabang/*', 'salesman', 'salesman/*']) ? 'open' : '' }}">
+             @if (auth()->user()->hasAnyPermission(['regional.index', 'cabang.index', 'salesman.index']))
+                 <a href="javascript:void(0);" class="menu-link menu-toggle">
+                     <i class="menu-icon tf-icons ti ti-database"></i>
+                     <div>Data Master</div>
+                 </a>
+                 <ul class="menu-sub">
+                     @can('regional.index')
+                         <li class="menu-item {{ request()->is(['regional', 'regional/*']) ? 'active' : '' }}">
+                             <a href="{{ route('regional.index') }}" class="menu-link">
+                                 <div>Regional</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('cabang.index')
+                         <li class="menu-item {{ request()->is(['cabang', 'cabang/*']) ? 'active' : '' }}">
+                             <a href="{{ route('cabang.index') }}" class="menu-link">
+                                 <div>Cabang</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('salesman.index')
+                         <li class="menu-item {{ request()->is(['salesman', 'salesman/*']) ? 'active' : '' }}">
+                             <a href="{{ route('salesman.index') }}" class="menu-link">
+                                 <div>Salesman</div>
+                             </a>
+                         </li>
+                     @endcan
+
+                     @can('salesman.index')
+                         <li class="menu-item {{ request()->is(['produk', 'produk/*']) ? 'active' : '' }}">
+                             <a href="{{ route('salesman.index') }}" class="menu-link">
+                                 <div>Produk</div>
+                             </a>
+                         </li>
+                     @endcan
+                 </ul>
+             @endif
+
+
+         </li>
          <li
              class="menu-item {{ request()->is([
                  'roles',
@@ -35,7 +77,6 @@
              <a href="javascript:void(0);" class="menu-link menu-toggle">
                  <i class="menu-icon tf-icons ti ti-settings"></i>
                  <div>Settings</div>
-                 <div class="badge bg-primary rounded-pill ms-auto">5</div>
              </a>
              <ul class="menu-sub">
                  <li class="menu-item {{ request()->is(['users', 'users/*']) ? 'active' : '' }}">
@@ -53,7 +94,8 @@
                          <div>Permission</div>
                      </a>
                  </li>
-                 <li class="menu-item  {{ request()->is(['permissiongroups', 'permissiongroups/*']) ? 'active' : '' }}">
+                 <li
+                     class="menu-item  {{ request()->is(['permissiongroups', 'permissiongroups/*']) ? 'active' : '' }}">
                      <a href="{{ route('permissiongroups.index') }}" class="menu-link">
                          <div>Group Permission</div>
                      </a>

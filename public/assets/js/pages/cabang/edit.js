@@ -1,56 +1,67 @@
 (function () {
-    const formcreateUser = document.querySelector('#formcreateUser');
+    const formeditCabang = document.querySelector('#formeditCabang');
     // Form validation for Add new record
-    if (formcreateUser) {
-        const fv = FormValidation.formValidation(formcreateUser, {
+    if (formeditCabang) {
+        const fv = FormValidation.formValidation(formeditCabang, {
             fields: {
-                name: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Nama User Harus Diisi'
-                        }
-                    }
-                },
-
-                username: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Username Harus Diisi'
-                        }
-                    }
-                },
-
-                email: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Email Harus Diisi'
-                        },
-                        emailAddress: {
-                            message: 'Silahkan Masukan Email yang Valid'
-                        }
-                    }
-                },
-
-                password: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Password Harus Diisi'
-                        }
-                    }
-                },
-
-                role: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Silahkan Pilih Role'
-                        }
-                    }
-                },
-
                 kode_cabang: {
                     validators: {
                         notEmpty: {
-                            message: 'Silahkan Pilih Cabang'
+                            message: 'Kode Cabang Harus Diisi'
+                        },
+                        stringLength: {
+                            max: 3,
+                            min: 3,
+                            message: 'Kode Cabang Harus 3 Karakter'
+                        },
+
+
+                    }
+                },
+                nama_cabang: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Nama Cabang Harus Diisi'
+                        }
+                    }
+                },
+
+                alamat_cabang: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Alamat Cabang Harus Diisi'
+                        }
+                    }
+                },
+
+                telepon_cabang: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Telepon Cabang Harus Diisi'
+                        },
+                        numeric: {
+                            message: 'Telepon Cabang Harus Diisi dengan Angka'
+                        },
+
+                        stringLength: {
+                            max: 13,
+                            message: 'Maksimal 13 Karakter'
+                        },
+                    }
+                },
+
+                lokasi_cabang: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Lokasi Cabang Harus Diisi'
+                        }
+                    }
+                },
+
+                radius_cabang: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Radius Cabang Harus Diisi'
                         }
                     }
                 },
@@ -58,12 +69,19 @@
                 kode_regional: {
                     validators: {
                         notEmpty: {
-                            message: 'Silahkan Pilih Regional'
+                            message: 'Regional Harus Dipilih'
                         }
                     }
-                }
+                },
 
 
+                urutan: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Urutan Harus Diisi'
+                        }
+                    }
+                },
 
 
             },
@@ -73,10 +91,6 @@
                     eleValidClass: '',
                     rowSelector: '.mb-3'
                 }),
-
-
-
-
                 submitButton: new FormValidation.plugins.SubmitButton(),
 
                 defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
@@ -91,5 +105,4 @@
             }
         });
     }
-
 })();

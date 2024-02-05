@@ -13,13 +13,19 @@ class PermissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = Permission::query();
         $query->select('permissions.id', 'permissions.name', 'permission_groups.name as group_name');
         $query->join('permission_groups', 'permissions.id_permission_group', '=', 'permission_groups.id');
+        if (!empty($request->id_permission_group)) {
+            $query->where('id_permission_group', $request->id_permission_group);
+        }
+        $query->orderBy('id_permission_group');
         $permissions = $query->paginate(10);
-        return view('settings.permissions.index', compact('permissions'));
+
+        $permission_groups = Permission_group::orderBy('id')->get();
+        return view('settings.permissions.index', compact('permissions', 'permission_groups'));
     }
 
     /**

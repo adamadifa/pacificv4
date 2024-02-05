@@ -1,69 +1,84 @@
 (function () {
-    const formcreateUser = document.querySelector('#formcreateUser');
+    const formeditSalesman = document.querySelector('#formeditSalesman');
     // Form validation for Add new record
-    if (formcreateUser) {
-        const fv = FormValidation.formValidation(formcreateUser, {
+    if (formeditSalesman) {
+        const fv = FormValidation.formValidation(formeditSalesman, {
             fields: {
-                name: {
+                nama_salesman: {
                     validators: {
                         notEmpty: {
-                            message: 'Nama User Harus Diisi'
+                            message: 'Nama Salesman Harus Diisi'
                         }
                     }
                 },
 
-                username: {
+                alamat_salesman: {
                     validators: {
                         notEmpty: {
-                            message: 'Username Harus Diisi'
+                            message: 'Alamat Salesman Harus Diisi'
                         }
                     }
                 },
 
-                email: {
+                no_hp_salesman: {
                     validators: {
                         notEmpty: {
-                            message: 'Email Harus Diisi'
+                            message: 'No. HP Salesman Harus Diisi'
                         },
-                        emailAddress: {
-                            message: 'Silahkan Masukan Email yang Valid'
+                        numeric: {
+                            message: 'No. HP Harus Diisi dengan Angka'
+                        },
+
+                        stringLength: {
+                            max: 13,
+                            message: 'Maksimal 13 Karakter'
+                        },
+                    }
+                },
+
+                kode_kategori_salesman: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kategori Salesman Harus Diisi'
                         }
                     }
                 },
 
-                password: {
+                status_komisi_salesman: {
                     validators: {
                         notEmpty: {
-                            message: 'Password Harus Diisi'
+                            message: 'Status Komisi Harus Diisi'
                         }
                     }
                 },
 
-                role: {
+                status_aktif_salesman: {
                     validators: {
                         notEmpty: {
-                            message: 'Silahkan Pilih Role'
+                            message: 'Status Aktif Salesman Harus Diisi'
                         }
                     }
                 },
+
 
                 kode_cabang: {
                     validators: {
                         notEmpty: {
-                            message: 'Silahkan Pilih Cabang'
+                            message: 'Cabang Harus Diisi'
                         }
                     }
                 },
 
-                kode_regional: {
+                marker: {
                     validators: {
-                        notEmpty: {
-                            message: 'Silahkan Pilih Regional'
-                        }
+                        file: {
+                            extension: 'png',
+                            type: 'image/png',
+                            maxSize: '102400',
+                            message: 'File Marker Harus PNG, dan Ukuran Maksimal 100 KB',
+                        },
                     }
-                }
-
-
+                },
 
 
             },
@@ -73,10 +88,6 @@
                     eleValidClass: '',
                     rowSelector: '.mb-3'
                 }),
-
-
-
-
                 submitButton: new FormValidation.plugins.SubmitButton(),
 
                 defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
@@ -91,5 +102,4 @@
             }
         });
     }
-
 })();

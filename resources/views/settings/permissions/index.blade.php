@@ -18,8 +18,8 @@
                         <form action="{{ route('permissions.index') }}">
                             <div class="row">
                                 <div class="col-lg-10 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Search Permission Name" value="{{ Request('name') }}"
-                                        name="name" icon="ti ti-search" />
+                                    <x-select name="id_permission_group" label="Group" :data="$permission_groups" key="id"
+                                        textShow="name" selected="{{ Request('id_permission_group') }}" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
                                     <button class="btn btn-primary">Cari</button>

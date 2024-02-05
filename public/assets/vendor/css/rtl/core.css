@@ -7057,7 +7057,7 @@ a.invert-bg-dark:hover, a.invert-bg-dark:focus {
 }
 
 .table-dark {
-  --bs-table-bg: #554bbb;
+  --bs-table-bg: #002e65;
   --bs-table-striped-bg: #4f4f4f;
   --bs-table-striped-color: #fff;
   --bs-table-active-bg: #595959;

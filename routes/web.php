@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\CabangController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 
@@ -72,6 +76,35 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{id}/edit', 'edit')->name('users.edit');
         Route::put('/users/{id}/update', 'update')->name('users.update');
         Route::delete('/users/{id}/delete', 'destroy')->name('users.delete');
+    });
+
+
+
+    Route::controller(RegionalController::class)->group(function () {
+        Route::get('/regional', 'index')->name('regional.index')->can('regional.index');
+        Route::get('/regional/create', 'create')->name('regional.create')->can('regional.create');
+        Route::post('/regional', 'store')->name('regional.store')->can('regional.store');
+        Route::get('/regional/{kode_regional}/edit', 'edit')->name('regional.edit')->can('regional.edit');
+        Route::put('/regional/{kode_regional}', 'update')->name('regional.update')->can('regional.update');
+        Route::delete('/regional/{kode_regional}', 'destroy')->name('regional.delete')->can('regional.delete');
+    });
+
+    Route::controller(CabangController::class)->group(function () {
+        Route::get('/cabang', 'index')->name('cabang.index')->can('cabang.index');
+        Route::get('/cabang/create', 'create')->name('cabang.create')->can('cabang.create');
+        Route::post('/cabang', 'store')->name('cabang.store')->can('cabang.store');
+        Route::get('/cabang/{kode_cabang}/edit', 'edit')->name('cabang.edit')->can('cabang.edit');
+        Route::put('/cabang/{kode_cabang}', 'update')->name('cabang.update')->can('cabang.update');
+        Route::delete('/cabang/{kode_cabang}', 'destroy')->name('cabang.delete')->can('cabang.delete');
+    });
+
+    Route::controller(SalesmanController::class)->group(function () {
+        Route::get('/salesman', 'index')->name('salesman.index')->can('salesman.index');
+        Route::get('/salesman/create', 'create')->name('salesman.create')->can('salesman.create');
+        Route::post('/salesman', 'store')->name('salesman.store')->can('salesman.store');
+        Route::get('/salesman/{kode_salesman}/edit', 'edit')->name('salesman.edit')->can('salesman.edit');
+        Route::put('/salesman/{kode_salesman}', 'update')->name('salesman.update')->can('salesman.update');
+        Route::delete('/salesman/{kode_salesman}', 'destroy')->name('salesman.delete')->can('salesman.delete');
     });
 });
 

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-wide" dir="ltr"
-    data-theme="theme-default" data-assets-path="{{ asset('/assets/') }}"
-    data-template="vertical-menu-template-no-customizer">
+    data-theme="theme-default" data-assets-path="{{ asset('/assets/') }}" data-template="vertical-menu-template">
 
 <head>
     <meta charset="utf-8" />

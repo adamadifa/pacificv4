@@ -1,29 +1,25 @@
 @extends('layouts.app')
-@section('titlepage', 'Users')
+@section('titlepage', 'Wilayah')
 
 @section('content')
 @section('navigasi')
-    <span>Users</span>
+    <span>Wilayah</span>
 @endsection
 <div class="row">
-    <div class="col-lg-10 col-sm-12 col-xs-12">
+    <div class="col-lg-6 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                <a href="#" class="btn btn-primary" id="btncreateUser"><i class="fa fa-plus me-2"></i> Tambah
-                    User</a>
+                <a href="#" class="btn btn-primary" id="btncreateWilayah"><i class="fa fa-plus me-2"></i> Tambah
+                    Wilayah</a>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <form action="{{ route('users.index') }}">
+                        <form action="{{ route('wilayah.index') }}">
                             <div class="row">
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari User" value="{{ Request('name') }}" name="name"
+                                <div class="col-lg-10 col-sm-12 col-md-12">
+                                    <x-input-with-icon label="Search Name" value="{{ Request('name') }}" name="name"
                                         icon="ti ti-search" />
-                                </div>
-                                <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                                        textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
                                     <button class="btn btn-primary">Cari</button>
@@ -40,40 +36,28 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th>No.</th>
-                                        <th>Name</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Cabang</th>
-                                        <th>Regional</th>
+                                        <th>Kode Wilayah</th>
+                                        <th>Nama Wilayah</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($users as $d)
+                                    @foreach ($wilayah as $d)
                                         <tr>
-                                            <td> {{ $loop->iteration + $users->firstItem() - 1 }}</td>
-                                            <td>{{ $d->name }}</td>
-                                            <td>{{ $d->username }}</td>
-                                            <td>{{ $d->email }}</td>
-                                            <td>
-                                                @foreach ($d->roles as $role)
-                                                    {{ ucwords($role->name) }}
-                                                @endforeach
-                                            </td>
-                                            <td>{{ textCamelCase($d->nama_cabang) }}</td>
-                                            <td>{{ textCamelCase($d->nama_regional) }}</td>
+                                            <td> {{ $loop->iteration }}</td>
+                                            <td>{{ $d->kode_wilayah }}</td>
+                                            <td>{{ $d->nama_wilayah }}</td>
                                             <td>
                                                 <div class="d-flex">
                                                     <div>
-                                                        <a href="#" class="me-2 editUser"
-                                                            id="{{ Crypt::encrypt($d->id) }}">
+                                                        <a href="#" class="me-2 editWilayah"
+                                                            kode_wilayah="{{ Crypt::encrypt($d->kode_wilayah) }}">
                                                             <i class="ti ti-edit text-success"></i>
                                                         </a>
                                                     </div>
                                                     <div>
                                                         <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('users.delete', Crypt::encrypt($d->id)) }}">
+                                                            action="{{ route('wilayah.delete', Crypt::encrypt($d->kode_wilayah)) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                             <a href="#" class="delete-confirm ml-1">
@@ -89,7 +73,7 @@
                             </table>
                         </div>
                         <div style="float: right;">
-                            {{-- {{ $users->links() }} --}}
+                            {{-- {{ $Wilayahs->links() }} --}}
                         </div>
                     </div>
                 </div>
@@ -97,23 +81,23 @@
         </div>
     </div>
 </div>
-<x-modal-form id="mdlcreateUser" size="" show="loadcreateUser" title="Tambah User" />
-<x-modal-form id="mdleditUser" size="" show="loadeditUser" title="Edit User" />
+<x-modal-form id="mdlcreateWilayah" size="" show="loadcreateWilayah" title="Tambah Wilayah" />
+<x-modal-form id="mdleditWilayah" size="" show="loadeditWilayah" title="Edit Wilayah" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
 <script>
     $(function() {
-        $("#btncreateUser").click(function(e) {
-            $('#mdlcreateUser').modal("show");
-            $("#loadcreateUser").load('/users/create');
+        $("#btncreateWilayah").click(function(e) {
+            $('#mdlcreateWilayah').modal("show");
+            $("#loadcreateWilayah").load('/wilayah/create');
         });
 
-        $(".editUser").click(function(e) {
-            var id = $(this).attr("id");
+        $(".editWilayah").click(function(e) {
+            var kode_wilayah = $(this).attr("kode_wilayah");
             e.preventDefault();
-            $('#mdleditUser').modal("show");
-            $("#loadeditUser").load('/users/' + id + '/edit');
+            $('#mdleditWilayah').modal("show");
+            $("#loadeditWilayah").load('/wilayah/' + kode_wilayah + '/edit');
         });
     });
 </script>
