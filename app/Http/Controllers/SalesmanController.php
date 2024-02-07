@@ -230,4 +230,29 @@ class SalesmanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    //GET DATA FROM AJAX
+    public function getsalesmanbycabang(Request $request)
+    {
+
+        $kode_cabang_user = auth()->user()->kode_cabang;
+        $query = Salesman::query();
+        if ($kode_cabang_user != "PST") {
+            $query->where('kode_cabang', $kode_cabang_user);
+        } else {
+            $query->where('kode_cabang', $request->kode_cabang);
+        }
+        $query->where('status_aktif_salesman', 1);
+        $salesman = $query->get();
+
+
+
+
+        echo "<option value=''>Salesman</option>";
+        foreach ($salesman as $d) {
+            $selected = $d->kode_salesman == $request->kode_salesman ? 'selected' : '';
+            echo "<option $selected value='$d->kode_salesman'>$d->nama_salesman</option>";
+        }
+    }
 }

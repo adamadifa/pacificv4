@@ -4,6 +4,7 @@ use App\Http\Controllers\CabangController;
 use App\Http\Controllers\HargaController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KategoriprodukController;
+use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProdukController;
@@ -109,6 +110,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/salesman/{kode_salesman}/edit', 'edit')->name('salesman.edit')->can('salesman.edit');
         Route::put('/salesman/{kode_salesman}', 'update')->name('salesman.update')->can('salesman.update');
         Route::delete('/salesman/{kode_salesman}', 'destroy')->name('salesman.delete')->can('salesman.delete');
+
+        //GET DATA FROM AJAX
+        Route::post('/salesman/getsalesmanbycabang', 'getsalesmanbycabang');
     });
 
     Route::controller(KategoriprodukController::class)->group(function () {
@@ -144,6 +148,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/harga/{kode_harga}/edit', 'edit')->name('harga.edit')->can('harga.edit');
         Route::put('/harga/{kode_harga}', 'update')->name('harga.update')->can('harga.update');
         Route::delete('/harga/{kode_harga}', 'destroy')->name('harga.delete')->can('harga.delete');
+    });
+
+    Route::controller(PelangganController::class)->group(function () {
+        Route::get('/pelanggan', 'index')->name('pelanggan.index')->can('pelanggan.index');
+        Route::get('/pelanggan/create', 'create')->name('pelanggan.create')->can('pelanggan.create');
+        Route::post('/pelanggan', 'store')->name('pelanggan.store')->can('pelanggan.store');
+        Route::get('/pelanggan/{kode_pelanggan}/edit', 'edit')->name('pelanggan.edit')->can('pelanggan.edit');
+        Route::put('/pelanggan/{kode_pelanggan}', 'update')->name('pelanggan.update')->can('pelanggan.update');
+        Route::delete('/pelanggan/{kode_pelanggan}', 'destroy')->name('pelanggan.delete')->can('pelanggan.delete');
+        Route::get('/pelanggan/{kode_pelanggan}/show', 'show')->name('pelanggan.show')->can('pelanggan.show');
     });
 });
 

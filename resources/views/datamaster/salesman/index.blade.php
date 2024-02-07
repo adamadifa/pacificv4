@@ -123,7 +123,7 @@
                             </table>
                         </div>
                         <div style="float: right;">
-                            {{-- {{ $Salesman->links() }} --}}
+                            {{ $salesman->links() }}
                         </div>
                     </div>
                 </div>

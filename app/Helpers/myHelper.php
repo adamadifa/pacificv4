@@ -29,3 +29,15 @@ function getdocMarker($file)
     $url = url('/storage/marker/' . $file);
     return $url;
 }
+
+
+function toNumber($value)
+{
+    return str_replace(".", "", $value);
+}
+
+
+function formatRupiah($nilai)
+{
+    return number_format($nilai, '0', ',', '.');
+}

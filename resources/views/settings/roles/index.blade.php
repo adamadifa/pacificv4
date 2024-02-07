@@ -52,13 +52,13 @@
                                                     <div>
                                                         <a href="{{ route('roles.createrolepermission', Crypt::encrypt($d->id)) }}"
                                                             class="me-2" id="{{ $d->id }}">
-                                                            <i class="fa fa-user-secret text-info"></i>
+                                                            <i class="ti ti-shield-lock-filled text-info"></i>
                                                         </a>
                                                     </div>
                                                     <div>
                                                         <a href="#" class="me-2 editRole"
                                                             id="{{ $d->id }}">
-                                                            <i class="fa fa-edit text-success"></i>
+                                                            <i class="ti ti-edit text-success"></i>
                                                         </a>
                                                     </div>
                                                     <div>
@@ -67,7 +67,7 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <a href="#" class="delete-confirm ml-1">
-                                                                <i class="fa fa-trash-alt text-danger"></i>
+                                                                <i class="ti ti-trash text-danger"></i>
                                                             </a>
                                                         </form>
                                                     </div>
