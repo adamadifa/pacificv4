@@ -159,6 +159,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('/pelanggan/{kode_pelanggan}', 'destroy')->name('pelanggan.delete')->can('pelanggan.delete');
         Route::get('/pelanggan/{kode_pelanggan}/show', 'show')->name('pelanggan.show')->can('pelanggan.show');
     });
+
+    Route::controller(WilayahController::class)->group(function () {
+        Route::get('/wilayah', 'index')->name('wilayah.index')->can('wilayah.index');
+        Route::get('/wilayah/create', 'create')->name('wilayah.create')->can('wilayah.create');
+        Route::post('/wilayah', 'store')->name('wilayah.store')->can('wilayah.store');
+        Route::get('/wilayah/{kode_wilayah}/edit', 'edit')->name('wilayah.edit')->can('wilayah.edit');
+        Route::put('/wilayah/{kode_wilayah}', 'update')->name('wilayah.update')->can('wilayah.update');
+        Route::delete('/wilayah/{kode_wilayah}', 'destroy')->name('wilayah.delete')->can('wilayah.delete');
+        Route::get('/wilayah/{kode_wilayah}/show', 'show')->name('wilayah.show')->can('wilayah.show');
+
+        //GET DATA FROM AJAX
+        Route::post('/wilayah/getwilayahbycabang', 'getwilayahbycabang');
+    });
 });
 
 

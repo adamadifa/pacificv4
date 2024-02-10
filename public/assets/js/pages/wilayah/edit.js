@@ -4,24 +4,18 @@
     if (formeditWilayah) {
         const fv = FormValidation.formValidation(formeditWilayah, {
             fields: {
-                kode_wilayah: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kode Wilayah Harus Diisi'
-                        },
-                        stringLength: {
-                            max: 3,
-                            min: 3,
-                            message: 'Kode Wilayah Harus 3 Karakter'
-                        },
-
-
-                    }
-                },
                 nama_wilayah: {
                     validators: {
                         notEmpty: {
                             message: 'Nama Wilayah Harus Diisi'
+                        }
+                    }
+                },
+
+                kode_cabang: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Cabang Harus Diisi'
                         }
                     }
                 }

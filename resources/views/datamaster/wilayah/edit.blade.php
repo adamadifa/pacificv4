@@ -5,6 +5,10 @@
         readonly="true" />
     <x-input-with-icon icon="ti ti-map-pin" label="Nama Wilayah" value="{{ $wilayah->nama_wilayah }}"
         name="nama_wilayah" />
+    @hasanyrole($roles_show_cabang)
+        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+            selected="{{ $wilayah->kode_cabang }}" />
+    @endhasanyrole
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

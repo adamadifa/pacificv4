@@ -15,6 +15,12 @@
 
  <!-- Vendors JS -->
  <!-- Vendors JS -->
+ <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
+ <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
+ <script src="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
+ <script src="{{ asset('assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js') }}"></script>
+ <script src="{{ asset('assets/vendor/libs/jquery-timepicker/jquery-timepicker.js') }}"></script>
+ <script src="{{ asset('assets/vendor/libs/pickr/pickr.js') }}"></script>
  <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
  <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
  <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
@@ -27,6 +33,13 @@
      integrity="sha512-4lykFR6C2W55I60sYddEGjieC2fU79R7GUtaqr3DzmNbo0vSaO1MfUjMoTFYYuedjfEix6uV9jVTtRCSBU/Xiw=="
      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+
+ <script>
+     $(function() {
+         $(".flatpickr-date").flatpickr();
+     });
+ </script>
  <!-- Main JS -->
  @if ($message = Session::get('success'))
      <script>

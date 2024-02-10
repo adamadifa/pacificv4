@@ -1,7 +1,10 @@
 <form action="{{ route('wilayah.store') }}" id="formcreateWilayah" method="POST">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Kode Wilayah" name="kode_wilayah" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="kode_wilayah" />
     <x-input-with-icon icon="ti ti-map-pin" label="Nama Wilayah" name="nama_wilayah" />
+    @hasanyrole($roles_show_cabang)
+        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" />
+    @endhasanyrole
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

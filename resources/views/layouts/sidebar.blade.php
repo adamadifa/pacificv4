@@ -37,6 +37,8 @@
                  'harga/*',
                  'pelanggan',
                  'pelanggan/*',
+                 'wilayah',
+                 'wilayah/*',
              ])
                  ? 'open'
                  : '' }}">
@@ -50,6 +52,13 @@
                          <li class="menu-item {{ request()->is(['regional', 'regional/*']) ? 'active' : '' }}">
                              <a href="{{ route('regional.index') }}" class="menu-link">
                                  <div>Regional</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('wilayah.index')
+                         <li class="menu-item {{ request()->is(['wilayah', 'wilayah/*']) ? 'active' : '' }}">
+                             <a href="{{ route('wilayah.index') }}" class="menu-link">
+                                 <div>Wilayah / Rute</div>
                              </a>
                          </li>
                      @endcan
@@ -102,6 +111,7 @@
                              </a>
                          </li>
                      @endcan
+
                  </ul>
              @endif
 

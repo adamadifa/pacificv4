@@ -140,12 +140,32 @@
                                             <td>{{ textCamelCase($d->nama_wilayah) }}</td>
                                             <td class="text-end">
                                                 @if (empty($d->limit_pelanggan))
-                                                    <span class="badge bg-danger">Belum Memiliki Limit</span>
+                                                    <i class="ti ti-clipboard-x text-danger"></i>
                                                 @else
                                                     {{ formatRupiah($d->limit_pelanggan) }}
                                                 @endif
                                             </td>
-                                            <td></td>
+                                            <td>
+                                                @if (!empty($d->foto))
+                                                    @if (Storage::disk('public')->exists('/pelanggan/' . $d->foto))
+                                                        <div class="avatar avatar-xs me-2">
+                                                            <img src="{{ getfotoPelanggan($d->foto) }}" alt=""
+                                                                class="rounded-circle">
+                                                        </div>
+                                                    @else
+                                                        <div class="avatar avatar-xs me-2">
+                                                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}"
+                                                                alt="" class="rounded-circle">
+                                                        </div>
+                                                    @endif
+                                                @else
+                                                    <div class="avatar avatar-xs me-2">
+                                                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}"
+                                                            alt="" class="rounded-circle">
+                                                    </div>
+                                                @endif
+
+                                            </td>
                                             <td>{{ textCamelCase($d->nama_salesman) }}</td>
                                             <td>{{ $d->kode_cabang }}</td>
                                             <td>{{ date('d-m-Y', strtotime($d->tanggal_register)) }}</td>
@@ -177,7 +197,7 @@
                                                     @can('pelanggan.delete')
                                                         <div>
                                                             <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('pelanggan.delete', Crypt::encrypt($d->kode_cabang)) }}">
+                                                                action="{{ route('pelanggan.delete', Crypt::encrypt($d->kode_pelanggan)) }}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <a href="#" class="delete-confirm ml-1">
@@ -205,13 +225,14 @@
     </div>
 </div>
 <x-modal-form id="mdlcreatePelanggan" size="modal-lg" show="loadcreatePelanggan" title="Tambah Pelanggan" />
-<x-modal-form id="mdleditPelanggan" size="" show="loadeditPelanggan" title="Edit Pelanggan" />
+<x-modal-form id="mdleditPelanggan" size="modal-lg" show="loadeditPelanggan" title="Edit Pelanggan" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
 <script>
     $(function() {
         $("#btncreatePelanggan").click(function(e) {
+            e.preventDefault();
             $('#mdlcreatePelanggan').modal("show");
             $("#loadcreatePelanggan").load('/pelanggan/create');
         });

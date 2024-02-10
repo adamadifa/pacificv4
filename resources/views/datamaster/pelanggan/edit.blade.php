@@ -1,29 +1,35 @@
-<form action="{{ route('pelanggan.store') }}" aria-autocomplete="false" id="formcreatePelanggan" method="POST"
-    enctype="multipart/form-data">
+<form action="{{ route('pelanggan.update', Crypt::encrypt($pelanggan->kode_pelanggan)) }}" aria-autocomplete="false"
+    id="formeditPelanggan" method="POST" enctype="multipart/form-data">
     @csrf
+    @method('PUT')
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="kode_pelanggan" />
-            <x-input-with-icon icon="ti ti-credit-card" label="NIK" name="nik" />
-            <x-input-with-icon icon="ti ti-file-text" label="No. KK" name="no_kk" />
-            <x-input-with-icon icon="ti ti-user" label="Nama Pelanggan" name="nama_pelanggan" />
+            <x-input-with-icon icon="ti ti-barcode" label="Auto" value="{{ $pelanggan->kode_pelanggan }}" disabled="true"
+                name="kode_pelanggan" />
+            <x-input-with-icon icon="ti ti-credit-card" label="NIK" name="nik" value="{{ $pelanggan->nik }}" />
+            <x-input-with-icon icon="ti ti-file-text" label="No. KK" name="no_kk" value="{{ $pelanggan->no_kk }}" />
+            <x-input-with-icon icon="ti ti-user" label="Nama Pelanggan" name="nama_pelanggan"
+                value="{{ $pelanggan->nama_pelanggan }}" />
             <x-input-with-icon icon="ti ti-calendar" label="Tanggal Lahir" name="tanggal_lahir"
-                datepicker="flatpickr-date" />
-            <x-textarea label="Alamat Pelanggan" name="alamat_pelanggan" />
-            <x-textarea label="Alamat Toko" name="alamat_toko" />
+                datepicker="flatpickr-date" value="{{ $pelanggan->tanggal_lahir }}" />
+            <x-textarea label="Alamat Pelanggan" name="alamat_pelanggan" value="{{ $pelanggan->alamat_pelanggan }}" />
+            <x-textarea label="Alamat Toko" name="alamat_toko" value="{{ $pelanggan->alamat_toko }}" />
             <div class="row">
                 <div class="col-10">
-                    <x-input-with-icon icon="ti ti-phone" label="No. HP" name="no_hp_pelanggan" />
+                    <x-input-with-icon icon="ti ti-phone" label="No. HP" name="no_hp_pelanggan"
+                        value="{{ $pelanggan->no_hp_pelanggan }}" />
                 </div>
                 <div class="col-2">
                     <div class="form-check">
-                        <input class="form-check-input na_nohp" type="checkbox" value="1" id="na_nohp">
+                        <input class="form-check-input na_nohp" type="checkbox" value="1" id="na_nohp"
+                            {{ $pelanggan->no_hp_pelanggan == 'NA' ? 'checked' : '' }}>
                         <label class="form-check-label" for="defaultCheck3"> NA </label>
                     </div>
                 </div>
             </div>
             @hasanyrole($roles_show_cabang)
-                <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" />
+                <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                    selected="{{ $pelanggan->kode_cabang }}" />
             @endhasanyrole
 
             <div class="form-group mb-3">
@@ -37,30 +43,32 @@
             <div class="form-group mb-3">
                 <select name="hari" id="hari" class="form-select">
                     <option value="">Hari</option>
-                    <option value="Senin">Senin</option>
-                    <option value="Selasa">Selasa</option>
-                    <option value="Rabu">Rabu</option>
-                    <option value="Kamis">Kamis</option>
-                    <option value="Jumat">Jumat</option>
-                    <option value="Sabtu">Sabtu</option>
-                    <option value="Minggu">Minggu</option>
+                    <option value="Senin" {{ $pelanggan->hari == 'Senin' ? 'selected' : '' }}>Senin</option>
+                    <option value="Selasa" {{ $pelanggan->hari == 'Selasa' ? 'selected' : '' }}>Selasa</option>
+                    <option value="Rabu" {{ $pelanggan->hari == 'Rabu' ? 'selected' : '' }}>Rabu</option>
+                    <option value="Kamis" {{ $pelanggan->hari == 'Kamis' ? 'selected' : '' }}>Kamis</option>
+                    <option value="Jumat" {{ $pelanggan->hari == 'Jumat' ? 'selected' : '' }}>Jumat</option>
+                    <option value="Sabtu" {{ $pelanggan->hari == 'Sabtu' ? 'selected' : '' }}>Sabtu</option>
+                    <option value="Minggu" {{ $pelanggan->hari == 'Minggu' ? 'selected' : '' }}>Minggu</option>
                 </select>
             </div>
             <x-input-with-icon icon="ti ti-moneybag" label="Limit Pelanggan" name="limit_pelanggan" align="right"
-                money="true" />
+                money="true" value="{{ formatRupiah($pelanggan->limit_pelanggan) }}" />
             <div class="form-group mb-3">
                 <select name="ljt" id="ljt" class="form-select">
                     <option value="">LJT</option>
-                    <option value="14">14</option>
-                    <option value="30">30</option>
-                    <option value="45">45</option>
+                    <option value="14" {{ $pelanggan->ljt == 14 ? 'selected' : '' }}>14</option>
+                    <option value="30" {{ $pelanggan->ljt == 30 ? 'selected' : '' }}>30</option>
+                    <option value="45" {{ $pelanggan->ljt == 45 ? 'selected' : '' }}>45</option>
                 </select>
             </div>
             <div class="form-group mb-3">
                 <select name="status_aktif_pelanggan" id="status_aktif_pelanggan" class="form-select">
                     <option value="">Status</option>
-                    <option value="1">Aktif</option>
-                    <option value="0">Nonaktif</option>
+                    <option value="1" {{ $pelanggan->status_aktif_pelanggan === '1' ? 'selected' : '' }}>Aktif
+                    </option>
+                    <option value="0" {{ $pelanggan->status_aktif_pelanggan === '0' ? 'selected' : '' }}>Nonaktif
+                    </option>
                 </select>
             </div>
         </div>
@@ -82,65 +90,85 @@
             <div class="form-group mb-3">
                 <select name="kepemilikan" id="kepemilikan" class="form-select">
                     <option value="">Kepemilikan</option>
-                    <option value="SW">Sewa</option>
-                    <option value="MS">Milik Sendiri</option>
+                    <option value="SW" {{ $pelanggan->kepemilikan == 'SW' ? 'selected' : '' }}>Sewa
+                    </option>
+                    <option value="MS" {{ $pelanggan->kepemilikan == 'MS' ? 'selected' : '' }}>Milik Sendiri
+                    </option>
                 </select>
             </div>
             <div class="form-group mb-3">
                 <select name="lama_berjualan" id="lama_berjualan" class="form-select">
                     <option value="">Lama Usaha</option>
-                    <option value="LU01">
+                    <option value="LU01" {{ $pelanggan->lama_berjualan == 'LU01' ? 'selected' : '' }}>
                         < 2 Tahun</option>
-                    <option value="LU02">2 - 5 Tahun</option>
-                    <option value="LU03">> 5 Tahun</option>
+                    <option value="LU02" {{ $pelanggan->lama_berjualan == 'LU02' ? 'selected' : '' }}>2 - 5 Tahun
+                    </option>
+                    <option value="LU03" {{ $pelanggan->lama_berjualan == 'LU03' ? 'selected' : '' }}>> 5 Tahun
+                    </option>
                 </select>
             </div>
             <div class="form-group mb-3">
                 <select name="status_outlet" id="status_outlet" class="form-select">
                     <option value="">Status Outlet</option>
-                    <option value="NO">New Outlet</option>
-                    <option value="EO">Existing Outlet</option>
+                    <option value="NO" {{ $pelanggan->status_outlet == 'NO' ? 'selected' : '' }}>New Outlet
+                    </option>
+                    <option value="EO" {{ $pelanggan->status_outlet == 'EO' ? 'selected' : '' }}>Existing Outlet
+                    </option>
                 </select>
             </div>
             <div class="form-group mb-3">
                 <select name="type_outlet" id="type_outlet" class="form-select">
                     <option value="">Type Outlet</option>
-                    <option value="GR">Grosir</option>
-                    <option value="RT">Retail</option>
+                    <option value="GR" {{ $pelanggan->type_outlet == 'GR' ? 'selected' : '' }}>Grosir</option>
+                    <option value="RT" {{ $pelanggan->type_outlet == 'RT' ? 'selected' : '' }}>Retail</option>
                 </select>
             </div>
             <div class="form-group mb-3">
                 <select name="cara_pembayaran" id="cara_pembayaran" class="form-select">
                     <option value="">Cara Pembayaran</option>
-                    <option value="BT">Bank Transfer</option>
-                    <option value="AC">Advance Cash</option>
-                    <option value="CQ">Cheque</option>
+                    <option value="BT" {{ $pelanggan->cara_pembayaran == 'BT' ? 'selected' : '' }}>Bank Transfer
+                    </option>
+                    <option value="AC" {{ $pelanggan->cara_pembayaran == 'AC' ? 'selected' : '' }}>Advance Cash
+                    </option>
+                    <option value="CQ" {{ $pelanggan->cara_pembayaran == 'CQ' ? 'selected' : '' }}>Cheque</option>
                 </select>
             </div>
 
             <div class="form-group mb-3">
                 <select name="lama_langganan" id="lama_langganan" class="form-select">
                     <option value="">Lama Langganan</option>
-                    <option value="LL01">
+                    <option value="LL01" {{ $pelanggan->lama_langganan == 'LL01' ? 'selected' : '' }}>
                         < 2 Tahun</option>
-                    <option value="LL02">> 2 Tahun</option>
+                    <option value="LL02" {{ $pelanggan->lama_langganan == 'LL02' ? 'selected' : '' }}>> 2 Tahun
+                    </option>
                 </select>
             </div>
             <div class="form-group mb-3">
                 <select name="jaminan" id="jaminan" class="form-select">
                     <option value="">Jaminan</option>
-                    <option value="1">Ada</option>
-                    <option value="0">Tidak Ada</option>
+                    <option value="1" {{ $pelanggan->jaminan === '1' ? 'selected' : '' }}>Ada</option>
+                    <option value="0" {{ $pelanggan->jaminan === '0' ? 'selected' : '' }}>Tidak Ada</option>
                 </select>
             </div>
-            <x-input-with-icon icon="ti ti-map-pin" label="Titik Koordinat" name="lokasi" />
+            <x-input-with-icon icon="ti ti-map-pin" label="Titik Koordinat" name="lokasi"
+                value="{{ $pelanggan->latitude }},{{ $pelanggan->longitude }}" />
             <x-input-with-icon icon="ti ti-moneybag" label="Omset Toko" name="omset_toko" align="right"
-                money="true" />
+                money="true" value="{{ formatRupiah($pelanggan->omset_toko) }}" />
             <x-input-file name="foto" label="Foto" />
-            <div class="form-group">
+            @if (Storage::disk('public')->exists('/pelanggan/' . $pelanggan->foto))
+                <img src="{{ getfotoPelanggan($pelanggan->foto) }}" alt="user image"
+                    class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
+            @else
+                <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                    class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
+            @endif
+
+            {{-- @if (!empty($pelanggan->foto))
+            @endif --}}
+            <div class="form-group mt-3">
                 <button class="btn btn-primary w-100" type="submit">
                     <ion-icon name="send-outline" class="me-1"></ion-icon>
-                    Submit
+                    Update
                 </button>
             </div>
         </div>
@@ -152,7 +180,7 @@
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
-<script src="{{ asset('assets/js/pages/pelanggan/create.js') }}"></script>
+<script src="{{ asset('assets/js/pages/pelanggan/edit.js') }}"></script>
 <script>
     $(function() {
 
@@ -182,44 +210,48 @@
 
         function getsalesmanbyCabang() {
 
-            var kode_cabang = $("#formcreatePelanggan").find("#kode_cabang").val();
+            var kode_cabang = $("#formeditPelanggan").find("#kode_cabang").val();
+            var kode_salesman = "{{ $pelanggan->kode_salesman }}";
             //alert(selected);
             $.ajax({
                 type: 'POST',
                 url: '/salesman/getsalesmanbycabang',
                 data: {
                     _token: "{{ csrf_token() }}",
-                    kode_cabang: kode_cabang
+                    kode_cabang: kode_cabang,
+                    kode_salesman: kode_salesman
                 },
                 cache: false,
                 success: function(respond) {
                     console.log(respond);
-                    $("#formcreatePelanggan").find("#kode_salesman").html(respond);
+                    $("#formeditPelanggan").find("#kode_salesman").html(respond);
                 }
             });
         }
 
         function getwilayahbyCabang() {
 
-            var kode_cabang = $("#formcreatePelanggan").find("#kode_cabang").val();
+            var kode_cabang = $("#formeditPelanggan").find("#kode_cabang").val();
+            var kode_wilayah = "{{ $pelanggan->kode_wilayah }}";
             $.ajax({
                 type: 'POST',
                 url: '/wilayah/getwilayahbycabang',
                 data: {
                     _token: "{{ csrf_token() }}",
                     kode_cabang: kode_cabang,
+                    kode_wilayah: kode_wilayah
                 },
                 cache: false,
                 success: function(respond) {
                     console.log(respond);
-                    $("#formcreatePelanggan").find("#kode_wilayah").html(respond);
+                    $("#formeditPelanggan").find("#kode_wilayah").html(respond);
                 }
             });
         }
 
         getsalesmanbyCabang();
         getwilayahbyCabang();
-        $("#formcreatePelanggan").find("#kode_cabang").change(function(e) {
+        $("#formeditPelanggan").find("#kode_cabang").change(function(e) {
             getsalesmanbyCabang();
             getwilayahbyCabang();
         });
