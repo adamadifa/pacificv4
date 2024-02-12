@@ -38,6 +38,7 @@
  <script>
      $(function() {
          $(".flatpickr-date").flatpickr();
+
      });
  </script>
  <!-- Main JS -->
@@ -119,6 +120,9 @@
  <script>
      $(".money").maskMoney();
  </script>
+
  <script src="{{ asset('/assets/js/main.js') }}"></script>
+
+
 
  @stack('myscript')

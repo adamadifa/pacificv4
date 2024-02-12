@@ -75,15 +75,6 @@ class PelangganController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_pelanggan' => 'required',
-            'alamat_pelanggan' => 'required',
-            'alamat_toko' => 'required',
-            'kode_cabang' => 'required',
-            'kode_salesman' => 'required',
-            'kode_wilayah' => 'required',
-            'hari' => 'required'
-        ]);
 
 
         $user = User::findorFail(auth()->user()->id);
@@ -91,8 +82,25 @@ class PelangganController extends Controller
 
         if ($user->hasRole($roles_show_cabang)) {
             $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'nama_pelanggan' => 'required',
+                'alamat_pelanggan' => 'required',
+                'alamat_toko' => 'required',
+                'kode_cabang' => 'required',
+                'kode_salesman' => 'required',
+                'kode_wilayah' => 'required',
+                'hari' => 'required'
+            ]);
         } else {
             $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'nama_pelanggan' => 'required',
+                'alamat_pelanggan' => 'required',
+                'alamat_toko' => 'required',
+                'kode_salesman' => 'required',
+                'kode_wilayah' => 'required',
+                'hari' => 'required'
+            ]);
         }
 
 
@@ -102,7 +110,7 @@ class PelangganController extends Controller
             ->orderBy('kode_pelanggan', 'desc')
             ->first();
         $last_kode_pelanggan = $lastpelanggan->kode_pelanggan;
-        $kode_pelanggan =  buatkode($last_kode_pelanggan, $request->kode_cabang . '-', 5);
+        $kode_pelanggan =  buatkode($last_kode_pelanggan, $kode_cabang . '-', 5);
 
 
         $data_foto = [];
@@ -134,7 +142,7 @@ class PelangganController extends Controller
             'alamat_pelanggan' => $request->alamat_pelanggan,
             'alamat_toko' => $request->alamat_toko,
             'no_hp_pelanggan' => $request->no_hp_pelanggan,
-            'kode_cabang' => $request->kode_cabang,
+            'kode_cabang' => $kode_cabang,
             'kode_salesman' => $request->kode_salesman,
             'kode_wilayah' => $request->kode_wilayah,
             'hari' => $request->hari,
@@ -185,15 +193,7 @@ class PelangganController extends Controller
 
         //dd($kode_pelanggan);
         $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
-        $request->validate([
-            'nama_pelanggan' => 'required',
-            'alamat_pelanggan' => 'required',
-            'alamat_toko' => 'required',
-            'kode_cabang' => 'required',
-            'kode_salesman' => 'required',
-            'kode_wilayah' => 'required',
-            'hari' => 'required'
-        ]);
+
 
 
         $user = User::findorFail(auth()->user()->id);
@@ -201,8 +201,25 @@ class PelangganController extends Controller
 
         if ($user->hasRole($roles_show_cabang)) {
             $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'nama_pelanggan' => 'required',
+                'alamat_pelanggan' => 'required',
+                'alamat_toko' => 'required',
+                'kode_cabang' => 'required',
+                'kode_salesman' => 'required',
+                'kode_wilayah' => 'required',
+                'hari' => 'required'
+            ]);
         } else {
             $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'nama_pelanggan' => 'required',
+                'alamat_pelanggan' => 'required',
+                'alamat_toko' => 'required',
+                'kode_salesman' => 'required',
+                'kode_wilayah' => 'required',
+                'hari' => 'required'
+            ]);
         }
 
 
@@ -238,7 +255,7 @@ class PelangganController extends Controller
             'alamat_pelanggan' => $request->alamat_pelanggan,
             'alamat_toko' => $request->alamat_toko,
             'no_hp_pelanggan' => $request->no_hp_pelanggan,
-            'kode_cabang' => $request->kode_cabang,
+            'kode_cabang' => $kode_cabang,
             'kode_salesman' => $request->kode_salesman,
             'kode_wilayah' => $request->kode_wilayah,
             'hari' => $request->hari,

@@ -3,7 +3,9 @@
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\HargaController;
 use App\Http\Controllers\JenisprodukController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KategoriprodukController;
+use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
@@ -12,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesmanController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
@@ -171,6 +174,37 @@ Route::middleware('auth')->group(function () {
 
         //GET DATA FROM AJAX
         Route::post('/wilayah/getwilayahbycabang', 'getwilayahbycabang');
+    });
+
+
+    Route::controller(KendaraanController::class)->group(function () {
+        Route::get('/kendaraan', 'index')->name('kendaraan.index')->can('kendaraan.index');
+        Route::get('/kendaraan/create', 'create')->name('kendaraan.create')->can('kendaraan.create');
+        Route::post('/kendaraan', 'store')->name('kendaraan.store')->can('kendaraan.store');
+        Route::get('/kendaraan/{kode_kendaraan}/edit', 'edit')->name('kendaraan.edit')->can('kendaraan.edit');
+        Route::put('/kendaraan/{kode_kendaraan}', 'update')->name('kendaraan.update')->can('kendaraan.update');
+        Route::delete('/kendaraan/{kode_kendaraan}', 'destroy')->name('kendaraan.delete')->can('kendaraan.delete');
+        Route::get('/kendaraan/{kode_kendaraan}/show', 'show')->name('kendaraan.show')->can('kendaraan.show');
+    });
+
+    Route::controller(SupplierController::class)->group(function () {
+        Route::get('/supplier', 'index')->name('supplier.index')->can('supplier.index');
+        Route::get('/supplier/create', 'create')->name('supplier.create')->can('supplier.create');
+        Route::post('/supplier', 'store')->name('supplier.store')->can('supplier.store');
+        Route::get('/supplier/{kode_supplier}/edit', 'edit')->name('supplier.edit')->can('supplier.edit');
+        Route::put('/supplier/{kode_supplier}', 'update')->name('supplier.update')->can('supplier.update');
+        Route::delete('/supplier/{kode_supplier}', 'destroy')->name('supplier.delete')->can('supplier.delete');
+        Route::get('/supplier/{kode_supplier}/show', 'show')->name('supplier.show')->can('supplier.show');
+    });
+
+    Route::controller(KaryawanController::class)->group(function () {
+        Route::get('/karyawan', 'index')->name('karyawan.index')->can('karyawan.index');
+        Route::get('/karyawan/create', 'create')->name('karyawan.create')->can('karyawan.create');
+        Route::post('/karyawan', 'store')->name('karyawan.store')->can('karyawan.store');
+        Route::get('/karyawan/{nik}/edit', 'edit')->name('karyawan.edit')->can('karyawan.edit');
+        Route::put('/karyawan/{nik}', 'update')->name('karyawan.update')->can('karyawan.update');
+        Route::delete('/karyawan/{nik}', 'destroy')->name('karyawan.delete')->can('karyawan.delete');
+        Route::get('/karyawan/{nik}/show', 'show')->name('karyawan.show')->can('karyawan.show');
     });
 });
 

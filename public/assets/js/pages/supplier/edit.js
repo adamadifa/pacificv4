@@ -1,32 +1,16 @@
 (function () {
-    const formcreateRegional = document.querySelector('#formcreateRegional');
-    const submitButton = document.querySelector('button[type="submit"]');
+    const formeditSupplier = document.querySelector('#formeditSupplier');
     // Form validation for Add new record
-    if (formcreateRegional) {
-        const fv = FormValidation.formValidation(formcreateRegional, {
+    if (formeditSupplier) {
+        const fv = FormValidation.formValidation(formeditSupplier, {
             fields: {
-                kode_regional: {
+                nama_supplier: {
                     validators: {
                         notEmpty: {
-                            message: 'Kode Regional Harus Diisi'
+                            message: 'Nama Supplier Harus Diisi'
                         },
-                        stringLength: {
-                            max: 3,
-                            min: 3,
-                            message: 'Kode Regional Harus 3 Karakter'
-                        },
-
-
                     }
                 },
-                nama_regional: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Nama Regional Harus Diisi'
-                        }
-                    }
-                }
-
             },
             plugins: {
                 trigger: new FormValidation.plugins.Trigger(),
@@ -35,7 +19,6 @@
                     rowSelector: '.mb-3'
                 }),
                 submitButton: new FormValidation.plugins.SubmitButton(),
-
 
                 defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
                 autoFocus: new FormValidation.plugins.AutoFocus()
@@ -47,12 +30,6 @@
                     }
                 });
             }
-        }).on('core.form.valid', function () {
-            // Disable the submit button
-            submitButton.setAttribute('disabled', true);
-
-            // Do something else such as sending the form to back-end via Ajax request
-            // ...
         });
     }
 })();

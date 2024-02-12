@@ -155,13 +155,19 @@
             <x-input-with-icon icon="ti ti-moneybag" label="Omset Toko" name="omset_toko" align="right"
                 money="true" value="{{ formatRupiah($pelanggan->omset_toko) }}" />
             <x-input-file name="foto" label="Foto" />
-            @if (Storage::disk('public')->exists('/pelanggan/' . $pelanggan->foto))
-                <img src="{{ getfotoPelanggan($pelanggan->foto) }}" alt="user image"
-                    class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
+            @if (!empty($pelanggan->foto))
+                @if (Storage::disk('public')->exists('/pelanggan/' . $pelanggan->foto))
+                    <img src="{{ getfotoPelanggan($pelanggan->foto) }}" alt="user image"
+                        class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
+                @else
+                    <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                        class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
+                @endif
             @else
                 <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
                     class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
             @endif
+
 
             {{-- @if (!empty($pelanggan->foto))
             @endif --}}

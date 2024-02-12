@@ -46,8 +46,10 @@
                     <option value="Minggu">Minggu</option>
                 </select>
             </div>
-            <x-input-with-icon icon="ti ti-moneybag" label="Limit Pelanggan" name="limit_pelanggan" align="right"
-                money="true" />
+            @hasanyrole($roles_show_cabang)
+                <x-input-with-icon icon="ti ti-moneybag" label="Limit Pelanggan" name="limit_pelanggan" align="right"
+                    money="true" />
+            @endhasanyrole
             <div class="form-group mb-3">
                 <select name="ljt" id="ljt" class="form-select">
                     <option value="">LJT</option>

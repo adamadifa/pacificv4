@@ -39,6 +39,12 @@
                  'pelanggan/*',
                  'wilayah',
                  'wilayah/*',
+                 'kendaraan',
+                 'kendaraan/*',
+                 'supplier',
+                 'supplier/*',
+                 'karyawan',
+                 'karyawan/*',
              ])
                  ? 'open'
                  : '' }}">
@@ -112,6 +118,29 @@
                          </li>
                      @endcan
 
+                     @can('kendaraan.index')
+                         <li class="menu-item {{ request()->is(['kendaraan', 'kendaraan/*']) ? 'active' : '' }}">
+                             <a href="{{ route('kendaraan.index') }}" class="menu-link">
+                                 <div>Kendaraan</div>
+                             </a>
+                         </li>
+                     @endcan
+
+                     @can('supplier.index')
+                         <li class="menu-item {{ request()->is(['supplier', 'supplier/*']) ? 'active' : '' }}">
+                             <a href="{{ route('supplier.index') }}" class="menu-link">
+                                 <div>Supplier</div>
+                             </a>
+                         </li>
+                     @endcan
+
+                     @can('karyawan.index')
+                         <li class="menu-item {{ request()->is(['karyawan', 'karyawan/*']) ? 'active' : '' }}">
+                             <a href="{{ route('karyawan.index') }}" class="menu-link">
+                                 <div>Karyawan</div>
+                             </a>
+                         </li>
+                     @endcan
                  </ul>
              @endif
 

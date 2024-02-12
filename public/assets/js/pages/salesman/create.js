@@ -11,8 +11,8 @@
                         },
                         stringLength: {
                             max: 7,
-                            min: 7,
-                            message: 'Kode Salesman Harus 7 Karakter ex SPST001'
+                            min: 6,
+                            message: 'Kode Salesman Minimal 7 Karakter ex SPST001'
                         },
 
 
