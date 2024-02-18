@@ -22,7 +22,7 @@ class Globalprovider extends ServiceProvider
     public function boot(Guard $auth): void
     {
         view()->composer('*', function ($view) use ($auth) {
-            $roles_show_cabang = ['super admin', 'general manager 3', 'manager keuangan', 'direktur', 'rsm'];
+            $roles_show_cabang = ['super admin', 'general manager 3', 'manager keuangan', 'direktur', 'regional sales manager'];
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang
             ];

@@ -8,6 +8,11 @@
     <x-select label="Role" name="role" :data="$roles" key="name" textShow="name" />
     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
         selected="{{ $user->kode_cabang }}" />
+
+    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
+        selected="{{ $user->kode_dept }}" />
+
+
     <x-select label="Regional" name="kode_regional" :data="$regional" key="kode_regional" textShow="nama_regional"
         selected="{{ $user->kode_regional }}" />
     <div class="form-group">

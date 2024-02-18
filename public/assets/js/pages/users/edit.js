@@ -34,6 +34,33 @@
 
 
 
+                kode_cabang: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Silahkan Pilih Cabang'
+                        }
+                    }
+                },
+
+                kode_dept: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Silahkan Pilih Departemen'
+                        }
+                    }
+                },
+
+                kode_regional: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Silahkan Pilih Regional'
+                        }
+                    }
+                }
+
+
+
+
             },
             plugins: {
                 trigger: new FormValidation.plugins.Trigger(),

@@ -34,6 +34,7 @@
      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+ <script src="{{ asset('assets/js/jquery.mask.min.js') }}"></script>
 
  <script>
      $(function() {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Departemen;
 use App\Models\Regional;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -36,7 +37,8 @@ class UserController extends Controller
         $roles = Role::orderBy('name')->get();
         $cabang = Cabang::orderBy('nama_cabang')->get();
         $regional = Regional::orderBy('kode_regional')->get();
-        return view('settings.users.create', compact('roles', 'cabang', 'regional'));
+        $departemen = Departemen::orderBy('kode_dept')->get();
+        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen'));
     }
 
     public function edit($id)
@@ -46,7 +48,8 @@ class UserController extends Controller
         $roles = Role::orderBy('name')->get();
         $cabang = Cabang::orderBy('nama_cabang')->get();
         $regional = Regional::orderBy('kode_regional')->get();
-        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional'));
+        $departemen = Departemen::orderBy('kode_dept')->get();
+        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen'));
     }
 
     public function store(Request $request)
@@ -58,7 +61,8 @@ class UserController extends Controller
             'password' => 'required',
             'role' => 'required',
             'kode_cabang' => 'required',
-            'kode_regional' => 'required'
+            'kode_regional' => 'required',
+            'kode_dept' => 'required'
         ]);
 
         try {
@@ -68,12 +72,14 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => $request->password,
                 'kode_cabang' => $request->kode_cabang,
+                'kode_dept' => $request->kode_dept,
                 'kode_regional' => $request->kode_regional
             ]);
 
             $user->assignRole($request->role);
             return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
         } catch (\Exception $e) {
+
             return Redirect::back()->with(['error' => $e->getMessage()]);
         }
     }
@@ -90,7 +96,8 @@ class UserController extends Controller
             'username' => 'required',
             'email' => 'required|email',
             'kode_cabang' => 'required',
-            'kode_regional' => 'required'
+            'kode_regional' => 'required',
+            'kode_dept' => 'required'
         ]);
 
         try {
@@ -101,6 +108,7 @@ class UserController extends Controller
                     'username' => $request->username,
                     'email' => $request->email,
                     'kode_cabang' => $request->kode_cabang,
+                    'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
                     'password' => bcrypt($request->password)
                 ]);
@@ -110,6 +118,7 @@ class UserController extends Controller
                     'username' => $request->username,
                     'email' => $request->email,
                     'kode_cabang' => $request->kode_cabang,
+                    'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
                 ]);
             }

@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('statusperkawinans', function (Blueprint $table) {
-            $table->id();
+        Schema::create('hrd_status_kawin', function (Blueprint $table) {
+            $table->char('kode_status_kawin', 2)->primary();
+            $table->string('keterangan_status_kawin');
             $table->timestamps();
         });
     }
@@ -22,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('statusperkawinans');
+        Schema::dropIfExists('hrd_status_kawin');
     }
 };

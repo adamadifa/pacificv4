@@ -23,6 +23,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'kode_dept',
         'kode_cabang',
         'kode_regional'
     ];

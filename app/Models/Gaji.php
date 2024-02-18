@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Gaji extends Model
+{
+    use HasFactory;
+    protected $table = "hrd_gaji";
+    protected $primaryKey = "kode_gaji";
+    protected $guarded = [];
+    public $incrementing  = false;
+}

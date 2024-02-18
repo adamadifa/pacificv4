@@ -51,6 +51,13 @@ function getfotoPelanggan($file)
 }
 
 
+function getfotoKaryawan($file)
+{
+    $url = url('/storage/karyawan/' . $file);
+    return $url;
+}
+
+
 function toNumber($value)
 {
     return str_replace(".", "", $value);

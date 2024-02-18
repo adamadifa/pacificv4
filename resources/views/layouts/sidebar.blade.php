@@ -45,10 +45,29 @@
                  'supplier/*',
                  'karyawan',
                  'karyawan/*',
+                 'rekening',
+                 'rekening/*',
+                 'gaji',
+                 'gaji/*',
+                 'insentif',
+                 'insentif/*',
+                 'bpjskesehatan',
+                 'bpjskesehatan/*',
+                 'bpjstenagakerja',
+                 'bpjstenagakerja/*',
              ])
                  ? 'open'
                  : '' }}">
-             @if (auth()->user()->hasAnyPermission(['regional.index', 'cabang.index', 'salesman.index']))
+             @if (auth()->user()->hasAnyPermission([
+                         'regional.index',
+                         'cabang.index',
+                         'salesman.index',
+                         'karyawan.index',
+                         'gaji.index',
+                         'insentif.index',
+                         'bpjskesehatan.index',
+                         'bpjstenagakerja.index',
+                     ]))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-database"></i>
                      <div>Data Master</div>
@@ -138,6 +157,44 @@
                          <li class="menu-item {{ request()->is(['karyawan', 'karyawan/*']) ? 'active' : '' }}">
                              <a href="{{ route('karyawan.index') }}" class="menu-link">
                                  <div>Karyawan</div>
+                             </a>
+                         </li>
+                     @endcan
+
+                     @can('rekening.index')
+                         <li class="menu-item {{ request()->is(['rekening', 'rekening/*']) ? 'active' : '' }}">
+                             <a href="{{ route('rekening.index') }}" class="menu-link">
+                                 <div>Rekening</div>
+                             </a>
+                         </li>
+                     @endcan
+
+                     @can('gaji.index')
+                         <li class="menu-item {{ request()->is(['gaji', 'gaji/*']) ? 'active' : '' }}">
+                             <a href="{{ route('gaji.index') }}" class="menu-link">
+                                 <div>Gaji</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('insentif.index')
+                         <li class="menu-item {{ request()->is(['insentif', 'insentif/*']) ? 'active' : '' }}">
+                             <a href="{{ route('insentif.index') }}" class="menu-link">
+                                 <div>Insentif</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('bpjskesehatan.index')
+                         <li class="menu-item {{ request()->is(['bpjskesehatan', 'bpjskesehatan/*']) ? 'active' : '' }}">
+                             <a href="{{ route('bpjskesehatan.index') }}" class="menu-link">
+                                 <div>BPJS Kesehatan</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('bpjstenagakerja.index')
+                         <li
+                             class="menu-item {{ request()->is(['bpjstenagakerja', 'bpjstenagakerja/*']) ? 'active' : '' }}">
+                             <a href="{{ route('bpjstenagakerja.index') }}" class="menu-link">
+                                 <div>BPJS Tenaga Kerja</div>
                              </a>
                          </li>
                      @endcan

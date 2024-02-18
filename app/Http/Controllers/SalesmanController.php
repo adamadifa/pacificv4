@@ -21,7 +21,7 @@ class SalesmanController extends Controller
     public function index(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
-        $roles_show_cabang = config('global.roles_access_all_cabang');
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
 
         $query = Salesman::query();
         $query->join('salesman_kategori', 'salesman.kode_kategori_salesman', '=', 'salesman_kategori.kode_kategori_salesman');
@@ -34,8 +34,8 @@ class SalesmanController extends Controller
             $query->where('salesman.kode_cabang', $request->kode_cabang);
         }
 
-        if (!$user->hasRole($roles_show_cabang)) {
-            if ($user->hasRole('rsm')) {
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else {
                 $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);

@@ -55,6 +55,14 @@
                     }
                 },
 
+                kode_dept: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Silahkan Pilih Departemen'
+                        }
+                    }
+                },
+
                 kode_regional: {
                     validators: {
                         notEmpty: {

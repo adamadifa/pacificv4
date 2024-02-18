@@ -45,6 +45,7 @@
                                         <th>Email</th>
                                         <th>Role</th>
                                         <th>Cabang</th>
+                                        <th>Dept</th>
                                         <th>Regional</th>
                                         <th>#</th>
                                     </tr>
@@ -62,6 +63,7 @@
                                                 @endforeach
                                             </td>
                                             <td>{{ textCamelCase($d->nama_cabang) }}</td>
+                                            <td>{{ textUpperCase($d->kode_dept) }}</td>
                                             <td>{{ textCamelCase($d->nama_regional) }}</td>
                                             <td>
                                                 <div class="d-flex">

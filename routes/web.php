@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\BpjskesehatanController;
+use App\Http\Controllers\BpjstenagakerjaController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\GajiController;
 use App\Http\Controllers\HargaController;
+use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KategoriprodukController;
@@ -12,6 +16,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionalController;
+use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
@@ -205,6 +210,56 @@ Route::middleware('auth')->group(function () {
         Route::put('/karyawan/{nik}', 'update')->name('karyawan.update')->can('karyawan.update');
         Route::delete('/karyawan/{nik}', 'destroy')->name('karyawan.delete')->can('karyawan.delete');
         Route::get('/karyawan/{nik}/show', 'show')->name('karyawan.show')->can('karyawan.show');
+        Route::get('/karyawan/{nik}/unlocklocation', 'unlocklocation')->name('karyawan.unlocklocation')->can('karyawan.unlocklocation');
+        Route::get('/karyawan/{nik}/dokumen', 'dokumen')->name('karyawan.dokumen')->can('karyawan.dokumen');
+    });
+
+    Route::controller(RekeningController::class)->group(function () {
+        Route::get('/rekening', 'index')->name('rekening.index')->can('rekening.index');
+        Route::get('/rekening/{nik}/edit', 'edit')->name('rekening.edit')->can('rekening.edit');
+        Route::put('/rekening/{nik}', 'update')->name('rekening.update')->can('rekening.update');
+    });
+
+    Route::controller(GajiController::class)->group(function () {
+        Route::get('/gaji', 'index')->name('gaji.index')->can('gaji.index');
+        Route::get('/gaji/create', 'create')->name('gaji.create')->can('gaji.create');
+        Route::post('/gaji', 'store')->name('gaji.store')->can('gaji.store');
+        Route::get('/gaji/{kode_gaji}/edit', 'edit')->name('gaji.edit')->can('gaji.edit');
+        Route::put('/gaji/{kode_gaji}', 'update')->name('gaji.update')->can('gaji.update');
+        Route::delete('/gaji/{kode_gaji}', 'destroy')->name('gaji.delete')->can('gaji.delete');
+        Route::get('/gaji/{kode_gaji}/show', 'show')->name('gaji.show')->can('gaji.show');
+    });
+
+    Route::controller(InsentifController::class)->group(function () {
+        Route::get('/insentif', 'index')->name('insentif.index')->can('insentif.index');
+        Route::get('/insentif/create', 'create')->name('insentif.create')->can('insentif.create');
+        Route::post('/insentif', 'store')->name('insentif.store')->can('insentif.store');
+        Route::get('/insentif/{kode_insentif}/edit', 'edit')->name('insentif.edit')->can('insentif.edit');
+        Route::put('/insentif/{kode_insentif}', 'update')->name('insentif.update')->can('insentif.update');
+        Route::delete('/insentif/{kode_insentif}', 'destroy')->name('insentif.delete')->can('insentif.delete');
+        Route::get('/insentif/{kode_insentif}/show', 'show')->name('insentif.show')->can('insentif.show');
+    });
+
+
+    Route::controller(BpjskesehatanController::class)->group(function () {
+        Route::get('/bpjskesehatan', 'index')->name('bpjskesehatan.index')->can('bpjskesehatan.index');
+        Route::get('/bpjskesehatan/create', 'create')->name('bpjskesehatan.create')->can('bpjskesehatan.create');
+        Route::post('/bpjskesehatan', 'store')->name('bpjskesehatan.store')->can('bpjskesehatan.store');
+        Route::get('/bpjskesehatan/{kode_bpjs_kesehatan}/edit', 'edit')->name('bpjskesehatan.edit')->can('bpjskesehatan.edit');
+        Route::put('/bpjskesehatan/{kode_bpjs_kesehatan}', 'update')->name('bpjskesehatan.update')->can('bpjskesehatan.update');
+        Route::delete('/bpjskesehatan/{kode_bpjs_kesehatan}', 'destroy')->name('bpjskesehatan.delete')->can('bpjskesehatan.delete');
+        Route::get('/bpjskesehatan/{kode_bpjs_kesehatan}/show', 'show')->name('bpjskesehatan.show')->can('bpjskesehatan.show');
+    });
+
+
+    Route::controller(BpjstenagakerjaController::class)->group(function () {
+        Route::get('/bpjstenagakerja', 'index')->name('bpjstenagakerja.index')->can('bpjstenagakerja.index');
+        Route::get('/bpjstenagakerja/create', 'create')->name('bpjstenagakerja.create')->can('bpjstenagakerja.create');
+        Route::post('/bpjstenagakerja', 'store')->name('bpjstenagakerja.store')->can('bpjstenagakerja.store');
+        Route::get('/bpjstenagakerja/{kode_bpjs_tenagakerja}/edit', 'edit')->name('bpjstenagakerja.edit')->can('bpjstenagakerja.edit');
+        Route::put('/bpjstenagakerja/{kode_bpjs_tenagakerja}', 'update')->name('bpjstenagakerja.update')->can('bpjstenagakerja.update');
+        Route::delete('/bpjstenagakerja/{kode_bpjs_tenagakerja}', 'destroy')->name('bpjstenagakerja.delete')->can('bpjstenagakerja.delete');
+        Route::get('/bpjstenagakerja/{kode_bpjs_tenagakerja}/show', 'show')->name('bpjstenagakerja.show')->can('bpjstenagakerja.show');
     });
 });
 

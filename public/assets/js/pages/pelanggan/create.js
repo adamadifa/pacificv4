@@ -33,7 +33,8 @@
                         notEmpty: {
                             message: 'No. HP Harus Diisi'
                         }
-                    }
+                    },
+
                 },
 
                 kode_cabang: {

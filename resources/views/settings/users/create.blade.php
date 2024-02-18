@@ -6,6 +6,7 @@
     <x-input-with-icon icon="ti ti-key" label="Password" name="password" type="password" />
     <x-select label="Role" name="role" :data="$roles" key="name" textShow="name" />
     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" />
+    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" />
     <x-select label="Regional" name="kode_regional" :data="$regional" key="kode_regional" textShow="nama_regional" />
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
