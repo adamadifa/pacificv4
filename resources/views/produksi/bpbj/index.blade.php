@@ -7,11 +7,11 @@
 @endsection
 
 <div class="row">
-    <div class="col-lg-4 col-sm-12 col-xs-12">
+    <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
                 @can('bpjstenagakerja.create')
-                    <a href="#" class="btn btn-primary" id="btncreateBpjsTenagaKerja"><i class="fa fa-plus me-2"></i>
+                    <a href="#" class="btn btn-primary" id="btncreateBpbj"><i class="fa fa-plus me-2"></i>
                         Tambah BPBJ</a>
                 @endcan
             </div>
@@ -19,7 +19,16 @@
                 <div class="row">
                     <div class="col-12">
                         <form action="{{ route('bpbj.index') }}">
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-12 col-md-12">
+                                    <x-input-with-icon label="Tanggal Mutasi" value="{{ Request('tanggal_mutasi') }}"
+                                        name="tanggal_mutasi" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                </div>
 
+                                <div class="col-lg-2 col-sm-12 col-md-12">
+                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i></button>
+                                </div>
+                            </div>
 
                         </form>
                     </div>
@@ -40,13 +49,37 @@
                                         <tr>
                                             <td>{{ $d->no_mutasi }}</td>
                                             <td>{{ date('d-m-Y', strtotime($d->tanggal_mutasi)) }}</td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    @can('bpbj.edit')
+                                                        <div>
+                                                            <a href="#" class="me-2 editBpbj"
+                                                                no_mutasi="{{ Crypt::encrypt($d->no_mutasi) }}">
+                                                                <i class="ti ti-edit text-success"></i>
+                                                            </a>
+                                                        </div>
+                                                    @endcan
+                                                    @can('bpbj.delete')
+                                                        <div>
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('bpbj.delete', Crypt::encrypt($d->no_mutasi)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        </div>
+                                                    @endcan
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
                         <div style="float: right;">
-                            {{-- {{ $bpjstenagakerja->links() }} --}}
+                            {{ $bpbj->links() }}
                         </div>
                     </div>
                 </div>
@@ -54,7 +87,7 @@
         </div>
     </div>
 </div>
-<x-modal-form id="mdlcreateBpbj" size="" show="loadcreateBpbj" title="Tambah BPBJ " />
+<x-modal-form id="mdlcreateBpbj" size="modal-lg" show="loadcreateBpbj" title="Tambah BPBJ " />
 <x-modal-form id="mdleditBpbj" size="" show="loadeditBpbj" title="Edit BPBJ " />
 @endsection
 @push('myscript')
