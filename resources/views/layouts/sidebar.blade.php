@@ -55,6 +55,8 @@
                  'bpjskesehatan/*',
                  'bpjstenagakerja',
                  'bpjstenagakerja/*',
+                 'bufferstok',
+                 'bufferstok/*',
              ])
                  ? 'open'
                  : '' }}">
@@ -198,10 +200,33 @@
                              </a>
                          </li>
                      @endcan
+
+                     @can('bufferstok.index')
+                         <li class="menu-item {{ request()->is(['bufferstok', 'bufferstok/*']) ? 'active' : '' }}">
+                             <a href="{{ route('bufferstok.index') }}" class="menu-link">
+                                 <div>Buffer & Max Stok</div>
+                             </a>
+                         </li>
+                     @endcan
                  </ul>
              @endif
-
-
+         </li>
+         <li class="menu-item {{ request()->is(['bpbj', 'bpbj/*']) ? 'open' : '' }}">
+             @if (auth()->user()->hasAnyPermission(['bpbj.index']))
+                 <a href="javascript:void(0);" class="menu-link menu-toggle">
+                     <i class="menu-icon tf-icons ti ti-box"></i>
+                     <div>Produksi</div>
+                 </a>
+                 <ul class="menu-sub">
+                     @can('bpbj.index')
+                         <li class="menu-item {{ request()->is(['bpbj', 'bpbj/*']) ? 'active' : '' }}">
+                             <a href="{{ route('bpbj.index') }}" class="menu-link">
+                                 <div>BPBJ</div>
+                             </a>
+                         </li>
+                     @endcan
+                 </ul>
+             @endif
          </li>
          <li
              class="menu-item {{ request()->is([

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\BpbjController;
 use App\Http\Controllers\BpjskesehatanController;
 use App\Http\Controllers\BpjstenagakerjaController;
+use App\Http\Controllers\BufferstokController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\HargaController;
@@ -260,6 +262,26 @@ Route::middleware('auth')->group(function () {
         Route::put('/bpjstenagakerja/{kode_bpjs_tenagakerja}', 'update')->name('bpjstenagakerja.update')->can('bpjstenagakerja.update');
         Route::delete('/bpjstenagakerja/{kode_bpjs_tenagakerja}', 'destroy')->name('bpjstenagakerja.delete')->can('bpjstenagakerja.delete');
         Route::get('/bpjstenagakerja/{kode_bpjs_tenagakerja}/show', 'show')->name('bpjstenagakerja.show')->can('bpjstenagakerja.show');
+    });
+
+    Route::controller(BufferstokController::class)->group(function () {
+        Route::get('/bufferstok', 'index')->name('bufferstok.index')->can('bufferstok.index');
+        Route::put('/bufferstok', 'update')->name('bufferstok.update')->can('bufferstok.update');
+
+        //Ajax Request
+        Route::get('/bufferstok/{kode_cabang}/getbufferstok', 'getbufferstok');
+    });
+
+
+    //Produksi
+    Route::controller(BpbjController::class)->group(function () {
+        Route::get('/bpbj', 'index')->name('bpbj.index')->can('bpbj.index');
+        Route::get('/bpbj/create', 'create')->name('bpbj.create')->can('bpbj.create');
+        Route::post('/bpbj', 'store')->name('bpbj.store')->can('bpbj.store');
+        Route::get('/bpbj/{kode_bpbj}/edit', 'edit')->name('bpbj.edit')->can('bpbj.edit');
+        Route::put('/bpbj/{kode_bpbj}', 'update')->name('bpbj.update')->can('bpbj.update');
+        Route::delete('/bpbj/{kode_bpbj}', 'destroy')->name('bpbj.delete')->can('bpbj.delete');
+        Route::get('/bpbj/{kode_bpbj}/show', 'show')->name('bpbj.show')->can('bpbj.show');
     });
 });
 
