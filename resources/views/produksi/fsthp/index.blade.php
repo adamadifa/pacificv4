@@ -100,7 +100,7 @@
         </div>
     </div>
 </div>
-<x-modal-form id="mdlcreateFsthp" size="modal-lg" show="loadcreateFsthp" title="Tambah FSTHP " />
+<x-modal-form id="mdlcreateFsthp" size="" show="loadcreateFsthp" title="Tambah FSTHP " />
 <x-modal-form id="mdldetailFsthp" size="modal-lg" show="loaddetailFsthp" title="Detail FSTHP " />
 @endsection
 @push('myscript')

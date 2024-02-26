@@ -58,6 +58,10 @@ class BpbjController extends Controller
                 return Redirect::back()->with(messageError('Data Detail Produk Masih Kosong !'));
             }
 
+            $cekbpbj = Mutasiproduksi::where('no_mutasi', $request->no_mutasi)->count();
+            if (empty($cekbpbj > 0)) {
+                return Redirect::back()->with(messageError('Data Sudah Ada !'));
+            }
             $detailtemp = $temp->get();
             foreach ($detailtemp as $d) {
                 $detail[] = [

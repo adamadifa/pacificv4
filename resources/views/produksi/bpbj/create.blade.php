@@ -27,7 +27,7 @@
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
             <div class="form-group mb-3">
-                <a href="#" class="btn btn-primary mt-4" id="tambahproduk"><i class="ti ti-plus"></i></a>
+                <button class="btn btn-primary mt-4" id="tambahproduk"><i class="ti ti-plus"></i></button>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
         <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
     </div>
     <div class="form-group" id="saveButton">
-        <button class="btn btn-primary w-100" type="submit">
+        <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
             Submit
         </button>
@@ -206,6 +206,7 @@
 
 
             } else {
+                $("#tambahproduk").prop('disabled', true);
                 $.ajax({
                     type: "POST",
                     url: "{{ route('bpbj.storedetailtemp') }}",
@@ -227,6 +228,7 @@
                         } else {
                             Swal.fire("Error", respond, "error");
                         }
+                        $("#tambahproduk").prop('disabled', false);
                     }
                 });
             }
@@ -245,6 +247,7 @@
         $("#formcreateBpbj").submit(function() {
             const no_mutasi = $("#no_mutasi").val();
             const tanggal_mutasi = $("#tanggal_mutasi").val();
+            const kode_produk = $("#kode_produk").val();
             const cektutuplaporan = $("#cektutuplaporan").val();
             const cekdetailtemp = $("#cekdetailtemp").val();
             if (no_mutasi == "") {
@@ -271,12 +274,26 @@
                 });
 
                 return false;
+            } else if (kode_produk == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Produk Tidak Boleh Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#kode_produk").focus();
+                    },
+                });
+
+                return false;
             } else if (cektutuplaporan === '1') {
                 Swal.fire("Oops!", "Laporan Untuk Periode Ini Sudah Ditutup", "warning");
                 return false;
             } else if (cekdetailtemp === '0' || cekdetailtemp === '') {
                 Swal.fire("Oops!", "Data Masih Kosong", "warning");
                 return false;
+            } else {
+                $("#btnSimpan").prop('disabled', true);
             }
 
 
