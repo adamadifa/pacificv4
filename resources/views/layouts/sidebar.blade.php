@@ -211,7 +211,7 @@
                  </ul>
              @endif
          </li>
-         <li class="menu-item {{ request()->is(['bpbj', 'bpbj/*']) ? 'open' : '' }}">
+         <li class="menu-item {{ request()->is(['bpbj', 'bpbj/*', 'fsthp', 'fsthp/*']) ? 'open' : '' }}">
              @if (auth()->user()->hasAnyPermission(['bpbj.index']))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-box"></i>
@@ -222,6 +222,13 @@
                          <li class="menu-item {{ request()->is(['bpbj', 'bpbj/*']) ? 'active' : '' }}">
                              <a href="{{ route('bpbj.index') }}" class="menu-link">
                                  <div>BPBJ</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('fsthp.index')
+                         <li class="menu-item {{ request()->is(['fsthp', 'fsthp/*']) ? 'active' : '' }}">
+                             <a href="{{ route('fsthp.index') }}" class="menu-link">
+                                 <div>FSTHP</div>
                              </a>
                          </li>
                      @endcan

@@ -5,6 +5,7 @@ use App\Http\Controllers\BpjskesehatanController;
 use App\Http\Controllers\BpjstenagakerjaController;
 use App\Http\Controllers\BufferstokController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\FsthpController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\HargaController;
 use App\Http\Controllers\InsentifController;
@@ -279,8 +280,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/bpbj', 'index')->name('bpbj.index')->can('bpbj.index');
         Route::get('/bpbj/create', 'create')->name('bpbj.create')->can('bpbj.create');
         Route::post('/bpbj', 'store')->name('bpbj.store')->can('bpbj.store');
-        Route::get('/bpbj/{kode_bpbj}/edit', 'edit')->name('bpbj.edit')->can('bpbj.edit');
-        Route::put('/bpbj/{kode_bpbj}', 'update')->name('bpbj.update')->can('bpbj.update');
         Route::delete('/bpbj/{kode_bpbj}', 'destroy')->name('bpbj.delete')->can('bpbj.delete');
         Route::get('/bpbj/{kode_bpbj}/show', 'show')->name('bpbj.show')->can('bpbj.show');
 
@@ -289,6 +288,22 @@ Route::middleware('auth')->group(function () {
         Route::get('/bpbj/{kode_produk}/getdetailtemp', 'getdetailtemp')->name('bpbj.getdetailtemp');
         Route::post('/bpbj/generatenobpbj', 'generatenobpbj')->name('bpbj.generatenobpbj');
         Route::post('/bpbj/deletetemp', 'deletetemp')->name('bpbj.deletetemp');
+        Route::post('/bpbj/cekdetailtemp', 'cekdetailtemp')->name('bpbj.cekdetailtemp');
+    });
+
+    Route::controller(FsthpController::class)->group(function () {
+        Route::get('/fsthp', 'index')->name('fsthp.index')->can('fsthp.index');
+        Route::get('/fsthp/create', 'create')->name('fsthp.create')->can('fsthp.create');
+        Route::post('/fsthp', 'store')->name('fsthp.store')->can('fsthp.store');
+        Route::delete('/fsthp/{kode_fsthp}', 'destroy')->name('fsthp.delete')->can('fsthp.delete');
+        Route::get('/fsthp/{kode_fsthp}/show', 'show')->name('fsthp.show')->can('fsthp.show');
+
+        //Ajax Request
+        Route::post('/fsthp/storedetailtemp', 'storedetailtemp')->name('fsthp.storedetailtemp');
+        Route::get('/fsthp/{kode_produk}/getdetailtemp', 'getdetailtemp')->name('fsthp.getdetailtemp');
+        Route::post('/fsthp/generatenofsthp', 'generatenofsthp')->name('fsthp.generatenofsthp');
+        Route::post('/fsthp/deletetemp', 'deletetemp')->name('fsthp.deletetemp');
+        Route::post('/fsthp/cekdetailtemp', 'cekdetailtemp')->name('fsthp.cekdetailtemp');
     });
 
 

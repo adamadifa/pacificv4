@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Detailmutasiproduksi;
 use App\Models\Detailmutasiproduksitemp;
 use App\Models\Mutasiproduksi;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class BpbjController extends Controller
 {
@@ -14,8 +18,8 @@ class BpbjController extends Controller
         $query = Mutasiproduksi::query();
         $query->orderBy('tanggal_mutasi', 'desc');
         $query->orderBy('created_at', 'desc');
-        if (!empty($request->tanggal_mutasi)) {
-            $query->where('tanggal_mutasi', $request->tanggal_mutasi);
+        if (!empty($request->tanggal_mutasi_search)) {
+            $query->where('tanggal_mutasi', $request->tanggal_mutasi_search);
         }
         $query->where('jenis_mutasi', 'BPBJ');
         $bpbj = $query->simplePaginate(20);
@@ -31,6 +35,87 @@ class BpbjController extends Controller
     }
 
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'no_mutasi' => 'required',
+            'tanggal_mutasi' => 'required'
+        ]);
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal_mutasi, "produksi");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+
+            $temp = Detailmutasiproduksitemp::where('kode_produk', $request->kode_produk)
+                ->where('id_user', auth()->user()->id)
+                ->where('in_out', 'IN');
+
+
+            $cekdetailtemp = $temp->count();
+            if (empty($cekdetailtemp)) {
+                return Redirect::back()->with(messageError('Data Detail Produk Masih Kosong !'));
+            }
+
+            $detailtemp = $temp->get();
+            foreach ($detailtemp as $d) {
+                $detail[] = [
+                    'no_mutasi' => $request->no_mutasi,
+                    'kode_produk' => $d->kode_produk,
+                    'shift' => $d->shift,
+                    'jumlah' => $d->jumlah
+                ];
+            }
+            Mutasiproduksi::create([
+                'no_mutasi' => $request->no_mutasi,
+                'tanggal_mutasi' => $request->tanggal_mutasi,
+                'in_out' => 'IN',
+                'jenis_mutasi' => 'BPBJ'
+            ]);
+
+            Detailmutasiproduksi::insert($detail);
+
+            Detailmutasiproduksitemp::where('kode_produk', $request->kode_produk)
+                ->where('id_user', auth()->user()->id)
+                ->where('in_out', 'IN')
+                ->delete();
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function show($no_mutasi)
+    {
+        $no_mutasi = Crypt::decrypt($no_mutasi);
+        $bpbj = Mutasiproduksi::where('no_mutasi', $no_mutasi)->first();
+        $detail = Detailmutasiproduksi::where('no_mutasi', $no_mutasi)
+            ->join('produk', 'produksi_mutasi_detail.kode_produk', '=', 'produk.kode_produk')
+            ->get();
+
+        return view('produksi.bpbj.show', compact('bpbj', 'detail'));
+    }
+
+
+    public function destroy($no_mutasi)
+    {
+        $no_mutasi = Crypt::decrypt($no_mutasi);
+        $bpbj = Mutasiproduksi::where('no_mutasi', $no_mutasi)->first();
+        try {
+            $cektutuplaporan = cektutupLaporan($bpbj->tanggal_mutasi, "produksi");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            Mutasiproduksi::where('no_mutasi', $no_mutasi)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+    //AJAX REQUEST
     public function storedetailtemp(Request $request)
     {
         try {
@@ -110,5 +195,14 @@ class BpbjController extends Controller
         } catch (\Exception $e) {
             return $e;
         }
+    }
+
+    public function cekdetailtemp(Request $request)
+    {
+        $cek = Detailmutasiproduksitemp::where('kode_produk', $request->kode_produk)
+            ->where('id_user', auth()->user()->id)
+            ->where('in_out', 'IN')
+            ->count();
+        return $cek;
     }
 }

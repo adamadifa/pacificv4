@@ -1,6 +1,7 @@
 <form action="{{ route('bpbj.store') }}" id="formcreateBpbj" method="POST">
     @csrf
-    <input type="text" id="cektutuplaporan">
+    <input type="hidden" id="cektutuplaporan">
+    <input type="hidden" id="cekdetailtemp">
     <x-input-with-icon-label icon="ti ti-barcode" label="No. BPBJ" name="no_mutasi" readonly="true" />
 
     <x-input-with-icon-label icon="ti ti-calendar" label="Tanggal BPBJ" name="tanggal_mutasi"
@@ -79,10 +80,29 @@
             });
         }
 
-
-        function loaddetailtemp(kode_produk) {
-            $("#loaddetailbpbjtemp").load("/bpbj/" + kode_produk + "/getdetailtemp");
+        function cekdetailtemp() {
+            var kode_produk = $("#kode_produk").val();
+            $.ajax({
+                type: 'POST',
+                url: '/bpbj/cekdetailtemp',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_produk: kode_produk
+                },
+                cache: false,
+                success: function(respond) {
+                    $("#cekdetailtemp").val(respond);
+                }
+            });
         }
+
+
+        function loaddetailtemp() {
+            const kode_produk = $("#kode_produk").val();
+            $("#loaddetailbpbjtemp").load("/bpbj/" + kode_produk + "/getdetailtemp");
+            cekdetailtemp();
+        }
+
 
         function generetenobpbj() {
             var tanggal_mutasi = $("#tanggal_mutasi").val();
@@ -129,14 +149,14 @@
 
         $("#kode_produk").change(function(e) {
             const kode_produk = $(this).val();
-            loaddetailtemp(kode_produk);
+            loaddetailtemp();
             generetenobpbj();
         });
 
         $("#tanggal_mutasi").change(function(e) {
             generetenobpbj();
             //console.log(cektutuplaporan('2024-01-01'));
-            cektutuplaporan($(this).val(), "penjualan");
+            cektutuplaporan($(this).val(), "produksi");
 
         });
 
@@ -168,9 +188,10 @@
                     didClose: (e) => {
                         $("#shift").focus();
                     },
+                });
 
-                })
-            } else if (jumlah == "" || jumlah === 0) {
+
+            } else if (jumlah == "" || jumlah === "0") {
                 Swal.fire({
                     title: "Oops!",
                     text: "Jumlah Tidak Boleh Kosong!",
@@ -180,7 +201,10 @@
                         $("#jumlah").focus();
                     },
 
-                })
+                });
+
+
+
             } else {
                 $.ajax({
                     type: "POST",
@@ -195,7 +219,9 @@
                     success: function(respond) {
                         if (respond === '0') {
                             Swal.fire("Saved!", "", "success");
-                            loaddetailtemp(kode_produk);
+                            $("#jumlah").val(0);
+                            $("#shift").val("");
+                            loaddetailtemp();
                         } else if (respond === '1') {
                             Swal.fire("Oops!", "Data Sudah Ada", "warning");
                         } else {
@@ -217,13 +243,90 @@
         });
 
         $("#formcreateBpbj").submit(function() {
-            var cektutuplaporan = $("#cektutuplaporan").val();
-            if (cektutuplaporan === '1') {
+            const no_mutasi = $("#no_mutasi").val();
+            const tanggal_mutasi = $("#tanggal_mutasi").val();
+            const cektutuplaporan = $("#cektutuplaporan").val();
+            const cekdetailtemp = $("#cekdetailtemp").val();
+            if (no_mutasi == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "No. Mutasi Tidak Boleh Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#no_mutasi").focus();
+                    },
+                });
+
+                return false;
+            } else if (tanggal_mutasi == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tanggal Tidak Boleh Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#tanggal_mutasi").focus();
+                    },
+                });
+
+                return false;
+            } else if (cektutuplaporan === '1') {
                 Swal.fire("Oops!", "Laporan Untuk Periode Ini Sudah Ditutup", "warning");
+                return false;
+            } else if (cekdetailtemp === '0' || cekdetailtemp === '') {
+                Swal.fire("Oops!", "Data Masih Kosong", "warning");
                 return false;
             }
 
-            return false;
+
+        });
+
+
+        $('body').on('click', '.delete', function() {
+            var id = $(this).attr('id');
+            var kode_produk = $("#kode_produk").val();
+            event.preventDefault();
+            Swal.fire({
+                title: `Apakah Anda Yakin Ingin Menghapus Data Ini ?`,
+                text: "Jika dihapus maka data akan hilang permanent.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                showCancelButton: true,
+                confirmButtonColor: "#554bbb",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Hapus Saja!"
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/bpbj/deletetemp',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id: id,
+                        },
+                        cache: false,
+                        success: function(respond) {
+                            if (respond === '0') {
+                                Swal.fire({
+                                    title: "Berhasil",
+                                    text: "Data Berhasil Dihapus",
+                                    icon: "success"
+                                });
+                                loaddetailtemp();
+                            } else {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: respond,
+                                    icon: "error"
+                                });
+                            }
+                        }
+                    });
+                }
+            });
         });
     });
 </script>
