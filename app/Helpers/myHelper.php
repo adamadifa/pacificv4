@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Tutuplaporan;
+
 function buatkode($nomor_terakhir, $kunci, $jumlah_karakter = 0)
 {
     /* mencari nomor baru dengan memecah nomor terakhir dan menambahkan 1
@@ -86,4 +88,18 @@ function DateToIndo($date2)
 
     $result = $tgl2 . " " . $BulanIndo2[(int)$bulan2 - 1] . " " . $tahun2;
     return ($result);
+}
+
+
+function cektutupLaporan($tgl, $jenislaporan)
+{
+    $tanggal = explode("-", $tgl);
+    $bulan = $tanggal[1];
+    $tahun = $tanggal[0];
+    $cek = Tutuplaporan::where('jenis_laporan', $jenislaporan)
+        ->where('bulan', $bulan)
+        ->where('tahun', $tahun)
+        ->where('status', 1)
+        ->count();
+    return $cek;
 }

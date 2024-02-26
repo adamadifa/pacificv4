@@ -22,6 +22,7 @@ use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
@@ -282,6 +283,20 @@ Route::middleware('auth')->group(function () {
         Route::put('/bpbj/{kode_bpbj}', 'update')->name('bpbj.update')->can('bpbj.update');
         Route::delete('/bpbj/{kode_bpbj}', 'destroy')->name('bpbj.delete')->can('bpbj.delete');
         Route::get('/bpbj/{kode_bpbj}/show', 'show')->name('bpbj.show')->can('bpbj.show');
+
+        //Ajax Request
+        Route::post('/bpbj/storedetailtemp', 'storedetailtemp')->name('bpbj.storedetailtemp');
+        Route::get('/bpbj/{kode_produk}/getdetailtemp', 'getdetailtemp')->name('bpbj.getdetailtemp');
+        Route::post('/bpbj/generatenobpbj', 'generatenobpbj')->name('bpbj.generatenobpbj');
+        Route::post('/bpbj/deletetemp', 'deletetemp')->name('bpbj.deletetemp');
+    });
+
+
+    Route::controller(TutuplaporanController::class)->group(function () {
+
+
+        //Ajax Request
+        Route::post('/tutuplaporan/cektutuplaporan', 'cektutuplaporan');
     });
 });
 

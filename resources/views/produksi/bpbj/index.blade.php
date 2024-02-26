@@ -21,8 +21,9 @@
                         <form action="{{ route('bpbj.index') }}">
                             <div class="row">
                                 <div class="col-lg-10 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Tanggal Mutasi" value="{{ Request('tanggal_mutasi') }}"
-                                        name="tanggal_mutasi" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Tanggal Mutasi"
+                                        value="{{ Request('tanggal_mutasi_search') }}" name="tanggal_mutasi_search"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
 
                                 <div class="col-lg-2 col-sm-12 col-md-12">

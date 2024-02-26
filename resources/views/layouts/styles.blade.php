@@ -26,4 +26,8 @@
      .swal2-container {
          z-index: 9999 !important;
      }
+
+     .swal2-confirm {
+         background-color: #1a6bd1 !important;
+     }
  </style>
