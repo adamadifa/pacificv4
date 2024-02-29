@@ -62,7 +62,7 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
-                                                    @can('bpbj.show')
+                                                    @can('fsthp.show')
                                                         <div>
                                                             <a href="#" class="me-2 showFsthp"
                                                                 no_mutasi="{{ Crypt::encrypt($d->no_mutasi) }}">
@@ -70,6 +70,7 @@
                                                             </a>
                                                         </div>
                                                     @endcan
+
                                                     @can('fsthp.delete')
                                                         @if ($d->status !== '1')
                                                             <div>
@@ -81,6 +82,23 @@
                                                                         <i class="ti ti-trash text-danger"></i>
                                                                     </a>
                                                                 </form>
+                                                            </div>
+                                                        @endif
+                                                    @endcan
+                                                    @can('fsthp.approve')
+                                                        @if ($d->status !== '1')
+                                                            <div>
+                                                                <a href="#" class="me-2"
+                                                                    {{ route('fsthp.approve', Crypt::encrypt($d->no_mutasi)) }}>
+                                                                    <span class="badge bg-success">Approve</span>
+                                                                </a>
+                                                            </div>
+                                                        @else
+                                                            <div>
+                                                                <a href="#" class="me-2"
+                                                                    {{ route('fsthp.cancel', Crypt::encrypt($d->no_mutasi)) }}>
+                                                                    <span class="badge bg-danger">Batalkan</span>
+                                                                </a>
                                                             </div>
                                                         @endif
                                                     @endcan

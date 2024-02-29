@@ -211,13 +211,27 @@
                  </ul>
              @endif
          </li>
-         <li class="menu-item {{ request()->is(['bpbj', 'bpbj/*', 'fsthp', 'fsthp/*']) ? 'open' : '' }}">
+         <li
+             class="menu-item {{ request()->is(['bpbj', 'bpbj/*', 'fsthp', 'fsthp/*', 'samutasiproduksi', 'samutasiproduksi/*'])
+                 ? 'open'
+                 : '' }}">
              @if (auth()->user()->hasAnyPermission(['bpbj.index']))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-box"></i>
                      <div>Produksi</div>
                  </a>
                  <ul class="menu-sub">
+                     <li class="menu-header small text-uppercase">
+                         <span class="menu-header-text">Mutasi Produksi</span>
+                     </li>
+                     @can('samutasiproduksi.index')
+                         <li
+                             class="menu-item {{ request()->is(['samutasiproduksi', 'samutasiproduksi/*']) ? 'active' : '' }}">
+                             <a href="{{ route('samutasiproduksi.index') }}" class="menu-link">
+                                 <div>Saldo Awal</div>
+                             </a>
+                         </li>
+                     @endcan
                      @can('bpbj.index')
                          <li class="menu-item {{ request()->is(['bpbj', 'bpbj/*']) ? 'active' : '' }}">
                              <a href="{{ route('bpbj.index') }}" class="menu-link">
@@ -232,6 +246,9 @@
                              </a>
                          </li>
                      @endcan
+                     <li class="menu-header small text-uppercase">
+                         <span class="menu-header-text">Mutasi Barang</span>
+                     </li>
                  </ul>
              @endif
          </li>

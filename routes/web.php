@@ -21,6 +21,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TutuplaporanController;
@@ -280,8 +281,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/bpbj', 'index')->name('bpbj.index')->can('bpbj.index');
         Route::get('/bpbj/create', 'create')->name('bpbj.create')->can('bpbj.create');
         Route::post('/bpbj', 'store')->name('bpbj.store')->can('bpbj.store');
-        Route::delete('/bpbj/{kode_bpbj}', 'destroy')->name('bpbj.delete')->can('bpbj.delete');
-        Route::get('/bpbj/{kode_bpbj}/show', 'show')->name('bpbj.show')->can('bpbj.show');
+        Route::delete('/bpbj/{no_mutasi}', 'destroy')->name('bpbj.delete')->can('bpbj.delete');
+        Route::get('/bpbj/{no_mutasi}/show', 'show')->name('bpbj.show')->can('bpbj.show');
 
         //Ajax Request
         Route::post('/bpbj/storedetailtemp', 'storedetailtemp')->name('bpbj.storedetailtemp');
@@ -295,8 +296,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/fsthp', 'index')->name('fsthp.index')->can('fsthp.index');
         Route::get('/fsthp/create', 'create')->name('fsthp.create')->can('fsthp.create');
         Route::post('/fsthp', 'store')->name('fsthp.store')->can('fsthp.store');
-        Route::delete('/fsthp/{kode_fsthp}', 'destroy')->name('fsthp.delete')->can('fsthp.delete');
-        Route::get('/fsthp/{kode_fsthp}/show', 'show')->name('fsthp.show')->can('fsthp.show');
+        Route::delete('/fsthp/{no_mutasi}', 'destroy')->name('fsthp.delete')->can('fsthp.delete');
+        Route::get('/fsthp/{no_mutasi}/show', 'show')->name('fsthp.show')->can('fsthp.show');
+        Route::get('/fsthp/{no_mutasi}/approve', 'show')->name('fsthp.approve')->can('fsthp.approve');
+        Route::get('/fsthp/{no_mutasi}/cancel', 'show')->name('fsthp.cancel')->can('fsthp.approve');
 
         //Ajax Request
         Route::post('/fsthp/storedetailtemp', 'storedetailtemp')->name('fsthp.storedetailtemp');
@@ -304,6 +307,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/fsthp/generatenofsthp', 'generatenofsthp')->name('fsthp.generatenofsthp');
         Route::post('/fsthp/deletetemp', 'deletetemp')->name('fsthp.deletetemp');
         Route::post('/fsthp/cekdetailtemp', 'cekdetailtemp')->name('fsthp.cekdetailtemp');
+    });
+
+
+    Route::controller(SaldoawalmutasiproduksiController::class)->group(function () {
+        Route::get('/samutasiproduksi', 'index')->name('samutasiproduksi.index')->can('samutasiproduksi.index');
     });
 
 
