@@ -11,7 +11,7 @@
         <div class="card">
             <div class="card-header">
                 @can('bpbj.create')
-                    <a href="#" class="btn btn-primary"><i class="fa fa-plus me-2"></i>
+                    <a href="{{ route('samutasiproduksi.create') }}" class="btn btn-primary"><i class="fa fa-plus me-2"></i>
                         Buat Saldo Awal</a>
                 @endcan
             </div>

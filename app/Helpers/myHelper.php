@@ -71,6 +71,12 @@ function formatRupiah($nilai)
     return number_format($nilai, '0', ',', '.');
 }
 
+function formatAngka($nilai)
+{
+    return number_format($nilai, '0', ',', '.');
+}
+
+
 
 function DateToIndo($date2)
 { // fungsi atau method untuk mengubah tanggal ke format indonesia
@@ -102,4 +108,40 @@ function cektutupLaporan($tgl, $jenislaporan)
         ->where('status', 1)
         ->count();
     return $cek;
+}
+
+
+function getbulandantahunlalu($bulan, $tahun, $show)
+{
+    if ($bulan == 1) {
+        $bulanlalu = 12;
+        $tahunlalu = $tahun - 1;
+    } else {
+        $bulanlalu = $bulan - 1;
+        $tahunlalu = $tahun;
+    }
+
+    if ($show == "tahun") {
+        return $tahunlalu;
+    } elseif ($show == "bulan") {
+        return $bulanlalu;
+    }
+}
+
+
+function getbulandantahunberikutnya($bulan, $tahun, $show)
+{
+    if ($bulan == 12) {
+        $bulanberikutnya =  1;
+        $tahunberikutnya = $tahun + 1;
+    } else {
+        $bulanberikutnya = $bulan + 1;
+        $tahunberikutnya = $tahun;
+    }
+
+    if ($show == "tahun") {
+        return $tahunberikutnya;
+    } elseif ($show == "bulan") {
+        return $bulanberikutnya;
+    }
 }

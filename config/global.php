@@ -50,8 +50,8 @@ return  [
             'nama_bulan' => 'November'
         ],
         [
-            'kode_bulan' => '1',
-            'nama_bulan' => 'Januari'
+            'kode_bulan' => '12',
+            'nama_bulan' => 'Desember'
         ],
 
     ],

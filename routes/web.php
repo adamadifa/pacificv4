@@ -312,6 +312,12 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SaldoawalmutasiproduksiController::class)->group(function () {
         Route::get('/samutasiproduksi', 'index')->name('samutasiproduksi.index')->can('samutasiproduksi.index');
+        Route::get('/samutasiproduksi/create', 'create')->name('samutasiproduksi.create')->can('samutasiproduksi.create');
+        Route::post('/samutasiproduksi', 'store')->name('samutasiproduksi.store')->can('samutasiproduksi.store');
+
+
+        //AJAX REQUEST
+        Route::post('/samutasiproduksi/getdetailsaldo', 'getdetailsaldo')->name('samutasiproduksi.getdetailsaldo');
     });
 
 
