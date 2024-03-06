@@ -19,7 +19,7 @@
                                 <div class="form-group mb-3">
                                     <select name="bulan" id="bulan" class="form-select">
                                         <option value="">Bulan</option>
-                                        @foreach ($nama_bulan as $d)
+                                        @foreach ($list_bulan as $d)
                                             <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
                                         @endforeach
                                     </select>
@@ -123,6 +123,7 @@
                                     $("#bulan").focus();
                                 },
                             });
+                            $("#loaddetailsaldo").html("");
                         } else {
                             $("#loaddetailsaldo").html(respond);
                         }

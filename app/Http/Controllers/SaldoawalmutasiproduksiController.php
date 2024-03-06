@@ -13,19 +13,28 @@ use Illuminate\Support\Facades\Redirect;
 
 class SaldoawalmutasiproduksiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
+        $list_bulan = config('global.list_bulan');
         $nama_bulan = config('global.nama_bulan');
         $start_year = config('global.start_year');
-        return view('produksi.saldoawalmutasiproduksi.index', compact('nama_bulan', 'start_year'));
+        $query = Saldoawalmutasiproduksi::query();
+        if (!empty($request->bulan)) {
+            $query->where('bulan', $request->bulan);
+        }
+        $query->where('tahun', $request->tahun);
+        $query->orderBy('tahun', 'desc');
+        $query->orderBy('bulan');
+        $saldo_awal = $query->get();
+        return view('produksi.saldoawalmutasiproduksi.index', compact('list_bulan', 'start_year', 'saldo_awal', 'nama_bulan'));
     }
 
     public function create()
     {
-        $nama_bulan = config('global.nama_bulan');
+        $list_bulan = config('global.list_bulan');
         $start_year = config('global.start_year');
-        return view('produksi.saldoawalmutasiproduksi.create', compact('nama_bulan', 'start_year'));
+        return view('produksi.saldoawalmutasiproduksi.create', compact('list_bulan', 'start_year'));
     }
 
 
@@ -38,6 +47,9 @@ class SaldoawalmutasiproduksiController extends Controller
         $bulanlalu = getbulandantahunlalu($bulan, $tahun, "bulan");
         $tahunlalu = getbulandantahunlalu($bulan, $tahun, "tahun");
 
+        $tgl_dari_bulanlalu = $tahunlalu . "-" . $bulanlalu . "-01";
+        $tgl_sampai_bulanlalu = date('Y-m-t', strtotime($tgl_dari_bulanlalu));
+
         //Cek Apakah Sudah Ada Saldo Atau Belum
         $ceksaldo = Saldoawalmutasiproduksi::count();
         // Cek Saldo Bulan Lalu
@@ -46,23 +58,71 @@ class SaldoawalmutasiproduksiController extends Controller
         //Cek Saldo Bulan Ini
         $ceksaldobulanini = Saldoawalmutasiproduksi::where('bulan', $bulan)->where('tahun', $tahun)->count();
         //Get Produk
-        $produk = Produk::select('produk.kode_produk', 'nama_produk', 'jumlah')
-            ->where('status_aktif_produk', 1)
-            ->leftJoin(
-                DB::raw("(
-                SELECT
-                    kode_produk,
-                    jumlah
-                FROM
-                    produksi_mutasi_saldoawal_detail
-                INNER JOIN produksi_mutasi_saldoawal ON produksi_mutasi_saldoawal_detail.kode_saldo_awal = produksi_mutasi_saldoawal.kode_saldo_awal
-                WHERE bulan = '$bulan' AND tahun='$tahun'
-            ) saldo_awal"),
-                function ($join) {
-                    $join->on('produk.kode_produk', '=', 'saldo_awal.kode_produk');
-                }
+
+        //Jika Saldo BUlan Lalu Kosong dan Saldo Bulan Ini Ada Maka Di Ambil Saldo BUlan Ini
+        if (empty($ceksaldobulanlalu) && !empty($ceksaldobulanini)) {
+            $produk = Produk::selectRaw(
+                'produk.kode_produk,
+                nama_produk,
+                saldo_awal as saldo_akhir'
             )
-            ->orderBy('kode_produk')->get();
+                ->where('status_aktif_produk', 1)
+                ->leftJoin(
+                    DB::raw("(
+                    SELECT
+                        kode_produk,
+                        jumlah as saldo_awal
+                    FROM
+                        produksi_mutasi_saldoawal_detail
+                    INNER JOIN produksi_mutasi_saldoawal ON produksi_mutasi_saldoawal_detail.kode_saldo_awal = produksi_mutasi_saldoawal.kode_saldo_awal
+                    WHERE bulan = '$bulan' AND tahun='$tahun'
+                ) saldo_awal"),
+                    function ($join) {
+                        $join->on('produk.kode_produk', '=', 'saldo_awal.kode_produk');
+                    }
+                )
+                ->orderBy('kode_produk')->get();
+        } else {
+
+            //Jika Saldo Bulan Lalu Ada Maka Hitung Saldo Awal Bulan Lalu - Mutasi Bulan Lalu
+            $produk = Produk::selectRaw(
+                'produk.kode_produk,
+                nama_produk,
+                IFNULL(saldo_awal,0) - IFNULL(sisamutasi,0) as saldo_akhir'
+            )
+                ->where('status_aktif_produk', 1)
+                ->leftJoin(
+                    DB::raw("(
+                    SELECT
+                        kode_produk,
+                        jumlah as saldo_awal
+                    FROM
+                        produksi_mutasi_saldoawal_detail
+                    INNER JOIN produksi_mutasi_saldoawal ON produksi_mutasi_saldoawal_detail.kode_saldo_awal = produksi_mutasi_saldoawal.kode_saldo_awal
+                    WHERE bulan = '$bulanlalu' AND tahun='$tahunlalu'
+                ) saldo_awal"),
+                    function ($join) {
+                        $join->on('produk.kode_produk', '=', 'saldo_awal.kode_produk');
+                    }
+                )
+
+                ->leftJoin(
+                    DB::raw("(
+                        SELECT kode_produk,
+                        SUM(IF( in_out = 'IN', jumlah, 0)) - SUM(IF( in_out = 'OUT', jumlah, 0)) as sisamutasi
+                        FROM produksi_mutasi_detail
+                        INNER JOIN produksi_mutasi
+                        ON produksi_mutasi_detail.no_mutasi = produksi_mutasi.no_mutasi
+                        WHERE tanggal_mutasi BETWEEN '$tgl_dari_bulanlalu' AND '$tgl_sampai_bulanlalu'  GROUP BY kode_produk
+                    ) mutasi"),
+                    function ($join) {
+                        $join->on('produk.kode_produk', '=', 'mutasi.kode_produk');
+                    }
+                )
+                ->orderBy('kode_produk')->get();
+        }
+
+
 
         $data = ['produk', 'readonly'];
 
@@ -83,18 +143,24 @@ class SaldoawalmutasiproduksiController extends Controller
     public function store(Request $request)
     {
         $bulan = $request->bulan;
-
-
         $bln = $bulan < 10 ? "0" . $bulan : $bulan;
         $tahun = $request->tahun;
+        $tanggal = $tahun . "-" . $bln . "-01";
         $kode_produk = $request->kode_produk;
         $jumlah = $request->jumlah;
+        //SAMP = Saldo Awal Mutasi Produksi
         $kode_saldo_awal = "SAMP" . $bln . substr($tahun, 2, 2);
 
 
         $bulanberikutnya = getbulandantahunberikutnya($bulan, $tahun, "bulan");
         $tahunberikutnya = getbulandantahunberikutnya($bulan, $tahun, "tahun");
 
+        $cektutuplaporan = cektutupLaporan($tanggal, "produksi");
+        if ($cektutuplaporan > 0) {
+            return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+        } else if (empty($kode_produk)) {
+            return Redirect::back()->with(messageError('Silahkan Get Saldo Terlebih Dahulu !'));
+        }
         DB::beginTransaction();
         try {
             // Cek Saldo Bulan Berikutnya

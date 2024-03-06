@@ -24,18 +24,20 @@
                                     <div class="form-group mb-3">
                                         <select name="bulan" id="bulan" class="form-select">
                                             <option value="">Bulan</option>
-                                            @foreach ($nama_bulan as $d)
-                                                <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                            @foreach ($list_bulan as $d)
+                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                                    value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-12 col-md-12">
                                     <div class="form-group mb-3">
-                                        <select name="bulan" id="bulan" class="form-select">
+                                        <select name="tahun" id="tahun" class="form-select">
                                             <option value="">Tahun</option>
                                             @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                <option value="{{ $t }}">{{ $t }}</option>
+                                                <option {{ Request('tahun') == $t ? 'selected' : '' }}
+                                                    value="{{ $t }}">{{ $t }}</option>
                                             @endfor
                                         </select>
                                     </div>
@@ -62,7 +64,38 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($saldo_awal as $d)
+                                        <tr>
+                                            <td>{{ $d->kode_saldo_awal }}</td>
+                                            <td>{{ $nama_bulan[$d->bulan] }}</td>
+                                            <td>{{ $d->tahun }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    @can('samutasiproduksi.show')
+                                                        <div>
+                                                            <a href="#" class="me-2 showBpbj"
+                                                                no_mutasi="{{ Crypt::encrypt($d->kode_saldo_awal) }}">
+                                                                <i class="ti ti-file-description text-info"></i>
+                                                            </a>
+                                                        </div>
+                                                    @endcan
+                                                    @can('samutasiproduksi.delete')
+                                                        <div>
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('samutasiproduksi.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        </div>
+                                                    @endcan
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

@@ -2,7 +2,8 @@
 return  [
     //Nama Bulan Singkat
     'nama_bulan_singkat' => ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-    'nama_bulan' => (object) [
+    'nama_bulan' => ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+    'list_bulan' => (object) [
 
         [
             'kode_bulan' => '1',

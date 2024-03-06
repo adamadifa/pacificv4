@@ -298,8 +298,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/fsthp', 'store')->name('fsthp.store')->can('fsthp.store');
         Route::delete('/fsthp/{no_mutasi}', 'destroy')->name('fsthp.delete')->can('fsthp.delete');
         Route::get('/fsthp/{no_mutasi}/show', 'show')->name('fsthp.show')->can('fsthp.show');
-        Route::get('/fsthp/{no_mutasi}/approve', 'show')->name('fsthp.approve')->can('fsthp.approve');
-        Route::get('/fsthp/{no_mutasi}/cancel', 'show')->name('fsthp.cancel')->can('fsthp.approve');
+        Route::get('/fsthp/{no_mutasi}/approve', 'approve')->name('fsthp.approve')->can('fsthp.approve');
+        Route::get('/fsthp/{no_mutasi}/cancel', 'cancel')->name('fsthp.cancel')->can('fsthp.approve');
 
         //Ajax Request
         Route::post('/fsthp/storedetailtemp', 'storedetailtemp')->name('fsthp.storedetailtemp');
@@ -314,8 +314,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/samutasiproduksi', 'index')->name('samutasiproduksi.index')->can('samutasiproduksi.index');
         Route::get('/samutasiproduksi/create', 'create')->name('samutasiproduksi.create')->can('samutasiproduksi.create');
         Route::post('/samutasiproduksi', 'store')->name('samutasiproduksi.store')->can('samutasiproduksi.store');
-
-
+        Route::delete('/samutasiproduksi/{kode_saldo_awal}', 'destroy')->name('samutasiproduksi.delete')->can('samutasiproduksi.delete');
+        Route::get('/samutasiproduksi/{kode_saldo_awal}/show', 'show')->name('samutasiproduksi.show')->can('samutasiproduksi.show');
         //AJAX REQUEST
         Route::post('/samutasiproduksi/getdetailsaldo', 'getdetailsaldo')->name('samutasiproduksi.getdetailsaldo');
     });
