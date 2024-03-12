@@ -74,8 +74,8 @@
                                                 <div class="d-flex">
                                                     @can('samutasiproduksi.show')
                                                         <div>
-                                                            <a href="#" class="me-2 showBpbj"
-                                                                no_mutasi="{{ Crypt::encrypt($d->kode_saldo_awal) }}">
+                                                            <a href="#" class="me-2 show"
+                                                                kode_saldo_awal="{{ Crypt::encrypt($d->kode_saldo_awal) }}">
                                                                 <i class="ti ti-file-description text-info"></i>
                                                             </a>
                                                         </div>
@@ -108,5 +108,19 @@
         </div>
     </div>
 </div>
-
+<x-modal-form id="mdldetail" size="" show="loaddetail" title="Detail Saldo Awal " />
 @endsection
+@push('myscript')
+{{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
+<script>
+    $(function() {
+
+        $(".show").click(function(e) {
+            var kode_saldo_awal = $(this).attr("kode_saldo_awal");
+            e.preventDefault();
+            $('#mdldetail').modal("show");
+            $("#loaddetail").load('/samutasiproduksi/' + kode_saldo_awal + '/show');
+        });
+    });
+</script>
+@endpush

@@ -57,6 +57,8 @@
                  'bpjstenagakerja/*',
                  'bufferstok',
                  'bufferstok/*',
+                 'barangproduksi',
+                 'barangproduksi/*',
              ])
                  ? 'open'
                  : '' }}">
@@ -69,6 +71,7 @@
                          'insentif.index',
                          'bpjskesehatan.index',
                          'bpjstenagakerja.index',
+                         'barangproduksi.index',
                      ]))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-database"></i>
@@ -208,6 +211,13 @@
                              </a>
                          </li>
                      @endcan
+                     @can('barangproduksi.index')
+                         <li class="menu-item {{ request()->is(['barangproduksi', 'barangproduksi/*']) ? 'active' : '' }}">
+                             <a href="{{ route('barangproduksi.index') }}" class="menu-link">
+                                 <div>Barang Produksi</div>
+                             </a>
+                         </li>
+                     @endcan
                  </ul>
              @endif
          </li>
@@ -249,6 +259,14 @@
                      <li class="menu-header small text-uppercase">
                          <span class="menu-header-text">Mutasi Barang</span>
                      </li>
+                     @can('barangmasukproduksi.index')
+                         <li
+                             class="menu-item {{ request()->is(['barangmasukproduksi', 'barangmasukproduksi/*']) ? 'active' : '' }}">
+                             <a href="{{ route('barangmasukproduksi.index') }}" class="menu-link">
+                                 <div>Barang Masuk</div>
+                             </a>
+                         </li>
+                     @endcan
                  </ul>
              @endif
          </li>

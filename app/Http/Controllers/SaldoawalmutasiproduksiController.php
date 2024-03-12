@@ -8,6 +8,7 @@ use App\Models\Produk;
 use App\Models\Saldoawalmutasiproduksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
@@ -39,6 +40,112 @@ class SaldoawalmutasiproduksiController extends Controller
 
 
 
+
+
+    public function store(Request $request)
+    {
+        $bulan = $request->bulan;
+        $bln = $bulan < 10 ? "0" . $bulan : $bulan;
+        $tahun = $request->tahun;
+        $tanggal = $tahun . "-" . $bln . "-01";
+        $kode_produk = $request->kode_produk;
+        $jumlah = $request->jumlah;
+        //SAMP = Saldo Awal Mutasi Produksi
+        $kode_saldo_awal = "SAMP" . $bln . substr($tahun, 2, 2);
+
+
+        $bulanberikutnya = getbulandantahunberikutnya($bulan, $tahun, "bulan");
+        $tahunberikutnya = getbulandantahunberikutnya($bulan, $tahun, "tahun");
+
+        $cektutuplaporan = cektutupLaporan($tanggal, "produksi");
+        if ($cektutuplaporan > 0) {
+            return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+        } else if (empty($kode_produk)) {
+            return Redirect::back()->with(messageError('Silahkan Get Saldo Terlebih Dahulu !'));
+        }
+        DB::beginTransaction();
+        try {
+            // Cek Saldo Bulan Berikutnya
+            $ceksaldobulanberikutnya = Saldoawalmutasiproduksi::where('bulan', $bulanberikutnya)->where('tahun', $tahunberikutnya)->count();
+
+            //Cek Saldo Bulan Ini
+            $ceksaldobulanini = Saldoawalmutasiproduksi::where('bulan', $bulan)->where('tahun', $tahun)->count();
+
+            for ($i = 1; $i < count($kode_produk); $i++) {
+                $detail_saldo[] = [
+                    'kode_saldo_awal' => $kode_saldo_awal,
+                    'kode_produk' => $kode_produk[$i],
+                    'jumlah' => toNumber($jumlah[$i])
+                ];
+            }
+
+            $timestamp = Carbon::now();
+
+            foreach ($detail_saldo as &$record) {
+                $record['created_at'] = $timestamp;
+                $record['updated_at'] = $timestamp;
+            }
+
+
+
+            if (!empty($ceksaldobulanberikutnya)) {
+                return Redirect::back()->with(messageError('Tidak Bisa Update Saldo, Dikarenakan Saldo Berikutnya sudah di Set'));
+            } elseif (empty($ceksaldobulanberikutnya) && !empty($ceksaldobulanini)) {
+                Saldoawalmutasiproduksi::where('kode_saldo_awal', $kode_saldo_awal)->delete();
+            }
+            if (!empty($detail_saldo)) {
+
+                Saldoawalmutasiproduksi::create([
+                    'kode_saldo_awal' => $kode_saldo_awal,
+                    'bulan' => $bulan,
+                    'tahun' => $tahun,
+                    'tanggal'  => $tahun . "-" . $bulan . "-01"
+                ]);
+
+                $chunks_buffer = array_chunk($detail_saldo, 5);
+                foreach ($chunks_buffer as $chunk_buffer) {
+                    Detailsaldoawalmutasiproduksi::insert($chunk_buffer);
+                }
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function show($kode_saldo_awal)
+    {
+        $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
+        $saldo_awal = Saldoawalmutasiproduksi::where('kode_saldo_awal', $kode_saldo_awal)->first();
+        $detail = Detailsaldoawalmutasiproduksi::where('kode_saldo_awal', $kode_saldo_awal)
+            ->join('produk', 'produksi_mutasi_saldoawal_detail.kode_produk', '=', 'produk.kode_produk')
+            ->get();
+        $nama_bulan = config('global.nama_bulan');
+        return view('produksi.saldoawalmutasiproduksi.show', compact('saldo_awal', 'nama_bulan', 'detail'));
+    }
+
+
+    public function destroy($kode_saldo_awal)
+    {
+        $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
+        $saldo_awal = Saldoawalmutasiproduksi::where('kode_saldo_awal', $kode_saldo_awal)->first();
+        try {
+            $cektutuplaporan = cektutupLaporan($saldo_awal->tanggal, "produksi");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            Saldoawalmutasiproduksi::where('kode_saldo_awal', $kode_saldo_awal)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    //AJAX REQUEST
     public function getdetailsaldo(Request $request)
     {
         $bulan = $request->bulan;
@@ -136,82 +243,6 @@ class SaldoawalmutasiproduksiController extends Controller
                 $readonly = true;
                 return view('produksi.saldoawalmutasiproduksi.getdetailsaldo', compact($data));
             }
-        }
-    }
-
-
-    public function store(Request $request)
-    {
-        $bulan = $request->bulan;
-        $bln = $bulan < 10 ? "0" . $bulan : $bulan;
-        $tahun = $request->tahun;
-        $tanggal = $tahun . "-" . $bln . "-01";
-        $kode_produk = $request->kode_produk;
-        $jumlah = $request->jumlah;
-        //SAMP = Saldo Awal Mutasi Produksi
-        $kode_saldo_awal = "SAMP" . $bln . substr($tahun, 2, 2);
-
-
-        $bulanberikutnya = getbulandantahunberikutnya($bulan, $tahun, "bulan");
-        $tahunberikutnya = getbulandantahunberikutnya($bulan, $tahun, "tahun");
-
-        $cektutuplaporan = cektutupLaporan($tanggal, "produksi");
-        if ($cektutuplaporan > 0) {
-            return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
-        } else if (empty($kode_produk)) {
-            return Redirect::back()->with(messageError('Silahkan Get Saldo Terlebih Dahulu !'));
-        }
-        DB::beginTransaction();
-        try {
-            // Cek Saldo Bulan Berikutnya
-            $ceksaldobulanberikutnya = Saldoawalmutasiproduksi::where('bulan', $bulanberikutnya)->where('tahun', $tahunberikutnya)->count();
-
-            //Cek Saldo Bulan Ini
-            $ceksaldobulanini = Saldoawalmutasiproduksi::where('bulan', $bulan)->where('tahun', $tahun)->count();
-
-            for ($i = 1; $i < count($kode_produk); $i++) {
-                $detail_saldo[] = [
-                    'kode_saldo_awal' => $kode_saldo_awal,
-                    'kode_produk' => $kode_produk[$i],
-                    'jumlah' => toNumber($jumlah[$i])
-                ];
-            }
-
-            $timestamp = Carbon::now();
-
-            foreach ($detail_saldo as &$record) {
-                $record['created_at'] = $timestamp;
-                $record['updated_at'] = $timestamp;
-            }
-
-
-
-            if (!empty($ceksaldobulanberikutnya)) {
-                return Redirect::back()->with(messageError('Tidak Bisa Update Saldo, Dikarenakan Saldo Berikutnya sudah di Set'));
-            } elseif (empty($ceksaldobulanberikutnya) && !empty($ceksaldobulanini)) {
-                Saldoawalmutasiproduksi::where('kode_saldo_awal', $kode_saldo_awal)->delete();
-            }
-            if (!empty($detail_saldo)) {
-
-                Saldoawalmutasiproduksi::create([
-                    'kode_saldo_awal' => $kode_saldo_awal,
-                    'bulan' => $bulan,
-                    'tahun' => $tahun,
-                    'tanggal'  => $tahun . "-" . $bulan . "-01"
-                ]);
-
-                $chunks_buffer = array_chunk($detail_saldo, 5);
-                foreach ($chunks_buffer as $chunk_buffer) {
-                    Detailsaldoawalmutasiproduksi::insert($chunk_buffer);
-                }
-            }
-
-            DB::commit();
-            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
-        } catch (\Exception $e) {
-            dd($e);
-            DB::rollBack();
-            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 }

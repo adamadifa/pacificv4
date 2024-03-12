@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BarangmasukproduksiController;
+use App\Http\Controllers\BarangproduksiController;
 use App\Http\Controllers\BpbjController;
 use App\Http\Controllers\BpjskesehatanController;
 use App\Http\Controllers\BpjstenagakerjaController;
@@ -27,6 +29,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WilayahController;
+use App\Models\Barangproduksi;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 
@@ -107,6 +110,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/regional/{kode_regional}', 'destroy')->name('regional.delete')->can('regional.delete');
     });
 
+    //DATA MASTER
     Route::controller(CabangController::class)->group(function () {
         Route::get('/cabang', 'index')->name('cabang.index')->can('cabang.index');
         Route::get('/cabang/create', 'create')->name('cabang.create')->can('cabang.create');
@@ -275,7 +279,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/bufferstok/{kode_cabang}/getbufferstok', 'getbufferstok');
     });
 
-
+    Route::controller(BarangproduksiController::class)->group(function () {
+        Route::get('/barangproduksi', 'index')->name('barangproduksi.index')->can('barangproduksi.index');
+        Route::get('/barangproduksi/create', 'create')->name('barangproduksi.create')->can('barangproduksi.create');
+        Route::post('/barangproduksi', 'store')->name('barangproduksi.store')->can('barangproduksi.store');
+        Route::get('/barangproduksi/{kode_barang_produksi}/edit', 'edit')->name('barangproduksi.edit')->can('barangproduksi.edit');
+        Route::put('/barangproduksi/{kode_barang_produksi}', 'update')->name('barangproduksi.update')->can('barangproduksi.update');
+        Route::delete('/barangproduksi/{kode_barang_produksi}', 'destroy')->name('barangproduksi.delete')->can('barangproduksi.delete');
+    });
     //Produksi
     Route::controller(BpbjController::class)->group(function () {
         Route::get('/bpbj', 'index')->name('bpbj.index')->can('bpbj.index');
@@ -318,6 +329,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/samutasiproduksi/{kode_saldo_awal}/show', 'show')->name('samutasiproduksi.show')->can('samutasiproduksi.show');
         //AJAX REQUEST
         Route::post('/samutasiproduksi/getdetailsaldo', 'getdetailsaldo')->name('samutasiproduksi.getdetailsaldo');
+    });
+
+    Route::controller(BarangmasukproduksiController::class)->group(function () {
+        Route::get('/barangmasukproduksi', 'index')->name('barangmasukproduksi.index')->can('barangmasukproduksi.index');
+        Route::get('/barangmasukproduksi/create', 'create')->name('barangmasukproduksi.create')->can('barangmasukproduksi.create');
+        Route::post('/barangmasukproduksi', 'store')->name('barangmasukproduksi.store')->can('barangmasukproduksi.store');
+        Route::delete('/barangmasukproduksi/{no_mutasi}', 'destroy')->name('barangmasukproduksi.delete')->can('barangmasukproduksi.delete');
+        Route::get('/barangmasukproduksi/{no_mutasi}/show', 'show')->name('barangmasukproduksi.show')->can('barangmasukproduksi.show');
     });
 
 

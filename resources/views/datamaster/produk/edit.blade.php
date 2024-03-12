@@ -2,7 +2,7 @@
     @csrf
     @method('PUT')
     <x-input-with-icon icon="ti ti-barcode" label="Kode Produk" name="kode_produk" value="{{ $produk->kode_produk }}"
-        disabled="true" />
+        dsiabled="true" />
     <x-input-with-icon icon="ti ti-file-text" label="Nama Produk" name="nama_produk" value="{{ $produk->nama_produk }}" />
     <x-select label="Jenis Produk" name="kode_jenis_produk" :data="$jenisproduk" key="kode_jenis_produk"
         textShow="nama_jenis_produk" selected="{{ $produk->kode_jenis_produk }}" />
