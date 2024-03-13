@@ -222,7 +222,16 @@
              @endif
          </li>
          <li
-             class="menu-item {{ request()->is(['bpbj', 'bpbj/*', 'fsthp', 'fsthp/*', 'samutasiproduksi', 'samutasiproduksi/*'])
+             class="menu-item {{ request()->is([
+                 'bpbj',
+                 'bpbj/*',
+                 'fsthp',
+                 'fsthp/*',
+                 'samutasiproduksi',
+                 'samutasiproduksi/*',
+                 'barangmasukproduksi',
+                 'barangmasukproduksi/*',
+             ])
                  ? 'open'
                  : '' }}">
              @if (auth()->user()->hasAnyPermission(['bpbj.index']))

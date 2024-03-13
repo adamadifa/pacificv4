@@ -38,12 +38,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($barangmasuk as $d)
+                                        <tr>
+                                            <td>{{ $loop->iteration + $barangmasuk->firstItem() - 1 }}</td>
+                                            <td>{{ $d->no_bukti }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
+                                            <td>{{ $asal_barang[$d->kode_asal_barang] }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
                         <div style="float: right;">
-                            {{-- {{ $bpbj->links() }} --}}
+                            {{ $barangmasuk->links() }}
                         </div>
                     </div>
                 </div>

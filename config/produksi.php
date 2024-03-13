@@ -2,7 +2,8 @@
 return [
     'asal_barang_produksi' => [
         'GD' =>  'GUDANG',
-        'SS' => 'SEASONING'
+        'SS' => 'SEASONING',
+        'TR' => 'TRIAL'
     ],
 
     'kategori_barang_produksi' => [
