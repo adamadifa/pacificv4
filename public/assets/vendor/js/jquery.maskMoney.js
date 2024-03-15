@@ -10,18 +10,18 @@
     }
 
     var defaultOptions = {
-            prefix: "",
-            suffix: "",
-            affixesStay: true,
-            thousands: ".",
-            decimal: ",",
-            precision: 0,
-            allowZero: true,
-            allowNegative: true,
-            doubleClickSelection: true,
-            allowEmpty: false,
-            bringCaretAtEndOnFocus: false
-        },
+        prefix: "",
+        suffix: "",
+        affixesStay: true,
+        thousands: ".",
+        decimal: ",",
+        precision: 0,
+        allowZero: true,
+        allowNegative: true,
+        doubleClickSelection: true,
+        allowEmpty: true,
+        bringCaretAtEndOnFocus: false
+    },
         methods = {
             destroy: function () {
                 $(this).unbind(".maskMoney");

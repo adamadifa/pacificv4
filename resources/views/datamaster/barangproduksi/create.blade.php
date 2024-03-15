@@ -10,6 +10,7 @@
             <option value="">Asal Barang</option>
             <option value="GD">Gudang</option>
             <option value="SS">Seasoning</option>
+            <option value="TR">Trial</option>
         </select>
     </div>
     <div class="form-group mb-3">

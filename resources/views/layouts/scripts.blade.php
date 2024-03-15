@@ -10,6 +10,7 @@
  <script src="{{ asset('/assets/vendor/libs/typeahead-js/typeahead.js') }}"></script>
  <script src="{{ asset('/assets/vendor/js/menu.js') }}"></script>
  <script src="{{ asset('assets/vendor/js/jquery.maskMoney.js') }}"></script>
+ <script src="{{ asset('assets/vendor/js/easy-number-separator.js') }}"></script>
 
  <!-- endbuild -->
 
@@ -39,7 +40,12 @@
 
  <script>
      $(function() {
-         $(".flatpickr-date").flatpickr();
+         $(".flatpickr-date").flatpickr({
+             enable: [{
+                 from: "{{ $start_periode }}",
+                 to: "{{ $end_periode }}"
+             }, ]
+         });
 
      });
  </script>

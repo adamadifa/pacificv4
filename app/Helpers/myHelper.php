@@ -62,7 +62,7 @@ function getfotoKaryawan($file)
 
 function toNumber($value)
 {
-    return str_replace(".", "", $value);
+    return str_replace([".", ","], ["", "."], $value);
 }
 
 
@@ -74,6 +74,12 @@ function formatRupiah($nilai)
 function formatAngka($nilai)
 {
     return number_format($nilai, '0', ',', '.');
+}
+
+
+function formatAngkaDesimal($nilai)
+{
+    return number_format($nilai, '2', ',', '.');
 }
 
 

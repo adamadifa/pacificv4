@@ -20,6 +20,7 @@
                                 <div class="col-lg-10 col-sm-12 col-md-12">
                                     <x-select name="id_permission_group" label="Group" :data="$permission_groups" key="id"
                                         textShow="name" selected="{{ Request('id_permission_group') }}" />
+
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
                                     <button class="btn btn-primary">Cari</button>
