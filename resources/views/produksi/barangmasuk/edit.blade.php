@@ -67,6 +67,7 @@
                                         <th>No</th>
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
+                                        <th>Satuan</th>
                                         <th>Keterangan</th>
                                         <th>Jumlah</th>
                                         <th>#</th>
@@ -109,16 +110,20 @@
         });
 
         const select2Kodebarangproduksi = $('.select2Kodebarangproduksi');
-        if (select2Kodebarangproduksi.length) {
-            select2Kodebarangproduksi.each(function() {
-                var $this = $(this);
-                $this.wrap('<div class="position-relative"></div>').select2({
-                    placeholder: 'Pilih Barang',
-                    dropdownParent: $this.parent(),
 
+        function initselect2Kodebarangproduksi() {
+            if (select2Kodebarangproduksi.length) {
+                select2Kodebarangproduksi.each(function() {
+                    var $this = $(this);
+                    $this.wrap('<div class="position-relative"></div>').select2({
+                        placeholder: 'Pilih Barang',
+                        dropdownParent: $this.parent(),
+
+                    });
                 });
-            });
+            }
         }
+
 
         function getbarangbyAsalbarang() {
             var kode_asal_barang = $("#kode_asal_barang").val();
@@ -180,6 +185,7 @@
 
         loaddetailtemp();
         getbarangbyAsalbarang();
+        initselect2Kodebarangproduksi();
         cektutuplaporan(tanggal, "produksi");
         $("#tanggal").change(function() {
             cektutuplaporan($(this).val(), "produksi");
@@ -239,6 +245,7 @@
                                 showConfirmButton: true,
                                 didClose: (e) => {
                                     $("#kode_barang_produksi").focus();
+                                    initselect2Kodebarangproduksi();
                                     $("#nama_barang").val("");
                                     $("#keterangan").val("");
                                     $("#jumlah").val("");

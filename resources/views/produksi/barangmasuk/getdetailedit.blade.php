@@ -3,6 +3,7 @@
         <td>{{ $loop->iteration }}</td>
         <td>{{ $d->kode_barang_produksi }}</td>
         <td>{{ $d->nama_barang }}</td>
+        <td>{{ $d->satuan }}</td>
         <td>{{ $d->keterangan }}</td>
         <td class="text-end">{{ formatAngkaDesimal($d->jumlah) }}</td>
         <td>

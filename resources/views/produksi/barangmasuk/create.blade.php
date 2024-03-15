@@ -60,6 +60,7 @@
                                         <th>No</th>
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
+                                        <th>Satuan</th>
                                         <th>Keterangan</th>
                                         <th>Jumlah</th>
                                         <th>#</th>

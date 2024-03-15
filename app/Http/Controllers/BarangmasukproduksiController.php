@@ -17,14 +17,26 @@ class BarangmasukproduksiController extends Controller
 {
     public function index(Request $request)
     {
+        $start_year = config('global.start_year');
+        $start_date = $start_year . "-01-01";
+        $end_date = date('Y-m-d');
 
         $query = Barangmasukproduksi::query();
         $query->orderBy('tanggal', 'desc');
         $query->orderBy('created_at', 'desc');
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+        } else {
+            $query->whereBetween('tanggal', [$start_date, $end_date]);
         }
 
+        if (!empty($request->no_bukti_search)) {
+            $query->where('no_bukti', $request->no_bukti_search);
+        }
+
+        if (!empty($request->kode_asal_barang_search)) {
+            $query->where('kode_asal_barang', $request->kode_asal_barang_search);
+        }
         $barangmasuk = $query->simplePaginate(20);
         $barangmasuk->appends(request()->all());
 
@@ -138,12 +150,14 @@ class BarangmasukproduksiController extends Controller
     public function update($no_bukti, Request $request)
     {
         $no_bukti = Crypt::decrypt($no_bukti);
+
         $request->validate([
             'tanggal' => 'required',
         ]);
         DB::beginTransaction();
         try {
-            $cektutuplaporan = cektutupLaporan($request->tanggal, "produksi");
+            $barangmasukproduksi = Barangmasukproduksi::where('no_bukti', $no_bukti)->first();
+            $cektutuplaporan = cektutupLaporan($barangmasukproduksi->tanggal, "produksi");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
             }

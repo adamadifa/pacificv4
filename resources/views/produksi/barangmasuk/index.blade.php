@@ -19,8 +19,49 @@
                 <div class="row">
                     <div class="col-12">
                         <form action="{{ route('barangmasukproduksi.index') }}">
-
-
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12 col-md-12">
+                                    <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari"
+                                        datepicker="flatpickr-date" value="{{ Request('dari') }}" />
+                                </div>
+                                <div class="col-lg-6 col-sm-12 col-md-12">
+                                    <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai"
+                                        datepicker="flatpickr-date" value="{{ Request('sampai') }}" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti" name="no_bukti_search"
+                                        value="{{ Request('no_bukti_search') }}" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group mb-3">
+                                        <select name="kode_asal_barang_search" id="kode_asal_barang_search"
+                                            class="form-select">
+                                            <option value="">Asal Barang</option>
+                                            <option value="GD"
+                                                {{ Request('kode_asal_barang_search') == 'GD' ? 'selected' : '' }}>
+                                                Gudang</option>
+                                            <option value="SS"
+                                                {{ Request('kode_asal_barang_search') == 'SS' ? 'selected' : '' }}>
+                                                Seasoning</option>
+                                            <option value="TR"
+                                                {{ Request('kode_asal_barang_search') == 'TR' ? 'selected' : '' }}>Trial
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
+                                            Data</button>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

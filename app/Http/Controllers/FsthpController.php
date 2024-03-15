@@ -15,12 +15,17 @@ class FsthpController extends Controller
 {
     public function index(Request $request)
     {
+        $start_year = config('global.start_year');
+        $start_date = $start_year . "-01-01";
+        $end_date = date('Y-m-d');
 
         $query = Mutasiproduksi::query();
         $query->orderBy('tanggal_mutasi', 'desc');
         $query->orderBy('created_at', 'desc');
         if (!empty($request->tanggal_mutasi_search)) {
             $query->where('tanggal_mutasi', $request->tanggal_mutasi_search);
+        } else {
+            $query->whereBetween('tanggal_mutasi', [$start_date, $end_date]);
         }
         $query->where('jenis_mutasi', 'FSTHP');
         $fsthp = $query->simplePaginate(20);

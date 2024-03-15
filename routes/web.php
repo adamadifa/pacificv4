@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BarangkeluarproduksiController;
 use App\Http\Controllers\BarangmasukproduksiController;
 use App\Http\Controllers\BarangproduksiController;
 use App\Http\Controllers\BpbjController;
@@ -357,6 +358,30 @@ Route::middleware('auth')->group(function () {
     });
 
 
+    Route::controller(BarangkeluarproduksiController::class)->group(function () {
+        Route::get('/barangkeluarproduksi', 'index')->name('barangkeluarproduksi.index')->can('barangkeluarproduksi.index');
+        Route::get('/barangkeluarproduksi/create', 'create')->name('barangkeluarproduksi.create')->can('barangkeluarproduksi.create');
+        Route::get('/barangkeluarproduksi/{no_bukti}/edit', 'edit')->name('barangkeluarproduksi.edit')->can('barangkeluarproduksi.edit');
+        Route::post('/barangkeluarproduksi/{no_bukti}/update', 'update')->name('barangkeluarproduksi.update')->can('barangkeluarproduksi.update');
+        Route::post('/barangkeluarproduksi', 'store')->name('barangkeluarproduksi.store')->can('barangkeluarproduksi.store');
+        Route::delete('/barangkeluarproduksi/{no_bukti}', 'destroy')->name('barangkeluarproduksi.delete')->can('barangkeluarproduksi.delete');
+        Route::get('/barangkeluarproduksi/{no_bukti}/show', 'show')->name('barangkeluarproduksi.show')->can('barangkeluarproduksi.show');
+
+        //AJAX REQUEST
+        Route::post('/barangkeluarproduksi/storedetailtemp', 'storedetailtemp')->name('barangkeluarproduksi.storedetailtemp');
+        Route::get('/barangkeluarproduksi/{kode_asal_barang}/getdetailtemp', 'getdetailtemp')->name('barangkeluarproduksi.getdetailtemp');
+        Route::post('/barangkeluarproduksi/deletetemp', 'deletetemp')->name('barangkeluarproduksi.deletetemp');
+        Route::post('/barangkeluarproduksi/cekdetailtemp', 'cekdetailtemp')->name('barangkeluarproduksi.cekdetailtemp');
+        Route::post('/barangkeluarproduksi/getbarangbyasalbarang', 'getbarangbyasalbarang')->name('barangkeluarproduksi.getbarangbyasalbarang');
+
+        //EDIT
+        Route::post('/barangkeluarproduksi/storedetailedit', 'storedetailedit')->name('barangkeluarproduksi.storedetailedit');
+        Route::get('/barangkeluarproduksi/{no_bukti}/getdetailedit', 'getdetailedit')->name('barangkeluarproduksi.getdetailedit');
+        Route::get('/barangkeluarproduksi/{id}/editbarang', 'editbarang')->name('barangkeluarproduksi.editbarang');
+        Route::post('/barangkeluarproduksi/cekdetailedit', 'cekdetailedit')->name('barangkeluarproduksi.cekdetailedit');
+        Route::post('/barangkeluarproduksi/updatebarang', 'updatebarang')->name('barangkeluarproduksi.updatebarang');
+        Route::post('/barangkeluarproduksi/deleteedit', 'deleteedit')->name('barangkeluarproduksi.deleteedit');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 
