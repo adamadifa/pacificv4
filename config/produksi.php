@@ -6,6 +6,12 @@ return [
         'TR' => 'TRIAL'
     ],
 
+    'jenis_pengeluaran' => [
+        'RO' =>  'Retur Out',
+        'PK' => 'Pemakaian',
+        'LN' => 'Lainnya'
+    ],
+
     'kategori_barang_produksi' => [
         'KMS' =>  'KEMASAN',
         'BHN' => 'BAHAN',

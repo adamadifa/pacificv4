@@ -24,6 +24,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SaldoawalbarangproduksiController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
@@ -369,10 +370,10 @@ Route::middleware('auth')->group(function () {
 
         //AJAX REQUEST
         Route::post('/barangkeluarproduksi/storedetailtemp', 'storedetailtemp')->name('barangkeluarproduksi.storedetailtemp');
-        Route::get('/barangkeluarproduksi/{kode_asal_barang}/getdetailtemp', 'getdetailtemp')->name('barangkeluarproduksi.getdetailtemp');
+        Route::get('/barangkeluarproduksi/getdetailtemp', 'getdetailtemp')->name('barangkeluarproduksi.getdetailtemp');
         Route::post('/barangkeluarproduksi/deletetemp', 'deletetemp')->name('barangkeluarproduksi.deletetemp');
         Route::post('/barangkeluarproduksi/cekdetailtemp', 'cekdetailtemp')->name('barangkeluarproduksi.cekdetailtemp');
-        Route::post('/barangkeluarproduksi/getbarangbyasalbarang', 'getbarangbyasalbarang')->name('barangkeluarproduksi.getbarangbyasalbarang');
+
 
         //EDIT
         Route::post('/barangkeluarproduksi/storedetailedit', 'storedetailedit')->name('barangkeluarproduksi.storedetailedit');
@@ -382,6 +383,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/barangkeluarproduksi/updatebarang', 'updatebarang')->name('barangkeluarproduksi.updatebarang');
         Route::post('/barangkeluarproduksi/deleteedit', 'deleteedit')->name('barangkeluarproduksi.deleteedit');
     });
+
+    Route::controller(SaldoawalbarangproduksiController::class)->group(function () {
+        Route::get('/sabarangproduksi', 'index')->name('sabarangproduksi.index')->can('sabarangproduksi.index');
+        Route::get('/sabarangproduksi/create', 'create')->name('sabarangproduksi.create')->can('sabarangproduksi.create');
+        Route::post('/sabarangproduksi', 'store')->name('sabarangproduksi.store')->can('sabarangproduksi.store');
+        Route::delete('/sabarangproduksi/{kode_saldo_awal}', 'destroy')->name('sabarangproduksi.delete')->can('sabarangproduksi.delete');
+        Route::get('/sabarangproduksi/{kode_saldo_awal}/show', 'show')->name('sabarangproduksi.show')->can('sabarangproduksi.show');
+        //AJAX REQUEST
+        Route::post('/sabarangproduksi/getdetailsaldo', 'getdetailsaldo')->name('sabarangproduksi.getdetailsaldo');
+    });
+
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

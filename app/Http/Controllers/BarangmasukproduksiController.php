@@ -205,6 +205,7 @@ class BarangmasukproduksiController extends Controller
         $barangmasukproduksi = Barangmasukproduksi::where('no_bukti', $no_bukti)->first();
         $detail = Detailbarangmasukproduksi::where('no_bukti', $no_bukti)
             ->join('produksi_barang', 'produksi_barang_masuk_detail.kode_barang_produksi', '=', 'produksi_barang.kode_barang_produksi')
+            ->orderBy('produksi_barang_masuk_detail.kode_barang_produksi')
             ->get();
         $asal_barang = config('produksi.asal_barang_produksi');
         return view('produksi.barangmasuk.show', compact('barangmasukproduksi', 'asal_barang', 'detail'));

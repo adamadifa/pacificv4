@@ -233,10 +233,19 @@
                  'barangmasukproduksi/*',
                  'barangkeluarproduksi',
                  'barangkeluarproduksi/*',
+                 'sabarangproduksi',
+                 'sabarangproduksi/*',
              ])
                  ? 'open'
                  : '' }}">
-             @if (auth()->user()->hasAnyPermission(['bpbj.index']))
+             @if (auth()->user()->hasAnyPermission([
+                         'bpbj.index',
+                         'fsthp.index',
+                         'samutasiproduksi.index',
+                         'barangmasukproduksi.index',
+                         'barangkeluarproduksi.index',
+                         'sabarangproduksi.index',
+                     ]))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-box"></i>
                      <div>Produksi</div>
@@ -270,6 +279,14 @@
                      <li class="menu-header small text-uppercase">
                          <span class="menu-header-text">Mutasi Barang</span>
                      </li>
+                     @can('sabarangproduksi.index')
+                         <li
+                             class="menu-item {{ request()->is(['sabarangproduksi', 'sabarangproduksi/*']) ? 'active' : '' }}">
+                             <a href="{{ route('sabarangproduksi.index') }}" class="menu-link">
+                                 <div>Saldo Awal</div>
+                             </a>
+                         </li>
+                     @endcan
                      @can('barangmasukproduksi.index')
                          <li
                              class="menu-item {{ request()->is(['barangmasukproduksi', 'barangmasukproduksi/*']) ? 'active' : '' }}">
