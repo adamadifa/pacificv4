@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produksi_barang_saldoawal', function (Blueprint $table) {
-            $table->char('kode_saldo_awal', 8)->primary();
-            $table->date('tanggal');
-            $table->smallInteger('bulan');
-            $table->char('tahun', 4);
+        Schema::create('produksi_barang_saldoawal_detail', function (Blueprint $table) {
+            $table->char('kode_saldo_awal', 8);
+            $table->char('kode_barang_produksi', 6);
+            $table->integer('jumlah');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('produksi_barang_saldoawal');
+        Schema::dropIfExists('produksi_barang_saldoawal_detail');
     }
 };

@@ -24,7 +24,11 @@ class SaldoawalmutasiproduksiController extends Controller
         if (!empty($request->bulan)) {
             $query->where('bulan', $request->bulan);
         }
-        $query->where('tahun', $request->tahun);
+        if (!empty($request->tahun)) {
+            $query->where('tahun', $request->tahun);
+        } else {
+            $query->where('tahun', date('Y'));
+        }
         $query->orderBy('tahun', 'desc');
         $query->orderBy('bulan');
         $saldo_awal = $query->get();
@@ -109,11 +113,11 @@ class SaldoawalmutasiproduksiController extends Controller
             }
 
             DB::commit();
-            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+            return redirect(route('samutasiproduksi.index'))->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             dd($e);
             DB::rollBack();
-            return Redirect::back()->with(messageError($e->getMessage()));
+            return redirect(route('samutasiproduksi.index'))->with(messageError($e->getMessage()));
         }
     }
 

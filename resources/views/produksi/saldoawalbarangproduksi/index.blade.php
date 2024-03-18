@@ -1,24 +1,24 @@
 @extends('layouts.app')
-@section('titlepage', 'Saldo Awal Mutasi Produksi')
+@section('titlepage', 'Saldo Awal Barang Produksi')
 
 @section('content')
 @section('navigasi')
-    <span>Saldo Awal Mutasi Produksi</span>
+    <span>Saldo Awal Barang Produksi</span>
 @endsection
 
 <div class="row">
     <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('samutasiproduksi.create')
-                    <a href="{{ route('samutasiproduksi.create') }}" class="btn btn-primary"><i class="fa fa-plus me-2"></i>
+                @can('sabarangproduksi.create')
+                    <a href="{{ route('sabarangproduksi.create') }}" class="btn btn-primary"><i class="fa fa-plus me-2"></i>
                         Buat Saldo Awal</a>
                 @endcan
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <form action="{{ route('samutasiproduksi.index') }}">
+                        <form action="{{ route('sabarangproduksi.index') }}">
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
                                     <div class="form-group mb-3">
@@ -75,7 +75,7 @@
                                             <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
                                             <td>
                                                 <div class="d-flex">
-                                                    @can('samutasiproduksi.show')
+                                                    @can('sabarangproduksi.show')
                                                         <div>
                                                             <a href="#" class="me-2 show"
                                                                 kode_saldo_awal="{{ Crypt::encrypt($d->kode_saldo_awal) }}">
@@ -83,10 +83,10 @@
                                                             </a>
                                                         </div>
                                                     @endcan
-                                                    @can('samutasiproduksi.delete')
+                                                    @can('sabarangproduksi.delete')
                                                         <div>
                                                             <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('samutasiproduksi.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
+                                                                action="{{ route('sabarangproduksi.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <a href="#" class="delete-confirm ml-1">
@@ -122,7 +122,7 @@
             var kode_saldo_awal = $(this).attr("kode_saldo_awal");
             e.preventDefault();
             $('#mdldetail').modal("show");
-            $("#loaddetail").load('/samutasiproduksi/' + kode_saldo_awal + '/show');
+            $("#loaddetail").load('/sabarangproduksi/' + kode_saldo_awal + '/show');
         });
     });
 </script>
