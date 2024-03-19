@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('titlepage', 'Buat Saldo Awal Mutasi Produksi')
+@section('titlepage', 'Buat Saldo Awal Barang Produksi')
 
 @section('content')
 @section('navigasi')
-    <span>Buat Saldo Awal Mutasi Produksi</span>
+    <span>Buat Saldo Awal Barang Produksi</span>
 @endsection
 
 <div class="row">
-    <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('samutasiproduksi.store') }}" method="POST">
+                <form action="{{ route('sabarangproduksi.store') }}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-12">
@@ -105,7 +105,7 @@
             } else {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('samutasiproduksi.getdetailsaldo') }}",
+                    url: "{{ route('sabarangproduksi.getdetailsaldo') }}",
                     data: {
                         _token: "{{ csrf_token() }}",
                         bulan: bulan,

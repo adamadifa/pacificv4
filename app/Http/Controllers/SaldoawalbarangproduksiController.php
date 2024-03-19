@@ -7,6 +7,7 @@ use App\Models\Detailsaldoawalbarangproduksi;
 use App\Models\Saldoawalbarangproduksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class SaldoawalbarangproduksiController extends Controller
 {
@@ -72,80 +73,97 @@ class SaldoawalbarangproduksiController extends Controller
 
         //Jika Saldo BUlan Lalu Kosong dan Saldo Bulan Ini Ada Maka Di Ambil Saldo BUlan Ini
         if (empty($ceksaldobulanlalu) && !empty($ceksaldobulanini)) {
+            // echo 1;
+            // die;
             $barangproduksi = Barangproduksi::selectRaw(
-                'produk.kode_produk,
-                nama_produk,
+                'produksi_barang.kode_barang_produksi,
+                nama_barang,
                 saldo_awal as saldo_akhir'
             )
-                ->where('status_aktif_produk', 1)
+                ->where('status_aktif_barang', 1)
                 ->leftJoin(
                     DB::raw("(
                     SELECT
-                        kode_produk,
+                        kode_barang_produksi,
                         jumlah as saldo_awal
                     FROM
-                        produksi_mutasi_saldoawal_detail
-                    INNER JOIN produksi_mutasi_saldoawal ON produksi_mutasi_saldoawal_detail.kode_saldo_awal = produksi_mutasi_saldoawal.kode_saldo_awal
+                        produksi_barang_saldoawal_detail
+                    INNER JOIN produksi_barang_saldoawal ON produksi_barang_saldoawal_detail.kode_saldo_awal = produksi_barang_saldoawal.kode_saldo_awal
                     WHERE bulan = '$bulan' AND tahun='$tahun'
                 ) saldo_awal"),
                     function ($join) {
-                        $join->on('produk.kode_produk', '=', 'saldo_awal.kode_produk');
+                        $join->on('produksi_barang.kode_barang_produksi', '=', 'saldo_awal.kode_barang_produksi');
                     }
                 )
                 ->orderBy('kode_produk')->get();
         } else {
-
+            // echo 2;
+            // die;
             //Jika Saldo Bulan Lalu Ada Maka Hitung Saldo Awal Bulan Lalu - Mutasi Bulan Lalu
-            $produk = Produk::selectRaw(
-                'produk.kode_produk,
-                nama_produk,
-                IFNULL(saldo_awal,0) - IFNULL(sisamutasi,0) as saldo_akhir'
-            )
-                ->where('status_aktif_produk', 1)
+            $barangproduksi = Barangproduksi::selectRaw("
+            produksi_barang.kode_barang_produksi,
+            nama_barang,
+            jml_saldoawal,
+            jml_pemasukan,
+            jml_pengeluaran,
+            IFNULL(jml_saldoawal,0) + IFNULL(jml_pemasukan,0) - IFNULL(jml_pengeluaran,0) as saldo_akhir
+            ")
                 ->leftJoin(
                     DB::raw("(
-                    SELECT
-                        kode_produk,
-                        jumlah as saldo_awal
-                    FROM
-                        produksi_mutasi_saldoawal_detail
-                    INNER JOIN produksi_mutasi_saldoawal ON produksi_mutasi_saldoawal_detail.kode_saldo_awal = produksi_mutasi_saldoawal.kode_saldo_awal
-                    WHERE bulan = '$bulanlalu' AND tahun='$tahunlalu'
+                    SELECT kode_barang_produksi,SUM( jumlah ) AS jml_saldoawal
+                    FROM produksi_barang_saldoawal_detail
+                    INNER JOIN produksi_barang_saldoawal ON produksi_barang_saldoawal_detail.kode_saldo_awal=produksi_barang_saldoawal.kode_saldo_awal
+                    WHERE bulan = '$bulanlalu' AND tahun = '$tahunlalu'
+                    GROUP BY kode_barang_produksi
                 ) saldo_awal"),
                     function ($join) {
-                        $join->on('produk.kode_produk', '=', 'saldo_awal.kode_produk');
+                        $join->on('produksi_barang.kode_barang_produksi', '=', 'saldo_awal.kode_barang_produksi');
+                    }
+                )
+                ->leftJoin(
+                    DB::raw("(
+                        SELECT kode_barang_produksi,
+                        SUM( jumlah ) AS jml_pemasukan
+                        FROM produksi_barang_masuk_detail
+                        INNER JOIN produksi_barang_masuk ON produksi_barang_masuk_detail.no_bukti = produksi_barang_masuk.no_bukti
+                        WHERE MONTH(tanggal) = '$bulanlalu' AND YEAR(tanggal) = '$tahunlalu'
+                        GROUP BY produksi_barang_masuk_detail.kode_barang_produksi
+                    ) pemasukan"),
+                    function ($join) {
+                        $join->on('produksi_barang.kode_barang_produksi', '=', 'pemasukan.kode_barang_produksi');
                     }
                 )
 
                 ->leftJoin(
                     DB::raw("(
-                        SELECT kode_produk,
-                        SUM(IF( in_out = 'IN', jumlah, 0)) - SUM(IF( in_out = 'OUT', jumlah, 0)) as sisamutasi
-                        FROM produksi_mutasi_detail
-                        INNER JOIN produksi_mutasi
-                        ON produksi_mutasi_detail.no_mutasi = produksi_mutasi.no_mutasi
-                        WHERE tanggal_mutasi BETWEEN '$tgl_dari_bulanlalu' AND '$tgl_sampai_bulanlalu'  GROUP BY kode_produk
-                    ) mutasi"),
+                        SELECT kode_barang_produksi,
+                        SUM( jumlah ) AS jml_pengeluaran FROM produksi_barang_keluar_detail
+                        INNER JOIN produksi_barang_keluar ON produksi_barang_keluar_detail.no_bukti = produksi_barang_keluar.no_bukti
+                        WHERE MONTH(tanggal) = '$bulanlalu' AND YEAR(tanggal) = '$tahunlalu'
+                        GROUP BY produksi_barang_keluar_detail.kode_barang_produksi
+                    ) pengeluaran"),
                     function ($join) {
-                        $join->on('produk.kode_produk', '=', 'mutasi.kode_produk');
+                        $join->on('produksi_barang.kode_barang_produksi', '=', 'pengeluaran.kode_barang_produksi');
                     }
                 )
-                ->orderBy('kode_produk')->get();
+
+                ->where('produksi_barang.status_aktif_barang', '1')
+                ->get();
         }
 
 
 
-        $data = ['produk', 'readonly'];
+        $data = ['barangproduksi', 'readonly'];
 
         if (empty($ceksaldo)) {
             $readonly = false;
-            return view('produksi.saldoawalmutasiproduksi.getdetailsaldo', compact($data));
+            return view('produksi.saldoawalbarangproduksi.getdetailsaldo', compact($data));
         } else {
             if (empty($ceksaldobulanlalu) && empty($ceksaldobulanini)) {
                 return 1;
             } else {
                 $readonly = true;
-                return view('produksi.saldoawalmutasiproduksi.getdetailsaldo', compact($data));
+                return view('produksi.saldoawalbarangproduksi.getdetailsaldo', compact($data));
             }
         }
     }
