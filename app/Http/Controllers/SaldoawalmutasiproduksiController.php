@@ -75,7 +75,7 @@ class SaldoawalmutasiproduksiController extends Controller
             //Cek Saldo Bulan Ini
             $ceksaldobulanini = Saldoawalmutasiproduksi::where('bulan', $bulan)->where('tahun', $tahun)->count();
 
-            for ($i = 1; $i < count($kode_produk); $i++) {
+            for ($i = 0; $i < count($kode_produk); $i++) {
                 $detail_saldo[] = [
                     'kode_saldo_awal' => $kode_saldo_awal,
                     'kode_produk' => $kode_produk[$i],
@@ -110,7 +110,11 @@ class SaldoawalmutasiproduksiController extends Controller
                 foreach ($chunks_buffer as $chunk_buffer) {
                     Detailsaldoawalmutasiproduksi::insert($chunk_buffer);
                 }
+            } else {
+                DB::rollBack();
+                return Redirect::back()->with(messageError('Detail Saldo Kosong'));
             }
+
 
             DB::commit();
             return redirect(route('samutasiproduksi.index'))->with(messageSuccess('Data Berhasil Disimpan'));

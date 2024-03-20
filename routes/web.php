@@ -16,6 +16,7 @@ use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
@@ -394,6 +395,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/sabarangproduksi/getdetailsaldo', 'getdetailsaldo')->name('sabarangproduksi.getdetailsaldo');
     });
 
+
+    Route::controller(OmancabangController::class)->group(function () {
+        Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');
+        Route::get('/omancabang/create', 'create')->name('omancabang.create')->can('omancabang.create');
+    });
 
     Route::controller(TutuplaporanController::class)->group(function () {
 
