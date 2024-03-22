@@ -399,6 +399,9 @@ Route::middleware('auth')->group(function () {
     Route::controller(OmancabangController::class)->group(function () {
         Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');
         Route::get('/omancabang/create', 'create')->name('omancabang.create')->can('omancabang.create');
+        Route::get('/omancabang/{kode_oman}/edit', 'edit')->name('omancabang.edit')->can('omancabang.edit');
+        Route::delete('/omancabang/{kode_oman}', 'destroy')->name('omancabang.delete')->can('omancabang.delete');
+        Route::get('/omancabang/{kode_oman}/show', 'show')->name('omancabang.show')->can('omancabang.show');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {

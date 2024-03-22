@@ -34,36 +34,40 @@
                     @endcan
                     <div class="row mt-2">
                         <div class="col-12">
-                            <div class="row">
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <div class="form-group mb-3">
-                                        <select name="bulan" id="bulan" class="form-select">
-                                            <option value="">Bulan</option>
-                                            @foreach ($list_bulan as $d)
-                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                    value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                            @endforeach
-                                        </select>
+                            <form action="{{ route('omancabang.index') }}">
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-12 col-md-12">
+                                        <div class="form-group mb-3">
+                                            <select name="bulan_search" id="bulan_search" class="form-select">
+                                                <option value="">Bulan</option>
+                                                @foreach ($list_bulan as $d)
+                                                    <option
+                                                        {{ Request('bulan_search') == $d['kode_bulan'] ? 'selected' : '' }}
+                                                        value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <div class="form-group mb-3">
-                                        <select name="tahun" id="tahun" class="form-select">
-                                            <option value="">Tahun</option>
-                                            @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                <option
-                                                    @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
+                                    <div class="col-lg-4 col-sm-12 col-md-12">
+                                        <div class="form-group mb-3">
+                                            <select name="tahun_search" id="tahun_search" class="form-select">
+                                                <option value="">Tahun</option>
+                                                @for ($t = $start_year; $t <= date('Y'); $t++)
+                                                    <option
+                                                        @if (!empty(Request('tahun_search'))) {{ Request('tahun_search') == $t ? 'selected' : '' }}
                                                     @else
                                                     {{ date('Y') == $t ? 'selected' : '' }} @endif
-                                                    value="{{ $t }}">{{ $t }}</option>
-                                            @endfor
-                                        </select>
+                                                        value="{{ $t }}">{{ $t }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12 col-md-12">
+                                        <button class="btn btn-primary"><i
+                                                class="ti ti-icons ti-search me-1"></i></button>
                                     </div>
                                 </div>
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i></button>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                     <div class="row">
@@ -76,13 +80,56 @@
                                             <th>Cabang</th>
                                             <th>Bulan</th>
                                             <th>Tahun</th>
-                                            <th>Tanggal</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach ($oman_cabang as $d)
+                                            <tr>
+                                                <td>{{ $d->kode_oman }}</td>
+                                                <td>{{ $d->kode_cabang }}</td>
+                                                <td>{{ $nama_bulan[$d->bulan] }}</td>
+                                                <td>{{ $d->tahun }}</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        @can('omancabang.edit')
+                                                            <div>
+                                                                <a href="#" class="me-2 editOmancabang"
+                                                                    kode_oman="{{ Crypt::encrypt($d->kode_oman) }}">
+                                                                    <i class="ti ti-edit text-success"></i>
+                                                                </a>
+                                                            </div>
+                                                        @endcan
+                                                        @can('omancabang.show')
+                                                            <div>
+                                                                <a href="#" class="me-2 show"
+                                                                    kode_oman="{{ Crypt::encrypt($d->kode_oman) }}">
+                                                                    <i class="ti ti-file-description text-info"></i>
+                                                                </a>
+                                                            </div>
+                                                        @endcan
+
+                                                        @can('omancabang.delete')
+                                                            <div>
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('omancabang.delete', Crypt::encrypt($d->kode_oman)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm ml-1">
+                                                                        <i class="ti ti-trash text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            </div>
+                                                        @endcan
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
+                            </div>
+                            <div style="float: right;">
+                                {{ $oman_cabang->links() }}
                             </div>
                         </div>
                     </div>
