@@ -9,27 +9,11 @@
 <div class="row">
     <div class="col-lg-6">
         <div class="nav-align-top nav-tabs-shadow mb-4">
-            <ul class="nav nav-tabs nav-fill" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
-                        data-bs-target="#navs-justified-home" aria-controls="navs-justified-home" aria-selected="true">
-                        <i class="tf-icons ti ti-file-description ti-lg me-1"></i> Oman Cabang
-
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                        data-bs-target="#navs-justified-profile" aria-controls="navs-justified-profile"
-                        aria-selected="false" tabindex="-1">
-                        <i class="tf-icons ti ti-file-description ti-lg me-1"></i> Oman Marketing
-                    </button>
-                </li>
-
-            </ul>
+            @include('layouts.navigation_oman')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     @can('omancabang.create')
-                        <a href="{{ route('omancabang.create') }}" class="btn btn-primary"><i class="fa fa-plus me-2"></i>
+                        <a href="#" id="createOmancabang" class="btn btn-primary"><i class="fa fa-plus me-2"></i>
                             Buat Oman</a>
                     @endcan
                     <div class="row mt-2">
@@ -80,6 +64,7 @@
                                             <th>Cabang</th>
                                             <th>Bulan</th>
                                             <th>Tahun</th>
+                                            <th>Status</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
@@ -91,18 +76,27 @@
                                                 <td>{{ $nama_bulan[$d->bulan] }}</td>
                                                 <td>{{ $d->tahun }}</td>
                                                 <td>
+                                                    @if ($d->status_oman_cabang === '1')
+                                                        <span class="badge bg-success">Sudah di Proses</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Belum di Proses</span>
+                                                    @endif
+                                                </td>
+                                                <td>
                                                     <div class="d-flex">
                                                         @can('omancabang.edit')
-                                                            <div>
-                                                                <a href="#" class="me-2 editOmancabang"
-                                                                    kode_oman="{{ Crypt::encrypt($d->kode_oman) }}">
-                                                                    <i class="ti ti-edit text-success"></i>
-                                                                </a>
-                                                            </div>
+                                                            @if ($d->status_oman_cabang === '0')
+                                                                <div>
+                                                                    <a href="#" class="me-2 editOmancabang"
+                                                                        kode_oman="{{ Crypt::encrypt($d->kode_oman) }}">
+                                                                        <i class="ti ti-edit text-success"></i>
+                                                                    </a>
+                                                                </div>
+                                                            @endif
                                                         @endcan
                                                         @can('omancabang.show')
                                                             <div>
-                                                                <a href="#" class="me-2 show"
+                                                                <a href="#" class="me-2 showOmancabang"
                                                                     kode_oman="{{ Crypt::encrypt($d->kode_oman) }}">
                                                                     <i class="ti ti-file-description text-info"></i>
                                                                 </a>
@@ -110,16 +104,19 @@
                                                         @endcan
 
                                                         @can('omancabang.delete')
-                                                            <div>
-                                                                <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('omancabang.delete', Crypt::encrypt($d->kode_oman)) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            </div>
+                                                            @if ($d->status_oman_cabang === '0')
+                                                                <div>
+                                                                    <form method="POST" name="deleteform"
+                                                                        class="deleteform"
+                                                                        action="{{ route('omancabang.delete', Crypt::encrypt($d->kode_oman)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="delete-confirm ml-1">
+                                                                            <i class="ti ti-trash text-danger"></i>
+                                                                        </a>
+                                                                    </form>
+                                                                </div>
+                                                            @endif
                                                         @endcan
                                                     </div>
                                                 </td>
@@ -139,5 +136,30 @@
         </div>
     </div>
 </div>
-
+<x-modal-form id="mdlcreateOmancabang" size="modal-xl" show="loadcreateOmancabang" title="Buat Oman Cabang " />
+<x-modal-form id="mdleditOmancabang" size="modal-xl" show="loadeditOmancabang" title="Edit Oman Cabang " />
+<x-modal-form id="mdldetail" size="modal-xl" show="loaddetail" title="Detail Oman Cabang" />
 @endsection
+@push('myscript')
+<script>
+    $(function() {
+        $("#createOmancabang").click(function(e) {
+            $('#mdlcreateOmancabang').modal("show");
+            $("#loadcreateOmancabang").load('/omancabang/create');
+        });
+
+        $(".editOmancabang").click(function(e) {
+            const kode_oman = $(this).attr("kode_oman");
+            $('#mdleditOmancabang').modal("show");
+            $("#loadeditOmancabang").load('/omancabang/' + kode_oman + '/edit');
+        });
+        $(".showOmancabang").click(function(e) {
+            const kode_oman = $(this).attr("kode_oman");
+            //alert(kode_oman);
+            e.preventDefault();
+            $('#mdldetail').modal("show");
+            $("#loaddetail").load('/omancabang/' + kode_oman + '/show');
+        });
+    });
+</script>
+@endpush

@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
+use App\Models\Detailomancabang;
 use App\Models\Omancabang;
+use App\Models\Produk;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class OmancabangController extends Controller
 {
@@ -12,8 +20,10 @@ class OmancabangController extends Controller
         $list_bulan = config('global.list_bulan');
         $nama_bulan = config('global.nama_bulan');
         $start_year = config('global.start_year');
-
+        $user = User::findorfail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_access_all_cabang');
         $query = Omancabang::query();
+        $query->join('cabang', 'marketing_oman_cabang.kode_cabang', '=', 'cabang.kode_cabang');
         if (!empty($request->bulan_search)) {
             $query->where('bulan', $request->bulan_search);
         }
@@ -25,6 +35,13 @@ class OmancabangController extends Controller
         }
 
 
+        if (!$user->hasRole($roles_show_cabang)) {
+            if ($user->hasRole('rsm')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_oman_cabang.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
         $query->orderBy('bulan');
         $oman_cabang = $query->paginate(15);
         $oman_cabang->appends(request()->all());
@@ -34,5 +51,227 @@ class OmancabangController extends Controller
             'start_year',
             'oman_cabang'
         ));
+    }
+
+    public function create()
+    {
+        $list_bulan = config('global.list_bulan');
+        $start_year = config('global.start_year');
+        $cabang = Cabang::orderBy('kode_cabang')->get();
+        $produk = Produk::where('status_aktif_produk', 1)->orderBy('kode_produk')->get();
+        return view('marketing.omancabang.create', compact('cabang', 'list_bulan', 'start_year', 'produk'));
+    }
+
+
+    public function edit($kode_oman)
+    {
+        $kode_oman = Crypt::decrypt($kode_oman);
+        $oman_cabang = Omancabang::with('cabang')->where('kode_oman', $kode_oman)->first();
+        $detail = Detailomancabang::join('produk', 'marketing_oman_cabang_detail.kode_produk', '=', 'produk.kode_produk')
+            ->select(
+                'marketing_oman_cabang_detail.kode_produk',
+                'nama_produk',
+                DB::raw("SUM(IF(minggu_ke='1',jumlah,0)) as minggu_1"),
+                DB::raw("SUM(IF(minggu_ke='2',jumlah,0)) as minggu_2"),
+                DB::raw("SUM(IF(minggu_ke='3',jumlah,0)) as minggu_3"),
+                DB::raw("SUM(IF(minggu_ke='4',jumlah,0)) as minggu_4"),
+                DB::raw("SUM(jumlah) as total")
+            )
+            ->where('kode_oman', $kode_oman)
+            ->orderBy('marketing_oman_cabang_detail.kode_produk')
+            ->groupBy('marketing_oman_cabang_detail.kode_produk')
+            ->groupBy('nama_produk')
+            ->get();
+        return view('marketing.omancabang.edit', compact('oman_cabang', 'detail'));
+    }
+
+    public function store(Request $request)
+    {
+
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+
+
+
+        $bulan = $request->bulan;
+        $bln = $bulan < 10 ? "0" . $bulan : $bulan;
+        $tahun = $request->tahun;
+        $tanggal = $tahun . "-" . $bln . "-01";
+        $kode_produk = $request->kode_produk;
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'kode_cabang' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required'
+            ]);
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'bulan' => 'required',
+                'tahun' => 'required'
+            ]);
+        }
+        $kode_oman = "OM" . $kode_cabang . $bln . substr($tahun, 2, 2);
+        $jmlm1 = $request->jmlm1;
+        $jmlm2 = $request->jmlm2;
+        $jmlm3 = $request->jmlm3;
+        $jmlm4 = $request->jmlm4;
+
+        $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+        if ($cektutuplaporan > 0) {
+            return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+        }
+
+        DB::beginTransaction();
+        try {
+            for ($i = 0; $i < count($kode_produk); $i++) {
+
+                for ($m = 1; $m <= 4; $m++) {
+                    ${"detail_m$m"}[] = [
+                        'kode_oman' => $kode_oman,
+                        'kode_produk' => $kode_produk[$i],
+                        'minggu_ke' => $m,
+                        'jumlah' => toNumber(${"jmlm$m"}[$i] != null ? ${"jmlm$m"}[$i] : 0),
+                    ];
+                }
+            }
+
+            $detail = array_merge($detail_m1, $detail_m2, $detail_m3, $detail_m4);
+            $timestamp = Carbon::now();
+            foreach ($detail as &$record) {
+                $record['created_at'] = $timestamp;
+                $record['updated_at'] = $timestamp;
+            }
+
+            if (!empty($detail)) {
+
+                Omancabang::create([
+                    'kode_oman' => $kode_oman,
+                    'kode_cabang' => $kode_cabang,
+                    'bulan' => $bulan,
+                    'tahun' => $tahun,
+                    'tanggal' => $tanggal,
+                    'status_oman_cabang' => 0
+                ]);
+
+                $chunks_buffer = array_chunk($detail, 5);
+                foreach ($chunks_buffer as $chunk_buffer) {
+                    Detailomancabang::insert($chunk_buffer);
+                }
+            } else {
+                DB::rollBack();
+                return Redirect::back()->with(messageError('Detail Saldo Kosong'));
+            }
+
+            DB::commit();
+            if ($user->hasRole($roles_show_cabang)) {
+                return redirect('/omancabang?bulan_search=' . $bulan . '&tahun=' . $tahun)->with(messageSuccess('Data Berhasil Disimpan'));
+            } else {
+                return redirect(route('omancabang.index'))->with(messageSuccess('Data Berhasil Disimpan'));
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect(route('omancabang.index'))->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function update(Request $request, $kode_oman)
+    {
+        $kode_oman = Crypt::decrypt($kode_oman);
+        $oman_cabang = Omancabang::where('kode_oman', $kode_oman)->first();
+        $bulan = $oman_cabang->bulan;
+        $tahun = $oman_cabang->tahun;
+        $kode_produk = $request->kode_produk;
+        $jmlm1 = $request->jmlm1;
+        $jmlm2 = $request->jmlm2;
+        $jmlm3 = $request->jmlm3;
+        $jmlm4 = $request->jmlm4;
+
+        $cektutuplaporan = cektutupLaporan($oman_cabang->tanggal, "penjualan");
+        if ($cektutuplaporan > 0) {
+            return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+        }
+
+        DB::beginTransaction();
+        try {
+            for ($i = 0; $i < count($kode_produk); $i++) {
+
+                for ($m = 1; $m <= 4; $m++) {
+                    ${"detail_m$m"}[] = [
+                        'kode_oman' => $kode_oman,
+                        'kode_produk' => $kode_produk[$i],
+                        'minggu_ke' => $m,
+                        'jumlah' => toNumber(${"jmlm$m"}[$i] != null ? ${"jmlm$m"}[$i] : 0),
+                    ];
+                }
+            }
+
+            $detail = array_merge($detail_m1, $detail_m2, $detail_m3, $detail_m4);
+            $timestamp = Carbon::now();
+            foreach ($detail as &$record) {
+                $record['created_at'] = $timestamp;
+                $record['updated_at'] = $timestamp;
+            }
+
+            if (!empty($detail)) {
+
+                Detailomancabang::where('kode_oman', $kode_oman)->delete();
+
+                $chunks_buffer = array_chunk($detail, 5);
+                foreach ($chunks_buffer as $chunk_buffer) {
+                    Detailomancabang::insert($chunk_buffer);
+                }
+            } else {
+                DB::rollBack();
+                return Redirect::back()->with(messageError('Detail Saldo Kosong'));
+            }
+
+            DB::commit();
+            return redirect('/omancabang?bulan_search=' . $bulan . '&tahun=' . $tahun)->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect(route('omancabang.index'))->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function show($kode_oman)
+    {
+        $kode_oman = Crypt::decrypt($kode_oman);
+        $oman_cabang = Omancabang::with('cabang')->where('kode_oman', $kode_oman)->first();
+        $detail = Detailomancabang::join('produk', 'marketing_oman_cabang_detail.kode_produk', '=', 'produk.kode_produk')
+            ->select(
+                'marketing_oman_cabang_detail.kode_produk',
+                'nama_produk',
+                DB::raw("SUM(IF(minggu_ke='1',jumlah,0)) as minggu_1"),
+                DB::raw("SUM(IF(minggu_ke='2',jumlah,0)) as minggu_2"),
+                DB::raw("SUM(IF(minggu_ke='3',jumlah,0)) as minggu_3"),
+                DB::raw("SUM(IF(minggu_ke='4',jumlah,0)) as minggu_4"),
+                DB::raw("SUM(jumlah) as total")
+            )
+            ->where('kode_oman', $kode_oman)
+            ->orderBy('marketing_oman_cabang_detail.kode_produk')
+            ->groupBy('marketing_oman_cabang_detail.kode_produk')
+            ->groupBy('nama_produk')
+            ->get();
+
+        return view('marketing.omancabang.show', compact('oman_cabang', 'detail'));
+    }
+
+    public function destroy($kode_oman)
+    {
+        $kode_oman = Crypt::decrypt($kode_oman);
+        $omancabang = Omancabang::where('kode_oman', $kode_oman)->first();
+        try {
+            $cektutuplaporan = cektutupLaporan($omancabang->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            Omancabang::where('kode_oman', $kode_oman)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

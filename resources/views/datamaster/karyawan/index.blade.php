@@ -50,7 +50,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive mb-2">
-                            <table class="table table-striped table-hover">
+                            <table class="table  table-hover">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>No.</th>

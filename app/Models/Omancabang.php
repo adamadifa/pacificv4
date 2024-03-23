@@ -12,4 +12,14 @@ class Omancabang extends Model
     protected $primaryKey = "kode_oman";
     protected $guarded = [];
     public $incrementing = false;
+
+    public function detailomancabang()
+    {
+        return $this->hasMany(Detailomancabang::class);
+    }
+
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'kode_cabang');
+    }
 }

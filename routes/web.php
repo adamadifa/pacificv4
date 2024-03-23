@@ -17,6 +17,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\OmancabangController;
+use App\Http\Controllers\OmanController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
@@ -399,11 +400,24 @@ Route::middleware('auth')->group(function () {
     Route::controller(OmancabangController::class)->group(function () {
         Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');
         Route::get('/omancabang/create', 'create')->name('omancabang.create')->can('omancabang.create');
+        Route::post('/omancabang', 'store')->name('omancabang.store')->can('omancabang.store');
         Route::get('/omancabang/{kode_oman}/edit', 'edit')->name('omancabang.edit')->can('omancabang.edit');
+        Route::post('/omancabang/{kode_oman}/update', 'update')->name('omancabang.update')->can('omancabang.update');
         Route::delete('/omancabang/{kode_oman}', 'destroy')->name('omancabang.delete')->can('omancabang.delete');
         Route::get('/omancabang/{kode_oman}/show', 'show')->name('omancabang.show')->can('omancabang.show');
     });
 
+
+
+    Route::controller(OmanController::class)->group(function () {
+        Route::get('/oman', 'index')->name('oman.index')->can('oman.index');
+        Route::get('/oman/create', 'create')->name('oman.create')->can('oman.create');
+        Route::post('/oman', 'store')->name('oman.store')->can('oman.store');
+        Route::get('/oman/{kode_oman}/edit', 'edit')->name('oman.edit')->can('oman.edit');
+        Route::post('/oman/{kode_oman}/update', 'update')->name('oman.update')->can('oman.update');
+        Route::delete('/oman/{kode_oman}', 'destroy')->name('oman.delete')->can('oman.delete');
+        Route::get('/oman/{kode_oman}/show', 'show')->name('oman.show')->can('oman.show');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

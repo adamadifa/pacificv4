@@ -25,10 +25,12 @@ class Globalprovider extends ServiceProvider
             $roles_show_cabang = ['super admin', 'general manager 3', 'manager keuangan', 'direktur', 'regional sales manager'];
             $start_periode = '2023-01-01';
             $end_periode = date('Y') . '-12-31';
+            $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
                 'start_periode' => $start_periode,
                 'end_periode' => $end_periode,
+                'namabulan' => $namabulan,
             ];
             View::share($shareddata);
         });

@@ -35,4 +35,9 @@ class Cabang extends Model
 
         return $cabang;
     }
+
+    public function omancabang()
+    {
+        return $this->hasMany(Omancabang::class, 'kode_cabang');
+    }
 }
