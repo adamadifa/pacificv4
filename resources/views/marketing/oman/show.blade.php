@@ -3,25 +3,23 @@
         <table class="table">
             <tr>
                 <th>Kode OMAN</th>
-                <td>{{ $oman_cabang->kode_oman }}</td>
-            </tr>
-            <tr>
-                <th>Cabang</th>
-                <td>{{ textUpperCase($oman_cabang->cabang->nama_cabang) }}</td>
+                <td>{{ $oman->kode_oman }}</td>
             </tr>
             <tr>
                 <th>Bulan</th>
-                <td>{{ $namabulan[$oman_cabang->bulan] }}</td>
+                <td>{{ $namabulan[$oman->bulan] }}</td>
             </tr>
             <tr>
                 <th>Tahun</th>
-                <td>{{ $oman_cabang->tahun }}</td>
+                <td>{{ $oman->tahun }}</td>
             </tr>
             <tr>
                 <th>Status</th>
                 <td>
-                    @if ($oman_cabang->status_oman_cabang === '1')
-                        <span class="badge bg-success">Sudah di Proses</span>
+                    @if ($oman->status_oman === '1')
+                        <span class="badge bg-primary">Sudah di Proses Gudang</span>
+                    @elseif ($oman->status_oman === '2')
+                        <span class="badge bg-success">Sudah di Proses Produksi</span>
                     @else
                         <span class="badge bg-danger">Belum di Proses</span>
                     @endif

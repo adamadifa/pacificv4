@@ -405,6 +405,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/omancabang/{kode_oman}/update', 'update')->name('omancabang.update')->can('omancabang.update');
         Route::delete('/omancabang/{kode_oman}', 'destroy')->name('omancabang.delete')->can('omancabang.delete');
         Route::get('/omancabang/{kode_oman}/show', 'show')->name('omancabang.show')->can('omancabang.show');
+
+        //AJAX REQUEST
+        Route::post('/omancabang/getomancabang', [OmancabangController::class, 'getomancabang'])->name('omancabang.getomancabang');
     });
 
 

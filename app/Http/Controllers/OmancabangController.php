@@ -274,4 +274,30 @@ class OmancabangController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    //AJAX REQUEST
+    public function getomancabang(Request $request)
+    {
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+
+        $detail = Detailomancabang::join('produk', 'marketing_oman_cabang_detail.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_oman_cabang', 'marketing_oman_cabang_detail.kode_oman', '=', 'marketing_oman_cabang.kode_oman')
+            ->select(
+                'marketing_oman_cabang_detail.kode_produk',
+                'nama_produk',
+                DB::raw("SUM(IF(minggu_ke='1',jumlah,0)) as minggu_1"),
+                DB::raw("SUM(IF(minggu_ke='2',jumlah,0)) as minggu_2"),
+                DB::raw("SUM(IF(minggu_ke='3',jumlah,0)) as minggu_3"),
+                DB::raw("SUM(IF(minggu_ke='4',jumlah,0)) as minggu_4"),
+                DB::raw("SUM(jumlah) as total")
+            )
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->orderBy('marketing_oman_cabang_detail.kode_produk')
+            ->groupBy('marketing_oman_cabang_detail.kode_produk')
+            ->groupBy('nama_produk')
+            ->get();
+        return view('marketing.omancabang.getomancabang', compact('detail'));
+    }
 }

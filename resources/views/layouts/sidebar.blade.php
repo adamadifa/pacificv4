@@ -306,7 +306,7 @@
                  </ul>
              @endif
          </li>
-         <li class="menu-item {{ request()->is(['omancabang', 'omancabang/*']) ? 'open' : '' }}">
+         <li class="menu-item {{ request()->is(['omancabang', 'omancabang/*', 'oman', 'oman/*']) ? 'open' : '' }}">
              @if (auth()->user()->hasAnyPermission(['omancabang.index']))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-building-broadcast-tower"></i>
@@ -315,7 +315,7 @@
                  <ul class="menu-sub">
                      @can('omancabang.index')
                          <li
-                             class="menu-item {{ request()->is(['omancabang', 'omancabang/*', 'omanmarketing', 'omanmarketing/*']) ? 'active' : '' }}">
+                             class="menu-item {{ request()->is(['omancabang', 'omancabang/*', 'oman', 'oman/*']) ? 'active' : '' }}">
                              <a href="{{ route('omancabang.index') }}" class="menu-link">
                                  <div>OMAN</div>
                              </a>
