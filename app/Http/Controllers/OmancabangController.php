@@ -280,7 +280,6 @@ class OmancabangController extends Controller
     {
         $bulan = $request->bulan;
         $tahun = $request->tahun;
-
         $detail = Detailomancabang::join('produk', 'marketing_oman_cabang_detail.kode_produk', '=', 'produk.kode_produk')
             ->join('marketing_oman_cabang', 'marketing_oman_cabang_detail.kode_oman', '=', 'marketing_oman_cabang.kode_oman')
             ->select(
@@ -298,6 +297,72 @@ class OmancabangController extends Controller
             ->groupBy('marketing_oman_cabang_detail.kode_produk')
             ->groupBy('nama_produk')
             ->get();
-        return view('marketing.omancabang.getomancabang', compact('detail'));
+        return view('marketing.omancabang.getomancabang', compact('detail', 'bulan', 'tahun'));
+    }
+
+    public function editprodukomancabang(Request $request)
+    {
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+        $tanggal = $tahun . "-" . $bulan . "-01";
+        $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+        $minggu_ke = $request->minggu_ke;
+        if ($cektutuplaporan > 0) {
+            return "error|Oops|Laporan Periode Ini Sudah Ditutup";
+        } else {
+            $produk = Produk::where('kode_produk', $request->kode_produk)->first();
+            $data = Detailomancabang::join('marketing_oman_cabang', 'marketing_oman_cabang_detail.kode_oman', '=', 'marketing_oman_cabang.kode_oman')
+                ->join('cabang', 'marketing_oman_cabang.kode_cabang', '=', 'cabang.kode_cabang')
+                ->where('bulan', $request->bulan)
+                ->where('tahun', $request->tahun)
+                ->where('minggu_ke', $request->minggu_ke)
+                ->where('marketing_oman_cabang_detail.kode_produk', $request->kode_produk)
+                ->get();
+
+            return view('marketing.omancabang.editproduk', compact('data', 'minggu_ke', 'produk', 'bulan', 'tahun'));
+        }
+    }
+
+    public function updateprodukomancabang(Request $request)
+    {
+        $kode_oman = $request->kode_oman;
+        $kode_produk = $request->kode_produk;
+        $minggu_ke = $request->minggu_ke;
+        $jumlah = $request->jumlah;
+        DB::beginTransaction();
+        try {
+            //Hapus Data Sebelumnya
+            Detailomancabang::whereIn('kode_oman', $kode_oman)->where('minggu_ke', $minggu_ke)
+                ->whereIn('kode_produk', $kode_produk)
+                ->delete();
+
+            //Insert Data Baru
+            for ($i = 0; $i < count($kode_oman); $i++) {
+
+                $detail[] = [
+                    'kode_oman' => $kode_oman[$i],
+                    'kode_produk' => $kode_produk[$i],
+                    'minggu_ke' => $minggu_ke,
+                    'jumlah' => toNumber($jumlah[$i] != null ? $jumlah[$i] : 0),
+                ];
+            }
+
+
+            $timestamp = Carbon::now();
+            foreach ($detail as &$record) {
+                $record['created_at'] = $timestamp;
+                $record['updated_at'] = $timestamp;
+            }
+
+            $chunks_buffer = array_chunk($detail, 5);
+            foreach ($chunks_buffer as $chunk_buffer) {
+                Detailomancabang::insert($chunk_buffer);
+            }
+            DB::commit();
+            return "success|Berhasil|Data Berhasil Disimpan";
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return "error|Error|Data Gagal Disimpan";
+        }
     }
 }

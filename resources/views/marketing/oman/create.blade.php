@@ -70,6 +70,7 @@
         </div>
     </div>
 </form>
+
 <script>
     $(function() {
         const select2Kodecabang = $('.select2Kodecabang');
@@ -140,6 +141,90 @@
                 });
                 return false;
             }
+        });
+
+        $('#frmCreateOman').on('click', '.editOmancabang', function() {
+            var kode_produk = $(this).attr('kode_produk');
+            var bulan = $(this).attr('bulan');
+            var tahun = $(this).attr('tahun');
+            var minggu_ke = $(this).attr('minggu_ke');
+
+            $.ajax({
+                type: "POST",
+                url: "/omancabang/editprodukomancabang",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_produk: kode_produk,
+                    bulan: bulan,
+                    tahun: tahun,
+                    minggu_ke: minggu_ke
+                },
+                cache: false,
+                success: function(respond) {
+                    var res = respond.split("|");
+                    if (res[0] == "error") {
+                        Swal.fire({
+                            title: res[1],
+                            text: res[2],
+                            icon: res[0]
+                        });
+                    } else {
+                        $('#mdleditOmancabang').modal("show");
+                        $("#loadeditOmancabang").html(respond);
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#updateomanCabang', function() {
+            let kode_oman = [];
+            let kode_produk = [];
+            let minggu_ke = $('input[name=minggu_ke_edit_omancabang]').val();
+            let jumlah = [];
+            $('input[name=kode_oman_edit_omancabang]').each(function() {
+                kode_oman.push($(this).val());
+            });
+
+            $('input[name=kode_produk_edit_omancabang]').each(function() {
+                kode_produk.push($(this).val());
+            });
+
+
+
+            $('input[name=jumlah_edit_omancabang]').each(function() {
+                jumlah.push($(this).val());
+            });
+
+
+
+            $.ajax({
+                type: "POST",
+                url: "/omancabang/updateprodukomancabang",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_oman: kode_oman,
+                    kode_produk: kode_produk,
+                    minggu_ke: minggu_ke,
+                    jumlah: jumlah
+                },
+                cache: false,
+                success: function(respond) {
+                    var res = respond.split("|");
+                    Swal.fire({
+                        title: res[1],
+                        text: res[2],
+                        icon: res[0]
+                    });
+
+                    if (res[0] == "success") {
+                        $('#mdleditOmancabang').modal("hide");
+                        getomancabang();
+                    }
+                }
+            });
+
+
+
         });
 
     });

@@ -408,6 +408,8 @@ Route::middleware('auth')->group(function () {
 
         //AJAX REQUEST
         Route::post('/omancabang/getomancabang', [OmancabangController::class, 'getomancabang'])->name('omancabang.getomancabang');
+        Route::post('/omancabang/editprodukomancabang', [OmancabangController::class, 'editprodukomancabang'])->name('omancabang.editprodukomancabang');
+        Route::post('/omancabang/updateprodukomancabang', [OmancabangController::class, 'updateprodukomancabang'])->name('omancabang.updateprodukomancabang');
     });
 
 

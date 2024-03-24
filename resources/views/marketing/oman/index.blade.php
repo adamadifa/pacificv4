@@ -5,7 +5,15 @@
 @section('navigasi')
     <span>OMAN (Order Management)</span>
 @endsection
+<style>
+    .modal:nth-of-type(even) {
+        z-index: 1052 !important;
+    }
 
+    .modal-backdrop.show:nth-of-type(even) {
+        z-index: 1051 !important;
+    }
+</style>
 <div class="row">
     <div class="col-lg-6">
         <div class="nav-align-top nav-tabs-shadow mb-4">
@@ -139,6 +147,7 @@
 <x-modal-form id="mdlCreate" size="modal-xl" show="loadCreate" title="Buat Oman " />
 <x-modal-form id="mdlEdit" size="modal-xl" show="loadEdit" title="Edit Oman " />
 <x-modal-form id="mdlDetail" size="modal-xl" show="loadDetail" title="Detail Oman" />
+<x-modal-form id="mdleditOmancabang" show="loadeditOmancabang" title="Edit Oman Cabang" />
 @endsection
 @push('myscript')
 <script>
