@@ -53,7 +53,9 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $d->kode_produk }}</td>
                         <td>{{ $d->nama_produk }}</td>
-                        <td class="text-center">{{ formatAngka($d->minggu_1) }}</td>
+                        <td class="text-center">
+                            {{ formatAngka($d->minggu_1) }}
+                        </td>
                         <td class="text-center">{{ formatAngka($d->minggu_2) }}</td>
                         <td class="text-center">{{ formatAngka($d->minggu_3) }}</td>
                         <td class="text-center">{{ formatAngka($d->minggu_4) }}</td>

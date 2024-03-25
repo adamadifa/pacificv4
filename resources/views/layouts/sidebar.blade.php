@@ -245,64 +245,41 @@
                          'barangmasukproduksi.index',
                          'barangkeluarproduksi.index',
                          'sabarangproduksi.index',
+                         'permintaanproduksi.index',
                      ]))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-box"></i>
                      <div>Produksi</div>
                  </a>
                  <ul class="menu-sub">
-                     <li class="menu-header small text-uppercase">
-                         <span class="menu-header-text">Mutasi Produksi</span>
-                     </li>
-                     @can('samutasiproduksi.index')
+                     @can('permintaanproduksi.index')
                          <li
-                             class="menu-item {{ request()->is(['samutasiproduksi', 'samutasiproduksi/*']) ? 'active' : '' }}">
-                             <a href="{{ route('samutasiproduksi.index') }}" class="menu-link">
-                                 <div>Saldo Awal</div>
+                             class="menu-item {{ request()->is(['permintaanproduksi', 'permintaanproduksi/*', 'bpbj', 'bpbj/*', 'fsthp', 'fsthp/*']) ? 'active' : '' }}">
+                             <a href="#" class="menu-link">
+                                 <div>Permintaan Produksi</div>
                              </a>
                          </li>
                      @endcan
-                     @can('bpbj.index')
-                         <li class="menu-item {{ request()->is(['bpbj', 'bpbj/*']) ? 'active' : '' }}">
-                             <a href="{{ route('bpbj.index') }}" class="menu-link">
-                                 <div>BPBJ</div>
-                             </a>
-                         </li>
-                     @endcan
-                     @can('fsthp.index')
-                         <li class="menu-item {{ request()->is(['fsthp', 'fsthp/*']) ? 'active' : '' }}">
-                             <a href="{{ route('fsthp.index') }}" class="menu-link">
-                                 <div>FSTHP</div>
-                             </a>
-                         </li>
-                     @endcan
-                     <li class="menu-header small text-uppercase">
-                         <span class="menu-header-text">Mutasi Barang</span>
-                     </li>
-                     @can('sabarangproduksi.index')
-                         <li
-                             class="menu-item {{ request()->is(['sabarangproduksi', 'sabarangproduksi/*']) ? 'active' : '' }}">
-                             <a href="{{ route('sabarangproduksi.index') }}" class="menu-link">
-                                 <div>Saldo Awal</div>
-                             </a>
-                         </li>
-                     @endcan
-                     @can('barangmasukproduksi.index')
-                         <li
-                             class="menu-item {{ request()->is(['barangmasukproduksi', 'barangmasukproduksi/*']) ? 'active' : '' }}">
-                             <a href="{{ route('barangmasukproduksi.index') }}" class="menu-link">
-                                 <div>Barang Masuk</div>
-                             </a>
-                         </li>
-                     @endcan
-                     @can('barangkeluarproduksi.index')
-                         <li
-                             class="menu-item {{ request()->is(['barangkeluarproduksi', 'barangkeluarproduksi/*']) ? 'active' : '' }}">
-                             <a href="{{ route('barangkeluarproduksi.index') }}" class="menu-link">
-                                 <div>Barang Keluar</div>
-                             </a>
-                         </li>
-                     @endcan
+                     @if (auth()->user()->hasAnyPermission(['bpbj.index', 'fsthp.index', 'samutasiproduksi.index']))
+                         @can('samutasiproduksi.index')
+                             <li
+                                 class="menu-item {{ request()->is(['samutasiproduksi', 'samutasiproduksi/*', 'bpbj', 'bpbj/*', 'fsthp', 'fsthp/*']) ? 'active' : '' }}">
+                                 <a href="{{ route('samutasiproduksi.index') }}" class="menu-link">
+                                     <div>Mutasi Produksi</div>
+                                 </a>
+                             </li>
+                         @endcan
+                     @endif
+                     @if (auth()->user()->hasAnyPermission(['barangmasukproduksi.index', 'barangkeluarproduksi.index', 'sabarangproduksi.index']))
+                         @can('sabarangproduksi.index')
+                             <li
+                                 class="menu-item {{ request()->is(['sabarangproduksi', 'sabarangproduksi/*', 'barangmasukproduksi', 'barangmasukproduksi/*', 'barangkeluarproduksi', 'barangkeluarproduksi/*']) ? 'active' : '' }}">
+                                 <a href="{{ route('sabarangproduksi.index') }}" class="menu-link">
+                                     <div>Mutasi Barang</div>
+                                 </a>
+                             </li>
+                         @endcan
+                     @endif
                  </ul>
              @endif
          </li>

@@ -86,23 +86,17 @@ class OmanController extends Controller
                 $record['updated_at'] = $timestamp;
             }
 
-            if (!empty($detail)) {
+            Oman::create([
+                'kode_oman' => $kode_oman,
+                'bulan' => $bulan,
+                'tahun' => $tahun,
+                'tanggal' => $tanggal,
+                'status_oman' => 0
+            ]);
 
-                Oman::create([
-                    'kode_oman' => $kode_oman,
-                    'bulan' => $bulan,
-                    'tahun' => $tahun,
-                    'tanggal' => $tanggal,
-                    'status_oman' => 0
-                ]);
-
-                $chunks_buffer = array_chunk($detail, 5);
-                foreach ($chunks_buffer as $chunk_buffer) {
-                    Detailoman::insert($chunk_buffer);
-                }
-            } else {
-                DB::rollBack();
-                return Redirect::back()->with(messageError('Oman Kosong'));
+            $chunks_buffer = array_chunk($detail, 5);
+            foreach ($chunks_buffer as $chunk_buffer) {
+                Detailoman::insert($chunk_buffer);
             }
 
             DB::commit();
@@ -135,5 +129,21 @@ class OmanController extends Controller
             ->get();
 
         return view('marketing.oman.show', compact('oman', 'detail'));
+    }
+
+    public function destroy($kode_oman)
+    {
+        $kode_oman = Crypt::decrypt($kode_oman);
+        $omancabang = Oman::where('kode_oman', $kode_oman)->first();
+        try {
+            $cektutuplaporan = cektutupLaporan($omancabang->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            Oman::where('kode_oman', $kode_oman)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

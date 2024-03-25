@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Detailomancabang;
+use App\Models\Oman;
 use App\Models\Omancabang;
 use App\Models\Produk;
 use App\Models\User;
@@ -306,9 +307,12 @@ class OmancabangController extends Controller
         $tahun = $request->tahun;
         $tanggal = $tahun . "-" . $bulan . "-01";
         $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+        $cek = Oman::where('bulan', $bulan)->where('tahun', $tahun)->count();
         $minggu_ke = $request->minggu_ke;
         if ($cektutuplaporan > 0) {
-            return "error|Oops|Laporan Periode Ini Sudah Ditutup";
+            return "warning|Oops|Laporan Periode Ini Sudah Ditutup";
+        } else if ($cek > 0) {
+            return "warning|Oops|Data Untuk Periode Ini Sudah Ada, Untuk Melakukan Update Silahkan Hapus Data Dulu";
         } else {
             $produk = Produk::where('kode_produk', $request->kode_produk)->first();
             $data = Detailomancabang::join('marketing_oman_cabang', 'marketing_oman_cabang_detail.kode_oman', '=', 'marketing_oman_cabang.kode_oman')

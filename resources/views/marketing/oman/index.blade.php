@@ -92,16 +92,6 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        @can('oman.edit')
-                                                            @if ($d->status_oman === '0')
-                                                                <div>
-                                                                    <a href="#" class="me-2 editOman"
-                                                                        kode_oman="{{ Crypt::encrypt($d->kode_oman) }}">
-                                                                        <i class="ti ti-edit text-success"></i>
-                                                                    </a>
-                                                                </div>
-                                                            @endif
-                                                        @endcan
                                                         @can('oman.show')
                                                             <div>
                                                                 <a href="#" class="me-2 showOman"

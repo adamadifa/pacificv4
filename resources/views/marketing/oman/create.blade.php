@@ -9,6 +9,7 @@
     }
 </style>
 <form action="{{ route('oman.store') }}" method="POST" id="frmCreateOman">
+    <input type="hidden" id="cektutuplaporan">
     <div class="row">
         <div class="co-12">
             @csrf
@@ -90,9 +91,31 @@
 
         initselect2Kodecabang();
 
+        function cektutuplaporan(tanggal, jenis_laporan) {
+            $.ajax({
+
+                type: "POST",
+                url: "/tutuplaporan/cektutuplaporan",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    tanggal: tanggal,
+                    jenis_laporan: jenis_laporan
+                },
+                cache: false,
+                success: function(respond) {
+                    $("#cektutuplaporan").val(respond);
+                }
+            });
+
+
+        }
+
         function getomancabang() {
             const bulan = $("#bulan").val();
-            var tahun = $("#tahun").val();
+            const tahun = $("#tahun").val();
+            const tanggal = tahun + "-" + bulan + "-01";
+            // alert(tanggal);
+            cektutuplaporan(tanggal, "penjualan");
             $.ajax({
                 type: "POST",
                 url: "/omancabang/getomancabang",
@@ -108,11 +131,15 @@
             });
         }
 
-        getomancabang();
+        //getomancabang();
+
+
 
         $("#bulan,#tahun").change(function() {
             getomancabang();
         });
+
+
         $("#frmCreateOman").submit(function() {
             const bulan = $("#bulan").val();
             const tahun = $("#tahun").val();
@@ -143,7 +170,10 @@
             }
         });
 
-        $('#frmCreateOman').on('click', '.editOmancabang', function() {
+
+
+
+        $(document).on('click', '.editOmancabang', function() {
             var kode_produk = $(this).attr('kode_produk');
             var bulan = $(this).attr('bulan');
             var tahun = $(this).attr('tahun');
@@ -162,7 +192,7 @@
                 cache: false,
                 success: function(respond) {
                     var res = respond.split("|");
-                    if (res[0] == "error") {
+                    if (res[0] == "warning") {
                         Swal.fire({
                             title: res[1],
                             text: res[2],
@@ -210,21 +240,68 @@
                 cache: false,
                 success: function(respond) {
                     var res = respond.split("|");
-                    Swal.fire({
-                        title: res[1],
-                        text: res[2],
-                        icon: res[0]
-                    });
 
                     if (res[0] == "success") {
-                        $('#mdleditOmancabang').modal("hide");
-                        getomancabang();
+                        Swal.fire({
+                            title: res[1],
+                            text: res[2],
+                            icon: res[0],
+                            showConfirmButton: true,
+                            didClose: (e) => {
+                                $('#mdleditOmancabang').modal("hide");
+                                getomancabang();
+                            },
+                        });
+                    } else {
+                        Swal.fire({
+                            title: res[1],
+                            text: res[2],
+                            icon: res[0]
+                        });
                     }
                 }
             });
+        });
 
+        $("#frmCreateOman").submit(function(e) {
+            const cektutuplaporan = $("#cektutuplaporan").val();
+            const bulan = $("#bulan").val();
+            const tahun = $("#tahun").val();
+            if (bulan == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Bulan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#bulan").focus();
+                    },
+                });
 
-
+                return false;
+            } else if (tahun == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tahun Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#tahun").focus();
+                    },
+                });
+                return false;
+            } else if (cektutuplaporan > 0) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Laporan Periode Ini Sudah Dituutp !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#bulan").focus();
+                    },
+                });
+                return false;
+            }
         });
 
     });
