@@ -19,6 +19,7 @@ use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PermintaankirimanController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProdukController;
@@ -422,6 +423,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/oman/{kode_oman}/update', 'update')->name('oman.update')->can('oman.update');
         Route::delete('/oman/{kode_oman}', 'destroy')->name('oman.delete')->can('oman.delete');
         Route::get('/oman/{kode_oman}/show', 'show')->name('oman.show')->can('oman.show');
+    });
+
+    Route::controller(PermintaankirimanController::class)->group(function () {
+        Route::get('/permintaankiriman', 'index')->name('permintaankiriman.index')->can('permintaankiriman.index');
+        Route::get('/permintaankiriman/create', 'create')->name('permintaankiriman.create')->can('permintaankiriman.create');
+        Route::post('/permintaankiriman', 'store')->name('permintaankiriman.store')->can('permintaankiriman.store');
+        Route::get('/permintaankiriman/{no_permintaan}/edit', 'edit')->name('permintaankiriman.edit')->can('permintaankiriman.edit');
+        Route::post('/permintaankiriman/{no_permintaan}/update', 'update')->name('permintaankiriman.update')->can('permintaankiriman.update');
+        Route::delete('/permintaankiriman/{no_permintaan}', 'destroy')->name('permintaankiriman.delete')->can('permintaankiriman.delete');
+        Route::get('/permintaankiriman/{no_permintaan}/show', 'show')->name('permintaankiriman.show')->can('permintaankiriman.show');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
