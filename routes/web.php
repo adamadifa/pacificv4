@@ -20,6 +20,7 @@ use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PermintaankirimanController;
+use App\Http\Controllers\PermintaanproduksiController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProdukController;
@@ -387,6 +388,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/barangkeluarproduksi/deleteedit', 'deleteedit')->name('barangkeluarproduksi.deleteedit');
     });
 
+
+
     Route::controller(SaldoawalbarangproduksiController::class)->group(function () {
         Route::get('/sabarangproduksi', 'index')->name('sabarangproduksi.index')->can('sabarangproduksi.index');
         Route::get('/sabarangproduksi/create', 'create')->name('sabarangproduksi.create')->can('sabarangproduksi.create');
@@ -397,6 +400,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/sabarangproduksi/getdetailsaldo', 'getdetailsaldo')->name('sabarangproduksi.getdetailsaldo');
     });
 
+
+    Route::controller(PermintaanproduksiController::class)->group(function () {
+        Route::get('/permintaanproduksi', 'index')->name('permintaanproduksi.index')->can('permintaanproduksi.index');
+        Route::get('/permintaanproduksi/create', 'create')->name('permintaanproduksi.create')->can('permintaanproduksi.create');
+        Route::post('/permintaanproduksi', 'store')->name('permintaanproduksi.store')->can('permintaanproduksi.store');
+        Route::get('/permintaanproduksi/{no_permintaan}/edit', 'edit')->name('permintaanproduksi.edit')->can('permintaanproduksi.edit');
+        Route::post('/permintaanproduksi/{no_permintaan}/update', 'update')->name('permintaanproduksi.update')->can('permintaanproduksi.update');
+        Route::delete('/permintaanproduksi/{no_permintaan}', 'destroy')->name('permintaanproduksi.delete')->can('permintaanproduksi.delete');
+        Route::get('/permintaanproduksi/{no_permintaan}/show', 'show')->name('permintaanproduksi.show')->can('permintaanproduksi.show');
+    });
 
     Route::controller(OmancabangController::class)->group(function () {
         Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');

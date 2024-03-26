@@ -235,6 +235,8 @@
                  'barangkeluarproduksi/*',
                  'sabarangproduksi',
                  'sabarangproduksi/*',
+                 'permintaanproduksi',
+                 'permintaanproduksi/*',
              ])
                  ? 'open'
                  : '' }}">
@@ -254,8 +256,8 @@
                  <ul class="menu-sub">
                      @can('permintaanproduksi.index')
                          <li
-                             class="menu-item {{ request()->is(['permintaanproduksi', 'permintaanproduksi/*', 'bpbj', 'bpbj/*', 'fsthp', 'fsthp/*']) ? 'active' : '' }}">
-                             <a href="#" class="menu-link">
+                             class="menu-item {{ request()->is(['permintaanproduksi', 'permintaanproduksi/*']) ? 'active' : '' }}">
+                             <a href="{{ route('permintaanproduksi.index') }}" class="menu-link">
                                  <div>Permintaan Produksi</div>
                              </a>
                          </li>
