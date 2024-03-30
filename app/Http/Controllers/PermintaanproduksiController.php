@@ -15,7 +15,7 @@ class PermintaanproduksiController extends Controller
 {
     public function index(Request $request)
     {
-
+        $start_year = config('global.start_year');
         $query = Permintaanproduksi::query();
         if (!empty($request->tahun_search)) {
             $query->where('tahun', $request->tahun_search);
@@ -25,7 +25,7 @@ class PermintaanproduksiController extends Controller
         $query->join('marketing_oman', 'produksi_permintaan.kode_oman', '=', 'marketing_oman.kode_oman');
         $pp = $query->get();
 
-        return view('produksi.permintaanproduksi.index', compact('pp'));
+        return view('produksi.permintaanproduksi.index', compact('pp', 'start_year'));
     }
 
     public function create()
@@ -125,6 +125,44 @@ class PermintaanproduksiController extends Controller
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    //AJAX REQUEST
+
+    public function getrealisasi(Request $request)
+    {
+        $pp = Permintaanproduksi::join('marketing_oman', 'produksi_permintaan.kode_oman', '=', 'marketing_oman.kode_oman')
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->where('status', 1)
+            ->first();
+
+        if (empty($pp)) {
+            return '<div class="alert alert-warning d-flex align-items-center" role="alert">
+                <span class="alert-icon text-warning me-2">
+                  <i class="ti ti-info-circle ti-xs"></i>
+                </span>
+                Data Belum Tersedia !
+              </div>';
+        } else {
+            $dari = $pp->tahun . "-" . $pp->bulan . "-01";
+            $sampai = date('Y-m-t', strtotime($dari));
+            $detail = Detailpermintaanproduksi::select('produksi_permintaan_detail.*', 'jml_realisasi')
+                ->leftJoin(
+                    DB::raw("(
+                    SELECT kode_produk, SUM(jumlah) as jml_realisasi FROM produksi_mutasi_detail
+                    INNER JOIN produksi_mutasi  ON produksi_mutasi_detail.no_mutasi = produksi_mutasi.no_mutasi
+                    WHERE jenis_mutasi = 'BPBJ'
+                    AND tanggal_mutasi BETWEEN '$dari' AND '$sampai'
+                    GROUP BY kode_produk
+                ) mutasiproduksi"),
+                    function ($join) {
+                        $join->on('produksi_permintaan_detail.kode_produk', '=', 'mutasiproduksi.kode_produk');
+                    }
+                )
+                ->where('no_permintaan', $pp->no_permintaan)->get();
+            return view('produksi.permintaanproduksi.getrealisasi', compact('pp', 'detail'));
         }
     }
 }

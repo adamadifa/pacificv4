@@ -19,6 +19,12 @@
 
      <ul class="menu-inner py-1">
          <!-- Dashboards -->
+         <li class="menu-item {{ request()->is(['dashboard']) ? 'active' : '' }}">
+             <a href="{{ route('dashboard') }}" class="menu-link">
+                 <i class="menu-icon tf-icons ti ti-home"></i>
+                 <div>Dashboard</div>
+             </a>
+         </li>
          <li
              class="menu-item {{ request()->is([
                  'regional',

@@ -8,6 +8,7 @@ use App\Http\Controllers\BpjskesehatanController;
 use App\Http\Controllers\BpjstenagakerjaController;
 use App\Http\Controllers\BufferstokController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FsthpController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\HargaController;
@@ -54,14 +55,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+
+
+    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    //Dashboard
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/dashboard', 'index')->name('dashboard');
+        Route::get('/dashboard/produksi', 'produksi')->name('dashboard.produksi')->can('dashboard.produksi');
+    });
 
     //Setings
     //Role
@@ -409,6 +419,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/permintaanproduksi/{no_permintaan}/update', 'update')->name('permintaanproduksi.update')->can('permintaanproduksi.update');
         Route::delete('/permintaanproduksi/{no_permintaan}', 'destroy')->name('permintaanproduksi.delete')->can('permintaanproduksi.delete');
         Route::get('/permintaanproduksi/{no_permintaan}/show', 'show')->name('permintaanproduksi.show')->can('permintaanproduksi.show');
+
+
+        //AJAX REQUEST
+
+        Route::post('/permintaanproduksi/getrealisasi', 'getrealisasi')->name('permintaanproduksi.getrealisasi');
     });
 
     Route::controller(OmancabangController::class)->group(function () {

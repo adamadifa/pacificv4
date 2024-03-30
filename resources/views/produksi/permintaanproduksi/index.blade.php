@@ -18,16 +18,26 @@
                 <div class="row">
                     <div class="col-12">
                         <form action="{{ route('permintaanproduksi.index') }}">
-                            {{-- <div class="row">
+                            <div class="row">
                                 <div class="col-lg-10 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Produk" value="{{ Request('nama_produk') }}"
-                                        name="nama_produk" icon="ti ti-search" />
+                                    <div class="form-group mb-3">
+                                        <select name="tahun_search" id="tahun_search" class="form-select">
+                                            <option value="">Tahun</option>
+                                            @for ($t = $start_year; $t <= date('Y'); $t++)
+                                                <option
+                                                    @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
+                                                    @else
+                                                    {{ date('Y') == $t ? 'selected' : '' }} @endif
+                                                    value="{{ $t }}">{{ $t }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
                                     <button class="btn btn-primary"><i
                                             class="ti ti-icons ti-search me-1"></i>Cari</button>
                                 </div>
-                            </div> --}}
+                            </div>
 
                         </form>
                     </div>
