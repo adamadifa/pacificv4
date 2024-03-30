@@ -436,6 +436,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/oman/{kode_oman}/update', 'update')->name('oman.update')->can('oman.update');
         Route::delete('/oman/{kode_oman}', 'destroy')->name('oman.delete')->can('oman.delete');
         Route::get('/oman/{kode_oman}/show', 'show')->name('oman.show')->can('oman.show');
+
+        //AJAX REQUEST
+        Route::get('/oman/{kode_oman}/getoman', [OmanController::class, 'getoman'])->name('oman.getoman');
     });
 
     Route::controller(PermintaankirimanController::class)->group(function () {

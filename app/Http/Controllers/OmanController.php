@@ -146,4 +146,55 @@ class OmanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    //AJAX REQUEST
+    public function getoman($kode_oman)
+    {
+
+
+        if ($kode_oman == "null") {
+            return "<tr>
+            <td colspan='6'>
+                <div class='alert alert-warning'>Silahkan Pilih Oman</div>
+            </td>
+            </tr>";
+        }
+        $kode_oman = Crypt::decrypt($kode_oman);
+        $oman = Oman::where('kode_oman', $kode_oman)->first();
+        $bulan = $oman->bulan;
+        $tahun = $oman->tahun;
+        $bulanlalu = getbulandantahunlalu($bulan, $tahun, "bulan");
+        $tahunlalu = getbulandantahunlalu($bulan, $tahun, "tahun");
+        $start_date = $tahunlalu . "-" . $bulanlalu . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+
+        $detail = Detailoman::select(
+            'marketing_oman_detail.kode_produk',
+            'nama_produk',
+            DB::raw('SUM(jumlah) as total_oman'),
+            'saldo_akhir_gudang'
+        )
+            ->join('produk', 'marketing_oman_detail.kode_produk', '=', 'produk.kode_produk')
+            ->leftJoin(
+                DB::raw("(
+                SELECT kode_produk,
+                SUM(IF(`in_out`='I',jumlah,0)) - SUM(IF(`in_out`='O',jumlah,0))  as saldo_akhir_gudang
+                FROM gudang_jadi_mutasi_detail
+                INNER JOIN gudang_jadi_mutasi ON gudang_jadi_mutasi_detail.no_mutasi = gudang_jadi_mutasi.no_mutasi
+                WHERE tanggal <= '$end_date'
+                GROUP BY kode_produk
+            ) mutasi_gudang_jadi"),
+                function ($join) {
+                    $join->on('marketing_oman_detail.kode_produk', '=', 'mutasi_gudang_jadi.kode_produk');
+                }
+            )
+            ->where('kode_oman', $kode_oman)
+            ->groupBy('marketing_oman_detail.kode_produk')
+            ->groupBy('nama_produk')
+            ->orderBy('marketing_oman_detail.kode_produk')
+            ->get();
+
+        return view('marketing.oman.getoman', compact('detail'));
+    }
 }

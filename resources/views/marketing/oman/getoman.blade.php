@@ -1,33 +1,34 @@
-@foreach ($produk as $d)
+@foreach ($detail as $d)
+    @php
+        $subtotal = $d->total_oman - $d->saldo_akhir_gudang;
+    @endphp
     <tr>
-
-        <td class="text-center">
-            <input type="hidden" name="kode_produk[]" value="{{ $d->kode_produk }}">
+        <td>
             {{ $d->kode_produk }}
+            <input type="hidden" name="kode_produk[]" value="{{ $d->kode_produk }}">
         </td>
         <td>{{ $d->nama_produk }}</td>
-        <td>
-            <input type="text" id="jmlm1" name="jmlm1[]" class="jmlm1 text-end form-oman number-separator"
-                placeholder="0" autocomplete="false" aria-autocomplete="list">
+        <td class="text-end">
+            <input type="hidden" id="oman_marketing" class="oman_marketing" name="oman_marketing[]"
+                value="{{ $d->total_oman }}">
+            {{ formatAngka($d->total_oman) }}
+        </td>
+        <td class="text-end">
+            <input type="hidden" id="stok_gudang" class="stok_gudang" name="stok_gudang[]"
+                value="{{ $d->saldo_akhir_gudang }}">
+            {{ formatAngka($d->saldo_akhir_gudang) }}
         </td>
         <td>
-            <input type="text" id="jmlm2" name="jmlm2[]" class="jmlm2 text-end form-oman number-separator"
-                placeholder="0" autocomplete="false" aria-autocomplete="list" />
+            <input type="text" id="buffer_stok" name="buffer_stok[]" placeholder="0"
+                class="form-table text-end buffer_stok number-separator">
         </td>
         <td>
-            <input type="text" id="jmlm3" name="jmlm3[]" class="jmlm3 text-end form-oman number-separator"
-                placeholder="0" autocomplete="false" aria-autocomplete="list" />
-        </td>
-        <td>
-            <input type="text" id="jmlm4" name="jmlm4[]" class="jmlm4 text-end form-oman number-separator"
-                placeholder="0" autocomplete="false" aria-autocomplete="list" />
-        </td>
-        <td>
-            <input type="text" id="subtotal" name="subtotal[]" class="subtotal text-end form-oman" placeholder="0"
-                readonly />
+            <input type="text" id="subtotal" name="subtotal[]" placeholder="0" value="{{ formatAngka($subtotal) }}"
+                class="form-table text-end subtotal" readonly>
         </td>
     </tr>
 @endforeach
+
 <script>
     function convertToRupiah(number) {
         if (number) {
@@ -49,40 +50,38 @@
             return number;
         }
     }
+
+    easyNumberSeparator({
+        selector: '.number-separator',
+        separator: '.',
+        decimalSeparator: ',',
+    });
     var $tblrows = $("#mytable tbody tr");
     $tblrows.each(function(index) {
         var $tblrow = $(this);
-        $tblrow.find('.jmlm1,.jmlm2,.jmlm3,.jmlm4').on('input', function() {
-            var jmlm1 = $tblrow.find("[id=jmlm1]").val();
-            var jmlm2 = $tblrow.find("[id=jmlm2]").val();
-            var jmlm3 = $tblrow.find("[id=jmlm3]").val();
-            var jmlm4 = $tblrow.find("[id=jmlm4]").val();
+        $tblrow.find('.oman_marketing,.stok_gudang,.buffer_stok').on('input', function() {
+            var oman_marketing = $tblrow.find("[id=oman_marketing]").val();
+            var stok_gudang = $tblrow.find("[id=stok_gudang]").val();
+            var buffer_stok = $tblrow.find("[id=buffer_stok]").val();
 
-
-
-            if (jmlm1.length === 0) {
-                var jml1 = 0;
+            if (oman_marketing.length === 0) {
+                var om = 0;
             } else {
-                var jml1 = parseInt(jmlm1.replace(/\./g, ''));
+                var om = parseInt(oman_marketing.replace(/\./g, ''));
             }
-            if (jmlm2.length === 0) {
-                var jml2 = 0;
+            if (stok_gudang.length === 0) {
+                var sg = 0;
             } else {
-                var jml2 = parseInt(jmlm2.replace(/\./g, ''));
+                var sg = parseInt(stok_gudang.replace(/\./g, ''));
             }
-            if (jmlm3.length === 0) {
-                var jml3 = 0;
+            if (buffer_stok.length === 0) {
+                var bs = 0;
             } else {
-                var jml3 = parseInt(jmlm3.replace(/\./g, ''));
+                var bs = parseInt(buffer_stok.replace(/\./g, ''));
             }
 
-            if (jmlm4.length === 0) {
-                var jml4 = 0;
-            } else {
-                var jml4 = parseInt(jmlm4.replace(/\./g, ''));
-            }
-            var subTotal = parseInt(jml1) + parseInt(jml2) + parseInt(jml3) + parseInt(
-                jml4);
+
+            var subTotal = parseInt(om) - parseInt(sg) + parseInt(bs);
 
             if (!isNaN(subTotal)) {
                 $tblrow.find('.subtotal').val(convertToRupiah(subTotal));
@@ -95,12 +94,5 @@
             }
 
         });
-    });
-
-
-    easyNumberSeparator({
-        selector: '.number-separator',
-        separator: '.',
-        decimalSeparator: ',',
     });
 </script>

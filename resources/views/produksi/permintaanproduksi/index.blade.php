@@ -105,6 +105,22 @@
         </div>
     </div>
 </div>
-<x-modal-form id="mdlCreate" size="" show="loadCreate" title="Buat Permintaan" />
-<x-modal-form id="mdlEdit" size="" show="loadEdit" title="Edit Permintaan" />
+<x-modal-form id="mdlCreate" size="modal-xl" show="loadCreate" title="Buat Permintaan Produksi" />
+<x-modal-form id="mdlDetail" size="modal-xl" show="loadDetail" title="Detail" />
 @endsection
+@push('myscript')
+<script>
+    $(function() {
+        $("#btnCreate").click(function(e) {
+            $('#mdlCreate').modal("show");
+            $("#loadCreate").load("{{ route('permintaanproduksi.create') }}");
+        });
+
+        $(".btnShow").click(function(e) {
+            const no_permintaan = $(this).attr('no_permintaan');
+            $('#mdlDetail').modal("show");
+            $("#loadDetail").load("/permintaanproduksi/" + no_permintaan + "/show");
+        });
+    });
+</script>
+@endpush
