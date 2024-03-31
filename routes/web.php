@@ -317,6 +317,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/bpbj/generatenobpbj', 'generatenobpbj')->name('bpbj.generatenobpbj');
         Route::post('/bpbj/deletetemp', 'deletetemp')->name('bpbj.deletetemp');
         Route::post('/bpbj/cekdetailtemp', 'cekdetailtemp')->name('bpbj.cekdetailtemp');
+        Route::post('/bpbj/getrekaphasilproduksi', 'getrekaphasilproduksi')->name('bpbj.getrekaphasilproduksi');
     });
 
     Route::controller(FsthpController::class)->group(function () {

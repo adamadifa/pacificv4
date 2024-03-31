@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\HasilproduksiChart;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -23,10 +24,13 @@ class DashboardController extends Controller
     }
 
 
-    public function produksi()
+    public function produksi(HasilproduksiChart $chart)
     {
-        $start_year = config('global.start_year');
-        $list_bulan = config('global.list_bulan');
-        return view('dashboard.produksi', compact('start_year', 'list_bulan'));
+        $data['start_year'] = config('global.start_year');
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['nama_bulan_singkat'] = config('global.nama_bulan_singkat');
+        $data['chart'] = $chart->build(2024);
+
+        return view('dashboard.produksi', $data);
     }
 }

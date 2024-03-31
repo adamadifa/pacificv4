@@ -215,4 +215,24 @@ class BpbjController extends Controller
             ->count();
         return $cek;
     }
+
+    public function getrekaphasilproduksi(Request $request)
+    {
+        $nama_bulan_singkat = config('global.nama_bulan_singkat');
+        $select_bulan = "";
+        for ($i = 1; $i <= 12; $i++) {
+            $select_bulan .= "SUM(IF(MONTH(tanggal_mutasi)='$i' AND jenis_mutasi='BPBJ',jumlah,0)) as " . $nama_bulan_singkat[$i] . ",";
+        }
+        $rekap = Detailmutasiproduksi::selectRaw("
+            $select_bulan
+            kode_produk
+        ")
+            ->whereRaw("YEAR(tanggal_mutasi)='$request->tahun'")
+            ->join("produksi_mutasi", "produksi_mutasi_detail.no_mutasi", "=", "produksi_mutasi.no_mutasi")
+            ->groupBy("kode_produk")
+            ->orderBy("kode_produk")
+            ->get();
+
+        return view('produksi.bpbj.getrekaphasilproduksi', compact('rekap', 'nama_bulan_singkat'));
+    }
 }

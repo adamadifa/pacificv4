@@ -43,7 +43,7 @@
  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
  <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
  <script src="{{ asset('assets/js/jquery.mask.min.js') }}"></script>
-
+ <script type="text/javascript" src="{{ asset('assets/vendor/libs/freeze/js/freeze-table.js') }}"></script>
  <script>
      $(function() {
          $(".flatpickr-date").flatpickr({

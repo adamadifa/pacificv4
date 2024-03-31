@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Detailmutasiproduksi;
 use App\Models\Detailpermintaanproduksi;
 use App\Models\Oman;
 use App\Models\Permintaanproduksi;
