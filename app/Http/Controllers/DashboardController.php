@@ -24,13 +24,11 @@ class DashboardController extends Controller
     }
 
 
-    public function produksi(HasilproduksiChart $chart)
+    public function produksi()
     {
         $data['start_year'] = config('global.start_year');
         $data['list_bulan'] = config('global.list_bulan');
         $data['nama_bulan_singkat'] = config('global.nama_bulan_singkat');
-        $data['chart'] = $chart->build(2024);
-
         return view('dashboard.produksi', $data);
     }
 }

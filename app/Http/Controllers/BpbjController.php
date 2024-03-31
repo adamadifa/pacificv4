@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\HasilproduksiChart;
 use App\Models\Detailmutasiproduksi;
 use App\Models\Detailmutasiproduksitemp;
 use App\Models\Mutasiproduksi;
@@ -234,5 +235,12 @@ class BpbjController extends Controller
             ->get();
 
         return view('produksi.bpbj.getrekaphasilproduksi', compact('rekap', 'nama_bulan_singkat'));
+    }
+
+
+    public function getgrafikhasilproduksi(Request $request, HasilproduksiChart $chart)
+    {
+        $data['chart'] = $chart->build($request->tahun);
+        return view('produksi.bpbj.getgrafikhasilproduksi', $data);
     }
 }

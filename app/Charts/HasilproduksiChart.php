@@ -14,7 +14,7 @@ class HasilproduksiChart
         $this->chart = $chart;
     }
 
-    public function build($tahun): \ArielMejiaDev\LarapexCharts\LineChart
+    public function build($tahun = ""): \ArielMejiaDev\LarapexCharts\LineChart
     {
 
         function myfunction($num)
@@ -43,19 +43,20 @@ class HasilproduksiChart
                 ${"jmlbln$d->kode_produk"}[] = $d->{$nama_bulan_singkat[$i]};
             }
 
+            $produk[] = array(
+                'name' => $d->kode_produk,
+                'data' => ${"jmlbln$d->kode_produk"}
+            );
+
             ${$d->kode_produk} = ${"jmlbln$d->kode_produk"};
         }
         //dd($AR);
+
         return $this->chart->lineChart()
 
-            ->addData('AB', $AB)
-            ->addData('AR', $AR)
-            ->addData('AS', $AS)
-            ->addData('BB', $BB)
-            ->addData('BR20', $BR20)
-            ->addData('DEP', $DEP)
-
-            ->setHeight(300)
+            ->setDataset($produk)
+            ->setGrid('#3F51B5', 0.01)
+            ->setHeight(350)
             ->setXAxis($bulan);
     }
 }

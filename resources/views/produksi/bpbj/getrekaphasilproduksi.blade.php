@@ -5,12 +5,12 @@
             @if ($i != 1)
                 @if ($d->{$nama_bulan_singkat[$i]} > $d->{$nama_bulan_singkat[$i - 1]})
                     @php
-                        $icon = 'arrow-bar-up';
+                        $icon = '';
                         $color = 'success';
                     @endphp
                 @elseif ($d->{$nama_bulan_singkat[$i]} < $d->{$nama_bulan_singkat[$i - 1]})
                     @php
-                        $icon = 'arrow-bar-down';
+                        $icon = '';
                         $color = 'danger';
                     @endphp
                 @else

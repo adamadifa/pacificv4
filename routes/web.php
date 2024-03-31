@@ -17,6 +17,7 @@ use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
 use App\Http\Controllers\PelangganController;
@@ -318,6 +319,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/bpbj/deletetemp', 'deletetemp')->name('bpbj.deletetemp');
         Route::post('/bpbj/cekdetailtemp', 'cekdetailtemp')->name('bpbj.cekdetailtemp');
         Route::post('/bpbj/getrekaphasilproduksi', 'getrekaphasilproduksi')->name('bpbj.getrekaphasilproduksi');
+        Route::post('/bpbj/getgrafikhasilproduksi', 'getgrafikhasilproduksi')->name('bpbj.getgrafikhasilproduksi');
     });
 
     Route::controller(FsthpController::class)->group(function () {
@@ -427,6 +429,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/permintaanproduksi/getrealisasi', 'getrealisasi')->name('permintaanproduksi.getrealisasi');
     });
 
+    Route::controller(LaporanproduksiController::class)->group(function () {
+        Route::get('/laporanproduksi', 'index')->name('laporanproduksi.index');
+    });
     Route::controller(OmancabangController::class)->group(function () {
         Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');
         Route::get('/omancabang/create', 'create')->name('omancabang.create')->can('omancabang.create');

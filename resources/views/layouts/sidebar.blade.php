@@ -243,6 +243,8 @@
                  'sabarangproduksi/*',
                  'permintaanproduksi',
                  'permintaanproduksi/*',
+                 'laporanproduksi',
+                 'laporanproduksi/*',
              ])
                  ? 'open'
                  : '' }}">
@@ -254,6 +256,7 @@
                          'barangkeluarproduksi.index',
                          'sabarangproduksi.index',
                          'permintaanproduksi.index',
+                         'laporanproduksi.index',
                      ]))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-box"></i>
@@ -284,6 +287,22 @@
                                  class="menu-item {{ request()->is(['sabarangproduksi', 'sabarangproduksi/*', 'barangmasukproduksi', 'barangmasukproduksi/*', 'barangkeluarproduksi', 'barangkeluarproduksi/*']) ? 'active' : '' }}">
                                  <a href="{{ route('sabarangproduksi.index') }}" class="menu-link">
                                      <div>Mutasi Barang</div>
+                                 </a>
+                             </li>
+                         @endcan
+                     @endif
+                     @if (auth()->user()->hasAnyPermission([
+                                 'prd.mutasiproduksi',
+                                 'prd.rekapmutasi',
+                                 'prd.pemasukan',
+                                 'prd.pengeluaran',
+                                 'prd.rekappersediaan',
+                             ]))
+                         @can('sabarangproduksi.index')
+                             <li
+                                 class="menu-item {{ request()->is(['laporanproduksi', 'laporanproduksi/*']) ? 'active' : '' }}">
+                                 <a href="{{ route('laporanproduksi.index') }}" class="menu-link">
+                                     <div>Laporan</div>
                                  </a>
                              </li>
                          @endcan
