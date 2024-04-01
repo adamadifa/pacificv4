@@ -59,7 +59,7 @@ return  [
 
 
 
-    'start_year' => 2023,
+    'start_year' => 2024,
 
     'roles_access_all_cabang' => ['super admin', 'general manager 3', 'manager keuangan', 'direktur'],
     'roles_show_cabang' => ['super admin', 'general manager 3', 'manager keuangan', 'direktur', 'regional sales manager'],

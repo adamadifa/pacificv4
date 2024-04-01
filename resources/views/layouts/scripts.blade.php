@@ -25,6 +25,9 @@
  <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
  <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
  <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
+ <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-start-end-date/index.min.js') }}"></script>
+
+
  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
  {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
@@ -104,7 +107,7 @@
          toastr.options.showEasing = 'swing';
          toastr.options.hideEasing = 'linear';
          toastr.options.progressBar = true;
-         toastr.error("Gagal", "{{ $err }}", {
+         toastr.error(" Gagal", "{{ $err }}", {
              timeOut: 3000
          });
      </script>

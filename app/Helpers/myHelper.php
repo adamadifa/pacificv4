@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Tutuplaporan;
+use Illuminate\Support\Facades\Redirect;
 
 function buatkode($nomor_terakhir, $kunci, $jumlah_karakter = 0)
 {
@@ -149,5 +150,18 @@ function getbulandantahunberikutnya($bulan, $tahun, $show)
         return $tahunberikutnya;
     } elseif ($show == "bulan") {
         return $bulanberikutnya;
+    }
+}
+
+
+function lockreport($tanggal)
+{
+    $start_year = config('global.start_year');
+    $lock_date = $start_year . "-01-01";
+
+    if ($tanggal < $lock_date && !empty($tanggal)) {
+        return "error";
+    } else {
+        return "success";
     }
 }

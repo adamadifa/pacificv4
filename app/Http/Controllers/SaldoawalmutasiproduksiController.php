@@ -79,7 +79,7 @@ class SaldoawalmutasiproduksiController extends Controller
                 $detail_saldo[] = [
                     'kode_saldo_awal' => $kode_saldo_awal,
                     'kode_produk' => $kode_produk[$i],
-                    'jumlah' => toNumber($jumlah[$i])
+                    'jumlah' => !empty($jumlah[$i]) ? toNumber($jumlah[$i]) : 0
                 ];
             }
 

@@ -431,6 +431,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(LaporanproduksiController::class)->group(function () {
         Route::get('/laporanproduksi', 'index')->name('laporanproduksi.index');
+        Route::post('/laporanproduksi/cetakmutasiproduksi', 'cetakmutasiproduksi')->name('cetakmutasiproduksi');
     });
     Route::controller(OmancabangController::class)->group(function () {
         Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');

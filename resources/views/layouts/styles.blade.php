@@ -31,8 +31,8 @@
          background-color: #1a6bd1 !important;
      }
 
-     .tab-content {
+     /* .tab-content {
          box-shadow: none !important;
          background: none !important;
-     }
+     } */
  </style>
