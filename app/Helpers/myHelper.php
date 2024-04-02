@@ -74,13 +74,17 @@ function formatRupiah($nilai)
 
 function formatAngka($nilai)
 {
-    return number_format($nilai, '0', ',', '.');
+    if (!empty($nilai)) {
+        return number_format($nilai, '0', ',', '.');
+    }
 }
 
 
 function formatAngkaDesimal($nilai)
 {
-    return number_format($nilai, '2', ',', '.');
+    if (!empty($nilai)) {
+        return number_format($nilai, '2', ',', '.');
+    }
 }
 
 

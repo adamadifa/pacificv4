@@ -432,6 +432,8 @@ Route::middleware('auth')->group(function () {
     Route::controller(LaporanproduksiController::class)->group(function () {
         Route::get('/laporanproduksi', 'index')->name('laporanproduksi.index');
         Route::post('/laporanproduksi/cetakmutasiproduksi', 'cetakmutasiproduksi')->name('cetakmutasiproduksi');
+        Route::post('/laporanproduksi/cetakrekapmutasiproduksi', 'cetakrekapmutasiproduksi')->name('cetakrekapmutasiproduksi');
+        Route::post('/laporanproduksi/cetakbarangmasuk', 'cetakbarangmasuk')->name('cetakbarangmasuk');
     });
     Route::controller(OmancabangController::class)->group(function () {
         Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');

@@ -1,7 +1,12 @@
 @extends('layouts.app')
 @section('titlepage', 'Dashboard')
-
 @section('content')
+    <style>
+        .tab-content {
+            box-shadow: none !important;
+            background: none !important;
+        }
+    </style>
 @section('navigasi')
     <span>Dashboard</span>
 @endsection

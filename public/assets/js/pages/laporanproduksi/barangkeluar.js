@@ -1,30 +1,17 @@
 $(function(){
-    $("#frmLaporanmutasiproduksi").submit(function(){
-        const kode_produk = $("#frmLaporanmutasiproduksi").find("#kode_produk").val();
-        const dari = $("#frmLaporanmutasiproduksi").find("#dari").val();
-        const sampai = $("#frmLaporanmutasiproduksi").find("#sampai").val();
+    $("#frmLaporanbarangkeluar").submit(function(){
+        const dari = $(this).find("#dari").val();
+        const sampai = $(this).find("#sampai").val();
         var start = new Date(dari);
         var end = new Date(sampai);
-        if(kode_produk==""){
-            Swal.fire({
-                title: "Oops!",
-                text: 'Kode Produk Harus Diisi !',
-                icon: "warning",
-                showConfirmButton: true,
-                didClose: (e) => {
-                    $("#frmLaporanmutasiproduksi").find("#kode_produk").focus();
-                },
-            });
-
-            return false;
-        }else if(dari==""){
+        if(dari==""){
             Swal.fire({
                 title: "Oops!",
                 text: 'Periode Dari Harus Diisi !',
                 icon: "warning",
                 showConfirmButton: true,
                 didClose: (e) => {
-                    $("#frmLaporanmutasiproduksi").find("#dari").focus();
+                    $(this).find("#dari").focus();
                 },
             });
             return false;
@@ -35,7 +22,7 @@ $(function(){
                 icon: "warning",
                 showConfirmButton: true,
                 didClose: (e) => {
-                    $("#frmLaporanmutasiproduksi").find("#sampai").focus();
+                    $(this).find("#sampai").focus();
                 },
             });
             return false;
