@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('cetakbarangmasuk') }}" id="frmLaporanbarangmasuk" target="_blank">
+<form method="POST" action="{{ route('cetakbarangmasukproduksi') }}" id="frmLaporanbarangmasuk" target="_blank">
     @csrf
     <div class="row">
         <div class="col">

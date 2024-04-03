@@ -19,7 +19,8 @@ return [
         'KCP' => 'KECAP',
         'SRG' => 'SAUS REGULER',
         'SDP' => 'SAUS DP',
-        'SST' => 'SAUS STICK'
+        'SST' => 'SAUS STICK',
+        'LNY' => 'LAINNYA'
     ],
 
     'list_kategori_barang_produksi' => [
@@ -50,6 +51,10 @@ return [
         [
             'kode_kategori' => 'SST',
             'nama_kategori' => 'SAUS STICK',
+        ],
+        [
+            'kode_kategori' => 'LNY',
+            'nama_kategori' => 'LAINNYA',
         ],
     ]
 

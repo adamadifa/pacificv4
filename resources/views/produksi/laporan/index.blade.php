@@ -2,6 +2,7 @@
 @section('titlepage', 'Laporan Produksi')
 
 @section('content')
+
 @section('navigasi')
     <span>Laporan Produksi</span>
 @endsection
@@ -71,7 +72,7 @@
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                             data-bs-target="#rekappersediaanbarang" aria-controls="rekappersediaanbarang"
                             aria-selected="true">
-                            Rekap Persediaan Barang
+                            Rekap Persediaan
                         </button>
                     </li>
                 @endcan
@@ -91,7 +92,7 @@
                     </div>
                 @endcan
                 <div class="tab-pane fade " id="rekappersediaanbarang" role="tabpanel">
-                    @include('produksi.laporan.rekapmutasiproduksi')
+                    @include('produksi.laporan.rekappersediaanbarang')
                 </div>
             </div>
         </div>
@@ -103,6 +104,8 @@
 <script src="{{ asset('assets/js/pages/laporanproduksi/mutasiproduksi.js') }}"></script>
 <script src="{{ asset('assets/js/pages/laporanproduksi/rekapmutasiproduksi.js') }}"></script>
 <script src="{{ asset('assets/js/pages/laporanproduksi/barangmasuk.js') }}"></script>
+<script src="{{ asset('assets/js/pages/laporanproduksi/barangkeluar.js') }}"></script>
+<script src="{{ asset('assets/js/pages/laporanproduksi/rekappersediaanbarang.js') }}"></script>
 <script>
     $(function() {
         const select2Kodeproduk = $('.select2Kodeproduk');
@@ -129,26 +132,29 @@
                 select2Kodebarangmasuk.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
-                        placeholder: 'Semua Barang',
+                        // placeholder: 'Semua Barang',
                         dropdownParent: $this.parent(),
 
                     });
                 });
             }
         }
+
 
         function initselect2Kodebarangkeluar() {
             if (select2Kodebarangkeluar.length) {
                 select2Kodebarangkeluar.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
-                        placeholder: 'Semua Barang',
+                        // placeholder: 'Semua Barang',
                         dropdownParent: $this.parent(),
 
                     });
                 });
             }
         }
+
+
 
 
 

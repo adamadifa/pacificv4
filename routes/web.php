@@ -433,7 +433,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporanproduksi', 'index')->name('laporanproduksi.index');
         Route::post('/laporanproduksi/cetakmutasiproduksi', 'cetakmutasiproduksi')->name('cetakmutasiproduksi');
         Route::post('/laporanproduksi/cetakrekapmutasiproduksi', 'cetakrekapmutasiproduksi')->name('cetakrekapmutasiproduksi');
-        Route::post('/laporanproduksi/cetakbarangmasuk', 'cetakbarangmasuk')->name('cetakbarangmasuk');
+        Route::post('/laporanproduksi/cetakbarangmasuk', 'cetakbarangmasuk')->name('cetakbarangmasukproduksi');
+        Route::post('/laporanproduksi/cetakbarangkeluar', 'cetakbarangkeluar')->name('cetakbarangkeluarproduksi');
+        Route::post('/laporanproduksi/cetakrekappersediaanbarang', 'cetakrekappersediaanbarang')->name('cetakrekappersediaanbarangproduksi');
     });
     Route::controller(OmancabangController::class)->group(function () {
         Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');

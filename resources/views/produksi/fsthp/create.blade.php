@@ -41,7 +41,12 @@
 {{-- <script src="{{ asset('assets/js/pages/bpbj/create.js') }}"></script> --}}
 <script>
     $(".money").maskMoney();
-    $(".flatpickr-date").flatpickr();
+    $(".flatpickr-date").flatpickr({
+        enable: [{
+            from: "{{ $start_periode }}",
+            to: "{{ $end_periode }}"
+        }, ]
+    });
 </script>
 <script>
     $(function() {

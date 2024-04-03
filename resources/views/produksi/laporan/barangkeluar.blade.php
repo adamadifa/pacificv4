@@ -1,16 +1,26 @@
-<form method="POST" action="{{ route('cetakbarangmasuk') }}" id="frmLaporanbarangkeluar" target="_blank">
+<form method="POST" action="{{ route('cetakbarangkeluarproduksi') }}" id="frmLaporanbarangkeluar" target="_blank">
     @csrf
 
     <div class="row">
         <div class="col">
             <div class="form-group mb-3">
-                <select name="kode_barang_produksi" class="form-select select2Kodebarangkeluar" id="test">
-                    @foreach ($barangproduksi as $d)
-                        <option value="{{ $d->kode_barang_produksi }}">{{ $d->nama_barang }}</option>
-                    @endforeach
-                </select>
+                <x-select label="Semua Barang" name="kode_barang_produksi_keluar" :data="$barangproduksi"
+                    key="kode_barang_produksi" textShow="nama_barang" select2="select2Kodebarangkeluar" showKey="true"
+                    upperCase="true" />
             </div>
 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group mb-3">
+                <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
+                    <option value="">Jenis Pengeluaran</option>
+                    <option value="RO">Retur Out</option>
+                    <option value="PK">Pemakaian</option>
+                    <option value="LN">Lainnya</option>
+                </select>
+            </div>
         </div>
     </div>
     <div class="row">

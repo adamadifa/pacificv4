@@ -72,18 +72,31 @@
                          'regional.index',
                          'cabang.index',
                          'salesman.index',
+                         'kategoriproduk.index',
+                         'jenisproduk.index',
+                         'produk.index',
+                         'hraga.index',
+                         'pelanggan.index',
+                         'wilayah.index',
+                         'kendaraan.index',
+                         'supplier.index',
                          'karyawan.index',
+                         'rekening.index',
                          'gaji.index',
                          'insentif.index',
                          'bpjskesehatan.index',
                          'bpjstenagakerja.index',
                          'barangproduksi.index',
+                         'bufferstok.index',
                      ]))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-database"></i>
                      <div>Data Master</div>
                  </a>
                  <ul class="menu-sub">
+                     <li class="menu-header small text-uppercase">
+                         <span class="menu-header-text">MARKETING</span>
+                     </li>
                      @can('regional.index')
                          <li class="menu-item {{ request()->is(['regional', 'regional/*']) ? 'active' : '' }}">
                              <a href="{{ route('regional.index') }}" class="menu-link">
@@ -147,7 +160,9 @@
                              </a>
                          </li>
                      @endcan
-
+                     <li class="menu-header small text-uppercase">
+                         <span class="menu-header-text">GENERAL AFFAIR</span>
+                     </li>
                      @can('kendaraan.index')
                          <li class="menu-item {{ request()->is(['kendaraan', 'kendaraan/*']) ? 'active' : '' }}">
                              <a href="{{ route('kendaraan.index') }}" class="menu-link">
@@ -155,7 +170,9 @@
                              </a>
                          </li>
                      @endcan
-
+                     <li class="menu-header small text-uppercase">
+                         <span class="menu-header-text">PEMBELIAN</span>
+                     </li>
                      @can('supplier.index')
                          <li class="menu-item {{ request()->is(['supplier', 'supplier/*']) ? 'active' : '' }}">
                              <a href="{{ route('supplier.index') }}" class="menu-link">
@@ -163,7 +180,9 @@
                              </a>
                          </li>
                      @endcan
-
+                     <li class="menu-header small text-uppercase">
+                         <span class="menu-header-text">HRD</span>
+                     </li>
                      @can('karyawan.index')
                          <li class="menu-item {{ request()->is(['karyawan', 'karyawan/*']) ? 'active' : '' }}">
                              <a href="{{ route('karyawan.index') }}" class="menu-link">
@@ -194,6 +213,7 @@
                              </a>
                          </li>
                      @endcan
+
                      @can('bpjskesehatan.index')
                          <li class="menu-item {{ request()->is(['bpjskesehatan', 'bpjskesehatan/*']) ? 'active' : '' }}">
                              <a href="{{ route('bpjskesehatan.index') }}" class="menu-link">
@@ -209,7 +229,9 @@
                              </a>
                          </li>
                      @endcan
-
+                     <li class="menu-header small text-uppercase">
+                         <span class="menu-header-text">GUDANG JADI</span>
+                     </li>
                      @can('bufferstok.index')
                          <li class="menu-item {{ request()->is(['bufferstok', 'bufferstok/*']) ? 'active' : '' }}">
                              <a href="{{ route('bufferstok.index') }}" class="menu-link">
@@ -217,6 +239,9 @@
                              </a>
                          </li>
                      @endcan
+                     <li class="menu-header small text-uppercase">
+                         <span class="menu-header-text">PRODUKSI</span>
+                     </li>
                      @can('barangproduksi.index')
                          <li class="menu-item {{ request()->is(['barangproduksi', 'barangproduksi/*']) ? 'active' : '' }}">
                              <a href="{{ route('barangproduksi.index') }}" class="menu-link">

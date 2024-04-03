@@ -1,10 +1,10 @@
-$(function(){
-    $("#frmLaporanbarangkeluar").submit(function(){
+$(function () {
+    $("#frmLaporanbarangkeluar").submit(function () {
         const dari = $(this).find("#dari").val();
         const sampai = $(this).find("#sampai").val();
         var start = new Date(dari);
         var end = new Date(sampai);
-        if(dari==""){
+        if (dari == "") {
             Swal.fire({
                 title: "Oops!",
                 text: 'Periode Dari Harus Diisi !',
@@ -15,7 +15,7 @@ $(function(){
                 },
             });
             return false;
-        }else if(sampai==""){
+        } else if (sampai == "") {
             Swal.fire({
                 title: "Oops!",
                 text: 'Periode Sampai Harus Diisi !',
@@ -26,7 +26,7 @@ $(function(){
                 },
             });
             return false;
-        }else if (start.getTime() > end.getTime()) {
+        } else if (start.getTime() > end.getTime()) {
             Swal.fire({
                 title: "Oops!",
                 text: 'Periode Tidak Valid !, Periode Sampai Harus Lebih Akhir dari Periode Dari',
