@@ -2,18 +2,17 @@
     @csrf
     <input type="hidden" id="cektutuplaporan">
     <input type="hidden" id="cekdetailtemp">
-    <x-input-with-icon-label icon="ti ti-barcode" label="No. BPBJ" name="no_mutasi" readonly="true" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. BPBJ" name="no_mutasi" readonly="true" />
 
-    <x-input-with-icon-label icon="ti ti-calendar" label="Tanggal BPBJ" name="tanggal_mutasi"
-        datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal BPBJ" name="tanggal_mutasi" datepicker="flatpickr-date" />
 
     <hr>
-    <x-select-label label="Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk"
+    <x-select label="Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk"
         upperCase="true" select2="select2Kodeproduk" />
     <div class="row">
         <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="form-group mb-3">
-                <label for="exampleFormControlInput1" style="font-weight: 600" class="form-label">Shift</label>
+
                 <select name="shift" id="shift" class="form-select">
                     <option value="">Shift</option>
                     <option value="1">1</option>
@@ -23,7 +22,7 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon-label icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
             <div class="form-group mb-3">
@@ -46,7 +45,7 @@
     <div class="form-check mt-3 mb-3">
         <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value=""
             id="defaultCheck3">
-        <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
+        <label class="form-check" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
     </div>
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
@@ -55,7 +54,7 @@
         </button>
     </div>
 </form>
-<script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
+
 <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
@@ -109,6 +108,7 @@
         }
 
 
+
         function generetenobpbj() {
             var tanggal_mutasi = $("#tanggal_mutasi").val();
             var kode_produk = $("#kode_produk").val();
@@ -145,8 +145,6 @@
                     $("#cektutuplaporan").val(respond);
                 }
             });
-
-
         }
 
 

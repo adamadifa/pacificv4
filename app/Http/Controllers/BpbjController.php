@@ -66,7 +66,7 @@ class BpbjController extends Controller
             }
 
             $cekbpbj = Mutasiproduksi::where('no_mutasi', $request->no_mutasi)->count();
-            if (empty($cekbpbj > 0)) {
+            if ($cekbpbj > 0) {
                 return Redirect::back()->with(messageError('Data Sudah Ada !'));
             }
             $detailtemp = $temp->get();

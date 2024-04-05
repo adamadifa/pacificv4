@@ -18,17 +18,44 @@
                 <div class="row">
                     <div class="col-12">
                         <form action="{{ route('permintaankiriman.index') }}">
-                            {{-- <div class="row">
-                                <div class="col-lg-10 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Produk" value="{{ Request('nama_produk') }}"
-                                        name="nama_produk" icon="ti ti-search" />
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12 col-md-12">
+                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i
-                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
+                                <div class="col-lg-6 col-sm-12 col-md-12">
+                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
-                            </div> --}}
-
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
+                                        key="kode_cabang" textShow="nama_cabang" upperCase="true" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="form-group mb-3">
+                                        <select name="status_search" id="status_search" class="form-select">
+                                            <option value="">Smua Status</option>
+                                            <option value="0|pk">Belum Di Proses</option>
+                                            <option value="1|pk">Sudah Di Proses Gudang</option>
+                                            <option value="0|sj">Belum Diterima Cabang</option>
+                                            <option value="1|sj">Sudah Diterima Cabang</option>
+                                            <option value="2|sj">Transit Out</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="form-group mb-3">
+                                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
+                                            Data</button>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -162,16 +189,24 @@
         </div>
     </div>
 </div>
-<x-modal-form id="mdlCreate" size="" show="loadCreate" title="Buat Permintaan" />
-<x-modal-form id="mdlEdit" size="" show="loadEdit" title="Edit Permintaan" />
+<x-modal-form id="mdlCreate" size="modal-lg" show="loadCreate" title="Buat Permintaan" />
+<x-modal-form id="mdlEdit" size="modal-lg" show="loadEdit" title="Edit Permintaan" />
+<x-modal-form id="mdlDetail" size="" show="loadDetail" title="Detail Permintaan" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
 <script>
     $(function() {
-        $("#btncreateProduk").click(function(e) {
-            $('#mdlcreateProduk').modal("show");
-            $("#loadcreateProduk").load('/produk/create');
+        $("#btnCreate").click(function(e) {
+            e.preventDefault();
+            $('#mdlCreate').modal("show");
+            $("#loadCreate").load("{{ route('permintaankiriman.create') }}");
+        });
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            $('#mdlDetail').modal("show");
+            $("#loadDetail").load("{{ route('permintaankiriman.create') }}");
         });
 
         $(".editProduk").click(function(e) {

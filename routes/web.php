@@ -475,6 +475,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/permintaankiriman/{no_permintaan}/update', 'update')->name('permintaankiriman.update')->can('permintaankiriman.update');
         Route::delete('/permintaankiriman/{no_permintaan}', 'destroy')->name('permintaankiriman.delete')->can('permintaankiriman.delete');
         Route::get('/permintaankiriman/{no_permintaan}/show', 'show')->name('permintaankiriman.show')->can('permintaankiriman.show');
+
+        //AJAX REQUEST
+        Route::post('/permintaankiriman/storedetailtemp', 'storedetailtemp')->name('permintaankiriman.storedetailtemp');
+        Route::post('/permintaankiriman/cekdetailtemp', 'cekdetailtemp')->name('permintaankiriman.cekdetailtemp');
+        Route::get('/permintaankiriman/getdetailtemp', 'getdetailtemp')->name('permintaankiriman.getdetailtemp');
+        Route::post('/permintaankiriman/deletetemp', 'deletetemp')->name('permintaankiriman.deletetemp');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
