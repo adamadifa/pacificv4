@@ -48,6 +48,11 @@ class PermintaankirimanController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'tanggal' => 'required',
+            'kode_cabang' => 'required',
+            'keterangan' => 'required'
+        ]);
         DB::beginTransaction();
         try {
             //Buat No Permintaan
@@ -124,6 +129,36 @@ class PermintaankirimanController extends Controller
         }
     }
 
+    public function edit($no_permintaan)
+    {
+        $no_permintaan = Crypt::decrypt($no_permintaan);
+        $data['pk'] = Permintaankiriman::where('no_permintaan', $no_permintaan)
+            ->select('marketing_permintaan_kiriman.*', 'nama_cabang', 'nama_salesman')
+            ->join('cabang', 'marketing_permintaan_kiriman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('salesman', 'marketing_permintaan_kiriman.kode_salesman', '=', 'salesman.kode_salesman')
+            ->first();
+        $data['detail'] = Detailpermintaankiriman::select('marketing_permintaan_kiriman_detail.kode_produk', 'nama_produk', 'jumlah')
+            ->join('produk', 'marketing_permintaan_kiriman_detail.kode_produk', '=', 'produk.kode_produk')
+            ->where('no_permintaan', $no_permintaan)
+            ->get();
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['produk'] = Produk::where('status_aktif_produk', 1)->orderBy('kode_produk')->get();
+        return view('marketing.permintaankiriman.edit', $data);
+    }
+    public function show($no_permintaan)
+    {
+        $no_permintaan = Crypt::decrypt($no_permintaan);
+        $data['pk'] = Permintaankiriman::where('no_permintaan', $no_permintaan)
+            ->join('cabang', 'marketing_permintaan_kiriman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('salesman', 'marketing_permintaan_kiriman.kode_salesman', '=', 'salesman.kode_salesman')
+            ->first();
+        $data['detail'] = Detailpermintaankiriman::select('marketing_permintaan_kiriman_detail.kode_produk', 'nama_produk', 'jumlah')
+            ->join('produk', 'marketing_permintaan_kiriman_detail.kode_produk', '=', 'produk.kode_produk')
+            ->where('no_permintaan', $no_permintaan)
+            ->get();
+        return view('marketing.permintaankiriman.show', $data);
+    }
     public function destroy($no_permintaan)
     {
         $no_permintaan = Crypt::decrypt($no_permintaan);

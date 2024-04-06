@@ -191,7 +191,7 @@
 </div>
 <x-modal-form id="mdlCreate" size="modal-lg" show="loadCreate" title="Buat Permintaan" />
 <x-modal-form id="mdlEdit" size="modal-lg" show="loadEdit" title="Edit Permintaan" />
-<x-modal-form id="mdlDetail" size="" show="loadDetail" title="Detail Permintaan" />
+<x-modal-form id="mdlDetail" show="loadDetail" title="Detail Permintaan" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
@@ -205,15 +205,16 @@
 
         $(".btnShow").click(function(e) {
             e.preventDefault();
+            const no_permintaan = $(this).attr('no_permintaan');
             $('#mdlDetail').modal("show");
-            $("#loadDetail").load("{{ route('permintaankiriman.create') }}");
+            $("#loadDetail").load(`/permintaankiriman/${no_permintaan}/show`);
         });
 
-        $(".editProduk").click(function(e) {
-            var kode_produk = $(this).attr("kode_produk");
+        $(".btnEdit").click(function(e) {
+            const no_permintaan = $(this).attr("no_permintaan");
             e.preventDefault();
-            $('#mdleditProduk').modal("show");
-            $("#loadeditProduk").load('/produk/' + kode_produk + '/edit');
+            $('#mdlEdit').modal("show");
+            $("#loadEdit").load(`/permintaankiriman/${no_permintaan}/edit`);
         });
     });
 </script>

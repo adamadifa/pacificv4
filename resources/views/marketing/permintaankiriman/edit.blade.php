@@ -1,16 +1,21 @@
-<form action="{{ route('permintaankiriman.store') }}" method="POST" id="formcreatePermintaankiriman">
+<form action="{{ route('permintaankiriman.store') }}" method="POST" id="formeditPermintaankiriman">
     @csrf
     <input type="hidden" id="cektutuplaporan">
     <input type="hidden" id="cekdetailtemp">
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_perminataan" readonly="true" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Permintaan" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. Permintaan" value="{{ $pk->no_permintaan }}" name="no_perminataan"
+        readonly="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Permintaan" value="{{ $pk->tanggal }}" name="tanggal"
+        datepicker="flatpickr-date" />
     <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-        upperCase="true" select2="select2Kodecabang" />
+        upperCase="true" select2="select2Kodecabang" selected="{{ $pk->kode_cabang }}" />
     <div class="form-group mb-3" id="salesman">
+
+
         <select name="kode_salesman" id="kode_salesman" class="select2Kodesalesman form-select">
         </select>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" value="{{ $pk->keterangan }}"
+        name="keterangan" />
     <div class="divider text-start">
         <div class="divider-text">Detail Produk</div>
     </div>
@@ -27,7 +32,7 @@
         </div>
     </div>
 
-    <table class="table table-hover table-striped table-bordered">
+    <table class="table table-hover table-striped table-bordered" id="tabledetailProduk">
         <thead class="table-dark">
             <tr>
                 <th>Kode Produk</th>
@@ -36,7 +41,25 @@
                 <th>#</th>
             </tr>
         </thead>
-        <tbody id="loaddetailtemp"></tbody>
+        <tbody id="loaddetail">
+            @foreach ($detail as $d)
+                <tr id={{ 'index_' . $d->kode_produk }}>
+                    <td>
+                        <input type="hidden" name="kode_produk[]" value="{{ $d->kode_produk }}">
+                        {{ $d->kode_produk }}
+                    </td>
+                    <td>{{ $d->nama_produk }}</td>
+                    <td class="text-end">
+                        <input type="text" name="jumlah[]" class="noborder-form text-end money"
+                            value="{{ formatAngka($d->jumlah) }}" aria-autocomplete="list">
+                    </td>
+                    <td class="text-center">
+                        <a href="#" kode_produk="{{ $d->kode_produk }}" class="delete"><i
+                                class="ti ti-trash text-danger"></i></a>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
     </table>
     <div class="row">
         <div class="col-12">
@@ -58,6 +81,7 @@
 <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 <script>
     $(function() {
+        const form = $("#formeditPermintaankiriman");
         $(".money").maskMoney();
         $(".flatpickr-date").flatpickr({
             enable: [{
@@ -103,35 +127,15 @@
             });
         }
 
-        $("#saveButton").hide();
+        form.find("#saveButton").hide();
 
-        $('.agreement').change(function() {
+        form.find('.agreement').change(function() {
             if (this.checked) {
-                $("#saveButton").show();
+                form.find("#saveButton").show();
             } else {
-                $("#saveButton").hide();
+                form.find("#saveButton").hide();
             }
         });
-
-        function cekdetailtemp() {
-            $.ajax({
-                type: 'POST',
-                url: "{{ route('permintaankiriman.cekdetailtemp') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                },
-                cache: false,
-                success: function(respond) {
-                    $("#cekdetailtemp").val(respond);
-                }
-            });
-        }
-
-        function loaddetailtemp() {
-            $("#loaddetailtemp").load("{{ route('permintaankiriman.getdetailtemp') }}");
-            cekdetailtemp();
-        }
-
 
 
         function cektutuplaporan(tanggal, jenis_laporan) {
@@ -151,23 +155,23 @@
             });
         }
 
-
-
         function getsalesmanbyCabang() {
 
-            var kode_cabang = $("#kode_cabang").val();
+            var kode_cabang = form.find("#kode_cabang").val();
+            var kode_salesman = "{{ $pk->kode_salesman }}";
             //alert(selected);
             $.ajax({
                 type: 'POST',
                 url: '/salesman/getsalesmanbycabang',
                 data: {
                     _token: "{{ csrf_token() }}",
-                    kode_cabang: kode_cabang
+                    kode_cabang: kode_cabang,
+                    kode_salesman: kode_salesman
                 },
                 cache: false,
                 success: function(respond) {
                     console.log(respond);
-                    $("#kode_salesman").html(respond);
+                    form.find("#kode_salesman").html(respond);
                 }
             });
         }
@@ -182,9 +186,9 @@
             }
         }
 
-        cekdetailtemp();
-        loaddetailtemp();
         showhideSalesman();
+        getsalesmanbyCabang();
+
         $("#tanggal").change(function(e) {
             cektutuplaporan($(this).val(), "gudangjadi");
 
@@ -197,11 +201,36 @@
                 getsalesmanbyCabang();
             }
         });
-        $("#tambahproduk").click(function(e) {
-            e.preventDefault();
-            const kode_produk = $("#kode_produk").val();
-            const jumlah = $("#jumlah").val();
 
+        function addProduk() {
+            const dataProduk = $("#kode_produk :selected").select2(this.data);
+            const kode_produk = $(dataProduk).val();
+            const nama_produk = $(dataProduk).text();
+            const jumlah = form.find("#jumlah").val();
+
+            let produk = `
+                    <tr id="index_${kode_produk}">
+                        <td>
+                            <input type="hidden" name="kode_produk[]" value="${kode_produk}"/>
+                            ${kode_produk}
+                        </td>
+                        <td>${nama_produk}</td>
+                        <td>
+                            <input type="text" name="jml[]" value="${jumlah}" class="noborder-form text-end jml money" />
+                        </td>
+                        <td class="text-center">
+                            <a href="#" kode_produk="${kode_produk}" class="delete"><i class="ti ti-trash text-danger"></i></a>
+                        </td>
+                    </tr>
+                `;
+
+            //append to table
+            $('#loaddetail').prepend(produk);
+        }
+        form.find("#tambahproduk").click(function(e) {
+            e.preventDefault();
+            const kode_produk = form.find("#kode_produk").val();
+            const jumlah = form.find("#jumlah").val();
             if (kode_produk == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -209,7 +238,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        $("#kode_produk").focus();
+                        form.find("#kode_produk").focus();
                     },
 
                 });
@@ -221,44 +250,26 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        $("#jumlah").focus();
+                        form.find("#jumlah").focus();
                     },
 
                 });
 
             } else {
                 $("#tambahproduk").prop('disabled', true);
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('permintaankiriman.storedetailtemp') }}",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        kode_produk: kode_produk,
-                        jumlah: jumlah
-                    },
-                    cache: false,
-                    success: function(respond) {
-                        if (respond === '0') {
-                            Swal.fire("Saved!", "", "success");
-                            $("#jumlah").val("");
-                            loaddetailtemp();
-                            $('.select2Kodeproduk').val('').trigger("change");
-
-                        } else if (respond === '1') {
-                            Swal.fire("Oops!", "Data Sudah Ada", "warning");
-                        } else {
-                            Swal.fire("Error", respond, "error");
-                        }
-                        $("#tambahproduk").prop('disabled', false);
-                    }
-                });
+                if ($('#tabledetailProduk').find('#index_' + kode_produk).length > 0) {
+                    alert('test')
+                } else {
+                    addProduk();
+                }
             }
         });
 
 
         $('body').on('click', '.delete', function() {
-            var id = $(this).attr('id');
-            var kode_produk = $("#kode_produk").val();
+
+            var kode_produk = $(this).attr("kode_produk");
+
             event.preventDefault();
             Swal.fire({
                 title: `Apakah Anda Yakin Ingin Menghapus Data Ini ?`,
@@ -273,42 +284,16 @@
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    $.ajax({
-                        type: 'POST',
-                        url: "{{ route('permintaankiriman.deletetemp') }}",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            id: id,
-                        },
-                        cache: false,
-                        success: function(respond) {
-                            if (respond === '0') {
-                                Swal.fire({
-                                    title: "Berhasil",
-                                    text: "Data Berhasil Dihapus",
-                                    icon: "success"
-                                });
-                                loaddetailtemp();
-                            } else {
-                                Swal.fire({
-                                    title: "Error",
-                                    text: respond,
-                                    icon: "error"
-                                });
-                            }
-                        }
-                    });
+                    $(`#index_${kode_produk}`).remove();
                 }
             });
         });
 
-
-        $("#formcreatePermintaankiriman").submit(function() {
-            const tanggal = $("#tanggal").val();
-            const kode_cabang = $("#kode_cabang").val();
-            const keterangan = $("#keterangan").val();
-            const cektutuplaporan = $("#cektutuplaporan").val();
-            const cekdetailtemp = $("#cekdetailtemp").val();
+        form.submit(function() {
+            const tanggal = form.find("#tanggal").val();
+            const kode_cabang = form.find("#kode_cabang").val();
+            const keterangan = form.find("#keterangan").val();
+            const cektutuplaporan = form.find("#cektutuplaporan").val();
             if (tanggal == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -316,7 +301,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        $("#tanggal_mutasi").focus();
+                        form.find("#tanggal_mutasi").focus();
                     },
                 });
 
@@ -328,7 +313,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        $("#kode_produk").focus();
+                        form.find("#kode_produk").focus();
                     },
                 });
 
@@ -340,16 +325,13 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        $("#keteranga").focus();
+                        form.find("#keterangan").focus();
                     },
                 });
 
                 return false;
             } else if (cektutuplaporan === '1') {
                 Swal.fire("Oops!", "Laporan Untuk Periode Ini Sudah Ditutup", "warning");
-                return false;
-            } else if (cekdetailtemp === '0' || cekdetailtemp === '') {
-                Swal.fire("Oops!", "Data Masih Kosong", "warning");
                 return false;
             } else {
                 $("#btnSimpan").prop('disabled', true);

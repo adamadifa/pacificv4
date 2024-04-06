@@ -30,4 +30,13 @@
      .swal2-confirm {
          background-color: #1a6bd1 !important;
      }
+
+     .noborder-form {
+         width: 100%;
+         border: 0px;
+     }
+
+     .noborder-form:focus {
+         outline: none;
+     }
  </style>
