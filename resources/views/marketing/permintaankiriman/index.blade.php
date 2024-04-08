@@ -7,6 +7,12 @@
 @endsection
 <div class="row">
     <div class="col-lg-10 col-sm-12 col-xs-12">
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <span class="alert-icon text-info me-2">
+                <i class="ti ti-info-circle ti-xs"></i>
+            </span>
+            Silahkan Gunakan Icon <i class="ti ti-external-link primary me-1 ms-1"></i> Untuk membuat Surat Jalan !
+        </div>
         <div class="card">
             <div class="card-header">
                 @can('permintaankiriman.create')
@@ -31,7 +37,8 @@
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
-                                        key="kode_cabang" textShow="nama_cabang" upperCase="true" />
+                                        key="kode_cabang" textShow="nama_cabang" upperCase="true"
+                                        selected="{{ Request('kode_cabang_search') }}" />
                                 </div>
                             </div>
                             <div class="row">
@@ -39,11 +46,17 @@
                                     <div class="form-group mb-3">
                                         <select name="status_search" id="status_search" class="form-select">
                                             <option value="">Smua Status</option>
-                                            <option value="0|pk">Belum Di Proses</option>
-                                            <option value="1|pk">Sudah Di Proses Gudang</option>
-                                            <option value="0|sj">Belum Diterima Cabang</option>
-                                            <option value="1|sj">Sudah Diterima Cabang</option>
-                                            <option value="2|sj">Transit Out</option>
+                                            <option {{ Request('status_search') == '0|pk' ? 'selected' : '' }}
+                                                value="0|pk">Belum Di Proses</option>
+                                            <option {{ Request('status_search') == '1|pk' ? 'selected' : '' }}
+                                                value="1|pk">Sudah Di Proses Gudang</option>
+                                            <option {{ Request('status_search') == '0|sj' ? 'selected' : '' }}
+                                                value="0|sj">
+                                                Belum Diterima Cabang</option>
+                                            <option {{ Request('status_search') == '1|sj' ? 'selected' : '' }}
+                                                value="1|sj">Sudah Diterima Cabang</option>
+                                            <option {{ Request('status_search') == '2|sj' ? 'selected' : '' }}
+                                                value="2|sj">Transit Out</option>
                                         </select>
                                     </div>
                                 </div>
@@ -166,10 +179,22 @@
                                                                     action="{{ route('permintaankiriman.delete', Crypt::encrypt($d->no_permintaan)) }}">
                                                                     @csrf
                                                                     @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
+                                                                    <a href="#" class="delete-confirm me-1">
                                                                         <i class="ti ti-trash text-danger"></i>
                                                                     </a>
                                                                 </form>
+                                                            </div>
+                                                        @endif
+                                                    @endcan
+
+                                                    @can('suratjalan.create')
+                                                        @if ($d->status === '0')
+                                                            <div>
+                                                                <a href="#" alt="Buat Surat Jalan"
+                                                                    no_permintaan="{{ Crypt::encrypt($d->no_permintaan) }}"
+                                                                    class="btnCreateSuratjalan">
+                                                                    <i class="ti ti-external-link primary "></i>
+                                                                </a>
                                                             </div>
                                                         @endif
                                                     @endcan
@@ -192,6 +217,7 @@
 <x-modal-form id="mdlCreate" size="modal-lg" show="loadCreate" title="Buat Permintaan" />
 <x-modal-form id="mdlEdit" size="modal-lg" show="loadEdit" title="Edit Permintaan" />
 <x-modal-form id="mdlDetail" show="loadDetail" title="Detail Permintaan" />
+<x-modal-form id="mdlCreateSuratjalan" size="modal-lg" show="loadCreateSuratjalan" title="Buat Surat Jalan" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
@@ -215,6 +241,12 @@
             e.preventDefault();
             $('#mdlEdit').modal("show");
             $("#loadEdit").load(`/permintaankiriman/${no_permintaan}/edit`);
+        });
+
+        $(".btnCreateSuratjalan").click(function(e) {
+            e.preventDefault();
+            $('#mdlCreateSuratjalan').modal("show");
+            $("#loadCreateSuratjalan").load("{{ route('permintaankiriman.create') }}");
         });
     });
 </script>

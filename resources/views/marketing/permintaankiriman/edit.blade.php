@@ -1,9 +1,10 @@
-<form action="{{ route('permintaankiriman.store') }}" method="POST" id="formeditPermintaankiriman">
+<form action="{{ route('permintaankiriman.update', Crypt::encrypt($pk->no_permintaan)) }}" method="POST"
+    id="formeditPermintaankiriman">
     @csrf
     <input type="hidden" id="cektutuplaporan">
     <input type="hidden" id="cekdetailtemp">
-    <x-input-with-icon icon="ti ti-barcode" label="No. Permintaan" value="{{ $pk->no_permintaan }}" name="no_perminataan"
-        readonly="true" />
+    {{-- <x-input-with-icon icon="ti ti-barcode" label="No. Permintaan" value="{{ $pk->no_permintaan }}" name="no_perminataan"
+        readonly="true" /> --}}
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Permintaan" value="{{ $pk->tanggal }}" name="tanggal"
         datepicker="flatpickr-date" />
     <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
@@ -50,7 +51,7 @@
                     </td>
                     <td>{{ $d->nama_produk }}</td>
                     <td class="text-end">
-                        <input type="text" name="jumlah[]" class="noborder-form text-end money"
+                        <input type="text" name="jml[]" class="noborder-form text-end money"
                             value="{{ formatAngka($d->jumlah) }}" aria-autocomplete="list">
                     </td>
                     <td class="text-center">
@@ -203,7 +204,7 @@
         });
 
         function addProduk() {
-            const dataProduk = $("#kode_produk :selected").select2(this.data);
+            const dataProduk = form.find("#kode_produk :selected").select2(this.data);
             const kode_produk = $(dataProduk).val();
             const nama_produk = $(dataProduk).text();
             const jumlah = form.find("#jumlah").val();
@@ -258,7 +259,16 @@
             } else {
                 $("#tambahproduk").prop('disabled', true);
                 if ($('#tabledetailProduk').find('#index_' + kode_produk).length > 0) {
-                    alert('test')
+                    Swal.fire({
+                        title: "Oops!",
+                        text: "Data Sudah Ada!",
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            form.find("#kode_produk").focus();
+                        },
+
+                    });
                 } else {
                     addProduk();
                 }
@@ -294,7 +304,19 @@
             const kode_cabang = form.find("#kode_cabang").val();
             const keterangan = form.find("#keterangan").val();
             const cektutuplaporan = form.find("#cektutuplaporan").val();
-            if (tanggal == "") {
+            if ($('#loaddetail tr').length == 0) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Data Produk Masih Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#kode_produk").focus();
+                    },
+                });
+
+                return false;
+            } else if (tanggal == "") {
                 Swal.fire({
                     title: "Oops!",
                     text: "Tanggal Tidak Boleh Kosong !",

@@ -34,10 +34,12 @@ use App\Http\Controllers\SaldoawalbarangproduksiController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SuratjalanController;
 use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WilayahController;
 use App\Models\Barangproduksi;
+use App\Models\Permission_group;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 
@@ -482,6 +484,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/permintaankiriman/getdetailtemp', 'getdetailtemp')->name('permintaankiriman.getdetailtemp');
         Route::post('/permintaankiriman/deletetemp', 'deletetemp')->name('permintaankiriman.deletetemp');
     });
+
+    //Surat Jalan Gudang Jadi
+
+    Route::controller(SuratjalanController::class)->group(function () {
+        Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->canc('suratjalan.create');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 
@@ -503,4 +511,12 @@ Route::get('/createrolepermission', function () {
     }
 });
 
+
+Route::get('/creategrouppermission', function () {
+    $permissiongroup = Permission_group::create([
+        'name' => 'Surat Jalan'
+    ]);
+
+    dd($permissiongroup->id);
+});
 require __DIR__ . '/auth.php';

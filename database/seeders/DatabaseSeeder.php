@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            KategorisalesmanSeeder::class
+            KategorisalesmanSeeder::class,
+            Suratjalanpermissionseeder::class
         ]);
     }
 }
