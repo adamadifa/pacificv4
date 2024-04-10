@@ -30,8 +30,8 @@
     <table class="table table-hover table-striped table-bordered">
         <thead class="table-dark">
             <tr>
-                <th>Kode Produk</th>
-                <th>Nama Produk</th>
+                <th>Kode</th>
+                <th style="width: 50%">Nama Produk</th>
                 <th>Jumlah</th>
                 <th>#</th>
             </tr>

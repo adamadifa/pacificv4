@@ -214,10 +214,10 @@
         </div>
     </div>
 </div>
-<x-modal-form id="mdlCreate" size="modal-lg" show="loadCreate" title="Buat Permintaan" />
-<x-modal-form id="mdlEdit" size="modal-lg" show="loadEdit" title="Edit Permintaan" />
+<x-modal-form id="mdlCreate" show="loadCreate" title="Buat Permintaan" />
+<x-modal-form id="mdlEdit" show="loadEdit" title="Edit Permintaan" />
 <x-modal-form id="mdlDetail" show="loadDetail" title="Detail Permintaan" />
-<x-modal-form id="mdlCreateSuratjalan" size="modal-lg" show="loadCreateSuratjalan" title="Buat Surat Jalan" />
+<x-modal-form id="mdlCreateSuratjalan" show="loadCreateSuratjalan" title="Buat Surat Jalan" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
@@ -226,6 +226,8 @@
         $("#btnCreate").click(function(e) {
             e.preventDefault();
             $('#mdlCreate').modal("show");
+            $("#loadEdit").html('');
+            $("#loadCreateSuratjalan").html('');
             $("#loadCreate").load("{{ route('permintaankiriman.create') }}");
         });
 
@@ -239,6 +241,8 @@
         $(".btnEdit").click(function(e) {
             const no_permintaan = $(this).attr("no_permintaan");
             e.preventDefault();
+            $("#loadCreate").html('');
+            $("#loadCreateSuratjalan").html('');
             $('#mdlEdit').modal("show");
             $("#loadEdit").load(`/permintaankiriman/${no_permintaan}/edit`);
         });
@@ -246,6 +250,8 @@
         $(".btnCreateSuratjalan").click(function(e) {
             e.preventDefault();
             const no_permintaan = $(this).attr("no_permintaan");
+            $("#loadCreate").html('');
+            $("#loadEdit").html('');
             $('#mdlCreateSuratjalan').modal("show");
             $("#loadCreateSuratjalan").load(`/suratjalan/${no_permintaan}/create`);
         });

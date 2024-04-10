@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Angkutan;
 use App\Models\Detailpermintaankiriman;
 use App\Models\Permintaankiriman;
+use App\Models\Produk;
 use App\Models\Tujuanangkutan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -29,6 +30,7 @@ class SuratjalanController extends Controller
             ->where('no_permintaan', $no_permintaan)
             ->orderBy('marketing_permintaan_kiriman_detail.kode_produk')
             ->get();
+        $data['produk'] = Produk::where('status_aktif_produk', 1)->orderBy('kode_produk')->get();
         return view('gudangjadi.suratjalan.create', $data);
     }
 }

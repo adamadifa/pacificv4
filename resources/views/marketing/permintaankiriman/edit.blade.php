@@ -36,8 +36,8 @@
     <table class="table table-hover table-striped table-bordered" id="tabledetailProduk">
         <thead class="table-dark">
             <tr>
-                <th>Kode Produk</th>
-                <th>Nama Produk</th>
+                <th>Kode</th>
+                <th style="width: 50%">Nama Produk</th>
                 <th>Jumlah</th>
                 <th>#</th>
             </tr>
@@ -227,6 +227,7 @@
 
             //append to table
             $('#loaddetail').prepend(produk);
+            $(".money").maskMoney();
         }
         form.find("#tambahproduk").click(function(e) {
             e.preventDefault();
