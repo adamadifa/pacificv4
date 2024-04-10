@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluarproduksiController;
 use App\Http\Controllers\BarangmasukproduksiController;
 use App\Http\Controllers\BarangproduksiController;
@@ -35,6 +36,7 @@ use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanController;
+use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WilayahController;
@@ -486,7 +488,6 @@ Route::middleware('auth')->group(function () {
     });
 
     //Surat Jalan Gudang Jadi
-
     Route::controller(SuratjalanController::class)->group(function () {
         Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->can('suratjalan.create');
     });

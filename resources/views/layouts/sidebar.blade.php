@@ -65,6 +65,10 @@
                  'bufferstok/*',
                  'barangproduksi',
                  'barangproduksi/*',
+                 'tujuanangkutan',
+                 'tujuanangkutan/*',
+                 'angkutan',
+                 'angkutan/*',
              ])
                  ? 'open'
                  : '' }}">
@@ -239,6 +243,21 @@
                              </a>
                          </li>
                      @endcan
+                     @can('angkutan.index')
+                         <li class="menu-item {{ request()->is(['angkutan', 'angkutan/*']) ? 'active' : '' }}">
+                             <a href="{{ route('angkutan.index') }}" class="menu-link">
+                                 <div>Angkutan</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @can('tujuanangkutan.index')
+                         <li class="menu-item {{ request()->is(['tujuanangkutan', 'tujuanangkutan/*']) ? 'active' : '' }}">
+                             <a href="{{ route('tujuanangkutan.index') }}" class="menu-link">
+                                 <div>Tujuan Angkutan</div>
+                             </a>
+                         </li>
+                     @endcan
+
                      <li class="menu-header small text-uppercase">
                          <span class="menu-header-text">PRODUKSI</span>
                      </li>
