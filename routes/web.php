@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluarproduksiController;
 use App\Http\Controllers\BarangmasukproduksiController;
 use App\Http\Controllers\BarangproduksiController;
@@ -35,6 +36,7 @@ use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanController;
+use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WilayahController;
@@ -486,9 +488,28 @@ Route::middleware('auth')->group(function () {
     });
 
     //Surat Jalan Gudang Jadi
-
     Route::controller(SuratjalanController::class)->group(function () {
-        Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->canc('suratjalan.create');
+        Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->can('suratjalan.create');
+    });
+
+
+    Route::controller(TujuanangkutanController::class)->group(function () {
+        Route::get('/tujuanangkutan', 'index')->name('tujuanangkutan.index')->can('tujuanangkutan.index');
+        Route::get('/tujuanangkutan/create', 'create')->name('tujuanangkutan.create')->can('tujuanangkutan.create');
+        Route::post('/tujuanangkutan', 'store')->name('tujuanangkutan.store')->can('tujuanangkutan.store');
+        Route::get('/tujuanangkutan/{kode_tujuan}/edit', 'edit')->name('tujuanangkutan.edit')->can('tujuanangkutan.edit');
+        Route::post('/tujuanangkutan/{kode_tujuan}/update', 'update')->name('tujuanangkutan.update')->can('tujuanangkutan.update');
+        Route::delete('/tujuanangkutan/{kode_tujuan}', 'destroy')->name('tujuanangkutan.delete')->can('tujuanangkutan.delete');
+    });
+
+
+    Route::controller(AngkutanController::class)->group(function () {
+        Route::get('/angkutan', 'index')->name('angkutan.index')->can('angkutan.index');
+        Route::get('/angkutan/create', 'create')->name('angkutan.create')->can('angkutan.create');
+        Route::post('/angkutan', 'store')->name('angkutan.store')->can('angkutan.store');
+        Route::get('/angkutan/{kode_angkutan}/edit', 'edit')->name('angkutan.edit')->can('angkutan.edit');
+        Route::post('/angkutan/{kode_angkutan}/update', 'update')->name('angkutan.update')->can('angkutan.update');
+        Route::delete('/angkutan/{kode_angkutan}', 'destroy')->name('angkutan.delete')->can('angkutan.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

@@ -245,8 +245,9 @@
 
         $(".btnCreateSuratjalan").click(function(e) {
             e.preventDefault();
+            const no_permintaan = $(this).attr("no_permintaan");
             $('#mdlCreateSuratjalan').modal("show");
-            $("#loadCreateSuratjalan").load("{{ route('permintaankiriman.create') }}");
+            $("#loadCreateSuratjalan").load(`/suratjalan/${no_permintaan}/create`);
         });
     });
 </script>
