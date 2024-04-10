@@ -488,7 +488,7 @@ Route::middleware('auth')->group(function () {
     //Surat Jalan Gudang Jadi
 
     Route::controller(SuratjalanController::class)->group(function () {
-        Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->canc('suratjalan.create');
+        Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->can('suratjalan.create');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
