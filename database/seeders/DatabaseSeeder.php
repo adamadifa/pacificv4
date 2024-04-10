@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             KategorisalesmanSeeder::class,
             Suratjalanpermissionseeder::class,
             Tujuanangkutanseeder::class,
+            Tujuanangkutanpermissionseeder::class,
             Angkutanseeder::class,
             Angkutanpermissionseeder::class
         ]);
