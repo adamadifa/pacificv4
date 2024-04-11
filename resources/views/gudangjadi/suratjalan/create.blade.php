@@ -1,4 +1,5 @@
-<form action="" method="POST" id="formcreateSuratjalan">
+<form action="{{ route('suratjalan.store', Crypt::encrypt($pk->no_permintaan)) }}" method="POST"
+    id="formcreateSuratjalan">
     <div class="row">
         <div class="col">
             <table class="table">
@@ -34,7 +35,7 @@
             @csrf
             <input type="hidden" id="cektutuplaporan">
             <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_mutasi" readonly="true" />
-            <x-input-with-icon icon="ti ti-barcode" label="No. Dokumen" name="no_dokumen" readonly="true" />
+            <x-input-with-icon icon="ti ti-barcode" label="No. Dokumen" name="no_dok" />
             <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
             <div class="row">
                 <div class="col-lg-6 col-sm-12 col-md-12">
@@ -90,7 +91,10 @@
                 <tbody id="loaddetail">
                     @foreach ($detail as $d)
                         <tr id={{ 'index_' . $d->kode_produk }}>
-                            <td>{{ $d->kode_produk }}</td>
+                            <td>
+                                {{ $d->kode_produk }}
+                                <input type="hidden" name="kode_produk[]" value="{{ $d->kode_produk }}">
+                            </td>
                             <td>{{ $d->nama_produk }}</td>
                             <td class="text-end">
                                 <input type="text" name="jml[]" class="noborder-form text-end jml money"
@@ -295,6 +299,7 @@
         });
 
         formCreate.submit(function() {
+            //return false;
             const tanggal = formCreate.find("#tanggal").val();
             const no_dok = formCreate.find("#no_dok").val();
             const kode_tujuan = formCreate.find("#kode_tujuan").val();
@@ -304,8 +309,8 @@
             const tepung = formCreate.find("#tepung").val();
             const bs = formCreate.find("#bs").val();
             const keterangan = formCreate.find("#keterangan").val();
-            const cektutuplaporan = form.find("#cektutuplaporan").val();
-            if ($('#loaddetail tr').length == 0) {
+            const cektutuplaporan = formCreate.find("#cektutuplaporan").val();
+            if (formCreate.find('#loaddetail tr').length == 0) {
                 Swal.fire({
                     title: "Oops!",
                     text: "Data Produk Masih Kosong !",
@@ -320,44 +325,63 @@
             } else if (tanggal == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Tanggal Tidak Boleh Kosong !",
+                    text: "Tanggal Harus Diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        form.find("#tanggal_mutasi").focus();
+                        formCreate.find("#tanggal").focus();
                     },
                 });
 
                 return false;
-            } else if (kode_cabang == "") {
+            } else if (no_dok == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Cabang Tidak Boleh Kosong !",
+                    text: "No. Dokumen Harus Diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        form.find("#kode_produk").focus();
+                        formCreate.find("#no_dok").focus();
                     },
                 });
 
                 return false;
-            } else if (keterangan == "") {
+            } else if (kode_tujuan == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Keterangan Tidak Boleh Kosong !",
+                    text: "Tujuan  Harus Diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        form.find("#keterangan").focus();
+                        formCreate.find("#kode_tujuan").focus();
                     },
                 });
 
                 return false;
-            } else if (cektutuplaporan === '1') {
-                Swal.fire("Oops!", "Laporan Untuk Periode Ini Sudah Ditutup", "warning");
+            } else if (kode_angkutan != "" && no_polisi == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "No. Polisi  Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formCreate.find("#no_polisi").focus();
+                    },
+                });
+
                 return false;
-            } else {
-                $("#btnSimpan").prop('disabled', true);
+            } else if (kode_angkutan != "" && tarif == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tarif  Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formCreate.find("#tarif").focus();
+                    },
+                });
+
+                return false;
             }
 
 

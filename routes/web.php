@@ -489,7 +489,10 @@ Route::middleware('auth')->group(function () {
 
     //Surat Jalan Gudang Jadi
     Route::controller(SuratjalanController::class)->group(function () {
+        Route::get('/suratjalan', 'index')->name('suratjalan.index')->can('suratjalan.index');
         Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->can('suratjalan.create');
+        Route::post('/suratjalan/{no_permintaan}/store', 'store')->name('suratjalan.store')->can('suratjalan.store');
+        Route::delete('/suratjalan/{no_mutasi}', 'destroy')->name('suratjalan.delete')->can('suratjalan.delete');
     });
 
     Route::controller(TujuanangkutanController::class)->group(function () {

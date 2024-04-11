@@ -7,11 +7,24 @@
 @endsection
 <div class="row">
     <div class="col-lg-10 col-sm-12 col-xs-12">
-        <div class="alert alert-info d-flex align-items-center" role="alert">
-            <span class="alert-icon text-info me-2">
-                <i class="ti ti-info-circle ti-xs"></i>
+
+        <div class="alert alert-info alert-dismissible d-flex align-items-baseline" role="alert">
+            <span class="alert-icon alert-icon-lg text-info me-2">
+                <i class="ti ti-info-circle ti-sm"></i>
             </span>
-            Silahkan Gunakan Icon <i class="ti ti-external-link primary me-1 ms-1"></i> Untuk membuat Surat Jalan !
+            <div class="d-flex flex-column ps-1">
+                <h5 class="alert-heading mb-2">Informasi</h5>
+                <p class="mb-0">
+                    Silahkan Gunakan Icon <i class="ti ti-external-link primary me-1 ms-1"></i> Untuk membuat Surat
+                    Jalan !
+                </p>
+                <p class="mb-0">
+                    Silahkan Gunakan Icon <i class="ti ti-square-rounded-minus text-danger me-1 ms-1"></i> Untuk
+                    Membatalkan
+                    Surat Jalan !
+                </p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
         <div class="card">
             <div class="card-header">
@@ -195,6 +208,22 @@
                                                                     class="btnCreateSuratjalan">
                                                                     <i class="ti ti-external-link primary "></i>
                                                                 </a>
+                                                            </div>
+                                                        @endif
+                                                    @endcan
+
+                                                    @can('suratjalan.delete')
+                                                        @if ($d->status == '1' && $d->status_surat_jalan === '0')
+                                                            <div>
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('suratjalan.delete', Crypt::encrypt($d->no_mutasi)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm me-1">
+                                                                        <i
+                                                                            class="ti ti-square-rounded-minus text-danger"></i>
+                                                                    </a>
+                                                                </form>
                                                             </div>
                                                         @endif
                                                     @endcan
