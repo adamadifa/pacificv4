@@ -134,6 +134,29 @@
              }
          });
      });
+
+
+     $('.cancel-confirm').click(function(event) {
+         var form = $(this).closest("form");
+         var name = $(this).data("name");
+         event.preventDefault();
+         Swal.fire({
+             title: `Apakah Anda Yakin Ingin Membatalkan Data Ini ?`,
+             text: "Data ini akan dibatalkan.",
+             icon: "warning",
+             buttons: true,
+             dangerMode: true,
+             showCancelButton: true,
+             confirmButtonColor: "#554bbb",
+             cancelButtonColor: "#d33",
+             confirmButtonText: "Yes, Batalkan Saja Saja!"
+         }).then((result) => {
+             /* Read more about isConfirmed, isDenied below */
+             if (result.isConfirmed) {
+                 form.submit();
+             }
+         });
+     });
  </script>
 
  <script>

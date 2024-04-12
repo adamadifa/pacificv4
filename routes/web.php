@@ -328,12 +328,13 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(FsthpController::class)->group(function () {
         Route::get('/fsthp', 'index')->name('fsthp.index')->can('fsthp.index');
+        Route::get('/fsthpgudang', 'index_gudang')->name('fsthpgudang.index')->can('fsthpgudang.index');
         Route::get('/fsthp/create', 'create')->name('fsthp.create')->can('fsthp.create');
         Route::post('/fsthp', 'store')->name('fsthp.store')->can('fsthp.store');
         Route::delete('/fsthp/{no_mutasi}', 'destroy')->name('fsthp.delete')->can('fsthp.delete');
         Route::get('/fsthp/{no_mutasi}/show', 'show')->name('fsthp.show')->can('fsthp.show');
         Route::get('/fsthp/{no_mutasi}/approve', 'approve')->name('fsthp.approve')->can('fsthp.approve');
-        Route::get('/fsthp/{no_mutasi}/cancel', 'cancel')->name('fsthp.cancel')->can('fsthp.approve');
+        Route::delete('/fsthp/{no_mutasi}/cancel', 'cancel')->name('fsthp.cancel')->can('fsthp.approve');
 
         //Ajax Request
         Route::post('/fsthp/storedetailtemp', 'storedetailtemp')->name('fsthp.storedetailtemp');
@@ -492,6 +493,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/suratjalan', 'index')->name('suratjalan.index')->can('suratjalan.index');
         Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->can('suratjalan.create');
         Route::post('/suratjalan/{no_permintaan}/store', 'store')->name('suratjalan.store')->can('suratjalan.store');
+        Route::get('/suratjalan/{no_mutasi}/show', 'show')->name('suratjalan.show')->can('suratjalan.show');
+        Route::get('/suratjalan/{no_mutasi}/edit', 'edit')->name('suratjalan.edit')->can('suratjalan.edit');
+        Route::get('/suratjalan/{no_mutasi}/edit', 'edit')->name('suratjalan.edit')->can('suratjalan.edit');
+        Route::put('/suratjalan/{no_mutasi}/update', 'update')->name('suratjalan.update')->can('suratjalan.update');
+        Route::get('/suratjalan/{no_mutasi}/approveform', 'approveform')->name('suratjalan.approveform')->can('suratjalan.approve');
+        Route::post('/suratjalan/{no_mutasi}/approve', 'approve')->name('suratjalan.approve')->can('suratjalan.approve');
+        Route::delete('/suratjalan/{no_mutasi}/cancel', 'cancel')->name('suratjalan.cancel')->can('suratjalan.approve');
         Route::delete('/suratjalan/{no_mutasi}', 'destroy')->name('suratjalan.delete')->can('suratjalan.delete');
     });
 

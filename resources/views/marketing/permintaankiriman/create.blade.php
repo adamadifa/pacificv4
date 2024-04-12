@@ -244,6 +244,7 @@
                             loaddetailtemp();
                             $('.select2Kodeproduk').val('').trigger("change");
 
+
                         } else if (respond === '1') {
                             Swal.fire("Oops!", "Data Sudah Ada", "warning");
                         } else {

@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
             Tujuanangkutanseeder::class,
             Tujuanangkutanpermissionseeder::class,
             Angkutanseeder::class,
-            Angkutanpermissionseeder::class
+            Angkutanpermissionseeder::class,
+            Fsthpgudangpermissionseeder::class
         ]);
     }
 }

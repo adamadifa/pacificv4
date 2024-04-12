@@ -228,6 +228,9 @@
             //append to table
             $('#loaddetail').prepend(produk);
             $(".money").maskMoney();
+            $('.select2Kodeproduk').val('').trigger("change");
+            $("#jumlah").val("");
+            $("#kode_produk").focus();
         }
         form.find("#tambahproduk").click(function(e) {
             e.preventDefault();
@@ -296,6 +299,11 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $(`#index_${kode_produk}`).remove();
+                    Swal.fire({
+                        title: "Berhasil",
+                        text: "Data Berhasil Dihapus",
+                        icon: "success"
+                    });
                 }
             });
         });

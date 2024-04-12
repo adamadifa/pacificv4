@@ -1,29 +1,34 @@
-<form action="{{ route('suratjalan.store', Crypt::encrypt($pk->no_permintaan)) }}" method="POST"
-    id="formcreateSuratjalan">
+<form action="{{ route('suratjalan.update', Crypt::encrypt($surat_jalan->no_mutasi)) }}" method="POST"
+    id="formeditSuratjalan">
+    @method('PUT')
     <div class="row">
         <div class="col">
             <table class="table">
                 <tr>
                     <th>No. Permintaan</th>
-                    <td>{{ $pk->no_permintaan }}</td>
+                    <td>{{ $surat_jalan->no_permintaan }}</td>
+                </tr>
+                <tr>
+                    <th>No. Dokumen</th>
+                    <td>{{ $surat_jalan->no_dok }}</td>
                 </tr>
                 <tr>
                     <th>Tanggal</th>
-                    <td>{{ DateToIndo($pk->tanggal) }}</td>
+                    <td>{{ DateToIndo($surat_jalan->tanggal) }}</td>
                 </tr>
                 <tr>
                     <th>Cabang</th>
-                    <td>{{ textUpperCase($pk->nama_cabang) }}</td>
+                    <td>{{ textUpperCase($surat_jalan->nama_cabang) }}</td>
                 </tr>
-                @if (!empty($pk->kode_salesman))
+                @if (!empty($surat_jalan->kode_salesman))
                     <tr>
                         <th>Salesman</th>
-                        <td>{{ $pk->nama_salesman }}</td>
+                        <td>{{ $surat_jalan->nama_salesman }}</td>
                     </tr>
                 @endif
                 <tr>
                     <th>Keterangan</th>
-                    <td>{{ $pk->keterangan }}</td>
+                    <td>{{ $surat_jalan->keterangan }}</td>
                 </tr>
             </table>
 
@@ -34,40 +39,48 @@
 
             @csrf
             <input type="hidden" id="cektutuplaporan">
-            <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_mutasi" readonly="true" />
-            <x-input-with-icon icon="ti ti-barcode" label="No. Dokumen" name="no_dok" />
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+            {{-- <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_mutasi" readonly="true" /> --}}
+            <x-input-with-icon icon="ti ti-barcode" label="No. Dokumen" name="no_dok"
+                value="{{ $surat_jalan->no_dok }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date"
+                value="{{ $surat_jalan->tanggal }}" />
             <div class="row">
                 <div class="col-lg-6 col-sm-12 col-md-12">
                     <div class="form-group mb-3">
                         <select name="kode_tujuan" id="kode_tujuan" class="form-select Select2Kodetujuan">
                             <option value="">Pilih Tujuan</option>
                             @foreach ($tujuan_angkutan as $d)
-                                <option value="{{ $d->kode_tujuan }}" data-tarif="{{ formatAngka($d->tarif) }}">
+                                <option value="{{ $d->kode_tujuan }}" data-tarif="{{ formatAngka($d->tarif) }}"
+                                    {{ $surat_jalan->kode_tujuan == $d->kode_tujuan ? 'selected' : '' }}>
                                     {{ textUpperCase($d->tujuan) }}</option>
                             @endforeach
                         </select>
                     </div>
-
                 </div>
                 <div class="col-lg-6 col-sm-12 col-md-12">
                     <x-select label="Angkutan" name="kode_angkutan" :data="$angkutan" key="kode_angkutan"
-                        textShow="nama_angkutan" select2="select2Kodeangkutan" upperCase="true" />
+                        textShow="nama_angkutan" select2="select2Kodeangkutan" upperCase="true"
+                        selected="{{ $surat_jalan->kode_angkutan }}" />
                 </div>
             </div>
-            <x-input-with-icon icon="ti ti-barcode" label="No. Polisi" name="no_polisi" />
+            <x-input-with-icon icon="ti ti-barcode" label="No. Polisi" name="no_polisi"
+                value="{{ $surat_jalan->no_polisi }}" />
             <div class="row">
                 <div class="col-lg-4 col-md-12 col-sm-12">
-                    <x-input-with-icon icon="ti ti-file" label="Tarif" name="tarif" money="true" align="right" />
+                    <x-input-with-icon icon="ti ti-file" label="Tarif" name="tarif" money="true" align="right"
+                        value="{{ formatAngka($surat_jalan->tarif) }}" />
                 </div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
-                    <x-input-with-icon icon="ti ti-file" label="Tepung" name="tepung" money="true" align="right" />
+                    <x-input-with-icon icon="ti ti-file" label="Tepung" name="tepung" money="true" align="right"
+                        value="{{ formatAngka($surat_jalan->tepung) }}" />
                 </div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
-                    <x-input-with-icon icon="ti ti-file" label="BS" name="bs" money="true" align="right" />
+                    <x-input-with-icon icon="ti ti-file" label="BS" name="bs" money="true" align="right"
+                        value="{{ formatAngka($surat_jalan->bs) }}" />
                 </div>
             </div>
-            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan"
+                value="{{ $surat_jalan->keterangan }}" />
         </div>
     </div>
     <div class="divider text-start">
@@ -137,8 +150,9 @@
 <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 <script>
     $(function() {
-        const formCreate = $("#formcreateSuratjalan");
+        const form = $("#formeditSuratjalan");
         $(".flatpickr-date").flatpickr({
+
             enable: [{
                 from: "{{ $start_periode }}",
                 to: "{{ $end_periode }}"
@@ -152,6 +166,7 @@
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
                     placeholder: 'Pilih Tujuan',
+                    allowClear: true,
                     dropdownParent: $this.parent()
                 });
             });
@@ -163,14 +178,16 @@
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
                     placeholder: 'Pilih Angkutan',
+                    allowClear: true,
                     dropdownParent: $this.parent()
                 });
             });
         }
 
-        const select2Kodeproduk = formCreate.find('.select2Kodeproduk');
+        const select2Kodeproduk = form.find('.select2Kodeproduk');
         if (select2Kodeproduk.length) {
             select2Kodeproduk.each(function() {
+                var form = $("#formeditSuratjalan");
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
                     placeholder: 'Pilih Produk',
@@ -198,10 +215,10 @@
         }
 
         function addProduk() {
-            const dataProduk = formCreate.find("#kode_produk :selected").select2(this.data);
+            const dataProduk = form.find("#kode_produk :selected").select2(this.data);
             const kode_produk = $(dataProduk).val();
             const nama_produk = $(dataProduk).text();
-            const jumlah = formCreate.find("#jumlah").val();
+            const jumlah = form.find("#jumlah").val();
 
             let produk = `
                     <tr id="index_${kode_produk}">
@@ -235,7 +252,8 @@
             var tarif = $('option:selected', this).attr('data-tarif');
             $("#tarif").val(tarif);
         });
-        formCreate.on('click', '.delete', function(e) {
+
+        form.on('click', '.delete', function(e) {
             e.preventDefault();
             var kode_produk = $(this).attr("kode_produk");
             event.preventDefault();
@@ -253,23 +271,28 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $(`#index_${kode_produk}`).remove();
+                    Swal.fire({
+                        title: "Berhasil",
+                        text: "Data Berhasil Dihapus",
+                        icon: "success"
+                    });
                 }
             });
         });
-        formCreate.find("#saveButton").hide();
+        form.find("#saveButton").hide();
 
-        formCreate.find('.agreement').change(function() {
+        form.find('.agreement').change(function() {
             if (this.checked) {
-                formCreate.find("#saveButton").show();
+                form.find("#saveButton").show();
             } else {
-                formCreate.find("#saveButton").hide();
+                form.find("#saveButton").hide();
             }
         });
 
-        formCreate.find("#tambahproduk").click(function(e) {
+        form.find("#tambahproduk").click(function(e) {
             e.preventDefault();
-            const kode_produk = formCreate.find("#kode_produk").val();
-            const jumlah = formCreate.find("#jumlah").val();
+            const kode_produk = form.find("#kode_produk").val();
+            const jumlah = form.find("#jumlah").val();
             if (kode_produk == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -277,7 +300,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#kode_produk").focus();
+                        form.find("#kode_produk").focus();
                     },
 
                 });
@@ -289,21 +312,21 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#jumlah").focus();
+                        form.find("#jumlah").focus();
                     },
 
                 });
 
             } else {
-                formCreate.find("#tambahproduk").prop('disabled', true);
-                if (formCreate.find('#tabledetailProduk').find('#index_' + kode_produk).length > 0) {
+                form.find("#tambahproduk").prop('disabled', true);
+                if (form.find('#tabledetailProduk').find('#index_' + kode_produk).length > 0) {
                     Swal.fire({
                         title: "Oops!",
                         text: "Data Sudah Ada!",
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            formCreate.find("#kode_produk").focus();
+                            form.find("#kode_produk").focus();
                         },
 
                     });
@@ -313,19 +336,21 @@
             }
         });
 
-        formCreate.submit(function() {
+        cektutuplaporan($("#tanggal").val(), "gudangjadi");
+        form.submit(function() {
             //return false;
-            const tanggal = formCreate.find("#tanggal").val();
-            const no_dok = formCreate.find("#no_dok").val();
-            const kode_tujuan = formCreate.find("#kode_tujuan").val();
-            const kode_angkutan = formCreate.find("#kode_angkutan").val();
-            const no_polisi = formCreate.find("#no_polisi").val();
-            const tarif = formCreate.find("#tarif").val();
-            const tepung = formCreate.find("#tepung").val();
-            const bs = formCreate.find("#bs").val();
-            const keterangan = formCreate.find("#keterangan").val();
-            const cektutuplaporan = formCreate.find("#cektutuplaporan").val();
-            if (formCreate.find('#loaddetail tr').length == 0) {
+            const tanggal = form.find("#tanggal").val();
+            const no_dok = form.find("#no_dok").val();
+            const kode_tujuan = form.find("#kode_tujuan").val();
+            const kode_angkutan = form.find("#kode_angkutan").val();
+            const no_polisi = form.find("#no_polisi").val();
+            const tarif = form.find("#tarif").val();
+            const tepung = form.find("#tepung").val();
+            const bs = form.find("#bs").val();
+            const keterangan = form.find("#keterangan").val();
+            const cektutuplaporan = form.find("#cektutuplaporan").val();
+
+            if (form.find('#loaddetail tr').length == 0) {
                 Swal.fire({
                     title: "Oops!",
                     text: "Data Produk Masih Kosong !",
@@ -344,7 +369,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#tanggal").focus();
+                        form.find("#tanggal").focus();
                     },
                 });
 
@@ -356,7 +381,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#no_dok").focus();
+                        form.find("#no_dok").focus();
                     },
                 });
 
@@ -368,7 +393,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#kode_tujuan").focus();
+                        form.find("#kode_tujuan").focus();
                     },
                 });
 
@@ -380,7 +405,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#no_polisi").focus();
+                        form.find("#no_polisi").focus();
                     },
                 });
 
@@ -392,7 +417,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#tarif").focus();
+                        form.find("#tarif").focus();
                     },
                 });
 

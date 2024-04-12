@@ -21,8 +21,8 @@ class PermintaankirimanController extends Controller
     {
 
         $start_year = config('global.start_year');
-        $start_date = $start_year . "-01-01";
-        $end_date = date('Y-m-d');
+        $start_date = config('global.start_date');
+        $end_date = config('global.end_date');
 
 
         if (!empty($request->dari) && !empty($request->sampai)) {
@@ -59,16 +59,14 @@ class PermintaankirimanController extends Controller
         $pk->appends(request()->all());
 
         $data['pk'] = $pk;
-        $cbg = new Cabang();
-        $data['cabang'] = $cbg->getCabang();
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         return view('marketing.permintaankiriman.index', $data);
     }
 
 
     public function create()
     {
-        $cbg = new Cabang();
-        $data['cabang'] = $cbg->getCabang();
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['produk'] = Produk::where('status_aktif_produk', 1)->orderBy('kode_produk')->get();
         return view('marketing.permintaankiriman.create', $data);
     }
@@ -169,8 +167,7 @@ class PermintaankirimanController extends Controller
             ->join('produk', 'marketing_permintaan_kiriman_detail.kode_produk', '=', 'produk.kode_produk')
             ->where('no_permintaan', $no_permintaan)
             ->get();
-        $cbg = new Cabang();
-        $data['cabang'] = $cbg->getCabang();
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['produk'] = Produk::where('status_aktif_produk', 1)->orderBy('kode_produk')->get();
         return view('marketing.permintaankiriman.edit', $data);
     }
@@ -295,6 +292,8 @@ class PermintaankirimanController extends Controller
 
         return view('marketing.permintaankiriman.show', $data);
     }
+
+
     public function destroy($no_permintaan)
     {
         $no_permintaan = Crypt::decrypt($no_permintaan);

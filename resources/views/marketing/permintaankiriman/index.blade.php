@@ -15,11 +15,11 @@
             <div class="d-flex flex-column ps-1">
                 <h5 class="alert-heading mb-2">Informasi</h5>
                 <p class="mb-0">
-                    Silahkan Gunakan Icon <i class="ti ti-external-link primary me-1 ms-1"></i> Untuk membuat Surat
+                    Silahkan Gunakan Icon <i class="ti ti-external-link text-primary me-1 ms-1"></i> Untuk membuat Surat
                     Jalan !
                 </p>
                 <p class="mb-0">
-                    Silahkan Gunakan Icon <i class="ti ti-square-rounded-minus text-danger me-1 ms-1"></i> Untuk
+                    Silahkan Gunakan Icon <i class="ti ti-square-rounded-minus text-warning me-1 ms-1"></i> Untuk
                     Membatalkan
                     Surat Jalan !
                 </p>
@@ -221,7 +221,7 @@
                                                                     @method('DELETE')
                                                                     <a href="#" class="delete-confirm me-1">
                                                                         <i
-                                                                            class="ti ti-square-rounded-minus text-danger"></i>
+                                                                            class="ti ti-square-rounded-minus text-warning"></i>
                                                                     </a>
                                                                 </form>
                                                             </div>

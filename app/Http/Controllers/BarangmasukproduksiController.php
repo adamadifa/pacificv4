@@ -18,8 +18,8 @@ class BarangmasukproduksiController extends Controller
     public function index(Request $request)
     {
         $start_year = config('global.start_year');
-        $start_date = $start_year . "-01-01";
-        $end_date = date('Y-m-d');
+        $start_date = config('global.start_date');
+        $end_date = config('global.end_date');
 
         $query = Barangmasukproduksi::query();
         $query->orderBy('tanggal', 'desc');

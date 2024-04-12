@@ -354,15 +354,17 @@
                  </ul>
              @endif
          </li>
-         <li class="menu-item {{ request()->is(['suratjalan', 'suratjalan/*']) ? 'open' : '' }}">
+         <li
+             class="menu-item {{ request()->is(['suratjalan', 'suratjalan/*', 'fsthpgudang', 'fsthpgudang/*']) ? 'open' : '' }}">
              @if (auth()->user()->hasAnyPermission(['suratjalan.index']))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-building-warehouse"></i>
                      <div>Gudang Jadi</div>
                  </a>
                  <ul class="menu-sub">
-                     @if (auth()->user()->hasAnyPermission(['suratjalan.index']))
-                         <li class="menu-item {{ request()->is(['suratjalan', 'suratjalan/*']) ? 'active' : '' }}">
+                     @if (auth()->user()->hasAnyPermission(['suratjalan.index', 'fsthpgudang.index']))
+                         <li
+                             class="menu-item {{ request()->is(['suratjalan', 'suratjalan/*', 'fsthpgudang', 'fsthpgudang/*']) ? 'active' : '' }}">
                              <a href="{{ route('suratjalan.index') }}" class="menu-link">
                                  <div>Mutasi Produk</div>
                              </a>

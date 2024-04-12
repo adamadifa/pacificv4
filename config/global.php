@@ -1,4 +1,6 @@
 <?php
+$start_year = 2023;
+$hari_ini = date('Y-m-d');
 return  [
     //Nama Bulan Singkat
     'nama_bulan_singkat' => ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -59,7 +61,10 @@ return  [
 
 
 
-    'start_year' => 2023,
+    'start_year' => $start_year,
+    'start_date' => $start_year . "-01-01",
+    'end_date' => date('Y-m-t', strtotime($hari_ini)),
+
 
     'roles_access_all_cabang' => ['super admin', 'general manager 3', 'manager keuangan', 'direktur'],
     'roles_show_cabang' => ['super admin', 'general manager 3', 'manager keuangan', 'direktur', 'regional sales manager'],
