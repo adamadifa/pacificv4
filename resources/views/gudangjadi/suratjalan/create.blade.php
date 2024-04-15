@@ -332,7 +332,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        form.find("#kode_produk").focus();
+                        formCreate.find("#kode_produk").focus();
                     },
                 });
 

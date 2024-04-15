@@ -27,7 +27,13 @@ class DatabaseSeeder extends Seeder
             Tujuanangkutanpermissionseeder::class,
             Angkutanseeder::class,
             Angkutanpermissionseeder::class,
-            Fsthpgudangpermissionseeder::class
+            Fsthpgudangpermissionseeder::class,
+            Repackgudangjadipermissionseeder::class,
+            Rejectgudangjadipermissionseeder::class,
+            Lainnyagudangjadipermissionseeder::class,
+            Saldoawalmutasigudangjadipermissionseeder::class,
+            Suratjalanangkutanpermissionseeder::class,
+            Laporangudangjadipermissionseeder::class,
         ]);
     }
 }

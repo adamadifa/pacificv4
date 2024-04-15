@@ -355,22 +355,71 @@
              @endif
          </li>
          <li
-             class="menu-item {{ request()->is(['suratjalan', 'suratjalan/*', 'fsthpgudang', 'fsthpgudang/*']) ? 'open' : '' }}">
+             class="menu-item {{ request()->is([
+                 'sagudangjadi',
+                 'sagudangjadi/*',
+                 'suratjalan',
+                 'suratjalan/*',
+                 'fsthpgudang',
+                 'fsthpgudang/*',
+                 'repackgudangjadi',
+                 'repackgudangjadi/*',
+                 'rejectgudangjadi',
+                 'rejectgudangjadi/*',
+                 'lainnyagudangjadi',
+                 'lainnyagudangjadi/*',
+                 'suratjalanangkutan',
+                 'suratjalanangkutan/*',
+                 'laporangudangjadi',
+                 'laporangudangjadi/*',
+             ])
+                 ? 'open'
+                 : '' }}">
              @if (auth()->user()->hasAnyPermission(['suratjalan.index']))
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-building-warehouse"></i>
                      <div>Gudang Jadi</div>
                  </a>
                  <ul class="menu-sub">
-                     @if (auth()->user()->hasAnyPermission(['suratjalan.index', 'fsthpgudang.index']))
+                     @if (auth()->user()->hasAnyPermission($all_gudang_jadi))
                          <li
-                             class="menu-item {{ request()->is(['suratjalan', 'suratjalan/*', 'fsthpgudang', 'fsthpgudang/*']) ? 'active' : '' }}">
-                             <a href="{{ route('suratjalan.index') }}" class="menu-link">
+                             class="menu-item {{ request()->is([
+                                 'sagudangjadi',
+                                 'sagudangjadi/*',
+                                 'suratjalan',
+                                 'suratjalan/*',
+                                 'fsthpgudang',
+                                 'fsthpgudang/*',
+                                 'repackgudangjadi',
+                                 'repackgudangjadi/*',
+                                 'rejectgudangjadi',
+                                 'rejectgudangjadi/*',
+                                 'lainnyagudangjadi',
+                                 'lainnyagudangjadi/*',
+                             ])
+                                 ? 'active'
+                                 : '' }}">
+                             <a href="{{ route('sagudangjadi.index') }}" class="menu-link">
                                  <div>Mutasi Produk</div>
                              </a>
                          </li>
                      @endif
-
+                     @can('suratjalanangkutan.index')
+                         <li
+                             class="menu-item {{ request()->is(['suratjalanangkutan', 'suratjalanangkutan/*']) ? 'active' : '' }}">
+                             <a href="{{ route('suratjalanangkutan.index') }}" class="menu-link">
+                                 <div>Angkutan</div>
+                             </a>
+                         </li>
+                     @endcan
+                     @if (auth()->user()->hasAnyPermission($laporan_gudang_jadi))
+                         <li
+                             class="menu-item {{ request()->is(['laporangudangjadi', 'laporangudangjadi/*']) ? 'active' : '' }}">
+                             <a href="{{ route('laporangudangjadi.index') }}" class="menu-link">
+                                 <div>Laporan</div>
+                             </a>
+                         </li>
+                     @endif
                  </ul>
              @endif
          </li>

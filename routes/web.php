@@ -18,6 +18,8 @@ use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\LainnyagudangjadiController;
+use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
@@ -29,12 +31,16 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionalController;
+use App\Http\Controllers\RejectgudangjadiController;
 use App\Http\Controllers\RekeningController;
+use App\Http\Controllers\RepackgudangjadiController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaldoawalbarangproduksiController;
+use App\Http\Controllers\SaldoawalgudangjadiController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
 use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
@@ -520,6 +526,67 @@ Route::middleware('auth')->group(function () {
         Route::get('/angkutan/{kode_angkutan}/edit', 'edit')->name('angkutan.edit')->can('angkutan.edit');
         Route::post('/angkutan/{kode_angkutan}/update', 'update')->name('angkutan.update')->can('angkutan.update');
         Route::delete('/angkutan/{kode_angkutan}', 'destroy')->name('angkutan.delete')->can('angkutan.delete');
+    });
+
+
+    Route::controller(RepackgudangjadiController::class)->group(function () {
+        Route::get('/repackgudangjadi', 'index')->name('repackgudangjadi.index')->can('repackgudangjadi.index');
+        Route::get('/repackgudangjadi/create', 'create')->name('repackgudangjadi.create')->can('repackgudangjadi.create');
+        Route::post('/repackgudangjadi', 'store')->name('repackgudangjadi.store')->can('repackgudangjadi.store');
+        Route::get('/repackgudangjadi/{no_mutasi}/show', 'show')->name('repackgudangjadi.show')->can('repackgudangjadi.show');
+        Route::get('/repackgudangjadi/{no_mutasi}/edit', 'edit')->name('repackgudangjadi.edit')->can('repackgudangjadi.edit');
+        Route::post('/repackgudangjadi/{no_mutasi}/update', 'update')->name('repackgudangjadi.update')->can('repackgudangjadi.update');
+        Route::delete('/repackgudangjadi/{no_mutasi}', 'destroy')->name('repackgudangjadi.delete')->can('repackgudangjadi.delete');
+    });
+
+
+    Route::controller(RejectgudangjadiController::class)->group(function () {
+        Route::get('/rejectgudangjadi', 'index')->name('rejectgudangjadi.index')->can('rejectgudangjadi.index');
+        Route::get('/rejectgudangjadi/create', 'create')->name('rejectgudangjadi.create')->can('rejectgudangjadi.create');
+        Route::post('/rejectgudangjadi', 'store')->name('rejectgudangjadi.store')->can('rejectgudangjadi.store');
+        Route::get('/rejectgudangjadi/{no_mutasi}/show', 'show')->name('rejectgudangjadi.show')->can('rejectgudangjadi.show');
+        Route::get('/rejectgudangjadi/{no_mutasi}/edit', 'edit')->name('rejectgudangjadi.edit')->can('rejectgudangjadi.edit');
+        Route::post('/rejectgudangjadi/{no_mutasi}/update', 'update')->name('rejectgudangjadi.update')->can('rejectgudangjadi.update');
+        Route::delete('/rejectgudangjadi/{no_mutasi}', 'destroy')->name('rejectgudangjadi.delete')->can('rejectgudangjadi.delete');
+    });
+
+    Route::controller(LainnyagudangjadiController::class)->group(function () {
+        Route::get('/lainnyagudangjadi', 'index')->name('lainnyagudangjadi.index')->can('lainnyagudangjadi.index');
+        Route::get('/lainnyagudangjadi/create', 'create')->name('lainnyagudangjadi.create')->can('lainnyagudangjadi.create');
+        Route::post('/lainnyagudangjadi', 'store')->name('lainnyagudangjadi.store')->can('lainnyagudangjadi.store');
+        Route::get('/lainnyagudangjadi/{no_mutasi}/show', 'show')->name('lainnyagudangjadi.show')->can('lainnyagudangjadi.show');
+        Route::get('/lainnyagudangjadi/{no_mutasi}/edit', 'edit')->name('lainnyagudangjadi.edit')->can('lainnyagudangjadi.edit');
+        Route::post('/lainnyagudangjadi/{no_mutasi}/update', 'update')->name('lainnyagudangjadi.update')->can('lainnyagudangjadi.update');
+        Route::delete('/lainnyagudangjadi/{no_mutasi}', 'destroy')->name('lainnyagudangjadi.delete')->can('lainnyagudangjadi.delete');
+    });
+
+    Route::controller(SaldoawalgudangjadiController::class)->group(function () {
+        Route::get('/sagudangjadi', 'index')->name('sagudangjadi.index')->can('sagudangjadi.index');
+        Route::get('/sagudangjadi/create', 'create')->name('sagudangjadi.create')->can('sagudangjadi.create');
+        Route::post('/sagudangjadi', 'store')->name('sagudangjadi.store')->can('sagudangjadi.store');
+        Route::delete('/sagudangjadi/{kode_saldo_awal}', 'destroy')->name('sagudangjadi.delete')->can('sagudangjadi.delete');
+        Route::get('/sagudangjadi/{kode_saldo_awal}/show', 'show')->name('sagudangjadi.show')->can('sagudangjadi.show');
+        //AJAX REQUEST
+        Route::post('/sagudangjadi/getdetailsaldo', 'getdetailsaldo')->name('sagudangjadi.getdetailsaldo');
+    });
+
+    Route::controller(SuratjalanangkutanController::class)->group(function () {
+        Route::get('/suratjalanangkutan', 'index')->name('suratjalanangkutan.index')->can('suratjalanangkutan.index');
+        Route::get('/suratjalanangkutan/create', 'create')->name('suratjalanangkutan.create')->can('suratjalanangkutan.create');
+        Route::post('/suratjalanangkutan', 'store')->name('suratjalanangkutan.store')->can('suratjalanangkutan.store');
+        Route::delete('/suratjalanangkutan/{kode_saldo_awal}', 'destroy')->name('suratjalanangkutan.delete')->can('suratjalanangkutan.delete');
+        Route::get('/suratjalanangkutan/{kode_saldo_awal}/show', 'show')->name('suratjalanangkutan.show')->can('suratjalanangkutan.show');
+    });
+
+    Route::controller(LaporangudangjadiController::class)->group(function () {
+        Route::get('/laporangudangjadi', 'index')->name('laporangudangjadi.index');
+        Route::post('/laporangudangjadi/cetakpersediaan', 'cetakpersediaan')->name('laporangudangjadi.cetakpersediaan')->can('gj.persediaan');
+        Route::post('/laporangudangjadi/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporangudangjadi.cetakrekappersediaan')->can('gj.rekappersediaan');
+        Route::post('/laporangudangjadi/cetakrekaphasilproduksi', 'cetakrekaphasilproduksi')->name('laporangudangjadi.cetakrekaphasilproduksi')->can('gj.rekaphasilproduksi');
+        Route::post('/laporangudangjadi/cetakrekappengeluaran', 'cetakrekappengeluaran')->name('laporangudangjadi.cetakrekappengeluaran')->can('gj.rekappengeluaran');
+        Route::post('/laporangudangjadi/cetakrealisasikiriman', 'cetakrealisasikiriman')->name('laporangudangjadi.cetakrealisasikiriman')->can('gj.realisasikiriman');
+        Route::post('/laporangudangjadi/cetakrealisasioman', 'cetakrealisasioman')->name('laporangudangjadi.cetakrealisasioman')->can('gj.realisasioman');
+        Route::post('/laporangudangjadi/cetakangkutan', 'cetakangkutan')->name('laporangudangjadi.cetakangkutan')->can('gj.angkutan');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {
