@@ -12,8 +12,8 @@
     <div class="header">
         <h4 class="title">
             REKAP PERSEDIAAN BARANG PRODUKSI<br>
-            PERIODE BULAN {{ $namabulan[$bulan] }} {{ $tahun }}
         </h4>
+        <h4>PERIODE BULAN {{ $namabulan[$bulan] }} {{ $tahun }}</h4>
     </div>
     <div class="content">
         <table class="datatable3">

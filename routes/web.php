@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluarproduksiController;
+use App\Http\Controllers\BarangmasukgudangbahanController;
 use App\Http\Controllers\BarangmasukproduksiController;
+use App\Http\Controllers\BarangpembelianController;
 use App\Http\Controllers\BarangproduksiController;
 use App\Http\Controllers\BpbjController;
 use App\Http\Controllers\BpjskesehatanController;
@@ -238,6 +240,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/supplier/{kode_supplier}/show', 'show')->name('supplier.show')->can('supplier.show');
     });
 
+    Route::controller(BarangpembelianController::class)->group(function () {
+        Route::get('/barangpembelian', 'index')->name('barangpembelian.index')->can('barangpembelian.index');
+        Route::get('/barangpembelian/create', 'create')->name('barangpembelian.create')->can('barangpembelian.create');
+        Route::post('/barangpembelian', 'store')->name('barangpembelian.store')->can('barangpembelian.store');
+        Route::get('/barangpembelian/{kode_barang}/edit', 'edit')->name('barangpembelian.edit')->can('barangpembelian.edit');
+        Route::put('/barangpembelian/{kode_barang}', 'update')->name('barangpembelian.update')->can('barangpembelian.update');
+        Route::delete('/barangpembelian/{kode_barang}', 'destroy')->name('barangpembelian.delete')->can('barangpembelian.delete');
+        Route::get('/barangpembelian/{kode_barang}/show', 'show')->name('barangpembelian.show')->can('barangpembelian.show');
+    });
+
     Route::controller(KaryawanController::class)->group(function () {
         Route::get('/karyawan', 'index')->name('karyawan.index')->can('karyawan.index');
         Route::get('/karyawan/create', 'create')->name('karyawan.create')->can('karyawan.create');
@@ -442,11 +454,11 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(LaporanproduksiController::class)->group(function () {
         Route::get('/laporanproduksi', 'index')->name('laporanproduksi.index');
-        Route::post('/laporanproduksi/cetakmutasiproduksi', 'cetakmutasiproduksi')->name('cetakmutasiproduksi');
-        Route::post('/laporanproduksi/cetakrekapmutasiproduksi', 'cetakrekapmutasiproduksi')->name('cetakrekapmutasiproduksi');
-        Route::post('/laporanproduksi/cetakbarangmasuk', 'cetakbarangmasuk')->name('cetakbarangmasukproduksi');
-        Route::post('/laporanproduksi/cetakbarangkeluar', 'cetakbarangkeluar')->name('cetakbarangkeluarproduksi');
-        Route::post('/laporanproduksi/cetakrekappersediaanbarang', 'cetakrekappersediaanbarang')->name('cetakrekappersediaanbarangproduksi');
+        Route::post('/laporanproduksi/cetakmutasiproduksi', 'cetakmutasiproduksi')->name('cetakmutasiproduksi')->can('prd.mutasiproduksi');
+        Route::post('/laporanproduksi/cetakrekapmutasiproduksi', 'cetakrekapmutasiproduksi')->name('cetakrekapmutasiproduksi')->can('prd.rekapmutasi');
+        Route::post('/laporanproduksi/cetakbarangmasuk', 'cetakbarangmasuk')->name('cetakbarangmasukproduksi')->can('prd.pemasukan');
+        Route::post('/laporanproduksi/cetakbarangkeluar', 'cetakbarangkeluar')->name('cetakbarangkeluarproduksi')->can('prd.pengeluaran');
+        Route::post('/laporanproduksi/cetakrekappersediaanbarang', 'cetakrekappersediaanbarang')->name('cetakrekappersediaanbarangproduksi')->can('prd.rekappersediaan');
     });
     Route::controller(OmancabangController::class)->group(function () {
         Route::get('/omancabang', 'index')->name('omancabang.index')->can('omancabang.index');
@@ -589,6 +601,17 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporangudangjadi/cetakangkutan', 'cetakangkutan')->name('laporangudangjadi.cetakangkutan')->can('gj.angkutan');
     });
 
+
+    //Gudang Bahan
+    Route::controller(BarangmasukgudangbahanController::class)->group(function () {
+        Route::get('/barangmasukgudangbahan', 'index')->name('barangmasukgudangbahan.index')->can('barangmasukgb.index');
+        Route::get('/barangmasukgudangbahan/create', 'create')->name('barangmasukgudangbahan.create')->can('barangmasukgb.create');
+        Route::get('/barangmasukgudangbahan/{no_bukti}/edit', 'edit')->name('barangmasukgudangbahan.edit')->can('barangmasukgb.edit');
+        Route::put('/barangmasukgudangbahan/{no_bukti}/update', 'update')->name('barangmasukgudangbahan.update')->can('barangmasukgb.update');
+        Route::post('/barangmasukgudangbahan', 'store')->name('barangmasukgudangbahan.store')->can('barangmasukgb.store');
+        Route::delete('/barangmasukgudangbahan/{no_bukti}', 'destroy')->name('barangmasukgudangbahan.delete')->can('barangmasukgb.delete');
+        Route::get('/barangmasukgudangbahan/{no_bukti}/show', 'show')->name('barangmasukgudangbahan.show')->can('barangmasukgb.show');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

@@ -1,0 +1,29 @@
+@if (auth()->user()->hasAnyPermission($gudang_bahan_mutasi_permission))
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a href="#" class="nav-link {{ request()->is(['sagudangbahan', 'sagudangbahan/*']) ? 'active' : '' }}">
+                <i class="tf-icons ti ti-file-description ti-md me-1"></i> Saldo Awal
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a href="#"
+                class="nav-link {{ request()->is(['opnamegudangbahan', 'opnamegudangbahan/*']) ? 'active' : '' }}">
+                <i class="tf-icons ti ti-file-description ti-md me-1"></i> Opname
+            </a>
+        </li>
+        @can('barangmasukgb.index')
+            <li class="nav-item" role="presentation">
+                <a href="#"
+                    class="nav-link {{ request()->is(['barangmasukgudangbahan', 'barangmasukgudangbahan/*']) ? 'active' : '' }}">
+                    <i class="tf-icons ti  ti-package-import ti-md me-1"></i> Barang Masuk
+                </a>
+            </li>
+        @endcan
+        <li class="nav-item" role="presentation">
+            <a href="#"
+                class="nav-link {{ request()->is(['barangkeluargudangbahan', 'barangkeluargudangbahan/*']) ? 'active' : '' }}">
+                <i class="tf-icons ti  ti-package-export ti-md me-1"></i> Barang Keluar
+            </a>
+        </li>
+    </ul>
+@endif

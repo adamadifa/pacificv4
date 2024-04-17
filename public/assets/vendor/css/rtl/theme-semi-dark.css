@@ -1399,7 +1399,7 @@ li.ui-timepicker-selected,
   color: #fff;
 }
 .bg-menu-theme .menu-inner-shadow {
-  background: linear-gradient(#242745 41%, rgba(36, 39, 69, 0.11) 95%, rgba(36, 39, 69, 0));
+  background: linear-gradient(#0b2e59  41%, rgba(36, 39, 69, 0.11) 95%, rgba(36, 39, 69, 0));
 }
 .bg-menu-theme .menu-text {
   color: #dbdade;

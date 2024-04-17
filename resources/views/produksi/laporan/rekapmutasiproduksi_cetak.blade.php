@@ -11,10 +11,8 @@
 
 <body>
     <div class="header">
-        <h4 class="title">
-            REKAP MUTASI PRODUKSI<br>
-            PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}
-        </h4>
+        <h4 class="title">REKAP MUTASI PRODUKSI<br></h4>
+        <h4>PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
     </div>
     <div class="content">
         <table class="datatable3">

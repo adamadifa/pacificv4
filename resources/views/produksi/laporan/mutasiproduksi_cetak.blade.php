@@ -13,8 +13,8 @@
     <div class="header">
         <h4 class="title">
             LAPORAN MUTASI PRODUKSI<br>
-            PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}
         </h4>
+        <h4>PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
     </div>
     <div class="body">
         <table class="datatable3">

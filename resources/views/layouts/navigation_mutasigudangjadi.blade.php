@@ -1,4 +1,4 @@
-@if (auth()->user()->hasAnyPermission(['suratjalan.index']))
+@if (auth()->user()->hasAnyPermission($gudang_jadi_mutasi_permission))
     <ul class="nav nav-tabs" role="tablist">
         @can('sagudangjadi.index')
             <li class="nav-item" role="presentation">
