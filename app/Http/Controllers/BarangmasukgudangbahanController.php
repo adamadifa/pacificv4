@@ -40,6 +40,7 @@ class BarangmasukgudangbahanController extends Controller
 
         $data['barangmasuk'] = $barangmasuk;
         $data['asal_barang'] = config('gudangbahan.asal_barang_gudang_bahan');
+        $data['list_asal_barang'] = config('gudangbahan.list_asal_barang');
         return view('gudangbahan.barangmasuk.index', $data);
     }
 

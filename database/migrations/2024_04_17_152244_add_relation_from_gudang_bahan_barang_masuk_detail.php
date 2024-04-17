@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pembelian_barang_kategori', function (Blueprint $table) {
-            $table->dropForeign('pembelian_barang_kategori_kode_dept_foreign');
-            $table->dropColumn('kode_dept');
-            $table->char('kode_group', 3);
+        Schema::table('gudang_bahan_barang_masuk_detail', function (Blueprint $table) {
+            $table->foreign('kode_barang')->references('kode_barang')->on('pembelian_barang')->cascadeOnUpdate()->restrictOnDelete();
         });
     }
 
@@ -23,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pembelian_barang_kategori', function (Blueprint $table) {
+        Schema::table('gudang_bahan_barang_masuk_detail', function (Blueprint $table) {
             //
         });
     }

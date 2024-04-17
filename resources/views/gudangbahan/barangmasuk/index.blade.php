@@ -17,7 +17,7 @@
                     @endcan
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('repackgudangjadi.index') }}">
+                            <form action="{{ route('barangmasukgudangbahan.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
@@ -28,7 +28,25 @@
                                             icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                 </div>
-
+                                <div class="row">
+                                    <div class="col-12">
+                                        <x-input-with-icon icon="ti ti-barcode" label="No. Bukti" name="no_bukti_search"
+                                            value="{{ Request('no_bukti_search') }}" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <select name="kode_asal_barang_search" id="kode_asal_barang_search"
+                                                class="form-select">
+                                                <option value="">Semua Asal Barang</option>
+                                            @foreach ($list_asal_barang as $d)
+                                                <option value="{{ $d['kode_asal_barang'] }}" {{ Request('kode_asal_barang_search') == $d['kode_asal_barang'] ? 'selected' : '' }}>{{ $d['asal_barang'] }}</option>
+                                            @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">

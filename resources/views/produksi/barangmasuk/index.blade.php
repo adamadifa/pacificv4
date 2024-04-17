@@ -40,7 +40,7 @@
                                         <div class="form-group mb-3">
                                             <select name="kode_asal_barang_search" id="kode_asal_barang_search"
                                                 class="form-select">
-                                                <option value="">Asal Barang</option>
+                                                <option value="">Semua Asal Barang</option>
                                                 <option value="GD"
                                                     {{ Request('kode_asal_barang_search') == 'GD' ? 'selected' : '' }}>
                                                     Gudang</option>
