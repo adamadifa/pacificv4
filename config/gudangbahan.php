@@ -19,5 +19,44 @@ return [
             'kode_asal_barang' => 'LNY',
             'asal_barang' => 'LAINNYA'
         ],
+    ],
+
+    'jenis_pengeluaran' => [
+        'PRD' => 'PRODUKSI',
+        'SSN' => 'SEASONING',
+        'PDQ' => 'PDQC',
+        'SST' => 'SUSUT',
+        'CBG' => 'CABANG',
+        'LNY' => 'LAINNYA'
+    ],
+
+    'list_jenis_pengeluaran' => [
+        [
+            'kode_jenis_pengeluaran' => 'PRD',
+            'jenis_pengeluaran' => 'PRODUKSI'
+        ],
+        [
+            'kode_jenis_pengeluaran' => 'SSN',
+            'jenis_pengeluaran' => 'SEASONING'
+        ],
+        [
+            'kode_jenis_pengeluaran' => 'PDQ',
+            'jenis_pengeluaran' => 'PDQC'
+        ],
+        [
+            'kode_jenis_pengeluaran' => 'SST',
+            'jenis_pengeluaran' => 'SUSUT'
+        ],
+
+        [
+            'kode_jenis_pengeluaran' => 'CBG',
+            'jenis_pengeluaran' => 'CABANG'
+        ],
+
+        [
+            'kode_jenis_pengeluaran' => 'LNY',
+            'jenis_pengeluaran' => 'LAINNYA'
+        ],
+
     ]
 ];

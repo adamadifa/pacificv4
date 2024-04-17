@@ -1,15 +1,24 @@
-<form action="{{ route('barangmasukgudangbahan.store') }}" method="post" id="formcreateBarangmasukgudangbahan">
+<form action="{{ route('barangkeluargudangbahan.store') }}" method="post" id="formcreateBarangkeluargudangbahan">
     @csrf
     <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" />
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
     <div class="form-group mb-3">
-        <select name="kode_asal_barang" id="kode_asal_barang" class="form-select">
-            <option value="">Asal Barang</option>
-            @foreach ($list_asal_barang as $d)
-                <option value="{{ $d['kode_asal_barang'] }}">{{ $d['asal_barang'] }}</option>
+        <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
+            <option value="">Jenis Pengeluaran</option>
+            @foreach ($list_jenis_pengeluaran as $d)
+                <option value="{{ $d['kode_jenis_pengeluaran'] }}">{{ $d['jenis_pengeluaran'] }}</option>
             @endforeach
         </select>
     </div>
+    <div class="row" id="cabang-section">
+        <div class="col">
+            <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                select2="select2Kodecabang" upperCase="true" />
+        </div>
+    </div>
+
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan_barang_keluar" />
+
     <div class="divider text-start">
         <div class="divider-text">Detail Barang</div>
     </div>
@@ -68,7 +77,19 @@
 
 <script>
     $(function() {
-        const formCreate = $("#formcreateBarangmasukgudangbahan");
+        const formCreate = $("#formcreateBarangkeluargudangbahan");
+        const select2Kodecabang = formCreate.find('.select2Kodecabang');
+        if (select2Kodecabang.length) {
+            select2Kodecabang.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Pilih Cabang',
+                    dropdownParent: $this.parent(),
+                    allowClear: true
+                });
+            });
+        }
+
         $(".flatpickr-date").flatpickr({
             enable: [{
                 from: "{{ $start_periode }}",
@@ -80,6 +101,21 @@
             selector: '.number-separator',
             separator: '.',
             decimalSeparator: ',',
+        });
+
+
+        function loadkodecabang() {
+            const kode_jenis_pengeluaran = $("#kode_jenis_pengeluaran").val();
+            if (kode_jenis_pengeluaran == "CBG") {
+                formCreate.find("#cabang-section").show();
+            } else {
+                formCreate.find("#cabang-section").hide();
+            }
+        }
+
+        loadkodecabang();
+        $("#kode_jenis_pengeluaran").change(function() {
+            loadkodecabang();
         });
 
         function cektutuplaporan(tanggal, jenis_laporan) {
@@ -234,7 +270,9 @@
         formCreate.submit(function() {
             const no_bukti = formCreate.find("#no_bukti").val();
             const tanggal = formCreate.find("#tanggal").val();
-            const kode_asal_barang = formCreate.find("#kode_asal_barang").val();
+            const kode_jenis_pengeluaran = formCreate.find("#kode_jenis_pengeluaran").val();
+            const kode_cabang = formCreate.find("#kode_cabang").val();
+            const keterangan = formCreate.find("#keterangan").val();
             if (formCreate.find('#loaddetail tr').length == 0) {
                 Swal.fire({
                     title: "Oops!",
@@ -271,14 +309,39 @@
                 });
 
                 return false;
-            } else if (kode_asal_barang == "") {
+            } else if (kode_jenis_pengeluaran == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Asal Barang Harus Diisi !",
+                    text: "Jenis Pengeluaran Harus Diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#kode_asal_barang").focus();
+                        formCreate.find("#kode_jenis_pengeluaran").focus();
+                    },
+                });
+
+                return false;
+
+            } else if (kode_jenis_pengeluaran == "CBG" && kode_cabang == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Cabang Harus  Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formCreate.find("#kode_cabang").focus();
+                    },
+                });
+
+                return false;
+            } else if (kode_jenis_pengeluaran == "PRD" && keterangan == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Keterangan Harus  Diisi, (Unit 1 atau Unit 2) !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formCreate.find("#kode_cabang").focus();
                     },
                 });
 

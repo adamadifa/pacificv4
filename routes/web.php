@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AngkutanController;
+use App\Http\Controllers\BarangkeluargudangbahanController;
 use App\Http\Controllers\BarangkeluarproduksiController;
 use App\Http\Controllers\BarangmasukgudangbahanController;
 use App\Http\Controllers\BarangmasukproduksiController;
@@ -48,6 +49,7 @@ use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WilayahController;
+use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
 use App\Models\Permission_group;
 use Illuminate\Support\Facades\Route;
@@ -611,6 +613,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/barangmasukgudangbahan', 'store')->name('barangmasukgudangbahan.store')->can('barangmasukgb.store');
         Route::delete('/barangmasukgudangbahan/{no_bukti}', 'destroy')->name('barangmasukgudangbahan.delete')->can('barangmasukgb.delete');
         Route::get('/barangmasukgudangbahan/{no_bukti}/show', 'show')->name('barangmasukgudangbahan.show')->can('barangmasukgb.show');
+    });
+
+    Route::controller(BarangkeluargudangbahanController::class)->group(function () {
+        Route::get('/barangkeluargudangbahan', 'index')->name('barangkeluargudangbahan.index')->can('barangkeluargb.index');
+        Route::get('/barangkeluargudangbahan/create', 'create')->name('barangkeluargudangbahan.create')->can('barangkeluargb.create');
+        Route::get('/barangkeluargudangbahan/{no_bukti}/edit', 'edit')->name('barangkeluargudangbahan.edit')->can('barangkeluargb.edit');
+        Route::put('/barangkeluargudangbahan/{no_bukti}/update', 'update')->name('barangkeluargudangbahan.update')->can('barangkeluargb.update');
+        Route::post('/barangkeluargudangbahan', 'store')->name('barangkeluargudangbahan.store')->can('barangkeluargb.store');
+        Route::delete('/barangkeluargudangbahan/{no_bukti}', 'destroy')->name('barangkeluargudangbahan.delete')->can('barangkeluargb.delete');
+        Route::get('/barangkeluargudangbahan/{no_bukti}/show', 'show')->name('barangkeluargudangbahan.show')->can('barangkeluargb.show');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

@@ -13,17 +13,19 @@
         </li>
         @can('barangmasukgb.index')
             <li class="nav-item" role="presentation">
-                <a href="#"
+                <a href="{{ route('barangmasukgudangbahan.index') }}"
                     class="nav-link {{ request()->is(['barangmasukgudangbahan', 'barangmasukgudangbahan/*']) ? 'active' : '' }}">
                     <i class="tf-icons ti  ti-package-import ti-md me-1"></i> Barang Masuk
                 </a>
             </li>
         @endcan
-        <li class="nav-item" role="presentation">
-            <a href="#"
-                class="nav-link {{ request()->is(['barangkeluargudangbahan', 'barangkeluargudangbahan/*']) ? 'active' : '' }}">
-                <i class="tf-icons ti  ti-package-export ti-md me-1"></i> Barang Keluar
-            </a>
-        </li>
+        @can('barangkeluargb.index')
+            <li class="nav-item" role="presentation">
+                <a href="{{ route('barangkeluargudangbahan.index') }}"
+                    class="nav-link {{ request()->is(['barangkeluargudangbahan', 'barangkeluargudangbahan/*']) ? 'active' : '' }}">
+                    <i class="tf-icons ti  ti-package-export ti-md me-1"></i> Barang Keluar
+                </a>
+            </li>
+        @endcan
     </ul>
 @endif
