@@ -16,8 +16,24 @@
                 select2="select2Kodecabang" upperCase="true" />
         </div>
     </div>
+    <div class="row" id="unit-section">
+        <div class="col">
+            <div class="form-group mb-3">
+                <select name="unit" id="unit" class="form-select">
+                    <option value="">Unit</option>
+                    <option value="1">Unit 1</option>
+                    <option value="2">Unit 2</option>
+                </select>
+            </div>
+        </div>
 
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan_barang_keluar" />
+    </div>
+    <div class="row" id="keterangan-section">
+        <div class="col">
+            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan_barang_keluar" />
+        </div>
+    </div>
+
 
     <div class="divider text-start">
         <div class="divider-text">Detail Barang</div>
@@ -28,13 +44,13 @@
                 upperCase="true" select2="select2Kodebarang" showKey="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Unit" name="qty_unit" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Unit" name="qty_unit" align="right" numberFormat="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Berat" name="qty_berat" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Berat" name="qty_berat" align="right" numberFormat="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Lebih" name="qty_lebih" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Lebih" name="qty_lebih" align="right" numberFormat="true" />
         </div>
     </div>
     <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
@@ -46,9 +62,9 @@
                     <tr>
                         <th style="width: 15%">Kode</th>
                         <th style="width: 30%">Nama Barang</th>
-                        <th>Unit</th>
-                        <th>Berat</th>
-                        <th>Lebih</th>
+                        <th>Qty Unit</th>
+                        <th>Qty Berat</th>
+                        <th>Qty Lebih</th>
                         <th style="width: 20%">Keterangan</th>
                         <th>#</th>
                     </tr>
@@ -104,6 +120,15 @@
         });
 
 
+        function loadketerangan() {
+            const kode_jenis_pengeluaran = $("#kode_jenis_pengeluaran").val();
+            if (kode_jenis_pengeluaran == "CBG" || kode_jenis_pengeluaran == "PRD") {
+                formCreate.find("#keterangan-section").hide();
+            } else {
+                formCreate.find("#keterangan-section").show();
+            }
+        }
+
         function loadkodecabang() {
             const kode_jenis_pengeluaran = $("#kode_jenis_pengeluaran").val();
             if (kode_jenis_pengeluaran == "CBG") {
@@ -113,9 +138,22 @@
             }
         }
 
+        function loadunit() {
+            const kode_jenis_pengeluaran = $("#kode_jenis_pengeluaran").val();
+            if (kode_jenis_pengeluaran == "PRD") {
+                formCreate.find("#unit-section").show();
+            } else {
+                formCreate.find("#unit-section").hide();
+            }
+        }
+
         loadkodecabang();
+        loadunit();
+        loadketerangan();
         $("#kode_jenis_pengeluaran").change(function() {
             loadkodecabang();
+            loadunit();
+            loadketerangan();
         });
 
         function cektutuplaporan(tanggal, jenis_laporan) {
@@ -272,7 +310,8 @@
             const tanggal = formCreate.find("#tanggal").val();
             const kode_jenis_pengeluaran = formCreate.find("#kode_jenis_pengeluaran").val();
             const kode_cabang = formCreate.find("#kode_cabang").val();
-            const keterangan = formCreate.find("#keterangan").val();
+            const keterangan = formCreate.find("#keterangan_barang_keluar").val();
+            const unit = formCreate.find("#unit").val();
             if (formCreate.find('#loaddetail tr').length == 0) {
                 Swal.fire({
                     title: "Oops!",
@@ -334,14 +373,14 @@
                 });
 
                 return false;
-            } else if (kode_jenis_pengeluaran == "PRD" && keterangan == "") {
+            } else if (kode_jenis_pengeluaran == "PRD" && unit == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Keterangan Harus  Diisi, (Unit 1 atau Unit 2) !",
+                    text: "Unit Harus Diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#kode_cabang").focus();
+                        formCreate.find("#unit").focus();
                     },
                 });
 

@@ -206,23 +206,35 @@ class Globalprovider extends ServiceProvider
                 'gj.angkutan'
             ];
 
-
+            //Gudang Bahan
             $gudang_bahan_request = [
                 'barangmasukgudangbahan',
                 'barangmasukgudangbahan/*',
+                'barangkeluargudangbahan',
+                'barangkeluargudangbahan/*',
+                'sagudangbahan',
+                'sagudangbahan/*',
             ];
 
             $gudang_bahan_permission = [
                 'barangmasukgb.index',
+                'barangkeluar.index',
+                'sagudangbahan.index'
             ];
 
             $gudang_bahan_mutasi_request = [
                 'barangmasukgudangbahan',
                 'barangmasukgudangbahan/*',
+                'barangkeluargudangbahan',
+                'barangkeluargudangbahan/*',
+                'sagudangbahan',
+                'sagudangbahan/*',
             ];
 
             $gudang_bahan_mutasi_permission = [
                 'barangmasukgb.index',
+                'barangkeluargb.index',
+                'sagudangbahan.index',
             ];
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,

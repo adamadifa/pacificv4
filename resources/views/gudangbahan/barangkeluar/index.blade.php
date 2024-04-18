@@ -37,8 +37,8 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group mb-3">
-                                            <select name="kode_" id="kode_jenis_pengeluaran_search"
-                                                class="form-select">
+                                            <select name="kode_jenis_pengeluaran_search"
+                                                id="kode_jenis_pengeluaran_search" class="form-select">
                                                 <option value="">Semua Jenis Pengeluaran</option>
                                                 @foreach ($list_jenis_pengeluaran as $d)
                                                     <option value="{{ $d['kode_jenis_pengeluaran'] }}"
@@ -69,6 +69,7 @@
                                             <th>No. Bukti</th>
                                             <th>Tanggal</th>
                                             <th>Jenis Pengeluaran</th>
+                                            <th>Keterangan</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
@@ -78,6 +79,15 @@
                                                 <td>{{ $d->no_bukti }}</td>
                                                 <td>{{ DateToIndo($d->tanggal) }}</td>
                                                 <td>{{ $jenis_pengeluaran[$d->kode_jenis_pengeluaran] }}</td>
+                                                <td>
+                                                    @if ($d->kode_jenis_pengeluaran == 'CBG')
+                                                        {{ textUpperCase($d->nama_cabang) }}
+                                                    @elseif ($d->kode_jenis_pengeluaran == 'PRD')
+                                                        Unit {{ $d->keterangan }}
+                                                    @else
+                                                        {{ $d->keterangan }}
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('barangkeluargb.edit')

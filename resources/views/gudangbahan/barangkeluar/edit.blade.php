@@ -1,23 +1,47 @@
-<form action="{{ route('barangkeluargudangbahan.store') }}" method="post" id="formeditBarangkeluargudangbahan">
+<form action="{{ route('barangkeluargudangbahan.update', Crypt::encrypt($barangkeluar->no_bukti)) }}" method="post"
+    id="formeditBarangkeluargudangbahan">
+    @method('PUT')
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti"
+        value="{{ $barangkeluar->no_bukti }}" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date"
+        value="{{ $barangkeluar->tanggal }}" />
     <div class="form-group mb-3">
         <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
             <option value="">Jenis Pengeluaran</option>
             @foreach ($list_jenis_pengeluaran as $d)
-                <option value="{{ $d['kode_jenis_pengeluaran'] }}">{{ $d['jenis_pengeluaran'] }}</option>
+                <option value="{{ $d['kode_jenis_pengeluaran'] }}"
+                    {{ $barangkeluar->kode_jenis_pengeluaran == $d['kode_jenis_pengeluaran'] ? 'selected' : '' }}>
+                    {{ $d['jenis_pengeluaran'] }}</option>
             @endforeach
         </select>
     </div>
     <div class="row" id="cabang-section">
         <div class="col">
             <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                select2="select2Kodecabang" upperCase="true" />
+                select2="select2Kodecabang" upperCase="true" selected="{{ $barangkeluar->kode_cabang }}" />
         </div>
     </div>
 
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan_barang_keluar" />
+    <div class="row" id="unit-section">
+        <div class="col">
+            <div class="form-group mb-3">
+                <select name="unit" id="unit" class="form-select">
+                    <option value="">Unit</option>
+                    <option value="1" {{ $barangkeluar->keterangan == 1 ? 'selected' : '' }}>Unit 1</option>
+                    <option value="2" {{ $barangkeluar->keterangan == 2 ? 'selected' : '' }}>Unit 2</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+    <div class="row" id="keterangan-section">
+        <div class="col">
+            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan_barang_keluar"
+                value="{{ $barangkeluar->keterangan }}" />
+        </div>
+    </div>
+
 
     <div class="divider text-start">
         <div class="divider-text">Detail Barang</div>
@@ -28,13 +52,13 @@
                 upperCase="true" select2="select2Kodebarang" showKey="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Unit" name="qty_unit" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Unit" name="qty_unit" align="right" numberFormat="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Berat" name="qty_berat" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Berat" name="qty_berat" align="right" numberFormat="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Lebih" name="qty_lebih" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Lebih" name="qty_lebih" align="right" numberFormat="true" />
         </div>
     </div>
     <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
@@ -44,16 +68,45 @@
             <table class="table table-bordered" id="tabledetail">
                 <thead class="table-dark">
                     <tr>
-                        <th style="width: 15%">Kode</th>
-                        <th style="width: 30%">Nama Barang</th>
-                        <th>Unit</th>
-                        <th>Berat</th>
-                        <th>Lebih</th>
+                        <th style="width: 10%">Kode</th>
+                        <th style="width: 25%">Nama Barang</th>
+                        <th>Qty Unit</th>
+                        <th>Qty Berat</th>
+                        <th>Qty Lebih</th>
                         <th style="width: 20%">Keterangan</th>
                         <th>#</th>
                     </tr>
                 </thead>
                 <tbody id="loaddetail">
+                    @foreach ($detail as $d)
+                        <tr id="index_{{ $d->kode_barang }}">
+                            <td>
+                                <input type="hidden" name="kode_barang[]" value="{{ $d->kode_barang }}">
+                                {{ $d->kode_barang }}
+                            </td>
+                            <td>{{ textUpperCase($d->nama_barang) }}</td>
+                            <td class="text-end">
+                                <input type="hidden" name="qty_unit[]" value="{{ $d->qty_unit }}">
+                                {{ formatAngkaDesimal($d->qty_unit) }}
+                            </td>
+                            <td class="text-end">
+                                <input type="hidden" name="qty_berat[]" value="{{ $d->qty_berat }}">
+                                {{ formatAngkaDesimal($d->qty_berat) }}
+                            </td>
+                            <td class="text-end">
+                                <input type="hidden" name="qty_lebih[]" value="{{ $d->qty_lebih }}">
+                                {{ formatAngkaDesimal($d->qty_lebih) }}
+                            </td>
+                            <td>
+                                <input type="hidden" name="ket[]" value="{{ $d->keterangan }}">
+                                {{ $d->keterangan }}
+                            </td>
+                            <td class="text-center">
+                                <a href="#" kode_barang="{{ $d->kode_barang }}" class="delete"><i
+                                        class="ti ti-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -104,6 +157,15 @@
         });
 
 
+        function loadketerangan() {
+            const kode_jenis_pengeluaran = $("#kode_jenis_pengeluaran").val();
+            if (kode_jenis_pengeluaran == "CBG" || kode_jenis_pengeluaran == "PRD") {
+                form.find("#keterangan-section").hide();
+            } else {
+                form.find("#keterangan-section").show();
+            }
+        }
+
         function loadkodecabang() {
             const kode_jenis_pengeluaran = $("#kode_jenis_pengeluaran").val();
             if (kode_jenis_pengeluaran == "CBG") {
@@ -113,10 +175,24 @@
             }
         }
 
+        function loadunit() {
+            const kode_jenis_pengeluaran = $("#kode_jenis_pengeluaran").val();
+            if (kode_jenis_pengeluaran == "PRD") {
+                form.find("#unit-section").show();
+            } else {
+                form.find("#unit-section").hide();
+            }
+        }
+
         loadkodecabang();
+        loadunit();
+        loadketerangan();
         $("#kode_jenis_pengeluaran").change(function() {
             loadkodecabang();
+            loadunit();
+            loadketerangan();
         });
+
 
         function cektutuplaporan(tanggal, jenis_laporan) {
             $.ajax({
@@ -272,7 +348,8 @@
             const tanggal = form.find("#tanggal").val();
             const kode_jenis_pengeluaran = form.find("#kode_jenis_pengeluaran").val();
             const kode_cabang = form.find("#kode_cabang").val();
-            const keterangan = form.find("#keterangan").val();
+            const keterangan = form.find("#keterangan_barang_keluar").val();
+            const unit = form.find("#unit").val();
             if (form.find('#loaddetail tr').length == 0) {
                 Swal.fire({
                     title: "Oops!",
@@ -334,14 +411,14 @@
                 });
 
                 return false;
-            } else if (kode_jenis_pengeluaran == "PRD" && keterangan == "") {
+            } else if (kode_jenis_pengeluaran == "PRD" && unit == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Keterangan Harus  Diisi, (Unit 1 atau Unit 2) !",
+                    text: "Unit Harus Diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        form.find("#kode_cabang").focus();
+                        form.find("#unit").focus();
                     },
                 });
 

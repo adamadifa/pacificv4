@@ -25,13 +25,13 @@
                 upperCase="true" select2="select2Kodebarang" showKey="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Unit" name="qty_unit" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Unit" name="qty_unit" align="right" numberFormat="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Berat" name="qty_berat" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Berat" name="qty_berat" align="right" numberFormat="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Lebih" name="qty_lebih" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Lebih" name="qty_lebih" align="right" numberFormat="true" />
         </div>
     </div>
     <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
@@ -42,11 +42,11 @@
             <table class="table table-bordered" id="tabledetail">
                 <thead class="table-dark">
                     <tr>
-                        <th style="width: 15%">Kode</th>
-                        <th style="width: 30%">Nama Barang</th>
-                        <th>Unit</th>
-                        <th>Berat</th>
-                        <th>Lebih</th>
+                        <th style="width: 10%">Kode</th>
+                        <th style="width: 25%">Nama Barang</th>
+                        <th>Qty Unit</th>
+                        <th>Qty Berat</th>
+                        <th>Qty Lebih</th>
                         <th style="width: 20%">Keterangan</th>
                         <th>#</th>
                     </tr>
