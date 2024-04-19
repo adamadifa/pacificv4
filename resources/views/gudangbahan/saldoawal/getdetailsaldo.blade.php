@@ -8,12 +8,22 @@
         <td>{{ $d->nama_kategori }}</td>
         <td class="text-end">
             @if ($readonly)
-                <input type="hidden" name="qty_unit[]" value="{{ empty($d->saldo_unit) ? 0 : $d->saldo_unit }}"
+                <input type="hidden" name="qty_unit[]" value="{{ formatAngkaDesimal($d->saldo_unit) }}"
                     style="text-align: right" class="noborder-form">
                 {{ formatAngkaDesimal($d->saldo_unit) }}
             @else
-                <input type="text" name="qty_unit[]" value="{{ $d->saldo_unit }}" style="text-align: right"
-                    class="noborder-form money">
+                <input type="text" name="qty_unit[]" value="{{ formatAngkaDesimal($d->saldo_unit) }}"
+                    style="text-align: right" class="noborder-form money">
+            @endif
+        </td>
+        <td class="text-end">
+            @if ($readonly)
+                <input type="hidden" name="qty_berat[]" value="{{ formatAngkaDesimal($d->saldo_berat) }}"
+                    style="text-align: right" class="noborder-form">
+                {{ formatAngkaDesimal($d->saldo_berat) }}
+            @else
+                <input type="text" name="qty_berat[]" value="{{ formatAngkaDesimal($d->saldo_berat) }}"
+                    style="text-align: right" class="noborder-form money">
             @endif
         </td>
     </tr>

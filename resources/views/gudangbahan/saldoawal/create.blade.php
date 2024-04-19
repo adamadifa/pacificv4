@@ -10,7 +10,7 @@
     <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('sagudangbahan.store') }}" method="POST">
+                <form action="{{ route('sagudangbahan.store') }}" method="POST" id="formCreatesaldoawal">
                     @csrf
                     <div class="row">
                         <div class="col-12">
@@ -137,6 +137,23 @@
         $("#getsaldo").click(function(e) {
             e.preventDefault();
             loaddetailsaldo();
+        });
+
+        $("#formCreatesaldoawal").submit(function(e) {
+            const form = $("#formCreatesaldoawal");
+            if (form.find('#loaddetailsaldo tr').length == 0) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Silakan Get Saldo Terlebih Dahulu !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formCreate.find("#kode_barang").focus();
+                    },
+                });
+
+                return false;
+            }
         });
     });
 </script>

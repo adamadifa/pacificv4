@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('titlepage', 'Buat Saldo Awal Barang Produksi')
+@section('titlepage', 'Buat Opname Gudang Bahan')
 
 @section('content')
 @section('navigasi')
-    <span>Buat Saldo Awal Barang Produksi</span>
+    <span class="text-muted fw-light">Opname Gudang Bahan /</span> Buat Opname
 @endsection
 
 <div class="row">
-    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('sabarangproduksi.store') }}" method="POST" id="formCreatesaldoawal">
+                <form action="{{ route('opgudangbahan.store') }}" method="POST" id="formCreateopname">
                     @csrf
                     <div class="row">
                         <div class="col-12">
@@ -45,12 +45,14 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
+                                <table class="table table-bordered">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>Kode</th>
-                                            <th>Nama Produk</th>
-                                            <th style="width: 30%">Jumlah</th>
+                                            <th>Nama Barang</th>
+                                            <th>Kategori</th>
+                                            <th>Qty Unit</th>
+                                            <th>Qty Berat</th>
                                         </tr>
                                     </thead>
                                     <tbody id="loaddetailsaldo">
@@ -105,7 +107,7 @@
             } else {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('sabarangproduksi.getdetailsaldo') }}",
+                    url: "{{ route('opgudangbahan.getdetailsaldo') }}",
                     data: {
                         _token: "{{ csrf_token() }}",
                         bulan: bulan,
@@ -116,7 +118,7 @@
                         if (respond === '1') {
                             Swal.fire({
                                 title: "Oops!",
-                                text: "Saldo Bulan Sebelumnya Belum di input !",
+                                text: "Saldo Awal Bulan Ini Belum Diset !",
                                 icon: "warning",
                                 showConfirmButton: true,
                                 didClose: (e) => {
@@ -137,8 +139,8 @@
             loaddetailsaldo();
         });
 
-        $("#formCreatesaldoawal").submit(function(e) {
-            const form = $("#formCreatesaldoawal");
+        $("#formCreateopname").submit(function(e) {
+            const form = $("#formCreateopname");
             if (form.find('#loaddetailsaldo tr').length == 0) {
                 Swal.fire({
                     title: "Oops!",

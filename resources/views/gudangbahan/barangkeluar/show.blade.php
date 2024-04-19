@@ -39,7 +39,7 @@
                     <th>Qty Unit</th>
                     <th>Qty Berat</th>
                     <th>Qty Lebih</th>
-                    <th>Keterangan</th>
+                    <th style="width: 30%">Keterangan</th>
                 </tr>
             </thead>
             <tbody>

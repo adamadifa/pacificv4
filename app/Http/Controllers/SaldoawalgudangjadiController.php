@@ -231,4 +231,20 @@ class SaldoawalgudangjadiController extends Controller
             }
         }
     }
+
+    public function destroy($kode_saldo_awal)
+    {
+        $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
+        $saldo_awal = Saldoawalgudangjadi::where('kode_saldo_awal', $kode_saldo_awal)->first();
+        try {
+            $cektutuplaporan = cektutupLaporan($saldo_awal->tanggal, "gudangjadi");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            Saldoawalgudangjadi::where('kode_saldo_awal', $kode_saldo_awal)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

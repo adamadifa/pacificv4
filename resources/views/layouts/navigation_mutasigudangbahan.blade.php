@@ -8,13 +8,14 @@
                 </a>
             </li>
         @endcan
-
-        <li class="nav-item" role="presentation">
-            <a href="#"
-                class="nav-link {{ request()->is(['opnamegudangbahan', 'opnamegudangbahan/*']) ? 'active' : '' }}">
-                <i class="tf-icons ti ti-file-description ti-md me-1"></i> Opname
-            </a>
-        </li>
+        @can('opgudangbahan.index')
+            <li class="nav-item" role="presentation">
+                <a href="{{ route('opgudangbahan.index') }}"
+                    class="nav-link {{ request()->is(['opgudangbahan', 'opgudangbahan/*']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Opname
+                </a>
+            </li>
+        @endcan
         @can('barangmasukgb.index')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('barangmasukgudangbahan.index') }}"

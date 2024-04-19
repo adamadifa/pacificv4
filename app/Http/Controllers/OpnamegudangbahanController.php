@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barangpembelian;
-use App\Models\Detailsaldoawalgudangbahan;
+use App\Models\Detailopnamegudangbahan;
+use App\Models\Opnamegudangbahan;
 use App\Models\Saldoawalgudangbahan;
-use App\Models\Saldoawalgudangjadi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
-class SaldoawalgudangbahanController extends Controller
+class OpnamegudangbahanController extends Controller
 {
     public function index(Request $request)
     {
@@ -20,7 +20,7 @@ class SaldoawalgudangbahanController extends Controller
         $list_bulan = config('global.list_bulan');
         $nama_bulan = config('global.nama_bulan');
         $start_year = config('global.start_year');
-        $query = Saldoawalgudangbahan::query();
+        $query = Opnamegudangbahan::query();
         if (!empty($request->bulan)) {
             $query->where('bulan', $request->bulan);
         }
@@ -32,28 +32,14 @@ class SaldoawalgudangbahanController extends Controller
         $query->orderBy('tahun', 'desc');
         $query->orderBy('bulan');
         $saldo_awal = $query->get();
-        return view('gudangbahan.saldoawal.index', compact('list_bulan', 'start_year', 'saldo_awal', 'nama_bulan'));
+        return view('gudangbahan.opname.index', compact('list_bulan', 'start_year', 'saldo_awal', 'nama_bulan'));
     }
 
     public function create()
     {
         $list_bulan = config('global.list_bulan');
         $start_year = config('global.start_year');
-        return view('gudangbahan.saldoawal.create', compact('list_bulan', 'start_year'));
-    }
-
-    public function show($kode_saldo_awal)
-    {
-        $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
-        $saldo_awal = Saldoawalgudangbahan::where('kode_saldo_awal', $kode_saldo_awal)->first();
-        $detail = Detailsaldoawalgudangbahan::where('kode_saldo_awal', $kode_saldo_awal)
-            ->join('pembelian_barang', 'gudang_bahan_saldoawal_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
-            ->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori')
-            ->orderBy('pembelian_barang.kode_jenis_barang')
-            ->orderByRaw('cast(substr(gudang_bahan_saldoawal_detail.kode_barang from 4) AS UNSIGNED)')
-            ->get();
-        $nama_bulan = config('global.nama_bulan');
-        return view('gudangbahan.saldoawal.show', compact('saldo_awal', 'nama_bulan', 'detail'));
+        return view('gudangbahan.opname.create', compact('list_bulan', 'start_year'));
     }
 
     public function store(Request $request)
@@ -66,11 +52,7 @@ class SaldoawalgudangbahanController extends Controller
         $qty_unit = $request->qty_unit;
         $qty_berat = $request->qty_berat;
         //SAMP = Saldo Awal Mutasi Produksi
-        $kode_saldo_awal = "GB" . $bln . substr($tahun, 2, 2);
-
-
-        $bulanberikutnya = getbulandantahunberikutnya($bulan, $tahun, "bulan");
-        $tahunberikutnya = getbulandantahunberikutnya($bulan, $tahun, "tahun");
+        $kode_opname = "OPGB" . $bln . substr($tahun, 2, 2);
 
         $cektutuplaporan = cektutupLaporan($tanggal, "gudangbahan");
         if ($cektutuplaporan > 0) {
@@ -81,14 +63,13 @@ class SaldoawalgudangbahanController extends Controller
         DB::beginTransaction();
         try {
             // Cek Saldo Bulan Berikutnya
-            $ceksaldobulanberikutnya = Saldoawalgudangbahan::where('bulan', $bulanberikutnya)->where('tahun', $tahunberikutnya)->count();
 
             //Cek Saldo Bulan Ini
             $ceksaldobulanini = Saldoawalgudangbahan::where('bulan', $bulan)->where('tahun', $tahun)->count();
 
             for ($i = 0; $i < count($kode_barang); $i++) {
                 $detail_saldo[] = [
-                    'kode_saldo_awal' => $kode_saldo_awal,
+                    'kode_opname' => $kode_opname,
                     'kode_barang' => $kode_barang[$i],
                     'qty_unit' => !empty($qty_unit[$i]) ? toNumber($qty_unit[$i]) : 0,
                     'qty_berat' => !empty($qty_berat[$i]) ? toNumber($qty_berat[$i]) : 0
@@ -104,8 +85,8 @@ class SaldoawalgudangbahanController extends Controller
 
 
 
-            if (!empty($ceksaldobulanberikutnya)) {
-                return Redirect::back()->with(messageError('Tidak Bisa Update Saldo, Dikarenakan Saldo Berikutnya sudah di Set'));
+            if (empty($ceksaldoawalbulanini)) {
+                return Redirect::back()->with(messageError('Saldo Awal Bulan Ini Belum Di Set'));
             } elseif (empty($ceksaldobulanberikutnya) && !empty($ceksaldobulanini)) {
                 Saldoawalgudangbahan::where('kode_saldo_awal', $kode_saldo_awal)->delete();
             }
@@ -132,79 +113,43 @@ class SaldoawalgudangbahanController extends Controller
         }
     }
 
-    public function destroy($kode_saldo_awal)
+    public function show($kode_opname)
     {
-        $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
-        $saldo_awal = Saldoawalgudangbahan::where('kode_saldo_awal', $kode_saldo_awal)->first();
-        try {
-            $cektutuplaporan = cektutupLaporan($saldo_awal->tanggal, "gudangbahan");
-            if ($cektutuplaporan > 0) {
-                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
-            }
-            Saldoawalgudangbahan::where('kode_saldo_awal', $kode_saldo_awal)->delete();
-            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
-        } catch (\Exception $e) {
-            return Redirect::back()->with(messageError($e->getMessage()));
-        }
+        $kode_opname = Crypt::decrypt($kode_opname);
+        $data['opname'] = Opnamegudangbahan::where('kode_opname', $kode_opname)->first();
+        $data['detail'] = Detailopnamegudangbahan::where('kode_opname', $kode_opname)
+            ->join('pembelian_barang', 'gudang_bahan_opname_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori')
+            ->orderBy('pembelian_barang.kode_jenis_barang')
+            ->orderByRaw('cast(substr(gudang_bahan_opname_detail.kode_barang from 4) AS UNSIGNED)')
+            ->get();
+        $data['nama_bulan'] = config('global.nama_bulan');
+        return view('gudangbahan.opname.show', $data);
     }
+
 
     //AJAX REQUEST
     public function getdetailsaldo(Request $request)
     {
         $bulan = $request->bulan;
         $tahun = $request->tahun;
+        $dari = $tahun."-".$bulan."-01";
+        $sampai = date('Y-m-t',strtotime($dari));
+        // $bulanlalu = getbulandantahunlalu($bulan, $tahun, "bulan");
+        // $tahunlalu = getbulandantahunlalu($bulan, $tahun, "tahun");
 
-        $bulanlalu = getbulandantahunlalu($bulan, $tahun, "bulan");
-        $tahunlalu = getbulandantahunlalu($bulan, $tahun, "tahun");
+        // $tgl_dari_bulanlalu = $tahunlalu . "-" . $bulanlalu . "-01";
+        // $tgl_sampai_bulanlalu = date('Y-m-t', strtotime($tgl_dari_bulanlalu));
 
-        $tgl_dari_bulanlalu = $tahunlalu . "-" . $bulanlalu . "-01";
-        $tgl_sampai_bulanlalu = date('Y-m-t', strtotime($tgl_dari_bulanlalu));
 
-        //Cek Apakah Sudah Ada Saldo Atau Belum
-        $ceksaldo = Saldoawalgudangbahan::count();
-        // Cek Saldo Bulan Lalu
-        $ceksaldobulanlalu = Saldoawalgudangbahan::where('bulan', $bulanlalu)->where('tahun', $tahunlalu)->count();
+        // Cek Saldo Awal Bulan Ini
+        $ceksaldoawalbulanini = Saldoawalgudangbahan::where('bulan', $bulan)->where('tahun', $tahun)->count();
 
-        //Cek Saldo Bulan Ini
-        $ceksaldobulanini = Saldoawalgudangbahan::where('bulan', $bulan)->where('tahun', $tahun)->count();
-        //Get Produk
-
-        //Jika Saldo BUlan Lalu Kosong dan Saldo Bulan Ini Ada Maka Di Ambil Saldo BUlan Ini
-        if (empty($ceksaldobulanlalu) && !empty($ceksaldobulanini)) {
-            $barang = Barangpembelian::select(
-                'pembelian_barang.kode_barang',
-                'nama_barang',
-                'nama_kategori',
-                'saldo_awal_unit as saldo_akhir_unit',
-                'saldo_awal_berat as saldo_akhir_berat'
-            )
-                ->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori')
-
-                ->leftJoin(
-                    DB::raw("(
-                    SELECT
-                        kode_barang,
-                        qty_unit as saldo_awal_unit,
-                        qty_Berat as saldo_awal_berat
-                    FROM
-                        gudang_bahan_saldoawal_detail
-                    INNER JOIN gudang_bahan_saldoawal ON gudang_bahan_saldoawal_detail.kode_saldo_awal = gudang_bahan_saldoawal.kode_saldo_awal
-                    WHERE bulan = '$bulan' AND tahun='$tahun'
-                ) saldo_awal"),
-                    function ($join) {
-                        $join->on('pembelian_barang.kode_barang', '=', 'saldo_awal.kode_barang');
-                    }
-                )
-                ->where('status', 1)
-                ->where('pembelian_barang.kode_group', 'GDB')
-                ->where('pembelian_barang.kode_kategori', '!=', 'K002')
-                ->orderBy('pembelian_barang.kode_jenis_barang')
-                ->orderByRaw('cast(substr(pembelian_barang.kode_barang FROM 4) AS UNSIGNED)')
-                ->get();
-        } else {
-
+        if(empty($ceksaldoawalbulanini)){
+            return 1;
+        }else{
             //Jika Saldo Bulan Lalu Ada Maka Hitung Saldo Awal Bulan Lalu - Mutasi Bulan Lalu
-            $barang = Barangpembelian::select(
+            $data['barang'] = Barangpembelian::select(
                 'pembelian_barang.kode_barang',
                 'nama_barang',
                 'nama_kategori',
@@ -222,7 +167,7 @@ class SaldoawalgudangbahanController extends Controller
                     FROM
                         gudang_bahan_saldoawal_detail
                     INNER JOIN gudang_bahan_saldoawal ON gudang_bahan_saldoawal_detail.kode_saldo_awal = gudang_bahan_saldoawal.kode_saldo_awal
-                    WHERE bulan = '$bulanlalu' AND tahun='$tahunlalu'
+                    WHERE bulan = '$bulan' AND tahun='$tahun'
                 ) saldo_awal"),
                     function ($join) {
                         $join->on('pembelian_barang.kode_barang', '=', 'saldo_awal.kode_barang');
@@ -238,7 +183,7 @@ class SaldoawalgudangbahanController extends Controller
                         FROM
                         gudang_bahan_barang_masuk_detail
                         INNER JOIN gudang_bahan_barang_masuk ON gudang_bahan_barang_masuk_detail.no_bukti = gudang_bahan_barang_masuk.no_bukti
-                        WHERE tanggal BETWEEN '$tgl_dari_bulanlalu' AND '$tgl_sampai_bulanlalu'
+                        WHERE tanggal BETWEEN '$dari' AND '$sampai'
                         GROUP BY gudang_bahan_barang_masuk_detail.kode_barang
                     ) barang_masuk"),
                     function ($join) {
@@ -255,7 +200,7 @@ class SaldoawalgudangbahanController extends Controller
                         FROM
                         gudang_bahan_barang_keluar_detail
                         INNER JOIN gudang_bahan_barang_keluar ON gudang_bahan_barang_keluar_detail.no_bukti = gudang_bahan_barang_keluar.no_bukti
-                        WHERE tanggal BETWEEN '$tgl_dari_bulanlalu' AND '$tgl_sampai_bulanlalu'
+                        WHERE tanggal BETWEEN '$dari' AND '$sampai'
                         GROUP BY gudang_bahan_barang_keluar_detail.kode_barang
                     ) barang_keluar"),
                     function ($join) {
@@ -268,22 +213,10 @@ class SaldoawalgudangbahanController extends Controller
                 ->orderBy('pembelian_barang.kode_jenis_barang')
                 ->orderByRaw('cast(substr(pembelian_barang.kode_barang FROM 4) AS UNSIGNED)')
                 ->get();
+                return view('gudangbahan.opname.getdetailsaldo', $data);
         }
 
+        //Jika Saldo BUlan Lalu Kosong dan Saldo Bulan Ini Ada Maka Di Ambil Saldo BUlan Ini
 
-
-        $data = ['barang', 'readonly'];
-
-        if (empty($ceksaldo)) {
-            $readonly = false;
-            return view('gudangbahan.saldoawal.getdetailsaldo', compact($data));
-        } else {
-            if (empty($ceksaldobulanlalu) && empty($ceksaldobulanini)) {
-                return 1;
-            } else {
-                $readonly = true;
-                return view('gudangbahan.saldoawal.getdetailsaldo', compact($data));
-            }
-        }
     }
 }

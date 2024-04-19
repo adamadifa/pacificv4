@@ -7,11 +7,12 @@
         <td>{{ $d->nama_produk }}</td>
         <td class="text-end">
             @if ($readonly)
-                <input type="hidden" name="jumlah[]" value="{{ empty($d->saldo_akhir) ? 0 : $d->saldo_akhir }}"
-                    style="text-align: right" class="noborder-form">
+                <input type="hidden" name="jumlah[]"
+                    value="{{ empty($d->saldo_akhir) ? 0 : formatAngka($d->saldo_akhir) }}" style="text-align: right"
+                    class="noborder-form">
                 {{ !empty($d->saldo_akhir) ? formatAngka($d->saldo_akhir) : '' }}
             @else
-                <input type="text" name="jumlah[]" value="{{ $d->jumlah }}" style="text-align: right"
+                <input type="text" name="jumlah[]" value="{{ formatAngka($d->jumlah) }}" style="text-align: right"
                     class="noborder-form money">
             @endif
         </td>

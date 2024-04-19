@@ -26,6 +26,7 @@ use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
+use App\Http\Controllers\OpnamegudangbahanController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PermintaankirimanController;
 use App\Http\Controllers\PermintaanproduksiController;
@@ -635,6 +636,17 @@ Route::middleware('auth')->group(function () {
         //AJAX REQUEST
         Route::post('/sagudangbahan/getdetailsaldo', 'getdetailsaldo')->name('sagudangbahan.getdetailsaldo');
     });
+
+    Route::controller(OpnamegudangbahanController::class)->group(function () {
+        Route::get('/opgudangbahan', 'index')->name('opgudangbahan.index')->can('opgudangbahan.index');
+        Route::get('/opgudangbahan/create', 'create')->name('opgudangbahan.create')->can('opgudangbahan.create');
+        Route::post('/opgudangbahan', 'store')->name('opgudangbahan.store')->can('opgudangbahan.store');
+        Route::delete('/opgudangbahan/{kode_saldo_awal}', 'destroy')->name('opgudangbahan.delete')->can('opgudangbahan.delete');
+        Route::get('/opgudangbahan/{kode_saldo_awal}/show', 'show')->name('opgudangbahan.show')->can('opgudangbahan.show');
+        //AJAX REQUEST
+        Route::post('/opgudangbahan/getdetailsaldo', 'getdetailsaldo')->name('opgudangbahan.getdetailsaldo');
+    });
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

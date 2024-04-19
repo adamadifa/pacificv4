@@ -214,12 +214,15 @@ class Globalprovider extends ServiceProvider
                 'barangkeluargudangbahan/*',
                 'sagudangbahan',
                 'sagudangbahan/*',
+                'opgudangbahan',
+                'opgudangbahan/*',
             ];
 
             $gudang_bahan_permission = [
                 'barangmasukgb.index',
                 'barangkeluar.index',
-                'sagudangbahan.index'
+                'sagudangbahan.index',
+                'opgudangbahan.index'
             ];
 
             $gudang_bahan_mutasi_request = [
@@ -229,12 +232,15 @@ class Globalprovider extends ServiceProvider
                 'barangkeluargudangbahan/*',
                 'sagudangbahan',
                 'sagudangbahan/*',
+                'opgudangbahan',
+                'opgudangbahan/*',
             ];
 
             $gudang_bahan_mutasi_permission = [
                 'barangmasukgb.index',
                 'barangkeluargb.index',
                 'sagudangbahan.index',
+                'opgudangbahan.index',
             ];
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
