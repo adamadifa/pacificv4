@@ -74,6 +74,15 @@
                                                 <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
                                                 <td>
                                                     <div class="d-flex">
+                                                        @can('opgudangbahan.edit')
+                                                            <div>
+                                                                <a href="{{ route('opgudangbahan.edit', Crypt::encrypt($d->kode_opname)) }}"
+                                                                    class="me-2"
+                                                                    kode_opname="{{ Crypt::encrypt($d->kode_opname) }}">
+                                                                    <i class="ti ti-edit text-success"></i>
+                                                                </a>
+                                                            </div>
+                                                        @endcan
                                                         @can('opgudangbahan.show')
                                                             <div>
                                                                 <a href="#" class="me-2 btnShow"

@@ -12,7 +12,14 @@
                     </a>
                 </li>
             @endif
-
+            @if (auth()->user()->hasAnyPermission($gudang_bahan_laporan_permission))
+                <li
+                    class="menu-item {{ request()->is(['laporangudangbahan', 'laporangudangbahan/*']) ? 'active' : '' }}">
+                    <a href="{{ route('laporangudangbahan.index') }}" class="menu-link">
+                        <div>Laporan</div>
+                    </a>
+                </li>
+            @endif
         </ul>
     @endif
 </li>

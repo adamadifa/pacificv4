@@ -216,14 +216,11 @@ class Globalprovider extends ServiceProvider
                 'sagudangbahan/*',
                 'opgudangbahan',
                 'opgudangbahan/*',
+                'laporangudangbahan',
+                'laporangudangbahan/*'
             ];
 
-            $gudang_bahan_permission = [
-                'barangmasukgb.index',
-                'barangkeluar.index',
-                'sagudangbahan.index',
-                'opgudangbahan.index'
-            ];
+
 
             $gudang_bahan_mutasi_request = [
                 'barangmasukgudangbahan',
@@ -242,6 +239,18 @@ class Globalprovider extends ServiceProvider
                 'sagudangbahan.index',
                 'opgudangbahan.index',
             ];
+
+            $gudang_bahan_laporan_permission = [
+                'gb.barangmasuk',
+                'gb.barangkeluar',
+                'gb.persediaan',
+                'gb.rekappersediaan',
+                'gb.kartugudang',
+            ];
+
+            $gudang_bahan_permission = array_merge($gudang_bahan_mutasi_permission, $gudang_bahan_laporan_permission);
+
+
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
                 'start_periode' => $start_periode,
@@ -271,6 +280,7 @@ class Globalprovider extends ServiceProvider
                 'gudang_bahan_permission' => $gudang_bahan_permission,
                 'gudang_bahan_mutasi_request' => $gudang_bahan_mutasi_request,
                 'gudang_bahan_mutasi_permission' => $gudang_bahan_mutasi_permission,
+                'gudang_bahan_laporan_permission' => $gudang_bahan_laporan_permission,
 
             ];
             View::share($shareddata);

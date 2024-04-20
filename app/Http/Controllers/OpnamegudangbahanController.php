@@ -47,7 +47,9 @@ class OpnamegudangbahanController extends Controller
         $bulan = $request->bulan;
         $bln = $bulan < 10 ? "0" . $bulan : $bulan;
         $tahun = $request->tahun;
-        $tanggal = $tahun . "-" . $bln . "-01";
+        $dari = $tahun . "-" . $bulan . "-01";
+        $sampai = date('Y-m-t', strtotime($dari));
+        $tanggal = $sampai;
         $kode_barang = $request->kode_barang;
         $qty_unit = $request->qty_unit;
         $qty_berat = $request->qty_berat;
@@ -85,34 +87,49 @@ class OpnamegudangbahanController extends Controller
 
 
 
-            if (empty($ceksaldoawalbulanini)) {
+            if (empty($ceksaldobulanini)) {
                 return Redirect::back()->with(messageError('Saldo Awal Bulan Ini Belum Di Set'));
-            } elseif (empty($ceksaldobulanberikutnya) && !empty($ceksaldobulanini)) {
-                Saldoawalgudangbahan::where('kode_saldo_awal', $kode_saldo_awal)->delete();
+            } else {
+                Opnamegudangbahan::where('kode_opname', $kode_opname)->delete();
             }
 
-            Saldoawalgudangbahan::create([
-                'kode_saldo_awal' => $kode_saldo_awal,
+            Opnamegudangbahan::create([
+                'kode_opname' => $kode_opname,
                 'bulan' => $bulan,
                 'tahun' => $tahun,
-                'tanggal'  => $tahun . "-" . $bulan . "-01"
+                'tanggal'  => $tanggal
             ]);
 
             $chunks_buffer = array_chunk($detail_saldo, 5);
             foreach ($chunks_buffer as $chunk_buffer) {
-                Detailsaldoawalgudangbahan::insert($chunk_buffer);
+                Detailopnamegudangbahan::insert($chunk_buffer);
             }
 
 
             DB::commit();
-            return redirect(route('sagudangbahan.index'))->with(messageSuccess('Data Berhasil Disimpan'));
+            return redirect(route('opgudangbahan.index'))->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             dd($e);
             DB::rollBack();
-            return redirect(route('sagudangbahan.index'))->with(messageError($e->getMessage()));
+            return redirect(route('opgudangbahan.index'))->with(messageError($e->getMessage()));
         }
     }
 
+
+    public function edit($kode_opname)
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $kode_opname = Crypt::decrypt($kode_opname);
+        $data['opname'] = Opnamegudangbahan::where('kode_opname', $kode_opname)->first();
+        $data['detail'] = Detailopnamegudangbahan::where('kode_opname', $kode_opname)
+            ->join('pembelian_barang', 'gudang_bahan_opname_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori')
+            ->orderBy('pembelian_barang.kode_jenis_barang')
+            ->orderByRaw('cast(substr(gudang_bahan_opname_detail.kode_barang from 4) AS UNSIGNED)')
+            ->get();
+        return view('gudangbahan.opname.edit', $data);
+    }
     public function show($kode_opname)
     {
         $kode_opname = Crypt::decrypt($kode_opname);
@@ -127,14 +144,30 @@ class OpnamegudangbahanController extends Controller
         return view('gudangbahan.opname.show', $data);
     }
 
+    public function destroy($kode_opname)
+    {
+        $kode_opname = Crypt::decrypt($kode_opname);
+        $opname = Opnamegudangbahan::where('kode_opname', $kode_opname)->first();
+        try {
+            $cektutuplaporan = cektutupLaporan($opname->tanggal, "gudangbahan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            Opnamegudangbahan::where('kode_opname', $kode_opname)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
 
     //AJAX REQUEST
     public function getdetailsaldo(Request $request)
     {
         $bulan = $request->bulan;
         $tahun = $request->tahun;
-        $dari = $tahun."-".$bulan."-01";
-        $sampai = date('Y-m-t',strtotime($dari));
+        $dari = $tahun . "-" . $bulan . "-01";
+        $sampai = date('Y-m-t', strtotime($dari));
         // $bulanlalu = getbulandantahunlalu($bulan, $tahun, "bulan");
         // $tahunlalu = getbulandantahunlalu($bulan, $tahun, "tahun");
 
@@ -143,11 +176,11 @@ class OpnamegudangbahanController extends Controller
 
 
         // Cek Saldo Awal Bulan Ini
-        $ceksaldoawalbulanini = Saldoawalgudangbahan::where('bulan', $bulan)->where('tahun', $tahun)->count();
+        $ceksaldobulanini = Saldoawalgudangbahan::where('bulan', $bulan)->where('tahun', $tahun)->count();
 
-        if(empty($ceksaldoawalbulanini)){
+        if (empty($ceksaldobulanini)) {
             return 1;
-        }else{
+        } else {
             //Jika Saldo Bulan Lalu Ada Maka Hitung Saldo Awal Bulan Lalu - Mutasi Bulan Lalu
             $data['barang'] = Barangpembelian::select(
                 'pembelian_barang.kode_barang',
@@ -213,7 +246,7 @@ class OpnamegudangbahanController extends Controller
                 ->orderBy('pembelian_barang.kode_jenis_barang')
                 ->orderByRaw('cast(substr(pembelian_barang.kode_barang FROM 4) AS UNSIGNED)')
                 ->get();
-                return view('gudangbahan.opname.getdetailsaldo', $data);
+            return view('gudangbahan.opname.getdetailsaldo', $data);
         }
 
         //Jika Saldo BUlan Lalu Kosong dan Saldo Bulan Ini Ada Maka Di Ambil Saldo BUlan Ini

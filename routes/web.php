@@ -22,6 +22,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\LainnyagudangjadiController;
+use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\OmancabangController;
@@ -641,12 +642,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/opgudangbahan', 'index')->name('opgudangbahan.index')->can('opgudangbahan.index');
         Route::get('/opgudangbahan/create', 'create')->name('opgudangbahan.create')->can('opgudangbahan.create');
         Route::post('/opgudangbahan', 'store')->name('opgudangbahan.store')->can('opgudangbahan.store');
-        Route::delete('/opgudangbahan/{kode_saldo_awal}', 'destroy')->name('opgudangbahan.delete')->can('opgudangbahan.delete');
-        Route::get('/opgudangbahan/{kode_saldo_awal}/show', 'show')->name('opgudangbahan.show')->can('opgudangbahan.show');
+        Route::delete('/opgudangbahan/{kode_opname}', 'destroy')->name('opgudangbahan.delete')->can('opgudangbahan.delete');
+        Route::get('/opgudangbahan/{kode_opname}/show', 'show')->name('opgudangbahan.show')->can('opgudangbahan.show');
+        Route::get('/opgudangbahan/{kode_opname}/edit', 'edit')->name('opgudangbahan.edit')->can('opgudangbahan.edit');
         //AJAX REQUEST
         Route::post('/opgudangbahan/getdetailsaldo', 'getdetailsaldo')->name('opgudangbahan.getdetailsaldo');
     });
 
+
+    Route::controller(LaporangudangbahanController::class)->group(function () {
+        Route::get('/laporangudangbahan', 'index')->name('laporangudangbahan.index');
+        Route::post('/laporangudangbahan/cetakbarangmasuk', 'cetakbarangmasuk')->name('laporangudangbahan.cetakbarangmasuk')->can('gb.barangmasuk');
+        Route::post('/laporangudangbahan/cetakbarangkeluar', 'cetakbarangkeluar')->name('laporangudangbahan.cetakbarangkeluar')->can('gb.barangkeluar');
+        Route::post('/laporangudangbahan/cetakpersediaan', 'cetakpersediaan')->name('laporangudangbahan.cetakpersediaan')->can('gb.persediaan');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 
