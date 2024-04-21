@@ -30,8 +30,8 @@
             <div class="form-group mb-3">
                 <select name="kode_kategori" id="kode_kategori" class="form-select">
                     <option value="">Bahan / Kemasan</option>
-                    <option value="">BAHAN</option>
-                    <option value="">KEMASAN</option>
+                    <option value="B001">BAHAN</option>
+                    <option value="B002">KEMASAN</option>
                 </select>
             </div>
         </div>
@@ -55,7 +55,7 @@
             $("#frmPersediaan").submit(function() {
                 const bulan = $(this).find("#bulan").val();
                 const tahun = $(this).find("#tahun").val();
-
+                const kode_kategori = $(this).find("#kode_kategori").val();
                 if (bulan == "") {
                     Swal.fire({
                         title: "Oops!",
@@ -75,6 +75,17 @@
                         showConfirmButton: true,
                         didClose: (e) => {
                             $(this).find("#tahun").focus();
+                        },
+                    });
+                    return false;
+                }else if (kode_kategori == "") {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: 'Kategori Harus Diisi !',
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            $(this).find("#kode_kategori").focus();
                         },
                     });
                     return false;
