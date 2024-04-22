@@ -58,5 +58,12 @@ return [
             'jenis_pengeluaran' => 'LAINNYA'
         ],
 
-    ]
+    ],
+
+    'jenis_barang' => [
+        'BB' => 'BAHAN BAKU',
+        'BT' => 'BAHAN TAMBAHAN',
+        'KM' => 'KEMASAN',
+        'LN' => 'LAINNYA'
+    ],
 ];

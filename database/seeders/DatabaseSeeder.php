@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             Saldoawalgudangbahanpermissionseeder::class,
             Opnamegudangbahanpermissionseeder::class,
             Laporangudangbahanpermissionseeder::class,
+            Barangmasukgudanglogistikpermissionseeder::class
         ]);
     }
 }
