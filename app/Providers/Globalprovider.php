@@ -251,6 +251,49 @@ class Globalprovider extends ServiceProvider
             $gudang_bahan_permission = array_merge($gudang_bahan_mutasi_permission, $gudang_bahan_laporan_permission);
 
 
+
+            //Gudang Logistik
+            $gudang_logistik_request = [
+                'barangmasukgudanglogistik',
+                'barangmasukgudanglogistik/*',
+                'barangkeluargudanglogistik',
+                'barangkeluargudanglogistik/*',
+                'sagudanglogistik',
+                'sagudanglogistik/*',
+                'opgudanglogistik',
+                'opgudanglogistik/*',
+                'laporangudanglogistik',
+                'laporangudanglogistik/*'
+            ];
+
+
+
+            $gudang_logistik_mutasi_request = [
+                'barangmasukgudanglogistik',
+                'barangmasukgudanglogistik/*',
+                'barangkeluargudanglogistik',
+                'barangkeluargudanglogistik/*',
+                'sagudanglogistik',
+                'sagudanglogistik/*',
+                'opgudanglogistik',
+                'opgudanglogistik/*',
+            ];
+
+            $gudang_logistik_mutasi_permission = [
+                'barangmasukgl.index',
+                'barangkeluargl.index',
+                'sagudanglogistik.index',
+                'opgudanglogistik.index',
+            ];
+
+            $gudang_logistik_laporan_permission = [
+                'gl.barangmasuk',
+                'gl.barangkeluar',
+                'gl.persediaan',
+                'gl.rekappersediaan',
+                'gl.kartugudang',
+            ];
+            $gudang_logistik_permission = array_merge($gudang_logistik_mutasi_permission, $gudang_logistik_laporan_permission);
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
                 'start_periode' => $start_periode,
@@ -281,6 +324,12 @@ class Globalprovider extends ServiceProvider
                 'gudang_bahan_mutasi_request' => $gudang_bahan_mutasi_request,
                 'gudang_bahan_mutasi_permission' => $gudang_bahan_mutasi_permission,
                 'gudang_bahan_laporan_permission' => $gudang_bahan_laporan_permission,
+
+                'gudang_logistik_request' => $gudang_logistik_request,
+                'gudang_logistik_permission' => $gudang_logistik_permission,
+                'gudang_logistik_mutasi_request' => $gudang_logistik_mutasi_request,
+                'gudang_logistik_mutasi_permission' => $gudang_logistik_mutasi_permission,
+                'gudang_logistik_laporan_permission' => $gudang_logistik_laporan_permission,
 
             ];
             View::share($shareddata);

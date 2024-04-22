@@ -4,6 +4,7 @@ use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
 use App\Http\Controllers\BarangkeluarproduksiController;
 use App\Http\Controllers\BarangmasukgudangbahanController;
+use App\Http\Controllers\BarangmasukgudanglogistikController;
 use App\Http\Controllers\BarangmasukproduksiController;
 use App\Http\Controllers\BarangpembelianController;
 use App\Http\Controllers\BarangproduksiController;
@@ -657,6 +658,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporangudangbahan/cetakpersediaan', 'cetakpersediaan')->name('laporangudangbahan.cetakpersediaan')->can('gb.persediaan');
         Route::post('/laporangudangbahan/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporangudangbahan.cetakrekappersediaan')->can('gb.rekappersediaan');
     });
+
+    //Gudang Logistik
+    Route::controller(BarangmasukgudanglogistikController::class)->group(function () {
+        Route::get('/barangmasukgudanglogistik', 'index')->name('barangmasukgudanglogistik.index')->can('barangmasukgl.index');
+        Route::get('/barangmasukgudanglogistik/create', 'create')->name('barangmasukgudanglogistik.create')->can('barangmasukgl.create');
+        Route::get('/barangmasukgudanglogistik/{no_bukti}/edit', 'edit')->name('barangmasukgudanglogistik.edit')->can('barangmasukgl.edit');
+        Route::put('/barangmasukgudanglogistik/{no_bukti}/update', 'update')->name('barangmasukgudanglogistik.update')->can('barangmasukgl.update');
+        Route::post('/barangmasukgudanglogistik', 'store')->name('barangmasukgudanglogistik.store')->can('barangmasukgl.store');
+        Route::delete('/barangmasukgudanglogistik/{no_bukti}', 'destroy')->name('barangmasukgudanglogistik.delete')->can('barangmasukgl.delete');
+        Route::get('/barangmasukgudanglogistik/{no_bukti}/show', 'show')->name('barangmasukgudanglogistik.show')->can('barangmasukgl.show');
+    });
+
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 
