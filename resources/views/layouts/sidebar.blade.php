@@ -27,8 +27,9 @@
          </li>
          @include('layouts.sidebar.datamaster')
          @include('layouts.sidebar.produksi')
-         @include('layouts.sidebar.gudang_jadi')
          @include('layouts.sidebar.gudang_bahan')
+         @include('layouts.sidebar.gudang_logistik')
+         @include('layouts.sidebar.gudang_jadi')
 
          <li
              class="menu-item {{ request()->is(['omancabang', 'omancabang/*', 'oman', 'oman/*', 'permintaankiriman', 'permintaankiriman/*'])
