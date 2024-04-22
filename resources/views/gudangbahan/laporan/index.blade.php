@@ -70,6 +70,12 @@
                         @include('gudangbahan.laporan.persediaan')
                     </div>
                 @endcan
+
+                @can('gb.rekappersediaan')
+                    <div class="tab-pane fade" id="rekappersediaan" role="tabpanel">
+                        @include('gudangbahan.laporan.rekappersediaan')
+                    </div>
+                @endcan
             </div>
         </div>
     </div>

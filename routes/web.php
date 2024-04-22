@@ -655,6 +655,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporangudangbahan/cetakbarangmasuk', 'cetakbarangmasuk')->name('laporangudangbahan.cetakbarangmasuk')->can('gb.barangmasuk');
         Route::post('/laporangudangbahan/cetakbarangkeluar', 'cetakbarangkeluar')->name('laporangudangbahan.cetakbarangkeluar')->can('gb.barangkeluar');
         Route::post('/laporangudangbahan/cetakpersediaan', 'cetakpersediaan')->name('laporangudangbahan.cetakpersediaan')->can('gb.persediaan');
+        Route::post('/laporangudangbahan/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporangudangbahan.cetakrekappersediaan')->can('gb.rekappersediaan');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

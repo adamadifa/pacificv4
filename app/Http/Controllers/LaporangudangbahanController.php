@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barangpembelian;
 use App\Models\Detailbarangkeluargudangbahan;
 use App\Models\Detailbarangmasukgudangbahan;
+use App\Models\Kategoribarangpembelian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -84,7 +85,7 @@ class LaporangudangbahanController extends Controller
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "hasil-export.xls"
-            header("Content-Disposition: attachment; filename=Laporan Barang Masuk Gudang Bahan $request->dari-$request->sampai - $time.xls");
+            header("Content-Disposition: attachment; filename=Laporan Barang Keluar Gudang Bahan $request->dari-$request->sampai - $time.xls");
         }
         return view('gudangbahan.laporan.barangkeluar_cetak', $data);
     }
@@ -108,7 +109,7 @@ class LaporangudangbahanController extends Controller
 
             'saldo_awal_qty_unit',
             'saldo_awal_qty_berat',
-            'saldo_awal_harga',
+            // 'saldo_awal_harga',
 
             'opname_qty_unit',
             'opname_qty_berat',
@@ -135,19 +136,20 @@ class LaporangudangbahanController extends Controller
             'bk_qty_berat_lainnya',
             'bk_qty_berat_cabang',
 
-            'total_harga'
+            DB::raw('IFNULL(saldo_awal_qty_unit,0) + IFNULL(bm_qty_unit,0) - IFNULL(bk_qty_unit,0) as saldo_akhir_unit'),
+            DB::raw('IFNULL(saldo_awal_qty_berat,0) + IFNULL(bm_qty_berat,0) - IFNULL(bk_qty_berat,0) as saldo_akhir_berat'),
+            // 'total_harga'
         )
 
             //Saldo Awal
             ->leftJoin(
                 DB::raw("(
                 SELECT gudang_bahan_saldoawal_detail.kode_barang,
-                SUM( qty_unit ) AS saldo_awal_qty_unit,
-                SUM( qty_berat ) AS saldo_awal_qty_berat
+                qty_unit AS saldo_awal_qty_unit,
+                qty_berat AS saldo_awal_qty_berat
                 FROM gudang_bahan_saldoawal_detail
                 INNER JOIN gudang_bahan_saldoawal ON gudang_bahan_saldoawal_detail.kode_saldo_awal=gudang_bahan_saldoawal.kode_saldo_awal
                 WHERE bulan = '$bulan' AND tahun = '$tahun'
-                GROUP BY gudang_bahan_saldoawal_detail.kode_barang
             ) saldo_awal"),
                 function ($join) {
                     $join->on('pembelian_barang.kode_barang', '=', 'saldo_awal.kode_barang');
@@ -157,12 +159,11 @@ class LaporangudangbahanController extends Controller
             ->leftJoin(
                 DB::raw("(
                 SELECT gudang_bahan_opname_detail.kode_barang,
-                SUM( qty_unit ) AS opname_qty_unit,
-                SUM( qty_berat ) AS opname_qty_berat
+                qty_unit AS opname_qty_unit,
+                qty_berat AS opname_qty_berat
                 FROM gudang_bahan_opname_detail
-                INNER JOIN gudang_bahan_opname ON gudang_bahan_opname_detail.kode_opname=gudang_bahan_opname_detail.kode_opname
+                INNER JOIN gudang_bahan_opname ON gudang_bahan_opname_detail.kode_opname=gudang_bahan_opname.kode_opname
                 WHERE bulan = '$bulan' AND tahun = '$tahun'
-                GROUP BY gudang_bahan_opname_detail.kode_barang
             ) opname"),
                 function ($join) {
                     $join->on('pembelian_barang.kode_barang', '=', 'opname.kode_barang');
@@ -170,33 +171,33 @@ class LaporangudangbahanController extends Controller
             )
 
             //Pembelian
-            ->leftJoin(
-                DB::raw("(
-                SELECT kode_barang,SUM((jumlah*harga)+penyesuaian) as total_harga
-                FROM pembelian_detail
-                INNER JOIN pembelian ON pembelian_detail.no_bukti = pembelian.no_bukti
-                WHERE tanggal BETWEEN '$dari' AND '$sampai'
-                GROUP BY kode_barang
-            ) pembelian"),
-                function ($join) {
-                    $join->on('pembelian_barang.kode_barang', '=', 'pembelian.kode_barang');
-                }
-            )
+            // ->leftJoin(
+            //     DB::raw("(
+            //     SELECT kode_barang,SUM((jumlah*harga)+penyesuaian) as total_harga
+            //     FROM pembelian_detail
+            //     INNER JOIN pembelian ON pembelian_detail.no_bukti = pembelian.no_bukti
+            //     WHERE tanggal BETWEEN '$dari' AND '$sampai'
+            //     GROUP BY kode_barang
+            // ) pembelian"),
+            //     function ($join) {
+            //         $join->on('pembelian_barang.kode_barang', '=', 'pembelian.kode_barang');
+            //     }
+            // )
 
 
             //Saldo Awal Harga
 
-            ->leftJoin(
-                DB::raw("(
-                SELECT kode_barang,harga as saldo_awal_harga
-                FROM gudang_bahan_saldoawal_harga_detail
-                INNER JOIN gudang_bahan_saldoawal_harga ON gudang_bahan_saldoawal_harga_detail.kode_saldo_awal = gudang_bahan_saldoawal_harga.kode_saldo_awal
-                WHERE bulan = '$bulan' AND tahun = '$tahun'
-            ) saldo_awal_harga"),
-                function ($join) {
-                    $join->on('pembelian_barang.kode_barang', '=', 'saldo_awal_harga.kode_barang');
-                }
-            )
+            // ->leftJoin(
+            //     DB::raw("(
+            //     SELECT kode_barang,harga as saldo_awal_harga
+            //     FROM gudang_bahan_saldoawal_harga_detail
+            //     INNER JOIN gudang_bahan_saldoawal_harga ON gudang_bahan_saldoawal_harga_detail.kode_saldo_awal = gudang_bahan_saldoawal_harga.kode_saldo_awal
+            //     WHERE bulan = '$bulan' AND tahun = '$tahun'
+            // ) saldo_awal_harga"),
+            //     function ($join) {
+            //         $join->on('pembelian_barang.kode_barang', '=', 'saldo_awal_harga.kode_barang');
+            //     }
+            // )
 
             ->leftJoin(
                 DB::raw("(
@@ -208,7 +209,10 @@ class LaporangudangbahanController extends Controller
 
                 SUM( IF( kode_asal_barang = 'PMB',qty_berat ,0 )) AS bm_qty_berat_pembelian,
                 SUM( IF( kode_asal_barang = 'LNY',qty_berat ,0 )) AS bm_qty_berat_lainnya,
-                SUM( IF( kode_asal_barang = 'RTP',qty_berat ,0 )) AS bm_qty_berat_returpengganti
+                SUM( IF( kode_asal_barang = 'RTP',qty_berat ,0 )) AS bm_qty_berat_returpengganti,
+
+                SUM(qty_unit) as bm_qty_unit,
+                SUM(qty_berat) as bm_qty_berat
                 FROM
                 gudang_bahan_barang_masuk_detail
                 INNER JOIN gudang_bahan_barang_masuk ON gudang_bahan_barang_masuk_detail.no_bukti = gudang_bahan_barang_masuk.no_bukti
@@ -237,7 +241,12 @@ class LaporangudangbahanController extends Controller
                 SUM( IF( gudang_bahan_barang_keluar.kode_jenis_pengeluaran = 'PDQ' , qty_berat ,0 )) AS bk_qty_berat_pdqc,
                 SUM( IF( gudang_bahan_barang_keluar.kode_jenis_pengeluaran = 'SST' , qty_berat ,0 )) AS bk_qty_berat_susut,
                 SUM( IF( gudang_bahan_barang_keluar.kode_jenis_pengeluaran = 'LNY' , qty_berat ,0 )) AS bk_qty_berat_lainnya,
-                SUM( IF( gudang_bahan_barang_keluar.kode_jenis_pengeluaran = 'CBG' , qty_berat ,0 )) AS bk_qty_berat_cabang
+                SUM( IF( gudang_bahan_barang_keluar.kode_jenis_pengeluaran = 'CBG' , qty_berat ,0 )) AS bk_qty_berat_cabang,
+
+                SUM(qty_unit) as bk_qty_unit,
+                SUM(qty_berat) as bk_qty_berat
+
+
                 FROM gudang_bahan_barang_keluar_detail
                 INNER JOIN gudang_bahan_barang_keluar ON gudang_bahan_barang_keluar_detail.no_bukti = gudang_bahan_barang_keluar.no_bukti
                 WHERE tanggal BETWEEN '$dari' AND '$sampai'
@@ -254,6 +263,37 @@ class LaporangudangbahanController extends Controller
             ->orderBy('nama_barang')
             ->get();
 
-            dd($data['persediaan']);
+        $data['dari'] = $dari;
+        $data['sampai'] = $sampai;
+        $data['kategori'] = Kategoribarangpembelian::where('kode_kategori', $request->kode_kategori)->first();
+        $time = date('H:i:s');
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Persediaan Gudang Bahan $dari-$sampai- $time.xls");
+        }
+        return view('gudangbahan.laporan.persediaan_cetak', $data);
+    }
+
+
+    public function cetakrekappersediaan(Request $request)
+    {
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+        $dari = $tahun . "-" . $bulan . "-01";
+        $sampai = date("Y-m-t", strtotime($dari));
+        if (lockreport($dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+        $data['dari'] = $dari;
+        $data['sampai'] = $sampai;
+        $data['kategori'] = Kategoribarangpembelian::where('kode_kategori', $request->kode_kategori)->first();
+        $time = date('H:i:s');
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Persediaan Gudang Bahan $dari-$sampai- $time.xls");
+        }
+        return view('gudangbahan.laporan.rekappersediaan_cetak', $data);
     }
 }
