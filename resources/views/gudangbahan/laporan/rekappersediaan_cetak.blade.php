@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Persediaan Gudang Bahan {{ date('Y-m-d H:i:s') }}</title>
+    <title>Rekap Persediaan Gudang Bahan {{ date('Y-m-d H:i:s') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="{{ asset('assets/vendor/js/freeze-table.js') }}"></script>
@@ -202,6 +202,14 @@
                                     $harga_saldo_akhir = 0;
                                 }
                                 $jumlah_saldo_akhir = $qty_saldo_akhir * $harga_saldo_akhir;
+
+                                $qty_opname = $d->opname_qty_berat * 1000;
+                                if (!empty($qty_opname)) {
+                                    $harga_opname = !empty($qty_masuk) ? $jumlah_masuk / $qty_masuk : 0;
+                                } else {
+                                    $harga_opname = 0;
+                                }
+                                $jumlah_opname = $qty_opname * $harga_opname;
                             @endphp
                         @endif
                         <tr>
@@ -253,6 +261,10 @@
                             <td class="right">{{ formatAngkaDesimal($qty_saldo_akhir) }}</td>
                             <td class="right">{{ formatAngkaDesimal($harga_saldo_akhir) }}</td>
                             <td class="right">{{ formatAngkaDesimal($jumlah_saldo_akhir) }}</td>
+
+                            <td class="right">{{ formatAngkaDesimal($qty_opname) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($harga_opname) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($jumlah_opname) }}</td>
                         </tr>
                         @if ($kode_jenis_barang != $d->kode_jenis_barang)
                             <tr>
