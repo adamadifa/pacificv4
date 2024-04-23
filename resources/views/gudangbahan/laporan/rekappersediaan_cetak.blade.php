@@ -184,13 +184,24 @@
                                 $jumlah_cabang = $qty_cabang * $harga_cabang;
 
                                 //Lainnya
-                                $qty_lainnya = $d->bk_qty_berat_lainnya * 1000;
-                                if (!empty($qty_lainnya)) {
-                                    $harga_lainnya = !empty($qty_masuk) ? $jumlah_masuk / $qty_masuk : 0;
+                                $qty_lainnya_keluar = $d->bk_qty_berat_lainnya * 1000;
+                                if (!empty($qty_lainnya_keluar)) {
+                                    $harga_lainnya_keluar = !empty($qty_masuk) ? $jumlah_masuk / $qty_masuk : 0;
                                 } else {
-                                    $harga_lainnya = 0;
+                                    $harga_lainnya_keluar = 0;
                                 }
-                                $jumlah_lainnya = $qty_lainnya * $harga_lainnya;
+                                $jumlah_lainnya_keluar = $qty_lainnya_keluar * $harga_lainnya_keluar;
+
+                                $qty_keluar = $qty_produksi + $qty_seasoning + $qty_pdqc + $qty_susut + $qty_cabang + $qty_lainnya_keluar ;
+
+                                //Saldo Akhir
+                                $qty_saldo_akhir = $qty_masuk - $qty_keluar;
+                                if (!empty($qty_saldo_akhir)) {
+                                    $harga_saldo_akhir = !empty($qty_masuk) ? $jumlah_masuk / $qty_masuk : 0;
+                                } else {
+                                    $harga_saldo_akhir = 0;
+                                }
+                                $jumlah_saldo_akhir = $qty_saldo_akhir * $harga_saldo_akhir;
                             @endphp
                         @endif
                         <tr>
@@ -235,9 +246,13 @@
                             <td class="right">{{ formatAngkaDesimal($harga_cabang) }}</td>
                             <td class="right">{{ formatAngkaDesimal($jumlah_cabang) }}</td>
 
-                            <td class="right">{{ formatAngkaDesimal($qty_lainnya) }}</td>
-                            <td class="right">{{ formatAngkaDesimal($harga_lainnya) }}</td>
-                            <td class="right">{{ formatAngkaDesimal($jumlah_lainnya) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($qty_lainnya_keluar) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($harga_lainnya_keluar) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($jumlah_lainnya_keluar) }}</td>
+
+                            <td class="right">{{ formatAngkaDesimal($qty_saldo_akhir) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($harga_saldo_akhir) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($jumlah_saldo_akhir) }}</td>
                         </tr>
                         @if ($kode_jenis_barang != $d->kode_jenis_barang)
                             <tr>
