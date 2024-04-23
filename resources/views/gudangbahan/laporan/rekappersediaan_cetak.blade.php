@@ -212,6 +212,10 @@
                                 $jumlah_opname = $qty_opname * $harga_opname;
                             @endphp
                         @endif
+
+                        @php
+                            $selisih = ROUND()$qty_saldo_akhir - $qty_opname;
+                        @endphp
                         <tr>
                             <td class="center">{{ $loop->iteration }}</td>
                             <td class="center">{{ $d->kode_barang }}</td>
