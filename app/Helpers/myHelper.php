@@ -173,3 +173,15 @@ function lockreport($tanggal)
         return "success";
     }
 }
+
+
+
+function getBeratliter($tanggal)
+{
+    if ($tanggal <= "2022-03-01") {
+        $berat = 0.9064;
+    } else {
+        $berat = 1;
+    }
+    return $berat;
+}
