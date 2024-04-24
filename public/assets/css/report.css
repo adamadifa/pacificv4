@@ -25,9 +25,8 @@
 
 h4 {
     font-family: Arial, Helvetica, sans-serif;
-    line-height: 2px;;
+    line-height: 2px;
 }
-
 
 .right {
     text-align: right !important;
@@ -52,7 +51,6 @@ h4 {
     color: white !important;
 }
 
-
 .subtotal {
     border: 1px solid #050506;
     font-weight: bold;
@@ -63,4 +61,8 @@ h4 {
     background-color: #024a75;
     color: white;
     text-transform: uppercase;
+}
+
+.header {
+    margin-top: 30px;
 }

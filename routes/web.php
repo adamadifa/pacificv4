@@ -44,6 +44,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaldoawalbarangproduksiController;
 use App\Http\Controllers\SaldoawalgudangbahanController;
 use App\Http\Controllers\SaldoawalgudangjadiController;
+use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
@@ -639,6 +640,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/sagudangbahan/getdetailsaldo', 'getdetailsaldo')->name('sagudangbahan.getdetailsaldo');
     });
 
+    Route::controller(SaldoawalhargagudangbahanController::class)->group(function () {
+        Route::get('/sahargagb', 'index')->name('sahargagb.index')->can('sahargagb.index');
+        Route::get('/sahargagb/create', 'create')->name('sahargagb.create')->can('sahargagb.create');
+        Route::post('/sahargagb', 'store')->name('sahargagb.store')->can('sahargagb.store');
+        Route::delete('/sahargagb/{kode_saldo_awal}', 'destroy')->name('sahargagb.delete')->can('sahargagb.delete');
+        Route::get('/sahargagb/{kode_saldo_awal}/show', 'show')->name('sahargagb.show')->can('sahargagb.show');
+        //AJAX REQUEST
+        Route::post('/sahargagb/getdetailsaldo', 'getdetailsaldo')->name('sahargagb.getdetailsaldo');
+    });
+
     Route::controller(OpnamegudangbahanController::class)->group(function () {
         Route::get('/opgudangbahan', 'index')->name('opgudangbahan.index')->can('opgudangbahan.index');
         Route::get('/opgudangbahan/create', 'create')->name('opgudangbahan.create')->can('opgudangbahan.create');
@@ -657,6 +668,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporangudangbahan/cetakbarangkeluar', 'cetakbarangkeluar')->name('laporangudangbahan.cetakbarangkeluar')->can('gb.barangkeluar');
         Route::post('/laporangudangbahan/cetakpersediaan', 'cetakpersediaan')->name('laporangudangbahan.cetakpersediaan')->can('gb.persediaan');
         Route::post('/laporangudangbahan/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporangudangbahan.cetakrekappersediaan')->can('gb.rekappersediaan');
+        Route::post('/laporangudangbahan/cetakkartugudang', 'cetakkartugudang')->name('laporangudangbahan.cetakkartugudang')->can('gb.kartugudang');
     });
 
     //Gudang Logistik

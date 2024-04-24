@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barangpembelian;
 use App\Models\Detailbarangkeluargudangbahan;
 use App\Models\Detailbarangmasukgudangbahan;
+use App\Models\Detailsaldoawalgudangbahan;
 use App\Models\Kategoribarangpembelian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -450,6 +451,7 @@ class LaporangudangbahanController extends Controller
                     $join->on('pembelian_barang.kode_barang', '=', 'barangkeluar.kode_barang');
                 }
             )
+            ->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori')
             ->where('pembelian_barang.kode_group', 'GDB')
             ->where('pembelian_barang.kode_kategori', $request->kode_kategori)
             ->orderBy('kode_jenis_barang')
@@ -459,5 +461,199 @@ class LaporangudangbahanController extends Controller
 
         $data['jenis_barang'] = config('gudangbahan.jenis_barang');
         return view('gudangbahan.laporan.rekappersediaan_cetak', $data);
+    }
+
+    public function cetakkartugudang(Request $request)
+    {
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+        $dari = $tahun . "-" . $bulan . "-01";
+        $sampai = date("Y-m-t", strtotime($dari));
+        if (lockreport($dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+        $data['dari'] = $dari;
+        $data['sampai'] = $sampai;
+        $results = DB::table('gudang_bahan_barang_masuk_detail')
+            ->select(
+                'tanggal',
+                DB::raw('SUM(qty_unit) as qty_unit_masuk'),
+                DB::raw('SUM(qty_berat) as qty_berat_masuk'),
+                DB::raw('0 as qty_unit_keluar'),
+                DB::raw('0 as qty_berat_keluar'),
+
+                DB::raw('SUM(IF(kode_asal_barang="PMB",qty_unit,0)) as qty_unit_pembelian'),
+                DB::raw('SUM(IF(kode_asal_barang="LNY",qty_unit,0)) as qty_unit_lainnya'),
+                DB::raw('SUM(IF(kode_asal_barang="RTP",qty_unit,0)) as qty_unit_returpengganti'),
+
+                DB::raw('SUM(IF(kode_asal_barang="PMB",qty_berat,0)) as qty_berat_pembelian'),
+                DB::raw('SUM(IF(kode_asal_barang="LNY",qty_berat,0)) as qty_berat_lainnya'),
+                DB::raw('SUM(IF(kode_asal_barang="RTP",qty_berat,0)) as qty_berat_returpengganti'),
+
+                DB::raw('0 as qty_unit_produksi'),
+                DB::raw('0 as qty_unit_seasoning'),
+                DB::raw('0 as qty_unit_pdqc'),
+                DB::raw('0 as qty_unit_susut'),
+                DB::raw('0 as qty_unit_lainnya_keluar'),
+                DB::raw('0 as qty_unit_cabang'),
+
+                DB::raw('0 as qty_berat_produksi'),
+                DB::raw('0 as qty_berat_seasoning'),
+                DB::raw('0 as qty_berat_pdqc'),
+                DB::raw('0 as qty_berat_susut'),
+                DB::raw('0 as qty_berat_lainnya_keluar'),
+                DB::raw('0 as qty_berat_cabang')
+
+
+
+            )
+            ->join('gudang_bahan_barang_masuk', 'gudang_bahan_barang_masuk_detail.no_bukti', '=', 'gudang_bahan_barang_masuk.no_bukti')
+            ->whereBetween('tanggal', [$dari, $sampai])
+            ->where('gudang_bahan_barang_masuk_detail.kode_barang', $request->kode_barang_kartugudang)
+            ->groupBy('tanggal', 'gudang_bahan_barang_masuk_detail.kode_barang');
+
+        $results->unionAll(DB::table('gudang_bahan_barang_keluar_detail')
+            ->select(
+                'tanggal',
+                DB::raw('0 as qty_unit_masuk'),
+                DB::raw('0 as qty_berat_masuk'),
+                DB::raw('SUM(qty_unit) as qty_unit_keluar'),
+                DB::raw('SUM(qty_berat) as qty_berat_keluar'),
+
+                DB::raw('0 as qty_unit_pembelian'),
+                DB::raw('0 as qty_unit_lainnya'),
+                DB::raw('0 as qty_unit_returpengganti'),
+                DB::raw('0 as qty_berat_pembelian'),
+                DB::raw('0 as qty_berat_lainnya'),
+                DB::raw('0 as qty_berat_returpengganti'),
+
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="PRD",qty_unit,0)) as qty_unit_produksi'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="SSN",qty_unit,0)) as qty_unit_seasonig'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="PDQ",qty_unit,0)) as qty_unit_pdqc'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="SST",qty_unit,0)) as qty_unit_susut'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="LNY",qty_unit,0)) as qty_unit_lainnya_keluar'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="CBG",qty_unit,0)) as qty_unit_cabang'),
+
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="PRD",qty_berat,0)) as qty_berat_produksi'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="SSN",qty_berat,0)) as qty_berat_seasonig'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="PDQ",qty_berat,0)) as qty_berat_pdqc'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="SST",qty_berat,0)) as qty_berat_susut'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="LNY",qty_berat,0)) as qty_berat_lainnya_keluar'),
+                DB::raw('SUM(IF(kode_jenis_pengeluaran="CBG",qty_berat,0)) as qty_berat_cabang')
+
+            )
+            ->join('gudang_bahan_barang_keluar', 'gudang_bahan_barang_keluar_detail.no_bukti', '=', 'gudang_bahan_barang_keluar.no_bukti')
+            ->whereBetween('tanggal', [$dari, $sampai])
+            ->where('gudang_bahan_barang_keluar_detail.kode_barang', $request->kode_barang_kartugudang)
+            ->groupBy('tanggal', 'gudang_bahan_barang_keluar_detail.kode_barang'));
+
+        $kartu_gudang = $results->get();
+
+        $data['kartu_gudang'] = $kartu_gudang->groupBy('tanggal')
+            ->map(function ($item) {
+                return [
+                    'tanggal' => $item->first()->tanggal,
+                    'qty_unit_masuk' => $item->sum(function ($row) {
+                        return  $row->qty_unit_masuk;
+                    }),
+
+                    'qty_unit_keluar' => $item->sum(function ($row) {
+                        return $row->qty_unit_keluar;
+                    }),
+
+                    'qty_berat_masuk' => $item->sum(function ($row) {
+                        return $row->qty_berat_masuk;
+                    }),
+
+                    'qty_berat_keluar' => $item->sum(function ($row) {
+                        return $row->qty_berat_keluar;
+                    }),
+
+                    'qty_unit_pembelian' => $item->sum(function ($row) {
+                        return $row->qty_unit_pembelian;
+                    }),
+                    'qty_berat_pembelian' => $item->sum(function ($row) {
+                        return $row->qty_berat_pembelian;
+                    }),
+
+                    'qty_unit_lainnya' => $item->sum(function ($row) {
+                        return $row->qty_unit_lainnya;
+                    }),
+                    'qty_berat_lainnya' => $item->sum(function ($row) {
+                        return $row->qty_berat_lainnya;
+                    }),
+
+                    'qty_unit_returpengganti' => $item->sum(function ($row) {
+                        return $row->qty_unit_returpengganti;
+                    }),
+                    'qty_berat_returpengganti' => $item->sum(function ($row) {
+                        return $row->qty_berat_returpengganti;
+                    }),
+
+
+                    'qty_unit_produksi' => $item->sum(function ($row) {
+                        return $row->qty_unit_produksi;
+                    }),
+                    'qty_berat_produksi' => $item->sum(function ($row) {
+                        return $row->qty_berat_produksi;
+                    }),
+
+                    'qty_unit_seasoning' => $item->sum(function ($row) {
+                        return $row->qty_unit_seasoning;
+                    }),
+                    'qty_berat_seasoning' => $item->sum(function ($row) {
+                        return $row->qty_berat_seasoning;
+                    }),
+
+                    'qty_unit_pdqc' => $item->sum(function ($row) {
+                        return $row->qty_unit_pdqc;
+                    }),
+                    'qty_berat_pdqc' => $item->sum(function ($row) {
+                        return $row->qty_berat_pdqc;
+                    }),
+
+                    'qty_unit_susut' => $item->sum(function ($row) {
+                        return $row->qty_unit_susut;
+                    }),
+                    'qty_berat_susut' => $item->sum(function ($row) {
+                        return $row->qty_berat_susut;
+                    }),
+
+                    'qty_unit_lainnya_keluar' => $item->sum(function ($row) {
+                        return $row->qty_unit_lainnya_keluar;
+                    }),
+                    'qty_berat_lainnya_keluar' => $item->sum(function ($row) {
+                        return $row->qty_berat_lainnya_keluar;
+                    }),
+
+                    'qty_unit_cabang' => $item->sum(function ($row) {
+                        return $row->qty_unit_cabang;
+                    }),
+                    'qty_berat_cabang' => $item->sum(function ($row) {
+                        return $row->qty_berat_cabang;
+                    }),
+                ];
+            })
+            ->sortBy('tanggal')
+            ->values()
+            ->all();
+
+        //dd($data['kartu_gudang']);
+
+        $data['saldo_awal'] = Detailsaldoawalgudangbahan::select('kode_barang', 'qty_unit', 'qty_berat')
+            ->join('gudang_bahan_saldoawal', 'gudang_bahan_saldoawal_detail.kode_saldo_awal', '=', 'gudang_bahan_saldoawal.kode_saldo_awal')
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->where('kode_barang', $request->kode_barang_kartugudang)
+            ->first();
+        $barang = Barangpembelian::where('kode_barang', $request->kode_barang_kartugudang)->first();
+        $data['barang'] = $barang;
+        $time = date('H:i:s');
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Kartu Gudang Bahan $barang->kode_barang-$barang->nama_barang $dari-$sampai- $time.xls");
+        }
+        return view('gudangbahan.laporan.kartugudang_cetak', $data);
     }
 }

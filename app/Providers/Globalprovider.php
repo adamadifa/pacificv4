@@ -214,6 +214,8 @@ class Globalprovider extends ServiceProvider
                 'barangkeluargudangbahan/*',
                 'sagudangbahan',
                 'sagudangbahan/*',
+                'sahargagb',
+                'sahargagb/*',
                 'opgudangbahan',
                 'opgudangbahan/*',
                 'laporangudangbahan',
@@ -229,6 +231,8 @@ class Globalprovider extends ServiceProvider
                 'barangkeluargudangbahan/*',
                 'sagudangbahan',
                 'sagudangbahan/*',
+                'sahargagb',
+                'sahargagb/*',
                 'opgudangbahan',
                 'opgudangbahan/*',
             ];
@@ -237,6 +241,7 @@ class Globalprovider extends ServiceProvider
                 'barangmasukgb.index',
                 'barangkeluargb.index',
                 'sagudangbahan.index',
+                'sahargagb.index',
                 'opgudangbahan.index',
             ];
 
