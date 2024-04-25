@@ -1,7 +1,8 @@
-<form action="{{ route('barangmasukgudanglogistik.store') }}" method="post" id="formcreatebarangmasukgudanglogistik">
+<form action="{{ route('barangmasukgudanglogistik.update',Crypt::encrypt($barangmasuk->no_bukti)) }}" method="post" id="formeditbarangmasukgudanglogistik">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    @method('PUT')
+    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" value="{{ $barangmasuk->no_bukti }}" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $barangmasuk->tanggal }}" />
     <div class="divider text-start">
         <div class="divider-text">Detail Barang</div>
     </div>
@@ -34,6 +35,37 @@
                     </tr>
                 </thead>
                 <tbody id="loaddetail">
+                    @foreach ($detail as $d)
+                    <tr id="index_{{ $d->kode_barang }}">
+                        <td>
+                           <input type="hidden" name="kode_barang[]" value="{{ $d->kode_barang }}">
+                           {{ $d->kode_barang }}
+                        </td>
+                        <td>{{ textUpperCase($d->nama_barang) }}</td>
+                        <td class="text-end">
+                           <input type="hidden" name="jml[]" value="{{ $d->jumlah }}">
+                           {{ formatAngkaDesimal($d->jumlah) }}
+                        </td>
+                        <td class="text-end">
+                           <input type="hidden" name="harga[]" value="{{ $d->harga }}">
+                           {{ formatAngkaDesimal($d->harga) }}
+                        </td>
+                        <td class="text-end">
+                          @php
+                            $subtotal = $d->jumlah * $d->harga;
+                          @endphp
+                           {{ formatAngkaDesimal($subtotal) }}
+                        </td>
+                        <td>
+                           <input type="hidden" name="ket[]" value="{{ $d->keterangan }}">
+                           {{ $d->keterangan }}
+                        </td>
+                        <td class="text-center">
+                           <a href="#" kode_barang="{{ $d->kode_barang }}" class="delete"><i
+                                 class="ti ti-trash text-danger"></i></a>
+                        </td>
+                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -57,7 +89,7 @@
 
 <script>
     $(function() {
-        const formCreate = $("#formcreatebarangmasukgudanglogistik");
+        const form = $("#formeditbarangmasukgudanglogistik");
         $(".flatpickr-date").flatpickr({
             enable: [{
                 from: "{{ $start_periode }}",
@@ -113,7 +145,7 @@
             cektutuplaporan($(this).val(), "gudanglogistik");
         });
 
-        const select2Kodebarang = formCreate.find('.select2Kodebarang');
+        const select2Kodebarang = form.find('.select2Kodebarang');
         if (select2Kodebarang.length) {
             select2Kodebarang.each(function() {
                 var $this = $(this);
@@ -126,15 +158,15 @@
         }
 
         function addProduk() {
-            const dataBarang = formCreate.find("#kode_barang :selected").select2(this.data);
+            const dataBarang = form.find("#kode_barang :selected").select2(this.data);
             const kode_barang = $(dataBarang).val();
             const nama_barang = $(dataBarang).text().split("|");
-            const jumlah = formCreate.find("#jumlah").val();
-            const harga = formCreate.find("#harga").val();
+            const jumlah = form.find("#jumlah").val();
+            const harga = form.find("#harga").val();
             const jml = jumlah.replaceAll(".", "").replaceAll(",",".");
             const hrg = harga.replaceAll(".", "").replaceAll(",",".");
             const subtotal = convertToRupiah( parseFloat(jml) * parseFloat(hrg));
-            const keterangan = formCreate.find("#keterangan").val();
+            const keterangan = form.find("#keterangan").val();
 
             let produk = `
                     <tr id="index_${kode_barang}">
@@ -171,14 +203,15 @@
             $("#jumlah").val("");
             $("#harga").val("");
             $("#keterangan").val("");
+            $("#keterangan").val("");
             $("#kode_barang").focus();
         }
 
-        formCreate.find("#tambahproduk").click(function(e) {
+        form.find("#tambahproduk").click(function(e) {
             e.preventDefault();
-            const kode_barang = formCreate.find("#kode_barang").val();
-            const jumlah = formCreate.find("#jumlah").val();
-            const harga = formCreate.find("#harga").val();
+            const kode_barang = form.find("#kode_barang").val();
+            const jumlah = form.find("#jumlah").val();
+            const harga = form.find("#harga").val();
             if (kode_barang == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -186,7 +219,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#kode_barang").focus();
+                        form.find("#kode_barang").focus();
                     },
 
                 });
@@ -198,7 +231,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#jumlah").focus();
+                        form.find("#jumlah").focus();
                     },
 
                 });
@@ -210,21 +243,21 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#harga").focus();
+                        form.find("#harga").focus();
                     },
 
                 });
 
             } else {
-                formCreate.find("#tambahproduk").prop('disabled', true);
-                if (formCreate.find('#tabledetail').find('#index_' + kode_barang).length > 0) {
+                form.find("#tambahproduk").prop('disabled', true);
+                if (form.find('#tabledetail').find('#index_' + kode_barang).length > 0) {
                     Swal.fire({
                         title: "Oops!",
                         text: "Data Sudah Ada!",
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            formCreate.find("#kode_produk").focus();
+                            form.find("#kode_produk").focus();
                         },
 
                     });
@@ -234,7 +267,7 @@
             }
         });
 
-        formCreate.on('click', '.delete', function(e) {
+        form.on('click', '.delete', function(e) {
             e.preventDefault();
             var kode_barang = $(this).attr("kode_barang");
             event.preventDefault();
@@ -255,28 +288,28 @@
                 }
             });
         });
-        formCreate.find("#saveButton").hide();
+        form.find("#saveButton").hide();
 
-        formCreate.find('.agreement').change(function() {
+        form.find('.agreement').change(function() {
             if (this.checked) {
-                formCreate.find("#saveButton").show();
+                form.find("#saveButton").show();
             } else {
-                formCreate.find("#saveButton").hide();
+                form.find("#saveButton").hide();
             }
         });
 
-        formCreate.submit(function() {
-            const no_bukti = formCreate.find("#no_bukti").val();
-            const tanggal = formCreate.find("#tanggal").val();
-            const kode_asal_barang = formCreate.find("#kode_asal_barang").val();
-            if (formCreate.find('#loaddetail tr').length == 0) {
+        form.submit(function() {
+            const no_bukti = form.find("#no_bukti").val();
+            const tanggal = form.find("#tanggal").val();
+            const kode_asal_barang = form.find("#kode_asal_barang").val();
+            if (form.find('#loaddetail tr').length == 0) {
                 Swal.fire({
                     title: "Oops!",
                     text: "Data Barang Masih Kosong !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#kode_barang").focus();
+                        form.find("#kode_barang").focus();
                     },
                 });
 
@@ -288,7 +321,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#no_bukti").focus();
+                        form.find("#no_bukti").focus();
                     },
                 });
 
@@ -300,7 +333,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#tanggal").focus();
+                        form.find("#tanggal").focus();
                     },
                 });
 
@@ -312,7 +345,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formCreate.find("#kode_asal_barang").focus();
+                        form.find("#kode_asal_barang").focus();
                     },
                 });
 
