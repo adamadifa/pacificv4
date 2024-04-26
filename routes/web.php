@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
+use App\Http\Controllers\BarangkeluargudanglogistikController;
 use App\Http\Controllers\BarangkeluarproduksiController;
 use App\Http\Controllers\BarangmasukgudangbahanController;
 use App\Http\Controllers\BarangmasukgudanglogistikController;
@@ -682,6 +683,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/barangmasukgudanglogistik/{no_bukti}/show', 'show')->name('barangmasukgudanglogistik.show')->can('barangmasukgl.show');
     });
 
+    Route::controller(BarangkeluargudanglogistikController::class)->group(function () {
+        Route::get('/barangkeluargudanglogistik', 'index')->name('barangkeluargudanglogistik.index')->can('barangkeluargl.index');
+        Route::get('/barangkeluargudanglogistik/create', 'create')->name('barangkeluargudanglogistik.create')->can('barangkeluargl.create');
+        Route::get('/barangkeluargudanglogistik/{no_bukti}/edit', 'edit')->name('barangkeluargudanglogistik.edit')->can('barangkeluargl.edit');
+        Route::put('/barangkeluargudanglogistik/{no_bukti}/update', 'update')->name('barangkeluargudanglogistik.update')->can('barangkeluargl.update');
+        Route::post('/barangkeluargudanglogistik', 'store')->name('barangkeluargudanglogistik.store')->can('barangkeluargl.store');
+        Route::delete('/barangkeluargudanglogistik/{no_bukti}', 'destroy')->name('barangkeluargudanglogistik.delete')->can('barangkeluargl.delete');
+        Route::get('/barangkeluargudanglogistik/{no_bukti}/show', 'show')->name('barangkeluargudanglogistik.show')->can('barangkeluargl.show');
+    });
 
     Route::controller(TutuplaporanController::class)->group(function () {
 

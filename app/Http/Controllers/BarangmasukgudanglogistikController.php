@@ -34,9 +34,6 @@ class BarangmasukgudanglogistikController extends Controller
             $query->where('no_bukti', $request->no_bukti_search);
         }
 
-        if (!empty($request->kode_asal_barang_search)) {
-            $query->where('kode_asal_barang', $request->kode_asal_barang_search);
-        }
 
         $barangmasuk = $query->simplePaginate(20);
         $barangmasuk->appends(request()->all());

@@ -26,7 +26,7 @@
         @endcan
         @can('barangkeluargl.index')
             <li class="nav-item" role="presentation">
-                <a href="#"
+                <a href="{{ route('barangkeluargudanglogistik.index') }}"
                     class="nav-link {{ request()->is(['barangkeluargudanglogistik', 'barangkeluargudanglogistik/*']) ? 'active' : '' }}">
                     <i class="tf-icons ti  ti-package-export ti-md me-1"></i> Barang Keluar
                 </a>
