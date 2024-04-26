@@ -2,7 +2,7 @@
     <ul class="nav nav-tabs" role="tablist">
         @can('sagudanglogistik.index')
             <li class="nav-item" role="presentation">
-                <a href="#"
+                <a href="{{ route('sagudanglogistik.index') }}"
                     class="nav-link {{ request()->is(['sagudanglogistik', 'sagudanglogistik/*']) ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Saldo Awal
                 </a>

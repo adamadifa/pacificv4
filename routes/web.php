@@ -45,6 +45,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaldoawalbarangproduksiController;
 use App\Http\Controllers\SaldoawalgudangbahanController;
 use App\Http\Controllers\SaldoawalgudangjadiController;
+use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
@@ -691,6 +692,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/barangkeluargudanglogistik', 'store')->name('barangkeluargudanglogistik.store')->can('barangkeluargl.store');
         Route::delete('/barangkeluargudanglogistik/{no_bukti}', 'destroy')->name('barangkeluargudanglogistik.delete')->can('barangkeluargl.delete');
         Route::get('/barangkeluargudanglogistik/{no_bukti}/show', 'show')->name('barangkeluargudanglogistik.show')->can('barangkeluargl.show');
+    });
+
+    Route::controller(SaldoawalgudanglogistikController::class)->group(function () {
+        Route::get('/sagudanglogistik', 'index')->name('sagudanglogistik.index')->can('sagudanglogistik.index');
+        Route::get('/sagudanglogistik/create', 'create')->name('sagudanglogistik.create')->can('sagudanglogistik.create');
+        Route::post('/sagudanglogistik', 'store')->name('sagudanglogistik.store')->can('sagudanglogistik.store');
+        Route::delete('/sagudanglogistik/{kode_saldo_awal}', 'destroy')->name('sagudanglogistik.delete')->can('sagudanglogistik.delete');
+        Route::get('/sagudanglogistik/{kode_saldo_awal}/show', 'show')->name('sagudanglogistik.show')->can('sagudanglogistik.show');
+        //AJAX REQUEST
+        Route::post('/sagudanglogistik/getdetailsaldo', 'getdetailsaldo')->name('sagudanglogistik.getdetailsaldo');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {
