@@ -227,4 +227,25 @@ class BarangkeluargudanglogistikController extends Controller
         $data['jenis_pengeluaran'] = config('gudanglogistik.blade.jenis_pengeluaran');
         return view('gudanglogistik.barangkeluar.show', $data);
     }
+
+
+    public function destroy($no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        $barangkeluar = Barangkeluargudanglogistik::where('no_bukti', $no_bukti)->first();
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($barangkeluar->tanggal, "gudanglogistik");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            //Hapus Surat Jalan
+            Barangkeluargudanglogistik::where('no_bukti', $no_bukti)->delete();
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

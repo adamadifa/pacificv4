@@ -101,7 +101,7 @@
                                           @can('barangkeluargl.delete')
                                              <div>
                                                 <form method="POST" name="deleteform" class="deleteform"
-                                                   action="{{ route('barangmasukgudanglogistik.delete', Crypt::encrypt($d->no_bukti)) }}">
+                                                   action="{{ route('barangkeluargudanglogistik.delete', Crypt::encrypt($d->no_bukti)) }}">
                                                    @csrf
                                                    @method('DELETE')
                                                    <a href="#" class="delete-confirm ml-1">
