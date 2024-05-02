@@ -19,14 +19,15 @@ class WilayahController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $roles_show_cabang = config('global.roles_access_all_cabang');
         $query = Wilayah::query();
+        $query->join('cabang', 'wilayah.kode_cabang', '=', 'cabang.kode_cabang');
         if (!empty($request->nama_wilayah)) {
             $query->where('nama_wilayah', 'like', '%' . $request->nama_wilayah . '%');
         }
         if (!empty($request->kode_cabang)) {
-            $query->where('kode_cabang', $request->kode_cabang);
+            $query->where('wilayah.kode_cabang', $request->kode_cabang);
         }
         if (!$user->hasRole($roles_show_cabang)) {
-            if ($user->hasRole('rsm')) {
+            if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else {
                 $query->where('wilayah.kode_cabang', auth()->user()->kode_cabang);

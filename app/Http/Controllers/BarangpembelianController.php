@@ -117,4 +117,24 @@ class BarangpembelianController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    //GET DATA FROM AJAX
+    public function getbarangbykategori(Request $request)
+    {
+
+        $query = Barangpembelian::query();
+        $query->where('status', 1);
+        $query->where('kode_kategori', $request->kode_kategori);
+        $query->orderBy('nama_barang');
+        $barang = $query->get();
+
+
+
+
+        echo "<option value=''>Semua Barang</option>";
+        foreach ($barang as $d) {
+            echo "<option  value='$d->kode_barang'>" . textUpperCase($d->nama_barang) . "</option>";
+        }
+    }
 }

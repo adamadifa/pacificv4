@@ -15,6 +15,8 @@ use App\Http\Controllers\BpjstenagakerjaController;
 use App\Http\Controllers\BufferstokController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DpbController;
+use App\Http\Controllers\DriverhelperController;
 use App\Http\Controllers\FsthpController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\HargaController;
@@ -26,10 +28,12 @@ use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\LainnyagudangjadiController;
 use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangjadiController;
+use App\Http\Controllers\LaporangudanglogistikController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
+use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PermintaankirimanController;
 use App\Http\Controllers\PermintaanproduksiController;
@@ -228,6 +232,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/wilayah/getwilayahbycabang', 'getwilayahbycabang');
     });
 
+    Route::controller(DriverhelperController::class)->group(function () {
+        Route::get('/driverhelper', 'index')->name('driverhelper.index')->can('driverhelper.index');
+        Route::get('/driverhelper/create', 'create')->name('driverhelper.create')->can('driverhelper.create');
+        Route::post('/driverhelper', 'store')->name('driverhelper.store')->can('driverhelper.store');
+        Route::get('/driverhelper/{kode_driverhelper}/edit', 'edit')->name('driverhelper.edit')->can('driverhelper.edit');
+        Route::put('/driverhelper/{kode_driverhelper}', 'update')->name('driverhelper.update')->can('driverhelper.update');
+        Route::delete('/driverhelper/{kode_driverhelper}', 'destroy')->name('driverhelper.delete')->can('driverhelper.delete');
+        Route::get('/driverhelper/{kode_driverhelper}/show', 'show')->name('driverhelper.show')->can('driverhelper.show');
+
+        //GET DATA FROM AJAX
+        Route::post('/driverhelper/getdriverhelperbycabang', 'getdriverhelperbycabang');
+    });
+
 
     Route::controller(KendaraanController::class)->group(function () {
         Route::get('/kendaraan', 'index')->name('kendaraan.index')->can('kendaraan.index');
@@ -257,6 +274,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/barangpembelian/{kode_barang}', 'update')->name('barangpembelian.update')->can('barangpembelian.update');
         Route::delete('/barangpembelian/{kode_barang}', 'destroy')->name('barangpembelian.delete')->can('barangpembelian.delete');
         Route::get('/barangpembelian/{kode_barang}/show', 'show')->name('barangpembelian.show')->can('barangpembelian.show');
+
+        //GET DATA FROM AJAX
+        Route::post('/barangpembelian/getbarangbykategori', 'getbarangbykategori');
     });
 
     Route::controller(KaryawanController::class)->group(function () {
@@ -518,6 +538,7 @@ Route::middleware('auth')->group(function () {
     //Surat Jalan Gudang Jadi
     Route::controller(SuratjalanController::class)->group(function () {
         Route::get('/suratjalan', 'index')->name('suratjalan.index')->can('suratjalan.index');
+        Route::get('/suratjalancabang', 'index_gudangcabang')->name('suratjalancabang.index')->can('suratjalancabang.index');
         Route::get('/suratjalan/{no_permintaan}/create', 'create')->name('suratjalan.create')->can('suratjalan.create');
         Route::post('/suratjalan/{no_permintaan}/store', 'store')->name('suratjalan.store')->can('suratjalan.store');
         Route::get('/suratjalan/{no_mutasi}/show', 'show')->name('suratjalan.show')->can('suratjalan.show');
@@ -704,6 +725,36 @@ Route::middleware('auth')->group(function () {
         Route::post('/sagudanglogistik/getdetailsaldo', 'getdetailsaldo')->name('sagudanglogistik.getdetailsaldo');
     });
 
+    Route::controller(OpnamegudanglogistikController::class)->group(function () {
+        Route::get('/opgudanglogistik', 'index')->name('opgudanglogistik.index')->can('opgudanglogistik.index');
+        Route::get('/opgudanglogistik/create', 'create')->name('opgudanglogistik.create')->can('opgudanglogistik.create');
+        Route::post('/opgudanglogistik', 'store')->name('opgudanglogistik.store')->can('opgudanglogistik.store');
+        Route::get('/opgudanglogistik/{kode_opname}/edit', 'edit')->name('opgudanglogistik.edit')->can('opgudanglogistik.edit');
+        Route::put('/opgudanglogistik/{kode_opname}/update', 'update')->name('opgudanglogistik.update')->can('opgudanglogistik.update');
+        Route::delete('/opgudanglogistik/{kode_saldo_awal}', 'destroy')->name('opgudanglogistik.delete')->can('opgudanglogistik.delete');
+        Route::get('/opgudanglogistik/{kode_saldo_awal}/show', 'show')->name('opgudanglogistik.show')->can('opgudanglogistik.show');
+        //AJAX REQUEST
+        Route::post('/opgudanglogistik/getdetailsaldo', 'getdetailsaldo')->name('opgudanglogistik.getdetailsaldo');
+    });
+
+    Route::controller(LaporangudanglogistikController::class)->group(function () {
+        Route::get('/laporangudanglogistik', 'index')->name('laporangudanglogistik.index');
+        Route::post('/laporangudanglogistik/cetakbarangmasuk', 'cetakbarangmasuk')->name('laporangudanglogistik.cetakbarangmasuk')->can('gl.barangmasuk');
+        Route::post('/laporangudanglogistik/cetakbarangkeluar', 'cetakbarangkeluar')->name('laporangudanglogistik.cetakbarangkeluar')->can('gl.barangkeluar');
+        Route::post('/laporangudanglogistik/cetakpersediaan', 'cetakpersediaan')->name('laporangudanglogistik.cetakpersediaan')->can('gl.persediaan');
+        Route::post('/laporangudanglogistik/cetakpersediaanopname', 'cetakpersediaanopname')->name('laporangudanglogistik.cetakpersediaanopname')->can('gl.persediaanopname');
+    });
+
+    //Gudang Jadi Cabang
+    Route::controller(DpbController::class)->group(function () {
+        Route::get('/dpb', 'index')->name('dpb.index')->can('dpb.index');
+        Route::get('/dpb/create', 'create')->name('dpb.create')->can('dpb.create');
+        Route::get('/dpb/{no_dpb}/edit', 'edit')->name('dpb.edit')->can('dpb.edit');
+        Route::put('/dpb/{no_dpb}/update', 'update')->name('dpb.update')->can('dpb.update');
+        Route::post('/dpb', 'store')->name('dpb.store')->can('dpb.store');
+        Route::delete('/dpb/{no_dpb}', 'destroy')->name('dpb.delete')->can('dpb.delete');
+        Route::get('/dpb/{no_dpb}/show', 'show')->name('dpb.show')->can('dpb.show');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

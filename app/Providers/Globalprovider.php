@@ -70,7 +70,8 @@ class Globalprovider extends ServiceProvider
                 'tujuanangkutan/*',
                 'angkutan',
                 'angkutan/*',
-                'barangpembelian'
+                'barangpembelian',
+                'driverhelper'
             ];
 
 
@@ -94,6 +95,7 @@ class Globalprovider extends ServiceProvider
                 'bpjstenagakerja.index',
                 'barangproduksi.index',
                 'bufferstok.index',
+                'driverhelper.index'
             ];
 
             //Produksi
@@ -295,10 +297,18 @@ class Globalprovider extends ServiceProvider
                 'gl.barangmasuk',
                 'gl.barangkeluar',
                 'gl.persediaan',
-                'gl.rekappersediaan',
-                'gl.kartugudang',
+                'gl.persediaanopname',
             ];
             $gudang_logistik_permission = array_merge($gudang_logistik_mutasi_permission, $gudang_logistik_laporan_permission);
+
+            //Gudang Cabang
+            $gudang_cabang_request = [
+                'suratjalancabang',
+            ];
+
+            $gudang_cabang_permission = [
+                'suratjalancabang.index',
+            ];
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
                 'start_periode' => $start_periode,
@@ -335,6 +345,10 @@ class Globalprovider extends ServiceProvider
                 'gudang_logistik_mutasi_request' => $gudang_logistik_mutasi_request,
                 'gudang_logistik_mutasi_permission' => $gudang_logistik_mutasi_permission,
                 'gudang_logistik_laporan_permission' => $gudang_logistik_laporan_permission,
+
+                //Gudang Cabang
+                'gudang_cabang_request' => $gudang_cabang_request,
+                'gudang_cabang_permission' => $gudang_cabang_permission,
 
             ];
             View::share($shareddata);

@@ -14,7 +14,7 @@ class DashboardController extends Controller
         if ($user->hasRole(['super admin'])) {
             return $this->marketing();
         } else {
-            return 0;
+            return $this->marketing();
         }
     }
 

@@ -123,9 +123,9 @@
          const qty_berat = formCreate.find("#qty_berat").val();
          const qty_lebih = formCreate.find("#qty_lebih").val();
          const keterangan = formCreate.find("#keterangan").val();
-
+         const index = Math.floor(Math.random() * 10000);
          let produk = `
-                    <tr id="index_${kode_barang}">
+                    <tr id="index_${index}">
                         <td>
                             <input type="hidden" name="kode_barang[]" value="${kode_barang}"/>
                             ${kode_barang}
@@ -148,7 +148,7 @@
                             ${keterangan}
                         </td>
                         <td class="text-center">
-                            <a href="#" kode_barang="${kode_barang}" class="delete"><i class="ti ti-trash text-danger"></i></a>
+                            <a href="#" kode_barang="${index}" class="delete"><i class="ti ti-trash text-danger"></i></a>
                         </td>
                     </tr>
                 `;

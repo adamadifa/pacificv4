@@ -13,6 +13,7 @@ use App\Models\Permintaankiriman;
 use App\Models\Produk;
 use App\Models\Suratjalanangkutan;
 use App\Models\Tujuanangkutan;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -21,12 +22,14 @@ use Illuminate\Support\Facades\Redirect;
 
 class SuratjalanController extends Controller
 {
-    public function index(Request $request)
+
+
+    public function getsuratjalan($request)
     {
-        $start_year = config('global.start_year');
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
-
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
 
         if (!empty($request->dari) && !empty($request->sampai)) {
             if (lockreport($request->dari) == "error") {
@@ -75,15 +78,36 @@ class SuratjalanController extends Controller
         if ($request->status_search != '') {
             $query->where('gudang_jadi_mutasi.status_surat_jalan', $request->status_search);
         }
-
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_permintaan_kiriman.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
         //$query->where('gudang_jadi_mutasi.no_mutasi', 'SJBDG01.13.04.2024');
         $query->orderBy('gudang_jadi_mutasi.tanggal', 'desc');
         $query->orderBy('gudang_jadi_mutasi.created_at', 'desc');
-        $surat_jalan = $query->paginate(15);
+        return $query;
+    }
+    public function index(Request $request)
+    {
+        $sj =  $this->getsuratjalan($request);
+        $surat_jalan = $sj->paginate(15);
         $surat_jalan->appends($request->all());
         $data['surat_jalan'] = $surat_jalan;
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
-        return view('gudangjadi.suratjalan.index', $data);
+        return view('gudangjadi.suratjalan.index_gudangjadi', $data);
+    }
+
+    public function index_gudangcabang(Request $request)
+    {
+        $sj =  $this->getsuratjalan($request);
+        $surat_jalan = $sj->paginate(15);
+        $surat_jalan->appends($request->all());
+        $data['surat_jalan'] = $surat_jalan;
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        return view('gudangjadi.suratjalan.index_gudangcabang', $data);
     }
 
     public function create($no_permintaan)

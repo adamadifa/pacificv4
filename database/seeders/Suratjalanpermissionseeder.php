@@ -58,6 +58,11 @@ class Suratjalanpermissionseeder extends Seeder
             'id_permission_group' => $permissiongroup->id
         ]);
 
+        Permission::create([
+            'name' => 'suratjalancabang.index',
+            'id_permission_group' => $permissiongroup->id
+        ]);
+
         $permissions = Permission::where('id_permission_group', $permissiongroup->id)->get();
         $roleID = 1;
         $role = Role::findById($roleID);
