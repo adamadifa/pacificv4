@@ -140,4 +140,25 @@ class DriverhelperController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function getdriverhelperbycabang(Request $request)
+    {
+        $kode_cabang_user = auth()->user()->kode_cabang;
+        $query = Driverhelper::query();
+        if ($kode_cabang_user != "PST") {
+            $query->where('kode_cabang', $kode_cabang_user);
+        } else {
+            $query->where('kode_cabang', $request->kode_cabang);
+        }
+        $query->orderBy('nama_driver_helper');
+        // $query->where('status_aktif_kendaraan', 1);
+        $driverhelper = $query->get();
+
+
+        echo "<option value=''>Pilih Driver / Helper</option>";
+        foreach ($driverhelper as $d) {
+            $selected = $d->kode_driver_helper == $request->kode_driver_helper ? 'selected' : '';
+            echo "<option $selected value='$d->kode_driver_helper'>" . $d->nama_driver_helper . "</option>";
+        }
+    }
 }

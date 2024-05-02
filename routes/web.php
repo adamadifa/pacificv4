@@ -254,6 +254,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/kendaraan/{kode_kendaraan}', 'update')->name('kendaraan.update')->can('kendaraan.update');
         Route::delete('/kendaraan/{kode_kendaraan}', 'destroy')->name('kendaraan.delete')->can('kendaraan.delete');
         Route::get('/kendaraan/{kode_kendaraan}/show', 'show')->name('kendaraan.show')->can('kendaraan.show');
+
+        //GET DATA FROM AJAX
+        Route::post('/kendaraan/getkendaraanbycabang', 'getkendaraanbycabang');
     });
 
     Route::controller(SupplierController::class)->group(function () {

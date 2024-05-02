@@ -166,4 +166,29 @@ class KendaraanController extends Controller
             ->first();
         return view('datamaster.kendaraan.show', compact('kendaraan'));
     }
+
+
+    //AJAX REQUEST
+
+    public function getkendaraanbycabang(Request $request)
+    {
+        $kode_cabang_user = auth()->user()->kode_cabang;
+        $query = Kendaraan::query();
+        if ($kode_cabang_user != "PST") {
+            $query->where('kode_cabang', $kode_cabang_user);
+        } else {
+            $query->where('kode_cabang', $request->kode_cabang);
+        }
+        $query->where('status_aktif_kendaraan', 1);
+        $kendaraan = $query->get();
+
+
+
+
+        echo "<option value=''>Kendaraan</option>";
+        foreach ($kendaraan as $d) {
+            $selected = $d->kode_kendaraan == $request->kode_kendaraan ? 'selected' : '';
+            echo "<option $selected value='$d->kode_kendaraan'>" . $d->no_polisi . "-" . textUpperCase($d->merek) . "-" . textUpperCase($d->tipe) .  "</option>";
+        }
+    }
 }

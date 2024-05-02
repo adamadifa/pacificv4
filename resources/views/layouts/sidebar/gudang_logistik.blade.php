@@ -1,5 +1,6 @@
-<li class="menu-item {{ request()->is($gudang_logistik_request) ? 'open' : '' }}">
-   @if (auth()->user()->hasAnyPermission($gudang_logistik_permission))
+@if (auth()->user()->hasAnyPermission($gudang_logistik_permission))
+   <li class="menu-item {{ request()->is($gudang_logistik_request) ? 'open' : '' }}">
+
       <a href="javascript:void(0);" class="menu-link menu-toggle">
          <i class="menu-icon tf-icons ti ti-building-warehouse"></i>
          <div>Gudang Logistik</div>
@@ -21,5 +22,5 @@
             </li>
          @endif
       </ul>
-   @endif
-</li>
+   </li>
+@endif

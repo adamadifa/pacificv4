@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
 use App\Models\Dpb;
+use App\Models\Produk;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -33,11 +35,44 @@ class DpbController extends Controller
             $query->whereBetween('dpb.tanggal_ambil', [$start_date, $end_date]);
         }
 
+        if (!empty($request->kode_cabang_search)) {
+            $query->where('cabang.kode_cabang', $request->kode_cabang_search);
+        }
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
+        if (!empty($request->no_dpb_search)) {
+            $query->where('dpb.no_dpb', $request->no_dpb_search);
+        }
+
+        if (!empty($request->kode_salesman_search)) {
+            $query->where('dpb.kode_salesman', $request->kode_salesman_search);
+        }
         $query->orderBy('tanggal_ambil', 'desc');
         $query->orderBy('dpb.created_at', 'desc');
         $dpb = $query->paginate('15');
         $dpb->appends(request()->all());
         $data['dpb'] = $dpb;
+
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
         return view('gudangcabang.dpb.index', $data);
+    }
+
+
+    public function create()
+    {
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
+        $data['produk'] = Produk::where('status_aktif_produk', 1)->orderBy('kode_produk')->get();
+        return view('gudangcabang.dpb.create', $data);
     }
 }

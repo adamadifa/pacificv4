@@ -304,6 +304,8 @@ class Globalprovider extends ServiceProvider
             //Gudang Cabang
             $gudang_cabang_request = [
                 'suratjalancabang',
+                'dpb',
+                'dpb/*'
             ];
 
             $gudang_cabang_permission = [

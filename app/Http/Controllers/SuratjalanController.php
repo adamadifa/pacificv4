@@ -96,7 +96,9 @@ class SuratjalanController extends Controller
         $surat_jalan = $sj->paginate(15);
         $surat_jalan->appends($request->all());
         $data['surat_jalan'] = $surat_jalan;
-        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
         return view('gudangjadi.suratjalan.index_gudangjadi', $data);
     }
 
@@ -106,7 +108,9 @@ class SuratjalanController extends Controller
         $surat_jalan = $sj->paginate(15);
         $surat_jalan->appends($request->all());
         $data['surat_jalan'] = $surat_jalan;
-        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
         return view('gudangjadi.suratjalan.index_gudangcabang', $data);
     }
 
