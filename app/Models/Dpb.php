@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Dpb extends Model
 {
     use HasFactory;
+    protected $table = "dpb";
+    protected $primaryKey = "no_dpb";
+    protected $guarded = [];
+    public $incrementing  = false;
 }
