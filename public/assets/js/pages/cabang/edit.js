@@ -66,6 +66,30 @@
                     }
                 },
 
+                kode_pt: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kode PT Harus Diisi'
+                        },
+                        stringLength: {
+                            max: 3,
+                            min: 3,
+                            message: 'Kode PT Harus 3 Karakter'
+                        },
+
+
+                    }
+                },
+
+                nama_pt: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Nama PT Harus Diisi'
+                        }
+                    }
+                },
+
+
                 kode_regional: {
                     validators: {
                         notEmpty: {

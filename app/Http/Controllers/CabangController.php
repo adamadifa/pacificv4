@@ -50,6 +50,8 @@ class CabangController extends Controller
             'lokasi_cabang' => 'required',
             'radius_cabang' => 'required',
             'kode_regional' => 'required',
+            'kode_pt' => 'required',
+            'nama_pt' => 'required',
             'urutan' => 'required',
         ]);
 
@@ -62,6 +64,8 @@ class CabangController extends Controller
                 'telepon_cabang' => $request->telepon_cabang,
                 'lokasi_cabang' => $request->lokasi_cabang,
                 'radius_cabang' => $request->radius_cabang,
+                'kode_pt' => $request->kode_pt,
+                'nama_pt' => $request->nama_pt,
                 'kode_regional' => $request->kode_regional,
                 'urutan' => $request->urutan,
                 'color_marker' => $request->color_marker
@@ -104,6 +108,8 @@ class CabangController extends Controller
             'lokasi_cabang' => 'required',
             'radius_cabang' => 'required',
             'kode_regional' => 'required',
+            'kode_pt' => 'required',
+            'nama_pt' => 'required',
             'urutan' => 'required',
         ]);
 
@@ -116,6 +122,8 @@ class CabangController extends Controller
                 'lokasi_cabang' => $request->lokasi_cabang,
                 'radius_cabang' => $request->radius_cabang,
                 'kode_regional' => $request->kode_regional,
+                'kode_pt' => $request->kode_pt,
+                'nama_pt' => $request->nama_pt,
                 'urutan' => $request->urutan,
                 'color_marker' => $request->color_marker
             ]);

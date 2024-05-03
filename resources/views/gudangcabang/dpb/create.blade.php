@@ -238,6 +238,22 @@
          getdriverhelperbyCabang();
       });
 
+      function generatenodpb() {
+         const kode_cabang = form.find("#kode_cabang").val();
+         $.ajax({
+            type: 'POST',
+            url: '/dpb/generatenodpb',
+            cache: false,
+            data: {
+               _token: "{{ csrf_token() }}",
+               kode_cabang: kode_cabang
+            },
+            success: function(respond) {
+
+            }
+         });
+      }
+
       form.submit(function() {
          const no_dpb = form.find("#no_dpb").val();
          const kode_cabang = form.find("#kode_cabang").val();
