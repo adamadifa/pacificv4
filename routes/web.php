@@ -757,6 +757,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/dpb', 'store')->name('dpb.store')->can('dpb.store');
         Route::delete('/dpb/{no_dpb}', 'destroy')->name('dpb.delete')->can('dpb.delete');
         Route::get('/dpb/{no_dpb}/show', 'show')->name('dpb.show')->can('dpb.show');
+
+        //AJAX REQUEST
+        Route::post('/dpb/generatenodpb', 'generatenodpb')->name('dpb.generatenodpb');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

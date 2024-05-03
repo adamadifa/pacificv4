@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Dpb extends Model
+class Detaildpb extends Model
 {
     use HasFactory;
-    protected $table = "gudang_cabang_dpb";
-    protected $primaryKey = "no_dpb";
+    protected $table = "gudang_cabang_dpb_detail";
     protected $guarded = [];
     public $incrementing  = false;
 }

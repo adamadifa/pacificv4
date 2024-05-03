@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detaildpb;
 use App\Models\Dpb;
 use App\Models\Produk;
 use App\Models\User;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class DpbController extends Controller
@@ -26,13 +30,13 @@ class DpbController extends Controller
 
         $query = Dpb::query();
         $query->select('no_dpb', 'tanggal_ambil', 'nama_salesman', 'nama_cabang', 'tujuan', 'no_polisi');
-        $query->join('salesman', 'dpb.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->join('kendaraan', 'dpb.kode_kendaraan', '=', 'kendaraan.kode_kendaraan');
+        $query->join('kendaraan', 'gudang_cabang_dpb.kode_kendaraan', '=', 'kendaraan.kode_kendaraan');
         if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('dpb.tanggal_ambil', [$request->dari, $request->sampai]);
+            $query->whereBetween('gudang_cabang_dpb.tanggal_ambil', [$request->dari, $request->sampai]);
         } else {
-            $query->whereBetween('dpb.tanggal_ambil', [$start_date, $end_date]);
+            $query->whereBetween('gudang_cabang_dpb.tanggal_ambil', [$start_date, $end_date]);
         }
 
         if (!empty($request->kode_cabang_search)) {
@@ -48,14 +52,14 @@ class DpbController extends Controller
         }
 
         if (!empty($request->no_dpb_search)) {
-            $query->where('dpb.no_dpb', $request->no_dpb_search);
+            $query->where('gudang_cabang_dpb.no_dpb', $request->no_dpb_search);
         }
 
         if (!empty($request->kode_salesman_search)) {
-            $query->where('dpb.kode_salesman', $request->kode_salesman_search);
+            $query->where('gudang_cabang_dpb.kode_salesman', $request->kode_salesman_search);
         }
         $query->orderBy('tanggal_ambil', 'desc');
-        $query->orderBy('dpb.created_at', 'desc');
+        $query->orderBy('gudang_cabang_dpb.created_at', 'desc');
         $dpb = $query->paginate('15');
         $dpb->appends(request()->all());
         $data['dpb'] = $dpb;
@@ -74,5 +78,104 @@ class DpbController extends Controller
         $data['cabang'] = $cabang;
         $data['produk'] = Produk::where('status_aktif_produk', 1)->orderBy('kode_produk')->get();
         return view('gudangcabang.dpb.create', $data);
+    }
+
+
+    //AJAX REQUEST 
+    public function generatenodpb(Request $request)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $kode_cabang = auth()->user()->kode_cabang;
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+
+        $cabang = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $kode_pt = $cabang->kode_pt;
+
+        if (!empty($request->tanggal)) {
+            $tahun = date('Y', strtotime($request->tanggal));
+        } else {
+            $tahun = date('Y');
+        }
+        return $kode_pt . substr($tahun, 2, 2);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'no_dpb_format' => 'required',
+            'no_dpb' => 'required',
+            'tanggal_ambil' => 'required',
+            'kode_salesman' => 'required',
+            'kode_kendaraan' => 'required',
+            'tujuan' => 'required',
+            'kode_driver' => 'required'
+        ]);
+
+        $kode_produk = $request->kode_produk;
+        $jml_dus = $request->jml_dus;
+        $jml_pack = $request->jml_pack;
+        $jml_pcs = $request->jml_pcs;
+        $isi_pcs_dus = $request->isi_pcs_dus;
+        $isi_pcs_pack = $request->isi_pcs_pack;
+
+
+        DB::beginTransaction();
+        try {
+
+            for ($i = 0; $i < count($kode_produk); $i++) {
+
+                $dus = !empty($jml_dus[$i]) ?  $jml_dus[$i] : 0;
+                $pack = !empty($jml_pack[$i]) ?  $jml_pack[$i] : 0;
+                $pcs = !empty($jml_pcs[$i]) ?  $jml_pcs[$i] : 0;
+
+                $jumlah = ($dus * $isi_pcs_dus[$i]) + ($pack * $isi_pcs_pack[$i]) + $pcs;
+                if (!empty($jumlah)) {
+                    $detail[] = [
+                        'no_dpb' => $request->no_dpb_format . $request->no_dpb,
+                        'kode_produk' => $kode_produk[$i],
+                        'jml_ambil' => $jumlah,
+                        'jml_kembali' => 0,
+                        'jml_penjualan' => 0
+                    ];
+                }
+            }
+
+
+            if (empty($detail)) {
+
+                return Redirect::back()->with(messageError('Data Pengambilan Masih Kosong'));
+            } else {
+                Dpb::create([
+                    'no_dpb' => $request->no_dpb_format . $request->no_dpb,
+                    'tanggal_ambil' => $request->tanggal_ambil,
+                    'kode_salesman' => $request->kode_salesman,
+                    'kode_kendaraan' => $request->kode_kendaraan,
+                    'tujuan' => $request->tujuan
+                ]);
+
+                $timestamp = Carbon::now();
+                foreach ($detail as &$record) {
+                    $record['created_at'] = $timestamp;
+                    $record['updated_at'] = $timestamp;
+                }
+
+                $chunks_buffer = array_chunk($detail, 5);
+                foreach ($chunks_buffer as $chunk_buffer) {
+                    Detaildpb::insert($chunk_buffer);
+                }
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (Exception $e) {
+            DB::rollBack();
+            //return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }
