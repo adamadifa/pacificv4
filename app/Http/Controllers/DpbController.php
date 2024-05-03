@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Detaildpb;
+use App\Models\Detailmutasigudangcabang;
 use App\Models\Dpb;
 use App\Models\Produk;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
@@ -78,31 +80,6 @@ class DpbController extends Controller
         $data['cabang'] = $cabang;
         $data['produk'] = Produk::where('status_aktif_produk', 1)->orderBy('kode_produk')->get();
         return view('gudangcabang.dpb.create', $data);
-    }
-
-
-    //AJAX REQUEST 
-    public function generatenodpb(Request $request)
-    {
-
-        $user = User::findorfail(auth()->user()->id);
-        $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            $kode_cabang = auth()->user()->kode_cabang;
-        } else {
-            $kode_cabang = $request->kode_cabang;
-        }
-
-
-        $cabang = Cabang::where('kode_cabang', $kode_cabang)->first();
-        $kode_pt = $cabang->kode_pt;
-
-        if (!empty($request->tanggal)) {
-            $tahun = date('Y', strtotime($request->tanggal));
-        } else {
-            $tahun = date('Y');
-        }
-        return $kode_pt . substr($tahun, 2, 2);
     }
 
     public function store(Request $request)
@@ -177,5 +154,67 @@ class DpbController extends Controller
             DB::rollBack();
             //return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+    public function show($no_dpb)
+    {
+        $no_dpb = Crypt::decrypt($no_dpb);
+        $data['dpb'] = Dpb::select('no_dpb', 'tanggal_ambil', 'tanggal_kembali', 'nama_salesman', 'nama_cabang', 'tujuan', 'no_polisi')
+            ->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('kendaraan', 'gudang_cabang_dpb.kode_kendaraan', '=', 'kendaraan.kode_kendaraan')
+            ->where('no_dpb', $no_dpb)->first();
+        $data['detail'] = Detaildpb::select(
+            'gudang_cabang_dpb_detail.*',
+            'nama_produk',
+            'isi_pcs_dus',
+            'isi_pack_dus',
+            'isi_pcs_pack'
+        )
+            ->join('produk', 'gudang_cabang_dpb_detail.kode_produk', '=', 'produk.kode_produk')
+            ->where('no_dpb', $no_dpb)
+            ->get();
+
+        $data['mutasi_dpb'] = Detailmutasigudangcabang::select(
+            'gudang_cabang_mutasi_detail.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'isi_pack_dus',
+            'isi_pcs_pack',
+            DB::raw("SUM(IF(jenis_mutasi='PJ',jumlah,0)) as jml_penjualan")
+        )
+            ->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk')
+            ->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi')
+            ->where('no_dpb', $no_dpb)
+            ->orderBy('nama_produk')
+            ->groupBy('gudang_cabang_mutasi_detail.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pack_dus', 'isi_pcs_pack')
+            ->get();
+
+        // dd($data['mutasi_dpb']);
+        return view('gudangcabang.dpb.show', $data);
+    }
+
+    //AJAX REQUEST
+    public function generatenodpb(Request $request)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $kode_cabang = auth()->user()->kode_cabang;
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+
+        $cabang = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $kode_pt = $cabang->kode_pt;
+
+        if (!empty($request->tanggal)) {
+            $tahun = date('Y', strtotime($request->tanggal));
+        } else {
+            $tahun = date('Y');
+        }
+        return $kode_pt . substr($tahun, 2, 2);
     }
 }
