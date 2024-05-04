@@ -313,7 +313,7 @@
       // Scrollable check and prevention
       var headTableWrapWidth = (that.scrollable) ? that.$tableWrapper.width() - that.scrollBarHeight : that.$tableWrapper.width();
       headTableWrapWidth = (headTableWrapWidth > 0) ? headTableWrapWidth : that.$tableWrapper.width();
-      that.$headTableWrap.css('width', headTableWrapWidth);
+      that.$headTableWrap.css('width', headTableWrapWidth-15);
       that.$headTableWrap.css('height', that.$table.find("thead").outerHeight());
     });
   }
@@ -591,6 +591,7 @@
       that.$columnHeadTableWrap.find("> table").css('width', that.$table.width());
       that.$columnHeadTableWrap.css('width', that.$columnTableWrap.width());
       that.$columnHeadTableWrap.css('height', that.$table.find("thead").outerHeight());
+      
     });
   }
 
