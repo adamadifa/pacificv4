@@ -89,8 +89,8 @@
                                     <div class="d-flex">
                                        @can('dpb.edit')
                                           <div>
-                                             <a href="{{ route('dpb.edit', Crypt::encrypt($d->no_dpb)) }}"
-                                                class="me-2"
+                                             <a href="#"
+                                                class="me-2 btnEdit"
                                                 no_dpb="{{ Crypt::encrypt($d->no_dpb) }}">
                                                 <i class="ti ti-edit text-success"></i>
                                              </a>
@@ -156,6 +156,15 @@
          $(".modal-title").text("Detail DPB");
          $("#loadmodal").load(`/dpb/${no_dpb}/show`);
       });
+
+      $(".btnEdit").click(function(e) {
+         e.preventDefault();
+         const no_dpb = $(this).attr('no_dpb');
+         $("#modal").modal("show");
+         $(".modal-title").text("Edit DPB");
+         $("#loadmodal").load(`/dpb/${no_dpb}/edit`);
+      });
+
 
       const select2Kodecabangsearch = $('.select2Kodecabangsearch');
       if (select2Kodecabangsearch.length) {

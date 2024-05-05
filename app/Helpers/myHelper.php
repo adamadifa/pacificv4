@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Produk;
 use App\Models\Tutuplaporan;
 use Illuminate\Support\Facades\Redirect;
 
@@ -184,4 +185,22 @@ function getBeratliter($tanggal)
         $berat = 1;
     }
     return $berat;
+}
+
+
+function convertToduspackpcs($kode_produk, $jumlah)
+{
+    $produk = Produk::where('kode_produk', $kode_produk)->first();
+    $jml_dus = floor($jumlah / $produk->isi_pcs_dus);
+    $sisa_dus = $jumlah % $produk->isi_pcs_dus;
+    if (!empty($produk->isi_pack_dus)) {
+        $jml_pack = floor($sisa_dus / $produk->isi_pcs_pack);
+        $sisa_pack = $sisa_dus % $produk->isi_pcs_pack;
+    } else {
+        $jml_pack = 0;
+        $sisa_pack = $sisa_dus;
+    }
+    $jml_pcs = $sisa_pack;
+
+    return $jml_dus . "|" . $jml_pack . "|" . $jml_pcs;
 }

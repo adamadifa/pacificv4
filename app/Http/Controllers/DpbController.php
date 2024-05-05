@@ -156,6 +156,35 @@ class DpbController extends Controller
         }
     }
 
+
+    public function edit($no_dpb)
+    {
+        $no_dpb = Crypt::decrypt($no_dpb);
+        $data['dpb'] = Dpb::where('no_dpb', $no_dpb)
+            ->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman')
+            ->first();
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
+        $data['produk'] = Produk::where('status_aktif_produk', 1)
+            ->select('produk.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pack_dus', 'isi_pcs_pack', 'jml_ambil', 'jml_kembali', 'jml_penjualan')
+            ->leftJoin(
+                DB::raw("(
+                    SELECT
+                    kode_produk,jml_ambil,jml_kembali,jml_penjualan
+                    FROM
+                    gudang_cabang_dpb_detail
+                    WHERE no_dpb = '$no_dpb'
+                ) dpb"),
+                function ($join) {
+                    $join->on('produk.kode_produk', '=', 'dpb.kode_produk');
+                }
+            )
+            ->orderBy('produk.kode_produk')
+            ->get();
+        return view('gudangcabang.dpb.edit', $data);
+    }
+
     public function show($no_dpb)
     {
         $no_dpb = Crypt::decrypt($no_dpb);
@@ -181,12 +210,21 @@ class DpbController extends Controller
             'isi_pcs_dus',
             'isi_pack_dus',
             'isi_pcs_pack',
-            DB::raw("SUM(IF(jenis_mutasi='PJ',jumlah,0)) as jml_penjualan")
+            DB::raw("SUM(IF(jenis_mutasi='RT',jumlah,0)) as jml_retur"),
+            DB::raw("SUM(IF(jenis_mutasi='HK',jumlah,0)) as jml_hutangkirim"),
+            DB::raw("SUM(IF(jenis_mutasi='PT',jumlah,0)) as jml_pelunasanttr"),
+
+            DB::raw("SUM(IF(jenis_mutasi='PJ',jumlah,0)) as jml_penjualan"),
+            DB::raw("SUM(IF(jenis_mutasi='GB',jumlah,0)) as jml_gantibarang"),
+            DB::raw("SUM(IF(jenis_mutasi='PH',jumlah,0)) as jml_pelunasanhutangkirim"),
+            DB::raw("SUM(IF(jenis_mutasi='TR',jumlah,0)) as jml_ttr"),
+            DB::raw("SUM(IF(jenis_mutasi='RP',jumlah,0)) as jml_rejectpasar"),
+            DB::raw("SUM(IF(jenis_mutasi='PR',jumlah,0)) as jml_promosi")
         )
             ->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk')
             ->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi')
             ->where('no_dpb', $no_dpb)
-            ->orderBy('nama_produk')
+            ->orderBy('gudang_cabang_mutasi_detail.kode_produk')
             ->groupBy('gudang_cabang_mutasi_detail.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pack_dus', 'isi_pcs_pack')
             ->get();
 

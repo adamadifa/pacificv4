@@ -90,7 +90,7 @@
                      <td>
                         @if (!empty($d->tanggal_mutasi_cabang))
                            @if ($d->status_surat_jalan == '1')
-                              @if (empty($d->tangal_transit_in))
+                              @if (empty($d->tanggal_transit_in))
                                  <span class="badge bg-success">
                                     {{ DateToIndo($d->tanggal_mutasi_cabang) }}
                                  </span>

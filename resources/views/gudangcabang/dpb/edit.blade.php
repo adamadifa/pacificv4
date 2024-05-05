@@ -1,20 +1,13 @@
-<form action="{{ route('dpb.store') }}" method="POST" id="formDPB">
+<form action="{{ route('dpb.update', Crypt::encrypt($dpb->no_dpb)) }}" method="POST" id="formDPB">
    @csrf
    <div class="row">
       <div class="col-lg-8 col-md-12 col-sm-12">
-         <div class="row">
-            <div class="col-lg-4">
-               <x-input-with-icon icon="ti ti-barcode" label="No. DPB" name="no_dpb_format" />
-            </div>
-            <div class="col-lg-8">
-               <x-input icon="ti ti-barcode" label="No. DPB" name="no_dpb" />
-            </div>
-         </div>
+         <x-input icon="ti ti-barcode" label="No. DPB" name="no_dpb" value="{{ $dpb->no_dpb }}" />
          <x-input icon="ti ti-calendar" label="Tanggal Pengambilan" name="tanggal_ambil"
-            datepicker="flatpickr-date" />
+            datepicker="flatpickr-date" value="{{ $dpb->tanggal_ambil }}" />
          @hasanyrole($roles_show_cabang)
             <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-               upperCase="true" select2="select2Kodecabang" />
+               upperCase="true" select2="select2Kodecabang" selected="{{ $dpb->kode_cabang }}" />
          @endrole
          <div class="form-group mb-3">
             <select name="kode_salesman" id="kode_salesman" class="form-select select2Kodesalesman">
@@ -26,7 +19,7 @@
                <option value="">Pilih Kendaraan</option>
             </select>
          </div>
-         <x-input-with-icon icon="ti ti-map-pin" label="Tujuan" name="tujuan" />
+         <x-input-with-icon icon="ti ti-map-pin" label="Tujuan" name="tujuan" value="{{ $dpb->tujuan }}" />
       </div>
       <div class="col-lg-4 col-sm-12 col-md-12">
          <div class="form-group mb-3">
@@ -58,16 +51,45 @@
                <tr>
                   <th rowspan="2">Kode</th>
                   <th rowspan="2" style="width: 60%">Nama Produk</th>
-                  <th colspan="3" class="text-center">Kuantitas</th>
+                  <th colspan="3" class="text-center">Pengambilan</th>
+                  <th colspan="3" class="text-center bg-success">Pengembalian</th>
+                  <th colspan="3" class="text-center bg-danger">Barang Keluar</th>
                </tr>
                <tr>
                   <th>Dus/Ball</th>
                   <th>Pack</th>
                   <th>Pcs</th>
+
+                  <th class="bg-success">Dus/Ball</th>
+                  <th class="bg-success">Pack</th>
+                  <th class="bg-success">Pcs</th>
+
+                  <th class="bg-danger">Dus/Ball</th>
+                  <th class="bg-danger">Pack</th>
+                  <th class="bg-danger">Pcs</th>
                </tr>
             </thead>
             <tbody>
                @foreach ($produk as $d)
+                  @php
+                     //Jml Pengambilan
+                     $ambil = explode('|', convertToduspackpcs($d->kode_produk, $d->jml_ambil));
+                     $ambil_dus = $ambil[0];
+                     $ambil_pack = $ambil[1];
+                     $ambil_pcs = $ambil[2];
+
+                     //Jml Pengembalian
+                     $kembali = explode('|', convertToduspackpcs($d->kode_produk, $d->jml_kembali));
+                     $kembali_dus = $kembali[0];
+                     $kembali_pack = $kembali[1];
+                     $kembali_pcs = $kembali[2];
+
+                     //Jml Barang Keluar
+                     $keluar = explode('|', convertToduspackpcs($d->kode_produk, $d->jml_penjualan));
+                     $keluar_dus = $keluar[0];
+                     $keluar_pack = $keluar[1];
+                     $keluar_pcs = $keluar[2];
+                  @endphp
                   <tr>
                      <td>
                         <input type="hidden" name="kode_produk[]" value="{{ $d->kode_produk }}">
@@ -77,13 +99,35 @@
                      </td>
                      <td>{{ $d->nama_produk }}</td>
                      <td>
-                        <input type="text" class="noborder-form text-end" name="jml_dus[]">
+                        <input type="text" class="noborder-form text-end" name="jml_ambil_dus[]" value="{{ formatAngka($ambil_dus) }}">
                      </td>
                      <td>
-                        <input type="text" class="noborder-form text-end" name="jml_pack[]">
+                        <input type="text" class="noborder-form text-end" {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }} name="jml_ambil_pack[]" value="{{ formatAngka($ambil_pack) }}">
                      </td>
                      <td>
-                        <input type="text" class="noborder-form text-end" name="jml_pcs[]">
+                        <input type="text" class="noborder-form text-end" name="jml_ambil_pcs[]" value="{{ formatAngka($ambil_pcs) }}">
+                     </td>
+
+                     <td style="background-color:#28c76f1a">
+                        <input type="text" style="background-color:#ffffff1a" class="noborder-form text-end" name="jml_kembali_dus[]" value="{{ formatAngka($kembali_dus) }}">
+                     </td>
+                     <td style="background-color:#28c76f1a">
+                        <input type="text" style="background-color:#ffffff1a" class="noborder-form text-end" {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }} name="jml_kembali_pack[]"
+                           value="{{ formatAngka($kembali_pack) }}">
+                     </td>
+                     <td style="background-color:#28c76f1a">
+                        <input type="text" style="background-color:#ffffff1a" class="noborder-form text-end" name="jml_kembali_pcs[]" value="{{ formatAngka($kembali_pcs) }}">
+                     </td>
+
+                     <td style="background-color: #ea54552e">
+                        <input type="text" style="background-color: #ffdcdc2e" class="noborder-form text-end" name="jml_keluar_dus[]" value="{{ formatAngka($keluar_dus) }}">
+                     </td>
+                     <td style="background-color: #ea54552e">
+                        <input type="text" style="background-color: #ffdcdc2e" class="noborder-form text-end" {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }} name="jml_keluar_pack[]"
+                           value="{{ formatAngka($keluar_pack) }}">
+                     </td>
+                     <td style="background-color: #ea54552e">
+                        <input type="text" style="background-color: #ffdcdc2e" class="noborder-form text-end" name="jml_keluar_pcs[]" value="{{ formatAngka($keluar_pcs) }}">
                      </td>
                   </tr>
                @endforeach
@@ -196,13 +240,15 @@
 
       function getsalesmanbyCabang() {
          var kode_cabang = form.find("#kode_cabang").val();
+         var kode_salesman = "{{ $dpb->kode_salesman }}";
          //alert(selected);
          $.ajax({
             type: 'POST',
             url: '/salesman/getsalesmanbycabang',
             data: {
                _token: "{{ csrf_token() }}",
-               kode_cabang: kode_cabang
+               kode_cabang: kode_cabang,
+               kode_salesman: kode_salesman
             },
             cache: false,
             success: function(respond) {
@@ -214,13 +260,15 @@
 
       function getkendaraanbyCabang() {
          var kode_cabang = form.find("#kode_cabang").val();
+         var kode_kendaraan = "{{ $dpb->kode_kendaraan }}";
          //alert(selected);
          $.ajax({
             type: 'POST',
             url: '/kendaraan/getkendaraanbycabang',
             data: {
                _token: "{{ csrf_token() }}",
-               kode_cabang: kode_cabang
+               kode_cabang: kode_cabang,
+               kode_kendaraan: kode_kendaraan
             },
             cache: false,
             success: function(respond) {
@@ -252,43 +300,43 @@
          });
       }
 
-      function generatenodpb() {
-         const kode_cabang = form.find("#kode_cabang").val();
-         const tanggal = form.find("#tanggal_ambil").val();
-         $.ajax({
-            type: 'POST',
-            url: '/dpb/generatenodpb',
-            cache: false,
-            data: {
-               _token: "{{ csrf_token() }}",
-               kode_cabang: kode_cabang,
-               tanggal: tanggal
-            },
-            success: function(respond) {
-               form.find("#no_dpb_format").val(respond);
-            }
-         });
-      }
+      //   function generatenodpb() {
+      //      const kode_cabang = form.find("#kode_cabang").val();
+      //      const tanggal = form.find("#tanggal_ambil").val();
+      //      $.ajax({
+      //         type: 'POST',
+      //         url: '/dpb/generatenodpb',
+      //         cache: false,
+      //         data: {
+      //            _token: "{{ csrf_token() }}",
+      //            kode_cabang: kode_cabang,
+      //            tanggal: tanggal
+      //         },
+      //         success: function(respond) {
+      //            form.find("#no_dpb_format").val(respond);
+      //         }
+      //      });
+      //   }
 
-      form.find("#tanggal_ambil").change(function() {
-         generatenodpb();
-      });
+      //   form.find("#tanggal_ambil").change(function() {
+      //      generatenodpb();
+      //   });
       getsalesmanbyCabang();
       getkendaraanbyCabang();
       getdriverhelperbyCabang();
-      generatenodpb();
+      //   generatenodpb();
 
       form.find("#kode_cabang").change(function(e) {
          getsalesmanbyCabang();
          getkendaraanbyCabang();
          getdriverhelperbyCabang();
-         generatenodpb();
+         //  generatenodpb();
       });
 
 
 
 
-      form.find("#no_dpb").mask("00000");
+      //   form.find("#no_dpb").mask("00000");
 
       form.submit(function() {
          const no_dpb = form.find("#no_dpb").val();
