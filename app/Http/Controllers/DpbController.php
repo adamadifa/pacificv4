@@ -6,6 +6,8 @@ use App\Models\Cabang;
 use App\Models\Detaildpb;
 use App\Models\Detailmutasigudangcabang;
 use App\Models\Dpb;
+use App\Models\Jenismutasigudangcabang;
+use App\Models\Mutasigudangcabang;
 use App\Models\Produk;
 use App\Models\User;
 use Carbon\Carbon;
@@ -31,7 +33,7 @@ class DpbController extends Controller
         }
 
         $query = Dpb::query();
-        $query->select('no_dpb', 'tanggal_ambil', 'nama_salesman', 'nama_cabang', 'tujuan', 'no_polisi');
+        $query->select('no_dpb', 'tanggal_ambil', 'nama_salesman', 'nama_cabang', 'tujuan', 'no_polisi', 'tanggal_kembali');
         $query->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('kendaraan', 'gudang_cabang_dpb.kode_kendaraan', '=', 'kendaraan.kode_kendaraan');
@@ -69,6 +71,8 @@ class DpbController extends Controller
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
+
+
         return view('gudangcabang.dpb.index', $data);
     }
 
@@ -93,7 +97,7 @@ class DpbController extends Controller
             'tujuan' => 'required',
             'kode_driver' => 'required'
         ]);
-
+        $no_dpb = $request->no_dpb_format . $request->no_dpb;
         $kode_produk = $request->kode_produk;
         $jml_dus = $request->jml_dus;
         $jml_pack = $request->jml_pack;
@@ -104,6 +108,16 @@ class DpbController extends Controller
 
         DB::beginTransaction();
         try {
+            //Checking
+            $cektutuplaporan = cektutupLaporan($request->tanggal_ambil, "gudangcabang");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+
+            $cekdpb = Dpb::where('no_dpb', $no_dpb)->count();
+            if ($cekdpb > 0) {
+                return Redirect::back()->with(messageError('Data Sudah Ada !'));
+            }
 
             for ($i = 0; $i < count($kode_produk); $i++) {
 
@@ -125,7 +139,6 @@ class DpbController extends Controller
 
 
             if (empty($detail)) {
-
                 return Redirect::back()->with(messageError('Data Pengambilan Masih Kosong'));
             } else {
                 Dpb::create([
@@ -185,6 +198,126 @@ class DpbController extends Controller
         return view('gudangcabang.dpb.edit', $data);
     }
 
+
+    public function update(Request $request, $no_dpb)
+    {
+        $no_dpb = Crypt::decrypt($no_dpb);
+        $request->validate([
+            'no_dpb' => 'required',
+            'tanggal_ambil' => 'required',
+            'tanggal_kembali' => 'required',
+            'kode_salesman' => 'required',
+            'kode_kendaraan' => 'required',
+            'tujuan' => 'required',
+            'kode_driver' => 'required'
+        ]);
+
+        $kode_produk = $request->kode_produk;
+        $jml_ambil_dus = $request->jml_ambil_dus;
+        $jml_ambil_pack = $request->jml_ambil_pack;
+        $jml_ambil_pcs = $request->jml_ambil_pcs;
+
+        $jml_kembali_dus = $request->jml_kembali_dus;
+        $jml_kembali_pack = $request->jml_kembali_pack;
+        $jml_kembali_pcs = $request->jml_kembali_pcs;
+
+        $jml_keluar_dus = $request->jml_keluar_dus;
+        $jml_keluar_pack = $request->jml_keluar_pack;
+        $jml_keluar_pcs = $request->jml_keluar_pcs;
+
+
+        $isi_pcs_dus = $request->isi_pcs_dus;
+        $isi_pcs_pack = $request->isi_pcs_pack;
+
+
+        DB::beginTransaction();
+        try {
+            //Checking
+            $dpb = Dpb::where('no_dpb', $no_dpb)->first();
+
+            //Checking
+            $cektutuplaporan_dpb = cektutupLaporan($dpb->tanggal_ambil, "gudangcabang");
+            if ($cektutuplaporan_dpb > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+
+
+            $cektutuplaporan = cektutupLaporan($request->tanggal_ambil, "gudangcabang");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+
+            for ($i = 0; $i < count($kode_produk); $i++) {
+
+                $dus_ambil = !empty($jml_ambil_dus[$i]) ?  $jml_ambil_dus[$i] : 0;
+                $pack_ambil = !empty($jml_ambil_pack[$i]) ?  $jml_ambil_pack[$i] : 0;
+                $pcs_ambil = !empty($jml_ambil_pcs[$i]) ?  $jml_ambil_pcs[$i] : 0;
+
+                $dus_kembali = !empty($jml_kembali_dus[$i]) ?  $jml_kembali_dus[$i] : 0;
+                $pack_kembali = !empty($jml_kembali_pack[$i]) ?  $jml_kembali_pack[$i] : 0;
+                $pcs_kembali = !empty($jml_kembali_pcs[$i]) ?  $jml_kembali_pcs[$i] : 0;
+
+                $dus_keluar = !empty($jml_keluar_dus[$i]) ?  $jml_keluar_dus[$i] : 0;
+                $pack_keluar = !empty($jml_keluar_pack[$i]) ?  $jml_keluar_pack[$i] : 0;
+                $pcs_keluar = !empty($jml_keluar_pcs[$i]) ?  $jml_keluar_pcs[$i] : 0;
+
+                $jumlah_ambil = ($dus_ambil * $isi_pcs_dus[$i]) + ($pack_ambil * $isi_pcs_pack[$i]) + $pcs_ambil;
+                $jumlah_kembali = ($dus_kembali * $isi_pcs_dus[$i]) + ($pack_kembali * $isi_pcs_pack[$i]) + $pcs_kembali;
+                $jumlah_keluar = ($dus_keluar * $isi_pcs_dus[$i]) + ($pack_keluar * $isi_pcs_pack[$i]) + $pcs_keluar;
+
+                $jumlah = $jumlah_ambil + $jumlah_kembali + $jumlah_keluar;
+                if (!empty($jumlah)) {
+                    $detail[] = [
+                        'no_dpb' => $request->no_dpb_format . $request->no_dpb,
+                        'kode_produk' => $kode_produk[$i],
+                        'jml_ambil' => $jumlah_ambil,
+                        'jml_kembali' => $jumlah_kembali,
+                        'jml_penjualan' => $jumlah_keluar
+                    ];
+                }
+            }
+
+
+            if (empty($detail)) {
+                return Redirect::back()->with(messageError('Data Pengambilan Masih Kosong'));
+            } else {
+
+                Dpb::where('no_dpb', $no_dpb)->delete();
+
+                Dpb::create([
+                    'no_dpb' => $request->no_dpb,
+                    'tanggal_ambil' => $request->tanggal_ambil,
+                    'tanggal_kembali' => $request->tanggal_kembali,
+                    'kode_salesman' => $request->kode_salesman,
+                    'kode_kendaraan' => $request->kode_kendaraan,
+                    'tujuan' => $request->tujuan
+                ]);
+
+                $timestamp = Carbon::now();
+                foreach ($detail as &$record) {
+                    $record['created_at'] = $timestamp;
+                    $record['updated_at'] = $timestamp;
+                }
+
+                $chunks_buffer = array_chunk($detail, 5);
+                foreach ($chunks_buffer as $chunk_buffer) {
+                    Detaildpb::insert($chunk_buffer);
+                }
+
+
+                Mutasigudangcabang::where('no_dpb', $no_dpb)->update([
+                    'no_dpb' => $request->no_dpb
+                ]);
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (Exception $e) {
+            DB::rollBack();
+            //return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
     public function show($no_dpb)
     {
         $no_dpb = Crypt::decrypt($no_dpb);
@@ -227,10 +360,33 @@ class DpbController extends Controller
             ->orderBy('gudang_cabang_mutasi_detail.kode_produk')
             ->groupBy('gudang_cabang_mutasi_detail.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pack_dus', 'isi_pcs_pack')
             ->get();
+        $data['jenis_mutasi'] = Jenismutasigudangcabang::orderBy('kode_jenis_mutasi')->get();
 
         // dd($data['mutasi_dpb']);
         return view('gudangcabang.dpb.show', $data);
     }
+
+    public function destroy($no_dpb)
+    {
+        $no_dpb = Crypt::decrypt($no_dpb);
+        $dpb = Dpb::where('no_dpb', $no_dpb)->first();
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($dpb->tanggal_ambil, "gudangcabang");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            //Hapus Surat Jalan
+            Dpb::where('no_dpb', $no_dpb)->delete();
+            Mutasigudangcabang::where('no_dpb', $no_dpb)->delete();
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
 
     //AJAX REQUEST
     public function generatenodpb(Request $request)

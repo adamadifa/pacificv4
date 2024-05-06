@@ -6,7 +6,7 @@
    <span>Data Pengambilan Barang (DPB)</span>
 @endsection
 <div class="row">
-   <div class="col-lg-10 col-sm-12 col-xs-12">
+   <div class="col-lg-11 col-sm-12 col-xs-12">
       <div class="card">
          <div class="card-header">
             @can('dpb.create')
@@ -73,6 +73,7 @@
                               <th>Cabang</th>
                               <th>Tujuan</th>
                               <th>No. Kendaraan</th>
+                              <th>Kembali</th>
                               <th>#</th>
                            </tr>
                         </thead>
@@ -85,6 +86,13 @@
                                  <td>{{ textUpperCase($d->nama_cabang) }}</td>
                                  <td>{{ $d->tujuan }}</td>
                                  <td>{{ $d->no_polisi }}</td>
+                                 <td class="text-center">
+                                    @if (!empty($d->tanggal_kembali))
+                                       {{ DateToIndo($d->tanggal_kembali) }}
+                                    @else
+                                       <i class="ti ti-hourglass-empty text-warning"></i>
+                                    @endif
+                                 </td>
                                  <td>
                                     <div class="d-flex">
                                        @can('dpb.edit')
@@ -134,12 +142,18 @@
    </div>
 </div>
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
+<x-modal-form id="modalMutasi" size="modal-lg" show="loadmodalMutasi" title="" />
 @endsection
 @push('myscript')
 <script>
    $(function() {
       const form = $("#formSearch");
 
+      $(document).on('show.bs.modal', '.modal', function() {
+         const zIndex = 1090 + 10 * $('.modal:visible').length;
+         $(this).css('z-index', zIndex);
+         setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack'));
+      });
 
       $("#btnCreate").click(function(e) {
          e.preventDefault();
@@ -203,6 +217,8 @@
       form.find("#kode_cabang_search").change(function(e) {
          getsalesmanbyCabang();
       });
+
+
    });
 </script>
 @endpush

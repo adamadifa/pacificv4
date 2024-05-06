@@ -30,6 +30,7 @@ use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporangudanglogistikController;
 use App\Http\Controllers\LaporanproduksiController;
+use App\Http\Controllers\MutasidpbController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
@@ -760,6 +761,10 @@ Route::middleware('auth')->group(function () {
 
         //AJAX REQUEST
         Route::post('/dpb/generatenodpb', 'generatenodpb')->name('dpb.generatenodpb');
+    });
+
+    Route::controller(MutasidpbController::class)->group(function () {
+        Route::get('/mutasidpb/create', 'create')->name('mutasidpb.create');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
