@@ -1,49 +1,78 @@
 <form action="#" method="POST" id="formMutasiDPB">
-   @csrf
-   <div class="row mb-2">
-      <div class="col">
-         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" />
-         <x-select label="Jenis Mutasi" name="jenis_mutasi" :data="$jenis_mutasi" key="kode_jenis_mutasi" textShow="jenis_mutasi"
-            upperCase="true" select2="select2Jenismutasi" />
-      </div>
-   </div>
-   <div class="row">
-      <div class="col">
-         <table class="table table-bordered table-striped table-hover">
-            <thead class="table-dark">
-               <tr>
-                  <th rowspan="2">Kode</th>
-                  <th rowspan="2">Produk</th>
-                  <th colspan="3" class="text-center">Kuantitas</th>
-               </tr>
-               <tr>
-                  <th class="text-center">Dus</th>
-                  <th class="text-center">Pack</th>
-                  <th class="text-center">Pcs</th>
-               </tr>
-            </thead>
-            <tbody>
-               @foreach ($produk as $d)
-                  <tr>
-                     <td>{{ $d->kode_produk }}</td>
-                     <td>{{ $d->nama_produk }}</td>
-                  </tr>
-               @endforeach
-            </tbody>
-         </table>
-      </div>
-   </div>
+    @csrf
+    <div class="row mb-2">
+        <div class="col">
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+            <x-select label="Jenis Mutasi" name="jenis_mutasi" :data="$jenis_mutasi" key="kode_jenis_mutasi"
+                textShow="jenis_mutasi" upperCase="true" select2="select2Jenismutasi" />
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th rowspan="2">Kode</th>
+                        <th rowspan="2" style="width:40%">Produk</th>
+                        <th colspan="3" class="text-center">Kuantitas</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">Dus</th>
+                        <th class="text-center">Pack</th>
+                        <th class="text-center">Pcs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($produk as $d)
+                        <tr>
+                            <td>
+                                <input type="hidden" class="kode_produk" name="kode_produk[]"
+                                    value="{{ $d->kode_produk }}">
+                                {{ $d->kode_produk }}
+                            </td>
+                            <td>{{ $d->nama_produk }}</td>
+                            <td>
+                                <input type="text" class="noborder-form text-end jml_dus" name="jml_dus[]">
+                            </td>
+                            <td>
+                                <input type="text" class="noborder-form text-end jml_pack" name="jml_pack[]"
+                                    {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }}>
+                            </td>
+                            <td>
+                                <input type="text" class="noborder-form text-end jml_pcs" name="jml_pcs[]">
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button type="submit" class="btn btn-primary w-100" id="submitMutasiDpb"><i
+                    class="ti ti-send me-1"></i>Submit</button>
+        </div>
+    </div>
 </form>
 <script>
-   const select2Jenismutasi = $('.select2Jenismutasi');
-   if (select2Jenismutasi.length) {
-      select2Jenismutasi.each(function() {
-         var $this = $(this);
-         $this.wrap('<div class="position-relative"></div>').select2({
-            placeholder: 'Jenis Mutasi',
-            allowClear: true,
-            dropdownParent: $this.parent()
-         });
-      });
-   }
+    $(function() {
+        $(".flatpickr-date").flatpickr({
+            enable: [{
+                from: "{{ $start_periode }}",
+                to: "{{ $end_periode }}"
+            }, ]
+        });
+
+        const select2Jenismutasi = $('.select2Jenismutasi');
+        if (select2Jenismutasi.length) {
+            select2Jenismutasi.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Jenis Mutasi',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+    });
 </script>
