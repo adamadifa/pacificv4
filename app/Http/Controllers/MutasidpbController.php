@@ -17,7 +17,7 @@ class MutasidpbController extends Controller
     public function create()
     {
 
-        $data['jenis_mutasi'] = Jenismutasigudangcabang::orderBy('kode_jenis_mutasi')->get();
+        $data['jenis_mutasi'] = Jenismutasigudangcabang::where('kategori', 'DPB')->orderBy('order')->get();
         $data['produk'] = Produk::orderBy('kode_produk')->where('status_aktif_produk', 1)->get();
         return view('gudangcabang.mutasidpb.create', $data);
     }
@@ -101,9 +101,9 @@ class MutasidpbController extends Controller
 
             $detail = [];
             for ($i = 0; $i < count($kode_produk); $i++) {
-                $dus = !empty($jml_dus[$i]) ? $jml_dus[$i] : 0;
-                $pack = !empty($jml_pack[$i]) ? $jml_pack[$i] : 0;
-                $pcs = !empty($jml_pcs[$i]) ? $jml_pcs[$i] : 0;
+                $dus = toNumber(!empty($jml_dus[$i]) ? $jml_dus[$i] : 0);
+                $pack = toNumber(!empty($jml_pack[$i]) ? $jml_pack[$i] : 0);
+                $pcs = toNumber(!empty($jml_pcs[$i]) ? $jml_pcs[$i] : 0);
 
                 $jumlah = ($dus * $isi_pcs_dus[$i]) + ($pack * $isi_pcs_pack[$i]) + $pcs;
                 if (!empty($jumlah)) {
@@ -259,9 +259,9 @@ class MutasidpbController extends Controller
 
             $detail = [];
             for ($i = 0; $i < count($kode_produk); $i++) {
-                $dus = !empty($jml_dus[$i]) ? $jml_dus[$i] : 0;
-                $pack = !empty($jml_pack[$i]) ? $jml_pack[$i] : 0;
-                $pcs = !empty($jml_pcs[$i]) ? $jml_pcs[$i] : 0;
+                $dus = toNumber(!empty($jml_dus[$i]) ? $jml_dus[$i] : 0);
+                $pack = toNumber(!empty($jml_pack[$i]) ? $jml_pack[$i] : 0);
+                $pcs = toNumber(!empty($jml_pcs[$i]) ? $jml_pcs[$i] : 0);
 
                 $jumlah = ($dus * $isi_pcs_dus[$i]) + ($pack * $isi_pcs_pack[$i]) + $pcs;
                 if (!empty($jumlah)) {
@@ -324,6 +324,7 @@ class MutasidpbController extends Controller
         }
         $query->join('gudang_cabang_jenis_mutasi', 'gudang_cabang_mutasi.jenis_mutasi', '=', 'gudang_cabang_jenis_mutasi.kode_jenis_mutasi');
         $query->where('no_dpb', $no_dpb);
+        $query->orderBy('order');
         $data['mutasi'] = $query->get();
         return view('gudangcabang.mutasidpb.getmutasidpb', $data);
     }

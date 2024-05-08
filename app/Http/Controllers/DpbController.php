@@ -121,9 +121,10 @@ class DpbController extends Controller
 
             for ($i = 0; $i < count($kode_produk); $i++) {
 
-                $dus = !empty($jml_dus[$i]) ?  $jml_dus[$i] : 0;
-                $pack = !empty($jml_pack[$i]) ?  $jml_pack[$i] : 0;
-                $pcs = !empty($jml_pcs[$i]) ?  $jml_pcs[$i] : 0;
+                $dus = toNumber(!empty($jml_dus[$i]) ? $jml_dus[$i] : 0);
+                $pack = toNumber(!empty($jml_pack[$i]) ? $jml_pack[$i] : 0);
+                $pcs = toNumber(!empty($jml_pcs[$i]) ? $jml_pcs[$i] : 0);
+
 
                 $jumlah = ($dus * $isi_pcs_dus[$i]) + ($pack * $isi_pcs_pack[$i]) + $pcs;
                 if (!empty($jumlah)) {
@@ -249,17 +250,17 @@ class DpbController extends Controller
 
             for ($i = 0; $i < count($kode_produk); $i++) {
 
-                $dus_ambil = !empty($jml_ambil_dus[$i]) ?  $jml_ambil_dus[$i] : 0;
-                $pack_ambil = !empty($jml_ambil_pack[$i]) ?  $jml_ambil_pack[$i] : 0;
-                $pcs_ambil = !empty($jml_ambil_pcs[$i]) ?  $jml_ambil_pcs[$i] : 0;
+                $dus_ambil = toNumber(!empty($jml_ambil_dus[$i]) ?  $jml_ambil_dus[$i] : 0);
+                $pack_ambil = toNumber(!empty($jml_ambil_pack[$i]) ?  $jml_ambil_pack[$i] : 0);
+                $pcs_ambil = toNumber(!empty($jml_ambil_pcs[$i]) ?  $jml_ambil_pcs[$i] : 0);
 
-                $dus_kembali = !empty($jml_kembali_dus[$i]) ?  $jml_kembali_dus[$i] : 0;
-                $pack_kembali = !empty($jml_kembali_pack[$i]) ?  $jml_kembali_pack[$i] : 0;
-                $pcs_kembali = !empty($jml_kembali_pcs[$i]) ?  $jml_kembali_pcs[$i] : 0;
+                $dus_kembali = toNumber(!empty($jml_kembali_dus[$i]) ?  $jml_kembali_dus[$i] : 0);
+                $pack_kembali = toNumber(!empty($jml_kembali_pack[$i]) ?  $jml_kembali_pack[$i] : 0);
+                $pcs_kembali = toNumber(!empty($jml_kembali_pcs[$i]) ?  $jml_kembali_pcs[$i] : 0);
 
-                $dus_keluar = !empty($jml_keluar_dus[$i]) ?  $jml_keluar_dus[$i] : 0;
-                $pack_keluar = !empty($jml_keluar_pack[$i]) ?  $jml_keluar_pack[$i] : 0;
-                $pcs_keluar = !empty($jml_keluar_pcs[$i]) ?  $jml_keluar_pcs[$i] : 0;
+                $dus_keluar = toNumber(!empty($jml_keluar_dus[$i]) ?  $jml_keluar_dus[$i] : 0);
+                $pack_keluar = toNumber(!empty($jml_keluar_pack[$i]) ?  $jml_keluar_pack[$i] : 0);
+                $pcs_keluar = toNumber(!empty($jml_keluar_pcs[$i]) ?  $jml_keluar_pcs[$i] : 0);
 
                 $jumlah_ambil = ($dus_ambil * $isi_pcs_dus[$i]) + ($pack_ambil * $isi_pcs_pack[$i]) + $pcs_ambil;
                 $jumlah_kembali = ($dus_kembali * $isi_pcs_dus[$i]) + ($pack_kembali * $isi_pcs_pack[$i]) + $pcs_kembali;
@@ -336,7 +337,9 @@ class DpbController extends Controller
             ->join('produk', 'gudang_cabang_dpb_detail.kode_produk', '=', 'produk.kode_produk')
             ->where('no_dpb', $no_dpb)
             ->get();
-        $data['jenis_mutasi'] = Jenismutasigudangcabang::orderBy('kode_jenis_mutasi')->get();
+        $data['jenis_mutasi'] = Jenismutasigudangcabang::orderBy('kode_jenis_mutasi')->where('kategori', 'DPB')
+            ->orderBY('order')
+            ->get();
 
         // dd($data['mutasi_dpb']);
         return view('gudangcabang.dpb.show', $data);

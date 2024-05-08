@@ -77,14 +77,14 @@
                             </td>
                             <td>{{ $d->nama_produk }}</td>
                             <td>
-                                <input type="text" class="noborder-form text-end" name="jml_dus[]">
+                                <input type="text" class="noborder-form text-end money" name="jml_dus[]">
                             </td>
                             <td>
-                                <input type="text" class="noborder-form text-end" name="jml_pack[]"
+                                <input type="text" class="noborder-form text-end money" name="jml_pack[]"
                                     {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }}>
                             </td>
                             <td>
-                                <input type="text" class="noborder-form text-end" name="jml_pcs[]">
+                                <input type="text" class="noborder-form text-end money" name="jml_pcs[]">
                             </td>
                         </tr>
                     @endforeach
@@ -100,6 +100,7 @@
 </form>
 <script>
     $(function() {
+        $(".money").maskMoney();
         const form = $("#formDPB");
 
         $(".flatpickr-date").flatpickr({
