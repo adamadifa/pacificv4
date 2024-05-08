@@ -1,10 +1,11 @@
-<form action="#" method="POST" id="formMutasiDPB">
+<form action="#" method="POST" id="formupdateMutasiDPB">
    @csrf
    <div class="row mb-2">
       <div class="col">
-         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+         <input type="hidden" name="no_mutasi" id="no_mutasi" value="{{ Crypt::encrypt($mutasi->no_mutasi) }}">
+         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $mutasi->tanggal }}" />
          <x-select label="Jenis Mutasi" name="jenis_mutasi" :data="$jenis_mutasi" key="kode_jenis_mutasi"
-            textShow="jenis_mutasi" upperCase="true" select2="select2Jenismutasi" />
+            textShow="jenis_mutasi" upperCase="true" select2="select2Jenismutasi" selected="{{ $mutasi->jenis_mutasi }}" />
       </div>
    </div>
    <div class="row mb-2">
@@ -24,6 +25,12 @@
             </thead>
             <tbody>
                @foreach ($produk as $d)
+                  @php
+                     $jumlah = explode('|', convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah));
+                     $jumlah_dus = $jumlah[0];
+                     $jumlah_pack = $jumlah[1];
+                     $jumlah_pcs = $jumlah[2];
+                  @endphp
                   <tr>
                      <td>
                         <input type="hidden" class="kode_produk" name="kode_produk[]"
@@ -37,14 +44,14 @@
                      </td>
                      <td>{{ $d->nama_produk }}</td>
                      <td>
-                        <input type="text" class="noborder-form text-end jml_dus" name="jml_dus[]">
+                        <input type="text" class="noborder-form text-end jml_dus" name="jml_dus[]" value="{{ formatAngka($jumlah_dus) }}">
                      </td>
                      <td>
                         <input type="text" class="noborder-form text-end jml_pack" name="jml_pack[]"
-                           {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }}>
+                           {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }} value="{{ formatAngka($jumlah_pack) }}">
                      </td>
                      <td>
-                        <input type="text" class="noborder-form text-end jml_pcs" name="jml_pcs[]">
+                        <input type="text" class="noborder-form text-end jml_pcs" name="jml_pcs[]" value="{{ formatAngka($jumlah_pcs) }}">
                      </td>
                   </tr>
                @endforeach

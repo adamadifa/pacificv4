@@ -336,7 +336,15 @@ class DpbController extends Controller
             ->join('produk', 'gudang_cabang_dpb_detail.kode_produk', '=', 'produk.kode_produk')
             ->where('no_dpb', $no_dpb)
             ->get();
+        $data['jenis_mutasi'] = Jenismutasigudangcabang::orderBy('kode_jenis_mutasi')->get();
 
+        // dd($data['mutasi_dpb']);
+        return view('gudangcabang.dpb.show', $data);
+    }
+
+    public function getdetailmutasidpb($no_dpb)
+    {
+        $no_dpb = Crypt::decrypt($no_dpb);
         $data['mutasi_dpb'] = Detailmutasigudangcabang::select(
             'gudang_cabang_mutasi_detail.kode_produk',
             'nama_produk',
@@ -360,10 +368,8 @@ class DpbController extends Controller
             ->orderBy('gudang_cabang_mutasi_detail.kode_produk')
             ->groupBy('gudang_cabang_mutasi_detail.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pack_dus', 'isi_pcs_pack')
             ->get();
-        $data['jenis_mutasi'] = Jenismutasigudangcabang::orderBy('kode_jenis_mutasi')->get();
 
-        // dd($data['mutasi_dpb']);
-        return view('gudangcabang.dpb.show', $data);
+        return view('gudangcabang.dpb.getdetailmutasidpb', $data);
     }
 
     public function destroy($no_dpb)

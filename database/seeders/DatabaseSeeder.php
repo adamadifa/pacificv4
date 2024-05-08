@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
             Laporangudanglogistikpermissionseeder::class,
             DPBpermissionseeder::class,
             Driverhelperpermissionseeder::class,
+            Mutasidpbpermissionseeder::class,
 
         ]);
     }

@@ -760,11 +760,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/dpb/{no_dpb}/show', 'show')->name('dpb.show')->can('dpb.show');
 
         //AJAX REQUEST
+        Route::get('/dpb/{no_dpb}/getdetailmutasidpb', 'getdetailmutasidpb')->name('dpb.getdetailmutasidpb');
         Route::post('/dpb/generatenodpb', 'generatenodpb')->name('dpb.generatenodpb');
     });
 
     Route::controller(MutasidpbController::class)->group(function () {
-        Route::get('/mutasidpb/create', 'create')->name('mutasidpb.create');
+        Route::get('/mutasidpb/create', 'create')->name('mutasidpb.create')->can('mutasidpb.create');
+        Route::post('/mutasidpb', 'store')->name('mutasidpb.store')->can('mutasidpb.store');
+        Route::get('/mutasidpb/{no_mutasi}/show', 'show')->name('mutasidpb.show')->can('mutasidpb.show');
+        Route::post('/mutasidpb/delete', 'destroy')->name('mutasidpb.delete')->can('mutasidpb.delete');
+        Route::get('/mutasidpb/{no_mutasi}/edit', 'edit')->name('mutasidpb.edit')->can('mutasidpb.edit');
+        Route::post('/mutasidpb/update', 'update')->name('mutasidpb.update')->can('mutasidpb.update');
+        Route::get('/mutasidpb/{no_dpb}/{jenis_mutasi}/getmutasidpb', 'getmutasidpb')->name('mutasidpb.getmutasidpb');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

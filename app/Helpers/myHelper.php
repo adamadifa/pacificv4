@@ -204,3 +204,22 @@ function convertToduspackpcs($kode_produk, $jumlah)
 
     return $jml_dus . "|" . $jml_pack . "|" . $jml_pcs;
 }
+
+
+
+function convertToduspackpcsv2($isi_pcs_dus, $isi_pcs_pack, $jumlah)
+{
+
+    $jml_dus = floor($jumlah / $isi_pcs_dus);
+    $sisa_dus = $jumlah % $isi_pcs_dus;
+    if (!empty($isi_pcs_pack)) {
+        $jml_pack = floor($sisa_dus / $isi_pcs_pack);
+        $sisa_pack = $sisa_dus % $isi_pcs_pack;
+    } else {
+        $jml_pack = 0;
+        $sisa_pack = $sisa_dus;
+    }
+    $jml_pcs = $sisa_pack;
+
+    return $jml_dus . "|" . $jml_pack . "|" . $jml_pcs;
+}
