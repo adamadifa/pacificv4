@@ -1,5 +1,13 @@
 @foreach ($mutasi as $d)
-   <tr>
+   @php
+      $mutasi_in = ['RETUR', 'HUTANG KIRIM'];
+      if (in_array($d->jenis_mutasi, $mutasi_in)) {
+          $color = '#28c76f1a';
+      } else {
+          $color = '#ea54552e';
+      }
+   @endphp
+   <tr style="background-color:{{ $color }}">
       <td>{{ $d->no_mutasi }}</td>
       <td>{{ DateToIndo($d->tanggal) }}</td>
       <td>{{ $d->jenis_mutasi }}</td>

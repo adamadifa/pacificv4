@@ -132,10 +132,23 @@
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
 <script>
    $(function() {
+      function loadingElement() {
+         const loading = `<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`;
+
+         return loading;
+      };
+
       $("#btnCreate").click(function(e) {
          e.preventDefault();
          $("#modal").modal("show");
          $(".modal-title").text("Tambah Data Barang Masuk");
+         $("#loadmodal").html(loadingElement());
          $("#loadmodal").load(`/barangmasukgudangbahan/create`);
       });
 
@@ -145,6 +158,7 @@
          e.preventDefault();
          $("#modal").modal("show");
          $(".modal-title").text("Detail Barang Masuk");
+         $("#loadmodal").html(loadingElement());
          $("#loadmodal").load(`/barangmasukgudangbahan/${no_bukti}/show`);
       });
 
@@ -154,6 +168,7 @@
          e.preventDefault();
          $("#modal").modal("show");
          $(".modal-title").text("Edit Barang Masuk");
+         $("#loadmodal").html(loadingElement());
          $("#loadmodal").load(`/barangmasukgudangbahan/${no_bukti}/edit`);
       });
    });

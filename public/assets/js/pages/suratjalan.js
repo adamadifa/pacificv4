@@ -1,5 +1,19 @@
 
 $(function () {
+
+    function loadingElement() {
+        const loading = `<div class="sk-wave sk-primary" style="margin:auto">
+           <div class="sk-wave-rect"></div>
+           <div class="sk-wave-rect"></div>
+           <div class="sk-wave-rect"></div>
+           <div class="sk-wave-rect"></div>
+           <div class="sk-wave-rect"></div>
+           </div>`;
+
+        return loading;
+    };
+
+
     const select2Kodecabangsearch = $('.select2Kodecabangsearch');
     if (select2Kodecabangsearch.length) {
         select2Kodecabangsearch.each(function () {
@@ -17,6 +31,7 @@ $(function () {
         e.preventDefault();
         $("#modal").modal("show");
         $(".modal-title").text("Detail Surat Jalan");
+        $("#loadmodal").html(loadingElement());
         $("#loadmodal").load(`/suratjalan/${no_mutasi}/show`);
     });
 
@@ -26,6 +41,7 @@ $(function () {
         e.preventDefault();
         $("#modal").modal("show");
         $(".modal-title").text("Edit Surat Jalan");
+        $("#loadmodal").html(loadingElement());
         $("#loadmodal").load(`/suratjalan/${no_mutasi}/edit`);
     });
 
@@ -35,6 +51,7 @@ $(function () {
         e.preventDefault();
         $("#modal").modal("show");
         $(".modal-title").text("Approve Surat Jalan");
+        $("#loadmodal").html(loadingElement());
         $("#loadmodal").load(`/suratjalan/${no_mutasi}/approveform`);
     });
 });

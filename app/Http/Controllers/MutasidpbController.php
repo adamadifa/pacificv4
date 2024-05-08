@@ -324,7 +324,8 @@ class MutasidpbController extends Controller
         }
         $query->join('gudang_cabang_jenis_mutasi', 'gudang_cabang_mutasi.jenis_mutasi', '=', 'gudang_cabang_jenis_mutasi.kode_jenis_mutasi');
         $query->where('no_dpb', $no_dpb);
-        $query->orderBy('order');
+        $query->orderBy('tanggal');
+        // $query->orderBy('order');
         $data['mutasi'] = $query->get();
         return view('gudangcabang.mutasidpb.getmutasidpb', $data);
     }

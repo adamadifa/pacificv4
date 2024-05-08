@@ -6,6 +6,7 @@ use App\Models\Cabang;
 use App\Models\Detaildpb;
 use App\Models\Detailmutasigudangcabang;
 use App\Models\Dpb;
+use App\Models\Dpbdriverhelper;
 use App\Models\Jenismutasigudangcabang;
 use App\Models\Mutasigudangcabang;
 use App\Models\Produk;
@@ -160,11 +161,50 @@ class DpbController extends Controller
                 foreach ($chunks_buffer as $chunk_buffer) {
                     Detaildpb::insert($chunk_buffer);
                 }
-            }
 
-            DB::commit();
-            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+
+                $driver = [
+                    'no_dpb' => $request->no_dpb_format . $request->no_dpb,
+                    'kode_driver_helper' => $request->kode_driver,
+                    'kode_posisi' => 'D',
+                    'jumlah' => 0,
+                    'keterangan' => 0
+                ];
+
+                //dd($driver);
+
+                $helper_1 = !empty($request->kode_helper_1) ?  [
+                    'no_dpb' => $request->no_dpb_format . $request->no_dpb,
+                    'kode_driver_helper' => $request->kode_helper_1,
+                    'kode_posisi' => 'H',
+                    'jumlah' => 0,
+                    'keterangan' => 1
+                ] : [];
+
+                $helper_2 = !empty($request->kode_helper_2) ?  [
+                    'no_dpb' => $request->no_dpb_format . $request->no_dpb,
+                    'kode_driver_helper' => $request->kode_helper_2,
+                    'kode_posisi' => 'H',
+                    'jumlah' => 0,
+                    'keterangan' => 2
+                ] : [];
+
+                $helper_3 = !empty($request->kode_helper_3) ?  [
+                    'no_dpb' => $request->no_dpb_format . $request->no_dpb,
+                    'kode_driver_helper' => $request->kode_helper_3,
+                    'kode_posisi' => 'H',
+                    'jumlah' => 0,
+                    'keterangan' => 3
+                ] : [];
+                $driverhelper   = array($driver, $helper_1);
+                //Simpan Driver Helper
+                Dpbdriverhelper::insert($driverhelper);
+
+                DB::commit();
+                return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+            }
         } catch (Exception $e) {
+            dd($e);
             DB::rollBack();
             //return Redirect::back()->with(messageError($e->getMessage()));
         }
