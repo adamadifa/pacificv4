@@ -196,7 +196,7 @@ class DpbController extends Controller
                     'jumlah' => 0,
                     'keterangan' => 3
                 ] : [];
-                $driverhelper   = array($driver, $helper_1);
+                $driverhelper   = array($driver, $helper_1, $helper_2, $helper_3);
                 //Simpan Driver Helper
                 Dpbdriverhelper::insert($driverhelper);
 
@@ -237,9 +237,14 @@ class DpbController extends Controller
             ->orderBy('produk.kode_produk')
             ->get();
 
+        $data['driver'] = Dpbdriverhelper::where('no_dpb', $no_dpb)
+            ->where('kode_posisi', 'D')
+            ->first();
+
         $data['driverhelper'] = Dpbdriverhelper::select('gudang_cabang_dpb_driverhelper.*', 'nama_driver_helper')
             ->join('driver_helper', 'gudang_cabang_dpb_driverhelper.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
             ->where('no_dpb', $no_dpb)
+            ->where('kode_posisi', 'H')
             ->get();
         return view('gudangcabang.dpb.edit', $data);
     }
