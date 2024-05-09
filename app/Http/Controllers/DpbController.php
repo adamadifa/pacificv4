@@ -236,6 +236,11 @@ class DpbController extends Controller
             )
             ->orderBy('produk.kode_produk')
             ->get();
+
+        $data['driverhelper'] = Dpbdriverhelper::select('gudang_cabang_dpb_driverhelper.*', 'nama_driver_helper')
+            ->join('driver_helper', 'gudang_cabang_dpb_driverhelper.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
+            ->where('no_dpb', $no_dpb)
+            ->get();
         return view('gudangcabang.dpb.edit', $data);
     }
 
