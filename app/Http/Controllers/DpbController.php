@@ -162,7 +162,7 @@ class DpbController extends Controller
                     Detaildpb::insert($chunk_buffer);
                 }
 
-
+                $driverhelper = [];
                 $driver = [
                     'no_dpb' => $request->no_dpb_format . $request->no_dpb,
                     'kode_driver_helper' => $request->kode_driver,
@@ -170,6 +170,10 @@ class DpbController extends Controller
                     'jumlah' => 0,
                     'keterangan' => 0
                 ];
+
+                if (!empty($driver)) {
+                    $driverhelper[] = $driver;
+                }
 
                 //dd($driver);
 
@@ -181,6 +185,9 @@ class DpbController extends Controller
                     'keterangan' => 1
                 ] : [];
 
+                if (!empty($helper_1)) {
+                    $driverhelper[] = $helper_1;
+                }
                 $helper_2 = !empty($request->kode_helper_2) ?  [
                     'no_dpb' => $request->no_dpb_format . $request->no_dpb,
                     'kode_driver_helper' => $request->kode_helper_2,
@@ -188,7 +195,9 @@ class DpbController extends Controller
                     'jumlah' => 0,
                     'keterangan' => 2
                 ] : [];
-
+                if (!empty($helper_2)) {
+                    $driverhelper[] = $helper_2;
+                }
                 $helper_3 = !empty($request->kode_helper_3) ?  [
                     'no_dpb' => $request->no_dpb_format . $request->no_dpb,
                     'kode_driver_helper' => $request->kode_helper_3,
@@ -196,7 +205,14 @@ class DpbController extends Controller
                     'jumlah' => 0,
                     'keterangan' => 3
                 ] : [];
-                $driverhelper   = array($driver, $helper_1, $helper_2, $helper_3);
+
+                if (!empty($helper_3)) {
+                    $driverhelper[] = $helper_3;
+                }
+
+                //$driverhelper   = array($driver, $helper_1, $helper_2, $helper_3);
+
+                // dd($driverhelper);
                 //Simpan Driver Helper
                 Dpbdriverhelper::insert($driverhelper);
 
