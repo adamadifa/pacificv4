@@ -92,6 +92,13 @@ function formatAngkaDesimal($nilai)
     }
 }
 
+function formatAngkaDesimal3($nilai)
+{
+    if (!empty($nilai)) {
+        return number_format($nilai, '3', ',', '.');
+    }
+}
+
 
 
 function DateToIndo($date2)

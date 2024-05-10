@@ -297,6 +297,9 @@ class DpbController extends Controller
         $isi_pcs_pack = $request->isi_pcs_pack;
 
 
+        $kode_helper = $request->kodehelper;
+        $qty_helper = $request->qtyhelper;
+
         DB::beginTransaction();
         try {
             //Checking
@@ -314,6 +317,7 @@ class DpbController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
             }
 
+            $totalbarangkeluar = 0;
             for ($i = 0; $i < count($kode_produk); $i++) {
 
                 $dus_ambil = toNumber(!empty($jml_ambil_dus[$i]) ?  $jml_ambil_dus[$i] : 0);
@@ -331,6 +335,8 @@ class DpbController extends Controller
                 $jumlah_ambil = ($dus_ambil * $isi_pcs_dus[$i]) + ($pack_ambil * $isi_pcs_pack[$i]) + $pcs_ambil;
                 $jumlah_kembali = ($dus_kembali * $isi_pcs_dus[$i]) + ($pack_kembali * $isi_pcs_pack[$i]) + $pcs_kembali;
                 $jumlah_keluar = ($dus_keluar * $isi_pcs_dus[$i]) + ($pack_keluar * $isi_pcs_pack[$i]) + $pcs_keluar;
+                $barangkeluar_dus = ROUND($jumlah_keluar / $isi_pcs_dus[$i], 3);
+                $totalbarangkeluar += $barangkeluar_dus;
 
                 $jumlah = $jumlah_ambil + $jumlah_kembali + $jumlah_keluar;
                 if (!empty($jumlah)) {
@@ -357,7 +363,8 @@ class DpbController extends Controller
                     'tanggal_kembali' => $request->tanggal_kembali,
                     'kode_salesman' => $request->kode_salesman,
                     'kode_kendaraan' => $request->kode_kendaraan,
-                    'tujuan' => $request->tujuan
+                    'tujuan' => $request->tujuan,
+                    'jenis_perhitungan' => $request->jenis_perhitungan
                 ]);
 
                 $timestamp = Carbon::now();
@@ -372,6 +379,36 @@ class DpbController extends Controller
                 }
 
 
+
+                Dpbdriverhelper::create([
+                    'no_dpb' => $request->no_dpb,
+                    'kode_driver_helper' => $request->kode_driver,
+                    'kode_posisi' => 'D',
+                    'jumlah' => 0,
+                    'keterangan' => 0
+                ]);
+                $no = 1;
+                // dd($totalbarangkeluar);
+                for ($i = 0; $i < count($kode_helper); $i++) {
+                    if ($request->jenis_perhitungan == "P") {
+                        $jumlah_qty_helper = ROUND(toNumber($qty_helper[$i]) / 100 * $totalbarangkeluar, 3);
+                    } else if ($request->jenis_perhitungan == "Q") {
+                        $jumlah_qty_helper = toNumber($qty_helper[$i]);
+                    } else if ($request->jenis_perhitungan == "R") {
+                        $jumlah_qty_helper =  ROUND($totalbarangkeluar / count($kode_helper), 3);
+                    }
+                    $helper[] = [
+                        'no_dpb' => $request->no_dpb,
+                        'kode_driver_helper' => $kode_helper[$i],
+                        'kode_posisi' => 'H',
+                        'jumlah' => $jumlah_qty_helper,
+                        'keterangan' => $no
+                    ];
+
+                    $no++;
+                }
+
+                Dpbdriverhelper::insert($helper);
                 Mutasigudangcabang::where('no_dpb', $no_dpb)->update([
                     'no_dpb' => $request->no_dpb
                 ]);
@@ -380,6 +417,7 @@ class DpbController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (Exception $e) {
+            dd($e);
             DB::rollBack();
             //return Redirect::back()->with(messageError($e->getMessage()));
         }
