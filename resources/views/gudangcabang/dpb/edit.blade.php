@@ -103,7 +103,7 @@
    </div>
    <div class="row mb-2">
       <div class="col">
-         <table class="table table-bordered">
+         <table class="table table-bordered" id="tabledpb">
             <thead class="table-dark">
                <tr>
                   <th rowspan="3" class="align-middle">Kode</th>
@@ -186,8 +186,8 @@
                   <tr>
                      <td>
                         <input type="hidden" name="kode_produk[]" value="{{ $d->kode_produk }}">
-                        <input type="hidden" name="isi_pcs_dus[]" value="{{ $d->isi_pcs_dus }}">
-                        <input type="hidden" name="isi_pcs_pack[]" value="{{ $d->isi_pcs_pack }}">
+                        <input type="hidden" id="isi_pcs_dus" name="isi_pcs_dus[]" value="{{ $d->isi_pcs_dus }}">
+                        <input type="hidden" id="isi_pcs_pack" name="isi_pcs_pack[]" value="{{ $d->isi_pcs_pack }}">
                         {{ $d->kode_produk }}
                      </td>
                      <td>{{ $d->nama_produk }}</td>
@@ -225,18 +225,18 @@
 
                      <td style="background-color: #ea54552e">
                         <input type="text" style="background-color: #ffdcdc2e"
-                           class="noborder-form text-end money jml_keluar_dus" name="jml_keluar_dus[]"
+                           class="jml_keluar_dus noborder-form text-end money" name="jml_keluar_dus[]" id="jml_keluar_dus"
                            value="{{ formatAngka($keluar_dus) }}">
                      </td>
                      <td style="background-color: {{ $color_keluar }}">
                         <input type="text" style="background-color: #ffdcdc2e"
                            class="noborder-form text-end money jml_keluar_pack"
-                           {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }} name="jml_keluar_pack[]"
+                           {{ empty($d->isi_pcs_pack) ? 'readonly' : '' }} name="jml_keluar_pack[]" id="jml_keluar_pack"
                            value="{{ formatAngka($keluar_pack) }}">
                      </td>
                      <td style="background-color: #ea54552e">
                         <input type="text" style="background-color: #ffdcdc2e"
-                           class="noborder-form text-end money jml_keluar_pcs" name="jml_keluar_pcs[]"
+                           class="noborder-form text-end money jml_keluar_pcs" name="jml_keluar_pcs[]" id="jml_keluar_pcs"
                            value="{{ formatAngka($keluar_pcs) }}">
                      </td>
                   </tr>
@@ -289,6 +289,60 @@
          }
          return s.join(dec);
       };
+
+      var $tblrows = $("#tabledpb tbody tr");
+      $tblrows.each(function(index) {
+         var $tblrow = $(this);
+         $tblrow.find('.jml_keluar_dus').on('input', function() {
+            alert('test');
+            var jml_keluar_dus = $tblrow.find("[id=jml_keluar_dus]").val();
+            var jml_keluar_pack = $tblrow.find("[id=jml_keluar_pack]").val();
+            var jml_keluar_pcs = $tblrow.find("[id=jml_keluar_pcs]").val();
+            var isi_pcs_dus = $tblrow.find("[id=isi_pcs_dus]").val();
+            var isi_pcs_pack = $tblrow.find("[id=isi_pcs_pack]").val();
+
+            if (jml_keluar_dus.length === 0) {
+               var jml_keluar_dus = 0;
+            } else {
+               var jml_keluar_dus = parseInt(jml_keluar_dus.replace(/\./g, ''));
+            }
+            if (jml_keluar_pack.length === 0) {
+               var jml_keluar_pack = 0;
+            } else {
+               var jml_keluar_pack = parseInt(jml_keluar_pack.replace(/\./g, ''));
+            }
+            if (jml_keluar_pcs.length === 0) {
+               var jml_keluar_pcs = 0;
+            } else {
+               var jml_keluar_pcs = parseInt(jml_keluar_pcs.replace(/\./g, ''));
+            }
+
+            if (isi_pcs_dus.length === 0) {
+               var isi_pcs_dus = 0;
+            } else {
+               var isi_pcs_dus = parseInt(isi_pcs_dus.replace(/\./g, ''));
+            }
+
+            if (isi_pcs_pack.length === 0) {
+               var isi_pcs_pack = 0;
+            } else {
+               var isi_pcs_pack = parseInt(isi_pcs_pack.replace(/\./g, ''));
+            }
+            var subTotal = (parseInt(jml_keluar_dus) * parseInt(isi_pcs_dus)) + (parseInt(jml_keluar_pack) * parseInt(isi_pcs_pack)) + parseInt(jml_keluar_pcs);
+
+            if (!isNaN(subTotal)) {
+               console.lg(subTotal);
+               //    $tblrow.find('.subtotal').val(convertToRupiah(subTotal));
+               // var grandTotal = 0;
+               // $(".subtotal").each(function() {
+               //     var stval = parseInt($(this).val());
+               //     grandTotal += isNaN(stval) ? 0 : stval;
+               // });
+               //$('.grdtot').val(grandTotal.toFixed(2));
+            }
+
+         });
+      });
 
       function generateqtyhelper() {
          const totalbarangkeluar = "{{ $totalbarangkeluar }}";
