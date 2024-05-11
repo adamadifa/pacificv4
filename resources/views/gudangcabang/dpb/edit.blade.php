@@ -245,6 +245,9 @@
                                     class="noborder-form text-end money jml_keluar_pcs" name="jml_keluar_pcs[]"
                                     id="jml_keluar_pcs" value="{{ formatAngka($keluar_pcs) }}">
                             </td>
+                            <td>
+                                <input type="text" class="subtotal">
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -302,7 +305,48 @@
             // console.log($tblrow.find('.jml_keluar_dus').val());
             $tblrow.find('.jml_keluar_dus,.jml_keluar_pack,.jml_keluar_pcs').on('keyup keydown',
                 function() {
+                    var jml_keluar_dus = $tblrow.find("[id=jml_keluar_dus]").val();
+                    var jml_keluar_pack = $tblrow.find("[id=jml_keluar_pack]").val();
+                    var jml_keluar_pcs = $tblrow.find("[id=jml_keluar_pcs]").val();
+                    var isi_pcs_dus = $tblrow.find("[id=isi_pcs_dus]").val();
+                    var isi_pcs_pack = $tblrow.find("[id=isi_pcs_pack]").val();
 
+                    if (jml_keluar_dus.length === 0) {
+                        var jml_keluar_dus = 0;
+                    } else {
+                        var jml_keluar_dus = parseInt(jml_keluar_dus.replace(/\./g, ''));
+                    }
+
+                    if (jml_keluar_pack.length === 0) {
+                        var jml_keluar_pack = 0;
+                    } else {
+                        var jml_keluar_pack = parseInt(jml_keluar_pack.replace(/\./g, ''));
+                    }
+
+                    if (jml_keluar_pcs.length === 0) {
+                        var jml_keluar_pcs = 0;
+                    } else {
+                        var jml_keluar_pcs = parseInt(jml_keluar_pcs.replace(/\./g, ''));
+                    }
+
+                    if (isi_pcs_dus.length === 0) {
+                        var isi_pcs_dus = 0;
+                    } else {
+                        var isi_pcs_dus = parseInt(isi_pcs_dus.replace(/\./g, ''));
+                    }
+
+                    if (isi_pcs_pack.length === 0) {
+                        var isi_pcs_pack = 0;
+                    } else {
+                        var isi_pcs_pack = parseInt(isi_pcs_pack.replace(/\./g, ''));
+                    }
+
+                    var subTotal = (parseInt(jml_keluar_dus) * parseInt(isi_pcs_dus)) + (parseInt(
+                        jml_keluar_pack) * parseInt(isi_pcs_pack)) + parseInt(
+                        jml_keluar_pcs);
+                    if (!isNaN(subTotal)) {
+                        $tblrow.find('.subtotal').val(subTotal);
+                    }
                 });
         });
 
