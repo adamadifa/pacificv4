@@ -25,8 +25,10 @@ use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\KirimpusatController;
 use App\Http\Controllers\LainnyagudangjadiController;
 use App\Http\Controllers\LaporangudangbahanController;
+use App\Http\Controllers\LaporangudangcabangController;
 use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporangudanglogistikController;
 use App\Http\Controllers\LaporanproduksiController;
@@ -36,6 +38,7 @@ use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
 use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PenyesuaiangudangcabangController;
 use App\Http\Controllers\PermintaankirimanController;
 use App\Http\Controllers\PermintaanproduksiController;
 use App\Http\Controllers\Permission_groupController;
@@ -43,12 +46,15 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionalController;
+use App\Http\Controllers\RejectController;
 use App\Http\Controllers\RejectgudangjadiController;
 use App\Http\Controllers\RekeningController;
+use App\Http\Controllers\RepackgudangcabangController;
 use App\Http\Controllers\RepackgudangjadiController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaldoawalbarangproduksiController;
 use App\Http\Controllers\SaldoawalgudangbahanController;
+use App\Http\Controllers\SaldoawalgudangcabangController;
 use App\Http\Controllers\SaldoawalgudangjadiController;
 use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
@@ -57,6 +63,7 @@ use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
+use App\Http\Controllers\TransitinController;
 use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
@@ -772,6 +779,68 @@ Route::middleware('auth')->group(function () {
         Route::get('/mutasidpb/{no_mutasi}/edit', 'edit')->name('mutasidpb.edit')->can('mutasidpb.edit');
         Route::post('/mutasidpb/update', 'update')->name('mutasidpb.update')->can('mutasidpb.update');
         Route::get('/mutasidpb/{no_dpb}/{jenis_mutasi}/getmutasidpb', 'getmutasidpb')->name('mutasidpb.getmutasidpb');
+    });
+
+    Route::controller(TransitinController::class)->group(function () {
+        Route::get('/transitin', 'index')->name('transitin.index')->can('transitin.index');
+        Route::get('/transitin/{no_mutasi}/create', 'create')->name('transitin.create')->can('transitin.create');
+        Route::post('/transitin/{no_mutasi}', 'store')->name('transitin.store')->can('transitin.store');
+        Route::delete('/transitin/{no_surat_jalan}', 'destroy')->name('transitin.delete')->can('transitin.delete');
+    });
+
+    Route::controller(RejectController::class)->group(function () {
+        Route::get('/reject', 'index')->name('reject.index')->can('reject.index');
+        Route::get('/reject/create', 'create')->name('reject.create')->can('reject.create');
+        Route::get('/reject/{no_mutasi}/show', 'show')->name('reject.show')->can('reject.show');
+        Route::get('/reject/{no_mutasi}/edit', 'edit')->name('reject.edit')->can('reject.edit');
+        Route::post('/reject', 'store')->name('reject.store')->can('reject.store');
+        Route::put('/reject/{no_mutasi}', 'update')->name('reject.update')->can('reject.update');
+        Route::delete('/reject/{no_mutasi}', 'destroy')->name('reject.delete')->can('reject.delete');
+    });
+
+    Route::controller(RepackgudangcabangController::class)->group(function () {
+        Route::get('/repackcbg', 'index')->name('repackcbg.index')->can('repackcbg.index');
+        Route::get('/repackcbg/create', 'create')->name('repackcbg.create')->can('repackcbg.create');
+        Route::get('/repackcbg/{no_mutasi}/show', 'show')->name('repackcbg.show')->can('repackcbg.show');
+        Route::get('/repackcbg/{no_mutasi}/edit', 'edit')->name('repackcbg.edit')->can('repackcbg.edit');
+        Route::post('/repackcbg', 'store')->name('repackcbg.store')->can('repackcbg.store');
+        Route::put('/repackcbg/{no_mutasi}', 'update')->name('repackcbg.update')->can('repackcbg.update');
+        Route::delete('/repackcbg/{no_mutasi}', 'destroy')->name('repackcbg.delete')->can('repackcbg.delete');
+    });
+
+    Route::controller(KirimpusatController::class)->group(function () {
+        Route::get('/kirimpusat', 'index')->name('kirimpusat.index')->can('kirimpusat.index');
+        Route::get('/kirimpusat/create', 'create')->name('kirimpusat.create')->can('kirimpusat.create');
+        Route::get('/kirimpusat/{no_mutasi}/show', 'show')->name('kirimpusat.show')->can('kirimpusat.show');
+        Route::get('/kirimpusat/{no_mutasi}/edit', 'edit')->name('kirimpusat.edit')->can('kirimpusat.edit');
+        Route::post('/kirimpusat', 'store')->name('kirimpusat.store')->can('kirimpusat.store');
+        Route::put('/kirimpusat/{no_mutasi}', 'update')->name('kirimpusat.update')->can('kirimpusat.update');
+        Route::delete('/kirimpusat/{no_mutasi}', 'destroy')->name('kirimpusat.delete')->can('kirimpusat.delete');
+    });
+
+    Route::controller(PenyesuaiangudangcabangController::class)->group(function () {
+        Route::get('/penygudangcbg', 'index')->name('penygudangcbg.index')->can('penygudangcbg.index');
+        Route::get('/penygudangcbg/create', 'create')->name('penygudangcbg.create')->can('penygudangcbg.create');
+        Route::get('/penygudangcbg/{no_mutasi}/show', 'show')->name('penygudangcbg.show')->can('penygudangcbg.show');
+        Route::get('/penygudangcbg/{no_mutasi}/edit', 'edit')->name('penygudangcbg.edit')->can('penygudangcbg.edit');
+        Route::post('/penygudangcbg', 'store')->name('penygudangcbg.store')->can('penygudangcbg.store');
+        Route::put('/penygudangcbg/{no_mutasi}', 'update')->name('penygudangcbg.update')->can('penygudangcbg.update');
+        Route::delete('/penygudangcbg/{no_mutasi}', 'destroy')->name('penygudangcbg.delete')->can('penygudangcbg.delete');
+    });
+
+    Route::controller(SaldoawalgudangcabangController::class)->group(function () {
+        Route::get('/sagudangcabang', 'index')->name('sagudangcabang.index')->can('sagudangcabang.index');
+        Route::get('/sagudangcabang/create', 'create')->name('sagudangcabang.create')->can('sagudangcabang.create');
+        Route::post('/sagudangcabang', 'store')->name('sagudangcabang.store')->can('sagudangcabang.store');
+        Route::delete('/sagudangcabang/{kode_saldo_awal}', 'destroy')->name('sagudangcabang.delete')->can('sagudangcabang.delete');
+        Route::get('/sagudangcabang/{kode_saldo_awal}/show', 'show')->name('sagudangcabang.show')->can('sagudangcabang.show');
+        //AJAX REQUEST
+        Route::post('/sagudangcabang/getdetailsaldo', 'getdetailsaldo')->name('sagudangcabang.getdetailsaldo');
+    });
+
+
+    Route::controller(LaporangudangcabangController::class)->group(function () {
+        Route::get('/laporangudangcabang', 'index')->name('laporangudangcabang.index');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

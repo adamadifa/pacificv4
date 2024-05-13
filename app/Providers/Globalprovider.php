@@ -305,12 +305,37 @@ class Globalprovider extends ServiceProvider
             $gudang_cabang_request = [
                 'suratjalancabang',
                 'dpb',
-                'dpb/*'
+                'dpb/*',
+                'transitin',
+                'reject',
+                'repackcbg',
+                'kirimpusat',
+                'penygudangcbg',
+                'sagudangcabang',
+                'sagudangcabang/*',
+                'laporangudangcabang'
             ];
 
-            $gudang_cabang_permission = [
-                'suratjalancabang.index',
+            $gudang_cabang_laporan_permission = [
+                'gc.goodstok',
+                'gc.badstok',
+                'gc.rekappersediaan',
+                'gc.mutasidpb',
+                'gc.monitoringretur',
+                'gc.rekonsiliasibj'
             ];
+            $gudang_cabang_permission = array_merge($gudang_cabang_laporan_permission, [
+                'suratjalancabang.index',
+                'dpb.index',
+                'transitin.index',
+                'reject.index',
+                'repackcbg.index',
+                'kirimpusat.index',
+                'penygudangcbg.index',
+                'sagudangcabang.index',
+            ]);
+
+
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
                 'start_periode' => $start_periode,
@@ -351,7 +376,7 @@ class Globalprovider extends ServiceProvider
                 //Gudang Cabang
                 'gudang_cabang_request' => $gudang_cabang_request,
                 'gudang_cabang_permission' => $gudang_cabang_permission,
-
+                'gudang_cabang_laporan_permission' => $gudang_cabang_laporan_permission
             ];
             View::share($shareddata);
         });

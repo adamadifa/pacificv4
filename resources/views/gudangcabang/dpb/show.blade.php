@@ -1,8 +1,8 @@
 <div class="row mb-3">
-   <div class="col-12">
+   <div class="col-6">
       <table class="table">
          <tr>
-            <th style="width: 20%">No. DPB</th>
+            <th style="width: 30%">No. DPB</th>
             <td>{{ $dpb->no_dpb }}</td>
          </tr>
          <tr>
@@ -22,6 +22,35 @@
             <td>{{ $dpb->no_polisi }}</td>
          </tr>
       </table>
+
+   </div>
+   <div class="col-lg-6 col-md-12 col-sm-12">
+      <div class="row">
+         <div class="col">
+            <table class="table table-striped table-bordered table-hover">
+               <thead class="table-dark">
+                  <tr>
+                     <th>DRIVER</th>
+                     <td colspan="2">{{ $driver->kode_driver_helper }} - {{ $driver->nama_driver_helper }}</td>
+                  </tr>
+                  <tr>
+                     <th>Kode</th>
+                     <th>Nama Helper</th>
+                     <th>Jumlah</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  @foreach ($driverhelper as $dh)
+                     <tr>
+                        <td>{{ $dh->kode_driver_helper }}</td>
+                        <td>{{ $dh->nama_driver_helper }}</td>
+                        <td class="text-end">{{ formatAngkaDesimal3($dh->jumlah) }}</td>
+                     </tr>
+                  @endforeach
+               </tbody>
+            </table>
+         </div>
+      </div>
 
    </div>
 </div>

@@ -48,7 +48,13 @@ class DatabaseSeeder extends Seeder
             DPBpermissionseeder::class,
             Driverhelperpermissionseeder::class,
             Mutasidpbpermissionseeder::class,
-
+            Transitinpermissionseeder::class,
+            Rejectpermissionseeder::class,
+            Repackpermissionseeder::class,
+            Kirimpusatpermissionseeder::class,
+            Penyesuaiangudangcabangpermissionseeder::class,
+            Saldoawalgudangcabangpermissionseeder::class,
+            Laporangudangcabangpermissionseeder::class
         ]);
     }
 }

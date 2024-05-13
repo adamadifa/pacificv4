@@ -136,7 +136,7 @@ class MutasidpbController extends Controller
                 return "success|Data Berhasil Disimpan|Berhasil";
             }
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
             DB::rollBack();
             return "error|" . $e->getMessage() . "|Error";
         }
@@ -338,7 +338,7 @@ class MutasidpbController extends Controller
         try {
             $cektutuplaporan = cektutupLaporan($mutasi->tanggal, "gudangcabang");
             if ($cektutuplaporan > 0) {
-                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+                return "warning|Periode Laporan Sudah Ditutup|Oops";
             }
             Mutasigudangcabang::where('no_mutasi', $no_mutasi)->delete();
             DB::commit();

@@ -445,6 +445,17 @@ class DpbController extends Controller
             ->orderBY('order')
             ->get();
 
+        $data['driverhelper'] = Dpbdriverhelper::select('gudang_cabang_dpb_driverhelper.*', 'nama_driver_helper')
+            ->join('driver_helper', 'gudang_cabang_dpb_driverhelper.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
+            ->where('no_dpb', $no_dpb)
+            ->where('kode_posisi', 'H')
+            ->get();
+
+        $data['driver'] = Dpbdriverhelper::where('no_dpb', $no_dpb)
+            ->join('driver_helper', 'gudang_cabang_dpb_driverhelper.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
+            ->where('kode_posisi', 'D')
+            ->first();
+
         // dd($data['mutasi_dpb']);
         return view('gudangcabang.dpb.show', $data);
     }
