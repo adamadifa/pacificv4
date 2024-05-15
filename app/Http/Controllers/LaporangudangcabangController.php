@@ -9,6 +9,7 @@ use App\Models\Produk;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class LaporangudangcabangController extends Controller
 {
@@ -25,6 +26,10 @@ class LaporangudangcabangController extends Controller
 
     public function cetakpersediaangs(Request $request)
     {
+
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
         $user = User::findorFail(auth()->user()->id);
         $roles_show_cabang = config('global.roles_show_cabang');
 
@@ -110,11 +115,6 @@ class LaporangudangcabangController extends Controller
         );
         $data['mutasi'] = $query->get();
 
-        $data['produk'] = Produk::where('kode_produk', $request->kode_produk_gs)->first();
-        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
-
-        $data['dari'] = $request->dari;
-        $data['sampai'] = $request->sampai;
 
         $saldo_awal = Detailsaldoawalgudangcabang::select('gudang_cabang_saldoawal_detail.kode_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'jumlah')
             ->join('gudang_cabang_saldoawal', 'gudang_cabang_saldoawal_detail.kode_saldo_awal', '=', 'gudang_cabang_saldoawal.kode_saldo_awal')
@@ -150,9 +150,242 @@ class LaporangudangcabangController extends Controller
             $saldo_awal_desimal = 0;
             $saldo_awal_pcs = 0;
         }
+
+
+        $produk = Produk::where('kode_produk', $request->kode_produk_gs)->first();
+        $data['produk'] = $produk;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
         $data['ceksaldo'] = $saldo_awal;
         $data['saldo_awal'] = $saldo_awal_desimal;
         $data['saldo_awal_pcs'] = $saldo_awal_pcs;
+
+        $time = date('H:i:s');
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Persediaan Good Stok $produk->nama_produk-$request->dari-$request->sampai-$time.xls");
+        }
         return view('gudangcabang.laporan.goodstok_cetak', $data);
+    }
+
+    public function cetakpersediaanbs(Request $request)
+    {
+
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang_bs;
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+        }
+
+        $bulan = date("m", strtotime($request->dari));
+        $tahun = date("Y", strtotime($request->dari));
+        $start_date = $tahun . "-" . $bulan . "-01";
+
+        $query = Detailmutasigudangcabang::query();
+        $query->select(
+            'gudang_cabang_mutasi_detail.no_mutasi',
+            'gudang_cabang_mutasi.tanggal',
+            'gudang_cabang_mutasi.jenis_mutasi',
+            'gudang_cabang_jenis_mutasi.jenis_mutasi as nama_jenis_mutasi',
+            'gudang_cabang_mutasi.keterangan',
+            'in_out_bad',
+            'gudang_cabang_mutasi.created_at',
+            'gudang_cabang_mutasi.updated_at',
+
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RP',gudang_cabang_mutasi_detail.jumlah,0))  as reject_pasar"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RM',gudang_cabang_mutasi_detail.jumlah,0))  as reject_mobil"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RG',gudang_cabang_mutasi_detail.jumlah,0))  as reject_gudang"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PB' AND in_out_bad = 'I',gudang_cabang_mutasi_detail.jumlah,0))  as penyesuaian_bad_in"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PB' AND in_out_bad = 'O',gudang_cabang_mutasi_detail.jumlah,0))  as penyesuaian_bad_out"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RK',gudang_cabang_mutasi_detail.jumlah,0))  as repack"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='KP',gudang_cabang_mutasi_detail.jumlah,0))  as kirim_pusat")
+        );
+
+        $query->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi');
+        $query->join('gudang_cabang_jenis_mutasi', 'gudang_cabang_mutasi.jenis_mutasi', '=', 'gudang_cabang_jenis_mutasi.kode_jenis_mutasi');
+
+
+        $query->whereBetween('gudang_cabang_mutasi.tanggal', [$request->dari, $request->sampai]);
+        $query->where('gudang_cabang_mutasi_detail.kode_produk', $request->kode_produk_bs);
+        $query->where('gudang_cabang_mutasi.kode_cabang', $kode_cabang);
+        $query->whereNotNull('in_out_bad');
+        $query->orderBy('gudang_cabang_mutasi.tanggal');
+        $query->orderBy('order');
+        $query->groupBy(
+            'gudang_cabang_mutasi_detail.no_mutasi',
+            'gudang_cabang_mutasi.tanggal',
+            'gudang_cabang_mutasi.jenis_mutasi',
+            'gudang_cabang_jenis_mutasi.jenis_mutasi',
+            'gudang_cabang_mutasi.keterangan',
+            'in_out_bad',
+            'gudang_cabang_mutasi.created_at',
+            'gudang_cabang_mutasi.updated_at',
+
+        );
+        $data['mutasi'] = $query->get();
+
+        $saldo_awal = Detailsaldoawalgudangcabang::select('gudang_cabang_saldoawal_detail.kode_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'jumlah')
+            ->join('gudang_cabang_saldoawal', 'gudang_cabang_saldoawal_detail.kode_saldo_awal', '=', 'gudang_cabang_saldoawal.kode_saldo_awal')
+            ->join('produk', 'gudang_cabang_saldoawal_detail.kode_produk', '=', 'produk.kode_produk')
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->where('kondisi', 'BS')
+            ->where('gudang_cabang_saldoawal_detail.kode_produk', $request->kode_produk_bs)
+            ->first();
+
+        $mutasi_saldo_awal = Detailmutasigudangcabang::select(
+            'gudang_cabang_mutasi_detail.kode_produk',
+            'isi_pcs_dus',
+            DB::raw("SUM(IF( `in_out_bad` = 'I', jumlah, 0)) -SUM(IF( `in_out_bad` = 'O', jumlah, 0)) as sisa_mutasi")
+        )
+            ->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk')
+            ->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi')
+            ->where('gudang_cabang_mutasi.tanggal', '>=', $start_date)
+            ->where('gudang_cabang_mutasi.tanggal', '<', $request->dari)
+            ->where('gudang_cabang_mutasi_detail.kode_produk', $request->kode_produk_bs)
+            ->where('gudang_cabang_mutasi.kode_cabang', $kode_cabang)
+            ->whereNotNull('in_out_bad')
+            ->groupBy('gudang_cabang_mutasi_detail.kode_produk', 'isi_pcs_dus')
+            ->first();
+
+        $sisa_mutasi_desimal = $mutasi_saldo_awal != NULL ? $mutasi_saldo_awal->sisa_mutasi / $mutasi_saldo_awal->isi_pcs_dus : 0;
+        $sisa_mutasi_pcs = $mutasi_saldo_awal != NULL ? $mutasi_saldo_awal->sisa_mutasi : 0;
+        if ($saldo_awal != NULL) {
+            $saldo_awal_desimal = ($saldo_awal->jumlah / $saldo_awal->isi_pcs_dus) + $sisa_mutasi_desimal;
+            $saldo_awal_jumlah = $saldo_awal->jumlah + $sisa_mutasi_pcs;
+        } else {
+            $saldo_awal_desimal = 0;
+            $saldo_awal_jumlah = 0;
+        }
+
+
+        $produk = Produk::where('kode_produk', $request->kode_produk_bs)->first();
+        $data['produk'] = $produk;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['ceksaldo'] = $saldo_awal;
+        $data['saldo_awal'] = $saldo_awal_desimal;
+        $data['saldo_awal_jumlah'] = $saldo_awal_jumlah;
+
+        $time = date('H:i:s');
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Persediaan Bad Stok $produk->nama_produk-$request->dari-$request->sampai-$time.xls");
+        }
+        return view('gudangcabang.laporan.badstok_cetak', $data);
+    }
+
+
+
+    public function cetakrekappersediaan(Request $request)
+    {
+
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang_persediaan;
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+        }
+
+        $bulan = date("m", strtotime($request->dari));
+        $tahun = date("Y", strtotime($request->dari));
+        $start_date = $tahun . "-" . $bulan . "-01";
+
+        $query = Produk::query();
+        $query->select(
+            'produk.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'isi_pcs_pack',
+            'saldo_awal',
+            'pusat',
+            'transit_in',
+            'retur',
+            'hutang_kirim',
+            'pelunasan_ttr',
+            'penyesuaian_bad',
+            'repack',
+            'penyesuaian_in',
+
+            'penjualan',
+            'promosi',
+            'reject_pasar',
+            'reject_mobil',
+            'reject_gudang',
+            'transit_out',
+            'ttr',
+            'ganti_barang',
+            'pelunasan_hutangkirim',
+            'penyesuaian_out'
+        );
+        $query->leftJoin(
+            DB::raw("(
+                SELECT kode_produk,jumlah as saldo_awal
+                FROM gudang_cabang_saldoawal_detail
+                INNER JOIN gudang_cabang_saldoawal ON gudang_cabang_saldoawal_detail.kode_saldo_awal = gudang_cabang_saldoawal.kode_saldo_awal
+                WHERE kondisi ='GS' AND bulan ='$bulan' AND tahun='$tahun' AND kode_cabang='$kode_cabang'
+            ) saldo_awal"),
+            function ($join) {
+                $join->on('produk.kode_produk', '=', 'saldo_awal.kode_produk');
+            }
+        );
+        $query->leftJoin(
+            DB::raw("(
+                SELECT kode_produk,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='SJ',gudang_cabang_mutasi_detail.jumlah,0))  as pusat,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='TI',gudang_cabang_mutasi_detail.jumlah,0)) as transit_in,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RT',gudang_cabang_mutasi_detail.jumlah,0)) as retur,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='HK',gudang_cabang_mutasi_detail.jumlah,0)) as hutang_kirim,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PT',gudang_cabang_mutasi_detail.jumlah,0)) as pelunasan_ttr,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PB',gudang_cabang_mutasi_detail.jumlah,0)) as penyesuaian_bad,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RK',gudang_cabang_mutasi_detail.jumlah,0)) as repack,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PY' AND in_out_good='I',gudang_cabang_mutasi_detail.jumlah,0)) as penyesuaian_in,
+
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PJ',gudang_cabang_mutasi_detail.jumlah,0))  as penjualan,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PR',gudang_cabang_mutasi_detail.jumlah,0))  as promosi,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RP',gudang_cabang_mutasi_detail.jumlah,0))  as reject_pasar,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RM',gudang_cabang_mutasi_detail.jumlah,0))  as reject_mobil,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RG',gudang_cabang_mutasi_detail.jumlah,0))  as reject_gudang,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='TO',gudang_cabang_mutasi_detail.jumlah,0))  as transit_out,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='TR',gudang_cabang_mutasi_detail.jumlah,0))  as ttr,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='GB',gudang_cabang_mutasi_detail.jumlah,0))  as ganti_barang,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PH',gudang_cabang_mutasi_detail.jumlah,0))  as pelunasan_hutangkirim,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PY' AND in_out_good='O',gudang_cabang_mutasi_detail.jumlah,0)) as penyesuaian_out
+                FROM gudang_cabang_mutasi_detail
+                INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
+                WHERE  tanggal BETWEEN '$request->dari' AND '$request->sampai' AND kode_cabang='$kode_cabang' AND in_out_good IS NOT NULL
+                GROUP BY kode_produk
+            ) mutasi"),
+            function ($join) {
+                $join->on('produk.kode_produk', '=', 'mutasi.kode_produk');
+            }
+        );
+        $query->where('status_aktif_produk', 1);
+        $data['rekapgs'] = $query->get();
+
+
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        return view('gudangcabang.laporan.rekappersediaan_cetak', $data);
     }
 }
