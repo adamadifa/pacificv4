@@ -1,4 +1,4 @@
-<form method="POST" action="#" id="frmLaporangoodstok" target="_blank">
+<form method="POST" action="{{ route('laporangudangcabang.cetakpersediaangs') }}" id="frmLaporangoodstok" target="_blank">
    @csrf
    @hasanyrole($roles_show_cabang)
       <div class="row">

@@ -841,6 +841,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(LaporangudangcabangController::class)->group(function () {
         Route::get('/laporangudangcabang', 'index')->name('laporangudangcabang.index');
+        Route::post('/laporangudangcabang/cetakpersediaangs', 'cetakpersediaangs')->name('laporangudangcabang.cetakpersediaangs')->can('gc.goodstok');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

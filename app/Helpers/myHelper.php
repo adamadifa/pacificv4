@@ -101,6 +101,9 @@ function formatAngkaDesimal3($nilai)
 
 
 
+
+
+
 function DateToIndo($date2)
 { // fungsi atau method untuk mengubah tanggal ke format indonesia
     // variabel BulanIndo merupakan variabel array yang menyimpan nama-nama bulan
@@ -111,12 +114,16 @@ function DateToIndo($date2)
         "Oktober", "November", "Desember"
     );
 
-    $tahun2 = substr($date2, 0, 4); // memisahkan format tahun menggunakan substring
-    $bulan2 = substr($date2, 5, 2); // memisahkan format bulan menggunakan substring
-    $tgl2   = substr($date2, 8, 2); // memisahkan format tanggal menggunakan substring
+    if (!empty($date2)) {
+        $tahun2 = substr($date2, 0, 4); // memisahkan format tahun menggunakan substring
+        $bulan2 = substr($date2, 5, 2); // memisahkan format bulan menggunakan substring
+        $tgl2   = substr($date2, 8, 2); // memisahkan format tanggal menggunakan substring
 
-    $result = $tgl2 . " " . $BulanIndo2[(int)$bulan2 - 1] . " " . $tahun2;
-    return ($result);
+        $result = $tgl2 . " " . $BulanIndo2[(int)$bulan2 - 1] . " " . $tahun2;
+        return ($result);
+    } else {
+        return "";
+    }
 }
 
 
@@ -229,4 +236,22 @@ function convertToduspackpcsv2($isi_pcs_dus, $isi_pcs_pack, $jumlah)
     $jml_pcs = $sisa_pack;
 
     return $jml_dus . "|" . $jml_pack . "|" . $jml_pcs;
+}
+
+
+function convertToduspackpcsv3($isi_pcs_dus, $isi_pcs_pack, $jumlah)
+{
+
+    $jml_dus = floor($jumlah / $isi_pcs_dus);
+    $sisa_dus = $jumlah % $isi_pcs_dus;
+    if (!empty($isi_pcs_pack)) {
+        $jml_pack = floor($sisa_dus / $isi_pcs_pack);
+        $sisa_pack = $sisa_dus % $isi_pcs_pack;
+    } else {
+        $jml_pack = 0;
+        $sisa_pack = $sisa_dus;
+    }
+    $jml_pcs = $sisa_pack;
+
+    return array($jml_dus, $jml_pack, $jml_pcs);
 }
