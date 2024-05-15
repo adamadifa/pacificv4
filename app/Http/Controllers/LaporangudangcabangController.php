@@ -315,7 +315,7 @@ class LaporangudangcabangController extends Controller
             'nama_produk',
             'isi_pcs_dus',
             'isi_pcs_pack',
-            'saldo_awal',
+            DB::raw("IFNULL(saldo_awal,0) + IFNULL(sisa_mutasi,0) as saldo_awal"),
             'pusat',
             'transit_in',
             'retur',
@@ -347,6 +347,23 @@ class LaporangudangcabangController extends Controller
                 $join->on('produk.kode_produk', '=', 'saldo_awal.kode_produk');
             }
         );
+
+        $query->leftJoin(
+            DB::raw("(
+                SELECT kode_produk,
+                SUM(IF( `in_out_good` = 'I', jumlah, 0)) -SUM(IF( `in_out_good` = 'O', jumlah, 0)) as sisa_mutasi
+                FROM gudang_cabang_mutasi_detail
+                INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
+                WHERE gudang_cabang_mutasi.tanggal >= '$start_date' AND gudang_cabang_mutasi.tanggal < '$request->dari'
+                AND gudang_cabang_mutasi.kode_cabang = '$kode_cabang' AND in_out_good IS NOT NULL
+                GROUP BY gudang_cabang_mutasi_detail.kode_produk
+            ) mutasi_saldo_awal"),
+            function ($join) {
+                $join->on('produk.kode_produk', '=', 'mutasi_saldo_awal.kode_produk');
+            }
+        );
+
+
         $query->leftJoin(
             DB::raw("(
                 SELECT kode_produk,
@@ -381,6 +398,70 @@ class LaporangudangcabangController extends Controller
         $query->where('status_aktif_produk', 1);
         $data['rekapgs'] = $query->get();
 
+
+        $querybs = Produk::query();
+        $querybs->select(
+            'produk.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'isi_pcs_pack',
+            DB::raw("IFNULL(saldo_awal,0) + IFNULL(sisa_mutasi,0) as saldo_awal"),
+            'reject_pasar',
+            'reject_mobil',
+            'reject_gudang',
+            'penyesuaian_bad_in',
+            'penyesuaian_bad_out',
+            'kirim_pusat',
+            'repack'
+        );
+        $querybs->leftJoin(
+            DB::raw("(
+                SELECT kode_produk,jumlah as saldo_awal
+                FROM gudang_cabang_saldoawal_detail
+                INNER JOIN gudang_cabang_saldoawal ON gudang_cabang_saldoawal_detail.kode_saldo_awal = gudang_cabang_saldoawal.kode_saldo_awal
+                WHERE kondisi ='BS' AND bulan ='$bulan' AND tahun='$tahun' AND kode_cabang='$kode_cabang'
+            ) saldo_awal"),
+            function ($join) {
+                $join->on('produk.kode_produk', '=', 'saldo_awal.kode_produk');
+            }
+        );
+
+        $querybs->leftJoin(
+            DB::raw("(
+                SELECT kode_produk,
+                SUM(IF( `in_out_bad` = 'I', jumlah, 0)) -SUM(IF( `in_out_bad` = 'O', jumlah, 0)) as sisa_mutasi
+                FROM gudang_cabang_mutasi_detail
+                INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
+                WHERE gudang_cabang_mutasi.tanggal >= '$start_date' AND gudang_cabang_mutasi.tanggal < '$request->dari'
+                AND gudang_cabang_mutasi.kode_cabang = '$kode_cabang' AND in_out_bad IS NOT NULL
+                GROUP BY gudang_cabang_mutasi_detail.kode_produk
+            ) mutasi_saldo_awal"),
+            function ($join) {
+                $join->on('produk.kode_produk', '=', 'mutasi_saldo_awal.kode_produk');
+            }
+        );
+
+        $querybs->leftJoin(
+            DB::raw("(
+                SELECT kode_produk,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RP',gudang_cabang_mutasi_detail.jumlah,0))  as reject_pasar,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RM',gudang_cabang_mutasi_detail.jumlah,0))  as reject_mobil,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RG',gudang_cabang_mutasi_detail.jumlah,0))  as reject_gudang,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PB' AND in_out_bad = 'I',gudang_cabang_mutasi_detail.jumlah,0))  as penyesuaian_bad_in,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PB' AND in_out_bad = 'O',gudang_cabang_mutasi_detail.jumlah,0))  as penyesuaian_bad_out,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RK',gudang_cabang_mutasi_detail.jumlah,0))  as repack,
+                SUM(IF(gudang_cabang_mutasi.jenis_mutasi='KP',gudang_cabang_mutasi_detail.jumlah,0))  as kirim_pusat
+                FROM gudang_cabang_mutasi_detail
+                INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
+                WHERE  tanggal BETWEEN '$request->dari' AND '$request->sampai' AND kode_cabang='$kode_cabang' AND in_out_bad IS NOT NULL
+                GROUP BY kode_produk
+            ) mutasi"),
+            function ($join) {
+                $join->on('produk.kode_produk', '=', 'mutasi.kode_produk');
+            }
+        );
+        $querybs->where('status_aktif_produk', 1);
+        $data['rekapbs'] = $querybs->get();
 
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
 
