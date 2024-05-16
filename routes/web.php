@@ -844,6 +844,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporangudangcabang/cetakpersediaangs', 'cetakpersediaangs')->name('laporangudangcabang.cetakpersediaangs')->can('gc.goodstok');
         Route::post('/laporangudangcabang/cetakpersediaanbs', 'cetakpersediaanbs')->name('laporangudangcabang.cetakpersediaanbs')->can('gc.badstok');
         Route::post('/laporangudangcabang/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporangudangcabang.cetakrekappersediaan')->can('gc.rekappersediaan');
+        Route::post('/laporangudangcabang/cetakmutasidpb', 'cetakmutasidpb')->name('laporangudangcabang.cetakmutasidpb')->can('gc.mutasidpb');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

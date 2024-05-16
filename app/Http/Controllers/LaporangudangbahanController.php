@@ -474,74 +474,72 @@ class LaporangudangbahanController extends Controller
         }
         $data['dari'] = $dari;
         $data['sampai'] = $sampai;
-        $results = DB::table('gudang_bahan_barang_masuk_detail')
-            ->select(
-                'tanggal',
-                DB::raw('SUM(qty_unit) as qty_unit_masuk'),
-                DB::raw('SUM(qty_berat) as qty_berat_masuk'),
-                DB::raw('0 as qty_unit_keluar'),
-                DB::raw('0 as qty_berat_keluar'),
+        $results = Detailbarangmasukgudangbahan::select(
+            'tanggal',
+            DB::raw('SUM(qty_unit) as qty_unit_masuk'),
+            DB::raw('SUM(qty_berat) as qty_berat_masuk'),
+            DB::raw('0 as qty_unit_keluar'),
+            DB::raw('0 as qty_berat_keluar'),
 
-                DB::raw('SUM(IF(kode_asal_barang="PMB",qty_unit,0)) as qty_unit_pembelian'),
-                DB::raw('SUM(IF(kode_asal_barang="LNY",qty_unit,0)) as qty_unit_lainnya'),
-                DB::raw('SUM(IF(kode_asal_barang="RTP",qty_unit,0)) as qty_unit_returpengganti'),
+            DB::raw('SUM(IF(kode_asal_barang="PMB",qty_unit,0)) as qty_unit_pembelian'),
+            DB::raw('SUM(IF(kode_asal_barang="LNY",qty_unit,0)) as qty_unit_lainnya'),
+            DB::raw('SUM(IF(kode_asal_barang="RTP",qty_unit,0)) as qty_unit_returpengganti'),
 
-                DB::raw('SUM(IF(kode_asal_barang="PMB",qty_berat,0)) as qty_berat_pembelian'),
-                DB::raw('SUM(IF(kode_asal_barang="LNY",qty_berat,0)) as qty_berat_lainnya'),
-                DB::raw('SUM(IF(kode_asal_barang="RTP",qty_berat,0)) as qty_berat_returpengganti'),
+            DB::raw('SUM(IF(kode_asal_barang="PMB",qty_berat,0)) as qty_berat_pembelian'),
+            DB::raw('SUM(IF(kode_asal_barang="LNY",qty_berat,0)) as qty_berat_lainnya'),
+            DB::raw('SUM(IF(kode_asal_barang="RTP",qty_berat,0)) as qty_berat_returpengganti'),
 
-                DB::raw('0 as qty_unit_produksi'),
-                DB::raw('0 as qty_unit_seasoning'),
-                DB::raw('0 as qty_unit_pdqc'),
-                DB::raw('0 as qty_unit_susut'),
-                DB::raw('0 as qty_unit_lainnya_keluar'),
-                DB::raw('0 as qty_unit_cabang'),
+            DB::raw('0 as qty_unit_produksi'),
+            DB::raw('0 as qty_unit_seasoning'),
+            DB::raw('0 as qty_unit_pdqc'),
+            DB::raw('0 as qty_unit_susut'),
+            DB::raw('0 as qty_unit_lainnya_keluar'),
+            DB::raw('0 as qty_unit_cabang'),
 
-                DB::raw('0 as qty_berat_produksi'),
-                DB::raw('0 as qty_berat_seasoning'),
-                DB::raw('0 as qty_berat_pdqc'),
-                DB::raw('0 as qty_berat_susut'),
-                DB::raw('0 as qty_berat_lainnya_keluar'),
-                DB::raw('0 as qty_berat_cabang')
-
+            DB::raw('0 as qty_berat_produksi'),
+            DB::raw('0 as qty_berat_seasoning'),
+            DB::raw('0 as qty_berat_pdqc'),
+            DB::raw('0 as qty_berat_susut'),
+            DB::raw('0 as qty_berat_lainnya_keluar'),
+            DB::raw('0 as qty_berat_cabang')
 
 
-            )
+
+        )
             ->join('gudang_bahan_barang_masuk', 'gudang_bahan_barang_masuk_detail.no_bukti', '=', 'gudang_bahan_barang_masuk.no_bukti')
             ->whereBetween('tanggal', [$dari, $sampai])
             ->where('gudang_bahan_barang_masuk_detail.kode_barang', $request->kode_barang_kartugudang)
             ->groupBy('tanggal', 'gudang_bahan_barang_masuk_detail.kode_barang');
 
-        $results->unionAll(DB::table('gudang_bahan_barang_keluar_detail')
-            ->select(
-                'tanggal',
-                DB::raw('0 as qty_unit_masuk'),
-                DB::raw('0 as qty_berat_masuk'),
-                DB::raw('SUM(qty_unit) as qty_unit_keluar'),
-                DB::raw('SUM(qty_berat) as qty_berat_keluar'),
+        $results->unionAll(Detailbarangkeluargudangbahan::select(
+            'tanggal',
+            DB::raw('0 as qty_unit_masuk'),
+            DB::raw('0 as qty_berat_masuk'),
+            DB::raw('SUM(qty_unit) as qty_unit_keluar'),
+            DB::raw('SUM(qty_berat) as qty_berat_keluar'),
 
-                DB::raw('0 as qty_unit_pembelian'),
-                DB::raw('0 as qty_unit_lainnya'),
-                DB::raw('0 as qty_unit_returpengganti'),
-                DB::raw('0 as qty_berat_pembelian'),
-                DB::raw('0 as qty_berat_lainnya'),
-                DB::raw('0 as qty_berat_returpengganti'),
+            DB::raw('0 as qty_unit_pembelian'),
+            DB::raw('0 as qty_unit_lainnya'),
+            DB::raw('0 as qty_unit_returpengganti'),
+            DB::raw('0 as qty_berat_pembelian'),
+            DB::raw('0 as qty_berat_lainnya'),
+            DB::raw('0 as qty_berat_returpengganti'),
 
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="PRD",qty_unit,0)) as qty_unit_produksi'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="SSN",qty_unit,0)) as qty_unit_seasonig'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="PDQ",qty_unit,0)) as qty_unit_pdqc'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="SST",qty_unit,0)) as qty_unit_susut'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="LNY",qty_unit,0)) as qty_unit_lainnya_keluar'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="CBG",qty_unit,0)) as qty_unit_cabang'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="PRD",qty_unit,0)) as qty_unit_produksi'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="SSN",qty_unit,0)) as qty_unit_seasonig'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="PDQ",qty_unit,0)) as qty_unit_pdqc'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="SST",qty_unit,0)) as qty_unit_susut'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="LNY",qty_unit,0)) as qty_unit_lainnya_keluar'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="CBG",qty_unit,0)) as qty_unit_cabang'),
 
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="PRD",qty_berat,0)) as qty_berat_produksi'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="SSN",qty_berat,0)) as qty_berat_seasonig'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="PDQ",qty_berat,0)) as qty_berat_pdqc'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="SST",qty_berat,0)) as qty_berat_susut'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="LNY",qty_berat,0)) as qty_berat_lainnya_keluar'),
-                DB::raw('SUM(IF(kode_jenis_pengeluaran="CBG",qty_berat,0)) as qty_berat_cabang')
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="PRD",qty_berat,0)) as qty_berat_produksi'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="SSN",qty_berat,0)) as qty_berat_seasonig'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="PDQ",qty_berat,0)) as qty_berat_pdqc'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="SST",qty_berat,0)) as qty_berat_susut'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="LNY",qty_berat,0)) as qty_berat_lainnya_keluar'),
+            DB::raw('SUM(IF(kode_jenis_pengeluaran="CBG",qty_berat,0)) as qty_berat_cabang')
 
-            )
+        )
             ->join('gudang_bahan_barang_keluar', 'gudang_bahan_barang_keluar_detail.no_bukti', '=', 'gudang_bahan_barang_keluar.no_bukti')
             ->whereBetween('tanggal', [$dari, $sampai])
             ->where('gudang_bahan_barang_keluar_detail.kode_barang', $request->kode_barang_kartugudang)

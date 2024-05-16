@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detaildpb;
 use App\Models\Detailmutasigudangcabang;
 use App\Models\Detailsaldoawalgudangcabang;
 use App\Models\Produk;
@@ -467,6 +468,163 @@ class LaporangudangcabangController extends Controller
 
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
+        $time = date('H:i:s');
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=REKAP PERSEDIAAN GUDANG CABANG-$request->dari-$request->sampai-$time.xls");
+        }
         return view('gudangcabang.laporan.rekappersediaan_cetak', $data);
+    }
+
+    public function cetakmutasidpb(Request $request)
+    {
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang_mutasidpb;
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+        }
+
+        $bulan = date("m", strtotime($request->dari));
+        $tahun = date("Y", strtotime($request->dari));
+        $start_date = $tahun . "-" . $bulan . "-01";
+
+        $results = Detailmutasigudangcabang::select(
+            'gudang_cabang_mutasi.tanggal',
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='SJ',gudang_cabang_mutasi_detail.jumlah,0))  as pusat"),
+            DB::raw('0 as jml_pengambilan'),
+            DB::raw('0 as jml_pengembalian'),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RP',gudang_cabang_mutasi_detail.jumlah,0))  as reject_pasar"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RM',gudang_cabang_mutasi_detail.jumlah,0))  as reject_mobil"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RG',gudang_cabang_mutasi_detail.jumlah,0))  as reject_gudang"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RK',gudang_cabang_mutasi_detail.jumlah,0))  as repack"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PY' AND in_out_good='I',gudang_cabang_mutasi_detail.jumlah,0)) as penyesuaian_in"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='PY' AND in_out_good='O',gudang_cabang_mutasi_detail.jumlah,0)) as penyesuaian_out")
+        )
+            ->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi')
+            ->whereBetween('gudang_cabang_mutasi.tanggal', [$request->dari, $request->sampai])
+            ->where('gudang_cabang_mutasi_detail.kode_produk', $request->kode_produk_mutasidpb)
+            ->where('gudang_cabang_mutasi.kode_cabang', $kode_cabang)
+            ->whereIn('gudang_cabang_mutasi.jenis_mutasi', ['SJ', 'RP', 'RM', 'RG', 'RK', 'PY'])
+            ->groupBy('gudang_cabang_mutasi.tanggal');
+
+
+        $results->unionAll(
+            Detaildpb::select(
+                'gudang_cabang_dpb.tanggal_ambil as tanggal',
+                DB::raw('0 as pusat'),
+                DB::raw("SUM(jml_ambil) as jml_pengambilan"),
+                DB::raw('0 as jml_pengembalian'),
+                DB::raw('0 as reject_pasar'),
+                DB::raw('0 as reject_mobil'),
+                DB::raw('0 as reject_gudang'),
+                DB::raw('0 as repack'),
+                DB::raw('0 as penyesuaian_in'),
+                DB::raw('0 as penyesuaian_out')
+            )
+                ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_detail.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
+                ->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman')
+                ->whereBetween('gudang_cabang_dpb.tanggal_ambil', [$request->dari, $request->sampai])
+                ->where('salesman.kode_cabang', $kode_cabang)
+                ->where('gudang_cabang_dpb_detail.kode_produk', $request->kode_produk_mutasidpb)
+                ->groupBy('gudang_cabang_dpb.tanggal_ambil')
+        );
+
+        $results->unionAll(
+            Detaildpb::select(
+                'gudang_cabang_dpb.tanggal_kembali as tanggal',
+                DB::raw('0 as pusat'),
+                DB::raw('0 as jml_pengambilan'),
+                DB::raw("SUM(jml_kembali) as jml_pengembalian"),
+                DB::raw('0 as reject_pasar'),
+                DB::raw('0 as reject_mobil'),
+                DB::raw('0 as reject_gudang'),
+                DB::raw('0 as repack'),
+                DB::raw('0 as penyesuaian_in'),
+                DB::raw('0 as penyesuaian_out')
+            )
+                ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_detail.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
+                ->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman')
+                ->whereBetween('gudang_cabang_dpb.tanggal_kembali', [$request->dari, $request->sampai])
+                ->where('salesman.kode_cabang', $kode_cabang)
+                ->where('gudang_cabang_dpb_detail.kode_produk', $request->kode_produk_mutasidpb)
+                ->groupBy('gudang_cabang_dpb.tanggal_kembali')
+        );
+
+        $mutasidpb = $results->get();
+
+        $data['mutasidpb'] = $mutasidpb->groupBy('tanggal')
+            ->map(function ($item) {
+                return [
+                    'tanggal' => $item->first()->tanggal,
+                    'pusat' => $item->sum(function ($row) {
+                        return  $row->pusat;
+                    }),
+                    'jml_pengambilan' => $item->sum(function ($row) {
+                        return  $row->jml_pengambilan;
+                    }),
+                    'jml_pengembalian' => $item->sum(function ($row) {
+                        return  $row->jml_pengembalian;
+                    }),
+                    'reject_pasar' => $item->sum(function ($row) {
+                        return  $row->reject_pasar;
+                    }),
+                    'reject_mobil' => $item->sum(function ($row) {
+                        return  $row->reject_mobil;
+                    }),
+                    'reject_gudang' => $item->sum(function ($row) {
+                        return  $row->reject_gudang;
+                    }),
+                    'repack' => $item->sum(function ($row) {
+                        return  $row->repack;
+                    }),
+                    'penyesuaian_in' => $item->sum(function ($row) {
+                        return  $row->penyesuaian_in;
+                    }),
+                    'penyesuaian_out' => $item->sum(function ($row) {
+                        return  $row->penyesuaian_out;
+                    }),
+                ];
+            })
+            ->sortBy('tanggal')
+            ->values()
+            ->all();
+
+        $saldo_awal = Detailsaldoawalgudangcabang::select('gudang_cabang_saldoawal_detail.kode_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'jumlah')
+            ->join('gudang_cabang_saldoawal', 'gudang_cabang_saldoawal_detail.kode_saldo_awal', '=', 'gudang_cabang_saldoawal.kode_saldo_awal')
+            ->join('produk', 'gudang_cabang_saldoawal_detail.kode_produk', '=', 'produk.kode_produk')
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->where('kondisi', 'GS')
+            ->where('gudang_cabang_saldoawal_detail.kode_produk', $request->kode_produk_mutasidpb)
+            ->first();
+
+
+        if ($saldo_awal != NULL) {
+            $saldo_awal_desimal = $saldo_awal->jumlah / $saldo_awal->isi_pcs_dus;
+            $saldo_awal_jumlah = $saldo_awal->jumlah;
+        } else {
+            $saldo_awal_desimal = 0;
+            $saldo_awal_jumlah = 0;
+        }
+
+        $produk = Produk::where('kode_produk', $request->kode_produk_mutasidpb)->first();
+        $data['produk'] = $produk;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['ceksaldo'] = $saldo_awal;
+        $data['saldo_awal'] = $saldo_awal_desimal;
+        $data['saldo_awal_jumlah'] = $saldo_awal_jumlah;
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+
+
+        return view('gudangcabang.laporan.mutasidpb_cetak', $data);
     }
 }
