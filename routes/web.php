@@ -86,9 +86,9 @@ use Spatie\Permission\Models\Role;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
 
@@ -855,10 +855,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/targetkomisi', 'index')->name('targetkomisi.index')->can('targetkomisi.index');
         Route::get('/targetkomisi/create', 'create')->name('targetkomisi.create')->can('targetkomisi.create');
         Route::post('/targetkomisi', 'store')->name('targetkomisi.store')->can('targetkomisi.store');
-        Route::delete('/targetkomisi/{kode_target}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
+        Route::get('/targetkomisi/{kode_target}/edit', 'edit')->name('targetkomisi.edit')->can('targetkomisi.edit');
+        Route::put('/targetkomisi/{kode_target}/update', 'update')->name('targetkomisi.update')->can('targetkomisi.update');
         Route::get('/targetkomisi/{kode_target}/show', 'show')->name('targetkomisi.show')->can('targetkomisi.show');
+        Route::get('/targetkomisi/{kode_target}/approve', 'approve')->name('targetkomisi.approve')->can('targetkomisi.approve');
+        Route::delete('/targetkomisi/{kode_target}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
 
         Route::post('/targetkomisi/gettargetsalesman', 'gettargetsalesman')->name('targetkomisi.gettargetsalesman');
+        Route::post('/targetkomisi/gettargetsalesmanedit', 'gettargetsalesmanedit')->name('targetkomisi.gettargetsalesmanedit');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {
