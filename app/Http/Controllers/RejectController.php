@@ -88,12 +88,22 @@ class RejectController extends Controller
 
     public function store(Request $request)
     {
-
-        $request->validate([
-            'tanggal' => 'required',
-            'kode_cabang' => 'required',
-            'jenis_mutasi' => 'required'
-        ]);
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'tanggal' => 'required',
+                'kode_cabang' => 'required',
+                'jenis_mutasi' => 'required'
+            ]);
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'tanggal' => 'required',
+                'jenis_mutasi' => 'required'
+            ]);
+        }
         $kode_produk = $request->kode_produk;
         $jml_dus = $request->jml_dus;
         $jml_pack = $request->jml_pack;
@@ -151,7 +161,7 @@ class RejectController extends Controller
             Mutasigudangcabang::create([
                 'no_mutasi'  => $no_reject,
                 'tanggal' => $request->tanggal,
-                'kode_cabang' => $request->kode_cabang,
+                'kode_cabang' => $kode_cabang,
                 'kondisi' => 'B',
                 'in_out_good' => 'O',
                 'in_out_bad' => 'I',
@@ -208,11 +218,22 @@ class RejectController extends Controller
     public function update($no_mutasi, Request $request)
     {
 
-        $request->validate([
-            'tanggal' => 'required',
-            'jenis_mutasi' => 'required',
-            'kode_cabang' => 'required'
-        ]);
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'tanggal' => 'required',
+                'kode_cabang' => 'required',
+                'jenis_mutasi' => 'required'
+            ]);
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'tanggal' => 'required',
+                'jenis_mutasi' => 'required'
+            ]);
+        }
         $no_mutasi = Crypt::decrypt($request->no_mutasi);
         $kode_produk = $request->kode_produk;
         $jml_dus = $request->jml_dus;
@@ -288,7 +309,7 @@ class RejectController extends Controller
             Mutasigudangcabang::where('no_mutasi', $no_mutasi)->update([
                 'no_mutasi'  => $no_reject,
                 'tanggal' => $request->tanggal,
-                'kode_cabang' => $request->kode_cabang,
+                'kode_cabang' => $kode_cabang,
                 'jenis_mutasi' => $request->jenis_mutasi,
                 'keterangan' => $request->keterangan,
             ]);

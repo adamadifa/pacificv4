@@ -63,6 +63,7 @@ use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
+use App\Http\Controllers\TargetkomisiController;
 use App\Http\Controllers\TransitinController;
 use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
@@ -846,6 +847,20 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporangudangcabang/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporangudangcabang.cetakrekappersediaan')->can('gc.rekappersediaan');
         Route::post('/laporangudangcabang/cetakmutasidpb', 'cetakmutasidpb')->name('laporangudangcabang.cetakmutasidpb')->can('gc.mutasidpb');
     });
+
+
+    //Marketing
+    //Target Komisi
+    Route::controller(TargetkomisiController::class)->group(function () {
+        Route::get('/targetkomisi', 'index')->name('targetkomisi.index')->can('targetkomisi.index');
+        Route::get('/targetkomisi/create', 'create')->name('targetkomisi.create')->can('targetkomisi.create');
+        Route::post('/targetkomisi', 'store')->name('targetkomisi.store')->can('targetkomisi.store');
+        Route::delete('/targetkomisi/{kode_saldo_awal}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
+        Route::get('/targetkomisi/{kode_saldo_awal}/show', 'show')->name('targetkomisi.show')->can('targetkomisi.show');
+
+        Route::post('/targetkomisi/gettargetsalesman', 'gettargetsalesman')->name('targetkomisi.gettargetsalesman');
+    });
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

@@ -86,10 +86,21 @@ class RepackgudangcabangController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
-            'tanggal' => 'required',
-            'kode_cabang' => 'required',
-        ]);
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'tanggal' => 'required',
+                'kode_cabang' => 'required',
+            ]);
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'tanggal' => 'required'
+            ]);
+        }
+
         $kode_produk = $request->kode_produk;
         $jml_dus = $request->jml_dus;
         $jml_pack = $request->jml_pack;
@@ -139,7 +150,7 @@ class RepackgudangcabangController extends Controller
             Mutasigudangcabang::create([
                 'no_mutasi'  => $no_repack,
                 'tanggal' => $request->tanggal,
-                'kode_cabang' => $request->kode_cabang,
+                'kode_cabang' => $kode_cabang,
                 'kondisi' => 'B',
                 'in_out_good' => 'I',
                 'in_out_bad' => 'O',
@@ -194,10 +205,20 @@ class RepackgudangcabangController extends Controller
     public function update($no_mutasi, Request $request)
     {
 
-        $request->validate([
-            'tanggal' => 'required',
-            'kode_cabang' => 'required'
-        ]);
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'tanggal' => 'required',
+                'kode_cabang' => 'required',
+            ]);
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'tanggal' => 'required'
+            ]);
+        }
         $no_mutasi = Crypt::decrypt($request->no_mutasi);
         $kode_produk = $request->kode_produk;
         $jml_dus = $request->jml_dus;
@@ -249,7 +270,7 @@ class RepackgudangcabangController extends Controller
 
             Mutasigudangcabang::where('no_mutasi', $no_mutasi)->update([
                 'tanggal' => $request->tanggal,
-                'kode_cabang' => $request->kode_cabang,
+                'kode_cabang' => $kode_cabang,
                 'keterangan' => $request->keterangan,
             ]);
 
