@@ -234,7 +234,7 @@ class SaldoawalgudangcabangController extends Controller
         $isi_pcs_pack = $request->isi_pcs_pack;
 
 
-        //SAMP = Saldo Awal Mutasi Produksi
+
         $kode_saldo_awal = $request->kondisi . $kode_cabang . $bln . substr($tahun, 2, 2);
 
 

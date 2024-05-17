@@ -855,8 +855,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/targetkomisi', 'index')->name('targetkomisi.index')->can('targetkomisi.index');
         Route::get('/targetkomisi/create', 'create')->name('targetkomisi.create')->can('targetkomisi.create');
         Route::post('/targetkomisi', 'store')->name('targetkomisi.store')->can('targetkomisi.store');
-        Route::delete('/targetkomisi/{kode_saldo_awal}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
-        Route::get('/targetkomisi/{kode_saldo_awal}/show', 'show')->name('targetkomisi.show')->can('targetkomisi.show');
+        Route::delete('/targetkomisi/{kode_target}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
+        Route::get('/targetkomisi/{kode_target}/show', 'show')->name('targetkomisi.show')->can('targetkomisi.show');
 
         Route::post('/targetkomisi/gettargetsalesman', 'gettargetsalesman')->name('targetkomisi.gettargetsalesman');
     });
