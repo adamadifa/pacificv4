@@ -1,21 +1,21 @@
 @extends('layouts.app')
-@section('titlepage', 'Target Komisi')
+@section('titlepage', 'Ratio Driver Helper')
 
 @section('content')
 @section('navigasi')
-  <span>Target Komisi</span>
+  <span>Ratio Driver Helper</span>
 @endsection
 <div class="col-lg-10">
   <div class="nav-align-top nav-tabs-shadow mb-4">
     @include('layouts.navigation_targetkomisi')
     <div class="tab-content">
       <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-        @can('targetkomisi.create')
-          <a href="#" class="btn btn-primary btnCreate"><i class="fa fa-plus me-2"></i> Buat Target</a>
+        @can('ratiodriverhelper.create')
+          <a href="#" class="btn btn-primary btnCreate"><i class="fa fa-plus me-2"></i> Buat Ratio </a>
         @endcan
         <div class="row mt-2">
           <div class="col-12">
-            <form action="{{ route('targetkomisi.index') }}">
+            <form action="{{ route('ratiodriverhelper.index') }}">
               <div class="row">
                 @hasanyrole($roles_show_cabang)
                   <div class="col-lg-4 col-md-12 col-sm-12">
@@ -68,54 +68,40 @@
                     <th>Bulan</th>
                     <th>Tahun</th>
                     <th>Cabang</th>
-                    <th>Posisi</th>
-                    <th>Status</th>
-                    <th>Status Ajuan</th>
-                    <th>Tanggal</th>
+                    <th>Berlaku</th>
                     <th>#</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($targetkomisi as $d)
+                  @foreach ($ratiodriverhelper as $d)
                     <tr>
-                      <td>{{ $d->kode_target }}</td>
+                      <td>{{ $d->kode_ratio }}</td>
                       <td>{{ $nama_bulan[$d->bulan] }}</td>
                       <td>{{ $d->tahun }}</td>
                       <td>{{ textUpperCase($d->nama_cabang) }}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>{{ date('d-m-Y H:i:s', strtotime($d->created_at)) }}</td>
+                      <td>{{ DateToIndo($d->tanggal_berlaku) }}</td>
                       <td>
                         <div class="d-flex">
-                          @can('targetkomisi.approve')
-                            <div>
-                              <a href="#" class="me-2 btnApprove"
-                                kode_target="{{ Crypt::encrypt($d->kode_target) }}">
-                                <i class="ti ti-send text-info"></i>
-                              </a>
-                            </div>
-                          @endcan
-                          @can('targetkomisi.edit')
+                          @can('ratiodriverhelper.edit')
                             <div>
                               <a href="#" class="me-2 btnEdit"
-                                kode_target="{{ Crypt::encrypt($d->kode_target) }}">
+                                kode_ratio="{{ Crypt::encrypt($d->kode_ratio) }}">
                                 <i class="ti ti-edit text-success"></i>
                               </a>
                             </div>
                           @endcan
-                          @can('targetkomisi.show')
+                          @can('ratiodriverhelper.show')
                             <div>
                               <a href="#" class="me-2 btnShow"
-                                kode_target="{{ Crypt::encrypt($d->kode_target) }}">
+                                kode_ratio="{{ Crypt::encrypt($d->kode_ratio) }}">
                                 <i class="ti ti-file-description text-info"></i>
                               </a>
                             </div>
                           @endcan
-                          @can('targetkomisi.delete')
+                          @can('ratiodriverhelper.delete')
                             <div>
                               <form method="POST" name="deleteform" class="deleteform"
-                                action="{{ route('targetkomisi.delete', Crypt::encrypt($d->kode_target)) }}">
+                                action="{{ route('ratiodriverhelper.delete', Crypt::encrypt($d->kode_ratio)) }}">
                                 @csrf
                                 @method('DELETE')
                                 <a href="#" class="delete-confirm ml-1">
@@ -132,7 +118,7 @@
               </table>
             </div>
             <div style="float: right;">
-              {{ $targetkomisi->links() }}
+              {{ $ratiodriverhelper->links() }}
             </div>
           </div>
         </div>
@@ -142,22 +128,13 @@
 </div>
 
 
-<x-modal-form id="modal" size="modal-fullscreen" show="loadmodal" title="" />
-<x-modal-form id="modalDetail" size="modal-xl" show="loadmodalDetail" title="" />
+<x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
 <script>
   $(function() {
-    function loading() {
-      $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            </div>`);
-    };
+
     const select2Kodecabangsearch = $('.select2Kodecabangsearch');
     if (select2Kodecabangsearch.length) {
       select2Kodecabangsearch.each(function() {
@@ -172,37 +149,26 @@
 
     $(".btnCreate").click(function(e) {
       e.preventDefault();
-      loading();
       $('#modal').modal("show");
-      $("#loadmodal").load("{{ route('targetkomisi.create') }}");
-      $(".modal-title").text("Buat Target");
+      $("#loadmodal").load("{{ route('ratiodriverhelper.create') }}");
+      $(".modal-title").text("Buat Ratio");
     });
 
     $(".btnShow").click(function(e) {
       e.preventDefault();
-      loading();
-      const kode_target = $(this).attr("kode_target");
-      $('#modalDetail').modal("show");
-      $("#loadmodalDetail").load(`/targetkomisi/${kode_target}/show`);
-      $(".modal-title").text("Detail Target");
+      const kode_ratio = $(this).attr("kode_ratio");
+      $('#modal').modal("show");
+      $("#loadmodal").load(`/ratiodriverhelper/${kode_ratio}`);
+      $(".modal-title").text("Detail Ratio Driver Helper");
     });
 
-    $(".btnApprove").click(function(e) {
-      e.preventDefault();
-      loading();
-      const kode_target = $(this).attr("kode_target");
-      $('#modalDetail').modal("show");
-      $("#loadmodalDetail").load(`/targetkomisi/${kode_target}/approve`);
-      $(".modal-title").text("Persetujuan Target");
-    });
 
     $(".btnEdit").click(function(e) {
       e.preventDefault();
-      loading();
-      const kode_target = $(this).attr("kode_target");
+      const kode_ratio = $(this).attr("kode_ratio");
       $('#modal').modal("show");
-      $("#loadmodal").load(`/targetkomisi/${kode_target}/edit`);
-      $(".modal-title").text("Edit Target");
+      $("#loadmodal").load(`/ratiodriverhelper/${kode_ratio}/edit`);
+      $(".modal-title").text("Edit Ratio Driver Helpar");
     });
   });
 </script>

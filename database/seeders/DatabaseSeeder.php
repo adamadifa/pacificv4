@@ -55,7 +55,8 @@ class DatabaseSeeder extends Seeder
             Penyesuaiangudangcabangpermissionseeder::class,
             Saldoawalgudangcabangpermissionseeder::class,
             Laporangudangcabangpermissionseeder::class,
-            Targetkomisipermissionseeder::class
+            Targetkomisipermissionseeder::class,
+            Ratiodriverhelperpermissionseeder::class
         ]);
     }
 }

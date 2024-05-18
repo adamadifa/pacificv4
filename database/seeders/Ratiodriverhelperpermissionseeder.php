@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class Targetkomisipermissionseeder extends Seeder
+class Ratiodriverhelperpermissionseeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,40 +16,40 @@ class Targetkomisipermissionseeder extends Seeder
     public function run(): void
     {
         $permissiongroup = Permission_group::create([
-            'name' => 'Target Komisi'
+            'name' => 'Ratio Driver Helper'
         ]);
 
         Permission::create([
-            'name' => 'targetkomisi.index',
+            'name' => 'ratiodriverhelper.index',
             'id_permission_group' => $permissiongroup->id
         ]);
 
         Permission::create([
-            'name' => 'targetkomisi.create',
+            'name' => 'ratiodriverhelper.create',
             'id_permission_group' => $permissiongroup->id
         ]);
 
         Permission::create([
-            'name' => 'targetkomisi.edit',
+            'name' => 'ratiodriverhelper.edit',
             'id_permission_group' => $permissiongroup->id
         ]);
 
         Permission::create([
-            'name' => 'targetkomisi.store',
+            'name' => 'ratiodriverhelper.store',
             'id_permission_group' => $permissiongroup->id
         ]);
 
         Permission::create([
-            'name' => 'targetkomisi.update',
+            'name' => 'ratiodriverhelper.update',
             'id_permission_group' => $permissiongroup->id
         ]);
         Permission::create([
-            'name' => 'targetkomisi.show',
+            'name' => 'ratiodriverhelper.show',
             'id_permission_group' => $permissiongroup->id
         ]);
 
         Permission::create([
-            'name' => 'targetkomisi.delete',
+            'name' => 'ratiodriverhelper.delete',
             'id_permission_group' => $permissiongroup->id
         ]);
 

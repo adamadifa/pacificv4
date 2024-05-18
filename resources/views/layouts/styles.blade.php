@@ -7,7 +7,7 @@
  <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
  <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css') }}" />
  <link rel="stylesheet"
-    href="{{ asset('assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css') }}" />
+   href="{{ asset('assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css') }}" />
  <link rel="stylesheet" href="{{ asset('assets/vendor/libs/jquery-timepicker/jquery-timepicker.css') }}" />
  <link rel="stylesheet" href="{{ asset('assets/vendor/libs/pickr/pickr-themes.css') }}" />
  <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />
@@ -21,24 +21,24 @@
 
  <!-- Page CSS -->
  <style>
-    .form-group {
-       margin-bottom: 5px !important;
-    }
+   .form-group {
+     margin-bottom: 5px !important;
+   }
 
-    .swal2-container {
-       z-index: 9999 !important;
-    }
+   .swal2-container {
+     z-index: 9999 !important;
+   }
 
-    .swal2-confirm {
-       background-color: #1a6bd1 !important;
-    }
+   .swal2-confirm {
+     background-color: #1a6bd1 !important;
+   }
 
-    .noborder-form {
-       width: 100%;
-       border: 0px;
-    }
+   .noborder-form {
+     width: 100%;
+     border: 0px;
+   }
 
-    .noborder-form:focus {
-       outline: none;
-    }
+   .noborder-form:focus {
+     outline: none;
+   }
  </style>

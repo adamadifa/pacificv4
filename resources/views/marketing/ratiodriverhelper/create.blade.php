@@ -1,4 +1,4 @@
-<form action="{{ route('targetkomisi.store') }}" method="POST" id="formTargetkomisi">
+<form action="{{ route('ratiodriverhelper.store') }}" method="POST" id="formRatiodriverhelper">
   <div class="row">
     <div class="co-12">
       @csrf
@@ -60,18 +60,13 @@
         <table class="table table-bordered">
           <thead class="table-dark">
             <tr>
-              <th rowspan="2" class="align-middle">Kode</th>
-              <th rowspan="2" class="align-middle">Salesman</th>
-              <th colspan="{{ count($produk) }}" class="text-center">Produk</th>
+              <th>Kode</th>
+              <th style="width: 40%">Nama Driver / Helper</th>
+              <th>Ratio Default</th>
+              <th>Ratio Helper</th>
             </tr>
-            <tr>
-              @foreach ($produk as $d)
-                <th class="text-center">{{ $d->kode_produk }}</th>
-              @endforeach
-            </tr>
-
           </thead>
-          <tbody id="gettargetsalesman"></tbody>
+          <tbody id="getratiodriverhelper"></tbody>
         </table>
       </div>
     </div>
@@ -94,7 +89,7 @@
 </form>
 <script>
   $(function() {
-    const form = $("#formTargetkomisi");
+    const form = $("#formRatiodriverhelper");
 
     form.find("#saveButton").hide();
 
@@ -119,12 +114,12 @@
       });
     }
 
-    function gettargetsalesman() {
+    function getratiodriverhelper() {
       var kode_cabang = form.find("#kode_cabang").val();
       //alert(selected);
       $.ajax({
         type: 'POST',
-        url: "{{ route('targetkomisi.gettargetsalesman') }}",
+        url: "{{ route('ratiodriverhelper.getratiodriverhelper') }}",
         data: {
           _token: "{{ csrf_token() }}",
           kode_cabang: kode_cabang
@@ -132,14 +127,14 @@
         cache: false,
         success: function(respond) {
           console.log(respond);
-          form.find("#gettargetsalesman").html(respond);
+          form.find("#getratiodriverhelper").html(respond);
         }
       });
     }
 
-    gettargetsalesman();
+    getratiodriverhelper();
     form.find("#kode_cabang").change(function() {
-      gettargetsalesman();
+      getratiodriverhelper();
     });
 
 

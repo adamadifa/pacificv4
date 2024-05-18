@@ -45,6 +45,7 @@ use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RatiodriverhelperController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RejectController;
 use App\Http\Controllers\RejectgudangjadiController;
@@ -863,6 +864,17 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/targetkomisi/gettargetsalesman', 'gettargetsalesman')->name('targetkomisi.gettargetsalesman');
         Route::post('/targetkomisi/gettargetsalesmanedit', 'gettargetsalesmanedit')->name('targetkomisi.gettargetsalesmanedit');
+    });
+
+    Route::controller(RatiodriverhelperController::class)->group(function () {
+        Route::get('/ratiodriverhelper', 'index')->name('ratiodriverhelper.index')->can('ratiodriverhelper.index');
+        Route::get('/ratiodriverhelper/create', 'create')->name('ratiodriverhelper.create')->can('ratiodriverhelper.create');
+        Route::get('/ratiodriverhelper/{kode_ratio}', 'show')->name('ratiodriverhelper.show')->can('ratiodriverhelper.show');
+        Route::get('/ratiodriverhelper/{kode_ratio}/edit', 'edit')->name('ratiodriverhelper.edit')->can('ratiodriverhelper.edit');
+        Route::post('/ratiodriverhelper', 'store')->name('ratiodriverhelper.store')->can('ratiodriverhelper.store');
+        Route::delete('/ratiodriverhelper/{kode_ratio}', 'delete')->name('ratiodriverhelper.delete')->can('ratiodriverhelper.delete');
+
+        Route::post('/ratiodriverhelper/getratiodriverhelper', 'getratiodriverhelper')->name('ratiodriverhelper.getratiodriverhelper');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {
