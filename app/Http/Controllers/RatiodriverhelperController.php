@@ -155,6 +155,10 @@ class RatiodriverhelperController extends Controller
     public function edit($kode_ratio)
     {
         $kode_ratio = Crypt::decrypt($kode_ratio);
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+
         $data['ratiodriverhelper'] = Ratiokomisidriverhelper::select('marketing_komisi_ratiodriverhelper.*', 'nama_cabang')
             ->join('cabang', 'marketing_komisi_ratiodriverhelper.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('kode_ratio', $kode_ratio)
@@ -164,7 +168,99 @@ class RatiodriverhelperController extends Controller
             ->join('driver_helper', 'marketing_komisi_ratiodriverhelper_detail.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
             ->where('kode_ratio', $kode_ratio)
             ->get();
-        return view('marketing.ratiodriverhelper.show', $data);
+        return view('marketing.ratiodriverhelper.edit', $data);
+    }
+
+
+    public function update($kode_ratio, Request $request)
+    {
+        $kode_ratio = Crypt::decrypt($kode_ratio);
+        $bulan = $request->bulan;
+        $bln = $bulan < 10 ? "0" . $bulan : $bulan;
+        $tahun = $request->tahun;
+        $tanggal = $tahun . "-" . $bln . "-01";
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'kode_cabang' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required'
+            ]);
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'bulan' => 'required',
+                'tahun' => 'required'
+            ]);
+        }
+        $kode_ratio_new =  "R" . $kode_cabang . $bln . $tahun;
+        $kode_driver_helper = $request->kode_driver_helper;
+        $ratio_default = $request->ratio_default;
+        $ratio_helper = $request->ratio_helper;
+
+
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            $cektarget = Ratiokomisidriverhelper::where('kode_ratio', $kode_ratio_new)->where('kode_ratio', '!=', $kode_ratio)->count();
+            if ($cektarget > 0) {
+                return Redirect::back()->with(messageError('Data Target Sudah Ada'));
+            }
+
+
+            for ($i = 0; $i < count($kode_driver_helper); $i++) {
+                $detail[] = [
+                    'kode_ratio' => $kode_ratio_new,
+                    'kode_driver_helper' => $kode_driver_helper[$i],
+                    'ratio_default' => toNumber($ratio_default[$i]),
+                    'ratio_helper' => toNumber($ratio_helper[$i]),
+                ];
+            }
+            $timestamp = Carbon::now();
+            foreach ($detail as &$record) {
+                $record['created_at'] = $timestamp;
+                $record['updated_at'] = $timestamp;
+            }
+            Ratiokomisidriverhelper::where('kode_ratio', $kode_ratio)->update([
+                'kode_ratio' => $kode_ratio_new,
+                'bulan' => $bulan,
+                'tahun' => $tahun,
+                'kode_cabang' => $kode_cabang,
+                'tanggal_berlaku' => $tanggal,
+            ]);
+            Detailratiodriverhelper::where('kode_ratio', $kode_ratio)->delete();
+            Detailratiodriverhelper::insert($detail);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            // dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function destroy($kode_ratio)
+    {
+        $kode_ratio = Crypt::decrypt($kode_ratio);
+        $ratiodriverhelper = Ratiokomisidriverhelper::where('kode_ratio', $kode_ratio)->first();
+        $tanggal = $ratiodriverhelper->tahun . "-" . $ratiodriverhelper->bulan . "-01";
+        try {
+            $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            Ratiokomisidriverhelper::where('kode_ratio', $kode_ratio)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 
 
@@ -184,5 +280,18 @@ class RatiodriverhelperController extends Controller
         $data['driverhelper'] = $query->get();
 
         return view('marketing.ratiodriverhelper.getratiodriverhelper', $data);
+    }
+
+
+    public function getratiodriverhelperedit(Request $request)
+    {
+
+        $kode_ratio = $request->kode_ratio;
+        $data['detail'] = Detailratiodriverhelper::select('marketing_komisi_ratiodriverhelper_detail.*', 'nama_driver_helper')
+            ->join('driver_helper', 'marketing_komisi_ratiodriverhelper_detail.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
+            ->where('kode_ratio', $kode_ratio)
+            ->get();
+
+        return view('marketing.ratiodriverhelper.getratiodriverhelperedit', $data);
     }
 }

@@ -1,4 +1,5 @@
-<form action="#">
+<form action="{{ route('targetkomisi.approvestore', Crypt::encrypt($targetkomisi->kode_target)) }}">
+   @csrf
    <div class="row">
       <div class="col">
          <table class="table">
@@ -75,7 +76,14 @@
       <div class="col">
          <x-textarea label="Catatan" name="catatan" />
          <div class="form-group mb-3">
-            <button class="btn btn-primary w-100"><i class="ti ti-thumb-up me-1"></i>Setuju dan Teruskan Ke </button>
+
+            @if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager')
+               <button class="btn btn-primary w-100"><i class="ti ti-thumb-up me-1"></i>Setuju dan Teruskan Ke GM Marketing </button>
+            @elseif (auth()->user()->roles->pluck('name')[0] == 'gm marketing')
+               <button class="btn btn-primary w-100"><i class="ti ti-thumb-up me-1"></i>Setuju dan Teruskan Ke Direktur </button>
+            @else
+               <button class="btn btn-primary w-100"><i class="ti ti-thumb-up me-1"></i>Setuju </button>
+            @endif
          </div>
       </div>
    </div>

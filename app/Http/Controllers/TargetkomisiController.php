@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Detailtargetkomisi;
+use App\Models\Disposisitargetkomisi;
 use App\Models\Produk;
 use App\Models\Salesman;
 use App\Models\Targetkomisi;
@@ -19,12 +20,72 @@ class TargetkomisiController extends Controller
     public function index(Request $request)
     {
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $roles_approve_targetkomisi = config('global.roles_aprove_targetkomisi');
         $user = User::findorfail(auth()->user()->id);
         $data['list_bulan'] = config('global.list_bulan');
         $data['nama_bulan'] = config('global.nama_bulan');
         $data['start_year'] = config('global.start_year');
-        $query = Targetkomisi::query();
-        $query->select('marketing_komisi_target.*', 'nama_cabang');
+
+        // dd($user->roles->pluck('name'));
+        if ($user->hasRole($roles_approve_targetkomisi)) {
+            $query = Disposisitargetkomisi::select(
+                'marketing_komisi_target_disposisi.kode_target',
+                'bulan',
+                'tahun',
+                'nama_cabang',
+                'disposisi.id_pengirim',
+                'roles.name as role',
+                'marketing_komisi_target.status',
+                'marketing_komisi_target.created_at',
+                'marketing_komisi_target_disposisi.status as status_disposisi',
+                'status_ajuan'
+
+            );
+            $query->where('marketing_komisi_target_disposisi.id_penerima', auth()->user()->id);
+            $query->join('marketing_komisi_target', 'marketing_komisi_target_disposisi.kode_target', '=', 'marketing_komisi_target.kode_target');
+            $query->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->leftJoin(
+                DB::raw("(
+                SELECT marketing_komisi_target_disposisi.kode_target,id_pengirim,id_penerima,catatan,status as status_ajuan
+                FROM marketing_komisi_target_disposisi
+				WHERE marketing_komisi_target_disposisi.kode_disposisi IN
+                    (SELECT MAX(kode_disposisi) as kode_disposisi
+                    FROM marketing_komisi_target_disposisi
+                    GROUP BY kode_target)
+                ) disposisi"),
+                function ($join) {
+                    $join->on('marketing_komisi_target.kode_target', '=', 'disposisi.kode_target');
+                }
+            );
+            $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
+            $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
+            $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
+            $query->orderBy('tahun', 'desc');
+            $query->orderBy('bulan');
+        } else {
+            $query = Targetkomisi::query();
+            $query->select('marketing_komisi_target.*', 'nama_cabang', 'roles.name as role', 'disposisi.id_pengirim');
+            $query->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->leftJoin(
+                DB::raw("(
+                SELECT marketing_komisi_target_disposisi.kode_target,id_pengirim,id_penerima,catatan,status
+                FROM marketing_komisi_target_disposisi
+				WHERE marketing_komisi_target_disposisi.kode_disposisi IN
+                    (SELECT MAX(kode_disposisi) as kode_disposisi
+                    FROM marketing_komisi_target_disposisi
+                    GROUP BY kode_target)
+                ) disposisi"),
+                function ($join) {
+                    $join->on('marketing_komisi_target.kode_target', '=', 'disposisi.kode_target');
+                }
+            );
+            $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
+            $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
+            $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
+            $query->orderBy('tahun', 'desc');
+            $query->orderBy('bulan');
+        }
+
         if (!empty($request->bulan)) {
             $query->where('bulan', $request->bulan);
         }
@@ -44,12 +105,22 @@ class TargetkomisiController extends Controller
         if (!empty($request->kode_cabang_search)) {
             $query->where('marketing_komisi_target.kode_cabang', $request->kode_cabang_search);
         }
-        $query->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->orderBy('tahun', 'desc');
-        $query->orderBy('bulan');
+
+        if (!empty($request->posisi_ajuan)) {
+            $query->where('roles.name', $request->posisi_ajuan);
+        }
+
+        if ($request->status === '0') {
+            $query->where('marketing_komisi_target.status', $request->status);
+        } else {
+            if (!empty($request->status)) {
+                $query->where('marketing_komisi_target.status', $request->status);
+            }
+        }
         $targetkomisi = $query->paginate(15);
         $targetkomisi->appends(request()->all());
         $data['targetkomisi'] = $targetkomisi;
+        $data['roles_approve_targetkomisi'] = $roles_approve_targetkomisi;
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
@@ -124,13 +195,42 @@ class TargetkomisiController extends Controller
                 'bulan' => $bulan,
                 'tahun' => $tahun,
                 'kode_cabang' => $kode_cabang,
-                'status' => 0
+                'status' => 0,
+                'id_user' => auth()->user()->id
             ]);
 
             Detailtargetkomisi::insert($data);
+
+            $tanggal_hariini = date('Y-m-d');
+            $lastdisposisi = Disposisitargetkomisi::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            $format = "DPTK" . date('Ymd');
+            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+            $regional = Cabang::where('kode_cabang', $kode_cabang)->first();
+            $user_penerima = User::role('regional sales manager')->where('kode_regional', $regional->kode_regional)
+                ->where('status', 1)
+                ->first();
+            if ($user_penerima == NULL) {
+                $user_penerima = User::role('gm marketing')
+                    ->where('status', 1)
+                    ->first();
+            }
+
+
+            Disposisitargetkomisi::create([
+                'kode_disposisi' => $kode_disposisi,
+                'kode_target' => $kode_target,
+                'id_pengirim' => auth()->user()->id,
+                'id_penerima' => $user_penerima->id,
+                'status' => 0
+            ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
+
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
@@ -196,6 +296,63 @@ class TargetkomisiController extends Controller
         return view('marketing.targetkomisi.approve', $data);
     }
 
+
+    public function approvestore($kode_target, Request $request)
+    {
+        $kode_target = Crypt::decrypt($kode_target);
+        $targetkomisi = Targetkomisi::where('kode_target', $kode_target)->first();
+        $tanggal = $targetkomisi->tahun . "-" . $targetkomisi->bulan . "-01";
+        DB::beginTransaction();
+        try {
+            //Update Status Disposisi
+            $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+            $tanggal_hariini = date('Y-m-d');
+            $lastdisposisi = Disposisitargetkomisi::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            $format = "DPTK" . date('Ymd');
+            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+            Disposisitargetkomisi::where('kode_target', $kode_target)->where('id_penerima', auth()->user()->id)->update([
+                'status' => 1
+            ]);
+            if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager') {
+                $user_penerima = User::role('gm marketing')
+                    ->where('status', 1)
+                    ->first();
+                Disposisitargetkomisi::create([
+                    'kode_disposisi' => $kode_disposisi,
+                    'kode_target' => $kode_target,
+                    'id_pengirim' => auth()->user()->id,
+                    'id_penerima' => $user_penerima->id,
+                    'status' => 0
+                ]);
+            } else if (auth()->user()->roles->pluck('name')[0] == 'gm marketing') {
+                $user_penerima = User::role('direktur')
+                    ->where('status', 1)
+                    ->first();
+                Disposisitargetkomisi::create([
+                    'kode_disposisi' => $kode_disposisi,
+                    'kode_target' => $kode_target,
+                    'id_pengirim' => auth()->user()->id,
+                    'id_penerima' => $user_penerima->id,
+                    'status' => 0
+                ]);
+            } else if (auth()->user()->roles->pluck('name')[0] == 'direktur') {
+                Targetkomisi::where('kode_target', $kode_target)->update(['status' => 1]);
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Target Berhasil Diteruskan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 
     public function edit($kode_target)
     {
@@ -359,5 +516,37 @@ class TargetkomisiController extends Controller
         $data['produk'] = $produk;
 
         return view('marketing.targetkomisi.gettargetsalesman_edit', $data);
+    }
+
+    public function cancel($kode_target)
+    {
+        $kode_target = Crypt::decrypt($kode_target);
+        $targetkomisi = Targetkomisi::where('kode_target', $kode_target)->first();
+        $tanggal = $targetkomisi->tahun . "-" . $targetkomisi->bulan . "-01";
+
+        DB::beginTransaction();
+        try {
+
+            $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            if (auth()->user()->roles->pluck('name')[0] == "direktur") {
+                Targetkomisi::where('kode_target', $kode_target)->update(['status' => 0]);
+            } else {
+                Disposisitargetkomisi::where('kode_target', $kode_target)
+                    ->where('id_pengirim', auth()->user()->id)
+                    ->delete();
+            }
+            Disposisitargetkomisi::where('kode_target', $kode_target)
+                ->where('id_penerima', auth()->user()->id)
+                ->update(['status' => 0]);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

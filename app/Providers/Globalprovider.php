@@ -22,11 +22,15 @@ class Globalprovider extends ServiceProvider
     public function boot(Guard $auth): void
     {
         view()->composer('*', function ($view) use ($auth) {
-            $roles_show_cabang = ['super admin', 'general manager 3', 'manager keuangan', 'direktur', 'regional sales manager'];
+            $roles_show_cabang = ['super admin', 'gm marketing', 'manager keuangan', 'direktur', 'regional sales manager'];
             $start_periode = '2023-01-01';
             $end_periode = date('Y') . '-12-31';
             $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
+            if ($auth->check()) {
+                $level_user = auth()->user()->roles->pluck('name')[0];
+            } else {
+                $level_user = '';
+            }
             $datamaster_request = [
                 'regional',
                 'regional/*',
@@ -344,7 +348,7 @@ class Globalprovider extends ServiceProvider
 
                 'datamaster_request' => $datamaster_request,
                 'datamaster_permission' => $datamaster_permission,
-
+                'level_user' => $level_user,
                 'produksi_request' => $produksi_request,
                 'produksi_permission' => $produksi_permission,
                 'produksi_mutasi_produk_request' => $produksi_mutasi_produk_request,

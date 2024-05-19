@@ -860,6 +860,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/targetkomisi/{kode_target}/update', 'update')->name('targetkomisi.update')->can('targetkomisi.update');
         Route::get('/targetkomisi/{kode_target}/show', 'show')->name('targetkomisi.show')->can('targetkomisi.show');
         Route::get('/targetkomisi/{kode_target}/approve', 'approve')->name('targetkomisi.approve')->can('targetkomisi.approve');
+        Route::get('/targetkomisi/{kode_target}/approvestore', 'approvestore')->name('targetkomisi.approvestore')->can('targetkomisi.approve');
+        Route::delete('/targetkomisi/{kode_target}/cancel', 'cancel')->name('targetkomisi.cancel')->can('targetkomisi.approve');
         Route::delete('/targetkomisi/{kode_target}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
 
         Route::post('/targetkomisi/gettargetsalesman', 'gettargetsalesman')->name('targetkomisi.gettargetsalesman');
@@ -871,10 +873,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/ratiodriverhelper/create', 'create')->name('ratiodriverhelper.create')->can('ratiodriverhelper.create');
         Route::get('/ratiodriverhelper/{kode_ratio}', 'show')->name('ratiodriverhelper.show')->can('ratiodriverhelper.show');
         Route::get('/ratiodriverhelper/{kode_ratio}/edit', 'edit')->name('ratiodriverhelper.edit')->can('ratiodriverhelper.edit');
+        Route::put('/ratiodriverhelper/{kode_ratio}', 'update')->name('ratiodriverhelper.update')->can('ratiodriverhelper.update');
         Route::post('/ratiodriverhelper', 'store')->name('ratiodriverhelper.store')->can('ratiodriverhelper.store');
-        Route::delete('/ratiodriverhelper/{kode_ratio}', 'delete')->name('ratiodriverhelper.delete')->can('ratiodriverhelper.delete');
+        Route::delete('/ratiodriverhelper/{kode_ratio}', 'destroy')->name('ratiodriverhelper.delete')->can('ratiodriverhelper.delete');
 
         Route::post('/ratiodriverhelper/getratiodriverhelper', 'getratiodriverhelper')->name('ratiodriverhelper.getratiodriverhelper');
+        Route::post('/ratiodriverhelper/getratiodriverhelperedit', 'getratiodriverhelperedit')->name('ratiodriverhelper.getratiodriverhelperedit');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {
