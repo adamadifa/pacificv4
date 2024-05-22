@@ -884,6 +884,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(PenjualanController::class)->group(function () {
         Route::get('/penjualan', 'index')->name('penjualan.index')->can('penjualan.index');
+        Route::get('/penjualan/{no_faktur}/show', 'show')->name('penjualan.show')->can('penjualan.show');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
