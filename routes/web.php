@@ -38,6 +38,7 @@ use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
 use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
 use App\Http\Controllers\PermintaankirimanController;
 use App\Http\Controllers\PermintaanproduksiController;
@@ -881,6 +882,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/ratiodriverhelper/getratiodriverhelperedit', 'getratiodriverhelperedit')->name('ratiodriverhelper.getratiodriverhelperedit');
     });
 
+    Route::controller(PenjualanController::class)->group(function () {
+        Route::get('/penjualan', 'index')->name('penjualan.index')->can('penjualan.index');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

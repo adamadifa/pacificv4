@@ -65,7 +65,7 @@
          @can('penjualan.index')
             <li
                class="menu-item {{ request()->is(['penjualan']) ? 'active' : '' }}">
-               <a href="#" class="menu-link">
+               <a href="{{ route('penjualan.index') }}" class="menu-link">
                   <div>Penjualan</div>
                </a>
             </li>
