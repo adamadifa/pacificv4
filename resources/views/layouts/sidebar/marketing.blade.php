@@ -1,5 +1,5 @@
 <li
-   class="menu-item {{ request()->is(['omancabang', 'omancabang/*', 'oman', 'oman/*', 'permintaankiriman', 'permintaankiriman/*', 'targetkomisi', 'ratiodriverhelper', 'penjualan']) ? 'open' : '' }}">
+   class="menu-item {{ request()->is(['omancabang', 'omancabang/*', 'oman', 'oman/*', 'permintaankiriman', 'permintaankiriman/*', 'targetkomisi', 'ratiodriverhelper', 'penjualan', 'penjualan/*']) ? 'open' : '' }}">
    @if (auth()->user()->hasAnyPermission(['omancabang.index', 'oman.index', 'permintaankiriman.index', 'targetkomisi.index', 'penjualan.index']))
       <a href="javascript:void(0);" class="menu-link menu-toggle">
          <i class="menu-icon tf-icons ti ti-building-broadcast-tower"></i>
@@ -64,7 +64,7 @@
          @endif
          @can('penjualan.index')
             <li
-               class="menu-item {{ request()->is(['penjualan']) ? 'active' : '' }}">
+               class="menu-item {{ request()->is(['penjualan', 'penjualan/*']) ? 'active' : '' }}">
                <a href="{{ route('penjualan.index') }}" class="menu-link">
                   <div>Penjualan</div>
                </a>

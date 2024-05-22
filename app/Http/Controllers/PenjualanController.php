@@ -3,8 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Checkinpenjualan;
+use App\Models\Detailgiro;
 use App\Models\Detailpenjualan;
+use App\Models\Detailretur;
+use App\Models\Detailtransfer;
+use App\Models\Historibayarpenjualan;
 use App\Models\Penjualan;
+use App\Models\Retur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -114,7 +120,7 @@ class PenjualanController extends Controller
         $data['cara_pembayaran'] = config('pelanggan.cara_pembayaran');
         $data['lama_langganan'] = config('pelanggan.lama_langganan');
         $data['jenis_bayar'] = config('penjualan.jenis_bayar');
-        $data['penjualan'] = Penjualan::select(
+        $penjualan = Penjualan::select(
             'marketing_penjualan.*',
             'nama_pelanggan',
             'pelanggan.foto',
@@ -180,13 +186,73 @@ class PenjualanController extends Controller
             ->join('cabang', 'pindahfaktur.kode_cabang_baru', '=', 'cabang.kode_cabang')
             ->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
             ->where('marketing_penjualan.no_faktur', $no_faktur)->first();
+        $data['penjualan'] = $penjualan;
         $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'subtotal')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->where('no_faktur', $no_faktur)
             ->get();
+
+        $data['retur'] = Detailretur::select(
+            'tanggal',
+            'marketing_retur_detail.*',
+            'jenis_retur',
+            'produk_harga.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'isi_pcs_pack',
+            'subtotal'
+        )
+            ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->where('no_faktur', $no_faktur)
+            ->get();
+
+        $data['historibayar'] = Historibayarpenjualan::select('marketing_penjualan_historibayar.*', 'nama_salesman')
+            ->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('no_faktur', $no_faktur)->get();
+
+        $data['giro'] = Detailgiro::select(
+            'no_giro',
+            'marketing_penjualan_giro.tanggal',
+            'bank_pengirim',
+            'marketing_penjualan_giro_detail.*',
+            'jatuh_tempo',
+            'status',
+            'tanggal_ditolak',
+            'keterangan',
+            'marketing_penjualan_historibayar.tanggal as tanggal_diterima',
+            'marketing_penjualan_historibayar_giro.no_bukti as no_bukti_giro',
+            'nama_salesman'
+        )
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_giro.kode_giro', '=', 'marketing_penjualan_historibayar_giro.kode_giro')
+            ->leftJoin('marketing_penjualan_historibayar', 'marketing_penjualan_historibayar_giro.no_bukti', '=', 'marketing_penjualan_historibayar.no_bukti')
+            ->where('marketing_penjualan_giro_detail.no_faktur', $no_faktur)
+            ->get();
+
+        $data['transfer'] = Detailtransfer::select(
+            'marketing_penjualan_transfer_detail.*',
+            'marketing_penjualan_transfer.tanggal',
+            'bank_pengirim',
+            'jatuh_tempo',
+            'status',
+            'tanggal_ditolak',
+            'keterangan',
+            'marketing_penjualan_historibayar.tanggal as tanggal_diterima',
+            'nama_salesman'
+        )
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_transfer.kode_transfer', '=', 'marketing_penjualan_historibayar_transfer.kode_transfer')
+            ->leftJoin('marketing_penjualan_historibayar', 'marketing_penjualan_historibayar_transfer.no_bukti', '=', 'marketing_penjualan_historibayar.no_bukti')
+            ->where('marketing_penjualan_transfer_detail.no_faktur', $no_faktur)
+            ->get();
+
         //dd($data['detail']);
-        $data['checkin'] = NULL;
+        $data['checkin'] = Checkinpenjualan::where('tanggal', $penjualan->tanggal)->where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
         return view('marketing.penjualan.show', $data);
     }
 }

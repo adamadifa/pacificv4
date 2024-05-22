@@ -3,6 +3,7 @@ return [
     'jenis_bayar' => [
         'TN' => 'TUNAI',
         'TP' => 'TITIPAN',
-        'TR' => 'TRANSFER'
+        'TR' => 'TRANSFER',
+        'GR' => 'GIRO'
     ],
 ];

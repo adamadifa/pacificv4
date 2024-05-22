@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Retur extends Model
+class Checkinpenjualan extends Model
 {
     use HasFactory;
-    protected $table = "marketing_retur";
-    protected $primaryKey = "marketing_retur_detail";
+    protected $table = "marketing_penjualan_checkin";
+    protected $primaryKey = "kode_checkin";
     protected $guarded = [];
     public $incrementing = false;
 }
