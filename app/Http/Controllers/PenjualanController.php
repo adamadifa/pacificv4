@@ -211,9 +211,22 @@ class PenjualanController extends Controller
             ->where('no_faktur', $no_faktur)
             ->get();
 
-        $data['historibayar'] = Historibayarpenjualan::select('marketing_penjualan_historibayar.*', 'nama_salesman')
+        $data['historibayar'] = Historibayarpenjualan::select(
+            'marketing_penjualan_historibayar.*',
+            'nama_salesman',
+            'marketing_penjualan_historibayar_giro.kode_giro',
+            'no_giro',
+            'giro_to_cash',
+            'nama_voucher'
+        )
+
+            ->leftJoin('jenis_voucher', 'marketing_penjualan_historibayar.jenis_voucher', '=', 'jenis_voucher.id')
+            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
+            ->leftJoin('marketing_penjualan_giro', 'marketing_penjualan_historibayar_giro.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
             ->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman')
-            ->where('no_faktur', $no_faktur)->get();
+            ->where('no_faktur', $no_faktur)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         $data['giro'] = Detailgiro::select(
             'no_giro',

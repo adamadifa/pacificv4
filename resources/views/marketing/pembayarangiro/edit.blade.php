@@ -1,39 +1,16 @@
-<form id="formBayar" method="POST" action="{{ route('pembayaranpenjualan.store', Crypt::encrypt($no_faktur)) }}">
+<form id="formBayar" method="POST" action="{{ route('pembayarangiro.update', [Crypt::encrypt($no_faktur), Crypt::encrypt($kode_giro)]) }}">
    @csrf
-   <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal"
+   @method('PUT')
+   <x-input-with-icon icon="ti ti-barcode" label="No. Giro" name="no_giro" value="{{ $giro->no_giro }}" />
+   <x-input-with-icon icon="ti ti-calendar" label="Tanggal Giro" name="tanggal" value="{{ $giro->tanggal }}"
       datepicker="flatpickr-date" />
-   <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" />
+   <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" value="{{ formatAngka($giro->jumlah) }}" />
    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman"
-      upperCase="true" select2="select2Kodesalesman" />
-   <div class="row mt-2">
-      <div class="col-12">
-         <div class="form-check mt-3 mb-2">
-            <input class="form-check-input agreementvoucher" name="agreementvoucher" value="1" type="checkbox"
-               value="" id="agreementvoucher">
-            <label class="form-check-label" for="agreementvoucher"> Bayar Menggunakan Voucher ? </label>
-         </div>
-      </div>
-   </div>
-   <div class="row" id="voucher">
-      <div class="col">
-         <x-select label="Pilih Voucher" name="jenis_voucher" :data="$jenis_voucher" key="id" textShow="nama_voucher"
-            upperCase="true" select2="select2Kodevoucher" />
-      </div>
-   </div>
-   <div class="row">
-      <div class="col-12">
-         <div class="form-check mb-3">
-            <input class="form-check-input agreementgiro" name="agreementgiro" value="1" type="checkbox" id="agreementgiro">
-            <label class="form-check-label" for="agreementgiro"> Ganti Giro Ke Cash ? </label>
-         </div>
-      </div>
-   </div>
-   <div class="row" id="giroditolak">
-      <div class="col">
-         <x-select label="Pilih Giro" name="kode_giro" :data="$giroditolak" key="kode_giro" textShow="no_giro"
-            upperCase="true" select2="select2Kodegiro" />
-      </div>
-   </div>
+      upperCase="true" select2="select2Kodesalesman" selected="{{ $giro->kode_salesman }}" />
+   <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" value="{{ $giro->bank_pengirim }}" />
+   <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo" value="{{ $giro->jatuh_tempo }}"
+      datepicker="flatpickr-date" />
+   <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $giro->keterangan }}" />
    <div class="row">
       <div class="col">
          <button class="btn btn-primary w-100"><i class="ti ti-send me-1"></i>Submit</button>
@@ -64,56 +41,42 @@
          });
       }
 
-      const select2Kodevoucher = $('.select2Kodevoucher');
-      if (select2Kodevoucher.length) {
-         select2Kodevoucher.each(function() {
-            var $this = $(this);
-            $this.wrap('<div class="position-relative"></div>').select2({
-               placeholder: 'Pilih Voucher',
-               allowClear: true,
-               dropdownParent: $this.parent()
-            });
-         });
-      }
+
       $("#jumlah").maskMoney();
 
-      form.find("#voucher").hide();
-      form.find("#giroditolak").hide();
-      form.find('.agreementvoucher').change(function() {
-         if (this.checked) {
-            console.log($(".agreementvoucher").is(':checked'));
-            form.find("#voucher").show();
-         } else {
-            form.find("#voucher").hide();
-         }
-      });
-      form.find('.agreementgiro').change(function() {
-         if (this.checked) {
-            form.find("#giroditolak").show();
-         } else {
-            form.find("#giroditolak").hide();
-         }
-      });
+
 
 
 
       form.submit(function(e) {
 
+         const no_giro = $(this).find("#no_giro").val();
+         const bank_pengirim = $(this).find("#bank_pengirim").val();
+         const jatuh_tempo = $(this).find("#jatuh_tempo").val();
          const sisabayar = $("#sisabayar").text();
          let sisa_bayar = parseInt(sisabayar.replace(/\./g, ''));
          const tanggal = $(this).find("#tanggal").val();
          const jml = $(this).find("#jumlah").val();
          const jumlah = parseInt(jml.replace(/\./g, ''));
          const kode_salesman = $(this).find("#kode_salesman").val();
-         const jenis_voucher = $(this).find("#jenis_voucher").val();
          if (isNaN(sisa_bayar)) {
             sisa_bayar = 0;
          } else {
             sisa_bayar = sisa_bayar;
          }
 
-
-         if (tanggal == "") {
+         if (no_giro == "") {
+            Swal.fire({
+               title: "Oops!",
+               text: "No Giro Harus Diisi !",
+               icon: "warning",
+               showConfirmButton: true,
+               didClose: (e) => {
+                  form.find("#no_giro").focus();
+               },
+            });
+            return false;
+         } else if (tanggal == "") {
             Swal.fire({
                title: "Oops!",
                text: "Tanggal Harus Diisi !",
@@ -158,17 +121,27 @@
             });
 
             return false;
-         } else if ($(".agreementvoucher").is(':checked') && jenis_voucher == "") {
+         } else if (bank_pengirim == "") {
             Swal.fire({
                title: "Oops!",
-               text: "Jenis Voucher Harus Diisi !",
+               text: "Bank Pengirim Harus Diisi !",
                icon: "warning",
                showConfirmButton: true,
                didClose: (e) => {
-                  form.find("#jenis_voucher").focus();
+                  form.find("#bank_pengirim").focus();
                },
             });
-
+            return false;
+         } else if (jatuh_tempo == "") {
+            Swal.fire({
+               title: "Oops!",
+               text: "Tanggal Jatuh Tempo Harus  Diisi !",
+               icon: "warning",
+               showConfirmButton: true,
+               didClose: (e) => {
+                  form.find("#jatuh_tempo").focus();
+               },
+            });
             return false;
          }
       });

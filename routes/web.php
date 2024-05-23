@@ -38,6 +38,7 @@ use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
 use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PembayarangiroController;
 use App\Http\Controllers\PembayaranpenjualanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
@@ -889,6 +890,19 @@ Route::middleware('auth')->group(function () {
     });
     Route::controller(PembayaranpenjualanController::class)->group(function () {
         Route::get('/pembayaranpenjualan/{no_faktur}/create', 'create')->name('pembayaranpenjualan.create')->can('pembayaranpenjualan.create');
+        Route::post('/pembayaranpenjualan/{no_faktur}/store', 'store')->name('pembayaranpenjualan.store')->can('pembayaranpenjualan.store');
+        Route::get('/pembayaranpenjualan/{no_bukti}/edit', 'edit')->name('pembayaranpenjualan.edit')->can('pembayaranpenjualan.edit');
+        Route::put('/pembayaranpenjualan/{no_bukti}/update', 'update')->name('pembayaranpenjualan.update')->can('pembayaranpenjualan.update');
+        Route::delete('/pembayaranpenjualan/{no_bukti}/delete', 'destroy')->name('pembayaranpenjualan.delete')->can('pembayaranpenjualan.delete');
+    });
+
+
+    Route::controller(PembayarangiroController::class)->group(function () {
+        Route::get('/pembayarangiro/{no_faktur}/create', 'create')->name('pembayarangiro.create')->can('pembayarangiro.create');
+        Route::post('/pembayarangiro/{no_faktur}/store', 'store')->name('pembayarangiro.store')->can('pembayarangiro.store');
+        Route::get('/pembayarangiro/{no_faktur}/{kode_giro}/edit', 'edit')->name('pembayarangiro.edit')->can('pembayarangiro.edit');
+        Route::put('/pembayarangiro/{no_faktur}/{kode_giro}/update', 'update')->name('pembayarangiro.update')->can('pembayarangiro.update');
+        Route::delete('/pembayarangiro/{no_faktur}/{kode_giro}/delete', 'destroy')->name('pembayarangiro.delete')->can('pembayarangiro.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
