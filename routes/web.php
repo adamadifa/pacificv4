@@ -38,6 +38,7 @@ use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
 use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PembayaranpenjualanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
 use App\Http\Controllers\PermintaankirimanController;
@@ -885,6 +886,9 @@ Route::middleware('auth')->group(function () {
     Route::controller(PenjualanController::class)->group(function () {
         Route::get('/penjualan', 'index')->name('penjualan.index')->can('penjualan.index');
         Route::get('/penjualan/{no_faktur}/show', 'show')->name('penjualan.show')->can('penjualan.show');
+    });
+    Route::controller(PembayaranpenjualanController::class)->group(function () {
+        Route::get('/pembayaranpenjualan/{no_faktur}/create', 'create')->name('pembayaranpenjualan.create')->can('pembayaranpenjualan.create');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

@@ -255,3 +255,9 @@ function convertToduspackpcsv3($isi_pcs_dus, $isi_pcs_pack, $jumlah)
 
     return array($jml_dus, $jml_pack, $jml_pcs);
 }
+
+function getSignature($file)
+{
+    $url = url('/storage/signature/' . $file);
+    return $url;
+}
