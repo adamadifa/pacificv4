@@ -27,9 +27,12 @@
          </div>
       </div> --}}
       <div class="card">
-         <div class="card-header">
+         <div class="card-header d-flex justify-content-between">
             @can('penjualan.create')
                <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Penjualan</a>
+            @endcan
+            @can('penjualan.cetakfaktur')
+               <a href="#" class="btn btn-success" id="btnCetakSuratjalan"><i class="ti ti-printer me-2"></i> Cetak Banyak Faktur</a>
             @endcan
          </div>
          <div class="card-body">
@@ -184,9 +187,27 @@
                                                    <i class="ti ti-printer text-primary"></i>
                                                 </a>
                                                 <ul class="dropdown-menu" style="">
-                                                   <li><a class="dropdown-item" href="#"><i class="ti ti-printer me-1"></i>Cetak Faktur</a></li>
-                                                   <li><a class="dropdown-item" href="#"><i class="ti ti-printer me-1"></i>Cetak Surat Jalan 1</a></li>
-                                                   <li><a class="dropdown-item" href="#"><i class="ti ti-printer me-1"></i>Cetak Surat Jalan 2</a></a></li>
+                                                   @can('penjualan.cetakfaktur')
+                                                      <li>
+                                                         <a class="dropdown-item" target="_blank"
+                                                            href="{{ route('penjualan.cetakfaktur', Crypt::encrypt($d->no_faktur)) }}">
+                                                            <i class="ti ti-printer me-1"></i>
+                                                            CetakFaktur
+                                                         </a>
+                                                      </li>
+                                                   @endcan
+                                                   @can('penjualan.cetaksuratjalan')
+                                                      <li>
+                                                         <a class="dropdown-item" target="_blank" href="{{ route('penjualan.cetaksuratjalan', [1, Crypt::encrypt($d->no_faktur)]) }}">
+                                                            <i class="ti ti-printer me-1"></i>Cetak Surat Jalan 1
+                                                         </a>
+                                                      </li>
+                                                      <li>
+                                                         <a class="dropdown-item" target="_blank" href="{{ route('penjualan.cetaksuratjalan', [2, Crypt::encrypt($d->no_faktur)]) }}">
+                                                            <i class="ti ti-printer me-1"></i>Cetak Surat Jalan 2
+                                                         </a>
+                                                      </li>
+                                                   @endcan
                                                 </ul>
                                              </div>
                                           </div>
@@ -207,10 +228,29 @@
       </div>
    </div>
 </div>
+<x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 <script>
    $(function() {
+      function loading() {
+         $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+      };
+      $("#btnCetakSuratjalan").click(function(e) {
+         e.preventDefault();
+         loading();
+         $("#modal").modal("show");
+         $(".modal-title").text("Cetak Surat Jalan");
+         $("#loadmodal").load(`/penjualan/filtersuratjalan`);
+      });
+
+
       const select2Kodecabangsearch = $('.select2Kodecabangsearch');
       if (select2Kodecabangsearch.length) {
          select2Kodecabangsearch.each(function() {

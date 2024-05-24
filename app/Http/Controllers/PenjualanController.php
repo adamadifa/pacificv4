@@ -122,78 +122,12 @@ class PenjualanController extends Controller
         $data['cara_pembayaran'] = config('pelanggan.cara_pembayaran');
         $data['lama_langganan'] = config('pelanggan.lama_langganan');
         $data['jenis_bayar'] = config('penjualan.jenis_bayar');
-        $penjualan = Penjualan::select(
-            'marketing_penjualan.*',
-            'nama_pelanggan',
-            'pelanggan.foto',
-            'pelanggan.alamat_pelanggan',
-            'pelanggan.status_aktif_pelanggan',
-            'pelanggan.nik',
-            'pelanggan.no_kk',
-            'pelanggan.tanggal_lahir',
-            'pelanggan.alamat_toko',
-            'pelanggan.hari',
-            'pelanggan.no_hp_pelanggan',
-            'pelanggan.kepemilikan',
-            'pelanggan.lama_berjualan',
-            'pelanggan.status_outlet',
-            'pelanggan.type_outlet',
-            'pelanggan.cara_pembayaran',
-            'pelanggan.lama_langganan',
-            'pelanggan.jaminan',
-            'pelanggan.omset_toko',
-            'pelanggan.limit_pelanggan',
-            'pelanggan.latitude',
-            'pelanggan.longitude',
-            'wilayah.nama_wilayah',
-            'nama_salesman',
-            'nama_cabang',
-        )
-            ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'))
-            ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
-        INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
-        WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'))
-            ->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'))
-            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-            ->leftJoin(
-                DB::raw("(
-                SELECT
-                    marketing_penjualan.no_faktur,
-                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
-                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
-                FROM
-                    marketing_penjualan
-                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                LEFT JOIN (
-                SELECT
-                    MAX(id) AS id,
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
-                    salesman.kode_cabang AS cabangbaru
-                FROM
-                    marketing_penjualan_movefaktur
-                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
-                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-            ) pindahfaktur"),
-                function ($join) {
-                    $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
-                }
-            )
-
-            ->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman')
-            ->join('cabang', 'pindahfaktur.kode_cabang_baru', '=', 'cabang.kode_cabang')
-            ->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
-            ->where('marketing_penjualan.no_faktur', $no_faktur)->first();
+        $pnj = new Penjualan();
+        $penjualan = $pnj->getFaktur($no_faktur);
         $data['penjualan'] = $penjualan;
-        $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'subtotal')
-            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
-            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
-            ->where('no_faktur', $no_faktur)
-            ->get();
+
+        $detailpenjualan = new Penjualan();
+        $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
 
         $data['retur'] = Detailretur::select(
             'tanggal',
@@ -269,5 +203,54 @@ class PenjualanController extends Controller
         //dd($data['detail']);
         $data['checkin'] = Checkinpenjualan::where('tanggal', $penjualan->tanggal)->where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
         return view('marketing.penjualan.show', $data);
+    }
+
+
+    public function cetakfaktur($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $pnj = new Penjualan();
+        $penjualan = $pnj->getFaktur($no_faktur);
+        $data['penjualan'] = $penjualan;
+
+        $detailpenjualan = new Penjualan();
+        $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
+
+        return view('marketing.penjualan.cetakfaktur', $data);
+    }
+
+
+    public function cetaksuratjalan($type, $no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $pnj = new Penjualan();
+        $penjualan = $pnj->getFaktur($no_faktur);
+        $data['penjualan'] = $penjualan;
+
+        $detailpenjualan = new Penjualan();
+        $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
+        if ($type == 1) {
+            return view('marketing.penjualan.cetaksuratjalan1', $data);
+        } else {
+            return view('marketing.penjualan.cetaksuratjalan2', $data);
+        }
+    }
+
+
+    public function filtersuratjalan()
+    {
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        return view('marketing.penjualan.cetaksuratjalan_filter', $data);
+    }
+
+
+    public function cetaksuratjalanrange(Request $request)
+    {
+        $pnj = new Penjualan();
+        $penjualan = $pnj->getFakturwithDetail($request);
+        $data['pj'] = $penjualan;
+
+        return view('marketing.penjualan.cetaksuratjalan_range', $data);
     }
 }

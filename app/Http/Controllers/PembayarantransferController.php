@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Detailgiro;
-use App\Models\Giro;
-use App\Models\Historibayarpenjualangiro;
+use App\Models\Detailtransfer;
 use App\Models\Penjualan;
 use App\Models\Salesman;
+use App\Models\Transfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
-class PembayarangiroController extends Controller
+class PembayarantransferController extends Controller
 {
     public function create($no_faktur)
     {
@@ -25,7 +24,7 @@ class PembayarangiroController extends Controller
             ->where('nama_salesman', '!=', '-')
             ->get();
         $data['no_faktur'] = $no_faktur;
-        return view('marketing.pembayarangiro.create', $data);
+        return view('marketing.pembayarantransfer.create', $data);
     }
 
 
@@ -33,52 +32,41 @@ class PembayarangiroController extends Controller
     {
 
         $request->validate([
-            'no_giro' => 'required',
             'tanggal' => 'required',
             'jumlah' => 'required',
             'kode_salesman' => 'required',
             'bank_pengirim' => 'required',
-            'jatuh_tempo' => 'required',
-
         ]);
         $no_faktur = Crypt::decrypt($no_faktur);
         $tahun = date('Y', strtotime($request->tanggal));
         DB::beginTransaction();
         try {
-
-
             $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
-            $cekgiro = Giro::where('no_giro', $request->no_giro)->count();
-            if ($cekgiro > 0) {
-                return Redirect::back()->with(messageError("No. Giro Sudah Ada"));
-            }
-
             $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
-            $lastgiro = Giro::select('kode_giro')
+            $lastransfer = Transfer::select('kode_transfer')
                 ->whereRaw('YEAR(tanggal)="' . $tahun . '"')
-                ->orderBy("kode_giro", "desc")
+                ->orderBy("kode_transfer", "desc")
                 ->first();
 
-            $last_kode_giro = $lastgiro != null ? $lastgiro->kode_giro : '';
-            $kode_giro  = buatkode($last_kode_giro, "GR" . $tahun, 4);
-            Giro::create([
-                'kode_giro' => $kode_giro,
+            $last_kode_transfer = $lastransfer != null ? $lastransfer->kode_transfer : '';
+            $kode_transfer  = buatkode($last_kode_transfer, "TR" . $tahun, 4);
+            Transfer::create([
+                'kode_transfer' => $kode_transfer,
                 'kode_pelanggan' => $penjualan->kode_pelanggan,
                 'tanggal' => $request->tanggal,
-                'no_giro' => $request->no_giro,
                 'kode_salesman' => $request->kode_salesman,
                 'bank_pengirim' => $request->bank_pengirim,
-                'jatuh_tempo' => $request->jatuh_tempo,
+                'jatuh_tempo' => $request->tanggal,
                 'keterangan' => $request->keterangan,
                 'status' => 0,
             ]);
 
-            Detailgiro::create([
-                'kode_giro' => $kode_giro,
+            Detailtransfer::create([
+                'kode_transfer' => $kode_transfer,
                 'no_faktur' => $no_faktur,
                 'jumlah' => toNumber($request->jumlah)
             ]);
@@ -94,10 +82,10 @@ class PembayarangiroController extends Controller
     }
 
 
-    public function edit($no_faktur, $kode_giro)
+    public function edit($no_faktur, $kode_transfer)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
-        $kode_giro = Crypt::decrypt($kode_giro);
+        $kode_transfer = Crypt::decrypt($kode_transfer);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->first();
@@ -106,48 +94,43 @@ class PembayarangiroController extends Controller
             ->where('nama_salesman', '!=', '-')
             ->get();
 
-        $data['giro'] = Detailgiro::select(
-            'no_giro',
-            'marketing_penjualan_giro.tanggal',
+        $data['transfer'] = Detailtransfer::select(
+            'marketing_penjualan_transfer_detail.kode_transfer',
+            'marketing_penjualan_transfer.tanggal',
             'bank_pengirim',
             'kode_salesman',
-            'marketing_penjualan_giro_detail.*',
+            'marketing_penjualan_transfer_detail.*',
             'jatuh_tempo',
             'status',
             'tanggal_ditolak',
             'keterangan',
         )
-            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
-            ->where('marketing_penjualan_giro_detail.no_faktur', $no_faktur)
-            ->where('marketing_penjualan_giro_detail.kode_giro', $kode_giro)
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->where('marketing_penjualan_transfer_detail.no_faktur', $no_faktur)
+            ->where('marketing_penjualan_transfer_detail.kode_transfer', $kode_transfer)
             ->first();
         $data['no_faktur'] = $no_faktur;
-        $data['kode_giro'] = $kode_giro;
-        return view('marketing.pembayarangiro.edit', $data);
+        $data['kode_transfer'] = $kode_transfer;
+        return view('marketing.pembayarantransfer.edit', $data);
     }
 
-
-
-    public function update(Request $request, $no_faktur, $kode_giro)
+    public function update(Request $request, $no_faktur, $kode_transfer)
     {
 
         $request->validate([
-            'no_giro' => 'required',
             'tanggal' => 'required',
             'jumlah' => 'required',
             'kode_salesman' => 'required',
             'bank_pengirim' => 'required',
-            'jatuh_tempo' => 'required',
         ]);
         $no_faktur = Crypt::decrypt($no_faktur);
-        $kode_giro = Crypt::decrypt($kode_giro);
+        $kode_transfer = Crypt::decrypt($kode_transfer);
         DB::beginTransaction();
         try {
 
-            $giro = Giro::where('kode_giro', $kode_giro)->first();
-
-            $cektutuplaporangiro = cektutupLaporan($giro->tanggal, "penjualan");
-            if ($cektutuplaporangiro > 0) {
+            $transfer = Transfer::where('kode_transfer', $kode_transfer)->first();
+            $cektutuplaporantransfer = cektutupLaporan($transfer->tanggal, "penjualan");
+            if ($cektutuplaporantransfer > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
@@ -157,26 +140,18 @@ class PembayarangiroController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
-            $cekgiro = Giro::where('no_giro', $request->no_giro)
-                ->where('no_giro', '!=', $giro->no_giro)
-                ->count();
-            if ($cekgiro > 0) {
-                return Redirect::back()->with(messageError("No. Giro Sudah Ada"));
-            }
-
 
             $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
-            Giro::where('kode_giro', $kode_giro)->update([
+            Transfer::where('kode_transfer', $kode_transfer)->update([
                 'kode_pelanggan' => $penjualan->kode_pelanggan,
                 'tanggal' => $request->tanggal,
-                'no_giro' => $request->no_giro,
                 'kode_salesman' => $request->kode_salesman,
                 'bank_pengirim' => $request->bank_pengirim,
-                'jatuh_tempo' => $request->jatuh_tempo,
+                'jatuh_tempo' => $request->tanggal,
                 'keterangan' => $request->keterangan,
             ]);
 
-            Detailgiro::where('kode_giro', $kode_giro)->where('no_faktur', $no_faktur)->update([
+            Detailtransfer::where('kode_transfer', $kode_transfer)->where('no_faktur', $no_faktur)->update([
                 'jumlah' => toNumber($request->jumlah)
             ]);
 
@@ -184,28 +159,28 @@ class PembayarangiroController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 
-    public function destroy($no_faktur, $kode_giro)
+    public function destroy($no_faktur, $kode_transfer)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
-        $kode_giro = Crypt::decrypt($kode_giro);
-        $giro = Giro::where('kode_giro', $kode_giro)->first();
+        $kode_transfer = Crypt::decrypt($kode_transfer);
+        $transfer = Transfer::where('kode_transfer', $kode_transfer)->first();
         DB::beginTransaction();
         try {
-            $cektutuplaporan = cektutupLaporan($giro->tanggal, "penjualan");
+            $cektutuplaporan = cektutupLaporan($transfer->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
             }
             //Hapus Surat Jalan
-            Detailgiro::where('no_faktur', $no_faktur)->where('kode_giro', $kode_giro)->delete();
-            $cekdetailgiro = Detailgiro::where('kode_giro', $kode_giro)->count();
-            if (empty($cekdetailgiro)) {
-                Giro::where('kode_giro', $kode_giro)->delete();
+            Detailtransfer::where('no_faktur', $no_faktur)->where('kode_transfer', $kode_transfer)->delete();
+            $cekdetailtransfer = Detailtransfer::where('kode_transfer', $kode_transfer)->count();
+            if (empty($cekdetailtransfer)) {
+                Transfer::where('kode_transfer', $kode_transfer)->delete();
             }
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));

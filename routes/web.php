@@ -40,6 +40,7 @@ use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PembayarangiroController;
 use App\Http\Controllers\PembayaranpenjualanController;
+use App\Http\Controllers\PembayarantransferController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
 use App\Http\Controllers\PermintaankirimanController;
@@ -887,6 +888,10 @@ Route::middleware('auth')->group(function () {
     Route::controller(PenjualanController::class)->group(function () {
         Route::get('/penjualan', 'index')->name('penjualan.index')->can('penjualan.index');
         Route::get('/penjualan/{no_faktur}/show', 'show')->name('penjualan.show')->can('penjualan.show');
+        Route::get('/penjualan/{no_faktur}/cetakfaktur', 'cetakfaktur')->name('penjualan.cetakfaktur')->can('penjualan.cetakfaktur');
+        Route::get('/penjualan/{no_faktur}/{type}/cetaksuratjalan', 'cetaksuratjalan')->name('penjualan.cetaksuratjalan')->can('penjualan.cetaksuratjalan');
+        Route::get('/penjualan/filtersuratjalan', 'filtersuratjalan')->name('penjualan.filtersuratjalan')->can('penjualan.cetaksuratjalan');
+        Route::post('/penjualan/cetaksuratjalanrange', 'cetaksuratjalanrange')->name('penjualan.cetaksuratjalanrange')->can('penjualan.cetaksuratjalan');
     });
     Route::controller(PembayaranpenjualanController::class)->group(function () {
         Route::get('/pembayaranpenjualan/{no_faktur}/create', 'create')->name('pembayaranpenjualan.create')->can('pembayaranpenjualan.create');
@@ -903,6 +908,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembayarangiro/{no_faktur}/{kode_giro}/edit', 'edit')->name('pembayarangiro.edit')->can('pembayarangiro.edit');
         Route::put('/pembayarangiro/{no_faktur}/{kode_giro}/update', 'update')->name('pembayarangiro.update')->can('pembayarangiro.update');
         Route::delete('/pembayarangiro/{no_faktur}/{kode_giro}/delete', 'destroy')->name('pembayarangiro.delete')->can('pembayarangiro.delete');
+    });
+
+    Route::controller(PembayarantransferController::class)->group(function () {
+        Route::get('/pembayarantransfer/{no_faktur}/create', 'create')->name('pembayarantransfer.create')->can('pembayarantransfer.create');
+        Route::post('/pembayarantransfer/{no_faktur}/store', 'store')->name('pembayarantransfer.store')->can('pembayarantransfer.store');
+        Route::get('/pembayarantransfer/{no_faktur}/{kode_giro}/edit', 'edit')->name('pembayarantransfer.edit')->can('pembayarantransfer.edit');
+        Route::put('/pembayarantransfer/{no_faktur}/{kode_giro}/update', 'update')->name('pembayarantransfer.update')->can('pembayarantransfer.update');
+        Route::delete('/pembayarantransfer/{no_faktur}/{kode_giro}/delete', 'destroy')->name('pembayarantransfer.delete')->can('pembayarantransfer.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

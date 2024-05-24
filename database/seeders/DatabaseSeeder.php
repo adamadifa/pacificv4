@@ -59,7 +59,8 @@ class DatabaseSeeder extends Seeder
             Ratiodriverhelperpermissionseeder::class,
             Pembayaranpenjualanpermissionseeder::class,
             Jenisvoucherseeder::class,
-            Pembayarangiropermissionseeder::class
+            Pembayarangiropermissionseeder::class,
+            Pembayarantransferpermissionseeder::class
         ]);
     }
 }

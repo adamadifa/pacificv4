@@ -77,9 +77,12 @@
                   <i class="ti ti-barcode text-heading"></i><span class="fw-medium mx-2 text-heading">Kode
                      Pelanggan:</span> <span>{{ $penjualan->kode_pelanggan }}</span>
                </li>
-               <li class="d-flex align-items-center mb-3">
+               <li class="d-flex align-items-center">
                   <i class="ti ti-user text-heading"></i><span class="fw-medium mx-2 text-heading">
-                     Nama Pelanggan:</span> <span>{{ textCamelCase($penjualan->nama_pelanggan) }}</span>
+                     Nama Pelanggan:</span>
+               </li>
+               <li class="d-flex align-items-center mb-3">
+                  <span>{{ textUpperCase($penjualan->nama_pelanggan) }}</span>
                </li>
                <li class="d-flex align-items-center mb-3">
                   <i class="ti ti-credit-card text-heading"></i><span
@@ -587,6 +590,13 @@
 
                </div>
             </div>
+            <div class="row mb-2 mt-3">
+               <div class="col">
+                  @can('pembayarantransfer.create')
+                     <a href="#" class="btn btn-primary" id="btnCreatetransfer"><i class="ti ti-plus me-1"></i>Input Transfer</a>
+                  @endcan
+               </div>
+            </div>
             <div class="row mt-2">
                <div class="col">
                   <div class="table-responsive">
@@ -601,7 +611,7 @@
                               <th>Bank</th>
                               <th>Jumlah</th>
                               <th>Jatuh Tempo</th>
-                              <th>Status</th>
+                              <th class="text-center">Status</th>
                               <th>Salesman</th>
                               <th>#</th>
                            </tr>
@@ -614,7 +624,7 @@
                                  <td>{{ $d->bank_pengirim }}</td>
                                  <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
                                  <td>{{ date('d-m-y', strtotime($d->jatuh_tempo)) }}</td>
-                                 <td>
+                                 <td class="text-center">
                                     @if ($d->status == '0')
                                        <i class="ti ti-hourglass-low text-warning"></i>
                                     @elseif ($d->status == '1')
@@ -625,10 +635,35 @@
                                  </td>
                                  <td>{{ $d->nama_salesman }}</td>
                                  <td>
-                                    @if ($d->status == '0')
-                                    @else
-                                       <span class="badge bg-success">Keuangan</span>
-                                    @endif
+                                    <div class="d-flex">
+
+
+                                       @if ($d->status == '0')
+                                          @can('pembayarantransfer.edit')
+                                             <div>
+                                                <a href="#" class="me-2 btnEdittransfer"
+                                                   kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}">
+                                                   <i class="ti ti-edit text-success"></i>
+                                                </a>
+                                             </div>
+                                          @endcan
+
+                                          @can('pembayarantransfer.delete')
+                                             <div>
+                                                <form method="POST" name="deleteform" class="deleteform" style="margin-bottom:0px !important; padding:0 !important"
+                                                   action="{{ route('pembayarantransfer.delete', [Crypt::encrypt($d->no_faktur), Crypt::encrypt($d->kode_transfer)]) }}">
+                                                   @csrf
+                                                   @method('DELETE')
+                                                   <a href="#" class="delete-confirm ml-1">
+                                                      <i class="ti ti-trash text-danger"></i>
+                                                   </a>
+                                                </form>
+                                             </div>
+                                          @endcan
+                                       @else
+                                          <span class="badge bg-success">Keuangan</span>
+                                       @endif
+                                    </div>
                                  </td>
                               </tr>
                            @endforeach
@@ -733,6 +768,26 @@
          $("#modal").modal("show");
          $(".modal-title").text("Edit Giro");
          $("#loadmodal").load(`/pembayarangiro/${no_faktur}/${kode_giro}/edit`);
+      });
+
+
+      $("#btnCreatetransfer").click(function(e) {
+         e.preventDefault();
+         loading();
+         const no_faktur = "{{ Crypt::encrypt($penjualan->no_faktur) }}";
+         $("#modal").modal("show");
+         $(".modal-title").text("Input Transfer");
+         $("#loadmodal").load(`/pembayarantransfer/${no_faktur}/create`);
+      });
+
+      $(".btnEdittransfer").click(function(e) {
+         e.preventDefault();
+         loading();
+         const no_faktur = "{{ Crypt::encrypt($penjualan->no_faktur) }}";
+         const kode_transfer = $(this).attr("kode_transfer");
+         $("#modal").modal("show");
+         $(".modal-title").text("Edit Transfer");
+         $("#loadmodal").load(`/pembayarantransfer/${no_faktur}/${kode_transfer}/edit`);
       });
    });
 </script>

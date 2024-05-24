@@ -51,6 +51,12 @@ class PembayaranpenjualanController extends Controller
 
     public function store(Request $request, $no_faktur)
     {
+
+        $request->validate([
+            'tanggal' => 'required',
+            'jumlah' => 'required',
+            'kode_salesman' => 'required'
+        ]);
         $no_faktur = Crypt::decrypt($no_faktur);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
@@ -150,6 +156,11 @@ class PembayaranpenjualanController extends Controller
     public function update(Request $request, $no_bukti)
     {
 
+        $request->validate([
+            'tanggal' => 'required',
+            'jumlah' => 'required',
+            'kode_salesman' => 'required'
+        ]);
 
         $no_bukti = Crypt::decrypt($no_bukti);
 
