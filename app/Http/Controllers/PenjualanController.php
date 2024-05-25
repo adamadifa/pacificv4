@@ -11,6 +11,7 @@ use App\Models\Detailtransfer;
 use App\Models\Historibayarpenjualan;
 use App\Models\Penjualan;
 use App\Models\Retur;
+use App\Models\Salesman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -104,6 +105,7 @@ class PenjualanController extends Controller
         }
 
         $query->orderBy('marketing_penjualan.tanggal', 'desc');
+        $query->orderBy('marketing_penjualan.no_faktur', 'desc');
         $penjualan = $query->cursorPaginate();
         $penjualan->appends(request()->all());
         $data['penjualan'] = $penjualan;
@@ -254,6 +256,7 @@ class PenjualanController extends Controller
         return view('marketing.penjualan.cetaksuratjalan_range', $data);
     }
 
+
     public function batalfaktur($no_faktur)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
@@ -273,6 +276,84 @@ class PenjualanController extends Controller
             return Redirect::back()->with(messageSuccess('Faktur Berhasil Dibatalkan'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function generatefaktur($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
+        $tanggal = $penjualan->tanggal;
+        $kode_salesman = $penjualan->kode_salesman;
+        //$id_karyawan = "SBDG09";
+        $salesman = Salesman::where('kode_salesman', $penjualan->kode_salesman)
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->first();
+
+
+
+        $lastpenjualan = Penjualan::where('kode_salesman', $penjualan->kode_salesman)
+            ->where('tanggal', $penjualan->tanggal)
+            ->whereRaw('MID(no_faktur,4,2) != "PR"')
+            ->orderBy('tanggal', 'desc')->first();
+
+        $lasttanggal = $lastpenjualan != null ? $penjualan->tanggal : date('Y-m-d', strtotime("-3 day", strtotime($penjualan->tanggal)));
+
+
+        // $start_date = date('Y-m-d', strtotime("-1 month", strtotime(date('Y-m-d'))));
+        // $end_date = date('Y-m-t');
+
+        $cekpenjualan = Penjualan::where('kode_salesman', $penjualan->kode_salesman)
+            ->where('tanggal', '>=', $penjualan->tanggal)
+            ->whereRaw('MID(no_faktur,4,2) != "PR"')
+            ->orderBy('no_faktur', 'desc')
+            ->first();
+
+
+
+        $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
+
+
+        // echo $lastnofak;
+        // die;
+        $kode_cabang = $salesman->kode_cabang;
+        $kode_faktur = substr($cekpenjualan->no_faktur, 3, 1);
+        $nomor_awal = substr($cekpenjualan->no_faktur, 4);
+        $jmlchar = strlen($nomor_awal);
+        $no_faktur_auto  =  buatkode($last_no_faktur, $kode_cabang . $kode_faktur, $jmlchar);
+
+        $kode_sales = $salesman->kode_sales;
+        $kode_pt = $salesman->kode_pt;
+
+        $tahun = date('y', strtotime($penjualan->tanggal));
+        $thn = date('Y', strtotime($penjualan->tanggal));
+
+        $start_date = "2024-03-01";
+        if ($penjualan->tanggal >= '2024-03-01') {
+            $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('tanggal', '>=', $start_date)
+                ->where('kode_sales', $kode_sales)
+                ->where('kode_cabang', $kode_cabang)
+                ->whereRaw('YEAR(tanggal)="' . $thn . '"')
+                ->whereRaw('LEFT(no_faktur,3)="' . $kode_pt . '"')
+                ->orderBy('no_faktur', 'desc')
+                ->first();
+            $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
+            $no_faktur_auto = buatkode($last_no_faktur, $kode_pt . $tahun . $kode_sales, 6);
+        }
+
+        // echo $no_fak_penj_auto;
+        // die;
+        try {
+
+            Penjualan::where('no_faktur', $no_faktur)
+                ->update([
+                    'no_faktur' => $no_faktur_auto
+                ]);
+            return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
+        } catch (\Exception $e) {
+            dd($e);
+            return Redirect::back()->with(['warning' => 'No. Faktur Gagal Dibuat']);
         }
     }
 }
