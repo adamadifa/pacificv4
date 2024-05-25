@@ -253,4 +253,26 @@ class PenjualanController extends Controller
 
         return view('marketing.penjualan.cetaksuratjalan_range', $data);
     }
+
+    public function batalfaktur($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $pnj = new Penjualan();
+        $data['penjualan'] = $pnj->getFaktur($no_faktur);
+        return view('marketing.penjualan.batalkanfaktur', $data);
+    }
+
+    public function updatefakturbatal($no_faktur, Request $request)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        try {
+            Penjualan::where('no_faktur', $no_faktur)->update([
+                'status_batal' => 1,
+                'keterangan' => $request->keterangan,
+            ]);
+            return Redirect::back()->with(messageSuccess('Faktur Berhasil Dibatalkan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

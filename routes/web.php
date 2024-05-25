@@ -891,6 +891,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/penjualan/{no_faktur}/cetakfaktur', 'cetakfaktur')->name('penjualan.cetakfaktur')->can('penjualan.cetakfaktur');
         Route::get('/penjualan/{no_faktur}/{type}/cetaksuratjalan', 'cetaksuratjalan')->name('penjualan.cetaksuratjalan')->can('penjualan.cetaksuratjalan');
         Route::get('/penjualan/filtersuratjalan', 'filtersuratjalan')->name('penjualan.filtersuratjalan')->can('penjualan.cetaksuratjalan');
+        Route::get('/penjualan/{no_faktur}/batalfaktur', 'batalfaktur')->name('penjualan.batalfaktur')->can('penjualan.batalfaktur');
+        Route::put('/penjualan/{no_faktur}/updatefakturbatal', 'updatefakturbatal')->name('penjualan.updatefakturbatal')->can('penjualan.batalfaktur');
         Route::post('/penjualan/cetaksuratjalanrange', 'cetaksuratjalanrange')->name('penjualan.cetaksuratjalanrange')->can('penjualan.cetaksuratjalan');
     });
     Route::controller(PembayaranpenjualanController::class)->group(function () {

@@ -8,31 +8,28 @@
 <div class="row">
    <div class="col-lg-12 col-sm-12 col-xs-12">
 
-      {{-- <div class="alert alert-info alert-dismissible d-flex align-items-baseline" role="alert">
+      <div class="alert alert-info alert-dismissible d-flex align-items-baseline" role="alert">
          <span class="alert-icon alert-icon-lg text-info me-2">
             <i class="ti ti-info-circle ti-sm"></i>
          </span>
          <div class="d-flex flex-column ps-1">
             <h5 class="alert-heading mb-2">Informasi</h5>
             <p class="mb-0">
-               Silahkan Gunakan Icon <i class="ti ti-external-link text-primary me-1 ms-1"></i> Untuk membuat Surat
-               Jalan !
+               Silahkan Gunakan Icon <i class="ti ti-file-invoice text-danger me-1 ms-1"></i> Untuk Membatalkan Faktur !
             </p>
             <p class="mb-0">
-               Silahkan Gunakan Icon <i class="ti ti-square-rounded-minus text-warning me-1 ms-1"></i> Untuk
-               Membatalkan
-               Surat Jalan !
+               Silahkan Gunakan Icon <i class="ti ti-adjustments text-warning me-1 ms-1"></i> Untuk Generate No. Faktur
             </p>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
          </div>
-      </div> --}}
+      </div>
       <div class="card">
          <div class="card-header d-flex justify-content-between">
             @can('penjualan.create')
                <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Penjualan</a>
             @endcan
             @can('penjualan.cetakfaktur')
-               <a href="#" class="btn btn-success" id="btnCetakSuratjalan"><i class="ti ti-printer me-2"></i> Cetak Banyak Faktur</a>
+               <a href="#" class="btn btn-success" id="btnCetakSuratjalan"><i class="ti ti-printer me-2"></i> Cetak Banyak Surat Jalan</a>
             @endcan
          </div>
          <div class="card-body">
@@ -152,12 +149,6 @@
                                  <td>
                                     <div class="d-flex">
                                        @can('penjualan.edit')
-                                          @if (substr($d->no_faktur, 3, 2) == 'PR')
-                                             <a
-                                                href="/penjualan/{{ Crypt::encrypt($d->no_faktur) }}/updatenofaktur">
-                                                <i class="ti ti-adjustments text-warning me-1"></i>
-                                             </a>
-                                          @endif
                                           <a class="me-1"
                                              href="/penjualan/{{ \Crypt::encrypt($d->no_faktur) }}/edit"><i
                                                 class="ti ti-edit text-success"></i></a>
@@ -169,17 +160,7 @@
                                                    class="ti ti-file-description text-info"></i></a>
                                           </div>
                                        @endcan
-                                       @can('penjualan.delete')
-                                          <form method="POST" name="deleteform" class="deleteform"
-                                             action="/penjualan/{{ Crypt::encrypt($d->no_faktur) }}/delete">
-                                             @csrf
-                                             @method('DELETE')
-                                             <a href="#"
-                                                class="delete-confirm me-1">
-                                                <i class="ti ti-trash text-danger"></i>
-                                             </a>
-                                          </form>
-                                       @endcan
+
                                        @can('penjualan.show')
                                           <div me-1>
                                              <div class="btn-group">
@@ -211,6 +192,30 @@
                                                 </ul>
                                              </div>
                                           </div>
+                                       @endcan
+                                       @can('penjualan.batalfaktur')
+                                          <div>
+                                             <a href="#" class="ms-4 btnBatal" no_faktur="{{ Crypt::encrypt($d->no_faktur) }}"><i class="ti ti-file-invoice text-danger"></i></a>
+                                          </div>
+                                       @endcan
+                                       @can('penjualan.delete')
+                                          <form method="POST" name="deleteform" class="deleteform"
+                                             action="/penjualan/{{ Crypt::encrypt($d->no_faktur) }}/delete">
+                                             @csrf
+                                             @method('DELETE')
+                                             <a href="#"
+                                                class="delete-confirm me-1">
+                                                <i class="ti ti-trash text-danger"></i>
+                                             </a>
+                                          </form>
+                                       @endcan
+                                       @can('penjualan.edit')
+                                          @if (substr($d->no_faktur, 3, 2) == 'PR')
+                                             <a
+                                                href="/penjualan/{{ Crypt::encrypt($d->no_faktur) }}/updatenofaktur">
+                                                <i class="ti ti-adjustments text-warning me-1"></i>
+                                             </a>
+                                          @endif
                                        @endcan
                                     </div>
                                  </td>
@@ -250,6 +255,14 @@
          $("#loadmodal").load(`/penjualan/filtersuratjalan`);
       });
 
+      $(".btnBatal").click(function(e) {
+         e.preventDefault();
+         loading();
+         const no_faktur = $(this).attr('no_faktur');
+         $("#modal").modal("show");
+         $(".modal-title").text("Ubah Ke Faktur Batal");
+         $("#loadmodal").load(`/penjualan/${no_faktur}/batalfaktur`);
+      });
 
       const select2Kodecabangsearch = $('.select2Kodecabangsearch');
       if (select2Kodecabangsearch.length) {
