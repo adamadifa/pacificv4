@@ -26,7 +26,7 @@
       <div class="card">
          <div class="card-header d-flex justify-content-between">
             @can('penjualan.create')
-               <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Penjualan</a>
+               <a href="{{ route('penjualan.create') }}" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Penjualan</a>
             @endcan
             @can('penjualan.cetakfaktur')
                <a href="#" class="btn btn-success" id="btnCetakSuratjalan"><i class="ti ti-printer me-2"></i> Cetak Banyak Surat Jalan</a>
@@ -212,7 +212,7 @@
                                        @can('penjualan.edit')
                                           @if (substr($d->no_faktur, 3, 2) == 'PR')
                                              <a
-                                                href="/penjualan/{{ Crypt::encrypt($d->no_faktur) }}/updatenofaktur">
+                                                href="/penjualan/{{ Crypt::encrypt($d->no_faktur) }}/generatefaktur">
                                                 <i class="ti ti-adjustments text-warning me-1"></i>
                                              </a>
                                           @endif

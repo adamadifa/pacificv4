@@ -277,8 +277,14 @@
                                      $color = 'danger';
                                      $ket = 'BELUM LUNAS';
                                  }
+
+                                 if ($d->status_promosi == '1') {
+                                     $color_row = 'bg-warning';
+                                 } else {
+                                     $color_row = '';
+                                 }
                               @endphp
-                              <tr>
+                              <tr class="{{ $color_row }}">
                                  <td>{{ $d->kode_produk }}</td>
                                  <td>{{ $d->nama_produk }}</td>
                                  <td class="text-end">{{ formatAngka($jumlah_dus) }}</td>

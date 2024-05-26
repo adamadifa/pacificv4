@@ -887,6 +887,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(PenjualanController::class)->group(function () {
         Route::get('/penjualan', 'index')->name('penjualan.index')->can('penjualan.index');
+        Route::get('/penjualan/create', 'create')->name('penjualan.create')->can('penjualan.create');
         Route::get('/penjualan/{no_faktur}/show', 'show')->name('penjualan.show')->can('penjualan.show');
         Route::get('/penjualan/{no_faktur}/cetakfaktur', 'cetakfaktur')->name('penjualan.cetakfaktur')->can('penjualan.cetakfaktur');
         Route::get('/penjualan/{no_faktur}/{type}/cetaksuratjalan', 'cetaksuratjalan')->name('penjualan.cetaksuratjalan')->can('penjualan.cetaksuratjalan');

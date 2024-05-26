@@ -114,6 +114,11 @@ class PenjualanController extends Controller
         return view('marketing.penjualan.index', $data);
     }
 
+
+    public function create()
+    {
+        return view('marketing.penjualan.create');
+    }
     public function show($no_faktur)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
