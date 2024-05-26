@@ -231,6 +231,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/pelanggan/{kode_pelanggan}', 'update')->name('pelanggan.update')->can('pelanggan.update');
         Route::delete('/pelanggan/{kode_pelanggan}', 'destroy')->name('pelanggan.delete')->can('pelanggan.delete');
         Route::get('/pelanggan/{kode_pelanggan}/show', 'show')->name('pelanggan.show')->can('pelanggan.show');
+
+        //AJAX REQUEST
+        Route::get('/pelanggan/{kode_pelanggan}/getPelanggan', 'getPelanggan')->name('pelanggan.getPelanggan');
     });
 
     Route::controller(WilayahController::class)->group(function () {

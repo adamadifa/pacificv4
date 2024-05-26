@@ -335,4 +335,28 @@ class PelangganController extends Controller
             'lama_langganan'
         ));
     }
+
+
+    public function getPelanggan($kode_pelanggan)
+    {
+        $pelanggan = Pelanggan::select(
+            'pelanggan.kode_pelanggan',
+            'nama_pelanggan',
+            'pelanggan.kode_salesman',
+            'nama_salesman',
+            'no_hp_pelanggan',
+            'latitude',
+            'longitude',
+            'limit_pelanggan',
+            'foto',
+            'alamat_pelanggan'
+        )
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('kode_pelanggan', Crypt::decrypt($kode_pelanggan))->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Pelanggan',
+            'data'    => $pelanggan
+        ]);
+    }
 }

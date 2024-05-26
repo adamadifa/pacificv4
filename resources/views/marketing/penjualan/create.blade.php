@@ -1,11 +1,21 @@
 @extends('layouts.app')
 @section('titlepage', 'Input Penjualan')
-
 @section('content')
+   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+   <style>
+      #tabelpelanggan_filter {
+         margin-bottom: 10px;
+      }
+
+      .nonaktif {
+         background-color: red;
+      }
+   </style>
 @section('navigasi')
    <span class="text-muted">Penjualan</span> / <span>Input Penjualan</span>
 @endsection
 <form action="{{ route('penjualan.cetaksuratjalanrange') }}" target="_blank" method="POST" id="formCetakfaktur">
+   <input type="hidden" name="limit_pelanggan" id="limit_pelanggan">
    <div class="row">
       <div class="col-lg-3 col-sm-12 col-xs-12">
          <div class="row mb-3">
@@ -29,7 +39,7 @@
                      style="height:250px; object-fit:cover" id="foto">
                   <div class="card-body">
                      <p class="card-text" id="alamat_pelanggan">
-                        Some quick example text to build on the card title and make up the bulk of the card's content.
+
                      </p>
                      <table class="table">
                         <tr>
@@ -37,12 +47,16 @@
                            <td id="no_hp_pelanggan"></td>
                         </tr>
                         <tr>
-                           <th>Titik Koordinat</th>
-                           <td id="lokasi"></td>
+                           <th>Latitude</th>
+                           <td id="latitude"></td>
+                        </tr>
+                        <tr>
+                           <th>Longitude</th>
+                           <td id="longitude"></td>
                         </tr>
                         <tr>
                            <th>Limit Pelanggan</th>
-                           <td id="limit_pelanggan"></td>
+                           <td id="limit_pelanggan_text"></td>
                         </tr>
                         <tr>
                            <th>Piutang</th>
@@ -251,5 +265,172 @@
       </div>
    </div>
 </form>
+
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
+<div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+   aria-hidden="true">
+   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel18">Data Pelanggan</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <div class="table-responsive">
+               <table class="table" id="tabelpelanggan" width="100%">
+                  <thead class="table-dark">
+                     <tr>
+                        <th>No.</th>
+                        <th>Kode</th>
+                        <th>Nama Pelanggan</th>
+                        <th>Salesman</th>
+                        <th>Wilayah</th>
+                        <th>Status</th>
+                        <th>#</th>
+                     </tr>
+                  </thead>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
 @endsection
+@push('myscript')
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+   $(document).ready(function() {
+      function convertToRupiah(number) {
+         if (number) {
+            var rupiah = "";
+            var numberrev = number
+               .toString()
+               .split("")
+               .reverse()
+               .join("");
+            for (var i = 0; i < numberrev.length; i++)
+               if (i % 3 == 0) rupiah += numberrev.substr(i, 3) + ".";
+            return (
+               rupiah
+               .split("", rupiah.length - 1)
+               .reverse()
+               .join("")
+            );
+         } else {
+            return number;
+         }
+      }
+      $('#tabelpelanggan').DataTable({
+         processing: true,
+         serverSide: true,
+         ajax: '{{ url()->current() }}',
+         bAutoWidth: false,
+         columns: [{
+               data: 'DT_RowIndex',
+               name: 'DT_RowIndex',
+               orderable: false,
+               searchable: false,
+               width: '5%'
+            },
+            {
+               data: 'kode_pelanggan',
+               name: 'kode_pelanggan',
+               orderable: true,
+               searchable: true,
+               width: '10%'
+            },
+            {
+               data: 'nama_pelanggan',
+               name: 'nama_pelanggan',
+               orderable: true,
+               searchable: true,
+               width: '30%'
+            },
+            {
+               data: 'nama_salesman',
+               name: 'nama_salesman',
+               orderable: true,
+               searchable: false,
+               width: '20%'
+            },
+
+            {
+               data: 'nama_wilayah',
+               name: 'nama_wilayah',
+               orderable: true,
+               searchable: false,
+               width: '30%'
+            },
+            {
+               data: 'status_pelanggan',
+               name: 'status_pelanggan',
+               orderable: true,
+               searchable: false,
+               width: '30%'
+            },
+            {
+               data: 'action',
+               name: 'action',
+               orderable: false,
+               searchable: false,
+               width: '5%'
+            }
+         ],
+
+         rowCallback: function(row, data, index) {
+            if (data.status_pelanggan == "NonAktif") {
+               $("td", row).addClass("bg-danger text-white");
+            }
+         }
+      });
+
+      $("#nama_pelanggan").click(function(e) {
+         e.preventDefault();
+         $("#modalPelanggan").modal("show");
+      });
+
+
+      //Get Pelanggan
+      function getPelanggan(kode_pelanggan) {
+         $.ajax({
+            url: `/pelanggan/${kode_pelanggan}/getPelanggan`,
+            type: "GET",
+            cache: false,
+            success: function(response) {
+               //fill data to form
+               $('#kode_pelanggan').val(response.data.kode_pelanggan);
+               $('#nama_pelanggan').val(response.data.nama_pelanggan);
+               $('#latitude').text(response.data.latitude);
+               $('#longitude').text(response.data.longitude);
+               $('#no_hp_pelanggan').text(response.data.no_hp_pelanggan);
+               $('#limit_pelanggan_text').text(convertToRupiah(response.data.limit_pelanggan));
+               $('#limit_pelanggan').text(response.data.limit_pelanggan);
+               $('#alamat_pelanggan').text(convertToRupiah(response.data.alamat_pelanggan));
+               if (response.data.foto != "") {
+                  var foto = "{{ url(Storage::url('pelanggan/')) }}/" + response.data.foto;
+               } else {
+                  var foto = "{{ asset('assets/img/elements/2.jpg') }}";
+               }
+               $("#foto").attr("src", foto);
+               //Data Salesman
+               $('#kode_salesman').val(response.data.kode_salesman);
+               $('#nama_salesman').val(response.data.nama_salesman);
+
+
+
+
+               //open modal
+               $('#modalPelanggan').modal('hide');
+            }
+         });
+      }
+      //Pilih Pelanggan
+      $('#tabelpelanggan tbody').on('click', '.pilihpelanggan', function(e) {
+         e.preventDefault();
+         const kode_pelanggan = $(this).attr('kode_pelanggan');
+         getPelanggan(kode_pelanggan);
+      });
+   });
+</script>
+@endpush

@@ -9,13 +9,16 @@ use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
 use App\Models\Detailtransfer;
 use App\Models\Historibayarpenjualan;
+use App\Models\Pelanggan;
 use App\Models\Penjualan;
 use App\Models\Retur;
 use App\Models\Salesman;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Yajra\DataTables\Facades\DataTables;
 
 class PenjualanController extends Controller
 {
@@ -117,6 +120,25 @@ class PenjualanController extends Controller
 
     public function create()
     {
+        if (request()->ajax()) {
+            $query = Pelanggan::query();
+            $query->select(
+                'pelanggan.*',
+                'wilayah.nama_wilayah',
+                'salesman.nama_salesman',
+                DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan")
+            );
+            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+            $pelanggan = $query;
+            return DataTables::of($pelanggan)
+                ->addIndexColumn()
+                ->addColumn('action', function ($item) {
+                    $button =   '<a href="#" kode_pelanggan="' . Crypt::encrypt($item->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    return $button;
+                })
+                ->make();
+        }
         return view('marketing.penjualan.create');
     }
     public function show($no_faktur)
