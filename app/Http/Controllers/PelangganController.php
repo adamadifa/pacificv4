@@ -359,4 +359,20 @@ class PelangganController extends Controller
             'data'    => $pelanggan
         ]);
     }
+
+    public function cekFotopelanggan(Request $request)
+    {
+        $filePath = $request->file;
+        if (Storage::disk('public')->exists($filePath)) {
+            return response()->json(['exists' => true]);
+        } else {
+            return response()->json(['exists' => false]);
+        }
+    }
+
+
+    public function cekfoto()
+    {
+        dd(Storage::disk('public')->exists('/pelanggan/TSM-00700.jpg'));
+    }
 }

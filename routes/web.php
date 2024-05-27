@@ -234,6 +234,9 @@ Route::middleware('auth')->group(function () {
 
         //AJAX REQUEST
         Route::get('/pelanggan/{kode_pelanggan}/getPelanggan', 'getPelanggan')->name('pelanggan.getPelanggan');
+        Route::get('/pelanggan/cekfotopelanggan', 'cekfotopelanggan')->name('pelanggan.cekfotopelanggan');
+        Route::get('/pelanggan/cekfoto', 'cekfoto')->name('pelanggan.cekfoto');
+        Route::get('/pelanggan/{kode_pelanggan}/getPiutangpelanggan', 'getPiutangpelanggan')->name('pelanggan.getPiutangpelanggan');
     });
 
     Route::controller(WilayahController::class)->group(function () {
@@ -899,6 +902,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/penjualan/{no_faktur}/updatefakturbatal', 'updatefakturbatal')->name('penjualan.updatefakturbatal')->can('penjualan.batalfaktur');
         Route::post('/penjualan/cetaksuratjalanrange', 'cetaksuratjalanrange')->name('penjualan.cetaksuratjalanrange')->can('penjualan.cetaksuratjalan');
         Route::get('/penjualan/{no_faktur}/generatefaktur', 'generatefaktur')->name('penjualan.generatefaktur')->can('penjualan.update');
+
+        //AJAX REQUEST
+
+
     });
     Route::controller(PembayaranpenjualanController::class)->group(function () {
         Route::get('/pembayaranpenjualan/{no_faktur}/create', 'create')->name('pembayaranpenjualan.create')->can('pembayaranpenjualan.create');
