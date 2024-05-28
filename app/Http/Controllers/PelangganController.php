@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detailsaldoawalpiutangpelanggan;
 use App\Models\Pelanggan;
+use App\Models\Pengajuanfaktur;
+use App\Models\Penjualan;
+use App\Models\Saldoawalpiutangpelanggan;
 use App\Models\User;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
@@ -311,7 +315,7 @@ class PelangganController extends Controller
     }
 
 
-    public function show($kode_pelanggan)
+    public function show(Request $request, $kode_pelanggan)
     {
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
         $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)
@@ -325,6 +329,9 @@ class PelangganController extends Controller
         $type_outlet = config('pelanggan.type_outlet');
         $cara_pembayaran = config('pelanggan.cara_pembayaran');
         $lama_langganan = config('pelanggan.lama_langganan');
+
+        $pj =  new Penjualan();
+        $penjualan = $pj->getFakturbyPelanggan($request, $kode_pelanggan)->cursorPaginate(10);
         return view('datamaster.pelanggan.show', compact(
             'pelanggan',
             'kepemilikan',
@@ -332,7 +339,8 @@ class PelangganController extends Controller
             'status_outlet',
             'type_outlet',
             'cara_pembayaran',
-            'lama_langganan'
+            'lama_langganan',
+            'penjualan'
         ));
     }
 
@@ -374,5 +382,105 @@ class PelangganController extends Controller
     public function cekfoto()
     {
         dd(Storage::disk('public')->exists('/pelanggan/TSM-00700.jpg'));
+    }
+
+    public function getPiutangpelanggan($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $hari_ini = date('Y-m-d');
+
+        $saldo_awal = Saldoawalpiutangpelanggan::orderBy('tanggal', 'desc')->first();
+        $start_date = $saldo_awal->tanggal;
+
+        $saldo_awal = Detailsaldoawalpiutangpelanggan::select(
+            'marketing_penjualan.kode_pelanggan',
+            DB::raw('SUM(jumlah) as jumlah')
+        )
+            ->join('marketing_penjualan', 'marketing_saldoawal_piutang_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            ->where('kode_saldo_awal', $saldo_awal->kode_saldo_awal)
+            ->groupBy('marketing_penjualan.kode_pelanggan')
+            ->first();
+
+        $end_date = date('Y-m-t', strtotime($hari_ini));
+
+        $pj = new Penjualan();
+        $penjualan = $pj->getPenjualanpelangganbydate($start_date, $end_date, $kode_pelanggan)->first();
+        $sisa_piutang = $saldo_awal->jumlah + $penjualan->total_bruto -  $penjualan->total_potongan + $penjualan->total_ppn - $penjualan->total_retur - $penjualan->total_bayar;
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sisa Piutang',
+            'data'    => $sisa_piutang
+        ]);
+    }
+
+    public function getFakturkredit($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $ajuanfaktur = Pengajuanfaktur::where('kode_pelanggan', $kode_pelanggan)
+            ->where('status', 1)
+            ->orderBy('tanggal', 'desc')
+            ->first();
+        $jml_faktur = $ajuanfaktur != null ? $ajuanfaktur->jumlah_faktur : 1;
+        $siklus_pembayaran = $ajuanfaktur != null ? $ajuanfaktur->siklus_pembayaran : 0;
+
+        // Subquery untuk total penjualan bruto
+        $subqueryTotalBruto = DB::table('marketing_penjualan_detail')
+            ->select('marketing_penjualan_detail.no_faktur', DB::raw('SUM(subtotal) as total_bruto'))
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->groupBy('no_faktur');
+
+        // Subquery untuk total retur
+        $subqueryTotalRetur = DB::table('marketing_retur_detail')
+            ->select('marketing_retur.no_faktur', DB::raw('SUM(subtotal) as total_retur'))
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->groupBy('no_faktur');
+
+        // Subquery untuk total pembayaran
+        $subqueryTotalPembayaran = DB::table('marketing_penjualan_historibayar')
+            ->select('marketing_penjualan_historibayar.no_faktur', DB::raw('SUM(jumlah) as total_pembayaran'))
+            ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->groupBy('no_faktur');
+
+        $unpaidSales = Penjualan::select(
+            'marketing_penjualan.no_faktur',
+            'bruto.total_bruto',
+            'retur.total_retur',
+            'potongan',
+            'potongan_istimewa',
+            'penyesuaian',
+            'ppn',
+            'pembayaran.total_pembayaran'
+        )
+            ->selectRaw('COALESCE(bruto.total_bruto, 0) - COALESCE(retur.total_retur, 0) - COALESCE(potongan, 0) - COALESCE(potongan_istimewa, 0) - COALESCE(penyesuaian, 0) + COALESCE(ppn, 0) - COALESCE(pembayaran.total_pembayaran, 0) as sisa_piutang')
+            ->leftJoinSub($subqueryTotalBruto, 'bruto', 'marketing_penjualan.no_faktur', '=', 'bruto.no_faktur')
+            ->leftJoinSub($subqueryTotalRetur, 'retur', 'marketing_penjualan.no_faktur', '=', 'retur.no_faktur')
+            ->leftJoinSub($subqueryTotalPembayaran, 'pembayaran', 'marketing_penjualan.no_faktur', '=', 'pembayaran.no_faktur')
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->havingRaw('sisa_piutang > 0')
+            ->count();
+        // $faktur_kredit = Penjualan::addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'))
+        //     ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
+        //     INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
+        //     WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'))
+
+        //     ->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'))
+        //     ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+        //     ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+        //     ->where('jenis_transaksi', 'K')
+        //     ->where('total_bruto', '>=', '1000000')
+        //     ->count();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Jumlah Faktur Kredit Belum Lunas',
+            'data'    => $unpaidSales
+        ]);
     }
 }

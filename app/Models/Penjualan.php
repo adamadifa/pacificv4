@@ -106,7 +106,7 @@ class Penjualan extends Model
 
 
 
-    function getFakturwithDetail($request)
+    function getFakturwithDetail($request, $kode_pelanggan = "")
     {
         $query = Penjualan::query();
         $query->select(
@@ -251,6 +251,140 @@ class Penjualan extends Model
         );
         $penjualan = $query->get();
 
+        return $penjualan;
+    }
+
+    function getFakturbyPelanggan($request, $kode_pelanggan)
+    {
+        $query = Penjualan::query();
+
+        $query->select(
+            'marketing_penjualan.*',
+            'nama_pelanggan',
+            'pelanggan.foto',
+            'pelanggan.alamat_pelanggan',
+            'pelanggan.status_aktif_pelanggan',
+            'pelanggan.nik',
+            'pelanggan.no_kk',
+            'pelanggan.tanggal_lahir',
+            'pelanggan.alamat_toko',
+            'pelanggan.hari',
+            'pelanggan.no_hp_pelanggan',
+            'pelanggan.kepemilikan',
+            'pelanggan.lama_berjualan',
+            'pelanggan.status_outlet',
+            'pelanggan.type_outlet',
+            'pelanggan.cara_pembayaran',
+            'pelanggan.lama_langganan',
+            'pelanggan.jaminan',
+            'pelanggan.omset_toko',
+            'pelanggan.limit_pelanggan',
+            'pelanggan.latitude',
+            'pelanggan.longitude',
+            'wilayah.nama_wilayah',
+            'nama_salesman',
+            'salesman.kode_kategori_salesman as pola_operasi',
+            'nama_kategori_salesman',
+            'salesman.kode_cabang',
+            'nama_cabang',
+            'alamat_cabang',
+            'nama_pt',
+            'signature'
+        );
+        $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'));
+        $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
+        INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
+        WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'));
+        $query->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'));
+        $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    MAX(id) AS id,
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                GROUP BY
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru,
+                    salesman.kode_cabang
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+
+        $query->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
+        $query->join('cabang', 'pindahfaktur.kode_cabang_baru', '=', 'cabang.kode_cabang');
+        $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->join('salesman_kategori', 'salesman.kode_kategori_salesman', '=', 'salesman_kategori.kode_kategori_salesman');
+        $query->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan);
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        }
+
+        if (!empty($request->no_faktur_search)) {
+            $query->where('marketing_penjualan.no_faktur', $request->no_faktur_search);
+        }
+        $query->orderBy('marketing_penjualan.tanggal', 'desc');
+        $query->orderBy('marketing_penjualan.no_faktur');
+        $penjualan = $query;
+        return $penjualan;
+    }
+
+
+
+    function getPenjualanpelangganbydate($start_date, $end_date, $kode_pelanggan)
+    {
+        $query = Pelanggan::query();
+
+        $query->select(
+            'pelanggan.kode_pelanggan',
+            'total_potongan',
+            'total_ppn'
+        );
+        $query->addSelect(DB::raw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail
+        INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
+        WHERE kode_pelanggan = pelanggan.kode_pelanggan AND
+        marketing_penjualan.tanggal BETWEEN '$start_date' AND '$end_date') as total_bruto"));
+
+        $query->addSelect(DB::raw("(SELECT SUM(subtotal) FROM marketing_retur_detail
+        INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
+        INNER JOIN marketing_penjualan ON marketing_retur.no_faktur = marketing_penjualan.no_faktur
+        WHERE kode_pelanggan = pelanggan.kode_pelanggan AND jenis_retur='PF' AND
+        marketing_penjualan.tanggal BETWEEN '$start_date' AND '$end_date') as total_retur"));
+
+        $query->addSelect(DB::raw("(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar
+        INNER JOIN marketing_penjualan ON marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur
+        WHERE kode_pelanggan = pelanggan.kode_pelanggan AND marketing_penjualan_historibayar.tanggal BETWEEN '$start_date' AND '$end_date') as total_bayar"));
+
+        $query->leftJoin(
+            DB::raw("(
+            SELECT kode_pelanggan,
+            SUM(potongan + potongan_istimewa + penyesuaian)  as total_potongan,
+            SUM(ppn) as total_ppn
+            FROM marketing_penjualan
+            WHERE kode_pelanggan = '$kode_pelanggan' AND tanggal BETWEEN '$start_date' AND '$end_date'
+            GROUP BY kode_pelanggan
+        ) penjualan"),
+            function ($join) {
+                $join->on('pelanggan.kode_pelanggan', '=', 'penjualan.kode_pelanggan');
+            }
+        );
+        $query->where('pelanggan.kode_pelanggan', $kode_pelanggan);
+        $penjualan = $query;
         return $penjualan;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jenisproduk;
 use App\Models\Kategoriproduk;
+use App\Models\Pelanggan;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;

@@ -221,6 +221,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/harga/{kode_harga}/edit', 'edit')->name('harga.edit')->can('harga.edit');
         Route::put('/harga/{kode_harga}', 'update')->name('harga.update')->can('harga.update');
         Route::delete('/harga/{kode_harga}', 'destroy')->name('harga.delete')->can('harga.delete');
+
+        //AjaxRequest
+        Route::get('/harga/{kode_pelanggan}/gethargabypelanggan', 'gethargabypelanggan')->name('harga.gethargabypelanggan');
     });
 
     Route::controller(PelangganController::class)->group(function () {
@@ -237,6 +240,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/cekfotopelanggan', 'cekfotopelanggan')->name('pelanggan.cekfotopelanggan');
         Route::get('/pelanggan/cekfoto', 'cekfoto')->name('pelanggan.cekfoto');
         Route::get('/pelanggan/{kode_pelanggan}/getPiutangpelanggan', 'getPiutangpelanggan')->name('pelanggan.getPiutangpelanggan');
+        Route::get('/pelanggan/{kode_pelanggan}/getFakturkredit', 'getFakturkredit')->name('pelanggan.getFakturkredit');
     });
 
     Route::controller(WilayahController::class)->group(function () {
