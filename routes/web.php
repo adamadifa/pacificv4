@@ -908,8 +908,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/penjualan/{no_faktur}/generatefaktur', 'generatefaktur')->name('penjualan.generatefaktur')->can('penjualan.update');
 
         //AJAX REQUEST
-
-
+        Route::post('/penjualan/editproduk', 'editproduk')->name('penjualan.editproduk');
     });
     Route::controller(PembayaranpenjualanController::class)->group(function () {
         Route::get('/pembayaranpenjualan/{no_faktur}/create', 'create')->name('pembayaranpenjualan.create')->can('pembayaranpenjualan.create');

@@ -389,8 +389,9 @@ class PelangganController extends Controller
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
         $hari_ini = date('Y-m-d');
 
-        $saldo_awal = Saldoawalpiutangpelanggan::orderBy('tanggal', 'desc')->first();
-        $start_date = $saldo_awal->tanggal;
+        $sa = Saldoawalpiutangpelanggan::orderBy('tanggal', 'desc')->first();
+        $start_date = $sa != null ? $sa->tanggal : date('Y') . "-01-01";
+        $kode_saldo_awal = $sa != null ? $sa->kode_saldo_awal : null;
 
         $saldo_awal = Detailsaldoawalpiutangpelanggan::select(
             'marketing_penjualan.kode_pelanggan',
@@ -398,15 +399,16 @@ class PelangganController extends Controller
         )
             ->join('marketing_penjualan', 'marketing_saldoawal_piutang_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
-            ->where('kode_saldo_awal', $saldo_awal->kode_saldo_awal)
+            ->where('kode_saldo_awal', $kode_saldo_awal)
             ->groupBy('marketing_penjualan.kode_pelanggan')
             ->first();
 
+        $saldo = $saldo_awal != null ? $saldo_awal->jumlah : 0;
         $end_date = date('Y-m-t', strtotime($hari_ini));
 
         $pj = new Penjualan();
         $penjualan = $pj->getPenjualanpelangganbydate($start_date, $end_date, $kode_pelanggan)->first();
-        $sisa_piutang = $saldo_awal->jumlah + $penjualan->total_bruto -  $penjualan->total_potongan + $penjualan->total_ppn - $penjualan->total_retur - $penjualan->total_bayar;
+        $sisa_piutang = $saldo + $penjualan->total_bruto -  $penjualan->total_potongan + $penjualan->total_ppn - $penjualan->total_retur - $penjualan->total_bayar;
 
 
         return response()->json([

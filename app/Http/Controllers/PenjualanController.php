@@ -8,6 +8,7 @@ use App\Models\Detailgiro;
 use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
 use App\Models\Detailtransfer;
+use App\Models\Harga;
 use App\Models\Historibayarpenjualan;
 use App\Models\Pelanggan;
 use App\Models\Penjualan;
@@ -382,5 +383,16 @@ class PenjualanController extends Controller
             dd($e);
             return Redirect::back()->with(['warning' => 'No. Faktur Gagal Dibuat']);
         }
+    }
+
+
+    public function editproduk(Request $request)
+    {
+        $dataproduk = $request->dataproduk;
+        $data['dataproduk'] = $dataproduk;
+
+        $hrg = new Harga();
+        $data['harga'] = $hrg->getHargabypelanggan($dataproduk['kode_pelanggan']);
+        return view('marketing.penjualan.editproduk', $data);
     }
 }
