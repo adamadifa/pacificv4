@@ -10,7 +10,7 @@
 @section('navigasi')
    <span class="text-muted">Penjualan</span> / <span>Input Penjualan</span>
 @endsection
-<form action="{{ route('penjualan.cetaksuratjalanrange') }}" target="_blank" method="POST" id="formCetakfaktur">
+<form action="#" target="_blank" method="POST" id="formPenjualan">
    <input type="hidden" name="limit_pelanggan" id="limit_pelanggan">
    <input type="hidden" name="sisa_piutang" id="sisa_piutang">
    <div class="row">
@@ -82,7 +82,7 @@
                            <i class="ti ti-shopping-bag text-primary" style="font-size: 8rem"></i>
                         </div>
                         <div class="mt-2">
-                           <h1 style="font-size: 6.5rem">0</h1>
+                           <h1 style="font-size: 6.5rem" id="grandtotal_text">0</h1>
                         </div>
                      </div>
                   </div>
@@ -211,13 +211,13 @@
                            <div class="row">
                               <div class="col">
                                  <x-input-with-group label="AIDA" placeholder="Potongan AIDA"
-                                    name="potongan_aida" align="right" />
+                                    name="potongan_aida" align="right" money="true" readonly="true" />
                                  <x-input-with-group label="SWAN" placeholder="Potongan SWAN"
-                                    name="potongan_swan" align="right" />
+                                    name="potongan_swan" align="right" money="true" readonly="true" />
                                  <x-input-with-group label="STICK" placeholder="Potongan STICK"
-                                    name="potongan_stick" align="right" />
+                                    name="potongan_stick" align="right" money="true" readonly="true" />
                                  <x-input-with-group label="SAMBAL" placeholder="Potongan SAMBAL"
-                                    name="potongan_sambal" align="right" />
+                                    name="potongan_sambal" align="right" money="true" readonly="true" />
                               </div>
                            </div>
                         </div>
@@ -234,11 +234,11 @@
                            <div class="row">
                               <div class="col">
                                  <x-input-with-group label="AIDA" placeholder="Potongan Istimewa AIDA"
-                                    name="potis_aida" align="right" />
+                                    name="potis_aida" align="right" money="true" />
                                  <x-input-with-group label="SWAN" placeholder="Potongan Istimewa SWAN"
-                                    name="potis_swan" align="right" />
+                                    name="potis_swan" align="right" money="true" />
                                  <x-input-with-group label="STICK" placeholder="Potongan Istimewa STICK"
-                                    name="potis_stick" align="right" />
+                                    name="potis_stick" align="right" money="true" />
                               </div>
                            </div>
                         </div>
@@ -255,11 +255,11 @@
                            <div class="row">
                               <div class="col">
                                  <x-input-with-group label="AIDA" placeholder="Penyesuaian AIDA"
-                                    name="peny_aida" align="right" />
+                                    name="peny_aida" align="right" money="true" />
                                  <x-input-with-group label="SWAN" placeholder="Penyesuaian SWAN"
-                                    name="peny_swan" align="right" />
+                                    name="peny_swan" align="right" money="true" />
                                  <x-input-with-group label="STICK" placeholder="Penyesuaian STICK"
-                                    name="peny_stick" align="right" />
+                                    name="peny_stick" align="right" money="true" />
                               </div>
                            </div>
                         </div>
@@ -283,8 +283,37 @@
                                        <option value="K">KREDIT</option>
                                     </select>
                                  </div>
-                                 <x-input-with-icon label="Grand Total" name="grandtotal"
-                                    icon="ti ti-shopping-cart" align="right" />
+                                 <x-input-with-icon label="Grand Total" name="grandtotal" id="grandtotal"
+                                    icon="ti ti-shopping-cart" align="right" disabled="true" />
+                              </div>
+                           </div>
+                           <div class="row" id="jenis_bayar_tunai">
+                              <div class="col">
+                                 <div class="form-group mb-3">
+                                    <select name="jenis_bayar" id="jenis_bayar"
+                                       class="form-select">
+                                       <option value="">Jenis Bayar</option>
+                                       <option value="TN">CASH</option>
+                                       <option value="TR">TRANSFER</option>
+                                    </select>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="row" id="titipan">
+                              <div class="col">
+                                 <x-input-with-icon icon="ti ti-moneybag" name="titipan" money="true" align="right" label="Titipan" />
+                              </div>
+                           </div>
+                           <div class="row" id="voucher_tunai">
+                              <div class="col">
+                                 <x-input-with-icon icon="ti ti-tag" name="voucher" money="true" align="right" label="Voucher" />
+                              </div>
+                           </div>
+                           <div class="row">
+                              <div class="col">
+                                 <div class="form-group mb-3">
+                                    <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+                                 </div>
                               </div>
                            </div>
                         </div>
@@ -459,6 +488,7 @@
       //GetPiutang
 
       function getPiutang(kode_pelanggan) {
+         buttonDisable();
          $.ajax({
             url: `/pelanggan/${kode_pelanggan}/getPiutangpelanggan`,
             type: 'GET',
@@ -466,12 +496,14 @@
             success: function(response) {
                $("#sisa_piutang_text").text(convertToRupiah(response.data));
                $("#sisa_piutang").text(response.data);
+               buttonEnable();
             }
          });
       }
 
 
       function getFakturkredit(kode_pelanggan) {
+         buttonDisable();
          $.ajax({
             url: `/pelanggan/${kode_pelanggan}/getFakturkredit`,
             type: 'GET',
@@ -479,38 +511,67 @@
             success: function(response) {
                console.log(response);
                $("#jmlfaktur_kredit").text(convertToRupiah(response.data));
+               buttonEnable();
             }
          });
       }
 
+
+      function buttonDisable() {
+         $("#btnSimpan").prop('disabled', true);
+         $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..
+         `);
+      }
+
+      function buttonEnable() {
+         $("#btnSimpan").prop('disabled', false);
+         $("#btnSimpan").html(`<i class="ti ti-send me-1"></i>Submit`);
+      }
       //Get Pelanggan
       function getPelanggan(kode_pelanggan) {
+         buttonDisable();
          $.ajax({
             url: `/pelanggan/${kode_pelanggan}/getPelanggan`,
             type: "GET",
             cache: false,
             success: function(response) {
                //fill data to form
-               $('#kode_pelanggan').val(response.data.kode_pelanggan);
-               $('#nama_pelanggan').val(response.data.nama_pelanggan);
-               $('#latitude').text(response.data.latitude);
-               $('#longitude').text(response.data.longitude);
-               $('#no_hp_pelanggan').text(response.data.no_hp_pelanggan);
-               $('#limit_pelanggan_text').text(convertToRupiah(response.data.limit_pelanggan));
-               $('#limit_pelanggan').text(response.data.limit_pelanggan);
-               $('#alamat_pelanggan').text(response.data.alamat_pelanggan);
-               let fileFoto = response.data.foto;
-               checkFileExistence(fileFoto);
-               //Data Salesman
-               $('#kode_salesman').val(response.data.kode_salesman);
-               $('#nama_salesman').val(response.data.nama_salesman);
+               const status_aktif_pelanggan = response.data.status_aktif_pelanggan;
+               if (status_aktif_pelanggan === '0') {
+                  Swal.fire({
+                     title: "Oops!",
+                     text: "Pelanggan Tidak Dapat Bertransaksi, Silahkan Hubungi Admin Untuk Mengaktifkan Pelanggan !",
+                     icon: "warning",
+                     showConfirmButton: true,
+                  });
+               } else {
+                  $('#kode_pelanggan').val(response.data.kode_pelanggan);
+                  $('#nama_pelanggan').val(response.data.nama_pelanggan);
+                  $('#latitude').text(response.data.latitude);
+                  $('#longitude').text(response.data.longitude);
+                  $('#no_hp_pelanggan').text(response.data.no_hp_pelanggan);
+                  $('#limit_pelanggan_text').text(convertToRupiah(response.data.limit_pelanggan));
+                  $('#limit_pelanggan').text(response.data.limit_pelanggan);
+                  $('#alamat_pelanggan').text(response.data.alamat_pelanggan);
+                  let fileFoto = response.data.foto;
+                  checkFileExistence(fileFoto);
+                  //Data Salesman
+                  $('#kode_salesman').val(response.data.kode_salesman);
+                  $('#nama_salesman').val(response.data.nama_salesman);
 
-               //Get Piutang
-               getPiutang(kode_pelanggan);
-               //Get FaktuR Kredit
-               getFakturkredit(kode_pelanggan);
-               //open modal
-               $('#modalPelanggan').modal('hide');
+                  //Get Piutang
+                  getPiutang(kode_pelanggan);
+                  //Get FaktuR Kredit
+                  getFakturkredit(kode_pelanggan);
+                  //open modal
+                  $('#modalPelanggan').modal('hide');
+                  buttonEnable();
+               }
+
             }
          });
       }
@@ -530,11 +591,13 @@
 
       //GetProduk
       function getHarga(kode_pelanggan) {
+         buttonDisable();
          $.ajax({
             url: `/harga/${kode_pelanggan}/gethargabypelanggan`,
             type: 'GET',
             cache: false,
             success: function(response) {
+               buttonEnable();
                $("#loadmodal").html(response);
             }
          });
@@ -832,6 +895,9 @@
             }
          });
       });
+
+
+
       let currentRow;
       $(document).on('click', '.edit', function(e) {
          e.preventDefault();
@@ -884,8 +950,8 @@
          });
       });
 
-      $(document).on('submit', '#formEditproduk', function(e) {
-         e.preventDefault();
+      $(document).on('submit', '#formEditproduk', function(event) {
+         event.preventDefault();
          let kode_harga = $(this).find("#kode_harga").val();
          let nama_produk = $(this).find("#kode_harga").find(':selected').text();
          let jml_dus = $(this).find("#jml_dus").val();
@@ -1089,6 +1155,8 @@
 
       $("#jenis_transaksi").change(function() {
          loadsubtotal();
+         showhidetunai();
+         showhidekredit();
       });
 
       function hitungdiskonAida() {
@@ -1132,10 +1200,75 @@
          const potonganSwanVal = $("#potongan_swan").val();
          const potongan_swan = potonganSwanVal != "" ? parseInt(potonganSwanVal.replace(/\./g, '')) : 0;
 
-         const grandtotal = parseInt(subtotal) - parseInt(potongan_swan);
+         const potonganAidaVal = $("#potongan_aida").val();
+         const potongan_aida = potonganAidaVal != "" ? parseInt(potonganAidaVal.replace(/\./g, '')) : 0;
 
+         const potonganStickVal = $("#potongan_stick").val();
+         const potongan_stick = potonganStickVal != "" ? parseInt(potonganStickVal.replace(/\./g, '')) : 0;
+
+         const potonganSambalVal = $("#potongan_sambal").val();
+         const potongan_sambal = potonganSambalVal != "" ? parseInt(potonganSambalVal.replace(/\./g, '')) : 0;
+
+         const total_potongan = parseInt(potongan_swan) + parseInt(potongan_aida) + parseInt(potongan_stick) + parseInt(potongan_sambal);
+
+         //Potongan Istimewa
+         const potisAidaVal = $("#potis_aida").val();
+         const potis_aida = potisAidaVal != "" ? parseInt(potisAidaVal.replace(/\./g, '')) : 0;
+
+         const potisSwanVal = $("#potis_swan").val();
+         const potis_swan = potisSwanVal != "" ? parseInt(potisSwanVal.replace(/\./g, '')) : 0;
+
+         const potisStickVal = $("#potis_stick").val();
+         const potis_stick = potisStickVal != "" ? parseInt(potisStickVal.replace(/\./g, '')) : 0;
+
+         const total_potongan_istimewa = parseInt(potis_aida) + parseInt(potis_swan) + parseInt(potis_stick);
+
+         //Penyesuaian
+         const penyAidaVal = $("#peny_aida").val();
+         const peny_aida = penyAidaVal != "" ? parseInt(penyAidaVal.replace(/\./g, '')) : 0;
+
+         const penySwanVal = $("#peny_swan").val();
+         const peny_swan = penySwanVal != "" ? parseInt(penySwanVal.replace(/\./g, '')) : 0;
+
+         const penyStickVal = $("#peny_stick").val();
+         const peny_stick = penyStickVal != "" ? parseInt(penyStickVal.replace(/\./g, '')) : 0;
+
+         const total_penyesuaian = parseInt(peny_aida) + parseInt(peny_swan) + parseInt(peny_stick);
+
+
+
+         const grandtotal = parseInt(subtotal) - parseInt(total_potongan) - parseInt(total_potongan_istimewa) - parseInt(total_penyesuaian);
+         $("#grandtotal_text").text(convertToRupiah(grandtotal));
+         $("#grandtotal").val(convertToRupiah(grandtotal));
          console.log(grandtotal);
       }
+
+      $("#potongan_aida, #potongan_swan, #potongan_stick, #potongan_sambal, #potis_aida, #potis_swan, #potis_stick, #peny_aida, #peny_swan, #peny_stick ").on('keyup keydown', function() {
+         calculateGrandtotal();
+      });
+
+      function showhidetunai() {
+         const jenis_transaksi = $("#jenis_transaksi").val();
+         if (jenis_transaksi == 'T') {
+            $("#jenis_bayar_tunai").show();
+            $("#voucher_tunai").show();
+         } else {
+            $("#jenis_bayar_tunai").hide();
+            $("#voucher_tunai").hide();
+         }
+      }
+
+      function showhidekredit() {
+         const jenis_transaksi = $("#jenis_transaksi").val();
+         if (jenis_transaksi == 'K') {
+            $("#titipan").show();
+         } else {
+            $("#titipan").hide();
+         }
+      }
+
+      showhidetunai();
+      showhidekredit();
    });
 </script>
 @endpush

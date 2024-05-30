@@ -60,7 +60,8 @@
       </div>
    </div>
    <div class="form-group mb-3">
-      <button class="btn btn-primary w-100" type="submit"><i class="ti ti-send me-1"></i>Update</button>
+      <button class="btn btn-primary w-100" type="submit" id="btnUpdateproduk"><i class="ti ti-send me-1"></i>Update</button>
+      {{-- <a href="#" id="btnTest">Test</a> --}}
    </div>
 </form>
 <script>

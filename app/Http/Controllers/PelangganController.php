@@ -357,7 +357,8 @@ class PelangganController extends Controller
             'longitude',
             'limit_pelanggan',
             'foto',
-            'alamat_pelanggan'
+            'alamat_pelanggan',
+            'status_aktif_pelanggan'
         )
             ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('kode_pelanggan', Crypt::decrypt($kode_pelanggan))->first();
