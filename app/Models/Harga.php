@@ -26,15 +26,17 @@ class Harga extends Model
         $cek_harga_pelanggan = Harga::where('kode_pelanggan', $kode_pelanggan)->count();
 
         if ($cek_harga_pelanggan > 0) {
-            $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon')
                 ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
                 ->where('kode_pelanggan', $kode_pelanggan)
                 ->where('status_aktif_produk', 1)
                 ->orderBy('nama_produk')
                 ->get();
         } else if (str_contains($pelanggan->nama_pelanggan, 'KPBN') || str_contains($pelanggan->nama_pelanggan, 'WSI')) {
-            $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon')
                 ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
                 ->where('kode_kategori_salesman', 'CV')
                 ->where('kode_cabang', $kode_cabang)
                 ->where('status_aktif_produk', 1)
@@ -42,8 +44,9 @@ class Harga extends Model
                 ->orderBy('nama_produk')
                 ->get();
         } else if (str_contains($pelanggan->nama_pelanggan, 'SMM')) {
-            $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon')
                 ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
                 ->where('status_aktif_produk', 1)
                 ->where('status_promo', 1)
                 ->where('kode_cabang', $kode_cabang)
@@ -51,8 +54,9 @@ class Harga extends Model
                 ->get();
         } else {
             if ($kode_kategori_salesman == 'TC') {
-                $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+                $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon')
                     ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                    ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
                     ->where('kode_kategori_salesman', 'CV')
                     ->where('kode_cabang', $kode_cabang)
                     ->where('status_aktif_produk', 1)
@@ -65,8 +69,9 @@ class Harga extends Model
                     ->get();
 
                 if ($kode_cabang == 'BKI') {
-                    $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+                    $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon')
                         ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                        ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
                         ->where('kode_kategori_salesman', 'CV')
                         ->where('kode_cabang', $kode_cabang)
                         ->where('status_aktif_produk', 1)
@@ -81,8 +86,9 @@ class Harga extends Model
                         ->get();
                 }
             } else {
-                $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+                $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon')
                     ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                    ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
                     ->where('kode_kategori_salesman', $kode_kategori_salesman)
                     ->where('kode_cabang', $kode_cabang)
                     ->where('status_aktif_produk', 1)

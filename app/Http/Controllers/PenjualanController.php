@@ -8,6 +8,7 @@ use App\Models\Detailgiro;
 use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
 use App\Models\Detailtransfer;
+use App\Models\Diskon;
 use App\Models\Harga;
 use App\Models\Historibayarpenjualan;
 use App\Models\Pelanggan;
@@ -140,7 +141,11 @@ class PenjualanController extends Controller
                 })
                 ->make();
         }
-        return view('marketing.penjualan.create');
+
+        $diskon = Diskon::orderBy('kode_kategori_diskon')->get();
+        $diskon_json = json_encode($diskon);
+        $data['diskon'] = $diskon_json;
+        return view('marketing.penjualan.create', $data);
     }
     public function show($no_faktur)
     {

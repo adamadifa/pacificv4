@@ -26,7 +26,8 @@
                   harga_pack = "{{ formatAngka($d->harga_pack) }}"
                   harga_pcs = "{{ formatAngka($d->harga_pcs) }}"
                   isi_pcs_dus="{{ $d->isi_pcs_dus }}"
-                  isi_pcs_pack = "{{ $d->isi_pcs_pack }}">
+                  isi_pcs_pack = "{{ $d->isi_pcs_pack }}"
+                  kode_kategori_diskon = "{{ $d->kode_kategori_diskon }}">
                   <i class="ti ti-external-link"></i>
                </a>
             </td>
