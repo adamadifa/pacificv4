@@ -100,7 +100,8 @@
         form.submit(function(e) {
 
             const sisabayar = $("#sisabayar").text();
-            let sisa_bayar = parseInt(sisabayar.replace(/\./g, ''));
+            let sb = sisabayar == "" ? 0 : sisabayar;
+            let sisa_bayar = parseInt(sb.replace(/\./g, ''));
             const tanggal = $(this).find("#tanggal").val();
             const jml = $(this).find("#jumlah").val();
             const jumlah = parseInt(jml.replace(/\./g, ''));

@@ -23,7 +23,8 @@
                 <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
                     @if (Storage::disk('public')->exists('/pelanggan/' . $penjualan->foto) && !empty($penjualan->foto))
                         <img src="{{ getfotoPelanggan($penjualan->foto) }}" alt="user image"
-                            class="d-block  ms-0 ms-sm-4 rounded user-profile-img" height="150">
+                            class="d-block  ms-0 ms-sm-4 rounded" height="150" width="200"
+                            style="object-fit: cover">
                     @else
                         <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
                             class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
@@ -715,6 +716,7 @@
         <!--/ Activity Timeline -->
     </div>
 </div>
+
 <!--/ User Profile Content -->
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection

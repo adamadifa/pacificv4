@@ -898,6 +898,9 @@ Route::middleware('auth')->group(function () {
     Route::controller(PenjualanController::class)->group(function () {
         Route::get('/penjualan', 'index')->name('penjualan.index')->can('penjualan.index');
         Route::get('/penjualan/create', 'create')->name('penjualan.create')->can('penjualan.create');
+        Route::post('/penjualan/store', 'store')->name('penjualan.store')->can('penjualan.store');
+        Route::delete('/penjualan/{no_faktur}/delete', 'destroy')->name('penjualan.delete')->can('penjualan.delete');
+
         Route::get('/penjualan/{no_faktur}/show', 'show')->name('penjualan.show')->can('penjualan.show');
         Route::get('/penjualan/{no_faktur}/cetakfaktur', 'cetakfaktur')->name('penjualan.cetakfaktur')->can('penjualan.cetakfaktur');
         Route::get('/penjualan/{no_faktur}/{type}/cetaksuratjalan', 'cetaksuratjalan')->name('penjualan.cetaksuratjalan')->can('penjualan.cetaksuratjalan');
@@ -907,7 +910,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/penjualan/cetaksuratjalanrange', 'cetaksuratjalanrange')->name('penjualan.cetaksuratjalanrange')->can('penjualan.cetaksuratjalan');
         Route::get('/penjualan/{no_faktur}/generatefaktur', 'generatefaktur')->name('penjualan.generatefaktur')->can('penjualan.update');
 
+
         //AJAX REQUEST
+        Route::post('/penjualan/generatenofaktur', 'generatenofaktur')->name('penjualan.generatenofaktur');
         Route::post('/penjualan/editproduk', 'editproduk')->name('penjualan.editproduk');
     });
     Route::controller(PembayaranpenjualanController::class)->group(function () {

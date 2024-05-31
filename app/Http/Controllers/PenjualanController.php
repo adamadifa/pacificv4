@@ -400,4 +400,268 @@ class PenjualanController extends Controller
         $data['harga'] = $hrg->getHargabypelanggan($dataproduk['kode_pelanggan']);
         return view('marketing.penjualan.editproduk', $data);
     }
+
+
+    public function generatenofaktur(Request $request)
+    {
+        $salesman = Salesman::join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('kode_salesman', $request->kode_salesman)->first();
+        $tahun = date('y', strtotime($request->tanggal));
+        $thn = date('Y', strtotime($request->tanggal));
+        $start_date = "2024-03-01";
+        if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
+            $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('tanggal', '>=', $start_date)
+                ->where('kode_sales', $salesman->kode_sales)
+                ->where('salesman.kode_cabang', $salesman->kode_cabang)
+                ->whereRaw('YEAR(tanggal)="' . $thn . '"')
+                ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
+                ->orderBy('no_faktur', 'desc')
+                ->first();
+            $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
+            $no_faktur = buatkode($last_no_faktur, $salesman->kode_pt . $tahun . $salesman->kode_sales, 6);
+            return $no_faktur;
+        } else {
+            return 0;
+        }
+    }
+
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'no_faktur' => 'required',
+            'tanggal' => 'required',
+            'kode_pelanggan' => 'required',
+            'kode_salesman' => 'required',
+            'jenis_transaksi' => 'required'
+        ]);
+
+        //No. Faktur Otomatis
+        $salesman = Salesman::join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('kode_salesman', $request->kode_salesman)->first();
+        $tahun = date('y', strtotime($request->tanggal));
+        $thn = date('Y', strtotime($request->tanggal));
+        $start_date = "2024-03-01";
+
+        $tanggal = $request->tanggal;
+        $kode_pelanggan = $request->kode_pelanggan;
+        $kode_salesman = $request->kode_salesman;
+        $keterangan = $request->keterangan;
+        //Potongan
+        $potongan_aida = toNumber($request->potongan_aida);
+        $potongan_swan = toNumber($request->potongan_swan);
+        $potongan_stick = toNumber($request->potongan_stick);
+        $potongan_sambal = toNumber($request->potongan_sambal);
+        $total_potongan =  $potongan_aida + $potongan_swan + $potongan_stick + $potongan_sambal;
+
+        //Potongan Istimewa
+        $potis_aida = toNumber($request->potis_aida);
+        $potis_swan = toNumber($request->potis_swan);
+        $potis_stick = toNumber($request->potis_stick);
+        $total_potongan_istimewa = $potis_aida + $potis_swan + $potis_stick;
+
+        //Penyesuaian 
+        $peny_aida = toNumber($request->peny_aida);
+        $peny_swan = toNumber($request->peny_swan);
+        $peny_stick = toNumber(($request->peny_stick));
+        $total_penyesuaian = $peny_aida + $peny_swan + $peny_stick;
+
+        $jenis_transaksi = $request->jenis_transaksi;
+        $jenis_bayar = $jenis_transaksi == "K" ? "TP" : $request->jenis_bayar;
+        $titipan = $jenis_transaksi == "T" ? 0 : toNumber($request->titipan);
+        $voucher = $jenis_transaksi == "K" ? 0 : toNumber($request->voucher);
+
+        $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+
+        $ljt = !empty($pelanggan->ljt) ? $pelanggan->ljt : 14;
+        $jatuh_tempo =  $jatuhtempo = date("Y-m-d", strtotime("+$ljt day", strtotime($tanggal)));
+
+
+        //Detail Produk
+        $kode_harga = $request->kode_harga_produk;
+        $isi_pcs_dus = $request->isi_pcs_dus_produk;
+        $isi_pcs_pack = $request->isi_pcs_pack_produk;
+        $hargadus = $request->harga_dus_produk;
+        $hargapack = $request->harga_pack_produk;
+        $hargapcs = $request->harga_pcs_produk;
+        $jumlah = $request->jumlah_produk;
+        $status_promosi = $request->status_promosi_produk;
+        $total_bruto = 0;
+
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+            //No. Faktur
+            if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
+                $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                    ->where('tanggal', '>=', $start_date)
+                    ->where('kode_sales', $salesman->kode_sales)
+                    ->where('salesman.kode_cabang', $salesman->kode_cabang)
+                    ->whereRaw('YEAR(tanggal)="' . $thn . '"')
+                    ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
+                    ->orderBy('no_faktur', 'desc')
+                    ->first();
+                $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
+                $no_faktur = buatkode($last_no_faktur, $salesman->kode_pt . $tahun . $salesman->kode_sales, 6);
+            } else {
+                $no_faktur =  $request->no_faktur;
+            }
+
+            $ceknofaktur = Penjualan::where('no_faktur', $no_faktur)->count();
+            if ($ceknofaktur > 0) {
+                return Redirect::back()->with(messageError('No. Faktur Suda Digunakan'));
+            }
+
+
+            for ($i = 0; $i < count($kode_harga); $i++) {
+
+                $jml = convertToduspackpcsv3($isi_pcs_dus[$i], $isi_pcs_pack[$i], $jumlah[$i]);
+                $jml_dus = $jml[0];
+                $jml_pack = $jml[1];
+                $jml_pcs = $jml[2];
+                $harga_dus = toNumber($hargadus[$i]);
+                $harga_pack = toNumber($hargapack[$i]);
+                $harga_pcs = toNumber($hargapcs[$i]);
+                $subtotal = ($jml_dus * $harga_dus) + ($jml_pack * $harga_pack) + ($jml_pcs * $harga_pcs);
+                $total_bruto += $subtotal;
+                $detail[] = [
+                    'no_faktur' => $no_faktur,
+                    'kode_harga' => $kode_harga[$i],
+                    'jumlah' => $jumlah[$i],
+                    'harga_dus' => $harga_dus,
+                    'harga_pack' => $harga_pack,
+                    'harga_pcs' => $harga_pcs,
+                    'subtotal' => $subtotal,
+                    'status_promosi' => $status_promosi[$i]
+                ];
+            }
+
+
+
+            $penjualan = new Penjualan();
+            $sisa_piutang = $penjualan->getPiutangpelanggan($kode_pelanggan);
+
+            $faktur_kredit = $penjualan->getFakturkredit($kode_pelanggan);
+            $max_faktur = $faktur_kredit['jml_faktur'];
+            $unpaid_faktur = $faktur_kredit['unpaid_faktur'];
+            $siklus_pembayaran = $faktur_kredit['siklus_pembayaran'];
+
+            $total_netto = $total_bruto - $total_potongan - $total_potongan_istimewa - $total_penyesuaian;
+            $total_piutang = $sisa_piutang + $total_netto;
+
+            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan &&  $siklus_pembayaran === '0') {
+                return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
+            } else if ($jenis_transaksi == 'K' && $total_netto > $pelanggan->limit_pelanggan && $siklus_pembayaran == '1') {
+                return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
+            } else if ($unpaid_faktur > $max_faktur && $siklus_pembayaran === '0') {
+                return Redirect::back()->with(messageError('Melebihi Jumlah Faktur Kredit'));
+            }
+
+
+
+            //No. Bukti Pembayaran
+            $lastbayar = Historibayarpenjualan::whereRaw('LEFT(no_bukti,6) = "' . $salesman->kode_cabang . date('y') . '-"')
+                ->orderBy("no_bukti", "desc")
+                ->first();
+            $last_no_bukti = $lastbayar != null ? $lastbayar->no_bukti : '';
+            $no_bukti  = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
+
+
+            //Insert Penjualan
+            Penjualan::create([
+                'no_faktur' => $no_faktur,
+                'tanggal' => $tanggal,
+                'kode_pelanggan' => $kode_pelanggan,
+                'kode_salesman' => $kode_salesman,
+                'keterangan' => $keterangan,
+
+                'potongan_aida' => $potongan_aida,
+                'potongan_swan' => $potongan_swan,
+                'potongan_stick' => $potongan_stick,
+                'potongan_sambal' => $potongan_sambal,
+                'potongan' => $total_potongan,
+
+                'potis_aida' => $potis_aida,
+                'potis_swan' => $potis_swan,
+                'potis_stick' => $potis_stick,
+                'potongan_istimewa' => $total_potongan_istimewa,
+
+                'peny_aida' => $peny_aida,
+                'peny_swan' => $peny_swan,
+                'peny_stick' => $peny_stick,
+                'penyesuaian' => $total_penyesuaian,
+
+                'jenis_transaksi' => $jenis_transaksi,
+                'jenis_bayar' => $jenis_bayar,
+
+                'jatuh_tempo' => $jatuh_tempo,
+                'id_user' => auth()->user()->id
+
+            ]);
+
+
+            Detailpenjualan::insert($detail);
+
+            //Pembayaran
+
+            //Jika Transaksi Tunai
+            if ($jenis_transaksi == "T") {
+                Historibayarpenjualan::create([
+                    'no_bukti' => $no_bukti,
+                    'no_faktur' => $no_faktur,
+                    'tanggal' => $tanggal,
+                    'jenis_bayar' => $jenis_bayar,
+                    'jumlah' => $total_netto - $voucher,
+                    'kode_salesman' => $kode_salesman,
+                    'id_user' => auth()->user()->id
+                ]);
+
+                //Jika Ada Voucher 
+                if (!empty($voucher)) {
+                    Historibayarpenjualan::create([
+                        'no_bukti' => $jenis_bayar == 'TR' ? $no_bukti : buatkode($no_bukti, $salesman->kode_cabang . date('y') . "-", 6),
+                        'no_faktur' => $no_faktur,
+                        'tanggal' => $tanggal,
+                        'jenis_bayar' => $jenis_bayar,
+                        'jumlah' => $voucher,
+                        'voucher' => 1,
+                        'jenis_voucher' => 2,
+                        'kode_salesman' => $kode_salesman,
+                        'id_user' => auth()->user()->id
+                    ]);
+                }
+            }
+            DB::commit();
+            return redirect(route('penjualan.show', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            //throw $th;
+            DB::rollBack();
+            dd($e);
+        }
+    }
+
+    public function destroy($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($penjualan->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            //Hapus Surat Jalan
+            Penjualan::where('no_faktur', $no_faktur)->delete();
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
