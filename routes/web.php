@@ -899,6 +899,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/penjualan', 'index')->name('penjualan.index')->can('penjualan.index');
         Route::get('/penjualan/create', 'create')->name('penjualan.create')->can('penjualan.create');
         Route::post('/penjualan/store', 'store')->name('penjualan.store')->can('penjualan.store');
+        Route::get('/penjualan/{no_faktur}/edit', 'edit')->name('penjualan.edit')->can('penjualan.edit');
         Route::delete('/penjualan/{no_faktur}/delete', 'destroy')->name('penjualan.delete')->can('penjualan.delete');
 
         Route::get('/penjualan/{no_faktur}/show', 'show')->name('penjualan.show')->can('penjualan.show');

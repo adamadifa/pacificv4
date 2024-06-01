@@ -22,9 +22,9 @@
             <div class="col">
                <div class="card">
                   <div class="card-body">
-                     <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode" />
+                     <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode" value="{{ $penjualan->no_faktur }}" disabled="true" />
                      <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" value="{{ $penjualan->tanggal }}" />
                      <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user"
                         readonly="true" />
                      <input type="hidden" id="kode_pelanggan" name="kode_pelanggan">
@@ -33,7 +33,7 @@
                      <input type="hidden" name="kode_salesman" id="kode_salesman">
                      <div class="form-group mb-3">
                         <textarea name="keterangan" class="form-control" id="" cols="30" rows="5" id="keterangan"
-                           placeholder="Keterangan"></textarea>
+                           placeholder="Keterangan">{{ $penjualan->keterangan }}</textarea>
                      </div>
                   </div>
                </div>
@@ -192,11 +192,49 @@
                                        <th>Harga</th>
                                     </tr>
                                  </thead>
-                                 <tbody id="loadproduk"></tbody>
+                                 <tbody id="loadproduk">
+                                    @php
+                                       $subtotal = 0;
+                                    @endphp
+                                    @foreach ($detail as $d)
+                                       @php
+                                          $jml = convertToduspackpcsv3($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah);
+                                          $jml_dus = $jml[0];
+                                          $jml_pack = $jml[1];
+                                          $jml_pcs = $jml[2];
+
+                                          $subtotal += $d->subtotal;
+                                       @endphp
+                                       <tr>
+                                          <td>{{ $d->kode_harga }}</td>
+                                          <td>{{ $d->nama_produk }}</td>
+                                          <td class="text-center">{{ $jml_dus }}</td>
+                                          <td class="text-end">{{ formatAngka($d->harga_dus) }}</td>
+                                          <td class="text-center">{{ $jml_pack }}</td>
+                                          <td class="text-end">{{ formatAngka($d->jml_pack) }}</td>
+                                          <td class="text-center">{{ $jml_pcs }}</td>
+                                          <td class="text-end">{{ formatAngka($d->jml_pcs) }}</td>
+                                          <td class="text-end">
+                                             {{ formatAngka($d->subtotal) }}
+                                             <input type="hidden" name="subtotal[]" class="subtotal" value="{{ $d->subtotal }}" />
+                                          </td>
+                                          <td>
+                                             <div class="d-flex">
+                                                <div>
+                                                   <a href="#" key="" class="edit me-2"><i class="ti ti-edit text-success"></i></a>
+                                                </div>
+                                                <div>
+                                                   <a href="#" key="" class="delete"><i class="ti ti-trash text-danger"></i></a>
+                                                </div>
+                                             </div>
+                                          </td>
+                                       </tr>
+                                    @endforeach
+                                 </tbody>
                                  <tfoot class="table-dark">
                                     <tr>
                                        <td colspan="8">SUBTOTAL</td>
-                                       <td class="text-end" id="subtotal"></td>
+                                       <td class="text-end" id="subtotal">{{ formatAngka($subtotal) }}</td>
                                        <td></td>
                                     </tr>
                                  </tfoot>
@@ -217,17 +255,18 @@
                            </div>
                            <div class="row">
                               <div class="col">
+
                                  <x-input-with-group label="AIDA" placeholder="Potongan AIDA"
-                                    name="potongan_aida" align="right" money="true"
+                                    name="potongan_aida" align="right" money="true" value="{{ formatAngka($penjualan->potongan_aida) }}"
                                     readonly="true" />
                                  <x-input-with-group label="SWAN" placeholder="Potongan SWAN"
-                                    name="potongan_swan" align="right" money="true"
+                                    name="potongan_swan" align="right" money="true" value="{{ formatAngka($penjualan->potongan_swan) }}"
                                     readonly="true" />
                                  <x-input-with-group label="STICK" placeholder="Potongan STICK"
-                                    name="potongan_stick" align="right" money="true"
+                                    name="potongan_stick" align="right" money="true" value="{{ formatAngka($penjualan->potongan_stick) }}"
                                     readonly="true" />
                                  <x-input-with-group label="SAMBAL" placeholder="Potongan SAMBAL"
-                                    name="potongan_sambal" align="right" money="true"
+                                    name="potongan_sambal" align="right" money="true" value="{{ formatAngka($penjualan->potongan_sambal) }}"
                                     readonly="true" />
                               </div>
                            </div>
@@ -245,11 +284,11 @@
                            <div class="row">
                               <div class="col">
                                  <x-input-with-group label="AIDA" placeholder="Potongan Istimewa AIDA"
-                                    name="potis_aida" align="right" money="true" />
+                                    name="potis_aida" align="right" money="true" value="{{ formatAngka($penjualan->potis_aida) }}" />
                                  <x-input-with-group label="SWAN" placeholder="Potongan Istimewa SWAN"
-                                    name="potis_swan" align="right" money="true" />
+                                    name="potis_swan" align="right" money="true" value="{{ formatAngka($penjualan->potis_swan) }}" />
                                  <x-input-with-group label="STICK" placeholder="Potongan Istimewa STICK"
-                                    name="potis_stick" align="right" money="true" />
+                                    name="potis_stick" align="right" money="true" value="{{ formatAngka($penjualan->potis_stick) }}" />
                               </div>
                            </div>
                         </div>
@@ -266,11 +305,11 @@
                            <div class="row">
                               <div class="col">
                                  <x-input-with-group label="AIDA" placeholder="Penyesuaian AIDA"
-                                    name="peny_aida" align="right" money="true" />
+                                    name="peny_aida" align="right" money="true" value="{{ formatAngka($penjualan->peny_aida) }}" />
                                  <x-input-with-group label="SWAN" placeholder="Penyesuaian SWAN"
-                                    name="peny_swan" align="right" money="true" />
+                                    name="peny_swan" align="right" money="true" value="{{ formatAngka($penjualan->peny_swan) }}" />
                                  <x-input-with-group label="STICK" placeholder="Penyesuaian STICK"
-                                    name="peny_stick" align="right" money="true" />
+                                    name="peny_stick" align="right" money="true" value="{{ formatAngka($penjualan->peny_stick) }}" />
                               </div>
                            </div>
                         </div>
@@ -341,40 +380,14 @@
 
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
 <x-modal-form id="modaleditProduk" size="" show="loadmodaleditProduk" title="" />
-<div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
-   aria-hidden="true">
-   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel18">Data Pelanggan</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-         </div>
-         <div class="modal-body">
-            <div class="table-responsive">
-               <table class="table" id="tabelpelanggan" width="100%">
-                  <thead class="table-dark">
-                     <tr>
-                        <th>No.</th>
-                        <th>Kode</th>
-                        <th>Nama Pelanggan</th>
-                        <th>Salesman</th>
-                        <th>Wilayah</th>
-                        <th>Status</th>
-                        <th>#</th>
-                     </tr>
-                  </thead>
-                  <tbody></tbody>
-               </table>
-            </div>
-         </div>
-      </div>
-   </div>
-</div>
 
 @endsection
 @push('myscript')
 <script type="text/javascript">
    $(document).ready(function() {
+
+      const kode_pelanggan = "{{ Crypt::encrypt($penjualan->kode_pelanggan) }}";
+
       function convertToRupiah(number) {
          if (number) {
             var rupiah = "";
@@ -395,77 +408,8 @@
             return number;
          }
       }
-      $('#tabelpelanggan').DataTable({
-         processing: true,
-         serverSide: true,
-         order: [
-            [2, 'asc']
-         ],
-         ajax: '{{ url()->current() }}',
-         bAutoWidth: false,
-         columns: [{
-               data: 'DT_RowIndex',
-               name: 'DT_RowIndex',
-               orderable: false,
-               searchable: false,
-               width: '5%'
-            },
-            {
-               data: 'kode_pelanggan',
-               name: 'kode_pelanggan',
-               orderable: true,
-               searchable: true,
-               width: '10%'
-            },
-            {
-               data: 'nama_pelanggan',
-               name: 'nama_pelanggan',
-               orderable: true,
-               searchable: true,
-               width: '30%'
-            },
-            {
-               data: 'nama_salesman',
-               name: 'nama_salesman',
-               orderable: true,
-               searchable: false,
-               width: '20%'
-            },
 
-            {
-               data: 'nama_wilayah',
-               name: 'nama_wilayah',
-               orderable: true,
-               searchable: false,
-               width: '30%'
-            },
-            {
-               data: 'status_pelanggan',
-               name: 'status_pelanggan',
-               orderable: true,
-               searchable: false,
-               width: '30%'
-            },
-            {
-               data: 'action',
-               name: 'action',
-               orderable: false,
-               searchable: false,
-               width: '5%'
-            }
-         ],
 
-         rowCallback: function(row, data, index) {
-            if (data.status_pelanggan == "NonAktif") {
-               $("td", row).addClass("bg-danger text-white");
-            }
-         }
-      });
-
-      $("#nama_pelanggan").on('click focus', function(e) {
-         e.preventDefault();
-         $("#modalPelanggan").modal("show");
-      });
 
 
 
@@ -606,7 +550,7 @@
                   getPiutang(kode_pelanggan);
                   //Get FaktuR Kredit
                   getFakturkredit(kode_pelanggan);
-                  generatenofaktur();
+
                   //open modal
                   $('#modalPelanggan').modal('hide');
                   buttonEnable();
@@ -615,20 +559,8 @@
             }
          });
       }
-      //Pilih Pelanggan
-      $('#tabelpelanggan tbody').on('click', '.pilihpelanggan', function(e) {
-         e.preventDefault();
-         let kode_pelanggan = $(this).attr('kode_pelanggan');
-         getPelanggan(kode_pelanggan);
-         $("#loadproduk").html('');
-         $("#potongan_swan").val(0);
-         $("#potongan_aida").val(0);
-         $("#potongan_sp").val(0);
-         $("#potongan_stick").val(0);
-         $("#potongan_sambal").val(0);
-         loadsubtotal();
 
-      });
+      getPelanggan(kode_pelanggan);
 
 
       //GetProduk
@@ -1174,7 +1106,7 @@
       }
 
 
-
+      //   loadsubtotal();
       // Function to calculate total quantity based on category
       function calculateTotalQuantityByCategory(category) {
          let totalQuantity = 0;
@@ -1317,6 +1249,8 @@
          console.log(grandtotal);
       }
 
+      calculateGrandtotal();
+
       $("#potongan_aida, #potongan_swan, #potongan_stick, #potongan_sambal, #potis_aida, #potis_swan, #potis_stick, #peny_aida, #peny_swan, #peny_stick ")
          .on('keyup keydown', function() {
             calculateGrandtotal();
@@ -1397,33 +1331,6 @@
          }
       });
 
-      function generatenofaktur() {
-         var tanggal = $("#tanggal").val();
-         var kode_salesman = $("#kode_salesman").val();
-         buttonDisable();
-         $.ajax({
-            type: 'POST',
-            url: '/penjualan/generatenofaktur',
-            data: {
-               _token: "{{ csrf_token() }}",
-               tanggal: tanggal,
-               kode_salesman: kode_salesman
-            },
-            cache: false,
-            success: function(respond) {
-               buttonEnable();
-               if (respond !== '0') {
-                  $("#no_faktur").val(respond);
-                  $("#no_faktur").prop('readonly', true);
-               }
-
-            }
-         });
-      }
-
-      $("#tanggal,#kode_salesman").change(function() {
-         generatenofaktur();
-      });
    });
 </script>
 @endpush

@@ -147,6 +147,21 @@ class PenjualanController extends Controller
         $data['diskon'] = $diskon_json;
         return view('marketing.penjualan.create', $data);
     }
+
+    public function edit($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $data['penjualan'] = Penjualan::where('no_faktur', $no_faktur)->first();
+        $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->where('no_faktur', $no_faktur)
+            ->get();
+        $diskon = Diskon::orderBy('kode_kategori_diskon')->get();
+        $diskon_json = json_encode($diskon);
+        $data['diskon'] = $diskon_json;
+        return view('marketing.penjualan.edit', $data);
+    }
     public function show($no_faktur)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
@@ -461,7 +476,7 @@ class PenjualanController extends Controller
         $potis_stick = toNumber($request->potis_stick);
         $total_potongan_istimewa = $potis_aida + $potis_swan + $potis_stick;
 
-        //Penyesuaian 
+        //Penyesuaian
         $peny_aida = toNumber($request->peny_aida);
         $peny_swan = toNumber($request->peny_swan);
         $peny_stick = toNumber(($request->peny_stick));
@@ -611,17 +626,21 @@ class PenjualanController extends Controller
 
             //Jika Transaksi Tunai
             if ($jenis_transaksi == "T") {
-                Historibayarpenjualan::create([
-                    'no_bukti' => $no_bukti,
-                    'no_faktur' => $no_faktur,
-                    'tanggal' => $tanggal,
-                    'jenis_bayar' => $jenis_bayar,
-                    'jumlah' => $total_netto - $voucher,
-                    'kode_salesman' => $kode_salesman,
-                    'id_user' => auth()->user()->id
-                ]);
 
-                //Jika Ada Voucher 
+                if ($jenis_bayar == "TN") {
+                    Historibayarpenjualan::create([
+                        'no_bukti' => $no_bukti,
+                        'no_faktur' => $no_faktur,
+                        'tanggal' => $tanggal,
+                        'jenis_bayar' => $jenis_bayar,
+                        'jumlah' => $total_netto - $voucher,
+                        'kode_salesman' => $kode_salesman,
+                        'id_user' => auth()->user()->id
+                    ]);
+                }
+
+
+                //Jika Ada Voucher
                 if (!empty($voucher)) {
                     Historibayarpenjualan::create([
                         'no_bukti' => $jenis_bayar == 'TR' ? $no_bukti : buatkode($no_bukti, $salesman->kode_cabang . date('y') . "-", 6),
@@ -631,6 +650,18 @@ class PenjualanController extends Controller
                         'jumlah' => $voucher,
                         'voucher' => 1,
                         'jenis_voucher' => 2,
+                        'kode_salesman' => $kode_salesman,
+                        'id_user' => auth()->user()->id
+                    ]);
+                }
+            } else {
+                if (!empty($titipan)) {
+                    Historibayarpenjualan::create([
+                        'no_bukti' => $no_bukti,
+                        'no_faktur' => $no_faktur,
+                        'tanggal' => $tanggal,
+                        'jenis_bayar' => $jenis_bayar,
+                        'jumlah' => $titipan,
                         'kode_salesman' => $kode_salesman,
                         'id_user' => auth()->user()->id
                     ]);
