@@ -148,112 +148,6 @@ class PenjualanController extends Controller
         return view('marketing.penjualan.create', $data);
     }
 
-    public function edit($no_faktur)
-    {
-        $no_faktur = Crypt::decrypt($no_faktur);
-        $data['penjualan'] = Penjualan::where('no_faktur', $no_faktur)->first();
-        $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
-            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
-            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
-            ->where('no_faktur', $no_faktur)
-            ->get();
-        $diskon = Diskon::orderBy('kode_kategori_diskon')->get();
-        $diskon_json = json_encode($diskon);
-        $data['diskon'] = $diskon_json;
-        return view('marketing.penjualan.edit', $data);
-    }
-    public function show($no_faktur)
-    {
-        $no_faktur = Crypt::decrypt($no_faktur);
-        $data['kepemilikan'] = config('pelanggan.kepemilikan');
-        $data['lama_berjualan'] = config('pelanggan.lama_berjualan');
-        $data['status_outlet'] = config('pelanggan.status_outlet');
-        $data['type_outlet'] = config('pelanggan.type_outlet');
-        $data['cara_pembayaran'] = config('pelanggan.cara_pembayaran');
-        $data['lama_langganan'] = config('pelanggan.lama_langganan');
-        $data['jenis_bayar'] = config('penjualan.jenis_bayar');
-        $pnj = new Penjualan();
-        $penjualan = $pnj->getFaktur($no_faktur);
-        $data['penjualan'] = $penjualan;
-
-        $detailpenjualan = new Penjualan();
-        $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
-
-        $data['retur'] = Detailretur::select(
-            'tanggal',
-            'marketing_retur_detail.*',
-            'jenis_retur',
-            'produk_harga.kode_produk',
-            'nama_produk',
-            'isi_pcs_dus',
-            'isi_pcs_pack',
-            'subtotal'
-        )
-            ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
-            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
-            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
-            ->where('no_faktur', $no_faktur)
-            ->get();
-
-        $data['historibayar'] = Historibayarpenjualan::select(
-            'marketing_penjualan_historibayar.*',
-            'nama_salesman',
-            'marketing_penjualan_historibayar_giro.kode_giro',
-            'no_giro',
-            'giro_to_cash',
-            'nama_voucher'
-        )
-
-            ->leftJoin('jenis_voucher', 'marketing_penjualan_historibayar.jenis_voucher', '=', 'jenis_voucher.id')
-            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
-            ->leftJoin('marketing_penjualan_giro', 'marketing_penjualan_historibayar_giro.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
-            ->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman')
-            ->where('no_faktur', $no_faktur)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $data['giro'] = Detailgiro::select(
-            'no_giro',
-            'marketing_penjualan_giro.tanggal',
-            'bank_pengirim',
-            'marketing_penjualan_giro_detail.*',
-            'jatuh_tempo',
-            'status',
-            'tanggal_ditolak',
-            'keterangan',
-            'marketing_penjualan_historibayar.tanggal as tanggal_diterima',
-            'marketing_penjualan_historibayar_giro.no_bukti as no_bukti_giro',
-            'nama_salesman'
-        )
-            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
-            ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
-            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_giro.kode_giro', '=', 'marketing_penjualan_historibayar_giro.kode_giro')
-            ->leftJoin('marketing_penjualan_historibayar', 'marketing_penjualan_historibayar_giro.no_bukti', '=', 'marketing_penjualan_historibayar.no_bukti')
-            ->where('marketing_penjualan_giro_detail.no_faktur', $no_faktur)
-            ->get();
-
-        $data['transfer'] = Detailtransfer::select(
-            'marketing_penjualan_transfer_detail.*',
-            'marketing_penjualan_transfer.tanggal',
-            'bank_pengirim',
-            'jatuh_tempo',
-            'status',
-            'tanggal_ditolak',
-            'keterangan',
-            'marketing_penjualan_historibayar.tanggal as tanggal_diterima',
-            'nama_salesman'
-        )
-            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
-            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
-            ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_transfer.kode_transfer', '=', 'marketing_penjualan_historibayar_transfer.kode_transfer')
-            ->leftJoin('marketing_penjualan_historibayar', 'marketing_penjualan_historibayar_transfer.no_bukti', '=', 'marketing_penjualan_historibayar.no_bukti')
-            ->where('marketing_penjualan_transfer_detail.no_faktur', $no_faktur)
-            ->get();
-
-        //dd($data['detail']);
-        $data['checkin'] = Checkinpenjualan::where('tanggal', $penjualan->tanggal)->where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
-        return view('marketing.penjualan.show', $data);
-    }
 
 
     public function cetakfaktur($no_faktur)
@@ -490,7 +384,7 @@ class PenjualanController extends Controller
         $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
 
         $ljt = !empty($pelanggan->ljt) ? $pelanggan->ljt : 14;
-        $jatuh_tempo =  $jatuhtempo = date("Y-m-d", strtotime("+$ljt day", strtotime($tanggal)));
+        $jatuh_tempo = date("Y-m-d", strtotime("+$ljt day", strtotime($tanggal)));
 
 
         //Detail Produk
@@ -673,6 +567,367 @@ class PenjualanController extends Controller
             //throw $th;
             DB::rollBack();
             dd($e);
+        }
+    }
+
+    public function edit($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $pj = new Penjualan();
+        $penjualan = $pj->getFaktur($no_faktur);
+        $data['penjualan'] = $penjualan;
+        $total_netto = $penjualan->total_bruto - $penjualan->total_retur - $penjualan->potongan - $penjualan->potongan_istimewa - $penjualan->penyesuaian + $penjualan->ppn;
+        $data['total_netto'] = $total_netto;
+        $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_diskon')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->where('no_faktur', $no_faktur)
+            ->get();
+        $titipan = Historibayarpenjualan::where('tanggal', $penjualan->tanggal)
+            ->where('jenis_bayar', 'TP')
+            ->where('voucher', 0)
+            ->where('no_faktur', $no_faktur)
+            ->orderBy('no_bukti')
+            ->first();
+
+        $voucher = Historibayarpenjualan::where('tanggal', $penjualan->tanggal)
+            ->where('voucher', 1)
+            ->where('jenis_voucher', 2)
+            ->where('jenis_bayar', 'TN')
+            ->where('no_faktur', $no_faktur)
+            ->orderBy('no_bukti')
+            ->first();
+
+
+        $data['titipan'] = $titipan == null ? 0 : $titipan->jumlah;
+        $data['voucher'] = $voucher == null ? 0 : $voucher->jumlah;
+        $diskon = Diskon::orderBy('kode_kategori_diskon')->get();
+        $diskon_json = json_encode($diskon);
+        $data['diskon'] = $diskon_json;
+        return view('marketing.penjualan.edit', $data);
+    }
+    public function show($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $data['kepemilikan'] = config('pelanggan.kepemilikan');
+        $data['lama_berjualan'] = config('pelanggan.lama_berjualan');
+        $data['status_outlet'] = config('pelanggan.status_outlet');
+        $data['type_outlet'] = config('pelanggan.type_outlet');
+        $data['cara_pembayaran'] = config('pelanggan.cara_pembayaran');
+        $data['lama_langganan'] = config('pelanggan.lama_langganan');
+        $data['jenis_bayar'] = config('penjualan.jenis_bayar');
+        $pnj = new Penjualan();
+        $penjualan = $pnj->getFaktur($no_faktur);
+        $data['penjualan'] = $penjualan;
+
+        $detailpenjualan = new Penjualan();
+        $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
+
+        $data['retur'] = Detailretur::select(
+            'tanggal',
+            'marketing_retur_detail.*',
+            'jenis_retur',
+            'produk_harga.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'isi_pcs_pack',
+            'subtotal'
+        )
+            ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->where('no_faktur', $no_faktur)
+            ->get();
+
+        $data['historibayar'] = Historibayarpenjualan::select(
+            'marketing_penjualan_historibayar.*',
+            'nama_salesman',
+            'marketing_penjualan_historibayar_giro.kode_giro',
+            'no_giro',
+            'giro_to_cash',
+            'nama_voucher'
+        )
+
+            ->leftJoin('jenis_voucher', 'marketing_penjualan_historibayar.jenis_voucher', '=', 'jenis_voucher.id')
+            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
+            ->leftJoin('marketing_penjualan_giro', 'marketing_penjualan_historibayar_giro.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('no_faktur', $no_faktur)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $data['giro'] = Detailgiro::select(
+            'no_giro',
+            'marketing_penjualan_giro.tanggal',
+            'bank_pengirim',
+            'marketing_penjualan_giro_detail.*',
+            'jatuh_tempo',
+            'status',
+            'tanggal_ditolak',
+            'keterangan',
+            'marketing_penjualan_historibayar.tanggal as tanggal_diterima',
+            'marketing_penjualan_historibayar_giro.no_bukti as no_bukti_giro',
+            'nama_salesman'
+        )
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_giro.kode_giro', '=', 'marketing_penjualan_historibayar_giro.kode_giro')
+            ->leftJoin('marketing_penjualan_historibayar', 'marketing_penjualan_historibayar_giro.no_bukti', '=', 'marketing_penjualan_historibayar.no_bukti')
+            ->where('marketing_penjualan_giro_detail.no_faktur', $no_faktur)
+            ->get();
+
+        $data['transfer'] = Detailtransfer::select(
+            'marketing_penjualan_transfer_detail.*',
+            'marketing_penjualan_transfer.tanggal',
+            'bank_pengirim',
+            'jatuh_tempo',
+            'status',
+            'tanggal_ditolak',
+            'keterangan',
+            'marketing_penjualan_historibayar.tanggal as tanggal_diterima',
+            'nama_salesman'
+        )
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_transfer.kode_transfer', '=', 'marketing_penjualan_historibayar_transfer.kode_transfer')
+            ->leftJoin('marketing_penjualan_historibayar', 'marketing_penjualan_historibayar_transfer.no_bukti', '=', 'marketing_penjualan_historibayar.no_bukti')
+            ->where('marketing_penjualan_transfer_detail.no_faktur', $no_faktur)
+            ->get();
+
+        //dd($data['detail']);
+        $data['checkin'] = Checkinpenjualan::where('tanggal', $penjualan->tanggal)->where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
+        return view('marketing.penjualan.show', $data);
+    }
+
+    public function update($no_faktur, Request $request)
+    {
+
+        $request->validate([
+            'tanggal' => 'required'
+        ]);
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $pj = new Penjualan();
+        $penjualan = $pj->getFaktur($no_faktur);
+        $jenis_transaksi = $penjualan->jenis_transaksi;
+        $jenis_bayar = $penjualan->jenis_bayar;
+        $titipan = $jenis_transaksi == "T" ? 0 : toNumber($request->titipan);
+        $voucher = $jenis_transaksi == "K" ? 0 : toNumber($request->voucher);
+        $keterangan = $request->keterangan;
+        $total_netto_penjualan = $penjualan->total_bruto - $penjualan->total_retur - $penjualan->potongan - $penjualan->potongan_istimewa - $penjualan->penyesuaian + $penjualan->ppn;
+        $total_bruto = 0;
+        //Salesman 
+        $salesman = Salesman::where('kode_salesman', $penjualan->kode_salesman)->first();
+
+        //Pelanggan 
+        $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
+        //Potongan
+        $potongan_aida = toNumber($request->potongan_aida);
+        $potongan_swan = toNumber($request->potongan_swan);
+        $potongan_stick = toNumber($request->potongan_stick);
+        $potongan_sambal = toNumber($request->potongan_sambal);
+        $total_potongan =  $potongan_aida + $potongan_swan + $potongan_stick + $potongan_sambal;
+
+        //Potongan Istimewa
+        $potis_aida = toNumber($request->potis_aida);
+        $potis_swan = toNumber($request->potis_swan);
+        $potis_stick = toNumber($request->potis_stick);
+        $total_potongan_istimewa = $potis_aida + $potis_swan + $potis_stick;
+
+        //Penyesuaian
+        $peny_aida = toNumber($request->peny_aida);
+        $peny_swan = toNumber($request->peny_swan);
+        $peny_stick = toNumber(($request->peny_stick));
+        $total_penyesuaian = $peny_aida + $peny_swan + $peny_stick;
+
+        $ljt = !empty($pelanggan->ljt) ? $pelanggan->ljt : 14;
+        $jatuh_tempo = date("Y-m-d", strtotime("+$ljt day", strtotime($request->tanggal)));
+
+
+        //Detail Produk
+        $kode_harga = $request->kode_harga_produk;
+        $isi_pcs_dus = $request->isi_pcs_dus_produk;
+        $isi_pcs_pack = $request->isi_pcs_pack_produk;
+        $hargadus = $request->harga_dus_produk;
+        $hargapack = $request->harga_pack_produk;
+        $hargapcs = $request->harga_pcs_produk;
+        $jumlah = $request->jumlah_produk;
+        $status_promosi = $request->status_promosi_produk;
+        $total_bruto = 0;
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            $cektutuplaporanpenjualan = cektutupLaporan($penjualan->tanggal, "penjualan");
+            if ($cektutuplaporanpenjualan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            for ($i = 0; $i < count($kode_harga); $i++) {
+
+                $jml = convertToduspackpcsv3($isi_pcs_dus[$i], $isi_pcs_pack[$i], $jumlah[$i]);
+                $jml_dus = $jml[0];
+                $jml_pack = $jml[1];
+                $jml_pcs = $jml[2];
+                $harga_dus = toNumber($hargadus[$i]);
+                $harga_pack = toNumber($hargapack[$i]);
+                $harga_pcs = toNumber($hargapcs[$i]);
+                $subtotal = ($jml_dus * $harga_dus) + ($jml_pack * $harga_pack) + ($jml_pcs * $harga_pcs);
+                $total_bruto += $subtotal;
+                $detail[] = [
+                    'no_faktur' => $no_faktur,
+                    'kode_harga' => $kode_harga[$i],
+                    'jumlah' => $jumlah[$i],
+                    'harga_dus' => $harga_dus,
+                    'harga_pack' => $harga_pack,
+                    'harga_pcs' => $harga_pcs,
+                    'subtotal' => $subtotal,
+                    'status_promosi' => $status_promosi[$i]
+                ];
+            }
+
+            $sisa_piutang = $penjualan->getPiutangpelanggan($penjualan->kode_pelanggan) - $total_netto_penjualan;
+
+            $faktur_kredit = $penjualan->getFakturkredit($penjualan->kode_pelanggan);
+            $max_faktur = $faktur_kredit['jml_faktur'];
+            $unpaid_faktur = $faktur_kredit['unpaid_faktur'] - 1;
+            $siklus_pembayaran = $faktur_kredit['siklus_pembayaran'];
+
+            $total_netto = $total_bruto - $total_potongan - $total_potongan_istimewa - $total_penyesuaian;
+            $total_piutang = $sisa_piutang + $total_netto;
+
+            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan &&  $siklus_pembayaran === '0') {
+                return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
+            } else if ($jenis_transaksi == 'K' && $total_netto > $pelanggan->limit_pelanggan && $siklus_pembayaran == '1') {
+                return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
+            } else if ($unpaid_faktur > $max_faktur && $siklus_pembayaran === '0') {
+                return Redirect::back()->with(messageError('Melebihi Jumlah Faktur Kredit'));
+            }
+
+            //No. Bukti Pembayaran
+            $lastbayar = Historibayarpenjualan::whereRaw('LEFT(no_bukti,6) = "' . $salesman->kode_cabang . date('y') . '-"')
+                ->orderBy("no_bukti", "desc")
+                ->first();
+            $last_no_bukti = $lastbayar != null ? $lastbayar->no_bukti : '';
+            $no_bukti  = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
+            //Update Penjualan
+            Penjualan::where('no_faktur', $no_faktur)->update([
+                'tanggal' => $request->tanggal,
+                'keterangan' => $keterangan,
+
+                'potongan_aida' => $potongan_aida,
+                'potongan_swan' => $potongan_swan,
+                'potongan_stick' => $potongan_stick,
+                'potongan_sambal' => $potongan_sambal,
+                'potongan' => $total_potongan,
+
+                'potis_aida' => $potis_aida,
+                'potis_swan' => $potis_swan,
+                'potis_stick' => $potis_stick,
+                'potongan_istimewa' => $total_potongan_istimewa,
+
+                'peny_aida' => $peny_aida,
+                'peny_swan' => $peny_swan,
+                'peny_stick' => $peny_stick,
+                'penyesuaian' => $total_penyesuaian,
+
+                'jatuh_tempo' => $jatuh_tempo,
+                'id_user' => auth()->user()->id
+            ]);
+
+            //Hapus Detail Penjualan Sebelmnya
+            Detailpenjualan::where('no_faktur', $no_faktur)->delete();
+            Detailpenjualan::insert($detail);
+
+            if ($jenis_transaksi == 'T') {
+                $cekbayar = Historibayarpenjualan::where('no_faktur', $no_faktur)
+                    ->where('voucher', 0)
+                    ->where('tanggal', $request->tanggal)
+                    ->orderBy('no_bukti')
+                    ->first();
+                $cekvoucher = Historibayarpenjualan::where('no_faktur', $no_faktur)
+                    ->where('voucher', 1)
+                    ->where('jenis_voucher', 2)
+                    ->where('jenis_bayar', 'TN')
+                    ->where('tanggal', $request->tanggal)
+                    ->orderBy('no_bukti')
+                    ->first();
+
+
+                if ($jenis_bayar == "TN") {
+                    if ($cekbayar != null) {
+                        Historibayarpenjualan::where('no_bukti', $cekbayar->no_bukti)->update([
+                            'tanggal' => $request->tanggal,
+                            'jumlah' => $total_netto - $voucher,
+                            'id_user' => auth()->user()->id
+                        ]);
+                    }
+                }
+
+                //Jika Ada Voucher
+                if (!empty($voucher)) {
+                    if ($cekvoucher != null) {
+                        Historibayarpenjualan::where('no_bukti', $cekvoucher->no_bukti)
+                            ->update([
+                                'tanggal' => $request->tanggal,
+                                'jenis_bayar' => $jenis_bayar,
+                                'jumlah' => $voucher,
+                                'id_user' => auth()->user()->id
+                            ]);
+                    } else {
+                        Historibayarpenjualan::create([
+                            'no_bukti' => $jenis_bayar == 'TR' ? $no_bukti : buatkode($no_bukti, $salesman->kode_cabang . date('y') . "-", 6),
+                            'no_faktur' => $no_faktur,
+                            'tanggal' => $request->tanggal,
+                            'jenis_bayar' => $jenis_bayar,
+                            'jumlah' => $voucher,
+                            'voucher' => 1,
+                            'jenis_voucher' => 2,
+                            'kode_salesman' => $penjualan->kode_salesman,
+                            'id_user' => auth()->user()->id
+                        ]);
+                    }
+                } else {
+                    if ($cekvoucher != null) {
+                        Historibayarpenjualan::where('no_bukti', $cekvoucher->no_bukti)->delete();
+                    }
+                }
+            } else {
+                $cektitipan = Historibayarpenjualan::where('no_faktur', $no_faktur)
+                    ->where('voucher', 0)
+                    ->where('tanggal', $request->tanggal)
+                    ->orderBy('no_bukti')
+                    ->first();
+                if ($cektitipan != null) {
+                    $no_bukti_titipan = $cektitipan->no_bukti;
+                    //Update Titipan
+                    Historibayarpenjualan::where('no_bukti', $no_bukti_titipan)->update([
+                        'tanggal' => $request->tanggal,
+                        'jumlah' => $titipan,
+                        'id_user' => auth()->user()->id
+                    ]);
+                } else {
+                    if (!empty($titipan)) {
+                        Historibayarpenjualan::create([
+                            'no_bukti' => $no_bukti,
+                            'no_faktur' => $no_faktur,
+                            'tanggal' => $request->tanggal,
+                            'jenis_bayar' => $jenis_bayar,
+                            'jumlah' => $titipan,
+                            'kode_salesman' => $penjualan->kode_salesman,
+                            'id_user' => auth()->user()->id
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+            return redirect(route('penjualan.show', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            //throw $th;
         }
     }
 
