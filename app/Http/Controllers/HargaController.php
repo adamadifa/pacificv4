@@ -157,4 +157,12 @@ class HargaController extends Controller
 
         return view('datamaster.harga.gethargabypelanggan', compact('harga'));
     }
+
+    public function gethargareturbypelanggan($kode_pelanggan)
+    {
+        $hrg = new Harga();
+        $harga = $hrg->getHargabypelanggan($kode_pelanggan);
+
+        return view('datamaster.harga.gethargareturbypelanggan', compact('harga'));
+    }
 }

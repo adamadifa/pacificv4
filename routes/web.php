@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
 use App\Http\Controllers\BarangkeluargudanglogistikController;
@@ -56,6 +57,7 @@ use App\Http\Controllers\RejectgudangjadiController;
 use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\RepackgudangcabangController;
 use App\Http\Controllers\RepackgudangjadiController;
+use App\Http\Controllers\ReturController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaldoawalbarangproduksiController;
 use App\Http\Controllers\SaldoawalgudangbahanController;
@@ -224,6 +226,7 @@ Route::middleware('auth')->group(function () {
 
         //AjaxRequest
         Route::get('/harga/{kode_pelanggan}/gethargabypelanggan', 'gethargabypelanggan')->name('harga.gethargabypelanggan');
+        Route::get('/harga/{kode_pelanggan}/gethargareturbypelanggan', 'gethargareturbypelanggan')->name('harga.gethargareturbypelanggan');
     });
 
     Route::controller(PelangganController::class)->group(function () {
@@ -241,6 +244,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/cekfoto', 'cekfoto')->name('pelanggan.cekfoto');
         Route::get('/pelanggan/{kode_pelanggan}/getPiutangpelanggan', 'getPiutangpelanggan')->name('pelanggan.getPiutangpelanggan');
         Route::get('/pelanggan/{kode_pelanggan}/getFakturkredit', 'getFakturkredit')->name('pelanggan.getFakturkredit');
+        Route::get('/pelanggan/getpelangganjson', 'getPelangganjson')->name('pelanggan.getpelangganjson');
     });
 
     Route::controller(WilayahController::class)->group(function () {
@@ -916,6 +920,20 @@ Route::middleware('auth')->group(function () {
         //AJAX REQUEST
         Route::post('/penjualan/generatenofaktur', 'generatenofaktur')->name('penjualan.generatenofaktur');
         Route::post('/penjualan/editproduk', 'editproduk')->name('penjualan.editproduk');
+        Route::post('/penjualan/getfakturbypelanggan', 'getfakturbypelanggan')->name('penjualan.getfakturbypelanggan');
+    });
+
+    Route::controller(ReturController::class)->group(function () {
+        Route::get('/retur', 'index')->name('retur.index')->can('retur.index');
+        Route::get('/retur/create', 'create')->name('retur.create')->can('retur.create');
+        Route::post('/retur/store', 'store')->name('retur.store')->can('retur.store');
+        Route::get('/retur/{no_retur}/edit', 'edit')->name('retur.edit')->can('retur.edit');
+        Route::put('/retur/{no_retur}/update', 'update')->name('retur.update')->can('retur.update');
+        Route::get('/retur/{no_retur}/show', 'show')->name('retur.show')->can('penjualan.show');
+        Route::delete('/retur/{no_retur}/delete', 'destroy')->name('retur.delete')->can('penjualan.delete');
+
+        //AJAX REQUEST
+        Route::post('/retur/editproduk', 'editproduk')->name('retur.editproduk');
     });
     Route::controller(PembayaranpenjualanController::class)->group(function () {
         Route::get('/pembayaranpenjualan/{no_faktur}/create', 'create')->name('pembayaranpenjualan.create')->can('pembayaranpenjualan.create');
@@ -940,6 +958,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembayarantransfer/{no_faktur}/{kode_giro}/edit', 'edit')->name('pembayarantransfer.edit')->can('pembayarantransfer.edit');
         Route::put('/pembayarantransfer/{no_faktur}/{kode_giro}/update', 'update')->name('pembayarantransfer.update')->can('pembayarantransfer.update');
         Route::delete('/pembayarantransfer/{no_faktur}/{kode_giro}/delete', 'destroy')->name('pembayarantransfer.delete')->can('pembayarantransfer.delete');
+    });
+
+    Route::controller(AjuanlimitkreditController::class)->group(function () {
+        Route::get('/ajuanlimit', 'index')->name('ajuanlimit.index')->can('ajuanlimit.index');
+        Route::get('/ajuanlimit/create', 'create')->name('ajuanlimit.create')->can('ajuanlimit.create');
+
+        //AJAX REQUEST
+        Route::post('/ajuanlimit/gettopupterakhir', 'gettopupTerakhir')->name('ajuanlimit.gettopupterakhir');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

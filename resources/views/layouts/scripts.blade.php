@@ -53,136 +53,143 @@
 
  <!-- LEAFLET-->
  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
 
  <script>
-     $(function() {
-         $(".flatpickr-date").flatpickr({
-             enable: [{
-                 from: "{{ $start_periode }}",
-                 to: "{{ $end_periode }}"
-             }, ]
-         });
+    $(function() {
+       $(".flatpickr-date").flatpickr({
+          enable: [{
+             from: "{{ $start_periode }}",
+             to: "{{ $end_periode }}"
+          }, ]
+       });
 
-     });
+    });
  </script>
  <!-- Main JS -->
  @if ($message = Session::get('success'))
-     <script>
-         toastr.options.showEasing = 'swing';
-         toastr.options.hideEasing = 'linear';
-         toastr.options.progressBar = true;
-         toastr.success("Berhasil", "{{ $message }}", {
-             timeOut: 3000
-         });
-     </script>
+    <script>
+       toastr.options.showEasing = 'swing';
+       toastr.options.hideEasing = 'linear';
+       toastr.options.progressBar = true;
+       toastr.success("Berhasil", "{{ $message }}", {
+          timeOut: 3000
+       });
+    </script>
  @endif
 
  @if ($message = Session::get('error'))
-     <script>
-         toastr.options.showEasing = 'swing';
-         toastr.options.hideEasing = 'linear';
-         toastr.options.progressBar = true;
-         toastr.error("Gagal", "{{ $message }}", {
-             timeOut: 3000
-         });
-     </script>
+    <script>
+       toastr.options.showEasing = 'swing';
+       toastr.options.hideEasing = 'linear';
+       toastr.options.progressBar = true;
+       toastr.error("Gagal", "{{ $message }}", {
+          timeOut: 3000
+       });
+    </script>
  @endif
 
  @if ($message = Session::get('warning'))
-     <script>
-         toastr.options.showEasing = 'swing';
-         toastr.options.hideEasing = 'linear';
-         toastr.options.progressBar = true;
-         toastr.warning("Warning", "{{ $message }}", {
-             timeOut: 3000
-         });
-     </script>
+    <script>
+       toastr.options.showEasing = 'swing';
+       toastr.options.hideEasing = 'linear';
+       toastr.options.progressBar = true;
+       toastr.warning("Warning", "{{ $message }}", {
+          timeOut: 3000
+       });
+    </script>
  @endif
 
  @if ($errors->any())
-     @php
-         $err = '';
-     @endphp
-     @foreach ($errors->all() as $error)
-         @php
-             $err .= $error;
-         @endphp
-     @endforeach
-     <script>
-         toastr.options.showEasing = 'swing';
-         toastr.options.hideEasing = 'linear';
-         toastr.options.progressBar = true;
-         toastr.error(" Gagal", "{{ $err }}", {
-             timeOut: 3000
-         });
-     </script>
+    @php
+      $err = '';
+    @endphp
+    @foreach ($errors->all() as $error)
+       @php
+          $err .= $error;
+       @endphp
+    @endforeach
+    <script>
+       toastr.options.showEasing = 'swing';
+       toastr.options.hideEasing = 'linear';
+       toastr.options.progressBar = true;
+       toastr.error(" Gagal", "{{ $err }}", {
+          timeOut: 3000
+       });
+    </script>
  @endif
  <script>
-     $('.delete-confirm').click(function(event) {
-         var form = $(this).closest("form");
-         var name = $(this).data("name");
-         event.preventDefault();
-         Swal.fire({
-             title: `Apakah Anda Yakin Ingin Menghapus Data Ini ?`,
-             text: "Jika dihapus maka data akan hilang permanent.",
-             icon: "warning",
-             buttons: true,
-             dangerMode: true,
-             showCancelButton: true,
-             confirmButtonColor: "#554bbb",
-             cancelButtonColor: "#d33",
-             confirmButtonText: "Yes, Hapus Saja!"
-         }).then((result) => {
-             /* Read more about isConfirmed, isDenied below */
-             if (result.isConfirmed) {
-                 form.submit();
-             }
-         });
-     });
+    $('.delete-confirm').click(function(event) {
+       var form = $(this).closest("form");
+       var name = $(this).data("name");
+       event.preventDefault();
+       Swal.fire({
+          title: `Apakah Anda Yakin Ingin Menghapus Data Ini ?`,
+          text: "Jika dihapus maka data akan hilang permanent.",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+          showCancelButton: true,
+          confirmButtonColor: "#554bbb",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Hapus Saja!"
+       }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+             form.submit();
+          }
+       });
+    });
 
 
-     $('.cancel-confirm').click(function(event) {
-         var form = $(this).closest("form");
-         var name = $(this).data("name");
-         event.preventDefault();
-         Swal.fire({
-             title: `Apakah Anda Yakin Ingin Membatalkan Data Ini ?`,
-             text: "Data ini akan dibatalkan.",
-             icon: "warning",
-             buttons: true,
-             dangerMode: true,
-             showCancelButton: true,
-             confirmButtonColor: "#554bbb",
-             cancelButtonColor: "#d33",
-             confirmButtonText: "Yes, Batalkan Saja Saja!"
-         }).then((result) => {
-             /* Read more about isConfirmed, isDenied below */
-             if (result.isConfirmed) {
-                 form.submit();
-             }
-         });
-     });
+    $('.cancel-confirm').click(function(event) {
+       var form = $(this).closest("form");
+       var name = $(this).data("name");
+       event.preventDefault();
+       Swal.fire({
+          title: `Apakah Anda Yakin Ingin Membatalkan Data Ini ?`,
+          text: "Data ini akan dibatalkan.",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+          showCancelButton: true,
+          confirmButtonColor: "#554bbb",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Batalkan Saja Saja!"
+       }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+             form.submit();
+          }
+       });
+    });
 
 
-     function SwalWarning(name, message) {
-         Swal.fire({
-             title: "Oops!",
-             text: message,
-             icon: "warning",
-             showConfirmButton: true,
-             didClose: (e) => {
-                 $("#" + name).focus();
-             },
-         });
-     }
+    function SwalWarning(name, message) {
+       Swal.fire({
+          title: "Oops!",
+          text: message,
+          icon: "warning",
+          showConfirmButton: true,
+          didClose: (e) => {
+             $("#" + name).focus();
+          },
+       });
+    }
+
+    $(document).on('show.bs.modal', '.modal', function() {
+       const zIndex = 1090 + 10 * $('.modal:visible').length;
+       $(this).css('z-index', zIndex);
+       setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
+          .addClass('modal-stack'));
+    });
  </script>
 
  <script>
-     $(".money").maskMoney();
+    $(".money").maskMoney();
  </script>
 
  <script src="{{ asset('/assets/js/main.js') }}"></script>

@@ -566,7 +566,8 @@ class PenjualanController extends Controller
         } catch (\Exception $e) {
             //throw $th;
             DB::rollBack();
-            dd($e);
+            return Redirect::back()->with(messageError($e->getMessage()));
+            //dd($e);
         }
     }
 
@@ -715,10 +716,10 @@ class PenjualanController extends Controller
         $keterangan = $request->keterangan;
         $total_netto_penjualan = $penjualan->total_bruto - $penjualan->total_retur - $penjualan->potongan - $penjualan->potongan_istimewa - $penjualan->penyesuaian + $penjualan->ppn;
         $total_bruto = 0;
-        //Salesman 
+        //Salesman
         $salesman = Salesman::where('kode_salesman', $penjualan->kode_salesman)->first();
 
-        //Pelanggan 
+        //Pelanggan
         $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
         //Potongan
         $potongan_aida = toNumber($request->potongan_aida);
@@ -873,7 +874,7 @@ class PenjualanController extends Controller
                         Historibayarpenjualan::where('no_bukti', $cekvoucher->no_bukti)
                             ->update([
                                 'tanggal' => $request->tanggal,
-                                'jenis_bayar' => $jenis_bayar,
+                                'jenis_bayar' => 'TN',
                                 'jumlah' => $voucher,
                                 'id_user' => auth()->user()->id
                             ]);
@@ -931,6 +932,15 @@ class PenjualanController extends Controller
         }
     }
 
+    public function getfakturbypelanggan(Request $request)
+    {
+        $kode_pelanggan  = $request->kode_pelanggan;
+        $listfaktur = Penjualan::where('kode_pelanggan', $kode_pelanggan)->orderBy('created_at', 'desc')->limit(5)->get();
+        echo "<option value=''>Pilih Faktur</option>";
+        foreach ($listfaktur as $d) {
+            echo "<option value='$d->no_faktur'>$d->no_faktur</option>";
+        }
+    }
     public function destroy($no_faktur)
     {
         $no_faktur = Crypt::decrypt($no_faktur);

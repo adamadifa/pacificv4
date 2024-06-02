@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class PelangganController extends Controller
 {
@@ -348,19 +349,12 @@ class PelangganController extends Controller
     public function getPelanggan($kode_pelanggan)
     {
         $pelanggan = Pelanggan::select(
-            'pelanggan.kode_pelanggan',
-            'nama_pelanggan',
-            'pelanggan.kode_salesman',
+            'pelanggan.*',
             'nama_salesman',
-            'no_hp_pelanggan',
-            'latitude',
-            'longitude',
-            'limit_pelanggan',
-            'foto',
-            'alamat_pelanggan',
-            'status_aktif_pelanggan'
+            'nama_cabang'
         )
             ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('kode_pelanggan', Crypt::decrypt($kode_pelanggan))->first();
         return response()->json([
             'success' => true,
@@ -409,5 +403,30 @@ class PelangganController extends Controller
             'message' => 'Jumlah Faktur Kredit Belum Lunas',
             'data'    => $faktur_kredit
         ]);
+    }
+
+
+    public function getPelangganjson(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Pelanggan::query();
+            $query->select(
+                'pelanggan.*',
+                'wilayah.nama_wilayah',
+                'salesman.nama_salesman',
+                DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan")
+            );
+            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+            $pelanggan = $query;
+            return DataTables::of($pelanggan)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 }

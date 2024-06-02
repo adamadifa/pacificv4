@@ -95,15 +95,15 @@
                      <table class="table table-bordered ">
                         <thead class="table-dark">
                            <tr>
-                              <th>No. Faktur</th>
-                              <th>Tanggal</th>
-                              <th>Nama Pelanggan</th>
+                              <th style="width: 10%">No. Faktur</th>
+                              <th style="width: 10%">Tanggal</th>
+                              <th style="width: 15%">Nama Pelanggan</th>
                               <th>Nama Cabang</th>
                               <th>Salesman</th>
                               <th>Total</th>
                               <th>JT</th>
                               <th>Status</th>
-                              <th>#</th>
+                              <th style="width: 10%">#</th>
                            </tr>
                         </thead>
                         <tbody>

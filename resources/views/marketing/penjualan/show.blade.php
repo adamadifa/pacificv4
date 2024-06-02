@@ -272,16 +272,6 @@
                                  $jumlah_pack = $jumlah[1];
                                  $jumlah_pcs = $jumlah[2];
                                  $subtotal += $d->subtotal;
-                                 if ($penjualan->total_bayar == $total_netto) {
-                                     $color = 'success';
-                                     $ket = 'LUNAS';
-                                 } elseif ($penjualan->total_bayar > $total_netto) {
-                                     $color = 'info';
-                                     $ket = 'LEBIH BAYAR';
-                                 } else {
-                                     $color = 'danger';
-                                     $ket = 'BELUM LUNAS';
-                                 }
 
                                  if ($d->status_promosi == '1') {
                                      $color_row = 'bg-warning';
@@ -322,6 +312,7 @@
                            <tr>
                               @php
                                  $total_dpp = $penjualan->total_bruto - $penjualan->potongan - $penjualan->potongan_istimewa - $penjualan->penyesuaian;
+
                               @endphp
                               <td colspan="8">TOTAL</td>
                               <td class="text-end">{{ formatAngka($total_dpp) }}</td>
@@ -348,6 +339,18 @@
                                  {{ formatAngka($total_netto - $penjualan->total_bayar) }}</td>
                            </tr>
                            <tr>
+                              @php
+                                 if ($penjualan->total_bayar == $total_netto) {
+                                     $color = 'success';
+                                     $ket = 'LUNAS';
+                                 } elseif ($penjualan->total_bayar > $total_netto) {
+                                     $color = 'info';
+                                     $ket = 'LEBIH BAYAR';
+                                 } else {
+                                     $color = 'danger';
+                                     $ket = 'BELUM LUNAS';
+                                 }
+                              @endphp
                               <td colspan="9" class="bg-{{ $color }} text-center">
                                  {{ $ket }}
                               </td>
@@ -421,7 +424,7 @@
                               <td class="text-end">{{ formatAngka($subtotal_retur_gb) }}</td>
                            </tr>
                            <tr>
-                              <td colspan="10">RETUR</td>
+                              <td colspan="10">POTONG FAKTUR</td>
                               <td class="text-end">{{ formatAngka($subtotal_retur - $subtotal_retur_gb) }}
                               </td>
                            </tr>
