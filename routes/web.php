@@ -967,6 +967,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanlimit/store', 'store')->name('ajuanlimit.store')->can('ajuanlimit.store');
         Route::delete('/ajuanlimit/{no_pengajuan}/delete', 'destroy')->name('ajuanlimit.delete')->can('ajuanlimit.delete');
         Route::get('/ajuanlimit/{no_pengajuan}/approve', 'approve')->name('ajuanlimit.approve')->can('ajuanlimit.approve');
+        Route::post('/ajuanlimit/{no_pengajuan}/approvestore', 'approvestore')->name('ajuanlimit.approvestore')->can('ajuanlimit.approve');
         //AJAX REQUEST
         Route::post('/ajuanlimit/gettopupterakhir', 'gettopupTerakhir')->name('ajuanlimit.gettopupterakhir');
     });
