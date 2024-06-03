@@ -9,6 +9,7 @@ use App\Models\Pelanggan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
@@ -16,7 +17,80 @@ class AjuanlimitkreditController extends Controller
 {
     public function index()
     {
-        return view('marketing.ajuanlimit.index');
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $roles_approve_ajuanlimitkredit = config('global.roles_aprove_ajuanlimitkredit');
+        $user = User::findorfail(auth()->user()->id);
+        if ($user->hasRole($roles_approve_ajuanlimitkredit)) {
+
+            $query = Disposisiajuanlimitkredit::select(
+                'marketing_ajuan_limitkredit.*',
+                'nama_pelanggan',
+                'nama_salesman',
+                'nama_cabang',
+                'roles.name as role',
+                'marketing_ajuan_limitkredit.status',
+                'marketing_ajuan_limitkredit_disposisi.status as status_disposisi',
+                'status_ajuan'
+            );
+            $query->where('marketing_ajuan_limitkredit_disposisi.id_penerima', auth()->user()->id);
+            $query->join('marketing_ajuan_limitkredit', 'marketing_ajuan_limitkredit_disposisi.no_pengajuan', '=', 'marketing_ajuan_limitkredit.no_pengajuan');
+            $query->join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->leftJoin(
+                DB::raw("(
+                SELECT marketing_ajuan_limitkredit_disposisi.no_pengajuan,id_pengirim,id_penerima,uraian_analisa,status as status_ajuan
+                FROM marketing_ajuan_limitkredit_disposisi
+				WHERE marketing_ajuan_limitkredit_disposisi.kode_disposisi IN
+                    (SELECT MAX(kode_disposisi) as kode_disposisi
+                    FROM marketing_ajuan_limitkredit_disposisi
+                    GROUP BY no_pengajuan)
+                ) disposisi"),
+                function ($join) {
+                    $join->on('marketing_ajuan_limitkredit.no_pengajuan', '=', 'disposisi.no_pengajuan');
+                }
+            );
+            $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
+            $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
+            $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
+        } else {
+            $query = Ajuanlimitkredit::query();
+            $query->select(
+                'marketing_ajuan_limitkredit.*',
+                'nama_pelanggan',
+                'nama_salesman',
+                'nama_cabang',
+                'roles.name as role',
+                'disposisi.id_pengirim'
+            );
+            $query->join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->leftJoin(
+                DB::raw("(
+                SELECT marketing_ajuan_limitkredit_disposisi.no_pengajuan,id_pengirim,id_penerima,uraian_analisa,status
+                FROM marketing_ajuan_limitkredit_disposisi
+				WHERE marketing_ajuan_limitkredit_disposisi.kode_disposisi IN
+                    (SELECT MAX(kode_disposisi) as kode_disposisi
+                    FROM marketing_ajuan_limitkredit_disposisi
+                    GROUP BY no_pengajuan)
+                ) disposisi"),
+                function ($join) {
+                    $join->on('marketing_ajuan_limitkredit.no_pengajuan', '=', 'disposisi.no_pengajuan');
+                }
+            );
+            $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
+            $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
+            $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
+            $query->orderBy('marketing_ajuan_limitkredit.tanggal', 'desc');
+        }
+
+        $ajuanlimit = $query->cursorPaginate(15);
+        $ajuanlimit->appends(request()->all());
+        $data['ajuanlimit'] = $ajuanlimit;
+
+        $data['roles_approve_ajuanlimitkredit'] = $roles_approve_ajuanlimitkredit;
+        return view('marketing.ajuanlimit.index', $data);
     }
 
     public function create()
@@ -121,7 +195,7 @@ class AjuanlimitkreditController extends Controller
                 'no_pengajuan' => $no_pengajuan,
                 'id_pengirim' => auth()->user()->id,
                 'id_penerima' => $id_penerima,
-                'uraian_analisa' => 0,
+                'uraian_analisa' => $request->uraian_analisa,
                 'status' => 0
             ]);
 
@@ -131,6 +205,30 @@ class AjuanlimitkreditController extends Controller
             DB::rollBack();
             dd($e);
         }
+    }
+
+    public function approve($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $ajuanlimit = Ajuanlimitkredit::select(
+            'marketing_ajuan_limitkredit.*',
+            'nik',
+            'nama_pelanggan',
+            'alamat_pelanggan',
+            'no_hp_pelanggan',
+            'nama_cabang',
+            'nama_salesman',
+            'hari',
+            'latitude',
+            'longitude'
+
+        )
+            ->join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('salesman', 'pelanggan.kode_salesman', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', 'cabang.kode_cabang')
+            ->where('no_pengajuan', $no_pengajuan)->first();
+        $data['ajuanlimit'] = $ajuanlimit;
+        return view('marketing.ajuanlimit.approve', $data);
     }
     //AJAX REQUEST
     public function gettopupTerakhir(Request $request)

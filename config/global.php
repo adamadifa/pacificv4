@@ -72,5 +72,6 @@ return  [
     'roles_access_all_karyawan' => ['super admin', 'general manager 3', 'manager keuangan', 'direktur'],
 
     'roles_aprove_targetkomisi' => ['regional sales manager', 'gm marketing', 'direktur'],
+    'roles_aprove_ajuanlimitkredit' => ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'],
 
 ];
