@@ -1,4 +1,4 @@
-<form action="{{ route('pelanggan.store') }}" aria-autocomplete="false" id="formAjuanlimit" method="POST"
+<form action="{{ route('ajuanlimit.store') }}" aria-autocomplete="false" id="formAjuanlimit" method="POST"
    enctype="multipart/form-data">
    @csrf
    <div class="row">
@@ -125,7 +125,7 @@
             </select>
          </div>
          <x-input-with-icon label="Terakhir Top UP" name="topup_terakhir" icon="ti ti-calendar" datepicker="flatpickr-date" />
-         <input type="text" id="lama_topup">
+         <input type="hidden" id="lama_topup" name="lama_topup">
          <span id="usia_topup" class="mb-3"></span>
          <x-input-with-icon icon="ti ti-moneybag" label="Omset Toko" name="omset_toko" align="right"
             money="true" />
@@ -141,15 +141,20 @@
                         <th>Sisa Piutang</th>
                      </tr>
                   </thead>
+                  <tbody id="loadlistfakturkredit"></tbody>
                </table>
+               <input type="hidden" id="jml_faktur" name="jml_faktur">
             </div>
          </div>
          <div class="row mb-2">
             <div class="col">
+               <input type="hidden" name="skor" id="skor">
                <table class="table">
                   <tr>
                      <td>Skor</td>
-                     <td id="total_score"></td>
+                     <td id="total_score">
+
+                     </td>
                   </tr>
                   <tr>
                      <td>Rekomendasi</td>
@@ -159,6 +164,7 @@
             </div>
          </div>
          <x-textarea label="Uraian Analisa" name="uraian_analisa" />
+
          <div class="form-group">
             <button class="btn btn-primary w-100" type="submit">
                <ion-icon name="send-outline" class="me-1"></ion-icon>
@@ -237,11 +243,28 @@
                   form.find("#jaminan").val(response.data.jaminan);
                   form.find("#omset_toko").val(convertToRupiah(response.data.omset_toko));
                   $('#modalPelanggan').modal('hide');
+                  getlistFakturkredit(response.data.kode_pelanggan);
                   loadSkor();
                }
 
             }
          });
+      }
+
+      function getlistFakturkredit(kode_pelanggan) {
+         $.ajax({
+            type: 'GET',
+            url: `/pelanggan/${kode_pelanggan}/getlistfakturkredit`,
+            cache: false,
+            success: function(respond) {
+               $("#loadlistfakturkredit").html(respond);
+               const jmlfaktur = $('#loadlistfakturkredit').find('tr').length;
+               $("#jml_faktur").val(jmlfaktur);
+               loadSkor();
+            }
+         });
+
+
       }
       $('#tabelpelanggan tbody').on('click', '.pilihpelanggan', function(e) {
          e.preventDefault();
@@ -324,6 +347,7 @@
 
          let ratioomset = Math.round(parseInt(ot) / parseInt(jm));
 
+         let jmlfaktur = $('#loadlistfakturkredit').find('tr').length;
 
          let score_omset = 0;
          let score_faktur = 0;
@@ -349,18 +373,19 @@
          }
 
 
-         //  if (jmlfaktur == 1) {
-         //     score_faktur = 0.50;
-         //  } else if (jmlfaktur == 2) {
-         //     score_faktur = 0.40;
-         //  } else if (jmlfaktur == 3) {
-         //     score_faktur = 0.30;
-         //  } else if (jmlfaktur > 3) {
-         //     score_faktur = 0.20;
-         //  } else {
-         //     score_faktur = 0;
-         //  }
+         if (jmlfaktur == 1) {
+            score_faktur = 0.50;
+         } else if (jmlfaktur == 2) {
+            score_faktur = 0.40;
+         } else if (jmlfaktur == 3) {
+            score_faktur = 0.30;
+         } else if (jmlfaktur > 3) {
+            score_faktur = 0.20;
+         } else {
+            score_faktur = 0;
+         }
 
+         console.log(score_faktur);
          if (status_outlet == "NO") {
             score_outlet = 1.05;
          } else if (status_outlet == "EO") {
@@ -469,9 +494,13 @@
             rekomendasi = "Layak";
          }
          $("#total_score").text(scoreakhir);
+         $("#skor").val(scoreakhir);
          $("#rekomendasi").text(rekomendasi);
       }
 
-
+      $("#cekjmlfaktur").click(function(e) {
+         const jmlfaktur = $('#loadlistfakturkredit').find('tr').length;
+         console.log(jmlfaktur);
+      });
    });
 </script>

@@ -426,6 +426,33 @@ class Penjualan extends Model
         $jml_faktur = $ajuanfaktur != null ? $ajuanfaktur->jumlah_faktur : 1;
         $siklus_pembayaran = $ajuanfaktur != null ? $ajuanfaktur->siklus_pembayaran : 0;
 
+
+
+        $unpaidSales = $this->getListfakturkredit($kode_pelanggan)->count();
+        // $faktur_kredit = Penjualan::addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'))
+        //     ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
+        //     INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
+        //     WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'))
+
+        //     ->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'))
+        //     ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+        //     ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+        //     ->where('jenis_transaksi', 'K')
+        //     ->where('total_bruto', '>=', '1000000')
+        //     ->count();
+
+        $data = [
+            'jml_faktur' => $jml_faktur,
+            'siklus_pembayaran' => $siklus_pembayaran,
+            'unpaid_faktur' => $unpaidSales
+        ];
+
+        return $data;
+    }
+
+
+    function getListfakturkredit($kode_pelanggan)
+    {
         // Subquery untuk total penjualan bruto
         $subqueryTotalBruto = DB::table('marketing_penjualan_detail')
             ->select('marketing_penjualan_detail.no_faktur', DB::raw('SUM(subtotal) as total_bruto'))
@@ -439,6 +466,7 @@ class Penjualan extends Model
             ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
             ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->where('kode_pelanggan', $kode_pelanggan)
+            ->where('jenis_retur', 'PF')
             ->groupBy('no_faktur');
 
         // Subquery untuk total pembayaran
@@ -463,26 +491,7 @@ class Penjualan extends Model
             ->leftJoinSub($subqueryTotalRetur, 'retur', 'marketing_penjualan.no_faktur', '=', 'retur.no_faktur')
             ->leftJoinSub($subqueryTotalPembayaran, 'pembayaran', 'marketing_penjualan.no_faktur', '=', 'pembayaran.no_faktur')
             ->where('kode_pelanggan', $kode_pelanggan)
-            ->havingRaw('sisa_piutang > 0')
-            ->count();
-        // $faktur_kredit = Penjualan::addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'))
-        //     ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
-        //     INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
-        //     WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'))
-
-        //     ->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'))
-        //     ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-        //     ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
-        //     ->where('jenis_transaksi', 'K')
-        //     ->where('total_bruto', '>=', '1000000')
-        //     ->count();
-
-        $data = [
-            'jml_faktur' => $jml_faktur,
-            'siklus_pembayaran' => $siklus_pembayaran,
-            'unpaid_faktur' => $unpaidSales
-        ];
-
-        return $data;
+            ->havingRaw('sisa_piutang > 0');
+        return $unpaidSales;
     }
 }

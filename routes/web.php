@@ -244,6 +244,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/cekfoto', 'cekfoto')->name('pelanggan.cekfoto');
         Route::get('/pelanggan/{kode_pelanggan}/getPiutangpelanggan', 'getPiutangpelanggan')->name('pelanggan.getPiutangpelanggan');
         Route::get('/pelanggan/{kode_pelanggan}/getFakturkredit', 'getFakturkredit')->name('pelanggan.getFakturkredit');
+        Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkredit', 'getlistFakturkredit')->name('pelanggan.getlistFakturkredit');
         Route::get('/pelanggan/getpelangganjson', 'getPelangganjson')->name('pelanggan.getpelangganjson');
     });
 
@@ -963,6 +964,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(AjuanlimitkreditController::class)->group(function () {
         Route::get('/ajuanlimit', 'index')->name('ajuanlimit.index')->can('ajuanlimit.index');
         Route::get('/ajuanlimit/create', 'create')->name('ajuanlimit.create')->can('ajuanlimit.create');
+        Route::post('/ajuanlimit/store', 'store')->name('ajuanlimit.store')->can('ajuanlimit.store');
 
         //AJAX REQUEST
         Route::post('/ajuanlimit/gettopupterakhir', 'gettopupTerakhir')->name('ajuanlimit.gettopupterakhir');

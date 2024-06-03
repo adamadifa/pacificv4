@@ -429,4 +429,12 @@ class PelangganController extends Controller
                 ->make(true);
         }
     }
+
+
+    public function getlistFakturkredit($kode_pelanggan)
+    {
+        $pj = new Penjualan();
+        $data['unpaidsales'] = $pj->getlistFakturkredit($kode_pelanggan)->get();
+        return view('datamaster.pelanggan.getlistfakturkredit', $data);
+    }
 }
