@@ -33,4 +33,10 @@ return [
         'LL02' => '< 2 Tahun'
     ],
 
+    'histori_transaksi' => [
+        'HT01' => '< 14 Hari',
+        'HT02' => '= 14 Hari',
+        'HT03' => '> 14 Hari',
+    ],
+
 ];

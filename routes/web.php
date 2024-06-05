@@ -967,6 +967,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanlimit/store', 'store')->name('ajuanlimit.store')->can('ajuanlimit.store');
         Route::delete('/ajuanlimit/{no_pengajuan}/delete', 'destroy')->name('ajuanlimit.delete')->can('ajuanlimit.delete');
         Route::get('/ajuanlimit/{no_pengajuan}/show', 'show')->name('ajuanlimit.show')->can('ajuanlimit.show');
+        Route::get('/ajuanlimit/{no_pengajuan}/edit', 'edit')->name('ajuanlimit.edit')->can('ajuanlimit.edit');
+        Route::get('/ajuanlimit/{no_pengajuan}/cetak', 'cetak')->name('ajuanlimit.cetak')->can('ajuanlimit.show');
 
         Route::get('/ajuanlimit/{no_pengajuan}/approve', 'approve')->name('ajuanlimit.approve')->can('ajuanlimit.approve');
         Route::post('/ajuanlimit/{no_pengajuan}/approvestore', 'approvestore')->name('ajuanlimit.approvestore')->can('ajuanlimit.approve');
