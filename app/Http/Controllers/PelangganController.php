@@ -408,6 +408,9 @@ class PelangganController extends Controller
 
     public function getPelangganjson(Request $request)
     {
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
         if ($request->ajax()) {
             $query = Pelanggan::query();
             $query->select(
@@ -417,7 +420,15 @@ class PelangganController extends Controller
                 DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan")
             );
             $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
             $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                } else {
+                    $query->where('pelanggan.kode_cabang', auth()->user()->kode_cabang);
+                }
+            }
             $pelanggan = $query;
             return DataTables::of($pelanggan)
                 ->addIndexColumn()

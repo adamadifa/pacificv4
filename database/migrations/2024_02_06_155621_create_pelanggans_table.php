@@ -27,11 +27,11 @@ return new class extends Migration
             $table->string('longitude', 30)->nullable();
             $table->char('status_lokasi', 1)->nullable();
             $table->smallInteger('ljt')->nullable();
-            $table->char('kepemilikan', 2)->nullable();
-            $table->char('lama_berjualan', 4)->nullable();
             $table->char('status_outlet', 2)->nullable();
             $table->char('type_outlet', 2)->nullable();
             $table->char('cara_pembayaran', 2)->nullable();
+            $table->char('kepemilikan', 2)->nullable();
+            $table->char('lama_berjualan', 4)->nullable();
             $table->char('jaminan', 1)->nullable();
             $table->bigInteger('omset_toko')->nullable();
             $table->string('foto', 20)->nullable();

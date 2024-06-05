@@ -165,6 +165,7 @@
                     </table>
                 </div>
             </div>
+
             <x-textarea label="Uraian Analisa" name="uraian_analisa" />
 
             <div class="form-group">
