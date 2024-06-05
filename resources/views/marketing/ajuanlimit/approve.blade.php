@@ -99,13 +99,13 @@
                               @endif
                            </button>
                         @else
-                           <button class="btn btn-primary w-100"><i class="ti ti-thumb-up me-1"></i>Setuju </button>
+                           <button class="btn btn-primary w-100" name="approve" type="submit"><i class="ti ti-thumb-up me-1"></i>Setuju </button>
                         @endif
                      </div>
                   </div>
                   <div class="col-lg-6 col-sm-12 col-md-12">
                      <div class="form-group mb-3">
-                        <button class="btn btn-danger w-100">Tolak</button>
+                        <button class="btn btn-danger w-100" name="decline" type="submit" value="decline">Tolak</button>
                      </div>
                   </div>
                </div>
@@ -205,7 +205,7 @@
          <div class="row mb-3">
             <div class="col">
                @foreach ($disposisi as $d)
-                  <h6 style="line-height: 0">{{ $d->name }}</h6>
+                  <h6 style="line-height: 0" class="text-info">{{ $d->username }} ({{ textCamelCase($d->role) }})</h6>
                   <small class="text-muted">{{ $d->created_at }}</small>
                   <p>{{ $d->uraian_analisa }}</p>
                @endforeach

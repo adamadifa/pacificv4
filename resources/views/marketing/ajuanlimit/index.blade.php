@@ -34,7 +34,7 @@
                                  <th>Pelanggan</th>
                                  <th>Jumlah</th>
                                  <th>LJT</th>
-                                 <th>Penyesuaian</th>
+                                 <th><i class="ti ti-adjustments me-1"></i>Peny</th>
                                  <th class="text-center">Skor</th>
                                  <th>Ket</th>
                                  <th>Posisi Ajuan</th>
@@ -57,9 +57,38 @@
                                     <td>{{ $d->no_pengajuan }}</td>
                                     <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
-                                    <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
+                                    <td class="text-end">
+                                       @if (!empty($d->jumlah_rekomendasi))
+                                          <span style="text-decoration: line-through red;">{{ formatAngka($d->jumlah) }}</span> /
+                                          {{ formatAngka($d->jumlah_rekomendasi) }}
+                                       @else
+                                          {{ formatAngka($d->jumlah) }}
+                                       @endif
+
+                                    </td>
                                     <td>{{ $d->ljt }} Hari</td>
-                                    <td></td>
+                                    <td class="text-center">
+                                       @can('ajuanlimit.adjust')
+                                          @if (empty($d->jumlah_rekomendasi))
+                                             <a href="#" class="adjustlimit" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                <i class="ti ti-adjustments text-warning"></i>
+                                             </a>
+                                          @endif
+                                       @endcan
+                                       @if (!empty($d->jumlah_rekomendasi))
+                                          @php
+                                             $selisih = $d->jumlah - $d->jumlah_rekomendasi;
+                                             $selisih = $selisih < 0 ? $selisih * -1 : $selisih;
+                                             $persentase = ($selisih / $d->jumlah) * 100;
+                                          @endphp
+
+                                          @if ($d->jumlah_rekomendasi < $d->jumlah)
+                                             <span class="text-danger"><i class="ti ti-trending-down me-1"></i> {{ ROUND($persentase) }} %</span>
+                                          @else
+                                             <span class="text-success"><i class="ti ti-trending-up me-1"></i> {{ ROUND($persentase) }} %</span>
+                                          @endif
+                                       @endif
+                                    </td>
                                     <td class="text-center">{{ formatAngkaDesimal($d->skor) }}</td>
                                     <td>
                                        @php
@@ -111,10 +140,12 @@
                                        </span>
                                     </td>
                                     <td class="text-center">
-                                       @if ($d->status == '0')
+                                       @if ($d->status === '0')
                                           <i class="ti ti-hourglass-empty text-warning"></i>
-                                       @else
+                                       @elseif($d->status == '1')
                                           <i class="ti ti-checks text-success"></i>
+                                       @elseif($d->status == '2')
+                                          <span class="badge bg-danger">Ditolak</span>
                                        @endif
                                     </td>
                                     <td>
@@ -128,37 +159,35 @@
                                                       <i class="ti ti-send text-info"></i>
                                                    </a>
                                                 @else
+                                                   <!-- Proses Cancel -->
                                                    @if ($level_user == 'direktur')
-                                                      @if ($d->status_disposisi == '1')
-                                                         <form method="POST" name="deleteform"
-                                                            class="deleteform"
-                                                            action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#"
-                                                               class="cancel-confirm me-1">
-                                                               <i
-                                                                  class="ti ti-square-rounded-x text-danger"></i>
+                                                      <form method="POST" name="deleteform"
+                                                         class="deleteform"
+                                                         action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                         @csrf
+                                                         @method('DELETE')
+                                                         <a href="#"
+                                                            class="cancel-confirm me-1">
+                                                            <i
+                                                               class="ti ti-square-rounded-x text-danger"></i>
 
-                                                            </a>
-                                                         </form>
-                                                      @endif
-                                                   @else
-                                                      @if ($d->status_ajuan == '0' && $d->role == $nextlevel)
-                                                         <form method="POST" name="deleteform"
-                                                            class="deleteform"
-                                                            action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#"
-                                                               class="cancel-confirm me-1">
-                                                               <i
-                                                                  class="ti ti-square-rounded-x text-danger"></i>
-                                                            </a>
-                                                         </form>
-                                                      @endif
+                                                         </a>
+                                                      </form>
+                                                   @elseif (($d->status_ajuan == '0' && $d->role == $nextlevel) || $d->role == auth()->user()->roles->pluck('name')[0])
+                                                      <form method="POST" name="deleteform"
+                                                         class="deleteform"
+                                                         action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                         @csrf
+                                                         @method('DELETE')
+                                                         <a href="#"
+                                                            class="cancel-confirm me-1">
+                                                            <i
+                                                               class="ti ti-square-rounded-x text-danger"></i>
+                                                         </a>
+                                                      </form>
                                                    @endif
                                                 @endif
+
                                              </div>
                                           @endcan
                                           @can('ajuanlimit.edit')
@@ -221,6 +250,7 @@
 </div>
 
 <x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
+<x-modal-form id="modalAdjust" size="" show="loadmodalAdjust" title="" />
 <x-modal-form id="modalApprove" size="modal-xl" show="loadmodalApprove" title="" />
 <div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
    aria-hidden="true">
@@ -354,11 +384,13 @@
          }
       });
 
-
-
-
-
-
+      $(".adjustlimit").click(function(e) {
+         e.preventDefault();
+         const no_pengajuan = $(this).attr("no_pengajuan");
+         $("#modalAdjust").modal("show");
+         $("#modalAdjust").find(".modal-title").text("Penyesuaian Limit");
+         $("#loadmodalAdjust").load(`/ajuanlimit/${no_pengajuan}/adjust`);
+      });
    });
 </script>
 @endpush

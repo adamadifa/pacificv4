@@ -203,7 +203,7 @@ class AjuanlimitkreditController extends Controller
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 
@@ -222,7 +222,10 @@ class AjuanlimitkreditController extends Controller
         $data['cara_pembayaran'] = config('pelanggan.cara_pembayaran');
         $data['lama_langganan'] = config('pelanggan.lama_langganan');
 
-        $data['disposisi'] = Disposisiajuanlimitkredit::join('users', 'marketing_ajuan_limitkredit_disposisi.id_pengirim', '=', 'users.id')
+        $data['disposisi'] = Disposisiajuanlimitkredit::select('marketing_ajuan_limitkredit_disposisi.*', 'users.name as username', 'roles.name as role')
+            ->join('users', 'marketing_ajuan_limitkredit_disposisi.id_pengirim', '=', 'users.id')
+            ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
             ->where('no_pengajuan', $no_pengajuan)
             ->orderBy('marketing_ajuan_limitkredit_disposisi.created_at')
             ->get();
@@ -245,85 +248,173 @@ class AjuanlimitkreditController extends Controller
             $format = "DPLK" . date('Ymd');
             $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
 
-            Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                ->where('id_penerima', auth()->user()->id)->update([
-                    'status' => 1
-                ]);
+            if (isset($_POST['decline'])) {
+                Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+                    ->where('id_penerima', auth()->user()->id)->update([
+                        'status' => 2
+                    ]);
+                Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 2]);
+                DB::commit();
+                return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Ditolak'));
+            } else {
+                Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+                    ->where('id_penerima', auth()->user()->id)->update([
+                        'status' => 1
+                    ]);
 
-            if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager') {
-                if ($ajuanlimit->jumlah <= 5000000) {
-                    Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
-                    DB::commit();
-                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
-                } else {
-                    $rsm = User::role('regional sales manager')
-                        ->where('status', 1)
-                        ->first();
-                    if ($rsm != NULL) {
-                        $id_penerima = $rsm->id;
+                if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager') {
+                    if ($ajuanlimit->jumlah <= 5000000) {
+                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
+                        DB::commit();
+                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
                     } else {
-                        $gm = User::role('general marketing')
+                        $rsm = User::role('regional sales manager')
+                            ->where('status', 1)
+                            ->first();
+                        if ($rsm != NULL) {
+                            $id_penerima = $rsm->id;
+                        } else {
+                            $gm = User::role('gm marketing')
+                                ->where('status', 1)
+                                ->first();
+                            $id_penerima = $gm->id;
+                        }
+                        Disposisiajuanlimitkredit::create([
+                            'kode_disposisi' => $kode_disposisi,
+                            'no_pengajuan' => $no_pengajuan,
+                            'id_pengirim' => auth()->user()->id,
+                            'id_penerima' => $id_penerima,
+                            'uraian_analisa' => $request->uraian_analisa,
+                            'status' => 0
+                        ]);
+                        DB::commit();
+                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
+                    }
+                } else if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager') {
+                    if ($ajuanlimit->jumlah <= 10000000) {
+                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
+                        DB::commit();
+                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
+                    } else {
+                        $gm = User::role('gm marketing')
                             ->where('status', 1)
                             ->first();
                         $id_penerima = $gm->id;
+                        Disposisiajuanlimitkredit::create([
+                            'kode_disposisi' => $kode_disposisi,
+                            'no_pengajuan' => $no_pengajuan,
+                            'id_pengirim' => auth()->user()->id,
+                            'id_penerima' => $id_penerima,
+                            'uraian_analisa' => $request->uraian_analisa,
+                            'status' => 0
+                        ]);
+                        DB::commit();
+                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
                     }
-                    Disposisiajuanlimitkredit::create([
-                        'kode_disposisi' => $kode_disposisi,
-                        'no_pengajuan' => $no_pengajuan,
-                        'id_pengirim' => auth()->user()->id,
-                        'id_penerima' => $id_penerima,
-                        'uraian_analisa' => $request->uraian_analisa,
-                        'status' => 0
-                    ]);
-                    DB::commit();
-                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
-                }
-            } else if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager') {
-                if ($ajuanlimit->jumlah <= 10000000) {
+                } else if (auth()->user()->roles->pluck('name')[0] == 'gm marketing') {
+                    if ($ajuanlimit->jumlah <= 15000000) {
+                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
+                        DB::commit();
+                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
+                    } else {
+                        $dirut = User::role('direktur')
+                            ->where('status', 1)
+                            ->first();
+                        $id_penerima = $dirut->id;
+                        Disposisiajuanlimitkredit::create([
+                            'kode_disposisi' => $kode_disposisi,
+                            'no_pengajuan' => $no_pengajuan,
+                            'id_pengirim' => auth()->user()->id,
+                            'id_penerima' => $id_penerima,
+                            'uraian_analisa' => $request->uraian_analisa,
+                            'status' => 0
+                        ]);
+                        DB::commit();
+                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
+                    }
+                } else if (auth()->user()->roles->pluck('name')[0] == 'direktur') {
                     Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
                     DB::commit();
                     return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
-                } else {
-                    $gm = User::role('general marketing')
-                        ->where('status', 1)
-                        ->first();
-                    $id_penerima = $gm->id;
-                    Disposisiajuanlimitkredit::create([
-                        'kode_disposisi' => $kode_disposisi,
-                        'no_pengajuan' => $no_pengajuan,
-                        'id_pengirim' => auth()->user()->id,
-                        'id_penerima' => $id_penerima,
-                        'uraian_analisa' => $request->uraian_analisa,
-                        'status' => 0
-                    ]);
-                    DB::commit();
-                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
                 }
-            } else if (auth()->user()->roles->pluck('name')[0] == 'gm marketing') {
-                if ($ajuanlimit->jumlah <= 15000000) {
-                    Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
-                    DB::commit();
-                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
-                } else {
-                    $dirut = User::role('direktur')
-                        ->where('status', 1)
-                        ->first();
-                    $id_penerima = $dirut->id;
-                    Disposisiajuanlimitkredit::create([
-                        'kode_disposisi' => $kode_disposisi,
-                        'no_pengajuan' => $no_pengajuan,
-                        'id_pengirim' => auth()->user()->id,
-                        'id_penerima' => $id_penerima,
-                        'status' => 0
-                    ]);
-                    DB::commit();
-                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
-                }
-            } else if (auth()->user()->roles->pluck('name')[0] == 'direktur') {
-                Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
-                DB::commit();
-                return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
             }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cancel($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $ajuanlimit = Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->first();
+
+
+        DB::beginTransaction();
+        try {
+            if ($ajuanlimit->status == '2') {
+                Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+                    ->where('id_penerima', auth()->user()->id)->update([
+                        'status' => 0
+                    ]);
+                Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
+            } else {
+                if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager') {
+                    if ($ajuanlimit->jumlah <= 5000000) {
+                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
+                    }
+                } else if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager') {
+                    if ($ajuanlimit->jumlah <= 10000000) {
+                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
+                    }
+                } else if (auth()->user()->roles->pluck('name')[0] == 'gm marketing') {
+                    if ($ajuanlimit->jumlah <= 15000000) {
+                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
+                    }
+                } else if (auth()->user()->roles->pluck('name')[0] == 'direktur') {
+                    Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
+                }
+                Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+                    ->where('id_pengirim', auth()->user()->id)
+                    ->delete();
+                Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+                    ->where('id_penerima', auth()->user()->id)
+                    ->update(['status' => 0]);
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function adjust($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $ajuanlimit = Ajuanlimitkredit::join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('salesman', 'pelanggan.kode_salesman', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', 'cabang.kode_cabang')
+            ->where('no_pengajuan', $no_pengajuan)->first();
+        $data['ajuanlimit'] = $ajuanlimit;
+
+        return view('marketing.ajuanlimit.adjust', $data);
+    }
+
+    public function adjuststore($no_pengajuan, Request $request)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        DB::beginTransaction();
+        try {
+            Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update([
+                'jumlah_rekomendasi' => toNumber($request->jumlah_rekomendasi),
+                'ljt_rekomendasi' => $request->ljt
+            ]);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Penyesuaian Berhasil Di Simpan'));
         } catch (\Exception $e) {
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));

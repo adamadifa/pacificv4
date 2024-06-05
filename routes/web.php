@@ -968,6 +968,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/ajuanlimit/{no_pengajuan}/delete', 'destroy')->name('ajuanlimit.delete')->can('ajuanlimit.delete');
         Route::get('/ajuanlimit/{no_pengajuan}/approve', 'approve')->name('ajuanlimit.approve')->can('ajuanlimit.approve');
         Route::post('/ajuanlimit/{no_pengajuan}/approvestore', 'approvestore')->name('ajuanlimit.approvestore')->can('ajuanlimit.approve');
+        Route::delete('/ajuanlimit/{no_pengajuan}/cancel', 'cancel')->name('ajuanlimit.cancel')->can('ajuanlimit.approve');
+        Route::get('/ajuanlimit/{no_pengajuan}/adjust', 'adjust')->name('ajuanlimit.adjust')->can('ajuanlimit.adjust');
+        Route::post('/ajuanlimit/{no_pengajuan}/adjuststore', 'adjuststore')->name('ajuanlimit.adjuststore')->can('ajuanlimit.adjust');
         //AJAX REQUEST
         Route::post('/ajuanlimit/gettopupterakhir', 'gettopupTerakhir')->name('ajuanlimit.gettopupterakhir');
     });
