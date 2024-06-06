@@ -64,6 +64,7 @@ class AjuanlimitkreditController extends Controller
             $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
             $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
             $query->where('marketing_ajuan_limitkredit_disposisi.id_penerima', auth()->user()->id);
+            $query->orderBy('marketing_ajuan_limitkredit.created_at', 'desc');
         } else {
             $query = Ajuanlimitkredit::query();
             $query->select(
@@ -94,7 +95,7 @@ class AjuanlimitkreditController extends Controller
             $query->leftjoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
             $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
             $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
-            $query->orderBy('marketing_ajuan_limitkredit.tanggal', 'desc');
+            $query->orderBy('marketing_ajuan_limitkredit.created_at', 'desc');
         }
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
@@ -146,10 +147,11 @@ class AjuanlimitkreditController extends Controller
         return view('marketing.ajuanlimit.create');
     }
 
-    public function edit()
-    {
-        return view('marketing.ajuanlimit.create');
-    }
+    // public function edit($no_pengajuan)
+    // {
+    //     $no_pengajuan = Crypt::decrypt($no_pengajuan);
+    //     return view('marketing.ajuanlimit.create');
+    // }
 
     public function store(Request $request)
     {

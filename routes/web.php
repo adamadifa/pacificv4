@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AjuanfakturkreditController;
 use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
@@ -977,6 +978,21 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanlimit/{no_pengajuan}/adjuststore', 'adjuststore')->name('ajuanlimit.adjuststore')->can('ajuanlimit.adjust');
         //AJAX REQUEST
         Route::post('/ajuanlimit/gettopupterakhir', 'gettopupTerakhir')->name('ajuanlimit.gettopupterakhir');
+    });
+
+
+    Route::controller(AjuanfakturkreditController::class)->group(function () {
+        Route::get('/ajuanfaktur', 'index')->name('ajuanfaktur.index')->can('ajuanfaktur.index');
+        Route::get('/ajuanfaktur/create', 'create')->name('ajuanfaktur.create')->can('ajuanfaktur.create');
+        Route::post('/ajuanfaktur/store', 'store')->name('ajuanfaktur.store')->can('ajuanfaktur.store');
+        Route::delete('/ajuanfaktur/{no_pengajuan}/delete', 'destroy')->name('ajuanfaktur.delete')->can('ajuanfaktur.delete');
+        Route::get('/ajuanfaktur/{no_pengajuan}/show', 'show')->name('ajuanfaktur.show')->can('ajuanfaktur.show');
+        Route::get('/ajuanfaktur/{no_pengajuan}/edit', 'edit')->name('ajuanfaktur.edit')->can('ajuanfaktur.edit');
+        Route::get('/ajuanfaktur/{no_pengajuan}/cetak', 'cetak')->name('ajuanfaktur.cetak')->can('ajuanfaktur.show');
+
+        Route::get('/ajuanfaktur/{no_pengajuan}/approve', 'approve')->name('ajuanfaktur.approve')->can('ajuanfaktur.approve');
+        Route::post('/ajuanfaktur/{no_pengajuan}/approvestore', 'approvestore')->name('ajuanfaktur.approvestore')->can('ajuanfaktur.approve');
+        Route::delete('/ajuanfaktur/{no_pengajuan}/cancel', 'cancel')->name('ajuanfaktur.cancel')->can('ajuanfaktur.approve');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
