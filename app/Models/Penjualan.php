@@ -16,6 +16,7 @@ class Penjualan extends Model
 
     function getFaktur($no_faktur)
     {
+
         $penjualan = Penjualan::select(
             'marketing_penjualan.*',
             'nama_pelanggan',

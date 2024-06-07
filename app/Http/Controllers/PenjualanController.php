@@ -27,10 +27,10 @@ class PenjualanController extends Controller
     public function index(Request $request)
     {
 
-        $start_year = config('global.start_year');
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
-
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
 
         if (!empty($request->dari) && !empty($request->sampai)) {
             if (lockreport($request->dari) == "error") {
@@ -81,6 +81,14 @@ class PenjualanController extends Controller
 
         $query->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'pindahfaktur.kode_cabang_baru', '=', 'cabang.kode_cabang');
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('kode_cabang_baru', auth()->user()->kode_cabang);
+            }
+        }
 
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);

@@ -955,7 +955,12 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(PembayarantransferController::class)->group(function () {
+        Route::get('/pembayarantransfer', 'index')->name('pembayarantransfer.index')->can('pembayarantransfer.index');
         Route::get('/pembayarantransfer/{no_faktur}/create', 'create')->name('pembayarantransfer.create')->can('pembayarantransfer.create');
+        Route::get('/pembayarantransfer/{kode_transfer}/show', 'show')->name('pembayarantransfer.show')->can('pembayarantransfer.show');
+        Route::get('/pembayarantransfer/{kode_transfer}/approve', 'approve')->name('pembayarantransfer.approve')->can('pembayarantransfer.approve');
+        Route::post('/pembayarantransfer/{kode_transfer}/approvestore', 'approvestore')->name('pembayarantransfer.approvestore')->can('pembayarantransfer.approve');
+
         Route::post('/pembayarantransfer/{no_faktur}/store', 'store')->name('pembayarantransfer.store')->can('pembayarantransfer.store');
         Route::get('/pembayarantransfer/{no_faktur}/{kode_giro}/edit', 'edit')->name('pembayarantransfer.edit')->can('pembayarantransfer.edit');
         Route::put('/pembayarantransfer/{no_faktur}/{kode_giro}/update', 'update')->name('pembayarantransfer.update')->can('pembayarantransfer.update');

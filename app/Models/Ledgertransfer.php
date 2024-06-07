@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ledger extends Model
+class Ledgertransfer extends Model
 {
     use HasFactory;
-    protected $table = "keuangan_ledger";
-    protected $primaryKey = "no_bukti";
+    protected $table = "keuangan_ledger_transfer";
     protected $guarded = [];
-    public $incrementing = false;
 }

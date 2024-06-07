@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
+use App\Models\Cabang;
 use App\Models\Detailtransfer;
+use App\Models\Historibayarpenjualan;
+use App\Models\Ledger;
+use App\Models\Ledgertransfer;
 use App\Models\Penjualan;
 use App\Models\Salesman;
 use App\Models\Transfer;
@@ -13,11 +18,34 @@ use Illuminate\Support\Facades\Redirect;
 
 class PembayarantransferController extends Controller
 {
+
+    public function index(Request $request)
+    {
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            if (lockreport($request->dari) == "error") {
+                return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+            }
+        }
+
+        $trf = new Transfer();
+        $transfer = $trf->getTransfer(request: $request);
+        $transfer = $transfer->paginate(15);
+        $transfer->appends(request()->all());
+        $data['transfer'] = $transfer;
+
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
+
+
+        return view('marketing.pembayarantransfer.index', $data);
+    }
     public function create($no_faktur)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
             ->first();
         $data['salesman'] =  Salesman::where('kode_cabang', $penjualan->kode_cabang)
             ->where('status_aktif_salesman', '1')
@@ -87,7 +115,7 @@ class PembayarantransferController extends Controller
         $no_faktur = Crypt::decrypt($no_faktur);
         $kode_transfer = Crypt::decrypt($kode_transfer);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
             ->first();
         $data['salesman'] =  Salesman::where('kode_cabang', $penjualan->kode_cabang)
             ->where('status_aktif_salesman', '1')
@@ -187,6 +215,128 @@ class PembayarantransferController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function show($kode_transfer)
+    {
+        $kode_transfer = Crypt::decrypt($kode_transfer);
+        $trf = new Transfer();
+        $transfer = $trf->getTransfer(kode_transfer: $kode_transfer)->first();
+        $data['transfer'] = $transfer;
+        $data['detail'] = $trf->getDetailtransfer($kode_transfer)->get();
+        return view('marketing.pembayarantransfer.show', $data);
+    }
+
+
+    public function approve($kode_transfer)
+    {
+        $kode_transfer = Crypt::decrypt($kode_transfer);
+        $trf = new Transfer();
+        $transfer = $trf->getTransfer(kode_transfer: $kode_transfer)->first();
+        $data['transfer'] = $transfer;
+        $data['detail'] = $trf->getDetailtransfer($kode_transfer)->get();
+        $bnk = new Bank();
+        $bank = $bnk->getbankCabang()->get();
+        $data['bank'] = $bank;
+
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        return view('marketing.pembayarantransfer.approve', $data);
+    }
+
+    public function approvestore($kode_transfer, Request $request)
+    {
+        $kode_transfer = Crypt::decrypt($kode_transfer);
+        $tahun = date('y', strtotime($request->tanggal));
+        DB::beginTransaction();
+        try {
+            $trf = new Transfer();
+            $transfer = $trf->getTransfer($kode_transfer)->first();
+
+            $detail = $trf->getDetailtransfer($kode_transfer)->get();
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            //Jika Diterima
+            if ($request->status === '1') {
+                // $bank = Bank::where('kode_bank', $request->kode_bank)->first();
+                // $kode_akun_bank = $bank->kode_akun;
+                Transfer::where('kode_transfer', $kode_transfer)->update([
+                    'status' => 1,
+                    'omset_bulan' => $request->omset_bulan,
+                    'omset_tahun' => $request->omset_tahun
+                ]);
+
+
+                //Insert Histori Byar
+                $totalbayar = 0;
+                foreach ($detail as $d) {
+                    $lasthistoribayar = Historibayarpenjualan::select('no_bukti')
+                        ->whereRaw('LEFT(no_bukti,6) = "' . $transfer->kode_cabang . $tahun . '-"')
+                        ->orderBy("no_bukti", "desc")
+                        ->first();
+
+                    $last_no_bukti = $lasthistoribayar != null ? $lasthistoribayar->no_bukti : '';
+                    $no_bukti  = buatkode($last_no_bukti, $transfer->kode_cabang . $tahun . "-", 6);
+                    Historibayarpenjualan::create([
+                        'no_bukti' => $no_bukti,
+                        'tanggal' => $request->tanggal,
+                        'no_faktur' => $d->no_faktur,
+                        'jenis_bayar' => 'TR',
+                        'jumlah' => toNumber($d->jumlah),
+                        'kode_salesman' => $transfer->kode_salesman,
+                        'id_user' => auth()->user()->id
+                    ]);
+
+                    $totalbayar += $d->jumlah;
+                    $list_faktur[] = $d->no_faktur;
+                }
+
+                $datafaktur = implode(",", $list_faktur);
+                //Insert Ledger
+                //Generate Ledger
+
+                if ($transfer->kode_cabang == 'PST') {
+                    $lastledger = Ledger::select('no_bukti')
+                        ->whereRaw('LEFT(no_bukti,7) ="LR' . $transfer->kode_cabang . $tahun . '"')
+                        ->whereRaw('LENGTH(no_bukti)=12')
+                        ->orderBy('no_bukti', 'desc')
+                        ->first();
+                    $last_no_bukti = $lastledger != null ?  $lastledger->no_bukti : '';
+                    $no_bukti = buatkode($last_no_bukti, 'LR' . $transfer->kode_cabang . $tahun, 5);
+                } else {
+                    $lastledger = Ledger::select('no_bukti')
+                        ->whereRaw('LEFT(no_bukti,7) ="LR' . $transfer->kode_cabang . $tahun . '"')
+                        ->orderBy('no_bukti', 'desc')
+                        ->first();
+                    $last_no_bukti = $lastledger != null ?  $lastledger->no_bukti : '';
+                    $no_bukti = buatkode($last_no_bukti, 'LR' . $transfer->kode_cabang . $tahun, 4);
+                }
+
+                Ledger::create([
+                    'no_bukti' => $no_bukti,
+                    'tanggal' => $request->tanggal,
+                    'pelanggan' => $transfer->nama_pelanggan,
+                    'kode_bank' => $request->kode_bank,
+                    'keterangan' => "INV " . $datafaktur,
+                    'kode_akun' => getAkunpiutangcabang($transfer->kode_cabang),
+                    'jumlah' => $totalbayar,
+                    'debet_kredit' => 'K'
+                ]);
+
+                Ledgertransfer::create([
+                    'no_bukti' => $no_bukti,
+                    'kode_transfer' => $kode_transfer
+                ]);
+            }
+
+            DB::commit();
+            return Redirect::back()->with('Data Transfer Berhasil Diterima');
+        } catch (\Exception $e) {
+            dd($e);
         }
     }
 }
