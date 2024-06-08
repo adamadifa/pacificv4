@@ -6,6 +6,7 @@ use App\Models\Bank;
 use App\Models\Cabang;
 use App\Models\Detailtransfer;
 use App\Models\Historibayarpenjualan;
+use App\Models\Historibayarpenjualantransfer;
 use App\Models\Ledger;
 use App\Models\Ledgertransfer;
 use App\Models\Penjualan;
@@ -253,17 +254,43 @@ class PembayarantransferController extends Controller
         try {
             $trf = new Transfer();
             $transfer = $trf->getTransfer($kode_transfer)->first();
-
+            if (!empty($request->tanggal)) {
+                $tanggal_tutup_laporan = $request->tanggal;
+            } else {
+                if (!empty($transfer->tanggal_diterima)) {
+                    $tanggal_tutup_laporan = $transfer->tanggal_diterima;
+                } else if (!empty($transfer->tanggal_ditolak)) {
+                    $tanggal_tutup_laporan = $transfer->tanggal_ditolak;
+                }
+            }
             $detail = $trf->getDetailtransfer($kode_transfer)->get();
-            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            $cektutuplaporan = cektutupLaporan($tanggal_tutup_laporan, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
+            function prosespending($kode_transfer)
+            {
+                $ledgertransfer = Ledgertransfer::where('kode_transfer', $kode_transfer)->first();
+                $historibayartransfer = Historibayarpenjualantransfer::where('kode_transfer', $kode_transfer)->get();
+                $no_bukti_ledger = $ledgertransfer != null ? $ledgertransfer->no_bukti : '';
+                $no_bukti_pembayaran = [];
+                foreach ($historibayartransfer as $d) {
+                    $no_bukti_pembayaran[] = $d->no_bukti;
+                }
+                if ($ledgertransfer != null) {
+                    Ledger::where('no_bukti', $no_bukti_ledger)->delete();
+                    Historibayarpenjualan::whereIn('no_bukti', $no_bukti_pembayaran)->delete();
+                    Transfer::where('kode_transfer', $kode_transfer)->update([
+                        'status' => 0
+                    ]);
+                }
+            }
             //Jika Diterima
             if ($request->status === '1') {
                 // $bank = Bank::where('kode_bank', $request->kode_bank)->first();
                 // $kode_akun_bank = $bank->kode_akun;
+                prosespending($kode_transfer);
                 Transfer::where('kode_transfer', $kode_transfer)->update([
                     'status' => 1,
                     'omset_bulan' => $request->omset_bulan,
@@ -290,7 +317,10 @@ class PembayarantransferController extends Controller
                         'kode_salesman' => $transfer->kode_salesman,
                         'id_user' => auth()->user()->id
                     ]);
-
+                    Historibayarpenjualantransfer::create([
+                        'no_bukti' => $no_bukti,
+                        'kode_transfer' => $kode_transfer
+                    ]);
                     $totalbayar += $d->jumlah;
                     $list_faktur[] = $d->no_faktur;
                 }
@@ -331,10 +361,22 @@ class PembayarantransferController extends Controller
                     'no_bukti' => $no_bukti,
                     'kode_transfer' => $kode_transfer
                 ]);
+            } elseif ($request->status == '2') {
+                prosespending($kode_transfer);
+                Transfer::where('kode_transfer', $kode_transfer)->update([
+                    'tanggal_ditolak' => $request->tanggal,
+                    'status' => 2,
+                    'omset_bulan' => date('m', strtotime($transfer->jatuh_tempo)),
+                    'omset_tahun' => date('Y', strtotime($transfer->jatuh_tempo)),
+                ]);
+            } else if ($request->status === '0') {
+
+                prosespending($kode_transfer);
             }
 
+
             DB::commit();
-            return Redirect::back()->with('Data Transfer Berhasil Diterima');
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             dd($e);
         }
