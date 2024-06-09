@@ -1,49 +1,49 @@
-<form action="{{ route('pembayarantransfer.approvestore', Crypt::encrypt($transfer->kode_transfer)) }}" method="POST"
-   id="formApprovetransfer">
+<form action="{{ route('pembayarangiro.approvestore', Crypt::encrypt($giro->kode_giro)) }}" method="POST"
+   id="formApprovegiro">
    @csrf
    <div class="row">
       <div class="col">
          <table class="table">
             <tr>
-               <th>Kode Transfer</th>
-               <td>{{ $transfer->kode_transfer }}</td>
+               <th>Kode Giro</th>
+               <td>{{ $giro->kode_giro }}</td>
             </tr>
             <tr>
                <th>Tanggal</th>
-               <td>{{ DateToIndo($transfer->tanggal) }}</td>
+               <td>{{ DateToIndo($giro->tanggal) }}</td>
             </tr>
             <tr>
                <th>Kode Pelanggan</th>
-               <td>{{ $transfer->kode_pelanggan }}</td>
+               <td>{{ $giro->kode_pelanggan }}</td>
             </tr>
             <tr>
                <th>Nama Pelanggan</th>
-               <td>{{ $transfer->nama_pelanggan }}</td>
+               <td>{{ $giro->nama_pelanggan }}</td>
             </tr>
             <tr>
                <th>Bank Pengirim</th>
-               <td>{{ $transfer->bank_pengirim }}</td>
+               <td>{{ $giro->bank_pengirim }}</td>
             </tr>
             <tr>
                <th>Jatuh Tempo</th>
-               <td>{{ DateToIndo($transfer->jatuh_tempo) }}</td>
+               <td>{{ DateToIndo($giro->jatuh_tempo) }}</td>
             </tr>
             <tr>
                <th>Status</th>
                <td>
-                  @if ($transfer->status == '1')
-                     <span class="badge bg-success">{{ DateToIndo($transfer->tanggal_diterima) }}</span>
-                  @elseif($transfer->status == '2')
+                  @if ($giro->status == '1')
+                     <span class="badge bg-success">{{ DateToIndo($giro->tanggal_diterima) }}</span>
+                  @elseif($giro->status == '2')
                      <i class="ti ti-square-rounded-x text-danger"></i>
                   @else
                      <i class="ti ti-hourglass-empty text-warning"></i>
                   @endif
                </td>
             </tr>
-            @if ($transfer->status == '1')
+            @if ($giro->status == '1')
                <tr>
                   <th>No. Bukti Ledger</th>
-                  <td>{{ $transfer->no_bukti }}</td>
+                  <td>{{ $giro->no_bukti }}</td>
                </tr>
             @endif
          </table>
@@ -61,7 +61,7 @@
             <tbody>
                @foreach ($detail as $d)
                   <tr>
-                     <td>{{ $d->no_faktur }}</td>
+                     <td><a href="{{ route('penjualan.show', Crypt::encrypt($d->no_faktur)) }}" target="_blank">{{ $d->no_faktur }}</a></td>
                      <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
                   </tr>
                @endforeach
@@ -138,7 +138,7 @@
 <script src="{{ asset('assets/js/alert.js') }}"></script>
 <script>
    $(function() {
-      const form = $("#formApprovetransfer");
+      const form = $("#formApprovegiro");
 
       function buttonDisable() {
          $("#btnSimpan").prop('disabled', true);
@@ -220,7 +220,7 @@
                },
             });
             return false;
-         } else if (status === '1' && kode_bank === '' || status === '2' && kode_bank === '') {
+         } else if (status === '1' && kode_bank === '') {
             Swal.fire({
                title: "Oops!",
                text: 'Bank Harus Diisi',

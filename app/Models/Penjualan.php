@@ -495,4 +495,49 @@ class Penjualan extends Model
             ->havingRaw('sisa_piutang > 0');
         return $unpaidSales;
     }
+
+
+    function getpiutangFaktur($no_faktur)
+    {
+        // Subquery untuk total penjualan bruto
+        $subqueryTotalBruto = DB::table('marketing_penjualan_detail')
+            ->select('marketing_penjualan_detail.no_faktur', DB::raw('SUM(subtotal) as total_bruto'))
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan_detail.no_faktur', $no_faktur)
+            ->groupBy('no_faktur');
+
+        // Subquery untuk total retur
+        $subqueryTotalRetur = DB::table('marketing_retur_detail')
+            ->select('marketing_retur.no_faktur', DB::raw('SUM(subtotal) as total_retur'))
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_retur.no_faktur', $no_faktur)
+            ->where('jenis_retur', 'PF')
+            ->groupBy('no_faktur');
+
+        // Subquery untuk total pembayaran
+        $subqueryTotalPembayaran = DB::table('marketing_penjualan_historibayar')
+            ->select('marketing_penjualan_historibayar.no_faktur', DB::raw('SUM(jumlah) as total_pembayaran'))
+            ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan_historibayar.no_faktur', $no_faktur)
+            ->groupBy('no_faktur');
+
+        $unpaidSales = Penjualan::select(
+            'marketing_penjualan.no_faktur',
+            'bruto.total_bruto',
+            'retur.total_retur',
+            'potongan',
+            'potongan_istimewa',
+            'penyesuaian',
+            'ppn',
+            'pembayaran.total_pembayaran'
+        )
+            ->selectRaw('COALESCE(bruto.total_bruto, 0) - COALESCE(retur.total_retur, 0) - COALESCE(potongan, 0) - COALESCE(potongan_istimewa, 0) - COALESCE(penyesuaian, 0) + COALESCE(ppn, 0) - COALESCE(pembayaran.total_pembayaran, 0) as sisa_piutang')
+            ->leftJoinSub($subqueryTotalBruto, 'bruto', 'marketing_penjualan.no_faktur', '=', 'bruto.no_faktur')
+            ->leftJoinSub($subqueryTotalRetur, 'retur', 'marketing_penjualan.no_faktur', '=', 'retur.no_faktur')
+            ->leftJoinSub($subqueryTotalPembayaran, 'pembayaran', 'marketing_penjualan.no_faktur', '=', 'pembayaran.no_faktur')
+            ->where('marketing_penjualan.no_faktur', $no_faktur)
+            ->havingRaw('sisa_piutang > 0');
+        return $unpaidSales;
+    }
 }

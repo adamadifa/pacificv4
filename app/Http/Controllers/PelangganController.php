@@ -448,4 +448,15 @@ class PelangganController extends Controller
         $data['unpaidsales'] = $pj->getlistFakturkredit($kode_pelanggan)->get();
         return view('datamaster.pelanggan.getlistfakturkredit', $data);
     }
+
+
+    public function getlistFakturkreditoption($kode_pelanggan)
+    {
+        $pj = new Penjualan();
+        $unpaidsales = $pj->getlistFakturkredit($kode_pelanggan)->get();
+        echo "<option value=''>Pilih Faktur</option>";
+        foreach ($unpaidsales as $d) {
+            echo "<option value='$d->no_faktur'>$d->no_faktur</option>";
+        }
+    }
 }

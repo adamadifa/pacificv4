@@ -380,7 +380,7 @@
                               <div class="col">
                                  <div class="form-group mb-3">
                                     <select name="jenis_transaksi" id="jenis_transaksi"
-                                       class="form-select">
+                                       class="form-select" disabled>
                                        <option value="">Jenis Transaksi</option>
                                        <option value="T"
                                           {{ $penjualan->jenis_transaksi == 'T' ? 'selected' : '' }}>
@@ -395,7 +395,7 @@
                                     icon="ti ti-shopping-cart" align="right" disabled="true" />
                               </div>
                            </div>
-                           <div class="row" id="jenis_bayar_tunai">
+                           <div class="row" id="jenis_bayar_tunai" disabled>
                               <div class="col">
                                  <div class="form-group mb-3">
                                     <select name="jenis_bayar" id="jenis_bayar" class="form-select">

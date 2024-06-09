@@ -68,6 +68,7 @@ use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
+use App\Http\Controllers\SetoranpenjualanController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
@@ -246,6 +247,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/{kode_pelanggan}/getPiutangpelanggan', 'getPiutangpelanggan')->name('pelanggan.getPiutangpelanggan');
         Route::get('/pelanggan/{kode_pelanggan}/getFakturkredit', 'getFakturkredit')->name('pelanggan.getFakturkredit');
         Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkredit', 'getlistFakturkredit')->name('pelanggan.getlistFakturkredit');
+        Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkreditoption', 'getlistfakturkreditoption')->name('pelanggan.getlistfakturkreditoption');
         Route::get('/pelanggan/getpelangganjson', 'getPelangganjson')->name('pelanggan.getpelangganjson');
     });
 
@@ -923,6 +925,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/penjualan/generatenofaktur', 'generatenofaktur')->name('penjualan.generatenofaktur');
         Route::post('/penjualan/editproduk', 'editproduk')->name('penjualan.editproduk');
         Route::post('/penjualan/getfakturbypelanggan', 'getfakturbypelanggan')->name('penjualan.getfakturbypelanggan');
+        Route::get('/penjualan/{no_faktur}/getpiutangfaktur', 'getpiutangfaktur')->name('penjualan.getpiutangfaktur');
     });
 
     Route::controller(ReturController::class)->group(function () {
@@ -947,24 +950,34 @@ Route::middleware('auth')->group(function () {
 
 
     Route::controller(PembayarangiroController::class)->group(function () {
+        Route::get('/pembayarangiro', 'index')->name('pembayarangiro.index')->can('pembayarangiro.index');
         Route::get('/pembayarangiro/{no_faktur}/create', 'create')->name('pembayarangiro.create')->can('pembayarangiro.create');
+        Route::get('/pembayarangiro/creategroup', 'creategroup')->name('pembayarangiro.creategroup')->can('pembayarangiro.create');
         Route::post('/pembayarangiro/{no_faktur}/store', 'store')->name('pembayarangiro.store')->can('pembayarangiro.store');
+        Route::post('/pembayarangiro/storegroup', 'storegroup')->name('pembayarangiro.storegroup')->can('pembayarangiro.store');
         Route::get('/pembayarangiro/{no_faktur}/{kode_giro}/edit', 'edit')->name('pembayarangiro.edit')->can('pembayarangiro.edit');
         Route::put('/pembayarangiro/{no_faktur}/{kode_giro}/update', 'update')->name('pembayarangiro.update')->can('pembayarangiro.update');
         Route::delete('/pembayarangiro/{no_faktur}/{kode_giro}/delete', 'destroy')->name('pembayarangiro.delete')->can('pembayarangiro.delete');
+        Route::delete('/pembayarangiro/{kode_giro}/deletegiro', 'destroygiro')->name('pembayarantransfer.deletegiro')->can('pembayarantransfer.delete');
+        Route::get('/pembayarangiro/{kode_giro}/approve', 'approve')->name('pembayarangiro.approve')->can('pembayarangiro.approve');
+        Route::post('/pembayarangiro/{kode_giro}/approvestore', 'approvestore')->name('pembayarangiro.approvestore')->can('pembayarangiro.approve');
+        Route::get('/pembayarangiro/{kode_giro}/show', 'show')->name('pembayarangiro.show')->can('pembayarangiro.show');
     });
 
     Route::controller(PembayarantransferController::class)->group(function () {
         Route::get('/pembayarantransfer', 'index')->name('pembayarantransfer.index')->can('pembayarantransfer.index');
         Route::get('/pembayarantransfer/{no_faktur}/create', 'create')->name('pembayarantransfer.create')->can('pembayarantransfer.create');
+        Route::get('/pembayarantransfer/creategroup', 'creategroup')->name('pembayarantransfer.creategroup')->can('pembayarantransfer.create');
         Route::get('/pembayarantransfer/{kode_transfer}/show', 'show')->name('pembayarantransfer.show')->can('pembayarantransfer.show');
         Route::get('/pembayarantransfer/{kode_transfer}/approve', 'approve')->name('pembayarantransfer.approve')->can('pembayarantransfer.approve');
         Route::post('/pembayarantransfer/{kode_transfer}/approvestore', 'approvestore')->name('pembayarantransfer.approvestore')->can('pembayarantransfer.approve');
 
         Route::post('/pembayarantransfer/{no_faktur}/store', 'store')->name('pembayarantransfer.store')->can('pembayarantransfer.store');
-        Route::get('/pembayarantransfer/{no_faktur}/{kode_giro}/edit', 'edit')->name('pembayarantransfer.edit')->can('pembayarantransfer.edit');
-        Route::put('/pembayarantransfer/{no_faktur}/{kode_giro}/update', 'update')->name('pembayarantransfer.update')->can('pembayarantransfer.update');
-        Route::delete('/pembayarantransfer/{no_faktur}/{kode_giro}/delete', 'destroy')->name('pembayarantransfer.delete')->can('pembayarantransfer.delete');
+        Route::post('/pembayarantransfer/storegroup', 'storegroup')->name('pembayarantransfer.storegroup')->can('pembayarantransfer.store');
+        Route::get('/pembayarantransfer/{no_faktur}/{kode_transfer}/edit', 'edit')->name('pembayarantransfer.edit')->can('pembayarantransfer.edit');
+        Route::put('/pembayarantransfer/{no_faktur}/{kode_transfer}/update', 'update')->name('pembayarantransfer.update')->can('pembayarantransfer.update');
+        Route::delete('/pembayarantransfer/{no_faktur}/{kode_transfer}/delete', 'destroy')->name('pembayarantransfer.delete')->can('pembayarantransfer.delete');
+        Route::delete('/pembayarantransfer/{kode_transfer}/deletetransfer', 'destroytransfer')->name('pembayarantransfer.deletetransfer')->can('pembayarantransfer.delete');
     });
 
     Route::controller(AjuanlimitkreditController::class)->group(function () {
@@ -998,6 +1011,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajuanfaktur/{no_pengajuan}/approve', 'approve')->name('ajuanfaktur.approve')->can('ajuanfaktur.approve');
         Route::post('/ajuanfaktur/{no_pengajuan}/approvestore', 'approvestore')->name('ajuanfaktur.approvestore')->can('ajuanfaktur.approve');
         Route::delete('/ajuanfaktur/{no_pengajuan}/cancel', 'cancel')->name('ajuanfaktur.cancel')->can('ajuanfaktur.approve');
+    });
+
+    Route::controller(SetoranpenjualanController::class)->group(function () {
+        Route::get('/setoranpenjualan', 'index')->name('setoranpenjualan.index')->can('setoranpenjualan.index');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

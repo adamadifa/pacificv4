@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('titlepage', 'Pembayaran Transfer')
+@section('titlepage', 'Pembayaran Giro')
 
 @section('content')
 @section('navigasi')
-   <span>Pembayaran Transfer</span>
+   <span>Pembayaran Giro</span>
 @endsection
 <div class="row">
    <div class="col-lg-12">
@@ -11,14 +11,14 @@
          @include('layouts.navigation_girotransfer')
          <div class="tab-content">
             <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-               @can('pembayarantransfer.create')
+               @can('pembayarangiro.create')
                   <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                     Input Pembayaran Transfer
+                     Input Pembayaran Giro
                   </a>
                @endcan
                <div class="row mt-2">
                   <div class="col-12">
-                     <form action="{{ route('pembayarantransfer.index') }}">
+                     <form action="{{ route('pembayarangiro.index') }}">
                         <div class="row">
                            <div class="col-lg-6 col-sm-12 col-md-12">
                               <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
@@ -40,8 +40,13 @@
                            </div>
                         @endrole
                         <div class="row">
-
-                           <div class="col-lg-6 col-md-12 col-sm-12">
+                           <div class="col-lg-3 col-md-12 col-sm-12">
+                              <div class="form-group mb-3">
+                                 <x-input-with-icon label="No. Giro" icon="ti ti-barcode" name="no_giro"
+                                    value="{{ Request('no_giro') }}" />
+                              </div>
+                           </div>
+                           <div class="col-lg-3 col-md-12 col-sm-12">
                               <div class="form-group mb-3">
                                  <x-input-with-icon label="Nama Pelanggan"
                                     value="{{ Request('nama_pelanggan_search') }}" icon="ti ti-user"
@@ -91,7 +96,7 @@
                         <table class="table table-striped table-hover table-bordered">
                            <thead class="table-dark">
                               <tr>
-                                 <th>Kode Transfer</th>
+                                 <th>No. Giro</th>
                                  <th>Tanggal</th>
                                  <th>Pelanggan</th>
                                  <th>Jumlah</th>
@@ -103,9 +108,9 @@
                               </tr>
                            </thead>
                            <tbody>
-                              @foreach ($transfer as $d)
+                              @foreach ($giro as $d)
                                  <tr>
-                                    <td>{{ $d->kode_transfer }}</td>
+                                    <td>{{ $d->no_giro }}</td>
                                     <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
                                     <td style="width: 20%">{{ $d->nama_pelanggan }}</td>
                                     <td class="text-end fw-bold">{{ formatAngka($d->total) }}</td>
@@ -127,24 +132,24 @@
                                     </td>
                                     <td>
                                        <div class="d-flex">
-                                          @can('pembayarantransfer.approve')
+                                          @can('pembayarangiro.approve')
                                              <div>
                                                 <a href="#" class="btnApprove me-2"
-                                                   kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}"><i
+                                                   kode_giro="{{ Crypt::encrypt($d->kode_giro) }}"><i
                                                       class="ti ti-external-link text-success"></i></a>
                                              </div>
                                           @endcan
-                                          @can('pembayarantransfer.show')
+                                          @can('pembayarangiro.show')
                                              <div>
                                                 <a href="#" class="btnShow"
-                                                   kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}"><i
+                                                   kode_giro="{{ Crypt::encrypt($d->kode_giro) }}"><i
                                                       class="ti ti-file-description text-info"></i></a>
                                              </div>
                                           @endcan
-                                          @can('pembayarantransfer.delete')
+                                          @can('pembayarangiro.delete')
                                              @if ($d->status === '0')
                                                 <form method="POST" name="deleteform" class="deleteform"
-                                                   action="/pembayarantransfer/{{ Crypt::encrypt($d->kode_transfer) }}/deletetransfer">
+                                                   action="/pembayarangiro/{{ Crypt::encrypt($d->kode_giro) }}/deletegiro">
                                                    @csrf
                                                    @method('DELETE')
                                                    <a href="#" class="delete-confirm me-1">
@@ -161,7 +166,7 @@
                         </table>
                      </div>
                      <div style="float: right;">
-                        {{ $transfer->links() }}
+                        {{ $giro->links() }}
                      </div>
                   </div>
                </div>
@@ -264,29 +269,30 @@
       $(".btnShow").click(function(e) {
          e.preventDefault();
          loading();
-         const kode_transfer = $(this).attr("kode_transfer");
+         const kode_giro = $(this).attr("kode_giro");
          $('#modal').modal("show");
-         $("#loadmodal").load(`/pembayarantransfer/${kode_transfer}/show`);
-         $("#modal").find(".modal-title").text("Detail Transfer");
+         $("#loadmodal").load(`/pembayarangiro/${kode_giro}/show`);
+         $("#modal").find(".modal-title").text("Detail Giro");
       });
 
 
       $(".btnApprove").click(function(e) {
          e.preventDefault();
          loading();
-         const kode_transfer = $(this).attr("kode_transfer");
+         const kode_giro = $(this).attr("kode_giro");
          $('#modal').modal("show");
-         $("#loadmodal").load(`/pembayarantransfer/${kode_transfer}/approve`);
-         $("#modal").find(".modal-title").text("Detail Transfer");
+         $("#loadmodal").load(`/pembayarangiro/${kode_giro}/approve`);
+         $("#modal").find(".modal-title").text("Detail Giro");
       });
 
       $("#btnCreate").click(function(e) {
          e.preventDefault();
          loading();
          $('#modal').modal("show");
-         $("#loadmodal").load(`/pembayarantransfer/creategroup`);
-         $("#modal").find(".modal-title").text("Input Pembayaran Transfer Pelanggan");
+         $("#loadmodal").load(`/pembayarangiro/creategroup`);
+         $("#modal").find(".modal-title").text("Input Pembayaran Giro Pelanggan");
       });
+
 
       $("#kode_cabang_search").change(function(e) {
          getsalesmanbyCabang();

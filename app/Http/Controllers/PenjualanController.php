@@ -685,14 +685,23 @@ class PenjualanController extends Controller
             'status',
             'tanggal_ditolak',
             'keterangan',
-            'marketing_penjualan_historibayar.tanggal as tanggal_diterima',
-            'marketing_penjualan_historibayar_giro.no_bukti as no_bukti_giro',
+            'historibayargiro.tanggal as tanggal_diterima',
+            // 'marketing_penjualan_historibayar_giro.no_bukti as no_bukti_giro',
             'nama_salesman'
         )
             ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
             ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
-            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_giro.kode_giro', '=', 'marketing_penjualan_historibayar_giro.kode_giro')
-            ->leftJoin('marketing_penjualan_historibayar', 'marketing_penjualan_historibayar_giro.no_bukti', '=', 'marketing_penjualan_historibayar.no_bukti')
+            ->leftJoin(
+                DB::raw("(
+                    SELECT kode_giro,marketing_penjualan_historibayar_giro.no_bukti,tanggal
+                    FROM marketing_penjualan_historibayar_giro
+                    INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_giro.no_bukti = marketing_penjualan_historibayar.no_bukti
+                    WHERE marketing_penjualan_historibayar.no_faktur = '$no_faktur'
+                ) historibayargiro"),
+                function ($join) {
+                    $join->on('marketing_penjualan_giro_detail.kode_giro', '=', 'historibayargiro.kode_giro');
+                }
+            )
             ->where('marketing_penjualan_giro_detail.no_faktur', $no_faktur)
             ->get();
 
@@ -704,15 +713,25 @@ class PenjualanController extends Controller
             'status',
             'tanggal_ditolak',
             'keterangan',
-            'marketing_penjualan_historibayar.tanggal as tanggal_diterima',
+            'historibayartransfer.tanggal as tanggal_diterima',
             'nama_salesman'
         )
             ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
             ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
-            ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_transfer.kode_transfer', '=', 'marketing_penjualan_historibayar_transfer.kode_transfer')
-            ->leftJoin('marketing_penjualan_historibayar', 'marketing_penjualan_historibayar_transfer.no_bukti', '=', 'marketing_penjualan_historibayar.no_bukti')
+            ->leftJoin(
+                DB::raw("(
+                    SELECT kode_transfer,marketing_penjualan_historibayar_transfer.no_bukti,tanggal
+                    FROM marketing_penjualan_historibayar_transfer
+                    INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_transfer.no_bukti = marketing_penjualan_historibayar.no_bukti
+                    WHERE marketing_penjualan_historibayar.no_faktur = '$no_faktur'
+                ) historibayartransfer"),
+                function ($join) {
+                    $join->on('marketing_penjualan_transfer_detail.kode_transfer', '=', 'historibayartransfer.kode_transfer');
+                }
+            )
             ->where('marketing_penjualan_transfer_detail.no_faktur', $no_faktur)
             ->get();
+
 
         //dd($data['detail']);
         $data['checkin'] = Checkinpenjualan::where('tanggal', $penjualan->tanggal)->where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
@@ -959,6 +978,17 @@ class PenjualanController extends Controller
         foreach ($listfaktur as $d) {
             echo "<option value='$d->no_faktur'>$d->no_faktur</option>";
         }
+    }
+
+    public function getpiutangfaktur($no_faktur)
+    {
+        $pj = new Penjualan();
+        $penjualan = $pj->getpiutangFaktur($no_faktur)->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'Piutang Faktur',
+            'data'    => $penjualan
+        ]);
     }
     public function destroy($no_faktur)
     {

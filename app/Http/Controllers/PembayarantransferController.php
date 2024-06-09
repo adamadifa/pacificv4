@@ -46,7 +46,7 @@ class PembayarantransferController extends Controller
     {
         $no_faktur = Crypt::decrypt($no_faktur);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)
-            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->first();
         $data['salesman'] =  Salesman::where('kode_cabang', $penjualan->kode_cabang)
             ->where('status_aktif_salesman', '1')
@@ -54,6 +54,11 @@ class PembayarantransferController extends Controller
             ->get();
         $data['no_faktur'] = $no_faktur;
         return view('marketing.pembayarantransfer.create', $data);
+    }
+
+    public function creategroup()
+    {
+        return view('marketing.pembayarantransfer.creategroup');
     }
 
 
@@ -104,19 +109,76 @@ class PembayarantransferController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 
+    public function storegroup(Request $request)
+    {
+        $request->validate([
+            'kode_pelanggan' => 'required',
+            'tanggal' => 'required',
+            'kode_salesman' => 'required',
+            'bank_pengirim' => 'required'
+        ]);
+        $no_faktur = $request->no_faktur;
+        $jumlah = $request->jml;
+        $tahun = date('Y', strtotime($request->tanggal));
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
 
+            if (empty($no_faktur)) {
+                return Redirect::back()->with(messageError('Detail Faktur Masih Kosong'));
+            }
+
+            $lastransfer = Transfer::select('kode_transfer')
+                ->whereRaw('YEAR(tanggal)="' . $tahun . '"')
+                ->orderBy("kode_transfer", "desc")
+                ->first();
+
+            $last_kode_transfer = $lastransfer != null ? $lastransfer->kode_transfer : '';
+            $kode_transfer  = buatkode($last_kode_transfer, "TR" . $tahun, 4);
+
+            Transfer::create([
+                'kode_transfer' => $kode_transfer,
+                'kode_pelanggan' => $request->kode_pelanggan,
+                'tanggal' => $request->tanggal,
+                'kode_salesman' => $request->kode_salesman,
+                'bank_pengirim' => $request->bank_pengirim,
+                'jatuh_tempo' => $request->tanggal,
+                'keterangan' => $request->keterangan,
+                'status' => 0,
+            ]);
+
+            for ($i = 0; $i < count($no_faktur); $i++) {
+                $detail[] = [
+                    'kode_transfer' => $kode_transfer,
+                    'no_faktur' => $no_faktur[$i],
+                    'jumlah' => toNumber($jumlah[$i])
+                ];
+            }
+
+            Detailtransfer::insert($detail);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
     public function edit($no_faktur, $kode_transfer)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
         $kode_transfer = Crypt::decrypt($kode_transfer);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)
-            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->first();
         $data['salesman'] =  Salesman::where('kode_cabang', $penjualan->kode_cabang)
             ->where('status_aktif_salesman', '1')
@@ -281,10 +343,12 @@ class PembayarantransferController extends Controller
                 if ($ledgertransfer != null) {
                     Ledger::where('no_bukti', $no_bukti_ledger)->delete();
                     Historibayarpenjualan::whereIn('no_bukti', $no_bukti_pembayaran)->delete();
-                    Transfer::where('kode_transfer', $kode_transfer)->update([
-                        'status' => 0
-                    ]);
                 }
+
+                Transfer::where('kode_transfer', $kode_transfer)->update([
+                    'status' => 0,
+                    'tanggal_ditolak' => NULL
+                ]);
             }
             //Jika Diterima
             if ($request->status === '1') {
@@ -378,7 +442,30 @@ class PembayarantransferController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
-            dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+            // dd($e);
+        }
+    }
+
+    public function destroytransfer($kode_transfer)
+    {
+
+        $kode_transfer = Crypt::decrypt($kode_transfer);
+        $transfer = Transfer::where('kode_transfer', $kode_transfer)->first();
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($transfer->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
+            }
+            //Hapus Surat Jalan
+            Transfer::where('kode_transfer', $kode_transfer)->delete();
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 }
