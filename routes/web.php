@@ -1015,6 +1015,11 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SetoranpenjualanController::class)->group(function () {
         Route::get('/setoranpenjualan', 'index')->name('setoranpenjualan.index')->can('setoranpenjualan.index');
+        Route::get('/setoranpenjualan/create', 'create')->name('setoranpenjualan.create')->can('setoranpenjualan.create');
+
+
+        //AJAX REQUEST
+        Route::post('/setoranpenjualan/getlhp', 'getlhp')->name('setoranpenjualan.getlhp');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
