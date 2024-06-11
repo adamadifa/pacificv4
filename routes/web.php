@@ -1021,6 +1021,7 @@ Route::middleware('auth')->group(function () {
 
         //AJAX REQUEST
         Route::post('/setoranpenjualan/getlhp', 'getlhp')->name('setoranpenjualan.getlhp');
+        Route::post('/setoranpenjualan/showlhp', 'showlhp')->name('setoranpenjualan.showlhp')->can('setoranpenjualan.show');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

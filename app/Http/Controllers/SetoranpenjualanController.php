@@ -7,6 +7,7 @@ use App\Models\Detailgiro;
 use App\Models\Detailtransfer;
 use App\Models\Giro;
 use App\Models\Historibayarpenjualan;
+use App\Models\Salesman;
 use App\Models\Setoranpenjualan;
 use App\Models\Transfer;
 use App\Models\User;
@@ -165,7 +166,7 @@ class SetoranpenjualanController extends Controller
             //Generate Kode Setoran
 
             $lastsetoranpenjualan = Setoranpenjualan::select('kode_setoran')
-                ->whereRaw('LEFT(kode_setoran,4)="SP' . date('Y') . '"')
+                ->whereRaw('LEFT(kode_setoran,4)="SP' . substr(date('Y'), 2, 2) . '"')
                 ->orderBy('kode_setoran', 'desc')
                 ->first();
             $last_kode_setoran = $lastsetoranpenjualan != null ? $lastsetoranpenjualan->kode_setoran : '';
@@ -193,5 +194,104 @@ class SetoranpenjualanController extends Controller
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+    public function showlhp(Request $request)
+    {
+
+        $data['lhp'] = Historibayarpenjualan::select(
+            'marketing_penjualan_historibayar.no_bukti',
+            'marketing_penjualan_historibayar.tanggal',
+            'marketing_penjualan_historibayar.no_faktur',
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TN' AND giro_to_cash IS NULL,jumlah,0)) as lhp_tunai"),
+            DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TP' AND giro_to_cash IS NULL,jumlah,0)) as lhp_tagihan"),
+            DB::raw("SUM(IF(giro_to_cash ='1',jumlah,0)) AS giro_to_cash_transfer")
+        )
+            ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
+            ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_transfer.no_bukti')
+            ->where('voucher', 0)
+            ->where('marketing_penjualan_historibayar.tanggal', $request->tanggal)
+            ->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman)
+            ->whereNotIn('marketing_penjualan_historibayar.jenis_bayar', ['TR', 'GR'])
+            ->groupBy(
+                'marketing_penjualan_historibayar.no_bukti',
+                'marketing_penjualan_historibayar.tanggal',
+                'marketing_penjualan_historibayar.no_faktur',
+                'marketing_penjualan.kode_pelanggan',
+                'nama_pelanggan'
+            )
+            ->orderBy('marketing_penjualan_historibayar.no_bukti', 'asc')
+            ->get();
+
+        $data['giro'] =  Detailgiro::select(
+            'marketing_penjualan_giro.no_giro',
+            'marketing_penjualan_giro_detail.no_faktur',
+            'nama_pelanggan',
+            'marketing_penjualan_giro.tanggal',
+            'marketing_penjualan_giro.kode_salesman',
+            'marketing_penjualan_giro.jatuh_tempo',
+            'marketing_penjualan_giro.status',
+            DB::raw("SUM(jumlah) as lhp_giro")
+        )
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('marketing_penjualan', 'marketing_penjualan_giro_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->where('marketing_penjualan_giro.tanggal', $request->tanggal)
+            ->where('marketing_penjualan_giro.kode_salesman', $request->kode_salesman)
+            ->groupBy(
+                'marketing_penjualan_giro.no_giro',
+                'marketing_penjualan_giro_detail.no_faktur',
+                'nama_pelanggan',
+                'marketing_penjualan_giro.tanggal',
+                'marketing_penjualan_giro.kode_salesman',
+                'marketing_penjualan_giro.jatuh_tempo',
+                'marketing_penjualan_giro.status'
+            )
+            ->get();
+
+        $data['transfer'] = Detailtransfer::select(
+            'marketing_penjualan_transfer.tanggal',
+            'marketing_penjualan_transfer.kode_transfer',
+            'marketing_penjualan_transfer_detail.no_faktur',
+            'nama_pelanggan',
+            'marketing_penjualan_transfer.kode_salesman',
+            'marketing_penjualan_transfer.status',
+            DB::raw("SUM(IF(giro_to_cash='1',jumlah,0)) as gito_to_transfer"),
+            DB::raw("SUM(IF(giro_to_cash IS NULL,jumlah,0)) as lhp_transfer")
+        )
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->join('marketing_penjualan', 'marketing_penjualan_transfer_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->leftJoin(
+                DB::raw("(
+                            SELECT marketing_penjualan_historibayar_transfer.no_bukti,kode_transfer,no_faktur,tanggal,giro_to_cash
+                            FROM marketing_penjualan_historibayar_transfer
+                            INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_transfer.no_bukti = marketing_penjualan_historibayar.no_bukti
+                            INNER JOIN marketing_penjualan_historibayar_giro ON marketing_penjualan_historibayar.no_bukti = marketing_penjualan_historibayar_giro.no_bukti
+                            ) historibayartransfer"),
+                function ($join) {
+                    $join->on('marketing_penjualan_transfer_detail.kode_transfer', '=', 'historibayartransfer.kode_transfer');
+                    $join->on('marketing_penjualan_transfer_detail.no_faktur', '=', 'historibayartransfer.no_faktur');
+                }
+            )
+
+            ->where('marketing_penjualan_transfer.tanggal', $request->tanggal)
+            ->where('marketing_penjualan_transfer.kode_salesman', $request->kode_salesman)
+            ->groupBy(
+                'marketing_penjualan_transfer.tanggal',
+                'marketing_penjualan_transfer.kode_transfer',
+                'marketing_penjualan_transfer_detail.no_faktur',
+                'nama_pelanggan',
+                'marketing_penjualan_transfer.kode_salesman',
+                'marketing_penjualan_transfer.status'
+            )
+            ->get();
+
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        return view('keuangan.kasbesar.setoranpenjualan.showlhp', $data);
     }
 }
