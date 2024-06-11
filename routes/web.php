@@ -1016,6 +1016,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(SetoranpenjualanController::class)->group(function () {
         Route::get('/setoranpenjualan', 'index')->name('setoranpenjualan.index')->can('setoranpenjualan.index');
         Route::get('/setoranpenjualan/create', 'create')->name('setoranpenjualan.create')->can('setoranpenjualan.create');
+        Route::post('/setoranpenjualan/store', 'store')->name('setoranpenjualan.store')->can('setoranpenjualan.store');
 
 
         //AJAX REQUEST
