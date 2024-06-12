@@ -260,7 +260,7 @@ class Globalprovider extends ServiceProvider
             ];
 
             $gudang_bahan_permission = array_merge($gudang_bahan_mutasi_permission, $gudang_bahan_laporan_permission);
-
+            $test = 'test';
 
 
             //Gudang Logistik
