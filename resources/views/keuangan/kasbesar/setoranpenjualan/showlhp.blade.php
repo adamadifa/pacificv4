@@ -1,5 +1,23 @@
 <div class="row">
     <div class="col">
+        <table class="table">
+            <tr>
+                <th>Kode Salesman</th>
+                <td>{{ $salesman->kode_salesman }}</td>
+            </tr>
+            <tr>
+                <th>Nama Salesman</th>
+                <td>{{ $salesman->nama_salesman }}</td>
+            </tr>
+            <tr>
+                <th>Tanggal</th>
+                <td>{{ DateToIndo($tanggal) }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>

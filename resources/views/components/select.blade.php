@@ -1,19 +1,9 @@
-@props([
-    'name',
-    'label',
-    'data',
-    'key',
-    'textShow',
-    'selected' => '',
-    'upperCase' => false,
-    'select2' => '',
-    'showKey' => false,
-])
+@props(['name', 'label', 'data', 'key', 'textShow', 'selected' => '', 'upperCase' => false, 'select2' => '', 'showKey' => false, 'disabled' => false])
 
 
 
 <div class="form-group mb-3">
-    <select name="{{ $name }}" id="{{ $name }}" class="form-select {{ $select2 }}">
+    <select name="{{ $name }}" id="{{ $name }}" class="form-select {{ $select2 }}" {{ $disabled ? 'disabled' : '' }}>
         <option value="">{{ $label }}</option>
         @foreach ($data as $d)
             <option {{ $d->$key == $selected ? 'selected' : '' }} value="{{ $d->$key }}">

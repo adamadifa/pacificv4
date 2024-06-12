@@ -68,7 +68,9 @@ use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
+use App\Http\Controllers\SetorangiroController;
 use App\Http\Controllers\SetoranpenjualanController;
+use App\Http\Controllers\SetorantransferController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
@@ -1016,13 +1018,33 @@ Route::middleware('auth')->group(function () {
     Route::controller(SetoranpenjualanController::class)->group(function () {
         Route::get('/setoranpenjualan', 'index')->name('setoranpenjualan.index')->can('setoranpenjualan.index');
         Route::get('/setoranpenjualan/create', 'create')->name('setoranpenjualan.create')->can('setoranpenjualan.create');
+        Route::get('/setoranpenjualan/{kode_setoran}/edit', 'edit')->name('setoranpenjualan.edit')->can('setoranpenjualan.edit');
         Route::post('/setoranpenjualan/store', 'store')->name('setoranpenjualan.store')->can('setoranpenjualan.store');
-
+        Route::put('/setoranpenjualan/{kode_setoran}/update', 'update')->name('setoranpenjualan.update')->can('setoranpenjualan.update');
+        Route::delete('/setoranpenjualan/{kode_setoran}/delete', 'destroy')->name('setoranpenjualan.delete')->can('setoranpenjualan.delete');
+        Route::get('/setoranpenjualan/cetak', 'cetak')->name('setoranpenjualan.cetak')->can('setoranpenjualan.show');
 
         //AJAX REQUEST
         Route::post('/setoranpenjualan/getlhp', 'getlhp')->name('setoranpenjualan.getlhp');
         Route::post('/setoranpenjualan/showlhp', 'showlhp')->name('setoranpenjualan.showlhp')->can('setoranpenjualan.show');
     });
+
+
+    Route::controller(SetorantransferController::class)->group(function () {
+        Route::get('/setorantransfer', 'index')->name('setorantransfer.index')->can('setorantransfer.index');
+        Route::get('/setorantransfer/{kode_transfer}/create', 'create')->name('setorantransfer.create')->can('setorantransfer.create');
+        Route::post('/setorantransfer/{kode_transfer}/store', 'store')->name('setorantransfer.store')->can('setorantransfer.store');
+        Route::delete('/setorantransfer/{kode_setoran}/delete', 'destroy')->name('setorantransfer.delete')->can('setorantransfer.delete');
+    });
+
+    Route::controller(SetorangiroController::class)->group(function () {
+        Route::get('/setorangiro', 'index')->name('setorangiro.index')->can('setorangiro.index');
+        Route::get('/setorangiro/{kode_giro}/create', 'create')->name('setorangiro.create')->can('setorangiro.create');
+        Route::post('/setorangiro/{kode_giro}/store', 'store')->name('setorangiro.store')->can('setorangiro.store');
+        Route::delete('/setorangiro/{kode_setoran}/delete', 'destroy')->name('setorangiro.delete')->can('setorangiro.delete');
+    });
+
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

@@ -1,49 +1,42 @@
-<form id="formBayar" method="POST"
-    action="{{ route('pembayaranpenjualan.update', Crypt::encrypt($historibayar->no_bukti)) }}">
+<form id="formBayar" method="POST" action="{{ route('pembayaranpenjualan.update', Crypt::encrypt($historibayar->no_bukti)) }}">
     @csrf
     @method('PUT')
     {{-- {{ $historibayar->no_bukti }} --}}
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date"
-        value="{{ $historibayar->tanggal }}" />
-    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right"
-        value="{{ formatAngka($historibayar->jumlah) }}" />
-    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman"
-        textShow="nama_salesman" upperCase="true" select2="select2Kodesalesman"
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" value="{{ $historibayar->tanggal }}" />
+    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" value="{{ formatAngka($historibayar->jumlah) }}" />
+    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true" select2="select2Kodesalesman"
         selected="{{ $historibayar->kode_salesman }}" />
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-2">
-                <input class="form-check-input agreementvoucher" name="agreementvoucher" value="1" type="checkbox"
-                    value="" id="agreementvoucher" {{ $historibayar->voucher == 1 ? 'checked' : '' }}>
+                <input class="form-check-input agreementvoucher" name="agreementvoucher" value="1" type="checkbox" value="" id="agreementvoucher"
+                    {{ $historibayar->voucher == 1 ? 'checked' : '' }}>
                 <label class="form-check-label" for="agreementvoucher"> Bayar Menggunakan Voucher ? </label>
             </div>
         </div>
     </div>
     <div class="row" id="voucher">
         <div class="col">
-            <x-select label="Pilih Voucher" name="jenis_voucher" :data="$jenis_voucher" key="id"
-                textShow="nama_voucher" upperCase="true" select2="select2Kodevoucher"
+            <x-select label="Pilih Voucher" name="jenis_voucher" :data="$jenis_voucher" key="id" textShow="nama_voucher" upperCase="true" select2="select2Kodevoucher"
                 selected="{{ $historibayar->jenis_voucher }}" />
         </div>
     </div>
     <div class="row">
         <div class="col-12">
             <div class="form-check mb-3">
-                <input class="form-check-input agreementgiro" name="agreementgiro" value="1" type="checkbox"
-                    id="agreementgiro" {{ $historibayar->giro_to_cash == '1' ? 'checked' : '' }}>
+                <input class="form-check-input agreementgiro" name="agreementgiro" value="1" type="checkbox" id="agreementgiro" {{ $historibayar->giro_to_cash == '1' ? 'checked' : '' }}>
                 <label class="form-check-label" for="agreementgiro"> Ganti Giro Ke Cash ? </label>
             </div>
         </div>
     </div>
     <div class="row" id="giroditolak">
         <div class="col">
-            <x-select label="Pilih Giro" name="kode_giro" :data="$giroditolak" key="kode_giro" textShow="no_giro"
-                upperCase="true" select2="select2Kodegiro" selected="{{ $historibayar->kode_giro }}" />
+            <x-select label="Pilih Giro" name="kode_giro" :data="$giroditolak" key="kode_giro" textShow="no_giro" upperCase="true" select2="select2Kodegiro" selected="{{ $historibayar->kode_giro }}" />
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <button class="btn btn-primary w-100"><i class="ti ti-send me-1"></i>Submit</button>
+            <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
         </div>
     </div>
 </form>
@@ -51,6 +44,16 @@
 <script>
     $(function() {
         const form = $("#formBayar");
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..
+         `);
+        }
         $(".flatpickr-date").flatpickr({
             enable: [{
                 from: "{{ $start_periode }}",
@@ -121,6 +124,7 @@
             const jumlah = parseInt(jml.replace(/\./g, ''));
             const kode_salesman = $(this).find("#kode_salesman").val();
             const jenis_voucher = $(this).find("#jenis_voucher").val();
+            const kode_giro = $(this).find("#kode_giro").val();
             if (isNaN(sisa_bayar)) {
                 sisa_bayar = 0;
             } else {
@@ -173,8 +177,32 @@
                 });
 
                 return false;
-            } else if ($(".agreementvoucher").is(':checked')) {
+            } else if ($(".agreementvoucher").is(':checked') && jenis_voucher == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jenis Voucher Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jenis_voucher").focus();
+                    },
+                });
+
                 return false;
+            } else if ($(".agreementgiro").is(':checked') && kode_giro == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Silahkan Pilih Giro Yang Diganti !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#kode_giro").focus();
+                    },
+                });
+
+                return false;
+            } else {
+                buttonDisable();
             }
         });
     });

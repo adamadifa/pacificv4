@@ -21,20 +21,17 @@
                             <form action="{{ route('ajuanlimit.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                 </div>
                                 @hasanyrole($roles_show_cabang)
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                                                select2="select2Kodecabangsearch" />
+                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
+                                                selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
                                         </div>
                                     </div>
                                 @endrole
@@ -136,8 +133,7 @@
                                                             </a>
                                                         @else
                                                             @if ($d->status != '2')
-                                                                <a href="#" class="adjustlimit"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                <a href="#" class="adjustlimit" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     @if ($d->jumlah_rekomendasi < $d->jumlah)
                                                                         <span class="text-danger"><i class="ti ti-trending-down me-1"></i>
                                                                             {{ ROUND($persentase) }} %</span>
@@ -246,8 +242,7 @@
                                                             <div>
                                                                 @if ($d->status_disposisi != null)
                                                                     @if ($d->status_disposisi == '0')
-                                                                        <a href="#" class="me-2 btnApprove"
-                                                                            no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                        <a href="#" class="me-2 btnApprove" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                             <i class="ti ti-send text-info"></i>
                                                                         </a>
                                                                     @else
@@ -275,8 +270,7 @@
                                                                     @endif
                                                                 @else
                                                                     @if ($d->role == 'sales marketing manager' && $level_user == 'operation manager' && $d->status_ajuan == '0')
-                                                                        <a href="#" class="me-2 btnApprove"
-                                                                            no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                        <a href="#" class="me-2 btnApprove" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                             <i class="ti ti-send text-info"></i>
                                                                         </a>
                                                                     @elseif(($d->status_ajuan == '0' && $d->role == 'regional sales manager') || $d->role == 'sales marketing manager')
@@ -319,14 +313,12 @@
 
                                                         @can('ajuanlimit.show')
                                                             <div>
-                                                                <a href="#" class="me-2 btnShow"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                <a href="#" class="me-2 btnShow" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-file-description text-info"></i>
                                                                 </a>
                                                             </div>
                                                             <div>
-                                                                <a href="{{ route('ajuanlimit.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
-                                                                    class="me-2" target="_blank">
+                                                                <a href="{{ route('ajuanlimit.cetak', Crypt::encrypt($d->no_pengajuan)) }}" class="me-2" target="_blank">
                                                                     <i class="ti ti-printer text-info"></i>
                                                                 </a>
                                                             </div>

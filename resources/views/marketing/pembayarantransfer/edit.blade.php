@@ -1,121 +1,134 @@
 <form id="formBayar" method="POST" action="{{ route('pembayarantransfer.update', [Crypt::encrypt($no_faktur), Crypt::encrypt($kode_transfer)]) }}">
-   @csrf
-   @method('PUT')
-   <x-input-with-icon icon="ti ti-calendar" label="Tanggal Giro" name="tanggal" value="{{ $transfer->tanggal }}"
-      datepicker="flatpickr-date" />
-   <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" value="{{ formatAngka($transfer->jumlah) }}" />
-   <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman"
-      upperCase="true" select2="select2Kodesalesman" selected="{{ $transfer->kode_salesman }}" />
-   <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" value="{{ $transfer->bank_pengirim }}" />
-   <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $transfer->keterangan }}" />
-   <div class="row">
-      <div class="col">
-         <button class="btn btn-primary w-100"><i class="ti ti-send me-1"></i>Submit</button>
-      </div>
-   </div>
+    @csrf
+    @method('PUT')
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Giro" name="tanggal" value="{{ $transfer->tanggal }}" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" value="{{ formatAngka($transfer->jumlah) }}" />
+    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true" select2="select2Kodesalesman"
+        selected="{{ $transfer->kode_salesman }}" />
+    <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" value="{{ $transfer->bank_pengirim }}" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $transfer->keterangan }}" />
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+        </div>
+    </div>
 </form>
 
 <script>
-   $(function() {
-      const form = $("#formBayar");
-      $(".flatpickr-date").flatpickr({
-         enable: [{
-            from: "{{ $start_periode }}",
-            to: "{{ $end_periode }}"
-         }, ]
-      });
+    $(function() {
+        const form = $("#formBayar");
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..
+         `);
+        }
 
 
-      const select2Kodesalesman = $('.select2Kodesalesman');
-      if (select2Kodesalesman.length) {
-         select2Kodesalesman.each(function() {
-            var $this = $(this);
-            $this.wrap('<div class="position-relative"></div>').select2({
-               placeholder: 'Salesman Penagih',
-               allowClear: true,
-               dropdownParent: $this.parent()
+        $(".flatpickr-date").flatpickr({
+            enable: [{
+                from: "{{ $start_periode }}",
+                to: "{{ $end_periode }}"
+            }, ]
+        });
+
+
+        const select2Kodesalesman = $('.select2Kodesalesman');
+        if (select2Kodesalesman.length) {
+            select2Kodesalesman.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Salesman Penagih',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
             });
-         });
-      }
+        }
 
 
-      $("#jumlah").maskMoney();
-
-
+        $("#jumlah").maskMoney();
 
 
 
-      form.submit(function(e) {
-         const bank_pengirim = $(this).find("#bank_pengirim").val();
-         const sisabayar = $("#sisabayar").text();
-         let sisa_bayar = parseInt(sisabayar.replace(/\./g, ''));
-         const tanggal = $(this).find("#tanggal").val();
-         const jml = $(this).find("#jumlah").val();
-         const jumlah = parseInt(jml.replace(/\./g, ''));
-         const kode_salesman = $(this).find("#kode_salesman").val();
-         if (isNaN(sisa_bayar)) {
-            sisa_bayar = 0;
-         } else {
-            sisa_bayar = sisa_bayar;
-         }
 
-         if (tanggal == "") {
-            Swal.fire({
-               title: "Oops!",
-               text: "Tanggal Harus Diisi !",
-               icon: "warning",
-               showConfirmButton: true,
-               didClose: (e) => {
-                  form.find("#tanggal").focus();
-               },
-            });
-            return false;
-         } else if (jml === "" || jml === '0') {
-            Swal.fire({
-               title: "Oops!",
-               text: "Jumlah Harus Diisi !",
-               icon: "warning",
-               showConfirmButton: true,
-               didClose: (e) => {
-                  form.find("#jumlah").focus();
-               },
-            });
-            return false;
-         } else if (parseInt(jumlah) > parseInt(sisa_bayar)) {
-            Swal.fire({
-               title: "Oops!",
-               text: "Jumlah Bayar Melebihi Sisa Bayar !",
-               icon: "warning",
-               showConfirmButton: true,
-               didClose: (e) => {
-                  form.find("#jumlah").focus();
-               },
-            });
-            return false;
-         } else if (kode_salesman == "") {
-            Swal.fire({
-               title: "Oops!",
-               text: "Salesman Harus Diisi !",
-               icon: "warning",
-               showConfirmButton: true,
-               didClose: (e) => {
-                  form.find("#kode_salesman").focus();
-               },
-            });
 
-            return false;
-         } else if (bank_pengirim == "") {
-            Swal.fire({
-               title: "Oops!",
-               text: "Bank Pengirim Harus Diisi !",
-               icon: "warning",
-               showConfirmButton: true,
-               didClose: (e) => {
-                  form.find("#bank_pengirim").focus();
-               },
-            });
-            return false;
-         }
-      });
-   });
+        form.submit(function(e) {
+            const bank_pengirim = $(this).find("#bank_pengirim").val();
+            const sisabayar = $("#sisabayar").text();
+            let sisa_bayar = parseInt(sisabayar.replace(/\./g, ''));
+            const tanggal = $(this).find("#tanggal").val();
+            const jml = $(this).find("#jumlah").val();
+            const jumlah = parseInt(jml.replace(/\./g, ''));
+            const kode_salesman = $(this).find("#kode_salesman").val();
+            if (isNaN(sisa_bayar)) {
+                sisa_bayar = 0;
+            } else {
+                sisa_bayar = sisa_bayar;
+            }
+
+            if (tanggal == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tanggal Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#tanggal").focus();
+                    },
+                });
+                return false;
+            } else if (jml === "" || jml === '0') {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jumlah").focus();
+                    },
+                });
+                return false;
+            } else if (parseInt(jumlah) > parseInt(sisa_bayar)) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Bayar Melebihi Sisa Bayar !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jumlah").focus();
+                    },
+                });
+                return false;
+            } else if (kode_salesman == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Salesman Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#kode_salesman").focus();
+                    },
+                });
+
+                return false;
+            } else if (bank_pengirim == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Bank Pengirim Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#bank_pengirim").focus();
+                    },
+                });
+                return false;
+            } else {
+                buttonDisable();
+            }
+        });
+    });
 </script>

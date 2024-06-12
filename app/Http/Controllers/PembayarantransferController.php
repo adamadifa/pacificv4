@@ -11,6 +11,8 @@ use App\Models\Ledger;
 use App\Models\Ledgertransfer;
 use App\Models\Penjualan;
 use App\Models\Salesman;
+use App\Models\Setoranpusat;
+use App\Models\Setoranpusattransfer;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -221,6 +223,14 @@ class PembayarantransferController extends Controller
 
             $transfer = Transfer::where('kode_transfer', $kode_transfer)->first();
             $cektutuplaporantransfer = cektutupLaporan($transfer->tanggal, "penjualan");
+
+
+            $ceksetorantransfer = Setoranpusattransfer::where('kode_transfer', $kode_transfer)->count();
+            if ($ceksetorantransfer > 0) {
+                return Redirect::back()->with(messageError('Data Transfer Tidak Bisa Di Ubah Karena Sudah Disetorkan'));
+            }
+
+
             if ($cektutuplaporantransfer > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
@@ -263,6 +273,13 @@ class PembayarantransferController extends Controller
         $transfer = Transfer::where('kode_transfer', $kode_transfer)->first();
         DB::beginTransaction();
         try {
+
+
+            $ceksetorantransfer = Setoranpusattransfer::where('kode_transfer', $kode_transfer)->count();
+            if ($ceksetorantransfer > 0) {
+                return Redirect::back()->with(messageError('Data Transfer Tidak Bisa Di Ubah Karena Sudah Disetorkan'));
+            }
+
             $cektutuplaporan = cektutupLaporan($transfer->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
@@ -331,15 +348,29 @@ class PembayarantransferController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
+            function updatesetoran($kode_transfer, $status, $omset_bulan, $omset_tahun)
+            {
+                $setorantransfer = Setoranpusattransfer::where('kode_transfer', $kode_transfer)->first();
+                if ($setorantransfer != null) {
+                    Setoranpusat::where('kode_setoran', $setorantransfer->kode_setoran)->update([
+                        'status' => $status,
+                        'omset_bulan' => $omset_bulan,
+                        'omset_tahun' => $omset_tahun
+                    ]);
+                }
+            }
             function prosespending($kode_transfer)
             {
                 $ledgertransfer = Ledgertransfer::where('kode_transfer', $kode_transfer)->first();
                 $historibayartransfer = Historibayarpenjualantransfer::where('kode_transfer', $kode_transfer)->get();
                 $no_bukti_ledger = $ledgertransfer != null ? $ledgertransfer->no_bukti : '';
+
                 $no_bukti_pembayaran = [];
                 foreach ($historibayartransfer as $d) {
                     $no_bukti_pembayaran[] = $d->no_bukti;
                 }
+
+
                 if ($ledgertransfer != null) {
                     Ledger::where('no_bukti', $no_bukti_ledger)->delete();
                     Historibayarpenjualan::whereIn('no_bukti', $no_bukti_pembayaran)->delete();
@@ -347,9 +378,16 @@ class PembayarantransferController extends Controller
 
                 Transfer::where('kode_transfer', $kode_transfer)->update([
                     'status' => 0,
-                    'tanggal_ditolak' => NULL
+                    'tanggal_ditolak' => NULL,
+                    'omset_bulan' => NULL,
+                    'omset_tahun' => NULL
                 ]);
+
+                updatesetoran($kode_transfer, 0, NULL, NULL);
             }
+
+
+
             //Jika Diterima
             if ($request->status === '1') {
                 // $bank = Bank::where('kode_bank', $request->kode_bank)->first();
@@ -361,6 +399,7 @@ class PembayarantransferController extends Controller
                     'omset_tahun' => $request->omset_tahun
                 ]);
 
+                updatesetoran($kode_transfer, 1, $request->omset_bulan, $request->omset_tahun);
 
                 //Insert Histori Byar
                 $totalbayar = 0;
@@ -433,6 +472,7 @@ class PembayarantransferController extends Controller
                     'omset_bulan' => date('m', strtotime($transfer->jatuh_tempo)),
                     'omset_tahun' => date('Y', strtotime($transfer->jatuh_tempo)),
                 ]);
+                updatesetoran($kode_transfer, 2, date('m', strtotime($transfer->jatuh_tempo)), date('Y', strtotime($transfer->jatuh_tempo)));
             } else if ($request->status === '0') {
 
                 prosespending($kode_transfer);
@@ -452,9 +492,14 @@ class PembayarantransferController extends Controller
     {
 
         $kode_transfer = Crypt::decrypt($kode_transfer);
-        $transfer = Transfer::where('kode_transfer', $kode_transfer)->first();
         DB::beginTransaction();
         try {
+            $transfer = Transfer::where('kode_transfer', $kode_transfer)->first();
+            $ceksetorantransfer = Setoranpusattransfer::where('kode_transfer', $kode_transfer)->count();
+
+            if ($ceksetorantransfer > 0) {
+                return Redirect::back()->with(messageError('Data Transfer Tidak Bisa Di Hapus Karena Sudah Disetorkan'));
+            }
             $cektutuplaporan = cektutupLaporan($transfer->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));

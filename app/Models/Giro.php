@@ -30,7 +30,9 @@ class Giro extends Model
             'nama_bank',
             'nama_bank_alias',
             'keuangan_ledger.tanggal as tanggal_diterima',
-            'salesman.kode_cabang'
+            'salesman.kode_cabang',
+            'keuangan_setoranpusat_giro.kode_setoran',
+            'keuangan_setoranpusat.tanggal as tanggal_disetorkan'
         );
         $query->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_giro_detail WHERE kode_giro = marketing_penjualan_giro.kode_giro) as total'));
         $query->join('pelanggan', 'marketing_penjualan_giro.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
@@ -39,6 +41,8 @@ class Giro extends Model
         $query->leftJoin('keuangan_ledger_giro', 'marketing_penjualan_giro.kode_giro', '=', 'keuangan_ledger_giro.kode_giro');
         $query->leftJoin('keuangan_ledger', 'keuangan_ledger_giro.no_bukti', '=', 'keuangan_ledger.no_bukti');
         $query->leftJoin('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
+        $query->leftJoin('keuangan_setoranpusat_giro', 'marketing_penjualan_giro.kode_giro', '=', 'keuangan_setoranpusat_giro.kode_giro');
+        $query->leftJoin('keuangan_setoranpusat', 'keuangan_setoranpusat_giro.kode_setoran', '=', 'keuangan_setoranpusat.kode_setoran');
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {

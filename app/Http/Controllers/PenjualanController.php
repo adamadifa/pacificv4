@@ -703,6 +703,7 @@ class PenjualanController extends Controller
                 }
             )
             ->where('marketing_penjualan_giro_detail.no_faktur', $no_faktur)
+            ->orderBy('marketing_penjualan_giro.tanggal', 'desc')
             ->get();
 
         $data['transfer'] = Detailtransfer::select(
@@ -730,6 +731,7 @@ class PenjualanController extends Controller
                 }
             )
             ->where('marketing_penjualan_transfer_detail.no_faktur', $no_faktur)
+            ->orderBy('marketing_penjualan_transfer.tanggal', 'desc')
             ->get();
 
 

@@ -64,7 +64,9 @@ class DatabaseSeeder extends Seeder
             Returpermissionseeder::class,
             Ajuanlimitkreditpermissionseeder::class,
             Ajuanfakturpermissionseeder::class,
-            Setoranpenjualanpermissionseeder::class
+            Setoranpenjualanpermissionseeder::class,
+            Setorantransferpermissionseeder::class,
+            Setorangiropermissionseeder::class
         ]);
     }
 }

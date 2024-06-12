@@ -12,6 +12,7 @@ use App\Models\Setoranpenjualan;
 use App\Models\Transfer;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
@@ -150,6 +151,11 @@ class SetoranpenjualanController extends Controller
 
     public function store(Request $request)
     {
+
+        $request->validate([
+            'tanggal' => 'required',
+            'kode_salesman' => 'required'
+        ]);
         DB::beginTransaction();
         try {
             $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
@@ -292,6 +298,100 @@ class SetoranpenjualanController extends Controller
             ->get();
 
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        $data['tanggal'] = $request->tanggal;
         return view('keuangan.kasbesar.setoranpenjualan.showlhp', $data);
+    }
+
+
+    public function edit($kode_setoran)
+    {
+        $kode_setoran = Crypt::decrypt($kode_setoran);
+        $data['setoranpenjualan'] = Setoranpenjualan::join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')->where('kode_setoran', $kode_setoran)->first();
+
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
+        return view('keuangan.kasbesar.setoranpenjualan.edit', $data);
+    }
+
+
+    public function update(Request $request, $kode_setoran)
+    {
+        $kode_setoran = Crypt::decrypt($kode_setoran);
+
+        DB::beginTransaction();
+        try {
+
+            $setoranpenjualan = Setoranpenjualan::where('kode_setoran', $kode_setoran)->first();
+
+
+            $cektutuplaporansetoranpenjualan = cektutupLaporan($setoranpenjualan->tanggal, "penjualan");
+            if ($cektutuplaporansetoranpenjualan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+
+            Setoranpenjualan::where('kode_setoran', $kode_setoran)->update([
+                'lhp_tunai' => toNumber($request->lhp_tunai),
+                'lhp_tagihan' => toNumber($request->lhp_tagihan),
+                'setoran_kertas' => toNumber($request->setoran_kertas),
+                'setoran_logam' => toNumber($request->setoran_logam),
+                'setoran_lainnya' => toNumber($request->setoran_lainnya),
+                'setoran_giro' => toNumber($request->setoran_giro),
+                'setoran_transfer' => toNumber($request->setoran_transfer),
+                'giro_to_cash' => toNumber($request->giro_to_cash),
+                'giro_to_transfer' => toNumber($request->giro_to_transfer),
+                'keterangan' => $request->keterangan
+            ]);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function destroy($kode_setoran)
+    {
+        $kode_setoran = Crypt::decrypt($kode_setoran);
+        $setoranpenjualan = Setoranpenjualan::where('kode_setoran', $kode_setoran)->first();
+
+        if (!$setoranpenjualan) {
+            return Redirect::back()->with(messageError('Data Setoran Penjualan tidak ditemukan'));
+        }
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($setoranpenjualan->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            Setoranpenjualan::where('kode_setoran', $kode_setoran)->delete();
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cetak(Request $request)
+    {
+        $sp = new Setoranpenjualan();
+        $data['setoran_penjualan'] = $sp->getSetoranpenjualan(request: $request)->get();
+        // dd($data['setoran_penjualan']);
+        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+
+        if (isset($_GET['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Setoran Penjualan $request->dari-$request->sampai.xls");
+        }
+        return view('keuangan.kasbesar.setoranpenjualan.cetak', $data);
     }
 }

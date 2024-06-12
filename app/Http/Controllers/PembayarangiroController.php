@@ -12,6 +12,8 @@ use App\Models\Ledger;
 use App\Models\Ledgergiro;
 use App\Models\Penjualan;
 use App\Models\Salesman;
+use App\Models\Setoranpusat;
+use App\Models\Setoranpusatgiro;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -299,6 +301,13 @@ class PembayarangiroController extends Controller
         $giro = Giro::where('kode_giro', $kode_giro)->first();
         DB::beginTransaction();
         try {
+
+            $ceksetorangiro = Setoranpusatgiro::where('kode_giro', $kode_giro)->count();
+            if ($ceksetorangiro > 0) {
+                return Redirect::back()->with(messageError('Data Giro Tidak Bisa Di Hapus Karena Sudah Disetorkan'));
+            }
+
+
             $cektutuplaporan = cektutupLaporan($giro->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
@@ -358,6 +367,18 @@ class PembayarangiroController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
+            function updatesetoran($kode_giro, $status, $omset_bulan, $omset_tahun)
+            {
+                $setorangiro = Setoranpusatgiro::where('kode_giro', $kode_giro)->first();
+                if ($setorangiro != null) {
+                    Setoranpusat::where('kode_setoran', $setorangiro->kode_setoran)->update([
+                        'status' => $status,
+                        'omset_bulan' => $omset_bulan,
+                        'omset_tahun' => $omset_tahun
+                    ]);
+                }
+            }
+
             function prosespending($kode_giro)
             {
 
@@ -374,8 +395,13 @@ class PembayarangiroController extends Controller
                 }
                 Giro::where('kode_giro', $kode_giro)->update([
                     'status' => 0,
-                    'tanggal_ditolak' => NULL
+                    'tanggal_ditolak' => NULL,
+                    'omset_bulan' => NULL,
+                    'omset_tahun' => NULL
+
                 ]);
+
+                updatesetoran($kode_giro, 0, NULL, NULL);
             }
             //Jika Diterima
             if ($request->status === '1') {
@@ -388,7 +414,7 @@ class PembayarangiroController extends Controller
                     'omset_tahun' => $request->omset_tahun
                 ]);
 
-
+                updatesetoran($kode_giro, 1, $request->omset_bulan, $request->omset_tahun);
                 //Insert Histori Byar
                 $totalbayar = 0;
                 foreach ($detail as $d) {
@@ -460,6 +486,8 @@ class PembayarangiroController extends Controller
                     'omset_bulan' => date('m', strtotime($giro->jatuh_tempo)),
                     'omset_tahun' => date('Y', strtotime($giro->jatuh_tempo)),
                 ]);
+
+                updatesetoran($kode_giro, 1, date('m', strtotime($giro->jatuh_tempo)), date('Y', strtotime($giro->jatuh_tempo)));
             } else if ($request->status === '0') {
 
                 prosespending($kode_giro);
@@ -491,9 +519,14 @@ class PembayarangiroController extends Controller
     {
 
         $kode_giro = Crypt::decrypt($kode_giro);
-        $giro = Giro::where('kode_giro', $kode_giro)->first();
+
         DB::beginTransaction();
         try {
+            $giro = Giro::where('kode_giro', $kode_giro)->first();
+            $ceksetorangiro = Setoranpusatgiro::where('kode_giro', $kode_giro)->count();
+            if ($ceksetorangiro > 0) {
+                return Redirect::back()->with(messageError('Data Giro Tidak Bisa Di Hapus Karena Sudah Disetorkan'));
+            }
             $cektutuplaporan = cektutupLaporan($giro->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
