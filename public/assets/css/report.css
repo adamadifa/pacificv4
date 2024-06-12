@@ -1,6 +1,7 @@
 .datatable3 {
     border: 1px solid #080909;
     border-collapse: collapse;
+
     /*float:left; */
 }
 
@@ -9,6 +10,7 @@
     padding: 6px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
+    border-width: 1px;
 }
 
 .datatable3 th {
@@ -21,6 +23,7 @@
     background-color: #024a75;
     color: white;
     text-transform: uppercase;
+    border-width: 1px;
 }
 
 h4 {
