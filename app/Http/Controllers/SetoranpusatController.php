@@ -26,4 +26,12 @@ class SetoranpusatController extends Controller
 
         return view('keuangan.kasbesar.setoranpusat.index', $data);
     }
+
+    public function create()
+    {
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
+        return view('keuangan.kasbesar.setoranpusat.create', $data);
+    }
 }

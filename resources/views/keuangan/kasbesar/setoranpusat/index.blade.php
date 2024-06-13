@@ -122,3 +122,25 @@
 <x-modal-form id="modal" show="loadmodal" title="" />
 
 @endsection
+@push('myscript')
+<script>
+    $(function() {
+        function loading() {
+            $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+        };
+
+        $("#btnCreate").click(function(e) {
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Input Setoran Pusat");
+            $("#loadmodal").load(`/setoranpusat/create`);
+        });
+    });
+</script>
+@endpush

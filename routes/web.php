@@ -1047,6 +1047,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SetoranpusatController::class)->group(function () {
         Route::get('/setoranpusat', 'index')->name('setoranpusat.index')->can('setoranpusat.index');
+        Route::get('/setoranpusat/create', 'create')->name('setoranpusat.create')->can('setoranpusat.create');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {
