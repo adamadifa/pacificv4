@@ -341,3 +341,10 @@ function getAkunpiutangcabang($kode_cabang)
 
     return $akun;
 }
+
+
+function formatIndo($date)
+{
+    $tanggal = !empty($date) ? date('d-m-Y', strtotime($date)) : '';
+    return $tanggal;
+}

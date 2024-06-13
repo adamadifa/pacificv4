@@ -70,6 +70,7 @@ use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SetorangiroController;
 use App\Http\Controllers\SetoranpenjualanController;
+use App\Http\Controllers\SetoranpusatController;
 use App\Http\Controllers\SetorantransferController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanangkutanController;
@@ -1044,6 +1045,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/setorangiro/{kode_setoran}/delete', 'destroy')->name('setorangiro.delete')->can('setorangiro.delete');
     });
 
+    Route::controller(SetoranpusatController::class)->group(function () {
+        Route::get('/setoranpusat', 'index')->name('setoranpusat.index')->can('setoranpusat.index');
+    });
 
     Route::controller(TutuplaporanController::class)->group(function () {
 
