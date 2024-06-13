@@ -60,7 +60,7 @@
                                             <th rowspan="2" style="width:25%">Keterangan</th>
                                             <th colspan="4" class="text-center">Setoran</th>
                                             <th rowspan="2" class="align-middle">Jumlah</th>
-                                            <th rowspan="2" class="text-center align-middle">BANK</th>
+                                            <th rowspan="2" class="text-center align-middle" style="width: 10%">BANK</th>
                                             <th rowspan="2" class="text-center align-middle">Status</th>
                                         </tr>
                                         <tr>
