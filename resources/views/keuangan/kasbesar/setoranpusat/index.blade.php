@@ -56,11 +56,12 @@
                                 <table class="table  table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th rowspan="2">Tanggal</th>
+                                            <th rowspan="2" class="align-middle">Tanggal</th>
                                             <th rowspan="2" style="width:25%">Keterangan</th>
                                             <th colspan="4" class="text-center">Setoran</th>
-                                            <th rowspan="2">Jumlah</th>
-                                            <th rowspan="2" class="text-center">Status</th>
+                                            <th rowspan="2" class="align-middle">Jumlah</th>
+                                            <th rowspan="2" class="text-center align-middle">BANK</th>
+                                            <th rowspan="2" class="text-center align-middle">Status</th>
                                         </tr>
                                         <tr>
                                             <th>Kertas</th>
@@ -79,6 +80,17 @@
                                                 <td class="text-end">{{ formatAngka($d->setoran_transfer) }}</td>
                                                 <td class="text-end">{{ formatAngka($d->setoran_giro) }}</td>
                                                 <td class="text-end">{{ formatAngka($d->total) }}</td>
+                                                <td>
+                                                    @if ($d->status == '1')
+                                                        @if (!empty($d->nama_bank))
+                                                            {{ $d->nama_bank }}
+                                                        @elseif(!empty($d->nama_bank_transfer))
+                                                            {{ $d->nama_bank_transfer }}
+                                                        @elseif(!empty($d->nama_bank_giro))
+                                                            {{ $d->nama_bank_giro }}
+                                                        @endif
+                                                    @endif
+                                                </td>
                                                 <td class="text-center">
                                                     @if ($d->status == '1')
                                                         @if (!empty($d->tanggal_diterima))
