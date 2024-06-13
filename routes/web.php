@@ -1047,6 +1047,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SetoranpusatController::class)->group(function () {
         Route::get('/setoranpusat', 'index')->name('setoranpusat.index')->can('setoranpusat.index');
+        Route::delete('/setoranpusat/{kode_setoran}/delete', 'destroy')->name('setoranpusat.delete')->can('setoranpusat.delete');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {
