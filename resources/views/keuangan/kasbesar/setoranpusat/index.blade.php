@@ -117,7 +117,7 @@
                                                         @can('setoranpusat.edit')
                                                             @if ($d->status == '0')
                                                                 <div>
-                                                                    <a href="#" class="edit me-1" kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}">
+                                                                    <a href="#" class="btnEdit me-1" kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}">
                                                                         <i class="ti ti-edit text-success"></i>
                                                                     </a>
                                                                 </div>
@@ -153,3 +153,46 @@
 <x-modal-form id="modal" show="loadmodal" title="" />
 
 @endsection
+@push('myscript')
+<script>
+    $(function() {
+        function loading() {
+            $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+        };
+
+        $("#btnCreate").click(function(e) {
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Input Setoran Pusat");
+            $("#loadmodal").load(`/setoranpusat/create`);
+        });
+
+        $(".btnEdit").click(function(e) {
+            e.preventDefault();
+            const kode_setoran = $(this).attr('kode_setoran');
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Edit Setoran Pusat");
+            $("#loadmodal").load(`/setoranpusat/${kode_setoran}/edit`);
+        });
+
+        const select2Kodecabangsearch = $('.select2Kodecabangsearch');
+        if (select2Kodecabangsearch.length) {
+            select2Kodecabangsearch.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Semua  Cabang',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+    });
+</script>
+@endpush

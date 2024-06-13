@@ -1047,6 +1047,10 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SetoranpusatController::class)->group(function () {
         Route::get('/setoranpusat', 'index')->name('setoranpusat.index')->can('setoranpusat.index');
+        Route::get('/setoranpusat/create', 'create')->name('setoranpusat.create')->can('setoranpusat.create');
+        Route::post('/setoranpusat/store', 'store')->name('setoranpusat.store')->can('setoranpusat.store');
+        Route::get('/setoranpusat/{kode_setoran}/edit', 'edit')->name('setoranpusat.edit')->can('setoranpusat.edit');
+        Route::put('/setoranpusat/{kode_setoran}/update', 'update')->name('setoranpusat.update')->can('setoranpusat.update');
         Route::delete('/setoranpusat/{kode_setoran}/delete', 'destroy')->name('setoranpusat.delete')->can('setoranpusat.delete');
     });
 
