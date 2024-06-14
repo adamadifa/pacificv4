@@ -77,7 +77,7 @@
                                                 <td class="text-end">{{ formatAngka($d->setoran_logam) }}</td>
                                                 <td class="text-end">{{ formatAngka($d->setoran_transfer) }}</td>
                                                 <td class="text-end">{{ formatAngka($d->setoran_giro) }}</td>
-                                                <td class="text-end">{{ formatAngka($d->total) }}</td>
+                                                <td class="text-end fw-bold">{{ formatAngka($d->total) }}</td>
                                                 <td>
                                                     @if ($d->status == '1')
                                                         @if (!empty($d->nama_bank))
@@ -107,15 +107,27 @@
                                                 <td class="text-center">
                                                     <div class="d-flex">
                                                         @can('setoranpusat.approve')
-                                                            @if ($d->status == '0')
+                                                            @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro))
                                                                 <div>
-                                                                    <a href="#" class="approve me-1" kode_setoran="{{ Crypt::encrypt($d->kode_setorann) }}/approve"><i
+                                                                    <a href="#" class="btnApprove me-1" kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}"><i
                                                                             class="ti ti-external-link text-primary"></i></a>
                                                                 </div>
+                                                            @else
+                                                                @if (empty($d->setoran_transfer) && empty($d->setoran_giro))
+                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                        action="{{ route('setoranpusat.cancel', Crypt::encrypt($d->kode_setoran)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="cancel-confirm me-1">
+                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+
+                                                                        </a>
+                                                                    </form>
+                                                                @endif
                                                             @endif
                                                         @endcan
                                                         @can('setoranpusat.edit')
-                                                            @if ($d->status == '0')
+                                                            @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro))
                                                                 <div>
                                                                     <a href="#" class="btnEdit me-1" kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}">
                                                                         <i class="ti ti-edit text-success"></i>
@@ -124,16 +136,18 @@
                                                             @endif
                                                         @endcan
                                                         @can('setoranpusat.delete')
-                                                            <div>
-                                                                <form method="POST" name="deleteform" class="deleteform me-1"
-                                                                    action="{{ route('setoranpusat.delete', Crypt::encrypt($d->kode_setoran)) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            </div>
+                                                            @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro))
+                                                                <div>
+                                                                    <form method="POST" name="deleteform" class="deleteform me-1"
+                                                                        action="{{ route('setoranpusat.delete', Crypt::encrypt($d->kode_setoran)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="delete-confirm ml-1">
+                                                                            <i class="ti ti-trash text-danger"></i>
+                                                                        </a>
+                                                                    </form>
+                                                                </div>
+                                                            @endif
                                                         @endcan
 
                                                     </div>
@@ -180,6 +194,16 @@
             loading();
             $("#modal").find(".modal-title").text("Edit Setoran Pusat");
             $("#loadmodal").load(`/setoranpusat/${kode_setoran}/edit`);
+        });
+
+
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
+            const kode_setoran = $(this).attr('kode_setoran');
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Approve Setoran Pusat");
+            $("#loadmodal").load(`/setoranpusat/${kode_setoran}/approve`);
         });
 
         const select2Kodecabangsearch = $('.select2Kodecabangsearch');

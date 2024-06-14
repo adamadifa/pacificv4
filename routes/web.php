@@ -34,6 +34,7 @@ use App\Http\Controllers\LaporangudangcabangController;
 use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporangudanglogistikController;
 use App\Http\Controllers\LaporanproduksiController;
+use App\Http\Controllers\LogamtokertasController;
 use App\Http\Controllers\MutasidpbController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
@@ -66,6 +67,7 @@ use App\Http\Controllers\SaldoawalgudangcabangController;
 use App\Http\Controllers\SaldoawalgudangjadiController;
 use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
+use App\Http\Controllers\SaldoawalkasbesarController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SetorangiroController;
@@ -1051,9 +1053,32 @@ Route::middleware('auth')->group(function () {
         Route::post('/setoranpusat/store', 'store')->name('setoranpusat.store')->can('setoranpusat.store');
         Route::get('/setoranpusat/{kode_setoran}/edit', 'edit')->name('setoranpusat.edit')->can('setoranpusat.edit');
         Route::put('/setoranpusat/{kode_setoran}/update', 'update')->name('setoranpusat.update')->can('setoranpusat.update');
+        Route::get('/setoranpusat/{kode_setoran}/approve', 'approve')->name('setoranpusat.approve')->can('setoranpusat.approve');
+        Route::post('/setoranpusat/{kode_setoran}/approvestore', 'approvestore')->name('setoranpusat.approvestore')->can('setoranpusat.approve');
+        Route::delete('/setoranpusat/{kode_setoran}/cancel', 'cancel')->name('setoranpusat.cancel')->can('setoranpusat.approve');
         Route::delete('/setoranpusat/{kode_setoran}/delete', 'destroy')->name('setoranpusat.delete')->can('setoranpusat.delete');
     });
 
+    Route::controller(LogamtokertasController::class)->group(function () {
+        Route::get('/logamtokertas', 'index')->name('logamtokertas.index')->can('logamtokertas.index');
+        Route::get('/logamtokertas/create', 'create')->name('logamtokertas.create')->can('logamtokertas.create');
+        Route::post('/logamtokertas/store', 'store')->name('logamtokertas.store')->can('logamtokertas.store');
+        Route::get('/logamtokertas/{kode_logamtokertas}/edit', 'edit')->name('logamtokertas.edit')->can('logamtokertas.edit');
+        Route::put('/logamtokertas/{kode_logamtokertas}/update', 'update')->name('logamtokertas.update')->can('logamtokertas.update');
+        Route::delete('/logamtokertas/{kode_logamtokertas}/delete', 'destroy')->name('logamtokertas.delete')->can('logamtokertas.delete');
+    });
+
+
+    Route::controller(SaldoawalkasbesarController::class)->group(function () {
+        Route::get('/sakasbesar', 'index')->name('sakasbesar.index')->can('sakasbesar.index');
+        Route::get('/sakasbesar/create', 'create')->name('sakasbesar.create')->can('sakasbesar.create');
+        Route::post('/sakasbesar/store', 'store')->name('sakasbesar.store')->can('sakasbesar.store');
+        Route::get('/sakasbesar/{kode_saldo_awal}/edit', 'edit')->name('sakasbesar.edit')->can('sakasbesar.edit');
+        Route::put('/sakasbesar/{kode_saldo_awal}/update', 'update')->name('sakasbesar.update')->can('sakasbesar.update');
+        Route::delete('/sakasbesar/{kode_saldo_awal}/delete', 'destroy')->name('sakasbesar.delete')->can('sakasbesar.delete');
+
+        Route::post('/sakasbesar/getsaldo', 'getsaldo')->name('sakasbesar.getsaldo');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

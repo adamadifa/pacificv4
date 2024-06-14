@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\Cabang;
+use App\Models\Ledger;
+use App\Models\Ledgersetoranpusat;
 use App\Models\Setoranpusat;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -162,17 +165,138 @@ class SetoranpusatController extends Controller
     }
 
 
+    public function approve($kode_setoran)
+    {
+        $kode_setoran = Crypt::decrypt($kode_setoran);
+        $sp = new Setoranpusat();
+        $data['setoranpusat'] = $sp->getSetoranpusat(kode_setoran: $kode_setoran)->first();
+        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        return view('keuangan.kasbesar.setoranpusat.approve', $data);
+    }
+
+    public function approvestore($kode_setoran, Request $request)
+    {
+
+        $request->validate([
+            'tanggal' => 'required',
+            'kode_bank' => 'required',
+            'omset_bulan' => 'required',
+            'omset_tahun' => 'required'
+        ]);
+
+        $kode_setoran = Crypt::decrypt($kode_setoran);
+        $tahun = date('y', strtotime($request->tanggal));
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            $sp = new Setoranpusat();
+            $setoranpusat = $sp->getSetoranpusat(kode_setoran: $kode_setoran)->first();
+            $total_setoran = $setoranpusat->setoran_kertas + $setoranpusat->setoran_logam;
+            if ($setoranpusat->kode_cabang == 'PST') {
+                $lastledger = Ledger::select('no_bukti')
+                    ->whereRaw('LEFT(no_bukti,7) ="LR' . $setoranpusat->kode_cabang . $tahun . '"')
+                    ->whereRaw('LENGTH(no_bukti)=12')
+                    ->orderBy('no_bukti', 'desc')
+                    ->first();
+                $last_no_bukti = $lastledger != null ?  $lastledger->no_bukti : '';
+                $no_bukti = buatkode($last_no_bukti, 'LR' . $setoranpusat->kode_cabang . $tahun, 5);
+            } else {
+                $lastledger = Ledger::select('no_bukti')
+                    ->whereRaw('LEFT(no_bukti,7) ="LR' . $setoranpusat->kode_cabang . $tahun . '"')
+                    ->orderBy('no_bukti', 'desc')
+                    ->first();
+                $last_no_bukti = $lastledger != null ?  $lastledger->no_bukti : '';
+                $no_bukti = buatkode($last_no_bukti, 'LR' . $setoranpusat->kode_cabang . $tahun, 4);
+            }
+
+            Ledger::create([
+                'no_bukti' => $no_bukti,
+                'tanggal' => $request->tanggal,
+                'kode_bank' => $request->kode_bank,
+                'keterangan' => "SETORAN CAB " . $setoranpusat->kode_cabang,
+                'kode_akun' => getAkunpiutangcabang($setoranpusat->kode_cabang),
+                'jumlah' => $total_setoran,
+                'debet_kredit' => 'K'
+            ]);
+
+            Ledgersetoranpusat::create([
+                'no_bukti' => $no_bukti,
+                'kode_setoran' => $kode_setoran
+            ]);
+
+            Setoranpusat::where('kode_setoran', $kode_setoran)->update([
+                'status' => 1,
+                'omset_bulan' => $request->omset_bulan,
+                'omset_tahun' => $request->omset_tahun
+            ]);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            //throw $th;
+            //dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function cancel($kode_setoran)
+    {
+        $kode_setoran = Crypt::decrypt($kode_setoran);
+        DB::beginTransaction();
+        try {
+            $setoranpusat = Setoranpusat::where('kode_setoran', $kode_setoran)->first();
+            if (!$setoranpusat) {
+                return Redirect::back()->with(messageError('Data Setoran Penjualan tidak ditemukan'));
+            }
+
+            $cektutuplaporan = cektutupLaporan($setoranpusat->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            $ledgersetoranpusat  = Ledgersetoranpusat::where('kode_setoran', $kode_setoran)->first();
+
+            //Hapus Ledger
+            Ledger::where('no_bukti', $ledgersetoranpusat->no_bukti)->delete();
+
+            //Update Setoran PUsat
+
+            Setoranpusat::where('kode_setoran', $kode_setoran)->update([
+                'status' => 0,
+                'omset_bulan' => NULL,
+                'omset_tahun' => NULL
+            ]);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            //throw $th;
+
+            //dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
     public function destroy($kode_setoran)
     {
         $kode_setoran = Crypt::decrypt($kode_setoran);
-        $setoranpusat = Setoranpusat::where('kode_setoran', $kode_setoran)->first();
-
-        if (!$setoranpusat) {
-            return Redirect::back()->with(messageError('Data Setoran Penjualan tidak ditemukan'));
-        }
 
         DB::beginTransaction();
         try {
+
+            $setoranpusat = Setoranpusat::where('kode_setoran', $kode_setoran)->first();
+
+            if (!$setoranpusat) {
+                return Redirect::back()->with(messageError('Data Setoran Penjualan tidak ditemukan'));
+            }
+
             $cektutuplaporan = cektutupLaporan($setoranpusat->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
