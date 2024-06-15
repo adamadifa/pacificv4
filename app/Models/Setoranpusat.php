@@ -78,7 +78,7 @@ class Setoranpusat extends Model
 
 
 
-    function cekOmsetsetoranpusat($bulan = "", $tahun = "", $kode_cabang = "")
+    function cekOmsetsetoranpusatbulandepan($bulan = "", $tahun = "", $omset_bulan = "", $omset_tahun = "", $kode_cabang = "")
     {
 
         $query = Setoranpusat::query();
@@ -109,7 +109,62 @@ class Setoranpusat extends Model
         $query->leftJoin('keuangan_ledger_giro', 'keuangan_setoranpusat_giro.kode_giro', '=', 'keuangan_ledger_giro.kode_giro');
         $query->leftJoin('keuangan_ledger as ledger_giro', 'keuangan_ledger_giro.no_bukti', '=', 'ledger_giro.no_bukti');
         $query->leftJoin('bank as bank_giro', 'ledger_giro.kode_bank', '=', 'bank_giro.kode_bank');
+        $query->where('omset_bulan', $omset_bulan);
+        $query->where('omset_tahun', $omset_tahun);
+        $query->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $bulan);
+        $query->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $tahun);
+        $query->where('keuangan_setoranpusat.kode_cabang', $kode_cabang);
 
+        $query->orWhere('omset_bulan', $omset_bulan);
+        $query->where('omset_tahun', $omset_tahun);
+        $query->whereRaw('MONTH(ledger_transfer.tanggal) = ' . $bulan);
+        $query->whereRaw('YEAR(ledger_transfer.tanggal) = ' . $tahun);
+        $query->where('keuangan_setoranpusat.kode_cabang', $kode_cabang);
+
+        $query->orWhere('omset_bulan', $omset_bulan);
+        $query->where('omset_tahun', $omset_tahun);
+        $query->whereRaw('MONTH(ledger_giro.tanggal) = ' . $bulan);
+        $query->whereRaw('YEAR(ledger_giro.tanggal) = ' . $tahun);
+        $query->where('keuangan_setoranpusat.kode_cabang', $kode_cabang);
+
+        $query->orderBy('keuangan_setoranpusat.tanggal');
+        return $query;
+    }
+
+
+    function cekOmsetsetoranpusatbulansebelumnya($bulan = "", $tahun = "", $omset_bulan = "", $omset_tahun = "", $kode_cabang = "")
+    {
+
+        $query = Setoranpusat::query();
+        $query->select(
+            'keuangan_setoranpusat.*',
+            DB::raw("setoran_kertas + setoran_logam + setoran_transfer + setoran_giro as total"),
+            'nama_cabang',
+            'keuangan_ledger.tanggal as tanggal_diterima',
+            'bank.nama_bank as nama_bank',
+
+            'ledger_transfer.tanggal as tanggal_diterima_transfer',
+            'bank_transfer.nama_bank as nama_bank_transfer',
+
+            'ledger_giro.tanggal as tanggal_diterima_giro',
+            'bank_giro.nama_bank as nama_bank_giro'
+        );
+        $query->join('cabang', 'keuangan_setoranpusat.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran');
+        $query->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti');
+        $query->leftJoin('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
+
+        $query->leftJoin('keuangan_setoranpusat_transfer', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_setoranpusat_transfer.kode_setoran');
+        $query->leftJoin('keuangan_ledger_transfer', 'keuangan_setoranpusat_transfer.kode_transfer', '=', 'keuangan_ledger_transfer.kode_transfer');
+        $query->leftJoin('keuangan_ledger as ledger_transfer', 'keuangan_ledger_transfer.no_bukti', '=', 'ledger_transfer.no_bukti');
+        $query->leftJoin('bank as bank_transfer', 'ledger_transfer.kode_bank', '=', 'bank_transfer.kode_bank');
+
+        $query->leftJoin('keuangan_setoranpusat_giro', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_setoranpusat_giro.kode_setoran');
+        $query->leftJoin('keuangan_ledger_giro', 'keuangan_setoranpusat_giro.kode_giro', '=', 'keuangan_ledger_giro.kode_giro');
+        $query->leftJoin('keuangan_ledger as ledger_giro', 'keuangan_ledger_giro.no_bukti', '=', 'ledger_giro.no_bukti');
+        $query->leftJoin('bank as bank_giro', 'ledger_giro.kode_bank', '=', 'bank_giro.kode_bank');
+        $query->where('omset_bulan', $omset_bulan);
+        $query->where('omset_tahun', $omset_tahun);
         $query->whereRaw('MONTH(keuangan_setoranpusat.tanggal) = ' . $bulan);
         $query->whereRaw('YEAR(keuangan_setoranpusat.tanggal) = ' . $tahun);
         $query->where('keuangan_setoranpusat.kode_cabang', $kode_cabang);

@@ -62,8 +62,8 @@
                                             <th>Cabang</th>
                                             <th>Bulan</th>
                                             <th>Tahun</th>
-                                            <th>Uang Logam</th>
                                             <th>Uang Kertas</th>
+                                            <th>Uang Logam</th>
                                             <th>Transfer</th>
                                             <th>Giro</th>
                                             <th>Tanggal</th>

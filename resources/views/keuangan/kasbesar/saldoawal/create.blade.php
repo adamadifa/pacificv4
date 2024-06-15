@@ -1,5 +1,6 @@
 <form action="#" method="POST" id="formSaldoawalkasbesar">
     @csrf
+    <input type="hidden" name="cekgetsaldo" id="cekgetsaldo">
     @hasanyrole($roles_show_cabang)
         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang" upperCase="true" />
     @endhasanyrole
@@ -20,12 +21,15 @@
         </select>
     </div>
     <div class="form-group mb-3">
-        <a class="btn btn-primary w-100" href="#" id="getSaldo"><i class="ti ti-moneybag me-1"></i>Get Saldo</a>
+        <a class="btn btn-success w-100" href="#" id="getSaldo"><i class="ti ti-moneybag me-1"></i>Get Saldo</a>
     </div>
-    <x-input-with-icon label="Uang Kertas" name="uang_kertas" align="right" money="true" icon="ti ti-moneybag" />
-    <x-input-with-icon label="Uang Logam" name="uang_kertas" align="right" money="true" icon="ti ti-moneybag" />
-    <x-input-with-icon label="Transfer" name="transfer" align="right" money="true" icon="ti ti-moneybag" />
-    <x-input-with-icon label="Giro" name="giro" align="right" money="true" icon="ti ti-moneybag" />
+    <x-input-with-icon label="Uang Kertas" name="uang_kertas" align="right" money="true" icon="ti ti-moneybag" readonly />
+    <x-input-with-icon label="Uang Logam" name="uang_logam" align="right" money="true" icon="ti ti-moneybag" readonly />
+    <x-input-with-icon label="Transfer" name="transfer" align="right" money="true" icon="ti ti-moneybag" readonly />
+    <x-input-with-icon label="Giro" name="giro" align="right" money="true" icon="ti ti-moneybag" readonly />
+    <div class="form-group mb-3">
+        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+    </div>
 </form>
 <script>
     $(function() {
@@ -33,14 +37,41 @@
         $(".flatpickr-date").flatpickr();
         $(".money").maskMoney();
 
+        function convertToRupiah(number) {
+            if (number) {
+                var rupiah = "";
+                var numberrev = number
+                    .toString()
+                    .split("")
+                    .reverse()
+                    .join("");
+                for (var i = 0; i < numberrev.length; i++)
+                    if (i % 3 == 0) rupiah += numberrev.substr(i, 3) + ".";
+                return (
+                    rupiah
+                    .split("", rupiah.length - 1)
+                    .reverse()
+                    .join("")
+                );
+            } else {
+                return number;
+            }
+        }
+
         function buttonDisable() {
-            $("#btnSimpan").prop('disabled', true);
-            $("#btnSimpan").html(`
+            $("#btnSimpan, #getSaldo").prop('disabled', true);
+            $("#btnSimpan, #getSaldo").html(`
             <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
             Loading..
          `);
+        }
+
+        function buttonEnable() {
+            $("#btnSimpan,#getSaldo").prop('disabled', false);
+            $("#btnSimpan").html(`<i class="ti ti-send me-1"></i>Submit`);
+            $("#getSaldo").html(`<i class="ti ti-moneybag me-1"></i>Get Saldo`);
         }
         const select2Kodecabang = $('.select2Kodecabang');
         if (select2Kodecabang.length) {
@@ -92,6 +123,7 @@
                 });
                 return false;
             } else {
+                buttonDisable();
                 $.ajax({
                     type: 'POST',
                     url: '/sakasbesar/getsaldo',
@@ -102,8 +134,12 @@
                         kode_cabang: kode_cabang
                     },
                     cache: false,
-                    success: function(respond) {
-
+                    success: function(response) {
+                        form.find("#uang_kertas").val(convertToRupiah(response.data.uang_kertas));
+                        form.find("#uang_logam").val(convertToRupiah(response.data.uang_logam));
+                        form.find("#transfer").val(convertToRupiah(response.data.transfer));
+                        form.find("#giro").val(convertToRupiah(response.data.giro));
+                        buttonEnable();
                     }
                 });
             }
@@ -111,6 +147,10 @@
 
         $("#getSaldo").click(function(e) {
             getsaldo();
+        });
+
+        form.find("#kode_cabang,#bulan,#tahun").change(function() {
+            form.find("cekgetsaldo").val(0);
         });
 
     });
