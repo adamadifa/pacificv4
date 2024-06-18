@@ -69,7 +69,10 @@ class DatabaseSeeder extends Seeder
             Setorangiropermissionseeder::class,
             Setoranpusatpermissionseeder::class,
             Logamtokertaspermissionseeder::class,
-            Saldoawalkasbesarpermissionseeder::class
+            Saldoawalkasbesarpermissionseeder::class,
+            Ajuantransferdanapermissionseeder::class,
+            Kaskecilpermissionseeder::class,
+            Ledgerpermissionseeder::class
         ]);
     }
 }

@@ -22,17 +22,20 @@
                             <form action="{{ route('setoranpusat.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
                                     </div>
                                 </div>
                                 @hasanyrole($roles_show_cabang)
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                                                selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
+                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                                textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                                select2="select2Kodecabangsearch" />
                                         </div>
                                     </div>
                                 @endrole
@@ -109,7 +112,8 @@
                                                         @can('setoranpusat.approve')
                                                             @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro))
                                                                 <div>
-                                                                    <a href="#" class="btnApprove me-1" kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}"><i
+                                                                    <a href="#" class="btnApprove me-1"
+                                                                        kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}"><i
                                                                             class="ti ti-external-link text-primary"></i></a>
                                                                 </div>
                                                             @else
@@ -129,7 +133,8 @@
                                                         @can('setoranpusat.edit')
                                                             @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro))
                                                                 <div>
-                                                                    <a href="#" class="btnEdit me-1" kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}">
+                                                                    <a href="#" class="btnEdit me-1"
+                                                                        kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}">
                                                                         <i class="ti ti-edit text-success"></i>
                                                                     </a>
                                                                 </div>

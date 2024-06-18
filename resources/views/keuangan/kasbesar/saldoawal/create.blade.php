@@ -1,8 +1,9 @@
-<form action="#" method="POST" id="formSaldoawalkasbesar">
+<form action="{{ route('sakasbesar.store') }}" method="POST" id="formSaldoawalkasbesar">
     @csrf
-    <input type="hidden" name="cekgetsaldo" id="cekgetsaldo">
+    <input type="hidden" name="cekgetsaldo" id="cekgetsaldo" value="0">
     @hasanyrole($roles_show_cabang)
-        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang" upperCase="true" />
+        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
+            upperCase="true" />
     @endhasanyrole
     <div class="form-group mb-3">
         <select name="bulan" id="bulan" class="form-select">
@@ -124,6 +125,7 @@
                 return false;
             } else {
                 buttonDisable();
+                form.find("#cekgetsaldo").val(1);
                 $.ajax({
                     type: 'POST',
                     url: '/sakasbesar/getsaldo',
@@ -153,5 +155,22 @@
             form.find("cekgetsaldo").val(0);
         });
 
+        form.submit(function() {
+            const cekgetsaldo = form.find("#cekgetsaldo").val();
+            if (cekgetsaldo === '0') {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Silahkan Get Saldo Terlebih Dahulu !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#getsaldo").focus();
+                    },
+                });
+                return false;
+            } else {
+                buttonDisable();
+            }
+        });
     });
 </script>

@@ -9,7 +9,9 @@ use App\Models\Saldoawalkasbesar;
 use App\Models\Setoranpenjualan;
 use App\Models\Setoranpusat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class SaldoawalkasbesarController extends Controller
 {
@@ -206,6 +208,74 @@ class SaldoawalkasbesarController extends Controller
                 'message' => 'Saldo Awal Kas Besar',
                 'data'    => $data
             ]);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        $kode_saldo_awal = "SA" . $request->kode_cabang . $request->bulan . substr($request->tahun, 2, 2);
+        $tanggal = $request->tahun . "-" . $request->bulan . "-01";
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+            //Cek Jika Saldo Sudah Pernah Diinputkan
+            $ceksaldo = Saldoawalkasbesar::where('kode_saldo_awal', $kode_saldo_awal)->count();
+            if ($ceksaldo > 0) {
+                Saldoawalkasbesar::where('kode_saldo_awal', $kode_saldo_awal)->update([
+                    'tanggal' => $tanggal,
+                    'bulan' => $request->bulan,
+                    'tahun' => $request->tahun,
+                    'uang_kertas' => toNumber($request->uang_kertas),
+                    'uang_logam' => toNumber($request->uang_logam),
+                    'giro'  => toNumber($request->giro),
+                    'transfer' => toNumber($request->transfer),
+                    'kode_cabang' => $request->kode_cabang,
+
+                ]);
+            } else {
+                Saldoawalkasbesar::create([
+                    'kode_saldo_awal' => $kode_saldo_awal,
+                    'tanggal' => $tanggal,
+                    'bulan' => $request->bulan,
+                    'tahun' => $request->tahun,
+                    'uang_kertas' => toNumber($request->uang_kertas),
+                    'uang_logam' => toNumber($request->uang_logam),
+                    'giro'  => toNumber($request->giro),
+                    'transfer' => toNumber($request->transfer),
+                    'kode_cabang' => $request->kode_cabang,
+                ]);
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function destroy($kode_saldo_awal)
+    {
+        $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
+        DB::beginTransaction();
+        try {
+            $saldoawalkasbesar = Saldoawalkasbesar::where('kode_saldo_awal', $kode_saldo_awal)->firstOrFail();
+            $cektutuplaporan = cektutupLaporan($saldoawalkasbesar->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            $saldoawalkasbesar->delete();
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 }

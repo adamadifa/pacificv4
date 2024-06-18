@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AjuanfakturkreditController;
 use App\Http\Controllers\AjuanlimitkreditController;
+use App\Http\Controllers\AjuantransferdanaController;
 use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
 use App\Http\Controllers\BarangkeluargudanglogistikController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\HargaController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\KaskecilController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KirimpusatController;
@@ -34,6 +36,7 @@ use App\Http\Controllers\LaporangudangcabangController;
 use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporangudanglogistikController;
 use App\Http\Controllers\LaporanproduksiController;
+use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\LogamtokertasController;
 use App\Http\Controllers\MutasidpbController;
 use App\Http\Controllers\OmancabangController;
@@ -1078,6 +1081,40 @@ Route::middleware('auth')->group(function () {
         Route::delete('/sakasbesar/{kode_saldo_awal}/delete', 'destroy')->name('sakasbesar.delete')->can('sakasbesar.delete');
 
         Route::post('/sakasbesar/getsaldo', 'getsaldo')->name('sakasbesar.getsaldo');
+    });
+
+    Route::controller(AjuantransferdanaController::class)->group(function () {
+        Route::get('/ajuantransfer', 'index')->name('ajuantransfer.index')->can('ajuantransfer.index');
+        Route::get('/ajuantransfer/create', 'create')->name('ajuantransfer.create')->can('ajuantransfer.create');
+        Route::post('/ajuantransfer/store', 'store')->name('ajuantransfer.store')->can('ajuantransfer.store');
+        Route::get('/ajuantransfer/{no_pengajuan}/edit', 'edit')->name('ajuantransfer.edit')->can('ajuantransfer.edit');
+        Route::put('/ajuantransfer/{no_pengajuan}/update', 'update')->name('ajuantransfer.update')->can('ajuantransfer.update');
+        Route::get('/ajuantransfer/{no_pengajuan}/approve', 'approve')->name('ajuantransfer.approve')->can('ajuantransfer.approve');
+        Route::get('/ajuantransfer/{no_pengajuan}/cancelapprove', 'cancelApprove')->name('ajuantransfer.cancelapprove')->can('ajuantransfer.approve');
+        Route::get('/ajuantransfer/{no_pengajuan}/proses', 'proses')->name('ajuantransfer.proses')->can('ajuantransfer.proses');
+        Route::post('/ajuantransfer/{no_pengajuan}/prosesstore', 'prosesstore')->name('ajuantransfer.prosesstore')->can('ajuantransfer.approve');
+        Route::delete('/ajuantransfer/{no_pengajuan}/cancelproses', 'cancelProses')->name('ajuantransfer.cancelproses')->can('ajuantransfer.proses');
+        Route::post('/ajuantransfer/{no_pengajuan}/cancelproses', 'cancelProses')->name('ajuantransfer.cancelproses')->can('ajuantransfer.proses');
+        Route::delete('/ajuantransfer/{no_pengajuan}/delete', 'delete')->name('ajuantransfer.delete')->can('ajuantransfer.delete');
+        Route::get('/ajuantransfer/cetak', 'cetak')->name('ajuantransfer.cetak')->can('ajuantransfer.show');
+    });
+
+    Route::controller(KaskecilController::class)->group(function () {
+        Route::get('/kaskecil', 'index')->name('kaskecil.index')->can('kaskecil.index');
+        Route::get('/kaskecil/create', 'create')->name('kaskecil.create')->can('kaskecil.create');
+        Route::post('/kaskecil/store', 'store')->name('kaskecil.store')->can('kaskecil.store');
+        Route::get('/kaskecil/{id}/edit', 'edit')->name('kaskecil.edit')->can('kaskecil.edit');
+        Route::put('/kaskecil/{id}/update', 'update')->name('kaskecil.update')->can('kaskecil.update');
+        Route::delete('/kaskecil/{id}/delete', 'destroy')->name('kaskecil.delete')->can('kaskecil.delete');
+    });
+
+    Route::controller(LedgerController::class)->group(function () {
+        Route::get('/ledger', 'index')->name('ledger.index')->can('ledger.index');
+        Route::get('/ledger/create', 'create')->name('ledger.create')->can('ledger.create');
+        Route::post('/ledger/store', 'store')->name('ledger.store')->can('ledger.store');
+        Route::get('/ledger/{no_bukti}/edit', 'edit')->name('ledger.edit')->can('ledger.edit');
+        Route::put('/ledger/{no_bukti}/update', 'update')->name('ledger.update')->can('ledger.update');
+        Route::delete('/ledger/{no_bukti}/delete', 'destroy')->name('ledger.delete')->can('ledger.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

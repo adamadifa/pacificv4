@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Coa extends Model
+class Setoranpusatajuantransfer extends Model
 {
     use HasFactory;
-    protected $table = "coa";
-    protected $primaryKey = "kode_akun";
+    protected $table = "keuangan_setoranpusat_ajuantransfer";
     protected $guarded = [];
-    public $incrementing = false;
+    public $incrementing  = false;
 }

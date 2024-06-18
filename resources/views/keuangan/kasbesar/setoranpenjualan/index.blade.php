@@ -17,12 +17,13 @@
                                 Input Setoran Penjualan
                             </a>
                         @endcan
-                        @can('setoranpenjualan.show')
+                        @can('ajuantransfer.show')
                             <form action="/setoranpenjualan/cetak" method="GET" id="formCetak" target="_blank">
                                 <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
                                 <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
                                 <input type="hidden" name="kode_cabang_search" id="kode_cabang_cetak" value="{{ Request('kode_cabang_search') }}" />
-                                <input type="hidden" name="kode_salesman_search" id="kode_salesman_cetak" value="{{ Request('kode_salesman_search') }}" />
+                                <input type="hidden" name="kode_salesman_search" id="kode_salesman_cetak"
+                                    value="{{ Request('kode_salesman_search') }}" />
                                 <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
                                 <button class="btn btn-success" name="exportButton"><i class="ti ti-download me-1"></i>Export Excel</button>
                             </form>
@@ -34,24 +35,28 @@
                             <form action="{{ route('setoranpenjualan.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
                                     </div>
                                 </div>
                                 @hasanyrole($roles_show_cabang)
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                                                selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
+                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                                textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                                select2="select2Kodecabangsearch" />
                                         </div>
                                     </div>
                                 @endrole
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <select name="kode_salesman_search" id="kode_salesman_search" class="form-select select2Kodesalesmansearch">
+                                            <select name="kode_salesman_search" id="kode_salesman_search"
+                                                class="form-select select2Kodesalesmansearch">
                                                 <option value="">Semua Salesman</option>
                                             </select>
                                         </div>
@@ -115,7 +120,8 @@
                                                 $ul = $d->kurangsetorlogam - $d->lebihsetorlogam;
                                                 $setoran_kertas = $d->setoran_kertas + $uk;
                                                 $setoran_logam = $d->setoran_logam + $ul;
-                                                $total_setoran = $setoran_kertas + $setoran_logam + $d->setoran_giro + $d->setoran_transfer + $d->setoran_lainnya;
+                                                $total_setoran =
+                                                    $setoran_kertas + $setoran_logam + $d->setoran_giro + $d->setoran_transfer + $d->setoran_lainnya;
 
                                                 $subtotal_lhp_tunai += $d->lhp_tunai;
                                                 $subtotal_lhp_tagihan += $d->lhp_tagihan;
@@ -134,7 +140,11 @@
                                                 $cek_giro_to_cash_transfer = $d->cek_giro_to_cash_transfer;
                                                 $giro_to_cash_transfer = $d->giro_to_cash + $d->giro_to_transfer;
 
-                                                if ($d->lhp_tunai == $d->cek_lhp_tunai && $d->lhp_tagihan == $cek_tagihan && $giro_to_cash_transfer == $cek_giro_to_cash_transfer) {
+                                                if (
+                                                    $d->lhp_tunai == $d->cek_lhp_tunai &&
+                                                    $d->lhp_tagihan == $cek_tagihan &&
+                                                    $giro_to_cash_transfer == $cek_giro_to_cash_transfer
+                                                ) {
                                                     $color_total_lhp = 'bg-success';
                                                 } else {
                                                     $color_total_lhp = 'bg-danger';
@@ -176,16 +186,20 @@
                                                     {{ formatAngka($d->lhp_tunai) }}</td>
                                                 <td class="text-end {{ $color_setoran_tagihan }} text-white">
                                                     {{ formatAngka($d->lhp_tagihan) }}</td>
-                                                <td class="text-end {{ $color_total_lhp }} text-white cursor-pointer showlhp" tanggal="{{ $d->tanggal }}"
-                                                    kode_salesman="{{ $d->kode_salesman }}">
+                                                <td class="text-end {{ $color_total_lhp }} text-white cursor-pointer showlhp"
+                                                    tanggal="{{ $d->tanggal }}" kode_salesman="{{ $d->kode_salesman }}">
                                                     {{ formatAngka($total_lhp) }}
                                                 </td>
-                                                <td class="text-end cursor-pointer" data-bs-toggle="popover" data-bs-placement="{{ $position }}" data-bs-html="true"
-                                                    data-bs-content="{!! $kontenkertas !!}" title="Rincian Setoran Kertas" data-bs-custom-class="popover-info">
+                                                <td class="text-end cursor-pointer" data-bs-toggle="popover"
+                                                    data-bs-placement="{{ $position }}" data-bs-html="true"
+                                                    data-bs-content="{!! $kontenkertas !!}" title="Rincian Setoran Kertas"
+                                                    data-bs-custom-class="popover-info">
                                                     {{ formatAngka($setoran_kertas) }}
                                                 </td>
-                                                <td class="text-end cursor-pointer" data-bs-toggle="popover" data-bs-placement="{{ $position }}" data-bs-html="true"
-                                                    data-bs-content="{!! $kontenlogam !!}" title="Rincian Setoran Logam" data-bs-custom-class="popover-info">
+                                                <td class="text-end cursor-pointer" data-bs-toggle="popover"
+                                                    data-bs-placement="{{ $position }}" data-bs-html="true"
+                                                    data-bs-content="{!! $kontenlogam !!}" title="Rincian Setoran Logam"
+                                                    data-bs-custom-class="popover-info">
                                                     {{ formatAngka($setoran_logam) }}
                                                 </td>
                                                 <td class="text-end">{{ formatAngka($d->setoran_giro) }}</td>
@@ -196,15 +210,18 @@
                                                     <div class="d-flex">
                                                         @can('setoranpenjualan.show')
                                                             <div>
-                                                                <a href="#" class="me-1" data-bs-toggle="popover" data-bs-placement="{{ $position }}" data-bs-html="true"
-                                                                    data-bs-content="{!! $d->keterangan !!}" title="Keterangan" data-bs-custom-class="popover-info">
+                                                                <a href="#" class="me-1" data-bs-toggle="popover"
+                                                                    data-bs-placement="{{ $position }}" data-bs-html="true"
+                                                                    data-bs-content="{!! $d->keterangan !!}" title="Keterangan"
+                                                                    data-bs-custom-class="popover-info">
                                                                     <i class="ti ti-info-square text-info"></i>
                                                                 </a>
                                                             </div>
                                                         @endcan
                                                         @can('setoranpenjualan.edit')
                                                             <div>
-                                                                <a href="#" class="btnEdit me-1" kode_setoran = "{{ Crypt::encrypt($d->kode_setoran) }}">
+                                                                <a href="#" class="btnEdit me-1"
+                                                                    kode_setoran = "{{ Crypt::encrypt($d->kode_setoran) }}">
                                                                     <i class="ti ti-edit text-success"></i>
                                                                 </a>
                                                             </div>

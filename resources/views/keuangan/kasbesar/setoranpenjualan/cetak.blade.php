@@ -79,7 +79,11 @@
                         $cek_giro_to_cash_transfer = $d->cek_giro_to_cash_transfer;
                         $giro_to_cash_transfer = $d->giro_to_cash + $d->giro_to_transfer;
 
-                        if ($d->lhp_tunai == $d->cek_lhp_tunai && $d->lhp_tagihan == $cek_tagihan && $giro_to_cash_transfer == $cek_giro_to_cash_transfer) {
+                        if (
+                            $d->lhp_tunai == $d->cek_lhp_tunai &&
+                            $d->lhp_tagihan == $cek_tagihan &&
+                            $giro_to_cash_transfer == $cek_giro_to_cash_transfer
+                        ) {
                             $color_total_lhp = 'bg-success';
                         } else {
                             $color_total_lhp = 'bg-danger';

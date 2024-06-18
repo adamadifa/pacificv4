@@ -1,5 +1,4 @@
-<form action="{{ route('ajuanlimit.adjuststore', Crypt::encrypt($ajuanlimit->no_pengajuan)) }}" id="formAdjustlimit"
-    method="POST">
+<form action="{{ route('ajuanlimit.adjuststore', Crypt::encrypt($ajuanlimit->no_pengajuan)) }}" id="formAdjustlimit" method="POST">
     @csrf
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -33,8 +32,8 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <x-input-with-icon label="Jumlah" name="jumlah_rekomendasi" icon="ti ti-adjusments" money="true"
-                align="right" value="{{ formatAngka($ajuanlimit->jumlah_rekomendasi) }}" />
+            <x-input-with-icon label="Jumlah" name="jumlah_rekomendasi" icon="ti ti-adjusments" money="true" align="right"
+                value="{{ formatAngka($ajuanlimit->jumlah_rekomendasi) }}" />
             <div class="form-group mb-3">
                 <select name="ljt_rekomendasi" id="ljt_rekomendasi" class="form-select">
                     <option value="">LJT</option>
