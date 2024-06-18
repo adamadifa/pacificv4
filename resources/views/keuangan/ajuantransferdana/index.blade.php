@@ -151,7 +151,7 @@
                                                                 <i class="ti ti-external-link text-primary"></i>
                                                             </a>
                                                         @else
-                                                            @if ($d->status_setoran == 0)
+                                                            @if ($d->status_setoran == 0 && !empty($d->kode_setoran))
                                                                 <form method="POST" name="deleteform" class="deleteform"
                                                                     action="{{ route('ajuantransfer.cancelproses', Crypt::encrypt($d->no_pengajuan)) }}">
                                                                     @csrf
@@ -186,6 +186,16 @@
     $(function() {
         const form = $("#formSearch");
         const formCetak = $("#formCetak");
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..
+         `);
+        }
 
         function loading() {
             $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">

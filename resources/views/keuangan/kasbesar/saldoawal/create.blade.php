@@ -65,8 +65,7 @@
             <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            Loading..
-         `);
+            Loading..`);
         }
 
         function buttonEnable() {

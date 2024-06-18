@@ -22,6 +22,15 @@
     $(function() {
         $(".flatpickr-date").flatpickr();
         $(".money").maskMoney();
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..`);
+        }
         const select2KodeCabang = $('.select2KodeCabang');
         if (select2KodeCabang.length) {
             select2KodeCabang.each(function() {
@@ -33,5 +42,7 @@
                 });
             });
         }
+
+
     });
 </script>

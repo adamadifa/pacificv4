@@ -2,7 +2,8 @@
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Transfer" name="tanggal" datepicker="flatpickr-date" />
     <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" />
-    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true" select2="select2Kodesalesman" />
+    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true"
+        select2="select2Kodesalesman" />
     <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" />
     {{-- <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo"
       datepicker="flatpickr-date" /> --}}
