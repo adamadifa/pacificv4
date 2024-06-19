@@ -71,6 +71,7 @@ use App\Http\Controllers\SaldoawalgudangjadiController;
 use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalkasbesarController;
+use App\Http\Controllers\SaldoawalledgerController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\SetorangiroController;
@@ -1115,6 +1116,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/ledger/{no_bukti}/edit', 'edit')->name('ledger.edit')->can('ledger.edit');
         Route::put('/ledger/{no_bukti}/update', 'update')->name('ledger.update')->can('ledger.update');
         Route::delete('/ledger/{no_bukti}/delete', 'destroy')->name('ledger.delete')->can('ledger.delete');
+    });
+
+    Route::controller(SaldoawalledgerController::class)->group(function () {
+        Route::get('/saledger', 'index')->name('saledger.index')->can('saledger.index');
+        Route::get('/saledger/create', 'create')->name('saledger.create')->can('saledger.create');
+        Route::post('/saledger/store', 'store')->name('saledger.store')->can('saledger.store');
+        Route::get('/saledger/{no_bukti}/edit', 'edit')->name('saledger.edit')->can('saledger.edit');
+        Route::put('/saledger/{no_bukti}/update', 'update')->name('saledger.update')->can('saledger.update');
+        Route::delete('/saledger/{no_bukti}/delete', 'destroy')->name('saledger.delete')->can('saledger.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

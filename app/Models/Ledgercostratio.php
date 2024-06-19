@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Saldoawalledger extends Model
+class Ledgercostratio extends Model
 {
     use HasFactory;
-    protected $table = "keuangan_ledger_saldoawal";
-    protected $primaryKey = "kode_saldo_awal";
+    protected $table = "keuangan_ledger_costratio";
     protected $guarded = [];
-    public $incrementing  = false;
 }

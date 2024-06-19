@@ -18,9 +18,16 @@ class Ledger extends Model
     function getLedger($no_bukti = '', Request $request = null)
     {
         $query = Ledger::query();
+        $query->select('keuangan_ledger.*', 'kode_cr', 'nama_akun');
         $query->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
-        $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
-        $query->where('kode_bank', $request->kode_bank_search);
+        $query->leftJoin('keuangan_ledger_costratio', 'keuangan_ledger.no_bukti', '=', 'keuangan_ledger_costratio.no_bukti');
+        if (empty($no_bukti)) {
+            $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
+            $query->where('keuangan_ledger.kode_bank', $request->kode_bank_search);
+        } else {
+            $query->where('keuangan_ledger.no_bukti', $no_bukti);
+        }
+
         $query->orderBy('keuangan_ledger.tanggal');
         $query->orderBy('keuangan_ledger.created_at');
         return $query;

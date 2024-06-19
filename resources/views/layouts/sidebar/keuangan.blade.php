@@ -11,6 +11,7 @@
         'ajuantransfer',
         'kaskecil',
         'ledger',
+        'saledger',
     ])
         ? 'open'
         : '' }}">
@@ -22,6 +23,7 @@
                 'ajuantransfer.index',
                 'kaskecil.index',
                 'ledger.index',
+                'saledger.index',
             ]))
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-moneybag"></i>
@@ -66,8 +68,8 @@
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->hasAnyPermission(['ledger.index']))
-                <li class="menu-item {{ request()->is(['ledger']) ? 'active' : '' }}">
+            @if (auth()->user()->hasAnyPermission(['ledger.index', 'saledger.index']))
+                <li class="menu-item {{ request()->is(['ledger', 'saledger']) ? 'active' : '' }}">
                     <a href="{{ route('ledger.index') }}" class="menu-link">
                         <div>Ledger</div>
                     </a>
