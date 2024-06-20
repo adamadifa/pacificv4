@@ -1125,6 +1125,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/saledger/{no_bukti}/edit', 'edit')->name('saledger.edit')->can('saledger.edit');
         Route::put('/saledger/{no_bukti}/update', 'update')->name('saledger.update')->can('saledger.update');
         Route::delete('/saledger/{no_bukti}/delete', 'destroy')->name('saledger.delete')->can('saledger.delete');
+
+        Route::post('/saledger/getsaldo', 'getsaldo')->name('saledger.getsaldo');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

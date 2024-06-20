@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bank;
+use App\Models\Ledger;
 use App\Models\Saldoawalledger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -32,10 +33,19 @@ class SaldoawalledgerController extends Controller
         $query->join('bank', 'keuangan_ledger_saldoawal.kode_bank', '=', 'bank.kode_bank');
         $query->orderBy('tahun', 'desc');
         $query->orderBy('bulan');
+        $query->orderBy('keuangan_ledger_saldoawal.kode_bank');
         $data['saldo_awal'] = $query->get();
 
         $data['bank'] = Bank::orderBy('nama_bank')->get();
         return view('keuangan.ledger.saldoawal.index', $data);
+    }
+
+    public function create()
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        return view('keuangan.ledger.saldoawal.create', $data);
     }
 
     public function destroy($kode_saldo_awal)
@@ -56,5 +66,56 @@ class SaldoawalledgerController extends Controller
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+    public function getsaldo(Request $request)
+    {
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+        $kode_bank = $request->kode_bank;
+
+        $bulanlalu = getbulandantahunlalu($bulan, $tahun, "bulan");
+        $tahunlalu = getbulandantahunlalu($bulan, $tahun, "tahun");
+
+        $start_date = $tahunlalu . "-" . $bulanlalu . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+        //Cek Apakah Sudah Ada Saldo Atau Belum
+        $ceksaldo = Saldoawalledger::where('kode_bank', $kode_bank)->count();
+        // Cek Saldo Bulan Lalu
+        $ceksaldobulanlalu = Saldoawalledger::where('bulan', $bulanlalu)->where('tahun', $tahunlalu)->where('kode_bank', $kode_bank)->count();
+
+
+
+
+        $saldobulanlalu = Saldoawalledger::where('bulan', $bulanlalu)->where('tahun', $tahunlalu)->where('kode_bank', $kode_bank)->first();
+
+        $mutasi  = Ledger::select(
+            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+        )
+            ->whereBetween('tanggal', [$start_date, $end_date])
+            ->where('kode_bank', $kode_bank)
+            ->first();
+
+        $lastsaldo = $saldobulanlalu != null ? $saldobulanlalu->jumlah : 0;
+        if ($mutasi != null) {
+            $debet = $mutasi->debet;
+            $kredit = $mutasi->kredit;
+        } else {
+            $debet = 0;
+            $kredit = 0;
+        }
+        $saldoawal = $lastsaldo + $kredit - $debet;
+
+        $data = [
+            'ceksaldo' => $ceksaldo,
+            'ceksaldobulanlalu' => $ceksaldobulanlalu,
+            'saldo' => $saldoawal
+        ];
+        return response()->json([
+            'success' => true,
+            'message' => 'Saldo Awal Ledger',
+            'data'    => $data
+        ]);
     }
 }

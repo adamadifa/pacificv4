@@ -124,8 +124,8 @@
         $("#btnCreate").click(function(e) {
             e.preventDefault();
             $("#modal").modal("show");
-            $("#modal").find(".modal-title").text("Buat Saldo Awal Kas Besar");
-            $("#loadmodal").load(`/sakasbesar/create`);
+            $("#modal").find(".modal-title").text("Buat Saldo Awal Ledger");
+            $("#loadmodal").load(`/saledger/create`);
         });
 
         const select2Kodebanksearch = $('.select2Kodebanksearch');
