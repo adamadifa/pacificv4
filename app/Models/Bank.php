@@ -33,4 +33,24 @@ class Bank extends Model
 
         return $query;
     }
+
+
+    function getBank()
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        $query = Bank::query();
+        $query->join('cabang', 'bank.kode_cabang', '=', 'cabang.kode_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('bank.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
+        $query->orderBy('kode_bank');
+        return $query;
+    }
 }

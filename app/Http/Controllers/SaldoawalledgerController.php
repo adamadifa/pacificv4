@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bank;
 use App\Models\Ledger;
 use App\Models\Saldoawalledger;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,9 @@ class SaldoawalledgerController extends Controller
 {
     public function index(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
         $data['list_bulan'] = config('global.list_bulan');
         $data['nama_bulan'] = config('global.nama_bulan');
         $data['start_year'] = config('global.start_year');
@@ -30,13 +34,24 @@ class SaldoawalledgerController extends Controller
         if (!empty($request->kode_bank_search)) {
             $query->where('keuangan_ledger_saldoawal.kode_bank', $request->kode_bank_search);
         }
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('bank.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
         $query->join('bank', 'keuangan_ledger_saldoawal.kode_bank', '=', 'bank.kode_bank');
+        $query->join('cabang', 'bank.kode_cabang', '=', 'cabang.kode_cabang');
         $query->orderBy('tahun', 'desc');
         $query->orderBy('bulan');
         $query->orderBy('keuangan_ledger_saldoawal.kode_bank');
         $data['saldo_awal'] = $query->get();
 
-        $data['bank'] = Bank::orderBy('nama_bank')->get();
+
+        $bnk = new Bank();
+        $data['bank'] = $bnk->getBank()->get();
         return view('keuangan.ledger.saldoawal.index', $data);
     }
 
@@ -44,8 +59,72 @@ class SaldoawalledgerController extends Controller
     {
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
-        $data['bank'] = Bank::orderBy('nama_bank')->get();
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+
+        $bnk = new Bank();
+        $data['bank'] = $bnk->getBank()->get();
         return view('keuangan.ledger.saldoawal.create', $data);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'bulan' => 'required',
+            'tahun' => 'required',
+            'kode_bank' => 'required',
+            'jumlah' => 'required'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $bulan = $request->bulan < 10 ? "0" . $request->bulan : $request->bulan;
+            $kode_saldo_awal = "SA" . $bulan . substr($request->tahun, 2, 2) . $request->kode_bank;
+            $tanggal = $request->tahun . "-" . $request->bulan . "-01";
+            $cektutuplaporan = cektutupLaporan($tanggal, "ledger");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+            //Cek Jika Saldo Sudah Pernah Diinputkan
+            $ceksaldo = Saldoawalledger::where('kode_saldo_awal', $kode_saldo_awal)->count();
+
+            $bulanlalu = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
+            $tahunlalu = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
+            $ceksaldobulanlalu = Saldoawalledger::where('bulan', $bulanlalu)->where('tahun', $tahunlalu)->where('kode_bank', $request->kode_bank)->count();
+
+            $ceksaldobank = Saldoawalledger::where('kode_bank', $request->kode_bank)->count();
+
+            if ($ceksaldobulanlalu === 0 && $ceksaldobank > 0 && $ceksaldo === 0) {
+                return Redirect::back()->with(messageError('Saldo Sebelumnya Belum Di Set'));
+            }
+
+            if ($ceksaldo > 0) {
+                Saldoawalledger::where('kode_saldo_awal', $kode_saldo_awal)->update([
+                    'tanggal' => $tanggal,
+                    'bulan' => $request->bulan,
+                    'tahun' => $request->tahun,
+                    'jumlah' => toNumber($request->jumlah),
+                ]);
+            } else {
+                Saldoawalledger::create([
+                    'kode_saldo_awal' => $kode_saldo_awal,
+                    'tanggal' => $tanggal,
+                    'bulan' => $request->bulan,
+                    'tahun' => $request->tahun,
+                    'kode_bank' => $request->kode_bank,
+                    'jumlah' => toNumber($request->jumlah),
+                ]);
+            }
+
+            DB::commit();
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 
     public function destroy($kode_saldo_awal)
@@ -84,7 +163,8 @@ class SaldoawalledgerController extends Controller
         // Cek Saldo Bulan Lalu
         $ceksaldobulanlalu = Saldoawalledger::where('bulan', $bulanlalu)->where('tahun', $tahunlalu)->where('kode_bank', $kode_bank)->count();
 
-
+        //Cek Saldo Bulan Ini
+        $ceksaldobulanini = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $kode_bank)->count();
 
 
         $saldobulanlalu = Saldoawalledger::where('bulan', $bulanlalu)->where('tahun', $tahunlalu)->where('kode_bank', $kode_bank)->first();
@@ -109,6 +189,7 @@ class SaldoawalledgerController extends Controller
 
         $data = [
             'ceksaldo' => $ceksaldo,
+            'ceksaldobulanini' => $ceksaldobulanini,
             'ceksaldobulanlalu' => $ceksaldobulanlalu,
             'saldo' => $saldoawal
         ];

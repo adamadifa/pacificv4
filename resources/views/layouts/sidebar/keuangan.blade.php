@@ -12,6 +12,9 @@
         'kaskecil',
         'ledger',
         'saledger',
+        'mutasibank',
+        'samutasibank',
+        'pjp',
     ])
         ? 'open'
         : '' }}">
@@ -24,6 +27,8 @@
                 'kaskecil.index',
                 'ledger.index',
                 'saledger.index',
+                'mutasibank.index',
+                'pjp.index',
             ]))
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-moneybag"></i>
@@ -72,6 +77,22 @@
                 <li class="menu-item {{ request()->is(['ledger', 'saledger']) ? 'active' : '' }}">
                     <a href="{{ route('ledger.index') }}" class="menu-link">
                         <div>Ledger</div>
+                    </a>
+                </li>
+            @endif
+
+            @if (auth()->user()->hasAnyPermission(['mutasibank.index']))
+                <li class="menu-item {{ request()->is(['mutasibank', 'samutasibank']) ? 'active' : '' }}">
+                    <a href="{{ route('mutasibank.index') }}" class="menu-link">
+                        <div>Mutasi Bank</div>
+                    </a>
+                </li>
+            @endif
+
+            @if (auth()->user()->hasAnyPermission(['pjp.index']))
+                <li class="menu-item {{ request()->is(['pjp', 'bayarpjp']) ? 'active' : '' }}">
+                    <a href="{{ route('pjp.index') }}" class="menu-link">
+                        <div>PJP</div>
                     </a>
                 </li>
             @endif

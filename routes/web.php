@@ -38,6 +38,7 @@ use App\Http\Controllers\LaporangudanglogistikController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\LogamtokertasController;
+use App\Http\Controllers\MutasibankController;
 use App\Http\Controllers\MutasidpbController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
@@ -53,6 +54,7 @@ use App\Http\Controllers\PermintaankirimanController;
 use App\Http\Controllers\PermintaanproduksiController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PjpController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatiodriverhelperController;
@@ -333,6 +335,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/karyawan/{nik}/show', 'show')->name('karyawan.show')->can('karyawan.show');
         Route::get('/karyawan/{nik}/unlocklocation', 'unlocklocation')->name('karyawan.unlocklocation')->can('karyawan.unlocklocation');
         Route::get('/karyawan/{nik}/dokumen', 'dokumen')->name('karyawan.dokumen')->can('karyawan.dokumen');
+
+        Route::get('/karyawan/{nik}/getkaryawan', 'getkaryawan')->name('karyawan.getkaryawan');
+        Route::get('/karyawan/getkaryawanjson', 'getkaryawanjson')->name('karyawan.getkaryawanjson');
     });
 
     Route::controller(RekeningController::class)->group(function () {
@@ -1120,6 +1125,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SaldoawalledgerController::class)->group(function () {
         Route::get('/saledger', 'index')->name('saledger.index')->can('saledger.index');
+        Route::get('/samutasibank', 'index')->name('samutasibank.index')->can('samutasibank.index');
         Route::get('/saledger/create', 'create')->name('saledger.create')->can('saledger.create');
         Route::post('/saledger/store', 'store')->name('saledger.store')->can('saledger.store');
         Route::get('/saledger/{no_bukti}/edit', 'edit')->name('saledger.edit')->can('saledger.edit');
@@ -1128,6 +1134,27 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/saledger/getsaldo', 'getsaldo')->name('saledger.getsaldo');
     });
+
+
+    Route::controller(MutasibankController::class)->group(function () {
+        Route::get('/mutasibank', 'index')->name('mutasibank.index')->can('mutasibank.index');
+        Route::get('/mutasibank/create', 'create')->name('mutasibank.create')->can('mutasibank.create');
+        Route::post('/mutasibank/store', 'store')->name('mutasibank.store')->can('mutasibank.store');
+        Route::get('/mutasibank/{no_bukti}/edit', 'edit')->name('mutasibank.edit')->can('mutasibank.edit');
+        Route::put('/mutasibank/{no_bukti}/update', 'update')->name('mutasibank.update')->can('mutasibank.update');
+        Route::delete('/mutasibank/{no_bukti}/delete', 'destroy')->name('mutasibank.delete')->can('mutasibank.delete');
+    });
+
+    Route::controller(PjpController::class)->group(function () {
+        Route::get('/pjp', 'index')->name('pjp.index')->can('pjp.index');
+        Route::get('/pjp/create', 'create')->name('pjp.create')->can('pjp.create');
+        Route::post('/pjp/store', 'store')->name('pjp.store')->can('pjp.store');
+        Route::get('/pjp/{no_pinjaman}/edit', 'edit')->name('pjp.edit')->can('pjp.edit');
+        Route::put('/pjp/{no_pinjaman}/update', 'update')->name('pjp.update')->can('pjp.update');
+        Route::delete('/pjp/{no_pinjaman}/delete', 'destroy')->name('pjp.delete')->can('pjp.delete');
+    });
+
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

@@ -6,15 +6,24 @@
     <x-input-with-icon icon="ti ti-mail" label="Email" name="email" value="{{ $user->email }}" />
     <x-input-with-icon icon="ti ti-key" label="Password" name="password" type="password" />
     <x-select label="Role" name="role" :data="$roles" key="name" textShow="name" />
-    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-        selected="{{ $user->kode_cabang }}" />
+    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" selected="{{ $user->kode_cabang }}" />
 
-    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-        selected="{{ $user->kode_dept }}" />
-
-
+    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" selected="{{ $user->kode_dept }}" />
     <x-select label="Regional" name="kode_regional" :data="$regional" key="kode_regional" textShow="nama_regional"
         selected="{{ $user->kode_regional }}" />
+
+    @foreach ($deptchunks as $deptchunk)
+        <div class="row">
+
+            @foreach ($deptchunk as $dept)
+                <div class="col-6">
+                    <input class="form-check-input" {{ in_array($dept->kode_dept, $dept_access) ? 'checked' : '' }} name="dept_access[]"
+                        value="{{ $dept->kode_dept }}" type="checkbox" id="{{ $dept->kode_dept }}">
+                    <label class="form-check-label" for="{{ $dept->kode_dept }}">{{ $dept->nama_dept }} </label>
+                </div>
+            @endforeach
+        </div>
+    @endforeach
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
             <ion-icon name="repeat-outline" class="me-1"></ion-icon>

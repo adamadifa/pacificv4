@@ -1,24 +1,35 @@
 @extends('layouts.app')
-@section('titlepage', 'Saldo Awal Ledger')
-
+@if (request()->is('samutasibank'))
+    @section('titlepage', 'Saldo Awal Mutasi Bank')
+@else
+    @section('titlepage', 'Saldo Awal Ledger')
+@endif
 @section('content')
 @section('navigasi')
-    <span>Saldo Awal Ledger</span>
+    @if (request()->is('samutasibank'))
+        <span>Saldo Awal Mutasi Bank</span>
+    @else
+        <span>Saldo Awal Ledger</span>
+    @endif
 @endsection
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-10">
         <div class="nav-align-top nav-tabs-shadow mb-4">
-            @include('layouts.navigation_ledger')
+            @if (request()->is('samutasibank'))
+                @include('layouts.navigation_mutasibank')
+            @else
+                @include('layouts.navigation_ledger')
+            @endif
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('saledger.create')
+                    @canany(['saledger.create', 'samutasibank.create'])
                         <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-plus me-2"></i>
                             Buat Saldo Awal
                         </a>
-                    @endcan
+                    @endcanany
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('saledger.index') }}">
+                            <form action="{{ URL::current() }}">
                                 <div class="row">
                                     <div class="col-lg-5 col-sm-12 col-md-12">
                                         <div class="form-group mb-3">

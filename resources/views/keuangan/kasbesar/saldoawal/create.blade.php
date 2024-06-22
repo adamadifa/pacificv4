@@ -151,7 +151,7 @@
         });
 
         form.find("#kode_cabang,#bulan,#tahun").change(function() {
-            form.find("cekgetsaldo").val(0);
+            form.find("#cekgetsaldo").val(0);
         });
 
         form.submit(function() {

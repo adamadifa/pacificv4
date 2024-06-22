@@ -1,4 +1,6 @@
-<form action="" id="formSaldoawalledger" method="POST">
+<form action="{{ route('saledger.store') }}" id="formSaldoawalledger" method="POST">
+    @csrf
+    <input type="hidden" name="cekgetsaldo" id="cekgetsaldo" value="0">
     <div class="form-group mb-3">
         <select name="bulan" id="bulan" class="form-select">
             <option value="">Bulan</option>
@@ -26,14 +28,14 @@
     </div>
     <div class="row mb-3">
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" />
+            <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" readonly="true" />
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
             <a href="#" id="getsaldo" class="btn btn-success">Get Saldo</a>
         </div>
     </div>
     <div class="form-group mb-3">
-        <button class="btn btn-primary w-100"><i class="ti ti-send me-1"></i>Submit</button>
+        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>
 </form>
 <script>
@@ -61,6 +63,14 @@
             }
         }
 
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..`);
+        }
 
         const select2Kodebank = $('.select2Kodebank');
         if (select2Kodebank.length) {
@@ -73,6 +83,10 @@
                 });
             });
         }
+
+        form.find("#kode_bank,#bulan,#tahun").change(function() {
+            form.find("#cekgetsaldo").val(0);
+        });
 
         $("#getsaldo").click(function() {
             const bulan = form.find("#bulan").val();
@@ -128,7 +142,8 @@
                             form.find("#jumlah").prop('readonly', false);
                             form.find("#jumlah").maskMoney();
                             form.find("#jumlah").focus();
-                        } else if (response.data.ceksaldobulanlalu == 0) {
+                            form.find("#cekgetsaldo").val(1);
+                        } else if (response.data.ceksaldobulanlalu == 0 && response.data.ceksaldobulanini == 0) {
                             Swal.fire({
                                 title: "Oops!",
                                 text: "Saldo Bulan Sebelumnya Belum Di Set !",
@@ -139,11 +154,30 @@
                                 },
                             });
                         } else {
+                            form.find("#cekgetsaldo").val(1);
                             form.find("#jumlah").val(convertToRupiah(response.data.saldo));
                             form.find("#jumlah").prop('readonly', true);
                         }
                     }
                 });
+            }
+        });
+
+        form.submit(function() {
+            const cekgetsaldo = form.find("#cekgetsaldo").val();
+            if (cekgetsaldo === '0') {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Silahkan Get Saldo Terlebih Dahulu !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#getsaldo").focus();
+                    },
+                });
+                return false;
+            } else {
+                buttonDisable();
             }
         });
     });

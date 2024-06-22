@@ -4,22 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Departemen;
+use App\Models\Gaji;
 use App\Models\Group;
 use App\Models\Jabatan;
 use App\Models\Karyawan;
 use App\Models\Klasifikasikaryawan;
+use App\Models\Kontrakkaryawan;
 use App\Models\Statusperkawinan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Yajra\DataTables\Facades\DataTables;
 
 class KaryawanController extends Controller
 {
     public function index(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
+        $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
         $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
 
         $cbg = new Cabang();
@@ -58,7 +63,8 @@ class KaryawanController extends Controller
 
 
 
-
+        // $departemen = Departemen::orderBy('kode_dept')->get();
+        // $group = Group::orderBy('kode_group')->get();
         $query = Karyawan::query();
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
@@ -67,16 +73,19 @@ class KaryawanController extends Controller
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else {
-                if (auth()->user()->kode_cabang == 'PST') {
-                    $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                } else {
+                if (auth()->user()->kode_cabang != 'PST') {
                     $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
                 }
             }
         }
 
-        if (!empty($request->kode_cabang)) {
-            $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang);
+
+
+
+        if (!empty($request->kode_cabang_search)) {
+            $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_search);
         }
 
         if (!empty($request->kode_dept)) {
@@ -280,5 +289,92 @@ class KaryawanController extends Controller
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+    public function getkaryawanjson(Request $request)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
+        if ($request->ajax()) {
+            $query = Karyawan::query();
+            $query->select(
+                'hrd_karyawan.nik',
+                DB::raw("UPPER(nama_karyawan) as nama_karyawan"),
+                'hrd_jabatan.nama_jabatan',
+                'hrd_departemen.nama_dept',
+                DB::raw('UPPER(cabang.nama_cabang) as nama_cabang'),
+                DB::raw("CASE
+                    WHEN status_karyawan = 'T' THEN 'TETAP'
+                    WHEN status_karyawan = 'K' THEN 'KONTRAK'
+                    WHEN status_karyawan = 'O' THEN 'OUTSOURCING'
+                    ELSE 'Undifined'
+                END AS statuskaryawan")
+            );
+            $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+            $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+            $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', $user->kode_regional);
+                    $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
+                } else {
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                    $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                }
+            }
+            $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+            $query->where('status_aktif_karyawan', 1);
+            $karyawan = $query;
+            return DataTables::of($karyawan)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="#" nik="' . Crypt::encrypt($row->nik) . '" class="pilihkaryawan"><i class="ti ti-external-link"></i></a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    }
+
+
+    public function getkaryawan($nik)
+    {
+
+        $nik = Crypt::decrypt($nik);
+        $query = Karyawan::query();
+        $query->select(
+            'hrd_karyawan.*',
+            'hrd_jabatan.nama_jabatan',
+            'hrd_departemen.nama_dept',
+            'cabang.nama_cabang',
+            DB::raw("CASE
+                WHEN status_karyawan = 'T' THEN 'TETAP'
+                WHEN status_karyawan = 'K' THEN 'KONTRAK'
+                WHEN status_karyawan = 'O' THEN 'OUTSOURCING'
+                ELSE 'Undifined'
+            END AS statuskaryawan")
+        );
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->where('nik', $nik);
+        $karyawan = $query->first()->toArray();
+
+        $gaji = Gaji::select('hrd_gaji.nik', DB::raw("gaji_pokok + t_jabatan + t_masakerja + t_tanggungjawab + t_makan + t_istri + t_skill as gapok_tunjangan"))
+            ->where('nik', $nik)->orderBy('tanggal_berlaku', 'desc')->first()->toArray();
+
+
+        $kontrak = Kontrakkaryawan::select('sampai as akhir_kontrak')->where('nik', $nik)->orderBy('tanggal', 'desc')->first()->toArray();
+        $data = array_merge($karyawan, $gaji, $kontrak);
+
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Karyawan',
+            'data'    => $data
+        ]);
     }
 }

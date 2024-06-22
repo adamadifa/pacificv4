@@ -38,7 +38,8 @@ class UserController extends Controller
         $cabang = Cabang::orderBy('nama_cabang')->get();
         $regional = Regional::orderBy('kode_regional')->get();
         $departemen = Departemen::orderBy('kode_dept')->get();
-        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen'));
+        $deptchunks = $departemen->chunk(2);
+        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen', 'deptchunks'));
     }
 
     public function edit($id)
@@ -49,7 +50,10 @@ class UserController extends Controller
         $cabang = Cabang::orderBy('nama_cabang')->get();
         $regional = Regional::orderBy('kode_regional')->get();
         $departemen = Departemen::orderBy('kode_dept')->get();
-        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen'));
+        $deptchunks = $departemen->chunk(2);
+        $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
+
+        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'deptchunks', 'dept_access'));
     }
 
     public function store(Request $request)
@@ -73,7 +77,8 @@ class UserController extends Controller
                 'password' => $request->password,
                 'kode_cabang' => $request->kode_cabang,
                 'kode_dept' => $request->kode_dept,
-                'kode_regional' => $request->kode_regional
+                'kode_regional' => $request->kode_regional,
+                'dept_access' => json_encode($request->dept_access)
             ]);
 
             $user->assignRole($request->role);
@@ -110,7 +115,8 @@ class UserController extends Controller
                     'kode_cabang' => $request->kode_cabang,
                     'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
-                    'password' => bcrypt($request->password)
+                    'password' => bcrypt($request->password),
+                    'dept_access' => json_encode($request->dept_access)
                 ]);
             } else {
                 User::where('id', $id)->update([
@@ -120,6 +126,7 @@ class UserController extends Controller
                     'kode_cabang' => $request->kode_cabang,
                     'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
+                    'dept_access' => json_encode($request->dept_access)
                 ]);
             }
 

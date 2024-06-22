@@ -46,7 +46,7 @@ class LedgerController extends Controller
         return view('keuangan.ledger.index', $data);
     }
 
-    public function create(Request $request)
+    public function create()
     {
         $data['bank'] = Bank::orderBy('nama_bank')->get();
         $data['coa'] = Coa::orderby('kode_akun')->get();

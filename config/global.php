@@ -69,9 +69,13 @@ return  [
     'roles_access_all_cabang' => ['super admin', 'gm administrasi', 'gm marketing', 'manager keuangan', 'direktur'],
     'roles_show_cabang' => ['super admin', 'gm administrasi', 'gm marketing', 'manager keuangan', 'direktur', 'regional sales manager'],
 
-    'roles_access_all_karyawan' => ['super admin', 'general manager 3', 'manager keuangan', 'direktur'],
+    'roles_access_all_karyawan' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur', 'manager hrd', 'spv presensi', 'spv recruitment'],
+    'roles_access_all_pjp' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur'],
+    'role_access_no_manajemen_pjp' => ['manager hrd', 'spv presensi', 'spv recruitment'],
+
 
     'roles_aprove_targetkomisi' => ['regional sales manager', 'gm marketing', 'direktur'],
+
     'roles_aprove_ajuanlimitkredit' => ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'],
     'roles_aprove_ajuanfakturkredit' => ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'],
     'roles_maker_ajuanlimitkredit' => ['salesman', 'operation manager', 'sales marketing manager'],
