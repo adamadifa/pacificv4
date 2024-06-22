@@ -7,6 +7,7 @@ use App\Models\Departemen;
 use App\Models\Gaji;
 use App\Models\Group;
 use App\Models\Jabatan;
+use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
 use App\Models\Klasifikasikaryawan;
 use App\Models\Kontrakkaryawan;
@@ -362,12 +363,16 @@ class KaryawanController extends Controller
         $query->where('nik', $nik);
         $karyawan = $query->first()->toArray();
 
-        $gaji = Gaji::select('hrd_gaji.nik', DB::raw("gaji_pokok + t_jabatan + t_masakerja + t_tanggungjawab + t_makan + t_istri + t_skill as gapok_tunjangan"))
-            ->where('nik', $nik)->orderBy('tanggal_berlaku', 'desc')->first()->toArray();
+        $gaji = Gaji::select('hrd_gaji.nik', DB::raw("gaji_pokok + t_jabatan + t_masakerja + t_tanggungjawab + t_makan + t_istri + t_skill as gapok_tunjangan, gaji_pokok"))
+            ->where('nik', $nik)->orderBy('tanggal_berlaku', 'desc')->first();
+        $gajiArray = $gaji != null ? $gaji->toArray() : ['gapok_tunjangan' => 0, 'gaji_pokok' => 0];
 
+        $kontrak = Kontrakkaryawan::select('sampai as akhir_kontrak')->where('nik', $nik)->orderBy('tanggal', 'desc')->first();
+        $kontrakArray = $kontrak != null ? $kontrak->toArray() :  ['akhir_kontrak' => date("Y-m-d")];
 
-        $kontrak = Kontrakkaryawan::select('sampai as akhir_kontrak')->where('nik', $nik)->orderBy('tanggal', 'desc')->first()->toArray();
-        $data = array_merge($karyawan, $gaji, $kontrak);
+        $jmk = Jasamasakerja::select(DB::raw('SUM(jumlah) as total_jmk_dibayar'))->where('nik', $nik)->groupBy('nik')->first();
+        $jmkArray = $jmk != null ? $jmk->toArray() : ['total_jmk_dibayar' => 0];
+        $data = array_merge($karyawan, $gajiArray, $kontrakArray, $jmkArray);
 
 
 

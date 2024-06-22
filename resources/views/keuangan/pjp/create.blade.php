@@ -75,11 +75,15 @@
             </table>
         </div>
     </div>
+    <div class="row" id="loadpjp">
+        <div class="col">
+            <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" />
+            <x-input-with-icon label="Angsuran" name="angsuran" icon="ti ti-box" align="right" />
+            <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" />
+            <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" />
+        </div>
+    </div>
 
-    <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" />
-    <x-input-with-icon label="Angsuran" name="angsuran" icon="ti ti-box" align="right" />
-    <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" />
-    <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" />
 </form>
 <script>
     $(function() {
@@ -195,6 +199,41 @@
             };
         }
 
+        function hitungJmk(masa_kerja) {
+            let jmlkali;
+            switch (true) {
+                case masa_kerja >= 3 && masa_kerja < 6:
+                    jmlkali = 2;
+                    break;
+                case masa_kerja >= 6 && masa_kerja < 9:
+                    jmlkali = 3;
+                    break;
+                case masa_kerja >= 9 && masa_kerja < 12:
+                    jmlkali = 4;
+                    break;
+                case masa_kerja >= 12 && masa_kerja < 15:
+                    jmlkali = 5;
+                    break;
+                case masa_kerja >= 15 && masa_kerja < 18:
+                    jmlkali = 6;
+                    break;
+                case masa_kerja >= 18 && masa_kerja < 21:
+                    jmlkali = 7;
+                    break;
+                case masa_kerja >= 21 && masa_kerja < 24:
+                    jmlkali = 8;
+                    break;
+                case masa_kerja >= 24:
+                    jmlkali = 10;
+                    break;
+                default:
+                    jmlkali = 1;
+
+            }
+
+            return jmlkali;
+        }
+
         function getKaryawan(nik) {
             $.ajax({
                 url: `/karyawan/${nik}/getkaryawan`,
@@ -225,6 +264,7 @@
                         form.find('#akhir_kontrak').html('<i class="ti ti-infinity"></i>');
                     } else {
                         tenor_max = calculateMonthDifference(new Date(), new Date(response.data.akhir_kontrak));
+                        tenor_max = tenor_max > 0 ? tenor_max : 0;
                         form.find("#akhir_kontrak").text(convertDateFormatToIndonesian(response.data.akhir_kontrak));
                     }
 
@@ -235,7 +275,30 @@
 
                     let plafon = angsuran_max * tenor_max;
                     form.find("#plafon").text(convertToRupiah(plafon));
-                    console.log(jumlahBulankerja);
+                    form.find("#jmk_dibayar").text(convertToRupiah(response.data.total_jmk_dibayar));
+
+                    let jmlkali_jmk = hitungJmk(masaKerja.years);
+                    let total_jmk;
+                    if (masaKerja.years <= 2) {
+                        total_jmk = jmlkali_jmk * response.data.gaji_pokok;
+                    } else {
+                        total_jmk = jmlkali_jmk * response.data.gapok_tunjangan;
+                    }
+                    form.find("#jmk").text(convertToRupiah(total_jmk));
+
+                    let plafon_max;
+                    if (plafon < total_jmk) {
+                        plafon_max = plafon;
+                    } else {
+                        plafon_max = total_jmk;
+                    }
+                    form.find("#plafon_max").text(convertToRupiah(plafon_max));
+
+                    if (tenor_max <= 0) {
+                        $("#loadpjp").html(`<div class="alert alert-danger">
+                        Tidak Dapat Melakukan Ajuan PJP, Karena Kontrak Karyawan Habis pada Tanggal ${convertDateFormatToIndonesian(response.data.akhir_kontrak)}, Silahkan Hubungi Departemen HRD
+                        </div>`);
+                    }
                     $("#modalKaryawan").modal("hide");
                 }
             });
