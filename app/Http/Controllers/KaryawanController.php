@@ -12,6 +12,7 @@ use App\Models\Karyawan;
 use App\Models\Klasifikasikaryawan;
 use App\Models\Kontrakkaryawan;
 use App\Models\Statusperkawinan;
+use App\Models\Suratperingatan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -372,7 +373,12 @@ class KaryawanController extends Controller
 
         $jmk = Jasamasakerja::select(DB::raw('SUM(jumlah) as total_jmk_dibayar'))->where('nik', $nik)->groupBy('nik')->first();
         $jmkArray = $jmk != null ? $jmk->toArray() : ['total_jmk_dibayar' => 0];
-        $data = array_merge($karyawan, $gajiArray, $kontrakArray, $jmkArray);
+
+        $sp = Suratperingatan::select('jenis_sp')->where('nik', $nik)->where('sampai', '>', date('Y-m-d'))->orderBy('tanggal', 'desc')->first();
+        $spArray = $sp != null ? $sp->toArray : ['jenis_sp' => null];
+
+
+        $data = array_merge($karyawan, $gajiArray, $kontrakArray, $jmkArray, $spArray);
 
 
 

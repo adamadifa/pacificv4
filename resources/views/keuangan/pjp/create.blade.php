@@ -75,8 +75,8 @@
             </table>
         </div>
     </div>
-    <div class="row" id="loadpjp">
-        <div class="col">
+    <div class="row">
+        <div class="col" id="loadpjp">
             <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" />
             <x-input-with-icon label="Angsuran" name="angsuran" icon="ti ti-box" align="right" />
             <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" />
@@ -294,10 +294,37 @@
                     }
                     form.find("#plafon_max").text(convertToRupiah(plafon_max));
 
-                    if (tenor_max <= 0) {
-                        $("#loadpjp").html(`<div class="alert alert-danger">
-                        Tidak Dapat Melakukan Ajuan PJP, Karena Kontrak Karyawan Habis pada Tanggal ${convertDateFormatToIndonesian(response.data.akhir_kontrak)}, Silahkan Hubungi Departemen HRD
+                    if (response.data.status_karyawan == 'O') {
+                        $("#loadpjp").html(`
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <span class="alert-icon text-danger me-2">
+                                <i class="ti ti-ban ti-xs"></i>
+                                </span>
+                                Tidak Dapat Melakukan Ajuan PJP, Karena Status Karyawan Sebagai Karyawan Outsourcing
+                            </div>`);
+                    } else if (jumlahBulankerja < 15) {
+                        $("#loadpjp").html(`
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <span class="alert-icon text-danger me-2">
+                            <i class="ti ti-ban ti-xs"></i>
+                            </span>
+                            Tidak Dapat Melakukan Ajuan PJP, Masa Kerja Karyawan Kurang dari 1,3 Tahun atau 15 Bulan, Masa Kerja Karyawan Saat Ini ${jumlahBulankerja} Bulan
                         </div>`);
+                    } else if (tenor_max <= 0) {
+                        $("#loadpjp").html(`
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <span class="alert-icon text-danger me-2">
+                            <i class="ti ti-ban ti-xs"></i>
+                            </span>
+                            Tidak Dapat Melakukan Ajuan PJP, Karena Kontrak Karyawan Habis pada Tanggal ${convertDateFormatToIndonesian(response.data.akhir_kontrak)}, Silahkan Hubungi Departemen HRD
+                        </div>`);
+                    } else {
+                        $("#loadpjp").html(`
+                        <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" />
+                        <x-input-with-icon label="Angsuran" name="angsuran" icon="ti ti-box" align="right" />
+                        <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" />
+                        <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" />
+                        `);
                     }
                     $("#modalKaryawan").modal("hide");
                 }
