@@ -77,10 +77,7 @@
     </div>
     <div class="row">
         <div class="col" id="loadpjp">
-            <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" />
-            <x-input-with-icon label="Angsuran" name="angsuran" icon="ti ti-box" align="right" />
-            <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" />
-            <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" />
+
         </div>
     </div>
 
@@ -89,6 +86,60 @@
     $(function() {
 
         const form = $("#formPJP");
+        $(".flatpickr-date").flatpickr();
+
+        let max_pinjaman;
+        let max_cicilan;
+        let max_angsuran;
+
+
+        form.find("#tanggal").change(function(e) {
+            var tanggal_pinjaman = $(this).val();
+            var tanggal = tanggal_pinjaman.split("-");
+            var tgl = tanggal[2];
+            var bulan = tanggal[1];
+            var tahun = tanggal[0];
+
+            if (tgl == 19 || tgl == 20) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tidak Bisa Melakukan Ajuan Pada Tanggal 19 & 20",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        forn.find("#mulai_cicilan").val("");
+                        form.find("#tanggal").val("");
+                    },
+                });
+
+            } else {
+                if (tgl <= 18 && bulan <= 10) {
+                    var nextbulan = parseInt(bulan) + 1;
+                    var nexttahun = parseInt(tahun);
+                } else if (tgl <= 18 && bulan == 12) {
+                    var nextbulan = 1;
+                    var nexttahun = parseInt(tahun) + 1;
+                } else if (parseInt(tgl) >= 21 && parseInt(bulan) <= 10) {
+                    var nextbulan = parseInt(bulan) + 2;
+                    var nexttahun = parseInt(tahun);
+                } else if (parseInt(tgl) <= 18 && parseInt(bulan) <= 11) {
+                    var nextbulan = parseInt(bulan) + 1;
+                    var nexttahun = parseInt(tahun);
+                } else if (parseInt(tgl) >= 21 && parseInt(bulan) == 11) {
+                    var nextbulan = 1;
+                    var nexttahun = parseInt(tahun) + 1;
+                } else if (parseInt(tgl) >= 21 && parseInt(bulan) == 12) {
+                    var nextbulan = 2;
+                    var nexttahun = parseInt(tahun) + 1;
+                }
+                if (nextbulan <= 9) {
+                    var nextbulan = "0" + nextbulan;
+                }
+                var mulai_cicilan = nexttahun + "-" + nextbulan + "-01";
+                form.find("#mulai_cicilan").val(mulai_cicilan);
+            }
+
+        });
 
         $('#tabelkaryawan tbody').on('click', '.pilihkaryawan', function(e) {
             e.preventDefault();
@@ -267,11 +318,13 @@
                         tenor_max = tenor_max > 0 ? tenor_max : 0;
                         form.find("#akhir_kontrak").text(convertDateFormatToIndonesian(response.data.akhir_kontrak));
                     }
-
+                    max_cicilan = tenor_max;
                     form.find("#tenor_max").text(tenor_max + ' Bulan');
 
                     let angsuran_max = Math.round(40 / 100 * response.data.gapok_tunjangan);
                     form.find("#angsuran_max").text(convertToRupiah(angsuran_max));
+                    max_angsuran = angsuran_max;
+
 
                     let plafon = angsuran_max * tenor_max;
                     form.find("#plafon").text(convertToRupiah(plafon));
@@ -293,8 +346,17 @@
                         plafon_max = total_jmk;
                     }
                     form.find("#plafon_max").text(convertToRupiah(plafon_max));
+                    max_pinjaman = plafon_max;
 
+
+                    const sp_pusat = ['SP2', 'SP3'];
+                    const sp_cabang = ['SP1', 'SP2', 'SP3'];
+
+                    const minimal_bayar = 75 / 100 * response.data.total_pinjaman;
+                    const persentase_bayar = Math.round(response.data.total_pembayaran / response.data.total_pinjaman * 100);
+                    //Kondisi Karyawan Tidak Bisa Melakukan PJP
                     if (response.data.status_karyawan == 'O') {
+                        // Jika Status Karyawan Outsourcing
                         $("#loadpjp").html(`
                             <div class="alert alert-danger d-flex align-items-center" role="alert">
                                 <span class="alert-icon text-danger me-2">
@@ -303,6 +365,7 @@
                                 Tidak Dapat Melakukan Ajuan PJP, Karena Status Karyawan Sebagai Karyawan Outsourcing
                             </div>`);
                     } else if (jumlahBulankerja < 15) {
+                        //Masa Kerja Kurang dari 15 Bulan
                         $("#loadpjp").html(`
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
                             <span class="alert-icon text-danger me-2">
@@ -311,6 +374,7 @@
                             Tidak Dapat Melakukan Ajuan PJP, Masa Kerja Karyawan Kurang dari 1,3 Tahun atau 15 Bulan, Masa Kerja Karyawan Saat Ini ${jumlahBulankerja} Bulan
                         </div>`);
                     } else if (tenor_max <= 0) {
+                        //Kontrak Habis
                         $("#loadpjp").html(`
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
                             <span class="alert-icon text-danger me-2">
@@ -318,17 +382,89 @@
                             </span>
                             Tidak Dapat Melakukan Ajuan PJP, Karena Kontrak Karyawan Habis pada Tanggal ${convertDateFormatToIndonesian(response.data.akhir_kontrak)}, Silahkan Hubungi Departemen HRD
                         </div>`);
+                    } else if (response.data.kode_cabang == 'PST' && sp_pusat.includes(response.data.jenis_sp) || response.data
+                        .kode_cabang != 'PST' && sp_cabang.includes(response.data.jenis_sp)) {
+                        //Masih dalam Masa SP
+                        $("#loadpjp").html(`
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <span class="alert-icon text-danger me-2">
+                            <i class="ti ti-ban ti-xs"></i>
+                            </span>
+                            Tidak Dapat Melakukan Ajuan PJP, Karena Kontrak Karyawan Masih Dalam Masa ${response.data.jenis_sp}, Yang Berakhir Pada
+                            ${convertDateFormatToIndonesian(response.data.tanggal_berakhir_sp)}
+                        </div>`);
+                    } else if (response.data.total_pembayaran < minimal_bayar) {
+                        $("#loadpjp").html(`
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <span class="alert-icon text-danger me-2">
+                            <i class="ti ti-ban ti-xs"></i>
+                            </span>
+                            Tidak Dapat Melakukan Ajuan PJP, Karana Karyawan Masih Memiliki Pinjaman, Untuk Melakukan Ajuan PJP kembali, Karyawan harus sudah membayar 75% dari Pinjaman Sebelumnya, Total Pinjaman Sebesar ${convertToRupiah(response.data.total_pinjaman)} dan Total Yang Sudah Dibayarkan Sebesar ${convertToRupiah(response.data.total_pembayaran)} (${persentase_bayar}%)
+                        </div>`);
                     } else {
                         $("#loadpjp").html(`
                         <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" />
-                        <x-input-with-icon label="Angsuran" name="angsuran" icon="ti ti-box" align="right" />
-                        <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" />
+                        <x-input-with-icon label="Jumlah Cicilan" name="angsuran" icon="ti ti-box" align="right" />
+                        <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" readonly="true" />
                         <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" />
+                        <div class="form-group mb-3">
+                            <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+                        </div>
                         `);
+                        $(".money").maskMoney();
+                        form.find("#angsuran").mask("##");
                     }
                     $("#modalKaryawan").modal("hide");
                 }
             });
         }
+
+
+        function calculateAngsuranperbulan() {
+            let jmlpinjaman = form.find("#jumlah_pinjaman").val();
+            let jumlah_pinjaman = jmlpinjaman != "" ? jmlpinjaman.replace(/\./g, '') : 0;
+            let angsuran = form.find("#angsuran").val();
+            let angsuranperbulan = angsuran != "" && angsuran !== '0' ? Math.round(jumlah_pinjaman / angsuran) : 0;
+            angsuranperbulan = isNaN(angsuranperbulan) ? 0 : angsuranperbulan;
+            form.find("#jumlah_angsuran").val(convertToRupiah(angsuranperbulan));
+        }
+
+        $(document).on('keyup keydown', '#jumlah_pinjaman', function(e) {
+            let jmlpinjaman = $(this).val();
+            let jumlah_pinjaman = jmlpinjaman != "" ? parseInt(jmlpinjaman.replace(/\./g, '')) : 0;
+            calculateAngsuranperbulan();
+            if (jumlah_pinjaman > max_pinjaman) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Pinjaman Melebihi Plafon Maksimal!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jumlah_pinjaman").focus();
+                        form.find("#jumlah_pinjaman").val(0);
+                        calculateAngsuranperbulan();
+                    },
+                });
+            }
+        });
+
+        $(document).on('keyup keydown', '#angsuran', function(e) {
+            let angsuran = $(this).val();
+            calculateAngsuranperbulan();
+            if (angsuran > max_cicilan) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Cicilan Melebihi Tenor Maksimal!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#angsuran").focus();
+                        form.find("#angsuran").val(0);
+                        calculateAngsuranperbulan();
+                    },
+                });
+            }
+        });
+
     });
 </script>

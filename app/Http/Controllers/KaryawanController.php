@@ -11,6 +11,7 @@ use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
 use App\Models\Klasifikasikaryawan;
 use App\Models\Kontrakkaryawan;
+use App\Models\Pjp;
 use App\Models\Statusperkawinan;
 use App\Models\Suratperingatan;
 use App\Models\User;
@@ -374,11 +375,29 @@ class KaryawanController extends Controller
         $jmk = Jasamasakerja::select(DB::raw('SUM(jumlah) as total_jmk_dibayar'))->where('nik', $nik)->groupBy('nik')->first();
         $jmkArray = $jmk != null ? $jmk->toArray() : ['total_jmk_dibayar' => 0];
 
-        $sp = Suratperingatan::select('jenis_sp')->where('nik', $nik)->where('sampai', '>', date('Y-m-d'))->orderBy('tanggal', 'desc')->first();
-        $spArray = $sp != null ? $sp->toArray : ['jenis_sp' => null];
+        $sp = Suratperingatan::select('jenis_sp', 'sampai as tanggal_berakhir_sp')->where('nik', $nik)->where('sampai', '>', date('Y-m-d'))->orderBy('tanggal', 'desc')->first();
+        $spArray = $sp != null ? $sp->toArray() : ['jenis_sp' => null, 'tanggal_berakhir_sp' => null];
 
 
-        $data = array_merge($karyawan, $gajiArray, $kontrakArray, $jmkArray, $spArray);
+        $cekpinjaman = Pjp::select(
+            'keuangan_pjp.nik',
+            DB::raw("SUM(jumlah_pinjaman) as total_pinjaman"),
+            DB::raw("SUM(totalpembayaran) as total_pembayaran"),
+        )
+            ->leftJoin(
+                DB::raw("(
+                SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM keuangan_pjp_historibayar GROUP BY no_pinjaman
+            ) historibayar"),
+                function ($join) {
+                    $join->on('keuangan_pjp.no_pinjaman', '=', 'historibayar.no_pinjaman');
+                }
+            )
+            ->where('keuangan_pjp.nik', $nik)
+            ->groupBy('keuangan_pjp.nik')
+            ->first();
+
+        $cekpinjamanArray = $cekpinjaman != null ? $cekpinjaman->toArray() : ['total_pinjaman' => 0, 'total_pembayaran' => 0];
+        $data = array_merge($karyawan, $gajiArray, $kontrakArray, $jmkArray, $spArray, $cekpinjamanArray);
 
 
 
