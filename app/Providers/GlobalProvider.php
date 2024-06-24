@@ -22,7 +22,7 @@ class Globalprovider extends ServiceProvider
     public function boot(Guard $auth): void
     {
         view()->composer('*', function ($view) use ($auth) {
-            $roles_show_cabang = ['super admin', 'gm marketing', 'manager keuangan', 'direktur', 'regional sales manager'];
+            $roles_show_cabang = ['super admin', 'gm marketing', 'manager keuangan', 'direktur', 'regional sales manager', 'asst. manager hrd'];
             $start_periode = '2023-01-01';
             $end_periode = date('Y') . '-12-31';
             $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];

@@ -20,6 +20,7 @@
                     <div class="row mt-2">
                         <div class="col-12">
                             <form action="{{ route('pjp.index') }}">
+                                {{-- {{ auth()->user()->roles->pluck('name')[0] }} --}}
                                 @hasanyrole($roles_show_cabang)
                                     <div class="row">
                                         <div class="col-lg-12 col-sm-12 col-md-12">
@@ -52,12 +53,13 @@
                                             <th>Tanggal</th>
                                             <th>NIK</th>
                                             <th>Nama Karyawan</th>
+                                            <th>Dept</th>
                                             <th>Jabatan</th>
                                             <th>Jumlah</th>
                                             <th>Bayar</th>
                                             <th>Sisa Tagihan</th>
                                             <th>Ket</th>
-                                            <th>Status</th>
+                                            <th class="text-center">Status</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
@@ -71,12 +73,13 @@
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nik }}</td>
                                                 <td>{{ $d->nama_karyawan }}</td>
+                                                <td>{{ $d->kode_dept }}</td>
                                                 <td>{{ $d->nama_jabatan }}</td>
                                                 <td class="text-end">{{ formatAngka($d->jumlah_pinjaman) }}</td>
                                                 <td class="text-end">{{ formatRupiah($d->totalpembayaran) }}</td>
                                                 <td class="text-end">{{ formatRupiah($sisatagihan) }}</td>
                                                 <td>{!! $d->jumlah_pinjaman - $d->totalpembayaran == 0 ? '<span class="badge bg-success">L</span>' : '<span class="badge bg-danger">BL</span>' !!}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     @if ($d->tanggal == '2023-05-01')
                                                         <span class="badge bg-info">Koperasi</span>
                                                     @else
@@ -87,6 +90,56 @@
                                                         @endif
                                                     @endif
 
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        @can('pjp.approve')
+                                                            @if ($d->status === '0')
+                                                                <div>
+                                                                    <a href="#" id="btnApprove"
+                                                                        no_pinjaman="{{ Crypt::encrypt($d->no_pinjaman) }}">
+                                                                        <i class="ti ti-external-link text-success me-1"></i>
+                                                                    </a>
+                                                                </div>
+                                                            @else
+                                                                <div>
+                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                        action="{{ route('pjp.cancel', Crypt::encrypt($d->no_pinjaman)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="cancel-confirm me-1">
+                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+
+                                                                        </a>
+                                                                    </form>
+                                                                </div>
+                                                            @endif
+                                                        @endcan
+                                                        @can('pjp.show')
+                                                            <div>
+                                                                <a href="#" class="btnShow" no_pinjaman="{{ Crypt::encrypt($d->no_pinjaman) }}"><i
+                                                                        class="ti ti-file-description text-info me-1"></i></a>
+                                                            </div>
+                                                            <div>
+                                                                <a href="{{ route('pjp.cetak', Crypt::encrypt($d->no_pinjaman)) }}" target="_blank"><i
+                                                                        class="ti ti-printer text-primary me-1"></i></a>
+                                                            </div>
+                                                        @endcan
+                                                        @can('pjp.delete')
+                                                            @if ($d->status === '0')
+                                                                <div>
+                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                        action="{{ route('pjp.delete', Crypt::encrypt($d->no_pinjaman)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="delete-confirm ml-1">
+                                                                            <i class="ti ti-trash text-danger"></i>
+                                                                        </a>
+                                                                    </form>
+                                                                </div>
+                                                            @endif
+                                                        @endcan
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -104,6 +157,9 @@
     </div>
 </div>
 <x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
+<x-modal-form id="modalBayar" size="" show="loadmodalBayar" title="" />
+<x-modal-form id="modalApprove" size="" show="loadmodalApprove" title="" />
+<x-modal-form id="modalShow" size="modal-xl" show="loadmodal" title="" />
 <div class="modal fade" id="modalKaryawan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog">
         <div class="modal-content">
@@ -139,7 +195,7 @@
     $(function() {
 
         function loading() {
-            $("#loadmodal,#loadmodalEdit").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
             <div class="sk-wave-rect"></div>
             <div class="sk-wave-rect"></div>
             <div class="sk-wave-rect"></div>
@@ -148,6 +204,25 @@
             </div>`);
         };
 
+        function loadingBayar() {
+            $("#loadmodalBayar").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+        };
+
+        function loadingApprove() {
+            $("#loadmodalApprove").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+        };
         const select2Kodecabangsearch = $('.select2Kodecabangsearch');
         if (select2Kodecabangsearch.length) {
             select2Kodecabangsearch.each(function() {
@@ -168,19 +243,39 @@
             $("#loadmodal").load('/pjp/create');
         });
 
-        $(".btnEdit").click(function(e) {
+        $("#btnApprove").click(function(e) {
+            e.preventDefault();
+            loadingApprove();
+            const no_pinjaman = $(this).attr('no_pinjaman');
+            $("#modalApprove").modal("show");
+            $("#modalApprove").find(".modal-title").text('Approve PJP');
+            $("#loadmodalApprove").load(`/pjp/${no_pinjaman}/approve`);
+        });
+
+
+        $(".btnShow").click(function(e) {
             e.preventDefault();
             loading();
-            const no_bukti = $(this).attr('no_bukti');
-            $("#modal").modal("show");
-            $("#modal").find(".modal-title").text('Edit Mutasi Bank');
-            $("#modal").find("#loadmodal").load(`/mutasibank/${no_bukti}/edit`);
+            const no_pinjaman = $(this).attr('no_pinjaman');
+            $("#modalShow").modal("show");
+            $("#modalShow").find(".modal-title").text('Detail PJP');
+            $("#modalShow").find("#loadmodal").load(`/pjp/${no_pinjaman}/show`);
         });
 
         $(document).on('click', '#nik_search', function(e) {
             $("#modalKaryawan").modal("show");
+
         });
 
+
+        $(document).on('click', '#btnBayar', function(e) {
+            e.preventDefault();
+            const no_pinjaman = $(this).attr('no_pinjaman');
+            loadingBayar();
+            $("#modalBayar").modal("show");
+            $("#modalBayar").find(".modal-title").text('Input Pembayaran PJP');
+            $("#modalBayar").find("#loadmodalBayar").load(`/pembayaranpjp/${no_pinjaman}/create`);
+        });
 
         $('#tabelkaryawan').DataTable({
             processing: true,

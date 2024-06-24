@@ -2,6 +2,7 @@
 
 use App\Models\Produk;
 use App\Models\Tutuplaporan;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Redirect;
 
 function buatkode($nomor_terakhir, $kunci, $jumlah_karakter = 0)
@@ -347,4 +348,61 @@ function formatIndo($date)
 {
     $tanggal = !empty($date) ? date('d-m-Y', strtotime($date)) : '';
     return $tanggal;
+}
+
+
+function calculateMonths($date1, $date2)
+{
+
+    // Parsing tanggal
+    $date1 = Carbon::parse($date1);
+    $date2 = Carbon::parse($date2);
+
+    // Menghitung jumlah bulan
+    $months = $date1->diffInMonths($date2);
+
+    // Mengembalikan hasil sebagai JSON
+    return $months;
+}
+
+
+function hitungJmk($masa_kerja)
+{
+    $jmlkali = 1;
+    if ($masa_kerja >= 3 && $masa_kerja < 6) {
+        $jmlkali = 2;
+    } elseif ($masa_kerja >= 6 && $masa_kerja < 9) {
+        $jmlkali = 3;
+    } elseif ($masa_kerja >= 9 && $masa_kerja < 12) {
+        $jmlkali = 4;
+    } elseif ($masa_kerja >= 12 && $masa_kerja < 15) {
+        $jmlkali = 5;
+    } elseif ($masa_kerja >= 15 && $masa_kerja < 18) {
+        $jmlkali = 6;
+    } elseif ($masa_kerja >= 18 && $masa_kerja < 21) {
+        $jmlkali = 7;
+    } elseif ($masa_kerja >= 21 && $masa_kerja < 24) {
+        $jmlkali = 8;
+    } elseif ($masa_kerja >= 24) {
+        $jmlkali = 10;
+    }
+
+    return $jmlkali;
+}
+
+
+function hitungMasakerja($tanggal_masuk, $tanggal_sampai)
+{
+    $joinDate = Carbon::parse($tanggal_masuk);
+    $currentDate = Carbon::parse($tanggal_sampai);
+
+    $diffYears = $joinDate->diffInYears($currentDate);
+    $diffMonths = $joinDate->copy()->addYears($diffYears)->diffInMonths($currentDate);
+    $diffDays = $joinDate->copy()->addYears($diffYears)->addMonths($diffMonths)->diffInDays($currentDate);
+
+    return [
+        'tahun' => $diffYears,
+        'bulan' => $diffMonths,
+        'hari' => $diffDays
+    ];
 }

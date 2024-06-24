@@ -47,6 +47,7 @@ use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PembayarangiroController;
 use App\Http\Controllers\PembayaranpenjualanController;
+use App\Http\Controllers\PembayaranpjpController;
 use App\Http\Controllers\PembayarantransferController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
@@ -1149,12 +1150,26 @@ Route::middleware('auth')->group(function () {
         Route::get('/pjp', 'index')->name('pjp.index')->can('pjp.index');
         Route::get('/pjp/create', 'create')->name('pjp.create')->can('pjp.create');
         Route::post('/pjp/store', 'store')->name('pjp.store')->can('pjp.store');
+        Route::get('/pjp/{no_pinjaman}/show', 'show')->name('pjp.show')->can('pjp.show');
         Route::get('/pjp/{no_pinjaman}/edit', 'edit')->name('pjp.edit')->can('pjp.edit');
         Route::put('/pjp/{no_pinjaman}/update', 'update')->name('pjp.update')->can('pjp.update');
         Route::delete('/pjp/{no_pinjaman}/delete', 'destroy')->name('pjp.delete')->can('pjp.delete');
+        Route::get('/pjp/{no_pinjaman}/cetak', 'cetak')->name('pjp.cetak')->can('pjp.show');
+        Route::post('/pjp/getrencanacicilan', 'getrencanacicilan')->name('pjp.getrencanacicilan');
+        Route::get('/pjp/{no_pinjaman}/approve', 'approve')->name('pjp.approve')->can('pjp.approve');
+        Route::post('/pjp/{no_pinjaman}/approvestore', 'approvestore')->name('pjp.approvestore')->can('pjp.approve');
+        Route::delete('/pjp/{no_pinjaman}/cancel', 'cancel')->name('pjp.cancel')->can('pjp.approve');
     });
 
+    Route::controller(PembayaranpjpController::class)->group(function () {
+        Route::get('/pembayaranpjp', 'index')->name('pembayaranpjp.index')->can('pembayaranpjp.index');
+        Route::get('/pembayaranpjp/{no_pinjman}/create', 'create')->name('pembayaranpjp.create')->can('pembayaranpjp.create');
+        Route::post('/pembayaranpjp/store', 'store')->name('pembayaranpjp.store')->can('pembayaranpjp.store');
 
+        // Route::put('/pembayaranpjp/{id}/update', 'update')->name('pembayaranpjp.update')->can('pembayaranpjp.update');
+        Route::post('/pembayaranpjp/delete', 'destroy')->name('pembayaranpjp.delete')->can('pembayaranpjp.delete');
+        Route::post('/pembayaranpjp/gethistoribayar', 'gethistoribayar')->name('pembayaranpjp.gethistoribayar');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

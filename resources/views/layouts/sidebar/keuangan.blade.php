@@ -15,6 +15,7 @@
         'mutasibank',
         'samutasibank',
         'pjp',
+        'pembayaranpjp',
     ])
         ? 'open'
         : '' }}">
@@ -90,7 +91,7 @@
             @endif
 
             @if (auth()->user()->hasAnyPermission(['pjp.index']))
-                <li class="menu-item {{ request()->is(['pjp', 'bayarpjp']) ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is(['pjp', 'pembayaranpjp']) ? 'active' : '' }}">
                     <a href="{{ route('pjp.index') }}" class="menu-link">
                         <div>PJP</div>
                     </a>

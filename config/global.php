@@ -66,12 +66,15 @@ return  [
     'end_date' => date('Y-m-t', strtotime($hari_ini)),
 
 
-    'roles_access_all_cabang' => ['super admin', 'gm administrasi', 'gm marketing', 'manager keuangan', 'direktur'],
-    'roles_show_cabang' => ['super admin', 'gm administrasi', 'gm marketing', 'manager keuangan', 'direktur', 'regional sales manager'],
+    'roles_access_all_cabang' => ['super admin', 'gm administrasi', 'gm marketing', 'manager keuangan', 'direktur', 'asst. manager hrd'],
+    'roles_show_cabang' => [
+        'super admin', 'gm administrasi', 'gm marketing', 'manager keuangan', 'direktur', 'regional sales manager',
+        'asst. manager hrd'
+    ],
 
-    'roles_access_all_karyawan' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur', 'manager hrd', 'spv presensi', 'spv recruitment'],
+    'roles_access_all_karyawan' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur', 'asst. manager hrd', 'spv presensi', 'spv recruitment'],
     'roles_access_all_pjp' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur'],
-    'role_access_no_manajemen_pjp' => ['manager hrd', 'spv presensi', 'spv recruitment'],
+    'role_access_no_manajemen_pjp' => ['asst. manager hrd', 'spv presensi', 'spv recruitment'],
 
 
     'roles_aprove_targetkomisi' => ['regional sales manager', 'gm marketing', 'direktur'],

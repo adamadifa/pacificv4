@@ -9,9 +9,9 @@
             </li>
         @endcan
 
-        @can('bayarpjp.index')
+        @can('pembayaranpjp.index')
             <li class="nav-item" role="presentation">
-                <a href="#" class="nav-link {{ request()->is(['bayarpjp']) ? 'active' : '' }}">
+                <a href="{{ route('pembayaranpjp.index') }}" class="nav-link {{ request()->is(['pembayaranpjp']) ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pembayaran
                 </a>
             </li>

@@ -1,4 +1,5 @@
-<form action="#" id="formPJP">
+<form action="{{ route('pjp.store') }}" id="formPJP" method="POST">
+    @csrf
     <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_pjp" />
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" />
     <div class="divider">
@@ -84,61 +85,70 @@
 </form>
 <script>
     $(function() {
-
         const form = $("#formPJP");
-        $(".flatpickr-date").flatpickr();
+        const hariini = "{{ date('Y-m-d') }}";
+        $(".flatpickr-date").flatpickr({
+            enable: [{
+                from: hariini,
+                to: "{{ $end_periode }}"
+            }, ]
+        });
 
         let max_pinjaman;
         let max_cicilan;
         let max_angsuran;
 
-
-        form.find("#tanggal").change(function(e) {
-            var tanggal_pinjaman = $(this).val();
+        function getMulaicicilan() {
+            var tanggal_pinjaman = form.find("#tanggal").val();
             var tanggal = tanggal_pinjaman.split("-");
             var tgl = tanggal[2];
             var bulan = tanggal[1];
             var tahun = tanggal[0];
 
-            if (tgl == 19 || tgl == 20) {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Tidak Bisa Melakukan Ajuan Pada Tanggal 19 & 20",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        forn.find("#mulai_cicilan").val("");
-                        form.find("#tanggal").val("");
-                    },
-                });
+            if (tanggal_pinjaman != "") {
+                if (tgl == 19 || tgl == 20) {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: "Tidak Bisa Melakukan Ajuan Pada Tanggal 19 & 20",
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            forn.find("#mulai_cicilan").val("");
+                            form.find("#tanggal").val("");
+                        },
+                    });
 
-            } else {
-                if (tgl <= 18 && bulan <= 10) {
-                    var nextbulan = parseInt(bulan) + 1;
-                    var nexttahun = parseInt(tahun);
-                } else if (tgl <= 18 && bulan == 12) {
-                    var nextbulan = 1;
-                    var nexttahun = parseInt(tahun) + 1;
-                } else if (parseInt(tgl) >= 21 && parseInt(bulan) <= 10) {
-                    var nextbulan = parseInt(bulan) + 2;
-                    var nexttahun = parseInt(tahun);
-                } else if (parseInt(tgl) <= 18 && parseInt(bulan) <= 11) {
-                    var nextbulan = parseInt(bulan) + 1;
-                    var nexttahun = parseInt(tahun);
-                } else if (parseInt(tgl) >= 21 && parseInt(bulan) == 11) {
-                    var nextbulan = 1;
-                    var nexttahun = parseInt(tahun) + 1;
-                } else if (parseInt(tgl) >= 21 && parseInt(bulan) == 12) {
-                    var nextbulan = 2;
-                    var nexttahun = parseInt(tahun) + 1;
+                } else {
+                    if (tgl <= 18 && bulan <= 10) {
+                        var nextbulan = parseInt(bulan) + 1;
+                        var nexttahun = parseInt(tahun);
+                    } else if (tgl <= 18 && bulan == 12) {
+                        var nextbulan = 1;
+                        var nexttahun = parseInt(tahun) + 1;
+                    } else if (parseInt(tgl) >= 21 && parseInt(bulan) <= 10) {
+                        var nextbulan = parseInt(bulan) + 2;
+                        var nexttahun = parseInt(tahun);
+                    } else if (parseInt(tgl) <= 18 && parseInt(bulan) <= 11) {
+                        var nextbulan = parseInt(bulan) + 1;
+                        var nexttahun = parseInt(tahun);
+                    } else if (parseInt(tgl) >= 21 && parseInt(bulan) == 11) {
+                        var nextbulan = 1;
+                        var nexttahun = parseInt(tahun) + 1;
+                    } else if (parseInt(tgl) >= 21 && parseInt(bulan) == 12) {
+                        var nextbulan = 2;
+                        var nexttahun = parseInt(tahun) + 1;
+                    }
+                    if (nextbulan <= 9) {
+                        var nextbulan = "0" + nextbulan;
+                    }
+                    var mulai_cicilan = nexttahun + "-" + nextbulan + "-01";
+                    form.find("#mulai_cicilan").val(mulai_cicilan);
                 }
-                if (nextbulan <= 9) {
-                    var nextbulan = "0" + nextbulan;
-                }
-                var mulai_cicilan = nexttahun + "-" + nextbulan + "-01";
-                form.find("#mulai_cicilan").val(mulai_cicilan);
             }
+        }
 
+        form.find("#tanggal").change(function(e) {
+            getMulaicicilan();
         });
 
         $('#tabelkaryawan tbody').on('click', '.pilihkaryawan', function(e) {
@@ -339,8 +349,9 @@
                     }
                     form.find("#jmk").text(convertToRupiah(total_jmk));
 
+                    let sisa_jmk = total_jmk - response.data.total_jmk_dibayar;
                     let plafon_max;
-                    if (plafon < total_jmk) {
+                    if (plafon < sisa_jmk) {
                         plafon_max = plafon;
                     } else {
                         plafon_max = total_jmk;
@@ -406,13 +417,14 @@
                         <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" />
                         <x-input-with-icon label="Jumlah Cicilan" name="angsuran" icon="ti ti-box" align="right" />
                         <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" readonly="true" />
-                        <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" />
+                        <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" readonly="true" />
                         <div class="form-group mb-3">
                             <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
                         </div>
                         `);
                         $(".money").maskMoney();
                         form.find("#angsuran").mask("##");
+                        getMulaicicilan();
                     }
                     $("#modalKaryawan").modal("hide");
                 }
@@ -466,5 +478,106 @@
             }
         });
 
+
+
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..`);
+        }
+        form.submit(function() {
+            const tanggal = form.find("#tanggal").val();
+            const nik = form.find("#nik").val();
+            const jumlah_pinjaman = form.find("#jumlah_pinjaman").val();
+            const angsuran = form.find("#angsuran").val();
+            let jmlangsuran = form.find("#jumlah_angsuran").val();
+            let jumlah_angsuran = jmlangsuran != "" ? parseInt(jmlangsuran.replace(/\./g, '')) : 0;
+            const mulai_cicilan = form.find("#mulai_cicilan").val();
+            if (tanggal == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tanggal harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#tanggal").focus();
+                    },
+                });
+                return false;
+            } else if (nik == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "NIK harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#nik").focus();
+                    },
+                });
+                return false;
+            } else if (jumlah_pinjaman == "" || angsuran === 0) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Pinjaman harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jumlah_pinjaman").focus();
+                    },
+                });
+                return false;
+            } else if (angsuran == "" || angsuran === 0) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Angsuran harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#angsuran").focus();
+                    },
+                });
+                return false;
+            } else if (jumlah_angsuran == "" || jumlah_angsuran === 0) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Angsuran harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jumlah_angsuran").focus();
+                    },
+                });
+                return false;
+            } else if (jumlah_angsuran > max_angsuran) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Melebihi Angsuran Maksimal Perbulan",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jumlah_angsuran").focus();
+                        form.find("#jumlah_angsuran").val(0);
+                    },
+                });
+                return false;
+            } else if (mulai_cicilan == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tanggal Mulai Cicilan harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#mulai_cicilan").focus();
+                    },
+                });
+                return false;
+            } else {
+                buttonDisable();
+            }
+        });
     });
 </script>
