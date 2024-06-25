@@ -19,5 +19,7 @@
         $(".flatpickr-date").flatpickr();
         $(".money").maskMoney();
 
+
+
     });
 </script>

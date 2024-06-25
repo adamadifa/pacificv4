@@ -73,7 +73,30 @@
                                                 <td>{{ $namabulan[$d->bulan] }}</td>
                                                 <td>{{ $d->tahun }}</td>
                                                 <td class="text-end fw-bold">{{ formatRupiah($d->totalpembayaran) }}</td>
-                                                <td></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        @can('pembayaranpjp.show')
+                                                            <div>
+                                                                <a href="#" class="btnShow"
+                                                                    kode_potongan="{{ Crypt::encrypt($d->kode_potongan) }}">
+                                                                    <i class="ti ti-file-description text-info me-1"></i>
+                                                                </a>
+                                                            </div>
+                                                        @endcan
+                                                        @can('pembayaranpjp.delete')
+                                                            <div>
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('pembayaranpjp.deletegenerate', Crypt::encrypt($d->kode_potongan)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm ml-1">
+                                                                        <i class="ti ti-trash text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            </div>
+                                                        @endcan
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -108,6 +131,18 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text('Generate Pembayaran');
             $("#modal").find("#loadmodal").load(`pembayaranpjp/create`);
+        });
+
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            const kode_potongan = $(this).attr('kode_potongan');
+            loading();
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text('Detail Pembayaran PJP');
+            $("#modal").find(".modal-dialog").addClass("modal-xl");
+            $("#modal").find("#loadmodal").load(`/pembayaranpjp/${kode_potongan}/false/show`);
+
         });
     });
 </script>

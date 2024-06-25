@@ -8,6 +8,7 @@ use App\Models\Historibayarpjp;
 use App\Models\Ledger;
 use App\Models\Ledgerpjp;
 use App\Models\Pjp;
+use App\Models\Pjppotonggaji;
 use App\Models\Rencanacicilanpjp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -311,6 +312,8 @@ class PjpController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
     public function destroy($no_pinjaman)
     {
         $no_pinjaman = Crypt::decrypt($no_pinjaman);

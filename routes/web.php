@@ -1164,8 +1164,12 @@ Route::middleware('auth')->group(function () {
     Route::controller(PembayaranpjpController::class)->group(function () {
         Route::get('/pembayaranpjp', 'index')->name('pembayaranpjp.index')->can('pembayaranpjp.index');
         Route::get('/pembayaranpjp/{no_pinjman}/create', 'create')->name('pembayaranpjp.create')->can('pembayaranpjp.create');
+        Route::get('/pembayaranpjp/{kode_potongan}/{export}/show', 'show')->name('pembayaranpjp.show')->can('pembayaranpjp.show');
         Route::get('/pembayaranpjp/create', 'creategenerate')->name('pembayaranpjp.creategenerate')->can('pembayaranpjp.create');
         Route::post('/pembayaranpjp/store', 'store')->name('pembayaranpjp.store')->can('pembayaranpjp.store');
+        Route::post('/pembayaranpjp/generatepjp', 'generatepjp')->name('pembayaranpjp.generatepjp')->can('pembayaranpjp.store');
+        Route::delete('/pembayaranpjp/{kode_potongan}/deletegenerate', 'destroygenerate')->name('pembayaranpjp.deletegenerate')->can('pembayaranpjp.delete');
+
 
         // Route::put('/pembayaranpjp/{id}/update', 'update')->name('pembayaranpjp.update')->can('pembayaranpjp.update');
         Route::post('/pembayaranpjp/delete', 'destroy')->name('pembayaranpjp.delete')->can('pembayaranpjp.delete');

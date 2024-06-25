@@ -299,6 +299,7 @@ class KaryawanController extends Controller
 
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $role_access_all_pjp = config('global.roles_access_all_pjp');
         $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
         if ($request->ajax()) {
             $query = Karyawan::query();
@@ -325,6 +326,10 @@ class KaryawanController extends Controller
                 } else {
                     $query->where('hrd_jabatan.kategori', 'NM');
                     $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                }
+            } else {
+                if (!$user->hasRole($role_access_all_pjp)) {
+                    $query->where('hrd_jabatan.kategori', 'NM');
                 }
             }
             $query->whereIn('hrd_karyawan.kode_dept', $dept_access);

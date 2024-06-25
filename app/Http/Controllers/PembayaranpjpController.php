@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class PembayaranpjpController extends Controller
 {
@@ -198,6 +199,75 @@ class PembayaranpjpController extends Controller
     }
 
 
+    public function generatepjp(Request $request)
+    {
+        $kode_potongan = "GJ" . $request->bulan . $request->tahun;
+        DB::beginTransaction();
+        try {
+            $bulanpotongan = getbulandantahunberikutnya($request->bulan, $request->tahun, "bulan");
+            $tahunpotongan = getbulandantahunberikutnya($request->bulan, $request->tahun, "tahun");
+
+            $lastbulan = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
+            $lasttahun = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
+
+            //Cek Potongan Gaji
+            $cek = Pjppotonggaji::count();
+            //Ce Potongan gaji Bulan Sebelumnya
+            $ceklast = Pjppotonggaji::where('bulan', $lastbulan)->where('tahun', $lasttahun)->count();
+            $ceknext = Pjppotonggaji::where('bulan', $bulanpotongan)->where('tahun', $tahunpotongan)->count();
+            $ceknow = Pjppotonggaji::where('bulan', $request->bulan)->where('tahun', $request->tahun)->count();
+            if ($ceklast == 0) {
+                return Redirect::back()->with(messageError('Potongan Gaji Bulan Sebelumnya Belum di Generate'));
+            } else if ($ceknext >  0) {
+                return Redirect::back()->with(messageError('Periode Laporan Ini Sudah Di Tutup'));
+            } else if ($ceknow > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Ini Sudah Di Generate Untuk Generate Ulang Silahkan Hapus Dulu'));
+            }
+
+            Pjppotonggaji::create([
+                'kode_potongan' => $kode_potongan,
+                'bulan' => $request->bulan,
+                'tahun' => $request->tahun
+            ]);
+
+            $rencanacicilan = Rencanacicilanpjp::where('bulan', $bulanpotongan)->where('tahun', $tahunpotongan)
+                ->where('bayar', 0)
+                ->get();
+            foreach ($rencanacicilan as $d) {
+                $lasthistoribayar = Historibayarpjp::select('no_bukti')
+                    ->whereRaw('YEAR(tanggal)="' . $tahunpotongan . '"')
+                    ->orderBy("no_bukti", "desc")
+                    ->first();
+                $last_nobukti = $lasthistoribayar != null ? $lasthistoribayar->no_bukti : '';
+                $no_bukti  = buatkode($last_nobukti, "PJ" . substr($tahunpotongan, 2, 2), 4);
+
+                $data = [
+                    'no_bukti' => $no_bukti,
+                    'tanggal' => $tahunpotongan . "-" . $bulanpotongan . "-01",
+                    'no_pinjaman' => $d->no_pinjaman,
+                    'jumlah' => $d->jumlah,
+                    'cicilan_ke' => $d->cicilan_ke,
+                    'id_user' => auth()->user()->id,
+                    'kode_potongan' => $kode_potongan
+                ];
+
+
+                Historibayarpjp::create($data);
+                Rencanacicilanpjp::where('bulan', $bulanpotongan)->where('tahun', $tahunpotongan)->where('no_pinjaman', $d->no_pinjaman)->update([
+                    'bayar' => $d->jumlah,
+                    'kode_potongan' => $kode_potongan
+                ]);
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            //dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
 
     function destroy(Request $request)
     {
@@ -252,6 +322,95 @@ class PembayaranpjpController extends Controller
             echo 1;
         }
     }
+
+
+    public function destroygenerate($kode_potongan)
+    {
+        $kode_potongan = Crypt::decrypt($kode_potongan);
+
+        DB::beginTransaction();
+        try {
+            $potonganpjp = Pjppotonggaji::where('kode_potongan', $kode_potongan)->first();
+
+            $nextbulan = getbulandantahunberikutnya($potonganpjp->bulan, $potonganpjp->tahun, "bulan");
+            $nexttahun = getbulandantahunberikutnya($potonganpjp->bulan, $potonganpjp->tahun, "tahun");
+
+            $ceknext = Pjppotonggaji::where('bulan', $nextbulan)->where('tahun', $nexttahun)->count();
+
+            if ($ceknext > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+
+            Pjppotonggaji::where('kode_potongan', $kode_potongan)->delete();
+            Historibayarpjp::where('kode_potongan', $kode_potongan)->delete();
+            Rencanacicilanpjp::where('kode_potongan', $kode_potongan)->update([
+                'bayar' => 0,
+                'kode_potongan' => NULL
+            ]);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function show($kode_potongan, $export)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $role_access_all_pjp = config('global.roles_access_all_pjp');
+        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
+
+
+        $kode_potongan = Crypt::decrypt($kode_potongan);
+        $query = Historibayarpjp::query();
+        $query->select(
+            'keuangan_pjp_historibayar.*',
+            'keuangan_pjp.nik',
+            'hrd_karyawan.nama_karyawan',
+            'hrd_jabatan.nama_jabatan',
+            'hrd_departemen.nama_dept',
+            'hrd_karyawan.kode_cabang',
+            'hrd_karyawan.kode_dept',
+            'cabang.nama_cabang'
+        );
+        $query->leftJoin('keuangan_pjp', 'keuangan_pjp_historibayar.no_pinjaman', '=', 'keuangan_pjp.no_pinjaman');
+        $query->leftJoin('hrd_karyawan', 'keuangan_pjp.nik', '=', 'hrd_karyawan.nik');
+        $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->leftJoin('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftJoin('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->where('kode_potongan', $kode_potongan);
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', $user->kode_regional);
+                $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
+            } else {
+                $query->where('hrd_jabatan.kategori', 'NM');
+                $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+            }
+        } else {
+            if (!$user->hasRole($role_access_all_pjp)) {
+                $query->where('hrd_jabatan.kategori', 'NM');
+            }
+        }
+        $query->orderBy('keuangan_pjp.nik', 'asc');
+        $data['historibayar'] = $query->get();
+
+
+        $data['potonganpjp'] = Pjppotonggaji::where('kode_potongan', $kode_potongan)->first();
+
+        if ($export == "true") {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Detail Pembayaran PJP.xls");
+            return view('keuangan.pembayaranpjp.export', $data);
+        } else {
+            return view('keuangan.pembayaranpjp.show', $data);
+        }
+    }
+
 
     public function gethistoribayar(Request $request)
     {
