@@ -66,6 +66,14 @@ class PembayaranpjpController extends Controller
         return view('keuangan.pembayaranpjp.create', $data);
     }
 
+    public function creategenerate()
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['nama_bulan'] = config('global.nama_bulan');
+        $data['start_year'] = config('global.start_year');
+        return view('keuangan.pembayaranpjp.creategenerate', $data);
+    }
+
     public function store(Request $request)
     {
         $no_pinjaman = $request->no_pinjaman;

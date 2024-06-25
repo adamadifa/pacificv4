@@ -86,7 +86,29 @@
         </div>
     </div>
 </div>
-<x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
-
-
+<x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection
+@push('myscript')
+<script>
+    $(function() {
+
+        function loading() {
+            $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+        };
+
+        $("#btnCreate").click(function(e) {
+            e.preventDefault();
+            loading();
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text('Generate Pembayaran');
+            $("#modal").find("#loadmodal").load(`pembayaranpjp/create`);
+        });
+    });
+</script>
+@endpush
