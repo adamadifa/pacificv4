@@ -26,6 +26,7 @@ use App\Http\Controllers\HargaController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\KasbonController;
 use App\Http\Controllers\KaskecilController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
@@ -1174,6 +1175,15 @@ Route::middleware('auth')->group(function () {
         // Route::put('/pembayaranpjp/{id}/update', 'update')->name('pembayaranpjp.update')->can('pembayaranpjp.update');
         Route::post('/pembayaranpjp/delete', 'destroy')->name('pembayaranpjp.delete')->can('pembayaranpjp.delete');
         Route::post('/pembayaranpjp/gethistoribayar', 'gethistoribayar')->name('pembayaranpjp.gethistoribayar');
+    });
+
+    Route::controller(KasbonController::class)->group(function () {
+        Route::get('/kasbon', 'index')->name('kasbon.index')->can('kasbon.index');
+        Route::get('/kasbon/create', 'create')->name('kasbon.create')->can('kasbon.create');
+        Route::post('/kasbon/store', 'store')->name('kasbon.store')->can('kasbon.store');
+        Route::get('/kasbon/{no_kasbon}/edit', 'edit')->name('kasbon.edit')->can('kasbon.edit');
+        Route::put('/kasbon/{no_kasbon}/update', 'update')->name('kasbon.update')->can('kasbon.update');
+        Route::delete('/kasbon/{no_kasbon}/delete', 'destroy')->name('kasbon.delete')->can('kasbon.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

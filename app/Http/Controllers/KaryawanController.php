@@ -9,9 +9,11 @@ use App\Models\Group;
 use App\Models\Jabatan;
 use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
+use App\Models\Kasbon;
 use App\Models\Klasifikasikaryawan;
 use App\Models\Kontrakkaryawan;
 use App\Models\Pjp;
+use App\Models\Rencanacicilanpjp;
 use App\Models\Statusperkawinan;
 use App\Models\Suratperingatan;
 use App\Models\User;
@@ -402,7 +404,48 @@ class KaryawanController extends Controller
             ->first();
 
         $cekpinjamanArray = $cekpinjaman != null ? $cekpinjaman->toArray() : ['total_pinjaman' => 0, 'total_pembayaran' => 0];
-        $data = array_merge($karyawan, $gajiArray, $kontrakArray, $jmkArray, $spArray, $cekpinjamanArray);
+
+
+
+        $lastpjp = Pjp::select('keuangan_pjp.*', 'totalpembayaran')
+            ->where('nik', $nik)
+            ->leftJoin(
+                DB::raw("(
+                SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM keuangan_pjp_historibayar GROUP BY no_pinjaman
+            ) historibayar"),
+                function ($join) {
+                    $join->on('keuangan_pjp.no_pinjaman', '=', 'historibayar.no_pinjaman');
+                }
+            )
+            ->whereRaw('IFNULL(jumlah_pinjaman,0) - IFNULL(totalpembayaran,0) != 0')
+            ->orderBy('keuangan_pjp.tanggal', 'desc')
+            ->first();
+
+        if ($lastpjp != null) {
+            $angsuran_max = $lastpjp->angsuran_max;
+            $cicilan = Rencanacicilanpjp::where('no_pinjaman', $lastpjp->no_pinjaman)->first();
+            $kasbon_max = $angsuran_max - $cicilan->jumlah;
+        } else {
+            $kasbon_max = 0;
+        }
+
+        $kasbonmaxArray = ['kasbon_max' => $kasbon_max];
+
+
+        $cekkasbon = Kasbon::leftJoin(
+            DB::raw("(
+                SELECT no_kasbon,jumlah as totalpembayaran FROM keuangan_kasbon_historibayar
+            ) historibayar"),
+            function ($join) {
+                $join->on('keuangan_kasbon.no_kasbon', '=', 'historibayar.no_kasbon');
+            }
+        )
+            ->where('nik', $nik)
+            ->whereNull('totalpembayaran')
+            ->count();
+
+        $kasbonArray = ['cekkasbon' => $cekkasbon];
+        $data = array_merge($karyawan, $gajiArray, $kontrakArray, $jmkArray, $spArray, $cekpinjamanArray, $kasbonmaxArray, $kasbonArray);
 
 
 

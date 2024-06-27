@@ -5,43 +5,57 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
-class Pjp extends Model
+class Kasbon extends Model
 {
     use HasFactory;
-    protected $table = 'keuangan_pjp';
-    protected $primaryKey = "no_pinjaman";
+
+    use HasFactory;
+    protected $table = 'keuangan_kasbon';
+    protected $primaryKey = "no_kasbon";
     protected $guarded = [];
     public $incrementing = false;
 
-    function getPjp($no_pinjaman = "", Request $request = null)
+    function getKasbon($no_kasbon = "", Request $request = null)
     {
 
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_pjp = config('global.roles_access_all_pjp');
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
-        $query = Pjp::query();
-        $query->select('keuangan_pjp.*', 'nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'nama_dept', 'nama_cabang', 'totalpembayaran', 'tanggal_masuk', 'keuangan_ledger.tanggal as tanggal_proses');
-        $query->join('hrd_karyawan', 'keuangan_pjp.nik', '=', 'hrd_karyawan.nik');
+
+
+        $query = Kasbon::query();
+        $query->select(
+            'keuangan_kasbon.*',
+            'nama_karyawan',
+            'nama_jabatan',
+            'hrd_karyawan.kode_dept',
+            'nama_dept',
+            'nama_cabang',
+            'tanggal_bayar',
+            'totalpembayaran',
+            'tanggal_masuk',
+            'keuangan_ledger.tanggal as tanggal_proses'
+        );
+        $query->join('hrd_karyawan', 'keuangan_kasbon.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->leftJoin('keuangan_ledger_pjp', 'keuangan_pjp.no_pinjaman', '=', 'keuangan_ledger_pjp.no_pinjaman');
-        $query->leftJoin('keuangan_ledger', 'keuangan_ledger_pjp.no_bukti', '=', 'keuangan_ledger.no_bukti');
+        $query->leftJoin('keuangan_ledger_kasbon', 'keuangan_kasbon.no_kasbon', '=', 'keuangan_ledger_kasbon.no_kasbon');
+        $query->leftJoin('keuangan_ledger', 'keuangan_ledger_kasbon.no_bukti', '=', 'keuangan_ledger.no_bukti');
         $query->leftJoin(
             DB::raw("(
-            SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM keuangan_pjp_historibayar GROUP BY no_pinjaman
+            SELECT no_kasbon,tanggal as tanggal_bayar,jumlah as totalpembayaran FROM keuangan_kasbon_historibayar
         ) historibayar"),
             function ($join) {
-                $join->on('keuangan_pjp.no_pinjaman', '=', 'historibayar.no_pinjaman');
+                $join->on('keuangan_kasbon.no_kasbon', '=', 'historibayar.no_kasbon');
             }
         );
 
         if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('keuangan_pjp.tanggal', [$request->dari, $request->sampai]);
+            $query->whereBetween('keuangan_kasbon.tanggal', [$request->dari, $request->sampai]);
         }
 
         if (!empty($request->kode_cabang_search)) {
@@ -71,8 +85,8 @@ class Pjp extends Model
             }
         }
 
-        if (!empty($no_pinjaman)) {
-            $query->where('keuangan_pjp.no_pinjaman', $no_pinjaman);
+        if (!empty($no_kasbon)) {
+            $query->where('keuangan_kasbon.no_kasbon', $no_kasbon);
         }
         //Jika User Tidak Memiliki Akses ke Semua PJP
         // if (!$user->hasRole($roles_access_all_pjp)) {
@@ -86,8 +100,8 @@ class Pjp extends Model
         // }
 
 
-        $query->orderBy('keuangan_pjp.tanggal', 'desc');
-        $query->orderBy('keuangan_pjp.no_pinjaman', 'desc');
+        $query->orderBy('keuangan_kasbon.tanggal', 'desc');
+        $query->orderBy('keuangan_kasbon.no_kasbon', 'desc');
         return $query;
     }
 }

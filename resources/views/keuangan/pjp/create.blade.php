@@ -519,7 +519,7 @@
                     },
                 });
                 return false;
-            } else if (jumlah_pinjaman == "" || angsuran === 0) {
+            } else if (jumlah_pinjaman == "" || jumlah_pinjaman === 0) {
                 Swal.fire({
                     title: "Oops!",
                     text: "Jumlah Pinjaman harus diisi!",

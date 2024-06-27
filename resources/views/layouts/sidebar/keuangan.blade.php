@@ -16,6 +16,7 @@
         'samutasibank',
         'pjp',
         'pembayaranpjp',
+        'kasbon',
     ])
         ? 'open'
         : '' }}">
@@ -30,6 +31,7 @@
                 'saledger.index',
                 'mutasibank.index',
                 'pjp.index',
+                'kasbon.index',
             ]))
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-moneybag"></i>
@@ -90,10 +92,17 @@
                 </li>
             @endif
 
-            @if (auth()->user()->hasAnyPermission(['pjp.index']))
+            @if (auth()->user()->hasAnyPermission(['pjp.index', 'pembayaranpjp.index']))
                 <li class="menu-item {{ request()->is(['pjp', 'pembayaranpjp']) ? 'active' : '' }}">
                     <a href="{{ route('pjp.index') }}" class="menu-link">
                         <div>PJP</div>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission(['kasbon.index']))
+                <li class="menu-item {{ request()->is(['kasbon', 'pembayarankasbon']) ? 'active' : '' }}">
+                    <a href="{{ route('kasbon.index') }}" class="menu-link">
+                        <div>Kasbon</div>
                     </a>
                 </li>
             @endif
