@@ -53,8 +53,8 @@
                                             <th>Tanggal</th>
                                             <th>NIK</th>
                                             <th>Nama Karyawan</th>
-                                            <th>Dept</th>
-                                            <th>Jabatan</th>
+                                            <th>Kantor</th>
+                                            {{-- <th>Jabatan</th> --}}
                                             <th>Jumlah</th>
                                             <th>Bayar</th>
                                             <th>Sisa Tagihan</th>
@@ -79,8 +79,8 @@
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nik }}</td>
                                                 <td style="width: 15%">{{ $d->nama_karyawan }}</td>
-                                                <td>{{ $d->kode_dept }}</td>
-                                                <td style="width: 10%">{{ $d->nama_jabatan }}</td>
+                                                <td>{{ textUpperCase($d->kode_cabang) }}</td>
+                                                {{-- <td style="width: 10%">{{ $d->nama_jabatan }}</td> --}}
                                                 <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
                                                 <td class="text-end">{{ formatRupiah($d->totalpembayaran) }}</td>
                                                 <td class="text-end">{{ formatRupiah($sisatagihan) }}</td>
@@ -100,6 +100,48 @@
                                                         <span class="badge bg-success">{{ formatIndo($d->tanggal_proses) }}</span>
                                                     @endif
                                                 </td>
+                                                <td>
+                                                    <div class="d-flex">
+
+
+                                                        @can('kasbon.approve')
+                                                            @if ($d->status === '0')
+                                                                <div>
+                                                                    <a href="#" class="btnApprove" no_kasbon="{{ Crypt::encrypt($d->no_kasbon) }}">
+                                                                        <i class="ti ti-external-link text-success me-1"></i>
+                                                                    </a>
+                                                                </div>
+                                                            @else
+                                                                <div>
+                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                        action="{{ route('kasbon.cancel', Crypt::encrypt($d->no_kasbon)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="cancel-confirm me-1">
+                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+
+                                                                        </a>
+                                                                    </form>
+                                                                </div>
+                                                            @endif
+                                                        @endcan
+
+                                                        @can('kasbon.delete')
+                                                            @if ($d->status === '0')
+                                                                <div>
+                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                        action="{{ route('kasbon.delete', Crypt::encrypt($d->no_kasbon)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="delete-confirm ml-1">
+                                                                            <i class="ti ti-trash text-danger"></i>
+                                                                        </a>
+                                                                    </form>
+                                                                </div>
+                                                            @endif
+                                                        @endcan
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -116,8 +158,6 @@
     </div>
 </div>
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
-<x-modal-form id="modalBayar" size="" show="loadmodalBayar" title="" />
-<x-modal-form id="modalApprove" size="" show="loadmodalApprove" title="" />
 <x-modal-form id="modalShow" size="modal-xl" show="loadmodal" title="" />
 <div class="modal fade" id="modalKaryawan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog">
@@ -163,25 +203,7 @@
             </div>`);
         };
 
-        function loadingBayar() {
-            $("#loadmodalBayar").html(`<div class="sk-wave sk-primary" style="margin:auto">
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            </div>`);
-        };
 
-        function loadingApprove() {
-            $("#loadmodalApprove").html(`<div class="sk-wave sk-primary" style="margin:auto">
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            </div>`);
-        };
         const select2Kodecabangsearch = $('.select2Kodecabangsearch');
         if (select2Kodecabangsearch.length) {
             select2Kodecabangsearch.each(function() {
@@ -202,13 +224,13 @@
             $("#loadmodal").load('/kasbon/create');
         });
 
-        $("#btnApprove").click(function(e) {
+        $(".btnApprove").click(function(e) {
             e.preventDefault();
-            loadingApprove();
-            const no_pinjaman = $(this).attr('no_pinjaman');
-            $("#modalApprove").modal("show");
-            $("#modalApprove").find(".modal-title").text('Approve PJP');
-            $("#loadmodalApprove").load(`/pjp/${no_pinjaman}/approve`);
+            loading();
+            const no_kasbon = $(this).attr('no_kasbon');
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text('Approve Kasbon');
+            $("#loadmodal").load(`/kasbon/${no_kasbon}/approve`);
         });
 
 

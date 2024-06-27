@@ -223,6 +223,15 @@
                 });
             }
         });
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..`);
+        }
         form.submit(function() {
             const tanggal = form.find("#tanggal").val();
             const nik = form.find("#nik").val();
@@ -272,6 +281,8 @@
                     },
                 });
                 return false;
+            } else {
+                buttonDisable();
             }
         });
 

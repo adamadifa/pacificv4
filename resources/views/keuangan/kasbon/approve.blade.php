@@ -1,65 +1,66 @@
-<form action="{{ route('pjp.approvestore', Crypt::encrypt($pjp->no_pinjaman)) }}" method="POST" id="formApprove">
+<form action="{{ route('kasbon.approvestore', Crypt::encrypt($kasbon->no_kasbon)) }}" method="POST" id="formApprove">
     @csrf
     <div class="row mb-3">
-        <div class="col">
+        <div class="col-12">
             <table class="table">
                 <tr>
-                    <th>No. Pinjaman</th>
-                    <td class="text-end">{{ $pjp->no_pinjaman }}</td>
+                    <th>No. Kasbon</th>
+                    <td class="text-end">{{ $kasbon->no_kasbon }}</td>
                 </tr>
                 <tr>
                     <th>Tanggal</th>
-                    <td class="text-end">{{ date('d-m-Y H:i', strtotime($pjp->created_at)) }}</td>
+                    <td class="text-end">{{ DateToIndo($kasbon->tanggal) }}</td>
                 </tr>
                 <tr>
                     <th>NIK</th>
-                    <td class="text-end">{{ $pjp->nik }}</td>
+                    <td class="text-end">{{ $kasbon->nik }}</td>
                 </tr>
                 <tr>
                     <th>Nama Karyawan</th>
-                    <td class="text-end">{{ textUpperCase($pjp->nama_karyawan) }}</td>
+                    <td class="text-end">{{ $kasbon->nama_karyawan }}</td>
                 </tr>
                 <tr>
                     <th>Jabatan</th>
-                    <td class="text-end">{{ $pjp->nama_jabatan }}</td>
+                    <td class="text-end">{{ $kasbon->nama_jabatan }}</td>
                 </tr>
                 <tr>
-                    <th>Nama Departemen</th>
-                    <td class="text-end">{{ textUpperCase($pjp->nama_dept) }}</td>
+                    <th>Departemen</th>
+                    <td class="text-end">{{ $kasbon->nama_dept }}</td>
                 </tr>
                 <tr>
-                    <th>Jumlah Pinjaman</th>
-                    <td class="text-end">{{ formatRupiah($pjp->jumlah_pinjaman) }}</td>
+                    <th>Kantor</th>
+                    <td class="text-end">{{ textUppercase($kasbon->nama_cabang) }}</td>
                 </tr>
                 <tr>
-                    <th>Angsuran</th>
-                    <td class="text-end">{{ formatRupiah($pjp->angsuran) }}</td>
+                    <th>Jumlah</th>
+                    <td class="text-end">{{ formatAngka($kasbon->jumlah) }}</td>
                 </tr>
                 <tr>
-                    <th>Angsuran per Bulan</th>
-                    <td class="text-end">{{ formatRupiah($pjp->jumlah_angsuran) }}</td>
-                </tr>
-                <tr>
-                    <th>Mulai Cicilan</th>
-                    <td class="text-end">{{ date('d-m-Y', strtotime($pjp->mulai_cicilan)) }}</td>
+                    <th>Jatuh Tempo</th>
+                    <td class="text-end">{{ DateToIndo($kasbon->jatuh_tempo) }}</td>
                 </tr>
             </table>
         </div>
     </div>
     <div class="row">
-        <div class="col">
-            <x-input-with-icon label="Tanggal Proses" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-            <div class="form-group mb-3">
-                <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
-                    <option value="">Debet Rekening</option>
-                    @foreach ($bank as $d)
-                        <option value="{{ $d->kode_bank }}">{{ $d->nama_bank }} {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group mb-3">
-                <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+        <div class="col-12">
+            <div class="row">
+                <div class="col">
+                    <x-input-with-icon label="Tanggal Proses" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <div class="form-group mb-3">
+                        <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
+                            <option value="">Debet Rekening</option>
+                            @foreach ($bank as $d)
+                                <option value="{{ $d->kode_bank }}">{{ $d->nama_bank }}
+                                    {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -114,7 +115,6 @@
                         form.find("#kode_bank").focus();
                     },
                 });
-
                 return false;
             } else {
                 buttonDisable();

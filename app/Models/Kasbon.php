@@ -32,6 +32,7 @@ class Kasbon extends Model
             'nama_karyawan',
             'nama_jabatan',
             'hrd_karyawan.kode_dept',
+            'hrd_karyawan.kode_cabang',
             'nama_dept',
             'nama_cabang',
             'tanggal_bayar',

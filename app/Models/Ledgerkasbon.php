@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Ledgerkasbon extends Model
 {
     use HasFactory;
+    protected $table = "keuangan_ledger_kasbon";
+    protected $guarded = [];
 }

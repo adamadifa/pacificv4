@@ -1184,6 +1184,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/kasbon/{no_kasbon}/edit', 'edit')->name('kasbon.edit')->can('kasbon.edit');
         Route::put('/kasbon/{no_kasbon}/update', 'update')->name('kasbon.update')->can('kasbon.update');
         Route::delete('/kasbon/{no_kasbon}/delete', 'destroy')->name('kasbon.delete')->can('kasbon.delete');
+        Route::get('/kasbon/{no_kasbon}/approve', 'approve')->name('kasbon.approve')->can('kasbon.approve');
+        Route::post('/kasbon/{no_kasbon}/approvestore', 'approvestore')->name('kasbon.approvestore')->can('kasbon.approve');
+        Route::delete('/kasbon/{no_kasbon}/cancel', 'cancel')->name('kasbon.cancel')->can('kasbon.approve');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

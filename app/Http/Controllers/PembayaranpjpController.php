@@ -230,9 +230,22 @@ class PembayaranpjpController extends Controller
                 'tahun' => $request->tahun
             ]);
 
+            $cekpjpbelumdiproses = Rencanacicilanpjp::join('keuangan_pjp', 'keuangan_pjp_rencanacicilan.no_pinjaman', '=', 'keuangan_pjp.no_pinjaman')
+                ->where('bulan', $bulanpotongan)->where('tahun', $tahunpotongan)
+                ->where('keuangan_pjp.status', 0)
+                ->where('keuangan_pjp.tanggal', '>', '2023-05-01')
+                ->count();
+
+            //dd($cekpjpbelumdiproses);
+            if ($cekpjpbelumdiproses  > 0) {
+                return Redirect::back()->with(messageError('Masih Ada Ajuan PJP yang Belum Di Proses'));
+            }
+
             $rencanacicilan = Rencanacicilanpjp::where('bulan', $bulanpotongan)->where('tahun', $tahunpotongan)
                 ->where('bayar', 0)
                 ->get();
+
+
             foreach ($rencanacicilan as $d) {
                 $lasthistoribayar = Historibayarpjp::select('no_bukti')
                     ->whereRaw('YEAR(tanggal)="' . $tahunpotongan . '"')

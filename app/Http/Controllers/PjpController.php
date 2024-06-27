@@ -122,13 +122,13 @@ class PjpController extends Controller
             $bulan_cicilan = date("m", strtotime($request->mulai_cicilan));
             $tahun_cicilan = date("Y", strtotime($request->mulai_cicilan));
 
-            // if ($bulan_cicilan == 1) {
-            //     $bulan_cicilan = 12;
-            //     $tahun_cicilan = $tahun_cicilan - 1;
-            // } else {
-            //     $bulan_cicilan = $bulan_cicilan - 1;
-            //     $tahun_cicilan = $tahun_cicilan;
-            // }
+            if ($bulan_cicilan == 1) {
+                $bulan_cicilan = 12;
+                $tahun_cicilan = $tahun_cicilan - 1;
+            } else {
+                $bulan_cicilan = $bulan_cicilan - 1;
+                $tahun_cicilan = $tahun_cicilan;
+            }
 
 
             $lastpinjaman = Pjp::select('no_pinjaman')
@@ -250,6 +250,13 @@ class PjpController extends Controller
 
         DB::beginTransaction();
         try {
+
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "ledger");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+
             $lastledger = Ledger::select('no_bukti')
                 ->whereRaw('LENGTH(no_bukti)=12')
                 ->whereRaw('LEFT(no_bukti,7) ="LRPST' . date('y', strtotime($request->tanggal)) . '"')

@@ -24,7 +24,18 @@ class Pjp extends Model
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
         $query = Pjp::query();
-        $query->select('keuangan_pjp.*', 'nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'nama_dept', 'nama_cabang', 'totalpembayaran', 'tanggal_masuk', 'keuangan_ledger.tanggal as tanggal_proses');
+        $query->select(
+            'keuangan_pjp.*',
+            'nama_karyawan',
+            'nama_jabatan',
+            'hrd_karyawan.kode_dept',
+            'hrd_karyawan.kode_cabang',
+            'nama_dept',
+            'nama_cabang',
+            'totalpembayaran',
+            'tanggal_masuk',
+            'keuangan_ledger.tanggal as tanggal_proses'
+        );
         $query->join('hrd_karyawan', 'keuangan_pjp.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');

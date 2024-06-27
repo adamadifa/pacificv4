@@ -53,7 +53,7 @@
                                             <th>Tanggal</th>
                                             <th>NIK</th>
                                             <th>Nama Karyawan</th>
-                                            <th>Dept</th>
+                                            <th>Kantor</th>
                                             <th>Jabatan</th>
                                             <th>Jumlah</th>
                                             <th>Bayar</th>
@@ -73,7 +73,7 @@
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nik }}</td>
                                                 <td>{{ $d->nama_karyawan }}</td>
-                                                <td>{{ $d->kode_dept }}</td>
+                                                <td>{{ $d->kode_cabang }}</td>
                                                 <td>{{ $d->nama_jabatan }}</td>
                                                 <td class="text-end">{{ formatAngka($d->jumlah_pinjaman) }}</td>
                                                 <td class="text-end">{{ formatRupiah($d->totalpembayaran) }}</td>
@@ -96,7 +96,7 @@
                                                         @can('pjp.approve')
                                                             @if ($d->status === '0')
                                                                 <div>
-                                                                    <a href="#" id="btnApprove"
+                                                                    <a href="#" class="btnApprove"
                                                                         no_pinjaman="{{ Crypt::encrypt($d->no_pinjaman) }}">
                                                                         <i class="ti ti-external-link text-success me-1"></i>
                                                                     </a>
@@ -243,7 +243,7 @@
             $("#loadmodal").load('/pjp/create');
         });
 
-        $("#btnApprove").click(function(e) {
+        $(".btnApprove").click(function(e) {
             e.preventDefault();
             loadingApprove();
             const no_pinjaman = $(this).attr('no_pinjaman');
