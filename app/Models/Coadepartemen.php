@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Detailpembelian extends Model
+class Coadepartemen extends Model
 {
     use HasFactory;
-    protected $table = "pembelian_detail";
+    protected $table = "coa_departemen";
     protected $guarded = [];
 }

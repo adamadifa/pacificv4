@@ -231,4 +231,13 @@ class KasbonController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function cetak($no_kasbon)
+    {
+        $no_kasbon = Crypt::decrypt($no_kasbon);
+        $kb = new Kasbon();
+        $data['kasbon'] = $kb->getKasbon($no_kasbon)->first();
+
+        return view('keuangan.kasbon.cetak', $data);
+    }
 }

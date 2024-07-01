@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Detailpembelian extends Model
+class Kasbonpotonggaji extends Model
 {
     use HasFactory;
-    protected $table = "pembelian_detail";
+    protected $table = "keuangan_kasbon_potonggaji";
+    protected $primaryKey = "kode_potongan";
     protected $guarded = [];
+    public $incrementing = false;
 }

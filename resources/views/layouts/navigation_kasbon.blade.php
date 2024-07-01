@@ -11,7 +11,7 @@
 
         @can('pembayarankasbon.index')
             <li class="nav-item" role="presentation">
-                <a href="#" class="nav-link {{ request()->is(['pembayarankasbon']) ? 'active' : '' }}">
+                <a href="{{ route('pembayarankasbon.index') }}" class="nav-link {{ request()->is(['pembayarankasbon']) ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pembayaran
                 </a>
             </li>

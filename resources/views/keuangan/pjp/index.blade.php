@@ -21,6 +21,16 @@
                         <div class="col-12">
                             <form action="{{ route('pjp.index') }}">
                                 {{-- {{ auth()->user()->roles->pluck('name')[0] }} --}}
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-12 col-md-12">
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
+                                    </div>
+                                    <div class="col-lg-6 col-sm-12 col-md-12">
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
+                                    </div>
+                                </div>
                                 @hasanyrole($roles_show_cabang)
                                     <div class="row">
                                         <div class="col-lg-12 col-sm-12 col-md-12">

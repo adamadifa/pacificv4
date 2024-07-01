@@ -47,15 +47,19 @@ use App\Http\Controllers\OpnamegudangbahanController;
 use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PembayarangiroController;
+use App\Http\Controllers\PembayarankasbonController;
 use App\Http\Controllers\PembayaranpenjualanController;
+use App\Http\Controllers\PembayaranpiutangkaryawanController;
 use App\Http\Controllers\PembayaranpjpController;
 use App\Http\Controllers\PembayarantransferController;
+use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
 use App\Http\Controllers\PermintaankirimanController;
 use App\Http\Controllers\PermintaanproduksiController;
 use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PiutangkaryawanController;
 use App\Http\Controllers\PjpController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
@@ -325,6 +329,7 @@ Route::middleware('auth')->group(function () {
 
         //GET DATA FROM AJAX
         Route::post('/barangpembelian/getbarangbykategori', 'getbarangbykategori');
+        Route::get('barangpembelian/{kode_group}/getbarangjson', 'getbarangjson')->name('barangpembelian.getbarangjson');
     });
 
     Route::controller(KaryawanController::class)->group(function () {
@@ -1182,11 +1187,56 @@ Route::middleware('auth')->group(function () {
         Route::get('/kasbon/create', 'create')->name('kasbon.create')->can('kasbon.create');
         Route::post('/kasbon/store', 'store')->name('kasbon.store')->can('kasbon.store');
         Route::get('/kasbon/{no_kasbon}/edit', 'edit')->name('kasbon.edit')->can('kasbon.edit');
+        Route::get('/kasbon/{no_kasbon}/cetak', 'cetak')->name('kasbon.cetak')->can('kasbon.show');
         Route::put('/kasbon/{no_kasbon}/update', 'update')->name('kasbon.update')->can('kasbon.update');
         Route::delete('/kasbon/{no_kasbon}/delete', 'destroy')->name('kasbon.delete')->can('kasbon.delete');
         Route::get('/kasbon/{no_kasbon}/approve', 'approve')->name('kasbon.approve')->can('kasbon.approve');
         Route::post('/kasbon/{no_kasbon}/approvestore', 'approvestore')->name('kasbon.approvestore')->can('kasbon.approve');
         Route::delete('/kasbon/{no_kasbon}/cancel', 'cancel')->name('kasbon.cancel')->can('kasbon.approve');
+    });
+
+
+
+    Route::controller(PembayarankasbonController::class)->group(function () {
+        Route::get('/pembayarankasbon', 'index')->name('pembayarankasbon.index')->can('pembayarankasbon.index');
+        Route::get('/pembayarankasbon/{no_pinjman}/create', 'create')->name('pembayarankasbon.create')->can('pembayarankasbon.create');
+        Route::get('/pembayarankasbon/{kode_potongan}/{export}/show', 'show')->name('pembayarankasbon.show')->can('pembayarankasbon.show');
+        Route::get('/pembayarankasbon/create', 'creategenerate')->name('pembayarankasbon.creategenerate')->can('pembayarankasbon.create');
+        Route::post('/pembayarankasbon/store', 'store')->name('pembayarankasbon.store')->can('pembayarankasbon.store');
+        Route::post('/pembayarankasbon/generatekasbon', 'generatekasbon')->name('pembayarankasbon.generatekasbon')->can('pembayarankasbon.store');
+        Route::delete('/pembayarankasbon/{kode_potongan}/deletegenerate', 'destroygenerate')->name('pembayarankasbon.deletegenerate')->can('pembayarankasbon.delete');
+
+
+        // Route::put('/pembayarankasbon/{id}/update', 'update')->name('pembayarankasbon.update')->can('pembayarankasbon.update');
+        Route::post('/pembayarankasbon/delete', 'destroy')->name('pembayarankasbon.delete')->can('pembayarankasbon.delete');
+        Route::post('/pembayarankasbon/gethistoribayar', 'gethistoribayar')->name('pembayarankasbon.gethistoribayar');
+    });
+
+
+    Route::controller(PiutangkaryawanController::class)->group(function () {
+        Route::get('/piutangkaryawan', 'index')->name('piutangkaryawan.index')->can('piutangkaryawan.index');
+        Route::get('/piutangkaryawan/create', 'create')->name('piutangkaryawan.create')->can('piutangkaryawan.create');
+        Route::post('/piutangkaryawan/store', 'store')->name('piutangkaryawan.store')->can('piutangkaryawan.store');
+        Route::delete('/piutangkaryawan/{no_pinjaman}/delete', 'destroy')->name('piutangkaryawan.delete')->can('piutangkaryawan.delete');
+        Route::get('/piutangkaryawan/{no_pinjaman}/show', 'show')->name('piutangkaryawan.show')->can('piutangkaryawan.show');
+        Route::get('/piutangkaryawan/{no_pinjaman}/getpiutangkaryawan', 'getpiutangkaryawan')->name('piutangkaryawan.getpiutangkaryawan')->can('piutangkaryawan.show');
+    });
+
+    Route::controller(PembayaranpiutangkaryawanController::class)->group(function () {
+        Route::get('/pembayaranpiutangkaryawan', 'index')->name('pembayaranpiutangkaryawan.index')->can('pembayaranpk.index');
+        Route::get('/pembayaranpiutangkaryawan/{no_pinjaman}/create', 'create')->name('pembayaranpiutangkaryawan.create')->can('pembayaranpk.create');
+        Route::post('/pembayaranpiutangkaryawan/store', 'store')->name('pembayaranpiutangkaryawan.store')->can('pembayaranpk.store');
+        Route::get('/pembayaranpiutangkaryawan/{no_pinjaman}/show', 'show')->name('pembayaranpiutangkaryawan.show')->can('pembayaranpk.show');
+        Route::post('/pembayaranpiutangkaryawan/delete', 'destroy')->name('pembayaranpiutangkaryawan.delete')->can('pembayaranpk.delete');
+        Route::post('/pembayaranpiutangkaryawan/gethistoribayar', 'gethistoribayar')->name('pembayaranpiutangkaryawan.gethistoribayar');
+    });
+
+    Route::controller(PembelianController::class)->group(function () {
+        Route::get('/pembelian', 'index')->name('pembelian.index')->can('pembelian.index');
+        Route::get('/pembelian/create', 'create')->name('pembelian.create')->can('pembelian.create');
+        Route::get('/pembelian/{no_bukti}/show', 'show')->name('pembelian.show')->can('pembelian.show');
+        Route::post('/pembelian/store', 'store')->name('pembelian.store')->can('pembelian.store');
+        Route::delete('/pembelian/{id}/delete', 'destroy')->name('pembelian.delete')->can('pembelian.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

@@ -2,7 +2,8 @@
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" />
     <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" />
-    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true" select2="select2Kodesalesman" />
+    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true"
+        select2="select2Kodesalesman" />
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-2">
@@ -13,7 +14,8 @@
     </div>
     <div class="row" id="voucher">
         <div class="col">
-            <x-select label="Pilih Voucher" name="jenis_voucher" :data="$jenis_voucher" key="id" textShow="nama_voucher" upperCase="true" select2="select2Kodevoucher" />
+            <x-select label="Pilih Voucher" name="jenis_voucher" :data="$jenis_voucher" key="id" textShow="nama_voucher" upperCase="true"
+                select2="select2Kodevoucher" />
         </div>
     </div>
     <div class="row">
@@ -26,7 +28,8 @@
     </div>
     <div class="row" id="giroditolak">
         <div class="col">
-            <x-select label="Pilih Giro" name="kode_giro" :data="$giroditolak" key="kode_giro" textShow="no_giro" upperCase="true" select2="select2Kodegiro" />
+            <x-select label="Pilih Giro" name="kode_giro" :data="$giroditolak" key="kode_giro" textShow="no_giro" upperCase="true"
+                select2="select2Kodegiro" />
         </div>
     </div>
     <div class="row">

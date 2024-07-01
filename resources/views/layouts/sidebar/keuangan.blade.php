@@ -17,6 +17,8 @@
         'pjp',
         'pembayaranpjp',
         'kasbon',
+        'pembayarankasbon',
+        'piutangkaryawan',
     ])
         ? 'open'
         : '' }}">
@@ -32,6 +34,8 @@
                 'mutasibank.index',
                 'pjp.index',
                 'kasbon.index',
+                'pembayarankasbon.index',
+                'piutangkaryawan.index',
             ]))
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-moneybag"></i>
@@ -103,6 +107,13 @@
                 <li class="menu-item {{ request()->is(['kasbon', 'pembayarankasbon']) ? 'active' : '' }}">
                     <a href="{{ route('kasbon.index') }}" class="menu-link">
                         <div>Kasbon</div>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission(['piutangkaryawan.index']))
+                <li class="menu-item {{ request()->is(['piutangkaryawan']) ? 'active' : '' }}">
+                    <a href="{{ route('piutangkaryawan.index') }}" class="menu-link">
+                        <div>Piutang Karyawan</div>
                     </a>
                 </li>
             @endif

@@ -74,4 +74,47 @@ return [
             'nama_group' => 'LAINNYA'
         ],
     ],
+
+    'asal_pengajuan' => [
+        'GDL' => 'GUDANG LOGISTIK',
+        'MKT' => 'MARKETING',
+        'LNY' => 'LAINNYA',
+        'GAF' => 'GENERAL AFFAIR',
+        'GDB' => 'GUDANG BAHAN',
+        'HRD' => 'HRD',
+        'AID' => 'AIDA',
+        'TSM' => 'CABANG TASIKMALAYA'
+    ],
+
+    'list_asal_pengajuan' => [
+
+
+        [
+            'kode_group' => 'GAF',
+            'nama_group' => 'GENERAL AFFAIR'
+        ],
+        [
+            'kode_group' => 'GDB',
+            'nama_group' => 'GUDANG BAHAN'
+        ],
+        [
+            'kode_group' => 'GDL',
+            'nama_group' => 'GUDANG LOGISTIK'
+        ],
+        [
+            'kode_group' => 'MKT',
+            'nama_group' => 'MARKETING'
+        ],
+        [
+            'kode_group' => 'HRD',
+            'nama_group' => 'HRD'
+        ],
+        [
+            'kode_group' => 'LNY',
+            'nama_group' => 'LAINNYA'
+        ],
+    ],
+
+
+
 ];

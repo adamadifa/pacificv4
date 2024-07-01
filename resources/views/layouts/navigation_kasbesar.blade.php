@@ -1,4 +1,11 @@
-@if (auth()->user()->hasAnyPermission(['setoranpenjualan.index', 'setorantransfer.index', 'setorangiro.index', 'setoranpusat.index', 'logamtokertas.index', 'sakasbesar.index']))
+@if (auth()->user()->hasAnyPermission([
+            'setoranpenjualan.index',
+            'setorantransfer.index',
+            'setorangiro.index',
+            'setoranpusat.index',
+            'logamtokertas.index',
+            'sakasbesar.index',
+        ]))
     <ul class="nav nav-tabs" role="tablist">
 
         @can('sakasbesar.index')

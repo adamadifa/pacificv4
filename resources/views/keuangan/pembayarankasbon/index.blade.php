@@ -1,25 +1,25 @@
 @extends('layouts.app')
-@section('titlepage', 'Pembayaran PJP')
+@section('titlepage', 'Pembayaran Kasbon')
 
 @section('content')
 @section('navigasi')
-    <span>Pembayaran PJP</span>
+    <span>Pembayaran Kasbon</span>
 @endsection
 <div class="row">
     <div class="col-lg-6">
         <div class="nav-align-top nav-tabs-shadow mb-4">
-            @include('layouts.navigation_pjp')
+            @include('layouts.navigation_kasbon')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('pembayaranpjp.create')
+                    @can('pembayarankasbon.create')
                         <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                            Input Pembayaran PJP
+                            Input Pembayaran Kasbon
                         </a>
                     @endcan
 
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('pembayaranpjp.index') }}">
+                            <form action="{{ route('pembayarankasbon.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <div class="form-group mb-3">
@@ -75,7 +75,7 @@
                                                 <td class="text-end fw-bold">{{ formatRupiah($d->totalpembayaran) }}</td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        @can('pembayaranpjp.show')
+                                                        @can('pembayarankasbon.show')
                                                             <div>
                                                                 <a href="#" class="btnShow"
                                                                     kode_potongan="{{ Crypt::encrypt($d->kode_potongan) }}">
@@ -83,10 +83,10 @@
                                                                 </a>
                                                             </div>
                                                         @endcan
-                                                        @can('pembayaranpjp.delete')
+                                                        @can('pembayarankasbon.delete')
                                                             <div>
                                                                 <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('pembayaranpjp.deletegenerate', Crypt::encrypt($d->kode_potongan)) }}">
+                                                                    action="{{ route('pembayarankasbon.deletegenerate', Crypt::encrypt($d->kode_potongan)) }}">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     <a href="#" class="delete-confirm ml-1">
@@ -129,8 +129,8 @@
             e.preventDefault();
             loading();
             $("#modal").modal("show");
-            $("#modal").find(".modal-title").text('Generate Pembayaran');
-            $("#modal").find("#loadmodal").load(`pembayaranpjp/create`);
+            $("#modal").find(".modal-title").text('Generate Pembayaran Kasbon');
+            $("#modal").find("#loadmodal").load(`pembayarankasbon/create`);
             $("#modal").find(".modal-dialog").removeClass("modal-xl");
         });
 
@@ -142,7 +142,7 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text('Detail Pembayaran PJP');
             $("#modal").find(".modal-dialog").addClass("modal-xl");
-            $("#modal").find("#loadmodal").load(`/pembayaranpjp/${kode_potongan}/false/show`);
+            $("#modal").find("#loadmodal").load(`/pembayarankasbon/${kode_potongan}/false/show`);
 
         });
     });

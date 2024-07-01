@@ -343,7 +343,7 @@
         form.on('click', '.delete', function(e) {
             e.preventDefault();
             var id = $(this).attr("id");
-            event.preventDefault();
+            //event.preventDefault();
             Swal.fire({
                 title: `Apakah Anda Yakin Ingin Menghapus Data Ini ?`,
                 text: "Jika dihapus maka data akan hilang permanent.",

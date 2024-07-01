@@ -7,6 +7,7 @@ use App\Models\Kategoribarangpembelian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
+use Yajra\DataTables\Facades\DataTables;
 
 class BarangpembelianController extends Controller
 {
@@ -135,6 +136,41 @@ class BarangpembelianController extends Controller
         echo "<option value=''>Semua Barang</option>";
         foreach ($barang as $d) {
             echo "<option  value='$d->kode_barang'>" . textUpperCase($d->nama_barang) . "</option>";
+        }
+    }
+
+
+    public function getbarangjson(Request $request, $kode_group)
+    {
+
+
+        if ($request->ajax()) {
+            $query = Barangpembelian::query();
+            $query->select(
+                'pembelian_barang.*',
+                'nama_kategori'
+            );
+            $query->where('pembelian_barang.kode_group', $kode_group);
+            $query->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori');
+            $barang = $query;
+            return DataTables::of($barang)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="#" kode_barang="' . $row->kode_barang . '" nama_barang="' . $row->nama_barang . '" class="pilihBarang"><i class="ti ti-external-link"></i></a>';
+                    return $btn;
+                })
+
+                ->addColumn('namabarang', function ($row) {
+                    $namabarang = textUpperCase($row->nama_barang);
+                    return $namabarang;
+                })
+                ->addColumn('jenisbarang', function ($row) {
+                    $jenis_barang = config('pembelian.jenis_barang');
+                    $jenisbarang = $jenis_barang[$row->kode_jenis_barang];
+                    return $jenisbarang;
+                })
+                ->rawColumns(['action', 'jenisbarang', 'namabarang'])
+                ->make(true);
         }
     }
 }
