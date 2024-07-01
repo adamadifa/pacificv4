@@ -11,6 +11,7 @@
     <span class="text-muted">Pembelian</span> / <span>Input Pembelian</span>
 @endsection
 <form action="{{ route('pembelian.store') }}" method="POST" id="formPembelian">
+    @csrf
     <div class="row">
         <div class="col-lg-3 col-sm-12 col-xs-12">
             <div class="row mb-3">
@@ -75,11 +76,18 @@
             </div>
         </div>
         <div class="col-lg-9 col-md-12 col-sm-12">
+
             <div class="row mb-3">
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title">Detail Pembelian</h5>
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title">Detail Pembelian</h5>
+                                <div class="d-flex justify-content-between">
+                                    <i class="ti ti-shopping-cart text-primary me-5" style="font-size: 2em;"></i>
+                                    <h4 id="grandtotal_text">0</h4>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -129,7 +137,7 @@
                             <div class="row">
                                 <div class="col">
 
-                                    <table class="table table-bordered table-striped">
+                                    <table class="table table-bordered">
                                         <thead class="table-dark">
                                             <tr>
                                                 <th style="width: 10%">Kode</th>
@@ -217,6 +225,23 @@
             separator: '.',
             decimalSeparator: ',',
         });
+
+        form.find("#no_bukti").on('keydown keyup', function(e) {
+            if (e.key === ' ') {
+                e.preventDefault();
+            }
+            this.value = this.value.toUpperCase();
+        });
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+                <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Loading..
+            `);
+        }
 
         function resetForm() {
             form.find("#kode_barang").val("");
@@ -397,6 +422,7 @@
                 grandTotal += parseFloat(convertNumber($(this).text())) || 0;
             });
             $('#grandtotal').text(numberFormat(grandTotal, '2', ',', '.'));
+            $('#grandtotal_text').text(numberFormat(grandTotal, '2', ',', '.'));
         }
 
         function addBarang() {
@@ -461,14 +487,21 @@
                 let total = parseFloat(subtotal) + parseFloat(peny);
                 subtotal = numberFormat(subtotal, '2', ',', '.');
                 total = numberFormat(total, '2', ',', '.');
+                let bg;
+                if (kode_akun.substring(0, 3) == '6-1' && kode_cabang != '' || kode_akun.substring(0, 3) == '6-2' && kode_cabang != '') {
+                    bg = "bg-info text-white";
+                } else {
+                    bg = "";
+                }
                 let barang = `
-                <tr id="index_${baris}">
+                <tr id="index_${baris}" class="${bg}">
                     <td>
                         <input type="hidden" name="kode_barang_item[]" value="${kode_barang}" />
                         <input type="hidden" name="jumlah_item[]" value="${jumlah}" />
                         <input type="hidden" name="harga_item[]" value="${harga}" />
                         <input type="hidden" name="penyesuaian_item[]" value="${penyesuaian}" />
-                        <input type="hidden" name="keterangan[]" value="${keterangan}" />
+                        <input type="hidden" name="kode_akun_item[]" value="${kode_akun}" />
+                        <input type="hidden" name="keterangan_item[]" value="${keterangan}" />
                         <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}" />
                         ${kode_barang}
                     </td>
@@ -487,7 +520,7 @@
                                     data-bs-placement="left" data-bs-html="true"
                                     data-bs-content="${keterangan}" title="Keterangan"
                                     data-bs-custom-class="popover-info">
-                                    <i class="ti ti-info-square text-info"></i>
+                                    <i class="ti ti-info-square text-warning"></i>
                                 </a>
                             </div>
                             <div>
@@ -566,6 +599,7 @@
                         form.find("#no_bukti").focus();
                     },
                 });
+                return false;
             } else if (tanggal == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -576,26 +610,29 @@
                         form.find("#tanggal").focus();
                     },
                 });
+                return false;
             } else if (kode_supplier == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Kode Supplier harus diisi!",
+                    text: "Supplier harus diisi!",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
                         form.find("#kode_supplier").focus();
                     },
                 });
+                return false;
             } else if (kode_asal_pengajuan == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Kode Asal Pengajuan harus diisi!",
+                    text: "Asal Ajuan harus diisi!",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
                         form.find("#kode_asal_pengajuan").focus();
                     },
                 });
+                return false;
             } else if (jenis_transaksi == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -606,7 +643,8 @@
                         form.find("#jenis_transaksi").focus();
                     },
                 });
-            } else if (jatuh_tempo == "") {
+                return false;
+            } else if (jatuh_tempo == "" && jenis_transaksi == 'K') {
                 Swal.fire({
                     title: "Oops!",
                     text: "Jatuh Tempo harus diisi!",
@@ -616,6 +654,20 @@
                         form.find("#jatuh_tempo").focus();
                     },
                 });
+                return false;
+            } else if ($('#loadbarang tr').length == 0) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Detail Pembelian Tidak Boleh Kosong!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        form.find("#nama_barang").focus();
+                    },
+                });
+                return false;
+            } else {
+                buttonDisable();
             }
         });
 

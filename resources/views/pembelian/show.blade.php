@@ -29,7 +29,7 @@
 </div>
 <div class="row">
     <div class="col">
-        <table class="table table-bordered table-striped table-hover">
+        <table class="table table-bordered  table-hover">
             <thead class="table-dark">
                 <tr>
                     <th colspan="8">Data Pembelian</th>
@@ -54,8 +54,12 @@
                         $subtotal = $d->jumlah * $d->harga;
                         $total = $subtotal + $d->penyesuaian;
                         $total_pembelian += $total;
+                        $bg = '';
+                        if (!empty($d->kode_cr)) {
+                            $bg = 'bg-info text-white';
+                        }
                     @endphp
-                    <tr>
+                    <tr class="{{ $bg }}">
                         <td>{{ $d->kode_barang }}</td>
                         <td>{{ textCamelCase($d->nama_barang) }}</td>
                         <td>{{ textCamelCase($d->keterangan) }}</td>
