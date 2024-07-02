@@ -333,4 +333,18 @@ class PembelianController extends Controller
 
         return view('pembelian.createpotongan', $data);
     }
+
+    public function editbarang(Request $request)
+    {
+        $databarang = $request->databarang;
+        $data['databarang'] = $databarang;
+
+        $data['barang'] = Barangpembelian::where('kode_barang', $databarang['kode_barang'])->first();
+        $data['coa'] = Coadepartemen::where('kode_dept', 'PMB')
+            ->join('coa', 'coa_departemen.kode_akun', '=', 'coa.kode_akun')
+            ->orderBy('coa_departemen.kode_akun')
+            ->get();
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        return view('pembelian.editbarang', $data);
+    }
 }

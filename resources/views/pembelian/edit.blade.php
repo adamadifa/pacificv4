@@ -153,11 +153,11 @@
                                                 <th style="width: 20%">Nama Barang</th>
                                                 <th>Qty</th>
                                                 <th>Harga</th>
-                                                <th>Subotal</th>
+                                                {{-- <th>Subotal</th> --}}
                                                 <th>Peny</th>
                                                 <th>Total</th>
-                                                <th style="width: 15%">kode Akun</th>
-                                                <th>Cabang</th>
+                                                <th style="width: 20%">kode Akun</th>
+                                                <th style="width: 3%">Cabang</th>
                                                 <th>#</th>
                                             </tr>
                                         </thead>
@@ -177,11 +177,25 @@
                                                     }
                                                 @endphp
                                                 <tr class="{{ $bg }}" id="index_{{ $no }}">
+                                                    <input type="hidden" name="kode_barang_item[]" value="{{ $d->kode_barang }}"
+                                                        class="kode_barang" />
+                                                    <input type="hidden" name="jumlah_item[]"
+                                                        value="{{ formatAngkaDesimal($d->jumlah) }}"class="jumlah" />
+                                                    <input type="hidden" name="harga_item[]" value="{{ formatAngkaDesimal($d->harga) }}"
+                                                        class="" />
+                                                    <input type="hidden" name="penyesuaian_item[]"
+                                                        value="{{ formatAngkaDesimal($d->penyesuaian) }}" class="penyesuaian" />
+                                                    <input type="hidden" name="kode_akun_item[]" value="{{ $d->kode_akun }}"
+                                                        class="kode_akun" />
+                                                    <input type="hidden" name="keterangan_item[]" value="{{ $d->keterangan }}"
+                                                        class="keterangan" />
+                                                    <input type="hidden" name="kode_cabang_item[]" value="{{ $d->kode_cabang }}"
+                                                        class="kode_cabang" />
                                                     <td>{{ $d->kode_barang }}</td>
                                                     <td>{{ textCamelCase($d->nama_barang) }}</td>
                                                     <td class="text-center">{{ formatAngkaDesimal($d->jumlah) }}</td>
                                                     <td class="text-end">{{ formatAngkaDesimal($d->harga) }}</td>
-                                                    <td class="text-end">{{ formatAngkaDesimal($subtotal) }}</td>
+                                                    {{-- <td class="text-end">{{ formatAngkaDesimal($subtotal) }}</td> --}}
                                                     <td class="text-end">{{ formatAngkaDesimal($d->penyesuaian) }}</td>
                                                     <td class="text-end totalharga">{{ formatAngkaDesimal($total) }}</td>
                                                     <td>{{ $d->kode_akun }} - {{ $d->nama_akun }}</td>
@@ -189,7 +203,7 @@
                                                     <td>
                                                         <div class='d-flex'>
                                                             <div>
-                                                                <a href="#" class="btnEdit me-1" id="index_{{ $no }}"><i
+                                                                <a href="#" class="btnEditbarang me-1" id="index_{{ $no }}"><i
                                                                         class="ti ti-edit text-success"></i></a>
                                                             </div>
                                                             <div>
@@ -575,26 +589,27 @@
                 }
                 let barang = `
                 <tr id="index_${baris}" class="${bg}">
-                    <td>
-                        <input type="hidden" name="kode_barang_item[]" value="${kode_barang}" />
-                        <input type="hidden" name="jumlah_item[]" value="${jumlah}" />
-                        <input type="hidden" name="harga_item[]" value="${harga}" />
-                        <input type="hidden" name="penyesuaian_item[]" value="${penyesuaian}" />
-                        <input type="hidden" name="kode_akun_item[]" value="${kode_akun}" />
-                        <input type="hidden" name="keterangan_item[]" value="${keterangan}" />
-                        <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}" />
-                        ${kode_barang}
-                    </td>
+                    <input type="hidden" name="kode_barang_item[]" value="${kode_barang}" class="kode_barnag" />
+                    <input type="hidden" name="jumlah_item[]" value="${jumlah}" class="jumlah/>
+                    <input type="hidden" name="harga_item[]" value="${harga}" class="harga"/>
+                    <input type="hidden" name="penyesuaian_item[]" value="${penyesuaian}" class="penyesuaian"/>
+                    <input type="hidden" name="kode_akun_item[]" value="${kode_akun}" class="kode_akun" />
+                    <input type="hidden" name="keterangan_item[]" value="${keterangan}" class="keterangan/>
+                    <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}"  class="kode_cabang"/>
+                    <td>${kode_barang}</td>
                     <td>${nama_barang}</td>
                     <td class='text-center'>${jumlah}</td>
                     <td class='text-end'>${harga}</td>
-                    <td class='text-end'>${subtotal}</td>
+
                     <td class='text-end'>${penyesuaian}</td>
                     <td class='text-end totalharga' >${total}</td>
                     <td>${nama_akun}</td>
                     <td>${kode_cabang}</td>
                     <td>
                         <div class='d-flex'>
+                            <div>
+                                <a href="#" class="btnEditbarang me-1" id="index_${baris}"><i class="ti ti-edit text-success"></i></a>
+                            </div>
                             <div>
                                 <a href="#" class="me-1" data-bs-toggle="popover"
                                     data-bs-placement="left" data-bs-html="true"
@@ -875,6 +890,153 @@
                     // calculateTotal();
                 }
             });
+        });
+
+        let currentRow;
+        $(document).on('click', '.btnEditbarang', function(e) {
+            e.preventDefault();
+            // Dapatkan baris tabel yang sesuai
+            currentRow = $(this).closest('tr');
+
+            // Ambil data dari sel
+            let kode_barang = currentRow.find('td:eq(0)').text();
+            let nama_barang = currentRow.find('td:eq(1)').text();
+            let jumlah = currentRow.find('td:eq(2)').text();
+            let harga = currentRow.find('td:eq(3)').text();
+            let penyesuaian = currentRow.find('td:eq(4)').text();
+            let kode_akun = currentRow.find('.kode_akun').val();
+            let keterangan = currentRow.find('.keterangan').val();
+            let kode_cabang = currentRow.find('.kode_cabang').val();
+
+            //alert(status_promosi);
+            let dataBarang = {
+                'kode_barang': kode_barang,
+                'nama_barang': nama_barang,
+                'jumlah': jumlah,
+                'harga': harga,
+                'penyesuaian': penyesuaian,
+                'kode_akun': kode_akun,
+                'keterangan': keterangan,
+                'kode_cabang': kode_cabang
+            };
+            console.log(dataBarang);
+            $.ajax({
+                type: 'POST',
+                url: '/pembelian/editbarang',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    databarang: dataBarang
+                },
+                cache: false,
+                success: function(respond) {
+                    $("#modal").modal("show");
+                    $("#modal").find(".modal-title").text("Edit Barang");
+                    $("#loadmodal").html(respond);
+                }
+            });
+        });
+
+        $(document).on('submit', '#formEditbarang', function(e) {
+            e.preventDefault();
+            const kode_barang = $(this).find("#kode_barang").val();
+            const nama_barang = $(this).find("#nama_barang").val();
+            const jumlah = $(this).find("#jumlah").val();
+            const harga = $(this).find("#harga").val();
+            const penyesuaian = $(this).find("#penyesuaian").val();
+            const dataAkun = $(this).find("#kode_akun_editBarang :selected").select2(this.data);
+            const kode_akun = $(dataAkun).val();
+            const nama_akun = $(dataAkun).text();
+            const keterangan = $(this).find("#keterangan").val();
+            const kode_cabang = $(this).find("#kode_cabang_editBarang").val();
+
+            if (jumlah == "" || jumlah === "0") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Qty Tidak Boleh Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#jumlah").focus();
+                    },
+                });
+            } else if (harga == "" || harga === "0") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Harga Tidak Boleh Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#harga").focus();
+                    },
+                });
+            } else if (kode_akun == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Akun Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#kode_akun_editBarang").focus();
+                    },
+                });
+            } else {
+                baris = baris + 1;
+                let jml = convertNumber(jumlah);
+                let hrg = convertNumber(harga);
+                let peny = convertNumber(penyesuaian);
+                let subtotal = parseFloat(jml) * parseFloat(hrg);
+                let total = parseFloat(subtotal) + parseFloat(peny);
+                subtotal = numberFormat(subtotal, '2', ',', '.');
+                total = numberFormat(total, '2', ',', '.');
+                let bg;
+                if (kode_akun.substring(0, 3) == '6-1' && kode_cabang != '' || kode_akun.substring(0, 3) == '6-2' && kode_cabang !=
+                    '') {
+                    bg = "bg-info text-white";
+                } else {
+                    bg = "";
+                }
+                let newRow = `
+                <tr id="index_${baris}" class="${bg}">
+                    <input type="hidden" name="kode_barang_item[]" value="${kode_barang}" class="kode_barang"/>
+                    <input type="hidden" name="jumlah_item[]" value="${jumlah}" class="jumlah"/>
+                    <input type="hidden" name="harga_item[]" value="${harga}" class="harga"/>
+                    <input type="hidden" name="penyesuaian_item[]" value="${penyesuaian}" class="penyesuaian"/>
+                    <input type="hidden" name="kode_akun_item[]" value="${kode_akun}" class="kode_akun" />
+                    <input type="hidden" name="keterangan_item[]" value="${keterangan}" class="keterangan"/>
+                    <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}" class="kode_cabang"/>
+                    <td>${kode_barang}</td>
+                    <td>${nama_barang}</td>
+                    <td class='text-center'>${jumlah}</td>
+                    <td class='text-end'>${harga}</td>
+
+                    <td class='text-end'>${penyesuaian}</td>
+                    <td class='text-end totalharga' >${total}</td>
+                    <td>${nama_akun}</td>
+                    <td>${kode_cabang}</td>
+                    <td>
+                        <div class='d-flex'>
+                            <div>
+                                <a href="#" class="btnEditbarang me-1" id="index_${baris}"><i class="ti ti-edit text-success"></i></a>
+                            </div>
+                            <div>
+                                <a href="#" class="me-1" data-bs-toggle="popover"
+                                    data-bs-placement="left" data-bs-html="true"
+                                    data-bs-content="${keterangan}" title="Keterangan"
+                                    data-bs-custom-class="popover-info">
+                                    <i class="ti ti-info-square text-warning"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="#" id="index_${baris}" class="delete"><i class="ti ti-trash text-danger"></i></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>`;
+                currentRow.replaceWith(newRow);
+                $("#modal").modal("hide");
+                $('[data-bs-toggle="popover"]').popover();
+                calculateTotal();
+            }
         });
     });
 </script>

@@ -1239,6 +1239,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembelian/createpotongan', 'createpotongan')->name('pembelian.createpotongan')->can('pembelian.edit');
         Route::post('/pembelian/store', 'store')->name('pembelian.store')->can('pembelian.store');
         Route::delete('/pembelian/{id}/delete', 'destroy')->name('pembelian.delete')->can('pembelian.delete');
+
+        Route::post('/pembelian/editbarang', 'editbarang')->name('pembelian.editbarang')->can('pembelian.edit');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
