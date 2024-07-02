@@ -1235,6 +1235,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembelian', 'index')->name('pembelian.index')->can('pembelian.index');
         Route::get('/pembelian/create', 'create')->name('pembelian.create')->can('pembelian.create');
         Route::get('/pembelian/{no_bukti}/show', 'show')->name('pembelian.show')->can('pembelian.show');
+        Route::get('/pembelian/{no_bukti}/edit', 'edit')->name('pembelian.edit')->can('pembelian.edit');
+        Route::get('/pembelian/createpotongan', 'createpotongan')->name('pembelian.createpotongan')->can('pembelian.edit');
         Route::post('/pembelian/store', 'store')->name('pembelian.store')->can('pembelian.store');
         Route::delete('/pembelian/{id}/delete', 'destroy')->name('pembelian.delete')->can('pembelian.delete');
     });

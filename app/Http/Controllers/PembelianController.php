@@ -93,6 +93,7 @@ class PembelianController extends Controller
     }
 
 
+
     public function store(Request $request)
     {
         $request->validate([
@@ -288,5 +289,48 @@ class PembelianController extends Controller
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+
+    public function edit($no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        $pmb = new Pembelian();
+        $data['pembelian'] = $pmb->getPembelian(no_bukti: $no_bukti)->first();
+
+        $data['detail'] = Detailpembelian::select('pembelian_detail.*', 'nama_barang', 'nama_akun')
+            ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->join('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun')
+            ->where('pembelian_detail.no_bukti', $no_bukti)
+            ->where('pembelian_detail.kode_transaksi', 'PMB')
+            ->select('pembelian_detail.*', 'pembelian_barang.nama_barang', 'coa.nama_akun')
+            ->get();
+
+        $data['potongan'] = Detailpembelian::select('pembelian_detail.*', 'nama_barang')
+            ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->where('no_bukti', $no_bukti)
+            ->where('pembelian_detail.kode_transaksi', 'PNJ')
+            ->get();
+
+        $data['supplier'] = Supplier::orderBy('nama_supplier')->get();
+        $data['asal_ajuan'] = config('pembelian.list_asal_pengajuan');
+        $data['coa'] = Coadepartemen::where('kode_dept', 'PMB')
+            ->join('coa', 'coa_departemen.kode_akun', '=', 'coa.kode_akun')
+            ->orderBy('coa_departemen.kode_akun')
+            ->get();
+
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        return view('pembelian.edit', $data);
+    }
+
+
+    public function createpotongan()
+    {
+        $data['coa'] = Coadepartemen::where('kode_dept', 'PMB')
+            ->join('coa', 'coa_departemen.kode_akun', '=', 'coa.kode_akun')
+            ->orderBy('coa_departemen.kode_akun')
+            ->get();
+
+        return view('pembelian.createpotongan', $data);
     }
 }

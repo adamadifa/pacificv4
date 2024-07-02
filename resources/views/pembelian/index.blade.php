@@ -143,7 +143,7 @@
                                             <td>
                                                 <div class="d-flex">
                                                     @can('pembelian.edit')
-                                                        <a href="#" class="btnEdit" no_bukti="{{ $d->no_bukti }}">
+                                                        <a href="{{ route('pembelian.edit', Crypt::encrypt($d->no_bukti)) }}" class="btnEdit">
                                                             <i class="ti ti-edit text-success me-1"></i>
                                                         </a>
                                                     @endcan
