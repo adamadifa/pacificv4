@@ -76,6 +76,17 @@ class KontrabonpembelianController extends Controller
         }
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'no_kontrabon' => 'required',
+            'tanggal' => 'required|date',
+            'kode_supplier' => 'required',
+            'kategori' => 'required',
+            'jenis_bayar' => 'required',
+        ]);
+    }
+
     public function destroy($no_kontrabon)
     {
         DB::beginTransaction();

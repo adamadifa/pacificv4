@@ -1248,6 +1248,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/pembelian/editbarang', 'editbarang')->name('pembelian.editbarang')->can('pembelian.edit');
         Route::post('/pembelian/splitbarang', 'splitbarang')->name('pembelian.splitbarang')->can('pembelian.edit');
         Route::get('/pembelian/{kode_supplier}/getpembelianbysupplier', 'getpembelianbysupplier')->name('pembelian.getpembelianbysupplier');
+        Route::get('/pembelian/{kode_supplier}/getpembelianbysupplierjson', 'getpembelianbysupplierjson')->name('pembelian.getpembelianbysupplierjson');
         Route::post('/pembelian/getbarangpembelian', 'getbarangpembelian')->name('pembelian.getbarangpembelian');
     });
 

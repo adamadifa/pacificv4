@@ -56,6 +56,7 @@
  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.js"></script>
 
  <script>
      $(function() {

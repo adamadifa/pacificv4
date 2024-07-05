@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Redis;
+use Yajra\DataTables\Facades\DataTables;
 
 class PembelianController extends Controller
 {
@@ -667,6 +668,54 @@ class PembelianController extends Controller
         echo "<option value=''>Pilih Barang</option>";
         foreach ($detail as $d) {
             echo "<option value='$d->kode_barang'>" . $d->nama_barang . "</option>";
+        }
+    }
+
+
+    public function getpembelianbysupplierjson(Request $request, $kode_supplier)
+    {
+
+        if ($request->ajax()) {
+            $pmb = new Pembelian();
+            $pembelian = $pmb->getPembelian(kode_supplier: $kode_supplier);
+            return DataTables::of($pembelian)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="#" class="pilihnobukti" no_bukti="' . $row->no_bukti . '"
+                    total_pembelian="' . $row->total_pembelian . '"
+                    total_bayar="' . $row->total_bayar . '"
+                    ><i class="ti ti-external-link"></i></a>';
+                    return $btn;
+                })
+                ->addColumn('asal_pengajuan', function ($row) {
+                    $asal_pengajuan = config('pembelian.asal_pengajuan');
+                    $asalpengajuan = $asal_pengajuan[$row->kode_asal_pengajuan];
+                    return $asalpengajuan;
+                })
+
+                ->addColumn('cekppn', function ($row) {
+                    if ($row->ppn === 1) {
+                        $ppn = "<i class='ti ti-checks text-success'></i>";
+                    } else {
+                        $ppn = "<i class='ti ti-square-rounded-x text-danger'></i>";
+                    }
+                    // $ppn = "<i class='ti ti-checks'></i>";
+                    return $ppn;
+                })
+
+                ->addColumn('totalpembelian', function ($row) {
+                    return formatAngkaDesimal($row->total_pembelian);
+                })
+
+                ->addColumn('subtotal', function ($row) {
+                    return formatAngkaDesimal($row->subtotal);
+                })
+
+                ->addColumn('penyesuaianjk', function ($row) {
+                    return formatAngkaDesimal($row->penyesuaian_jk);
+                })
+                ->rawColumns(['action', 'asal_pengajuan', 'cekppn', 'totalpembelian', 'subtotal', 'penyesuaianjk'])
+                ->make(true);
         }
     }
 }

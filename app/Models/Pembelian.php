@@ -20,7 +20,7 @@ class Pembelian extends Model
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
         $query = Pembelian::query();
-        $query->select('pembelian.*', 'nama_supplier', 'subtotal', 'penyesuaian_jk', 'totalbayar', 'cek_kontrabon');
+        $query->select('pembelian.*', 'nama_supplier', 'subtotal', 'penyesuaian_jk', 'totalbayar', 'cek_kontrabon', DB::raw('IFNULL(subtotal,0) + IFNULL(penyesuaian_jk,0) as total_pembelian'));
         $query->join('supplier', 'pembelian.kode_supplier', '=', 'supplier.kode_supplier');
         $query->leftJoin(
             DB::raw('(
@@ -111,6 +111,8 @@ class Pembelian extends Model
             if (!empty($request->jenis_transaksi_search)) {
                 $query->where('pembelian.jenis_transaksi', $request->jenis_transaksi_search);
             }
+        } else {
+            $query->whereBetween('pembelian.tanggal', [$start_date, $end_date]);
         }
         if (!empty($no_bukti)) {
             $query->where('pembelian.no_bukti', $no_bukti);
