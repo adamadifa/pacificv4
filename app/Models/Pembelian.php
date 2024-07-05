@@ -15,7 +15,7 @@ class Pembelian extends Model
     protected $guarded = [];
     public $incrementing = false;
 
-    function getPembelian($no_bukti = "", Request $request = null)
+    function getPembelian($no_bukti = "", Request $request = null, $kode_supplier = "")
     {
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
@@ -82,6 +82,10 @@ class Pembelian extends Model
                 $query->whereBetween('pembelian.tanggal', [$start_date, $end_date]);
             }
 
+            if (!empty($request->jatuhtempo_dari) && !empty($request->jatuhtempo_sampai)) {
+                $query->whereBetween('pembelian.jatuh_tempo', [$request->jatuhtempo_dari, $request->jatuhtempo_sampai]);
+            }
+
             if (!empty($request->no_bukti_search)) {
                 $query->where('pembelian.no_bukti', $request->no_bukti_search);
             }
@@ -110,6 +114,12 @@ class Pembelian extends Model
         }
         if (!empty($no_bukti)) {
             $query->where('pembelian.no_bukti', $no_bukti);
+        }
+
+        if (!empty($kode_supplier)) {
+            $query->where('pembelian.kode_supplier', $kode_supplier);
+            $query->where('pembelian.jenis_transaksi', '!=', 'T');
+            $query->whereRaw('IFNULL(subtotal,0) != IFNULL(totalbayar,0)');
         }
         $query->orderBy('pembelian.tanggal', 'desc');
         $query->orderBy('pembelian.no_bukti', 'desc');

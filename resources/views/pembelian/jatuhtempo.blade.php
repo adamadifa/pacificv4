@@ -1,24 +1,17 @@
 @extends('layouts.app')
-@section('titlepage', 'Pembelian')
+@section('titlepage', 'Jatuh Tempo')
 
 @section('content')
 @section('navigasi')
-    <span>Pembelian</span>
+    <span>Jatuh Tempo</span>
 @endsection
 <div class="row">
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between">
-                    @can('pembelian.create')
-                        <a href="{{ route('pembelian.create') }}" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Pembelian</a>
-                    @endcan
-                </div>
-            </div>
             <div class="card-body">
                 <div class="row mt-2">
                     <div class="col-12">
-                        <form action="{{ route('pembelian.index') }}" id="formSearch">
+                        <form action="{{ route('pembelian.jatuhtempo') }}" id="formSearch">
                             <div class="row">
                                 <div class="col">
                                     <x-input-with-icon label="No. Bukti Pembelian" value="{{ Request('no_bukti_search') }}" name="no_bukti_search"
@@ -28,12 +21,12 @@
 
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Dari" value="{{ Request('jatuhtempo_dari') }}" name="jatuhtempo_dari"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
                                 <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Sampai" value="{{ Request('jatuhtempo_sampai') }}" name="jatuhtempo_sampai"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
                             </div>
 
@@ -92,8 +85,7 @@
                                         <th style="width: 10%">Tanggal</th>
                                         <th style="width:20%">Supplier</th>
                                         <th style="width: 5%">Ajuan</th>
-                                        <th>Subtotal</th>
-                                        <th>Peny</th>
+                                        <th style="width: 10%">Jatuh Tempo</th>
                                         <th>Total</th>
                                         <th>Bayar</th>
                                         <th>PPN</th>
@@ -114,8 +106,7 @@
                                             <td>{{ formatIndo($d->tanggal) }}</td>
                                             <td>{{ $d->nama_supplier }}</td>
                                             <td>{{ $d->kode_asal_pengajuan }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($d->subtotal) }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($d->penyesuaian_jk) }}</td>
+                                            <td>{{ formatIndo($d->jatuh_tempo) }}</td>
                                             <td class="text-end">{{ formatAngkaDesimal($total) }}</td>
                                             <td class="text-end">{{ formatAngkaDesimal($d->totalbayar) }}</td>
                                             <td class="text-center">
@@ -144,17 +135,17 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
-                                                    @can('pembelian.edit')
+                                                    {{-- @can('pembelian.edit')
                                                         <a href="{{ route('pembelian.edit', Crypt::encrypt($d->no_bukti)) }}" class="btnEdit">
                                                             <i class="ti ti-edit text-success me-1"></i>
                                                         </a>
-                                                    @endcan
+                                                    @endcan --}}
                                                     @can('pembelian.show')
                                                         <a href="#" class="btnShow" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
                                                             <i class="ti ti-file-description text-info me-1"></i>
                                                         </a>
                                                     @endcan
-                                                    @can('pembelian.delete')
+                                                    {{-- @can('pembelian.delete')
                                                         <form method="POST" name="deleteform" class="deleteform"
                                                             action="{{ route('pembelian.delete', Crypt::encrypt($d->no_bukti)) }}">
                                                             @csrf
@@ -163,7 +154,7 @@
                                                                 <i class="ti ti-trash text-danger"></i>
                                                             </a>
                                                         </form>
-                                                    @endcan
+                                                    @endcan --}}
                                                 </div>
                                             </td>
                                         </tr>

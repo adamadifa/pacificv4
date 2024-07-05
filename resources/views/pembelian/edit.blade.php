@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('titlepage', 'Input Pembelian')
+@section('titlepage', 'Edit Pembelian')
 @section('content')
 
     <style>
@@ -8,10 +8,11 @@
         }
     </style>
 @section('navigasi')
-    <span class="text-muted">Pembelian</span> / <span>Input Pembelian</span>
+    <span class="text-muted">Pembelian</span> / <span>Edit Pembelian</span>
 @endsection
-<form action="{{ route('pembelian.store') }}" method="POST" id="formPembelian">
+<form action="{{ route('pembelian.update', Crypt::encrypt($pembelian->no_bukti)) }}" method="POST" id="formPembelian">
     @csrf
+    @method('PUT')
     <div class="row">
         <div class="col-lg-3 col-sm-12 col-xs-12">
             <div class="row mb-3">
@@ -24,7 +25,7 @@
                             <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
                                 upperCase="true" select2="select2Kodesupplier" selected="{{ $pembelian->kode_supplier }}" />
                             <div class="form-group mb-3">
-                                <select name="kode_asal_pengajuan" id="kode_asal_pengajuan" class="form-select">
+                                <select name="kode_asal_pengajuan" id="kode_asal_pengajuan" class="form-select" disabled="true">
                                     <option value="">Asal Ajuan</option>
                                     @foreach ($asal_ajuan as $d)
                                         <option value="{{ $d['kode_group'] }}"
@@ -99,50 +100,72 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Nama Barang" name="nama_barang" icon="ti ti-barcode" readonly="true" />
-                                    <input type="hidden" id="kode_barang" name="kode_barang">
+                            @if ($cekhistoribayar > 0)
+                                <div class="alert alert-warning">
+                                    <p>Data Pembelian dengan No. Bukti {{ $pembelian->no_bukti }} Sudah Memiliki Histori Pembayaran, yang sudah
+                                        dibayarkan oleh keuangan, Untuk melakukan
+                                        Tambah Data Barang Pembelian, ataupun Edit Quantity atau Harga silahkan Hubungi Bagian Keuangan Untuk
+                                        melakukan Pembatalan
+                                        Pembayaran Terlebih Dahulu</p>
                                 </div>
-                                <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" align="right" numberFormat="true" />
+                                <div class="d-flex justify-content-end">
+                                    <a href="{{ request()->url() }}" class="btn btn-danger"><i class="ti ti-refresh"></i></a>
                                 </div>
-                                <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right" numberFormat="true" />
-                                </div>
-                                <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Penyesuaian" name="penyesuaian" icon="ti ti-moneybag" align="right"
-                                        numberFormat="true" />
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <select name="kode_akun" id="kode_akun" class="form-select select2Kodeakun">
-                                            <option value="">Akun</option>
-                                            @foreach ($coa as $d)
-                                                <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} - {{ $d->nama_akun }}</option>
-                                            @endforeach
-                                        </select>
+                            @else
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-12 col-sm-12">
+                                        <x-input-with-icon label="Nama Barang" name="nama_barang" icon="ti ti-barcode" readonly="true" />
+                                        <input type="hidden" id="kode_barang" name="kode_barang">
+                                    </div>
+                                    <div class="col-lg-2 col-md-12 col-sm-12">
+                                        <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" align="right" numberFormat="true" />
+                                    </div>
+                                    <div class="col-lg-2 col-md-12 col-sm-12">
+                                        <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right"
+                                            numberFormat="true" />
+                                    </div>
+                                    <div class="col-lg-2 col-md-12 col-sm-12">
+                                        <x-input-with-icon label="Penyesuaian" name="penyesuaian" icon="ti ti-moneybag" align="right"
+                                            numberFormat="true" />
+                                    </div>
+                                    <div class="col-lg-3 col-md-12 col-sm-12">
+                                        <div class="form-group mb-3">
+                                            <select name="kode_akun" id="kode_akun" class="form-select select2Kodeakun">
+                                                <option value="">Akun</option>
+                                                @foreach ($coa as $d)
+                                                    <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} - {{ $d->nama_akun }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-8 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
-                                </div>
-                                <div class="col-lg-4 col-md-12 col-sm-12">
-                                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                        upperCase="true" select2="select2Kodecabang" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group mb-3">
-                                        <button class="btn btn-primary w-100" id="btnTambahbarang">
-                                            <i class="ti ti-plus me-1"></i>Tambah Barang
-                                        </button>
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-12 col-sm-12">
+                                        <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+                                    </div>
+                                    <div class="col-lg-4 col-md-12 col-sm-12">
+                                        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                            upperCase="true" select2="select2Kodecabang" />
                                     </div>
                                 </div>
-                            </div>
+                                <div class="row">
+                                    <div class="col-lg-10 col-md-12 col-sm-12">
+                                        <div class="form-group mb-3">
+                                            <button class="btn btn-primary w-100" id="btnTambahbarang">
+                                                <i class="ti ti-plus me-1"></i>Tambah Barang
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-12 col-sm-12">
+                                        <div class="form-group mb-3">
+                                            <a class="btn btn-danger w-100" id="btnReset" href="{{ request()->url() }}">
+                                                <i class="ti ti-refresh me-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
                             <div class="row">
                                 <div class="col">
 
@@ -202,10 +225,19 @@
                                                     <td>{{ $d->kode_cabang }}</td>
                                                     <td>
                                                         <div class='d-flex'>
+                                                            @if ($cekhistoribayar === 0)
+                                                                <div>
+                                                                    <a href="#" class="btnEditbarang me-1" id="index_{{ $no }}"><i
+                                                                            class="ti ti-edit text-success"></i></a>
+                                                                </div>
+                                                            @endif
+
                                                             <div>
-                                                                <a href="#" class="btnEditbarang me-1" id="index_{{ $no }}"><i
-                                                                        class="ti ti-edit text-success"></i></a>
+                                                                <a href="#" class="btnSplit me-1" id="index_{{ $no }}">
+                                                                    <i class="ti ti-adjustments text-primary"></i>
+                                                                </a>
                                                             </div>
+
                                                             <div>
                                                                 <a href="#" class="me-1" data-bs-toggle="popover" data-bs-placement="left"
                                                                     data-bs-html="true" data-bs-content="{{ $d->keterangan }}" title="Keterangan"
@@ -213,10 +245,12 @@
                                                                     <i class="ti ti-info-square text-warning"></i>
                                                                 </a>
                                                             </div>
-                                                            <div>
-                                                                <a href="#" id="index_{{ $no }}" class="delete"><i
-                                                                        class="ti ti-trash text-danger"></i></a>
-                                                            </div>
+                                                            @if ($cekhistoribayar === 0)
+                                                                <div>
+                                                                    <a href="#" id="index_{{ $no }}" class="delete"><i
+                                                                            class="ti ti-trash text-danger"></i></a>
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -227,7 +261,7 @@
                                         </tbody>
                                         <tfoot class="table-dark">
                                             <tr>
-                                                <td colspan="6">TOTAL</td>
+                                                <td colspan="5">TOTAL</td>
                                                 <td id="grandtotal" class="text-end"></td>
                                                 <td colspan="3"></td>
                                             </tr>
@@ -237,8 +271,11 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col">
-                                    <a href="#" class="btn btn-danger mb-3" id="tambahpotongan"><i class="ti ti-tag me-1"></i>Tambah
-                                        Potongan</a>
+                                    @if ($cekhistoribayar === 0)
+                                        <a href="#" class="btn btn-danger mb-3" id="tambahpotongan"><i class="ti ti-tag me-1"></i>Tambah
+                                            Potongan</a>
+                                    @endif
+
                                     <table class="table table-bordered">
                                         <thead class="bg-danger">
                                             <tr>
@@ -250,7 +287,38 @@
                                                 <th class="text-white">#</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="loadpotongan"></tbody>
+                                        <tbody id="loadpotongan">
+                                            @php
+                                                $no_potongan = 1;
+                                            @endphp
+                                            @foreach ($potongan as $d)
+                                                @php
+                                                    $subtotal_potongan = $d->jumlah * $d->harga;
+                                                @endphp
+                                                <tr id="index_{{ $no_potongan }}">
+                                                    <input type="hidden" name="keterangan_potongan_item[]"
+                                                        value="{{ $d->keterangan_penjualan }}" />
+                                                    <input type="hidden" name="kode_akun_potongan_item[]" value="{{ $d->kode_akun }}" />
+                                                    <input type="hidden" name="jumlah_potongan_item[]" value="{{ $d->jumlah }}" />
+                                                    <input type="hidden" name="harga_potongan_item[]" value="{{ $d->harga }}" />
+                                                    <td>{{ $d->keterangan_penjualan }}</td>
+                                                    <td>{{ $d->kode_akun }} - {{ $d->nama_akun }}</td>
+                                                    <td>{{ formatAngkaDesimal($d->jumlah) }}</td>
+                                                    <td class="text-end">{{ formatAngkaDesimal($d->harga) }}</td>
+                                                    <td class="text-end">{{ formatAngkaDesimal($subtotal_potongan) }}</td>
+                                                    <td>
+                                                        @if ($cekhistoribayar === 0)
+                                                            <a href="#" id="index_{{ $no_potongan }}" class="deletepotongan"><i
+                                                                    class="ti ti-trash text-danger"></i></a>
+                                                        @endif
+
+                                                    </td>
+                                                </tr>
+                                                @php
+                                                    $no_potongan++;
+                                                @endphp
+                                            @endforeach
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -311,8 +379,10 @@
 <script>
     $(document).ready(function() {
         const form = $("#formPembelian");
+
         let baris = {{ $no }};
-        let barisPotongan = 1;
+        let barisPotongan = {{ $no_potongan }};
+        let barisSplit = 1;
         easyNumberSeparator({
             selector: '.number-separator',
             separator: '.',
@@ -347,6 +417,21 @@
             form.find('.select2Kodecabang').val('').trigger("change");
 
         }
+
+
+        function resetFormsplit() {
+            const formSplit = $(document).find("#formSplitbarang");
+            formSplit.find("#kode_barang").val("");
+            formSplit.find("#nama_barang_split").val("");
+            formSplit.find("#jumlah").val("");
+            formSplit.find("#harga").val("");
+            formSplit.find("#penyesuaian").val("");
+            formSplit.find('.select2Kodeakunsplit').val('').trigger("change");
+            formSplit.find("#keterangan").val("");
+            formSplit.find('.select2Kodecabangsplit').val('').trigger("change");
+        }
+
+
         const select2Kodesupplier = $('.select2Kodesupplier');
         if (select2Kodesupplier.length) {
             select2Kodesupplier.each(function() {
@@ -467,14 +552,30 @@
             }
         });
 
+        function isModalOpen(modalId) {
+            var modal = document.getElementById(modalId);
+            if (modal) {
+                return modal.classList.contains('show');
+            }
+            return false;
+        }
+
         $('#tabelbarang tbody').on('click', '.pilihBarang', function(e) {
             e.preventDefault();
             const kode_barang = $(this).attr('kode_barang');
             const nama_barang = $(this).attr('nama_barang');
-            form.find("#kode_barang").val(kode_barang);
-            form.find("#nama_barang").val(nama_barang);
+
+            if (!isModalOpen('modal')) {
+                form.find("#kode_barang").val(kode_barang);
+                form.find("#nama_barang").val(nama_barang);
+                form.find("#qty").focus();
+            } else {
+                $(document).find("#formSplitbarang").find("#nama_barang_split").val(nama_barang);
+                $(document).find("#formSplitbarang").find("#kode_barang").val(kode_barang);
+            }
+
+
             $("#modalBarang").modal("hide");
-            form.find("#qty").focus();
 
         });
 
@@ -579,6 +680,7 @@
                 let peny = convertNumber(penyesuaian);
                 let subtotal = parseFloat(jml) * parseFloat(hrg);
                 let total = parseFloat(subtotal) + parseFloat(peny);
+                jml = numberFormat(jml, '2', ',', '.');
                 subtotal = numberFormat(subtotal, '2', ',', '.');
                 total = numberFormat(total, '2', ',', '.');
                 let bg;
@@ -590,15 +692,15 @@
                 let barang = `
                 <tr id="index_${baris}" class="${bg}">
                     <input type="hidden" name="kode_barang_item[]" value="${kode_barang}" class="kode_barnag" />
-                    <input type="hidden" name="jumlah_item[]" value="${jumlah}" class="jumlah/>
+                    <input type="hidden" name="jumlah_item[]" value="${jumlah}" class="jumlah"/>
                     <input type="hidden" name="harga_item[]" value="${harga}" class="harga"/>
                     <input type="hidden" name="penyesuaian_item[]" value="${penyesuaian}" class="penyesuaian"/>
                     <input type="hidden" name="kode_akun_item[]" value="${kode_akun}" class="kode_akun" />
-                    <input type="hidden" name="keterangan_item[]" value="${keterangan}" class="keterangan/>
+                    <input type="hidden" name="keterangan_item[]" value="${keterangan}" class="keterangan"/>
                     <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}"  class="kode_cabang"/>
                     <td>${kode_barang}</td>
                     <td>${nama_barang}</td>
-                    <td class='text-center'>${jumlah}</td>
+                    <td class='text-center'>${jml}</td>
                     <td class='text-end'>${harga}</td>
 
                     <td class='text-end'>${penyesuaian}</td>
@@ -609,6 +711,9 @@
                         <div class='d-flex'>
                             <div>
                                 <a href="#" class="btnEditbarang me-1" id="index_${baris}"><i class="ti ti-edit text-success"></i></a>
+                            </div>
+                            <div>
+                                <a href="#" class="btnSplit me-1"  id="index_${baris}"><i class="ti ti-adjustments text-primary"></i></a>
                             </div>
                             <div>
                                 <a href="#" class="me-1" data-bs-toggle="popover"
@@ -781,6 +886,7 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Tambah Potongan");
             $("#modal").find("#loadmodal").load(`/pembelian/createpotongan`);
+            $("#modal").find(".modal-dialog").removeClass("modal-xxl");
         });
 
 
@@ -853,8 +959,12 @@
                 `);
                 let potongan = `
                 <tr id="index_${barisPotongan}">
+                    <input type="hidden" name="keterangan_potongan_item[]" value="${keterangan}" />
+                    <input type="hidden" name="kode_akun_potongan_item[]" value="${kode_akun}" />
+                    <input type="hidden" name="jumlah_potongan_item[]" value="${jumlah}" />
+                    <input type="hidden" name="harga_potongan_item[]" value="${harga}" />
                     <td>${keterangan}</td>
-                    <td class='text-end'>${nama_akun}</td>
+                    <td>${nama_akun}</td>
                     <td>${jumlah}</td>
                     <td class='text-end'>${harga}</td>
                     <td class='text-end'>${total_potongan}</td>
@@ -907,7 +1017,7 @@
             let kode_akun = currentRow.find('.kode_akun').val();
             let keterangan = currentRow.find('.keterangan').val();
             let kode_cabang = currentRow.find('.kode_cabang').val();
-
+            //alert(kode_cabang);
             //alert(status_promosi);
             let dataBarang = {
                 'kode_barang': kode_barang,
@@ -932,6 +1042,7 @@
                     $("#modal").modal("show");
                     $("#modal").find(".modal-title").text("Edit Barang");
                     $("#loadmodal").html(respond);
+                    $("#modal").find(".modal-dialog").removeClass("modal-xxl");
                 }
             });
         });
@@ -986,6 +1097,7 @@
                 let peny = convertNumber(penyesuaian);
                 let subtotal = parseFloat(jml) * parseFloat(hrg);
                 let total = parseFloat(subtotal) + parseFloat(peny);
+                jml = numberFormat(jml, '2', ',', '.');
                 subtotal = numberFormat(subtotal, '2', ',', '.');
                 total = numberFormat(total, '2', ',', '.');
                 let bg;
@@ -1006,7 +1118,7 @@
                     <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}" class="kode_cabang"/>
                     <td>${kode_barang}</td>
                     <td>${nama_barang}</td>
-                    <td class='text-center'>${jumlah}</td>
+                    <td class='text-center'>${jml}</td>
                     <td class='text-end'>${harga}</td>
 
                     <td class='text-end'>${penyesuaian}</td>
@@ -1017,6 +1129,9 @@
                         <div class='d-flex'>
                             <div>
                                 <a href="#" class="btnEditbarang me-1" id="index_${baris}"><i class="ti ti-edit text-success"></i></a>
+                            </div>
+                            <div>
+                                <a href="#" class="btnSplit me-1" id="index_{{ $no }}"><i class="ti ti-adjustments text-primary"></i></a>
                             </div>
                             <div>
                                 <a href="#" class="me-1" data-bs-toggle="popover"
@@ -1037,6 +1152,256 @@
                 $('[data-bs-toggle="popover"]').popover();
                 calculateTotal();
             }
+        });
+
+
+        $(document).on('click', '.btnSplit', function(e) {
+            e.preventDefault();
+            // Dapatkan baris tabel yang sesuai
+            currentRow = $(this).closest('tr');
+
+            // Ambil data dari sel
+            let kode_barang = currentRow.find('td:eq(0)').text();
+            let nama_barang = currentRow.find('td:eq(1)').text();
+            let jumlah = currentRow.find('td:eq(2)').text();
+            let harga = currentRow.find('td:eq(3)').text();
+            let penyesuaian = currentRow.find('td:eq(4)').text();
+            let kode_akun = currentRow.find('.kode_akun').val();
+            let keterangan = currentRow.find('.keterangan').val();
+            let kode_cabang = currentRow.find('.kode_cabang').val();
+            //alert(kode_cabang);
+            //alert(status_promosi);
+            let dataBarang = {
+                'kode_barang': kode_barang,
+                'nama_barang': nama_barang,
+                'jumlah': jumlah,
+                'harga': harga,
+                'penyesuaian': penyesuaian,
+                'kode_akun': kode_akun,
+                'keterangan': keterangan,
+                'kode_cabang': kode_cabang
+            };
+            console.log(dataBarang);
+            $.ajax({
+                type: 'POST',
+                url: '/pembelian/splitbarang',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    databarang: dataBarang
+                },
+                cache: false,
+                success: function(respond) {
+                    $("#modal").modal("show");
+                    $("#modal").find(".modal-title").text("Split Barang");
+                    $("#loadmodal").html(respond);
+                    $("#modal").find(".modal-dialog").addClass("modal-xxl");
+                }
+            });
+        });
+
+        let grandTotalsplit = 0;
+
+        function calculateTotalsplit() {
+            const formSplit = $(document).find("#formSplitbarang");
+            let grandTotal = 0;
+            formSplit.find('.totalharga').each(function() {
+                grandTotal += parseFloat(convertNumber($(this).text())) || 0;
+            });
+            formSplit.find('#grandtotal').text(numberFormat(grandTotal, '2', ',', '.'));
+            grandTotalsplit = grandTotal;
+            //$('#grandtotal_text').text(numberFormat(grandTotal, '2', ',', '.'));
+        }
+
+        $(document).on('click', '#btnSplitbarang', function(e) {
+            e.preventDefault();
+            const formSplit = $(document).find("#formSplitbarang");
+            const kode_barang = formSplit.find("#kode_barang").val();
+            const nama_barang = formSplit.find("#nama_barang_split").val();
+            const jumlah = formSplit.find("#jumlah").val();
+            const harga = formSplit.find("#harga").val();
+            const penyesuaian = formSplit.find("#penyesuaian").val();
+            const dataAkun = formSplit.find("#kode_akun_split :selected").select2(this.data);
+            const kode_akun = $(dataAkun).val();
+            const nama_akun = $(dataAkun).text();
+            const keterangan = formSplit.find("#keterangan").val();
+            const kode_cabang = formSplit.find("#kode_cabang_split").val();
+            const totalSplit = convertNumber(formSplit.find('#totalSplit').text());
+            const total = parseFloat(convertNumber(jumlah)) * parseFloat(convertNumber(harga)) + parseFloat(convertNumber(
+                penyesuaian));
+            const jmlSplit = parseFloat(grandTotalsplit) + parseFloat(total);
+            if (kode_barang == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Barang Harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formSplit.find("#nama_barang_split").focus();
+                    },
+                });
+            } else if (jumlah == "" || jumlah === "0") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Qty Tidak Boleh Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formSplit.find("#jumlah").focus();
+                    },
+                });
+            } else if (harga == "" || harga === "0") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Harga Tidak Boleh Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formSplit.find("#harga").focus();
+                    },
+                });
+            } else if (kode_akun == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Akun Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formSplit.find("#kode_akun_split").focus();
+                    },
+                });
+            } else if (parseFloat(jmlSplit) > parseFloat(totalSplit)) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Split Melebihi Total Seharusnya !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formSplit.find("#jumlah").focus();
+                    },
+                });
+            } else {
+                barisSplit = barisSplit + 1;
+                let jml = convertNumber(jumlah);
+                let hrg = convertNumber(harga);
+                let peny = convertNumber(penyesuaian);
+                let subtotal = parseFloat(jml) * parseFloat(hrg);
+                let total = parseFloat(subtotal) + parseFloat(peny);
+                jml = numberFormat(jml, '2', ',', '.');
+                subtotal = numberFormat(subtotal, '2', ',', '.');
+                total = numberFormat(total, '2', ',', '.');
+                let bg;
+                if (kode_akun.substring(0, 3) == '6-1' && kode_cabang != '' || kode_akun.substring(0, 3) == '6-2' && kode_cabang !=
+                    '') {
+                    bg = "bg-info text-white";
+                } else {
+                    bg = "";
+                }
+                let splitRow = `
+                <tr id="index_${barisSplit}" class="${bg}">
+                    <input type="hidden" name="kode_barang_item[]" value="${kode_barang}" class="kode_barang"/>
+                    <input type="hidden" name="jumlah_item[]" value="${jumlah}" class="jumlah"/>
+                    <input type="hidden" name="harga_item[]" value="${harga}" class="harga"/>
+                    <input type="hidden" name="penyesuaian_item[]" value="${penyesuaian}" class="penyesuaian"/>
+                    <input type="hidden" name="kode_akun_item[]" value="${kode_akun}" class="kode_akun" />
+                    <input type="hidden" name="keterangan_item[]" value="${keterangan}" class="keterangan"/>
+                    <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}" class="kode_cabang"/>
+                    <td>${kode_barang}</td>
+                    <td>${nama_barang}</td>
+                    <td class='text-center'>${jml}</td>
+                    <td class='text-end'>${harga}</td>
+
+                    <td class='text-end'>${penyesuaian}</td>
+                    <td class='text-end totalharga'>${total}</td>
+                    <td>${nama_akun}</td>
+                    <td>${kode_cabang}</td>
+                    <td>
+                        <div class='d-flex'>
+                            <div>
+                                <a href="#" class="me-1" data-bs-toggle="popover"
+                                    data-bs-placement="left" data-bs-html="true"
+                                    data-bs-content="${keterangan}" title="Keterangan"
+                                    data-bs-custom-class="popover-info">
+                                    <i class="ti ti-info-square text-warning"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="#" id="index_${barisSplit}" class="deleteSplit hapussplit"><i class="ti ti-trash text-danger"></i></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>`;
+                formSplit.find("#loadsplitbarang").append(splitRow);
+                $('[data-bs-toggle="popover"]').popover();
+                calculateTotalsplit();
+                resetFormsplit();
+            }
+        });
+
+        $(document).on('click', '.deleteSplit', function(e) {
+            e.preventDefault();
+            let id = $(this).attr("id");
+            // event.preventDefault();
+            // alert(id);
+            Swal.fire({
+                title: `Apakah Anda Yakin Ingin Menghapus Data Ini ?`,
+                text: "Jika dihapus maka data akan hilang permanent.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                showCancelButton: true,
+                confirmButtonColor: "#554bbb",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Hapus Saja!"
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $(document).find("#formSplitbarang").find("#loadsplitbarang").find(`#${id}`).remove();
+                    calculateTotalsplit();
+                }
+            });
+        });
+        $(document).on("click", "#nama_barang_split", function(e) {
+            let kode_group = form.find("#kode_asal_pengajuan").val();
+            if (kode_group == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Asal Pengajuan Harus Diisi Dahulu !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#kode_asal_pengajuan").focus();
+                    },
+                });
+            } else {
+                loadTablebarang(kode_group);
+                $("#modalBarang").modal("show");
+            }
+        });
+
+        $(document).on('submit', '#formSplitbarang', function(e) {
+            // Ambil semua baris dari tabel A
+            e.preventDefault();
+            $('.deleteSplit').remove();
+            const totalSplit = convertNumber($(this).find('#totalSplit').text());
+            if (parseFloat(grandTotalsplit) != parseFloat(totalSplit)) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Harus Sama, dengan Item Yang di Split !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $(this).find("#jumlah").focus();
+                    },
+                });
+            } else {
+                var rows = $(document).find("#loadsplitbarang tr").clone();
+                console.log(rows);
+                currentRow.replaceWith(rows);
+                $('#loadbarang').append(rows);
+                $("#modal").modal("hide");
+            }
+            // $('.hapussplit').addClass('delete');
+
         });
     });
 </script>

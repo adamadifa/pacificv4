@@ -5188,13 +5188,20 @@ fieldset:disabled .btn {
 }
 @media (min-width: 992px) {
     .modal-lg,
-    .modal-xl {
+    .modal-xl,
+    .modal-xxl {
         --bs-modal-width: 50rem;
     }
 }
 @media (min-width: 1200px) {
     .modal-xl {
         --bs-modal-width: 1140px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .modal-xxl {
+        --bs-modal-width: 1400px;
     }
 }
 .modal-fullscreen {
@@ -12504,6 +12511,10 @@ html:not([dir="rtl"]) .modal-simple .btn-close {
 @media (min-width: 1200px) {
     .modal-xl .modal-dialog {
         max-width: 1140px;
+    }
+
+    .modal-xxl .modal-dialog {
+        max-width: 1400px;
     }
 }
 .progress-bar {

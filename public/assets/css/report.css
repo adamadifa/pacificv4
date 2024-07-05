@@ -38,6 +38,30 @@
 }
 
 
+.datatable5 {
+    border: 1px solid #161616;
+    border-collapse: collapse;
+    font-size: 12px;
+    width: 100%
+}
+
+.datatable5 td {
+    border: 1px solid #000000;
+    padding: 5px;
+    font-size: 11px;
+}
+
+.datatable5 th {
+    border: 1px solid #4d4d4d;
+    font-weight: bold;
+    text-align: left;
+    padding: 4px;
+    text-align: center;
+    font-size: 12px;
+    background-color: #d4d3d3cf
+}
+
+
 h4 {
     font-family: Arial, Helvetica, sans-serif;
     line-height: 2px;

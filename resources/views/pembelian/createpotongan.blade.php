@@ -2,18 +2,18 @@
     <x-input-with-icon label="Keterangan" name="keterangan_potongan" icon="ti ti-file-description" />
     <x-input-with-icon label="Qty" name="jumlah_potongan" icon="ti ti-box" numberFormat="true" />
     <x-input-with-icon label="Harga" name="harga_potongan" icon="ti ti-moneybag" align="right" numberFormat="true" />
-    <x-input-with-icon label="Total" name="total_potongan" icon="ti ti-moneybag" align="right" numberFormat="true" disabled="true"/>
-        <div class="form-group mb-3">
-            <select name="kode_akun_potongan" id="kode_akun_potongan" class="form-select select2Kodeakunpotongan">
-                <option value="">Akun</option>
-                @foreach ($coa as $d)
-                    <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} - {{ $d->nama_akun }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group mb-3">
-            <button class="btn btn-danger w-100" id="btnPotongan"><i class="ti ti-send me-1"></i>Submit</button>
-        </div>
+    <x-input-with-icon label="Total" name="total_potongan" icon="ti ti-moneybag" align="right" numberFormat="true" disabled="true" />
+    <div class="form-group mb-3">
+        <select name="kode_akun_potongan" id="kode_akun_potongan" class="form-select select2Kodeakunpotongan">
+            <option value="">Akun</option>
+            @foreach ($coa as $d)
+                <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} - {{ $d->nama_akun }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div class="form-group mb-3">
+        <button class="btn btn-danger w-100" id="btnPotongan"><i class="ti ti-send me-1"></i>Submit</button>
+    </div>
 </form>
 <script>
     $(function() {

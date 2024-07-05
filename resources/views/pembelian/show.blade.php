@@ -117,8 +117,12 @@
                     <td class="text-end">{{ formatAngkaDesimal($total_potongan) }}</td>
                 </tr>
                 <tr>
+                    <td colspan="3">PENY. JURNAL KOREKSI</td>
+                    <td class="text-end">{{ formatAngkaDesimal($pembelian->penyesuaian_jk) }}</td>
+                </tr>
+                <tr>
                     <td colspan="3" class="bg-success">GRAND TOTAL</td>
-                    <td class="text-end bg-success">{{ formatAngkaDesimal($total_pembelian - $total_potongan) }}</td>
+                    <td class="text-end bg-success">{{ formatAngkaDesimal($total_pembelian - $total_potongan + $pembelian->penyesuaian_jk) }}</td>
                 </tr>
             </tfoot>
         </table>
@@ -144,7 +148,7 @@
                     <tr>
                         <td>{{ $d->no_kontrabon }}</td>
                         <td>{{ DateToIndo($d->tanggal_kontrabon) }}</td>
-                        <td>{{ formatAngkaDesimal($d->jumlah) }}</td>
+                        <td class="text-end">{{ formatAngkaDesimal($d->jumlah) }}</td>
                         <td>{{ $d->kategori == 'TN' ? 'TUNAI' : textUpperCase($d->kategori) }}</td>
                         <td>
                             @if (!empty($d->tanggal_bayar))

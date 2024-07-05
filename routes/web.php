@@ -25,12 +25,14 @@ use App\Http\Controllers\GajiController;
 use App\Http\Controllers\HargaController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\JenisprodukController;
+use App\Http\Controllers\JurnalkoreksiController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KasbonController;
 use App\Http\Controllers\KaskecilController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KirimpusatController;
+use App\Http\Controllers\KontrabonpembelianController;
 use App\Http\Controllers\LainnyagudangjadiController;
 use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangcabangController;
@@ -97,6 +99,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WilayahController;
 use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
+use App\Models\Kontrabonpembelian;
 use App\Models\Permission_group;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
@@ -1236,11 +1239,37 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembelian/create', 'create')->name('pembelian.create')->can('pembelian.create');
         Route::get('/pembelian/{no_bukti}/show', 'show')->name('pembelian.show')->can('pembelian.show');
         Route::get('/pembelian/{no_bukti}/edit', 'edit')->name('pembelian.edit')->can('pembelian.edit');
+        Route::put('/pembelian/{no_bukti}/update', 'update')->name('pembelian.update')->can('pembelian.update');
         Route::get('/pembelian/createpotongan', 'createpotongan')->name('pembelian.createpotongan')->can('pembelian.edit');
         Route::post('/pembelian/store', 'store')->name('pembelian.store')->can('pembelian.store');
         Route::delete('/pembelian/{id}/delete', 'destroy')->name('pembelian.delete')->can('pembelian.delete');
+        Route::get('/pembelian/jatuhtempo', 'jatuhtempo')->name('pembelian.jatuhtempo')->can('pembelian.jatuhtempo');
 
         Route::post('/pembelian/editbarang', 'editbarang')->name('pembelian.editbarang')->can('pembelian.edit');
+        Route::post('/pembelian/splitbarang', 'splitbarang')->name('pembelian.splitbarang')->can('pembelian.edit');
+        Route::get('/pembelian/{kode_supplier}/getpembelianbysupplier', 'getpembelianbysupplier')->name('pembelian.getpembelianbysupplier');
+        Route::post('/pembelian/getbarangpembelian', 'getbarangpembelian')->name('pembelian.getbarangpembelian');
+    });
+
+    Route::controller(JurnalkoreksiController::class)->group(function () {
+        Route::get('/jurnalkoreksi', 'index')->name('jurnalkoreksi.index')->can('jurnalkoreksi.index');
+        Route::get('/jurnalkoreksi/create', 'create')->name('jurnalkoreksi.create')->can('jurnalkoreksi.create');
+        Route::post('/jurnalkoreksi/store', 'store')->name('jurnalkoreksi.store')->can('jurnalkoreksi.store');
+        Route::delete('/jurnalkoreksi/{kode_jurnalkoreksi}/delete', 'destroy')->name('jurnalkoreksi.delete')->can('jurnalkoreksi.delete');
+    });
+
+    Route::controller(KontrabonpembelianController::class)->group(function () {
+        Route::get('/kontrabonpembelian', 'index')->name('kontrabonpmb.index')->can('kontrabonpmb.index');
+        Route::get('/kontrabonpembelian/create', 'create')->name('kontrabonpmb.create')->can('kontrabonpmb.create');
+        Route::post('/kontrabonpembelian/store', 'store')->name('kontrabonpmb.store')->can('kontrabonpmb.store');
+        Route::get('/kontrabonpembelian/{no_kontrabon}/show', 'show')->name('kontrabonpmb.show')->can('kontrabonpmb.show');
+        Route::get('/kontrabonpembelian/{no_kontrabon}/cetak', 'cetak')->name('kontrabonpmb.cetak')->can('kontrabonpmb.show');
+        Route::get('/kontrabonpembelian/{no_kontrabon}/edit', 'edit')->name('kontrabonpmb.edit')->can('kontrabonpmb.edit');
+        Route::put('/kontrabonpembelian/{no_kontrabon}/update', 'update')->name('kontrabonpmb.update')->can('kontrabonpmb.update');
+        Route::delete('/kontrabonpembelian/{no_kontrabon}/delete', 'destroy')->name('kontrabonpmb.delete')->can('kontrabonpmb.delete');
+        Route::get('/kontrabonpembelian/{no_kontrabon}/approve', 'approve')->name('kontrabonpmb.approve')->can('kontrabonpmb.approve');
+        Route::get('/kontrabonpembelian/{no_kontrabon}/cancel', 'cancel')->name('kontrabonpmb.cancel')->can('kontrabonpmb.approve');
+        Route::post('/kontrabonpembelian/proses', 'proses')->name('kontrabonpmb.proses')->can('kontrabonpmb.proses');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
