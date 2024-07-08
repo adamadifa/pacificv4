@@ -162,6 +162,8 @@ class Globalprovider extends ServiceProvider
                 'suratjalanangkutan/*',
                 'laporangudangjadi',
                 'laporangudangjadi/*',
+                'kontrabonangkutan',
+                'kontrabonangkutan/*'
             ];
 
             $gudang_jadi_permission = [
@@ -171,6 +173,7 @@ class Globalprovider extends ServiceProvider
                 'repackgudangjadi.index',
                 'rejectgudangjadi.index',
                 'lainnyagudangjadi.index',
+                'kontrabonangkutan.index',
                 'gj.persediaan',
                 'gj.rekappersediaan',
                 'gj.rekaphasilproduksi',
@@ -274,7 +277,8 @@ class Globalprovider extends ServiceProvider
                 'opgudanglogistik',
                 'opgudanglogistik/*',
                 'laporangudanglogistik',
-                'laporangudanglogistik/*'
+                'laporangudanglogistik/*',
+                'pembeliangudang',
             ];
 
 

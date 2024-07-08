@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barangmasukgudanglogistik;
 use App\Models\Barangpembelian;
 use App\Models\Cabang;
 use App\Models\Coa;
 use App\Models\Coadepartemen;
 use App\Models\Costratio;
+use App\Models\Detailbarangmasukgudanglogistik;
 use App\Models\Detailkontrabonpembelian;
 use App\Models\Detailpembelian;
 use App\Models\Kontrabonpembelian;
@@ -625,8 +627,8 @@ class PembelianController extends Controller
             return redirect(route('pembelian.edit', Crypt::encrypt($request->no_bukti)))->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
-            return redirect(route('pembelian.edit', Crypt::encrypt($request->no_bukti)))->with(messageError($e->getMessage()));
+            //dd($e);
+            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 
@@ -716,6 +718,93 @@ class PembelianController extends Controller
                 })
                 ->rawColumns(['action', 'asal_pengajuan', 'cekppn', 'totalpembelian', 'subtotal', 'penyesuaianjk'])
                 ->make(true);
+        }
+    }
+
+
+    public function approvegdl($no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        $pmb = new Pembelian();
+        $data['pembelian'] = $pmb->getPembelian(no_bukti: $no_bukti)->first();
+
+        $data['detail'] = Detailpembelian::select('pembelian_detail.*', 'nama_barang')
+            ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->where('no_bukti', $no_bukti)
+            ->where('pembelian_detail.kode_transaksi', 'PMB')
+            ->get();
+
+
+
+
+        $data['asal_pengajuan'] = config('pembelian.asal_pengajuan');
+        return view('pembelian.approvegdl', $data);
+    }
+
+
+    public function storeapprovegdl(Request $request, $no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        DB::beginTransaction();
+        try {
+
+            $pembelian = Pembelian::where('no_bukti', $no_bukti)->first();
+            $detailpembelian = Detailpembelian::where('no_bukti', $no_bukti)->get();
+
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "gudanglogistik");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            Barangmasukgudanglogistik::create([
+                'no_bukti' => $pembelian->no_bukti,
+                'tanggal' => $request->tanggal,
+            ]);
+
+
+            foreach ($detailpembelian as $d) {
+                $detail[] = [
+                    'no_bukti' => $d->no_bukti,
+                    'kode_barang' => $d->kode_barang,
+                    'keterangan' => $d->keterangan,
+                    'jumlah' => $d->jumlah,
+                    'harga' => $d->harga,
+                    'penyesuaian' => $d->penyesuaian,
+                    'kode_akun' => $d->kode_akun
+                ];
+            }
+
+            //dd($detail);
+            Detailbarangmasukgudanglogistik::insert($detail);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cancelapprovegdl($no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        DB::beginTransaction();
+        try {
+            $pembelian = Pembelian::where('no_bukti', $no_bukti)->first();
+            $cektutuplaporan = cektutupLaporan($pembelian->tanggal, "gudanglogistik");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            Barangmasukgudanglogistik::where('no_bukti', $no_bukti)->delete();
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil di Dibatalkan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 }

@@ -90,10 +90,10 @@
                                     <tr>
                                         <th style="width: 10%">No. Bukti</th>
                                         <th style="width: 10%">Tanggal</th>
-                                        <th style="width:20%">Supplier</th>
+                                        <th style="width:25%">Supplier</th>
                                         <th style="width: 5%">Ajuan</th>
-                                        <th>Subtotal</th>
-                                        <th>Peny</th>
+                                        {{-- <th>Subtotal</th>
+                                        <th>Peny</th> --}}
                                         <th>Total</th>
                                         <th>Bayar</th>
                                         <th>PPN</th>
@@ -114,8 +114,8 @@
                                             <td>{{ formatIndo($d->tanggal) }}</td>
                                             <td>{{ $d->nama_supplier }}</td>
                                             <td>{{ $d->kode_asal_pengajuan }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($d->subtotal) }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($d->penyesuaian_jk) }}</td>
+                                            {{-- <td class="text-end">{{ formatAngkaDesimal($d->subtotal) }}</td>
+                                            <td class="text-end">{{ formatAngkaDesimal($d->penyesuaian_jk) }}</td> --}}
                                             <td class="text-end">{{ formatAngkaDesimal($total) }}</td>
                                             <td class="text-end">{{ formatAngkaDesimal($d->totalbayar) }}</td>
                                             <td class="text-center">
@@ -163,6 +163,24 @@
                                                                 <i class="ti ti-trash text-danger"></i>
                                                             </a>
                                                         </form>
+                                                    @endcan
+                                                    @can('pembelian.approvegdl')
+                                                        @if ($d->kode_asal_pengajuan == 'GDL')
+                                                            @if (empty($d->no_bukti_gdl))
+                                                                <a href="#" class="btnApprovegdl" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
+                                                                    <i class="ti ti-external-link text-primary"></i>
+                                                                </a>
+                                                            @else
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('pembelian.cancelapprovegdl', Crypt::encrypt($d->no_bukti)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="cancel-confirm me-1">
+                                                                        <i class="ti ti-xbox-x text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @endif
+                                                        @endif
                                                     @endcan
                                                 </div>
                                             </td>
@@ -214,6 +232,17 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Detail Pembelian");
             $("#modal").find("#loadmodal").load(`/pembelian/${no_bukti}/show`);
+            $("#modal").find(".modal-dialog").addClass('modal-xl');
+        });
+
+
+        $(".btnApprovegdl").click(function(e) {
+            e.preventDefault();
+            loading();
+            var no_bukti = $(this).attr("no_bukti");
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text("Approve Penerimaan Gudang Logistik");
+            $("#modal").find("#loadmodal").load(`/pembelian/${no_bukti}/approvegdl`);
             $("#modal").find(".modal-dialog").addClass('modal-xl');
         });
 

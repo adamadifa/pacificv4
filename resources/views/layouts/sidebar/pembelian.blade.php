@@ -1,4 +1,4 @@
-<li class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'jurnalkoreksi', 'kontrabonpembelian']) ? 'open' : '' }}">
+<li class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'jurnalkoreksi', 'kontrabonpembelian', 'kontrabonpembelian/*']) ? 'open' : '' }}">
 
     @if (auth()->user()->hasAnyPermission(['pembelian.index', 'pembelian.jatuhtempo', 'jurnalkoreksi.index', 'kontrabonpmb.index']))
         <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -28,7 +28,7 @@
                 </li>
             @endif
             @if (auth()->user()->hasAnyPermission(['kontrabonpmb.index']))
-                <li class="menu-item {{ request()->is(['kontrabonpembelian']) ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is(['kontrabonpembelian', 'kontrabonpembelian/*']) ? 'active' : '' }}">
                     <a href="{{ route('kontrabonpmb.index') }}" class="menu-link">
                         <div>Kontrabon</div>
                     </a>

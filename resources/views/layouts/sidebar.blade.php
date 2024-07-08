@@ -34,6 +34,7 @@
          @include('layouts.sidebar.marketing')
          @include('layouts.sidebar.pembelian')
          @include('layouts.sidebar.keuangan')
+         @include('layouts.sidebar.accounting')
 
 
 

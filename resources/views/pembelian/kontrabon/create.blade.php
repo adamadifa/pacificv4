@@ -18,7 +18,7 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="Auto" name="no_kontrabon" icon="ti ti-barcode" />
+                            <x-input-with-icon label="Auto" name="no_kontrabon" icon="ti ti-barcode" disabled="true" />
                             <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
                             <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
                                 upperCase="true" select2="select2Kodesupplier" />
@@ -348,6 +348,14 @@
             $('#grandtotal_text').text(numberFormat(grandTotal, '2', ',', '.'));
         }
 
+        function resetForm() {
+            form.find("#no_bukti").val("");
+            form.find("#jumlah").val("");
+            form.find("#keterangan").val("");
+            form.find("#total_pembelian").val("");
+        }
+
+
         form.find("#btnTambahitem").click(function(e) {
             e.preventDefault();
             const no_bukti = form.find("#no_bukti").val();
@@ -399,6 +407,9 @@
             } else {
                 let newItem = `
                     <tr id='${no_bukti_index}'>
+                        <input type="hidden" name="no_bukti_item[]" value="${no_bukti}"/>
+                        <input type="hidden" name="keterangan_item[]" value="${keterangan}"/>
+                        <input type="hidden" name="jumlah_item[]" value="${jumlah}"/>
                         <td>${no_bukti}</td>
                         <td>${keterangan}</td>
                         <td class='text-end totalbayar'>${jumlah}</td>
@@ -410,6 +421,7 @@
 
                 form.find("#loadpembelian").append(newItem);
                 calculateTotal();
+                resetForm();
             }
         });
 
@@ -437,6 +449,15 @@
             });
         });
 
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+                <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Loading..
+            `);
+        }
 
         form.find("#saveButton").hide();
 
@@ -448,6 +469,9 @@
             }
         });
 
+        form.find("#kode_supplier").change(function() {
+            form.find("#loadpembelian").html("");
+        });
         form.submit(function(e) {
             const tanggal = form.find("#tanggal").val();
             const kode_supplier = form.find("#kode_supplier").val();
@@ -508,6 +532,8 @@
                     },
                 });
                 return false;
+            } else {
+                buttonDisable();
             }
         });
     });

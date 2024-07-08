@@ -20,12 +20,12 @@
                             <form action="{{ route('barangmasukgudanglogistik.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
-                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
-                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
                                     </div>
                                 </div>
                                 <div class="row">
@@ -53,6 +53,7 @@
                                     <thead class="table-dark">
                                         <tr>
                                             <th>No. Bukti</th>
+                                            <th>Supplier</th>
                                             <th>Tanggal Pembelian</th>
                                             <th>Tanggal Diterima</th>
                                             <th>#</th>
@@ -62,6 +63,7 @@
                                         @foreach ($barangmasuk as $d)
                                             <tr>
                                                 <td>{{ $d->no_bukti }}</td>
+                                                <td>{{ $d->nama_supplier }}</td>
                                                 <td>{{ !empty($d->tanggal_pembelian) ? DateToIndo($d->tanggal_pembelian) : '' }}
                                                 </td>
                                                 <td>{{ DateToIndo($d->tanggal) }}</td>
@@ -69,17 +71,17 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('barangmasukgl.edit')
-                                                            <div>
-                                                                <a href="#" class="me-2 btnEdit"
-                                                                    no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
-                                                                    <i class="ti ti-edit text-success"></i>
-                                                                </a>
-                                                            </div>
+                                                            @if (empty($d->tanggal_pembelian))
+                                                                <div>
+                                                                    <a href="#" class="me-2 btnEdit" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
+                                                                        <i class="ti ti-edit text-success"></i>
+                                                                    </a>
+                                                                </div>
+                                                            @endif
                                                         @endcan
                                                         @can('barangmasukgl.show')
                                                             <div>
-                                                                <a href="#" class="me-2 btnShow"
-                                                                    no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
+                                                                <a href="#" class="me-2 btnShow" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
                                                                     <i class="ti ti-file-description text-info"></i>
                                                                 </a>
                                                             </div>

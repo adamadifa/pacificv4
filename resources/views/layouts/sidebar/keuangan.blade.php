@@ -19,6 +19,8 @@
         'kasbon',
         'pembayarankasbon',
         'piutangkaryawan',
+        'kontrabonkeuangan',
+        'kontrabonkeuangan/*',
     ])
         ? 'open'
         : '' }}">
@@ -36,6 +38,8 @@
                 'kasbon.index',
                 'pembayarankasbon.index',
                 'piutangkaryawan.index',
+                'kontrabonpembelian.index',
+                'kontrabonangkutan.index',
             ]))
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-moneybag"></i>
@@ -64,7 +68,13 @@
                     </a>
                 </li>
             @endif
-
+            @if (auth()->user()->hasAnyPermission(['kontrabonpembelian.index', 'kontrabonangkutan.index']))
+                <li class="menu-item {{ request()->is(['kontrabonkeuangan', 'kontrabonkeuangan/*']) ? 'active' : '' }}">
+                    <a href="{{ route('kontrabonkeuangan.pembelian') }}" class="menu-link">
+                        <div>Kontrabon</div>
+                    </a>
+                </li>
+            @endif
             @if (auth()->user()->hasAnyPermission(['ajuantransfer.index']))
                 <li class="menu-item {{ request()->is(['ajuantransfer']) ? 'active' : '' }}">
                     <a href="{{ route('ajuantransfer.index') }}" class="menu-link">

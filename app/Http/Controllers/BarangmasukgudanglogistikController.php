@@ -20,8 +20,9 @@ class BarangmasukgudanglogistikController extends Controller
         $end_date = config('global.end_date');
 
         $query = Barangmasukgudanglogistik::query();
-        $query->select('gudang_logistik_barang_masuk.*', 'pembelian.tanggal as tanggal_pembelian');
+        $query->select('gudang_logistik_barang_masuk.*', 'pembelian.tanggal as tanggal_pembelian', 'nama_supplier');
         $query->leftJoin('pembelian', 'gudang_logistik_barang_masuk.no_bukti', '=', 'pembelian.no_bukti');
+        $query->leftJoin('supplier', 'pembelian.kode_supplier', '=', 'supplier.kode_supplier');
         $query->orderBy('gudang_logistik_barang_masuk.tanggal', 'desc');
         $query->orderBy('gudang_logistik_barang_masuk.created_at', 'desc');
         if (!empty($request->dari) && !empty($request->sampai)) {

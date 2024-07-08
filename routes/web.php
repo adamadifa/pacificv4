@@ -17,6 +17,8 @@ use App\Http\Controllers\BpjskesehatanController;
 use App\Http\Controllers\BpjstenagakerjaController;
 use App\Http\Controllers\BufferstokController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\CoaController;
+use App\Http\Controllers\CostratioController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DpbController;
 use App\Http\Controllers\DriverhelperController;
@@ -32,6 +34,8 @@ use App\Http\Controllers\KaskecilController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KirimpusatController;
+use App\Http\Controllers\KontrabonangkutanController;
+use App\Http\Controllers\KontrabonkeuanganController;
 use App\Http\Controllers\KontrabonpembelianController;
 use App\Http\Controllers\LainnyagudangjadiController;
 use App\Http\Controllers\LaporangudangbahanController;
@@ -673,10 +677,14 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SuratjalanangkutanController::class)->group(function () {
         Route::get('/suratjalanangkutan', 'index')->name('suratjalanangkutan.index')->can('suratjalanangkutan.index');
-        Route::get('/suratjalanangkutan/create', 'create')->name('suratjalanangkutan.create')->can('suratjalanangkutan.create');
-        Route::post('/suratjalanangkutan', 'store')->name('suratjalanangkutan.store')->can('suratjalanangkutan.store');
-        Route::delete('/suratjalanangkutan/{kode_saldo_awal}', 'destroy')->name('suratjalanangkutan.delete')->can('suratjalanangkutan.delete');
-        Route::get('/suratjalanangkutan/{kode_saldo_awal}/show', 'show')->name('suratjalanangkutan.show')->can('suratjalanangkutan.show');
+        Route::get('/suratjalanangkutan/{no_dok}/edit', 'edit')->name('suratjalanangkutan.edit')->can('suratjalanangkutan.edit');
+        Route::put('/suratjalanangkutan/{no_dok}/update', 'update')->name('suratjalanangkutan.update')->can('suratjalanangkutan.update');
+        // Route::get('/suratjalanangkutan/create', 'create')->name('suratjalanangkutan.create')->can('suratjalanangkutan.create');
+        // Route::post('/suratjalanangkutan', 'store')->name('suratjalanangkutan.store')->can('suratjalanangkutan.store');
+        // Route::delete('/suratjalanangkutan/{kode_saldo_awal}', 'destroy')->name('suratjalanangkutan.delete')->can('suratjalanangkutan.delete');
+        // Route::get('/suratjalanangkutan/{kode_saldo_awal}/show', 'show')->name('suratjalanangkutan.show')->can('suratjalanangkutan.show');
+
+        Route::get('/suratjalanangkutan/{kode_angkutan}/getsuratjalanbyangkutan', 'getsuratjalanbyangkutan')->name('suratjalanangkutan.getsuratjalanbyangkutan');
     });
 
     Route::controller(LaporangudangjadiController::class)->group(function () {
@@ -1238,6 +1246,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembelian', 'index')->name('pembelian.index')->can('pembelian.index');
         Route::get('/pembelian/create', 'create')->name('pembelian.create')->can('pembelian.create');
         Route::get('/pembelian/{no_bukti}/show', 'show')->name('pembelian.show')->can('pembelian.show');
+        Route::get('/pembelian/{no_bukti}/approvegdl', 'approvegdl')->name('pembelian.approvegdl')->can('pembelian.approvegdl');
+        Route::post('/pembelian/{no_bukti}/storeapprovegdl', 'storeapprovegdl')->name('pembelian.storeapprovegdl')->can('pembelian.approvegdl');
+        Route::delete('/pembelian/{no_bukti}/cancelapprovegdl', 'cancelapprovegdl')->name('pembelian.cancelapprovegdl')->can('pembelian.approvegdl');
         Route::get('/pembelian/{no_bukti}/edit', 'edit')->name('pembelian.edit')->can('pembelian.edit');
         Route::put('/pembelian/{no_bukti}/update', 'update')->name('pembelian.update')->can('pembelian.update');
         Route::get('/pembelian/createpotongan', 'createpotongan')->name('pembelian.createpotongan')->can('pembelian.edit');
@@ -1270,7 +1281,47 @@ Route::middleware('auth')->group(function () {
         Route::delete('/kontrabonpembelian/{no_kontrabon}/delete', 'destroy')->name('kontrabonpmb.delete')->can('kontrabonpmb.delete');
         Route::get('/kontrabonpembelian/{no_kontrabon}/approve', 'approve')->name('kontrabonpmb.approve')->can('kontrabonpmb.approve');
         Route::get('/kontrabonpembelian/{no_kontrabon}/cancel', 'cancel')->name('kontrabonpmb.cancel')->can('kontrabonpmb.approve');
-        Route::post('/kontrabonpembelian/proses', 'proses')->name('kontrabonpmb.proses')->can('kontrabonpmb.proses');
+        Route::get('/kontrabonpembelian/{no_kontrabon}/proses', 'proses')->name('kontrabonpmb.proses')->can('kontrabonpmb.proses');
+        Route::post('/kontrabonpembelian/{no_kontrabon}/storeproses', 'storeproses')->name('kontrabonpmb.storeproses')->can('kontrabonpmb.proses');
+        Route::delete('/kontrabonpembelian/{no_kontrabon}/cancelproses', 'cancelproses')->name('kontrabonpmb.cancelproses')->can('kontrabonpmb.proses');
+
+        Route::get('/kontrabonkeuangan/pembelian', 'index')->name('kontrabonkeuangan.pembelian')->can('kontrabonpmb.index');
+    });
+
+    Route::controller(KontrabonangkutanController::class)->group(function () {
+        Route::get('/kontrabonangkutan', 'index')->name('kontrabonangkutan.index')->can('kontrabonangkutan.index');
+        Route::get('/kontrabonangkutan/create', 'create')->name('kontrabonangkutan.create')->can('kontrabonangkutan.create');
+        Route::post('/kontrabonangkutan/store', 'store')->name('kontrabonangkutan.store')->can('kontrabonangkutan.store');
+        Route::get('/kontrabonangkutan/{no_kontrabon}/show', 'show')->name('kontrabonangkutan.show')->can('kontrabonangkutan.show');
+        Route::get('/kontrabonangkutan/{no_kontrabon}/edit', 'edit')->name('kontrabonangkutan.edit')->can('kontrabonangkutan.edit');
+        Route::put('/kontrabonangkutan/{no_kontrabon}/update', 'update')->name('kontrabonangkutan.update')->can('kontrabonangkutan.update');
+        Route::delete('/kontrabonangkutan/{no_kontrabon}/delete', 'destroy')->name('kontrabonangkutan.delete')->can('kontrabonangkutan.delete');
+        Route::get('/kontrabonangkutan/{no_kontrabon}/proses', 'proses')->name('kontrabonangkutan.proses')->can('kontrabonangkutan.proses');
+        Route::post('/kontrabonangkutan/{no_kontrabon}/storeproses', 'storeproses')->name('kontrabonangkutan.storeproses')->can('kontrabonangkutan.proses');
+        Route::delete('/kontrabonangkutan/{no_kontrabon}/cancelproses', 'cancelproses')->name('kontrabonangkutan.cancelproses')->can('kontrabonangkutan.proses');
+        Route::get('/kontrabonkeuangan/angkutan', 'index')->name('kontrabonkeuangan.angkutan')->can('kontrabonangkutan.index');
+    });
+
+    // Route::controller(KontrabonkeuanganController::class)->group(function () {
+    //     Route::get('/kontrabonkeuangan/pembelian', 'pembelian')->name('kontrabonkeuangan.pembelian')->can('kontrabonpembelian.index');
+    // });
+
+    Route::controller(CoaController::class)->group(function () {
+        Route::get('/coa', 'index')->name('coa.index')->can('coa.index');
+        Route::get('/coa/create', 'create')->name('coa.create')->can('coa.create');
+        Route::post('/coa/store', 'store')->name('coa.store')->can('coa.store');
+        Route::get('/coa/{kode_akun}/edit', 'edit')->name('coa.edit')->can('coa.edit');
+        Route::put('/coa/{kode_akun}/update', 'update')->name('coa.update')->can('coa.update');
+        Route::delete('/coa/{kode_akun}/delete', 'destroy')->name('coa.delete')->can('coa.delete');
+    });
+
+    Route::controller(CostratioController::class)->group(function () {
+        Route::get('/costratio', 'index')->name('costratio.index')->can('costratio.index');
+        Route::get('/costratio/create', 'create')->name('costratio.create')->can('costratio.create');
+        Route::post('/costratio/store', 'store')->name('costratio.store')->can('costratio.store');
+        Route::get('/costratio/{id}/edit', 'edit')->name('costratio.edit')->can('costratio.edit');
+        Route::put('/costratio/{id}/update', 'update')->name('costratio.update')->can('costratio.update');
+        Route::delete('/costratio/{id}/delete', 'destroy')->name('costratio.delete')->can('costratio.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

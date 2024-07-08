@@ -49,11 +49,11 @@ class Kontrabonpembelian extends Model
                 $query->where('pembelian_kontrabon.kategori', $request->kategori_search);
             }
 
-            if (!empty($request->status)) {
-                if ($request->status == 'SP') {
-                    $query->whereNotNull('tglbayar');
+            if (!empty($request->status_search)) {
+                if ($request->status_search == 'SP') {
+                    $query->whereNotNull('pembelian_historibayar.tanggal');
                 } else {
-                    $query->whereNull('tglbayar');
+                    $query->whereNull('pembelian_historibayar.tanggal');
                 }
             }
         }

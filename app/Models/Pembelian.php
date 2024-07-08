@@ -20,7 +20,16 @@ class Pembelian extends Model
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
         $query = Pembelian::query();
-        $query->select('pembelian.*', 'nama_supplier', 'subtotal', 'penyesuaian_jk', 'totalbayar', 'cek_kontrabon', DB::raw('IFNULL(subtotal,0) + IFNULL(penyesuaian_jk,0) as total_pembelian'));
+        $query->select(
+            'pembelian.*',
+            'nama_supplier',
+            'subtotal',
+            'penyesuaian_jk',
+            'totalbayar',
+            'cek_kontrabon',
+            DB::raw('IFNULL(subtotal,0) + IFNULL(penyesuaian_jk,0) as total_pembelian'),
+            'gudang_logistik_barang_masuk.no_bukti as no_bukti_gdl'
+        );
         $query->join('supplier', 'pembelian.kode_supplier', '=', 'supplier.kode_supplier');
         $query->leftJoin(
             DB::raw('(
@@ -75,6 +84,8 @@ class Pembelian extends Model
                 $join->on('pembelian.no_bukti', '=', 'kontrabon.no_bukti');
             }
         );
+
+        $query->leftJoin('gudang_logistik_barang_masuk', 'pembelian.no_bukti', '=', 'gudang_logistik_barang_masuk.no_bukti');
         if (!empty($request)) {
             if (!empty($request->dari) && !empty($request->sampai)) {
                 $query->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai]);
