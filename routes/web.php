@@ -9,6 +9,7 @@ use App\Http\Controllers\BarangkeluargudanglogistikController;
 use App\Http\Controllers\BarangkeluarproduksiController;
 use App\Http\Controllers\BarangmasukgudangbahanController;
 use App\Http\Controllers\BarangmasukgudanglogistikController;
+use App\Http\Controllers\BarangmasukmaintenanceController;
 use App\Http\Controllers\BarangmasukproduksiController;
 use App\Http\Controllers\BarangpembelianController;
 use App\Http\Controllers\BarangproduksiController;
@@ -24,10 +25,13 @@ use App\Http\Controllers\DpbController;
 use App\Http\Controllers\DriverhelperController;
 use App\Http\Controllers\FsthpController;
 use App\Http\Controllers\GajiController;
+use App\Http\Controllers\HargaawalhppController;
 use App\Http\Controllers\HargaController;
+use App\Http\Controllers\HppController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\JurnalkoreksiController;
+use App\Http\Controllers\JurnalumumController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KasbonController;
 use App\Http\Controllers\KaskecilController;
@@ -1323,6 +1327,53 @@ Route::middleware('auth')->group(function () {
         Route::put('/costratio/{id}/update', 'update')->name('costratio.update')->can('costratio.update');
         Route::delete('/costratio/{id}/delete', 'destroy')->name('costratio.delete')->can('costratio.delete');
     });
+
+    Route::controller(JurnalumumController::class)->group(function () {
+        Route::get('/jurnalumum', 'index')->name('jurnalumum.index')->can('jurnalumum.index');
+        Route::get('/jurnalumum/create', 'create')->name('jurnalumum.create')->can('jurnalumum.create');
+        Route::post('/jurnalumum/store', 'store')->name('jurnalumum.store')->can('jurnalumum.store');
+        Route::get('/jurnalumum/{id}/show', 'show')->name('jurnalumum.show')->can('jurnalumum.show');
+        Route::get('/jurnalumum/{id}/edit', 'edit')->name('jurnalumum.edit')->can('jurnalumum.edit');
+        Route::put('/jurnalumum/{id}/update', 'update')->name('jurnalumum.update')->can('jurnalumum.update');
+        Route::delete('/jurnalumum/{id}/delete', 'destroy')->name('jurnalumum.delete')->can('jurnalumum.delete');
+    });
+
+
+    Route::controller(HppController::class)->group(function () {
+        Route::get('/hpp', 'index')->name('hpp.index')->can('hpp.index');
+        Route::get('/hpp/create', 'create')->name('hpp.create')->can('hpp.create');
+        Route::post('/hpp/store', 'store')->name('hpp.store')->can('hpp.store');
+        Route::get('/hpp/{kode_hpp}/show', 'show')->name('hpp.show')->can('hpp.show');
+        Route::get('/hpp/{id}/edit', 'edit')->name('hpp.edit')->can('hpp.edit');
+        Route::put('/hpp/{id}/update', 'update')->name('hpp.update')->can('hpp.update');
+        Route::delete('/hpp/{id}/delete', 'destroy')->name('hpp.delete')->can('hpp.delete');
+    });
+
+
+    Route::controller(HargaawalhppController::class)->group(function () {
+        Route::get('/hargaawalhpp', 'index')->name('hargaawalhpp.index')->can('hargaawalhpp.index');
+        Route::get('/hargaawalhpp/create', 'create')->name('hargaawalhpp.create')->can('hargaawalhpp.create');
+        Route::post('/hargaawalhpp/store', 'store')->name('hargaawalhpp.store')->can('hargaawalhpp.store');
+        Route::get('/hargaawalhpp/{id}/show', 'show')->name('hargaawalhpp.show')->can('hargaawalhpp.show');
+        Route::get('/hargaawalhpp/{id}/edit', 'edit')->name('hargaawalhpp.edit')->can('hargaawalhpp.edit');
+        Route::put('/hargaawalhpp/{id}/update', 'update')->name('hargaawalhpp.update')->can('hargaawalhpp.update');
+        Route::delete('/hargaawalhpp/{id}/delete', 'destroy')->name('hargaawalhpp.delete')->can('hargaawalhpp.delete');
+
+        Route::post('/hargaawalhpp/gethargaawal', 'gethargaawal')->name('hargaawalhpp.gethargaawal')->can('hargaawalhpp.create');
+    });
+
+
+    //Maintenance
+    Route::controller(BarangmasukmaintenanceController::class)->group(function () {
+        Route::get('/barangmasukmaintenance', 'index')->name('barangmasukmtc.index')->can('barangmasukmtc.index');
+        Route::get('/barangmasukmaintenance/create', 'create')->name('barangmasukmtc.create')->can('barangmasukmtc.create');
+        Route::post('/barangmasukmaintenance/store', 'store')->name('barangmasukmtc.store')->can('barangmasukmtc.store');
+        Route::get('/barangmasukmaintenance/{id}/show', 'show')->name('barangmasukmtc.show')->can('barangmasukmtc.show');
+        Route::get('/barangmasukmaintenance/{id}/edit', 'edit')->name('barangmasukmtc.edit')->can('barangmasukmtc.edit');
+        Route::put('/barangmasukmaintenance/{id}/update', 'update')->name('barangmasukmtc.update')->can('barangmasukmtc.update');
+        Route::delete('/barangmasukmaintenance/{id}/delete', 'destroy')->name('barangmasukmtc.delete')->can('barangmasukmtc.delete');
+    });
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

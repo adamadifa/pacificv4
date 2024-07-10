@@ -28,6 +28,10 @@ class JurnalkoreksiController extends Controller
         $query->select('pembelian_jurnalkoreksi.*', 'nama_barang', 'nama_akun');
         $query->join('pembelian_barang', 'pembelian_jurnalkoreksi.kode_barang', '=', 'pembelian_barang.kode_barang');
         $query->join('coa', 'pembelian_jurnalkoreksi.kode_akun', '=', 'coa.kode_akun');
+        $query->whereBetween('pembelian_jurnalkoreksi.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->no_bukti_search)) {
+            $query->where('pembelian_jurnalkoreksi.no_bukti', $request->no_bukti_search);
+        }
         $query->orderBy('pembelian_jurnalkoreksi.tanggal', 'desc');
         $query->orderBy('pembelian_jurnalkoreksi.no_bukti');
         $query->orderBy('pembelian_jurnalkoreksi.debet_kredit', 'desc');

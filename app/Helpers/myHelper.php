@@ -100,6 +100,14 @@ function formatAngkaDesimal3($nilai)
     }
 }
 
+function formatAngkaDesimal5($nilai)
+{
+    if (!empty($nilai)) {
+        return number_format($nilai, '5', ',', '.');
+    }
+}
+
+
 
 
 

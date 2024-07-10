@@ -35,6 +35,7 @@
          @include('layouts.sidebar.pembelian')
          @include('layouts.sidebar.keuangan')
          @include('layouts.sidebar.accounting')
+         @include('layouts.sidebar.maintenance')
 
 
 
