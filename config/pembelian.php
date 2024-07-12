@@ -116,5 +116,7 @@ return [
     ],
 
 
-
+    'role_access_all_pembelian' => [
+        'super admin', 'direktur', 'admin pembelian', 'manager pembelian', 'manager accounting'
+    ],
 ];

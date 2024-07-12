@@ -11,10 +11,12 @@
 
         @can('barangkeluarmtc.index')
             <li class="nav-item" role="presentation">
-                <a href="#" class="nav-link {{ request()->is(['barangkeluarmaintenance']) ? 'active' : '' }}">
+                <a href="{{ route('barangkeluarmtc.index') }}" class="nav-link {{ request()->is(['barangkeluarmaintenance']) ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Barang Keluar
                 </a>
             </li>
         @endcan
+
+
     </ul>
 @endif

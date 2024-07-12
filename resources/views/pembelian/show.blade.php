@@ -38,7 +38,7 @@
                     <th style="width: 10%">Kode</th>
                     <th style="width: 25%">Nama Barang</th>
                     <th style="width: 20%">Keterangan</th>
-                    <th>Qty</th>
+                    <th style="width: 10%">Qty</th>
                     <th>Harga</th>
                     <th>Subtotal</th>
                     <th>Peny</th>

@@ -6,7 +6,8 @@
     <span>Pembelian</span>
 @endsection
 <div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
+
+    <div class="@can('pembelian.harga') col-lg-12 @else col-lg-8 @endcan  col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">
@@ -36,40 +37,46 @@
                                         datepicker="flatpickr-date" />
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <select name="kode_asal_pengajuan_search" id="kode_asal_pengajuan_search" class="form-select">
-                                            <option value="">Asal Ajuan</option>
-                                            @foreach ($asal_ajuan as $d)
-                                                <option value="{{ $d['kode_group'] }}"
-                                                    {{ Request('kode_asal_pengajuan_search') == $d['kode_group'] ? 'selected' : '' }}>
-                                                    {{ $d['nama_group'] }}</option>
-                                            @endforeach
+                            @can('pembelian.harga')
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-12 col-sm-12">
+                                        <div class="form-group mb-3">
+                                            <select name="kode_asal_pengajuan_search" id="kode_asal_pengajuan_search" class="form-select">
+                                                <option value="">Asal Ajuan</option>
+                                                @foreach ($asal_ajuan as $d)
+                                                    <option value="{{ $d['kode_group'] }}"
+                                                        {{ Request('kode_asal_pengajuan_search') == $d['kode_group'] ? 'selected' : '' }}>
+                                                        {{ $d['nama_group'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-12 col-sm-12">
+                                        <x-select label="Semua Supplier" name="kode_supplier_search" :data="$supplier" key="kode_supplier"
+                                            textShow="nama_supplier" upperCase="true" selected="{{ Request('kode_supplier_search') }}"
+                                            select2="select2Kodesupplier" />
+                                    </div>
+                                    <div class="col-lg-3 col-md-12 col-sm-12">
+                                        <select name="ppn_search" id="ppn_search" class="form-select">
+                                            <option value="">PPN / Non PPN</option>
+                                            <option value="1" {{ Request('ppn_search') == '1' ? 'selected' : '' }}>PPN</option>
+                                            <option value="0" {{ Request('ppn_search') === '0' ? 'selected' : '' }}>Non PPN</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-12 col-sm-12">
+                                        <select name="jenis_transaksi_search" id="jenis_transaksi_search" class="form-select">
+                                            <option value="">Tunai / Kredit</option>
+                                            <option value="T" {{ Request('jenis_transaksi_search') == 'T' ? 'selected' : '' }}>Tunai</option>
+                                            <option value="K" {{ Request('jenis_transaksi_search') == 'K' ? 'selected' : '' }}>Kredit</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-select label="Semua Supplier" name="kode_supplier_search" :data="$supplier" key="kode_supplier"
-                                        textShow="nama_supplier" upperCase="true" selected="{{ Request('kode_supplier_search') }}"
-                                        select2="select2Kodesupplier" />
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <select name="ppn_search" id="ppn_search" class="form-select">
-                                        <option value="">PPN / Non PPN</option>
-                                        <option value="1" {{ Request('ppn_search') == '1' ? 'selected' : '' }}>PPN</option>
-                                        <option value="0" {{ Request('ppn_search') === '0' ? 'selected' : '' }}>Non PPN</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <select name="jenis_transaksi_search" id="jenis_transaksi_search" class="form-select">
-                                        <option value="">Tunai / Kredit</option>
-                                        <option value="T" {{ Request('jenis_transaksi_search') == 'T' ? 'selected' : '' }}>Tunai</option>
-                                        <option value="K" {{ Request('jenis_transaksi_search') == 'K' ? 'selected' : '' }}>Kredit</option>
-                                    </select>
-                                </div>
-                            </div>
+                            @else
+                                <x-select label="Semua Supplier" name="kode_supplier_search" :data="$supplier" key="kode_supplier"
+                                    textShow="nama_supplier" upperCase="true" selected="{{ Request('kode_supplier_search') }}"
+                                    select2="select2Kodesupplier" />
+                            @endcan
+
 
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
@@ -94,13 +101,18 @@
                                         <th style="width: 5%">Ajuan</th>
                                         {{-- <th>Subtotal</th>
                                         <th>Peny</th> --}}
-                                        <th>Total</th>
-                                        <th>Bayar</th>
-                                        <th>PPN</th>
-                                        <th>KB</th>
-                                        <th>Ket</th>
-                                        <th>T/K</th>
-                                        <th>#</th>
+                                        @can('pembelian.harga')
+                                            <th>Total</th>
+                                            <th>Bayar</th>
+                                            <th>PPN</th>
+                                            <th>KB</th>
+                                            <th>Ket</th>
+                                            <th>T/K</th>
+                                        @endcan
+
+
+
+                                        <th style="width: 10%">#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -116,32 +128,34 @@
                                             <td>{{ $d->kode_asal_pengajuan }}</td>
                                             {{-- <td class="text-end">{{ formatAngkaDesimal($d->subtotal) }}</td>
                                             <td class="text-end">{{ formatAngkaDesimal($d->penyesuaian_jk) }}</td> --}}
-                                            <td class="text-end">{{ formatAngkaDesimal($total) }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($d->totalbayar) }}</td>
-                                            <td class="text-center">
-                                                @if ($d->ppn == '1')
-                                                    <i class="ti ti-checks text-success"></i>
-                                                @endif
-                                            </td>
-                                            <td class="text-center">
-                                                @if ($d->cek_kontrabon > 0)
-                                                    <i class="ti ti-checks text-success"></i>
-                                                @else
-                                                    <i class="ti ti-hourglass-empty text-warning"></i>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($total == $d->totalbayar)
-                                                    <span class="badge bg-success">L</span>
-                                                @else
-                                                    <span class="badge bg-danger">BL</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="badge {{ $d->jenis_transaksi == 'T' ? 'bg-success' : 'bg-warning' }}">{{ $d->jenis_transaksi }}
-                                                </span>
-                                            </td>
+                                            @can('pembelian.harga')
+                                                <td class="text-end">{{ formatAngkaDesimal($total) }}</td>
+                                                <td class="text-end">{{ formatAngkaDesimal($d->totalbayar) }}</td>
+                                                <td class="text-center">
+                                                    @if ($d->ppn == '1')
+                                                        <i class="ti ti-checks text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($d->cek_kontrabon > 0)
+                                                        <i class="ti ti-checks text-success"></i>
+                                                    @else
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($total == $d->totalbayar)
+                                                        <span class="badge bg-success">L</span>
+                                                    @else
+                                                        <span class="badge bg-danger">BL</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="badge {{ $d->jenis_transaksi == 'T' ? 'bg-success' : 'bg-warning' }}">{{ $d->jenis_transaksi }}
+                                                    </span>
+                                                </td>
+                                            @endcan
                                             <td>
                                                 <div class="d-flex">
                                                     @can('pembelian.edit')
@@ -182,6 +196,24 @@
                                                             @endif
                                                         @endif
                                                     @endcan
+                                                    @can('pembelian.approvemtc')
+                                                        @if ($d->kode_asal_pengajuan == 'GAF' && $d->cekmaintenance > 0)
+                                                            @if (empty($d->no_bukti_mtc))
+                                                                <a href="#" class="btnApprovemtc" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
+                                                                    <i class="ti ti-external-link text-warning"></i>
+                                                                </a>
+                                                            @else
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('pembelian.cancelapprovemtc', Crypt::encrypt($d->no_bukti)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="cancel-confirm me-1">
+                                                                        <i class="ti ti-xbox-x text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @endif
+                                                        @endif
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>
@@ -198,7 +230,11 @@
         </div>
     </div>
 </div>
-<x-modal-form id="modal" show="loadmodal" title="" />
+@can('pembelian.harga')
+    <x-modal-form id="modal" show="loadmodal" title="" size="modal-xl" />
+@else
+    <x-modal-form id="modal" show="loadmodal" title="" size="modal-lg" />
+@endcan
 @endsection
 @push('myscript')
 <script>
@@ -232,7 +268,7 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Detail Pembelian");
             $("#modal").find("#loadmodal").load(`/pembelian/${no_bukti}/show`);
-            $("#modal").find(".modal-dialog").addClass('modal-xl');
+            // $("#modal").find(".modal-dialog").addClass('modal-xl');
         });
 
 
@@ -243,7 +279,18 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Approve Penerimaan Gudang Logistik");
             $("#modal").find("#loadmodal").load(`/pembelian/${no_bukti}/approvegdl`);
-            $("#modal").find(".modal-dialog").addClass('modal-xl');
+            // $("#modal").find(".modal-dialog").addClass('modal-xl');
+        });
+
+
+        $(".btnApprovemtc").click(function(e) {
+            e.preventDefault();
+            loading();
+            var no_bukti = $(this).attr("no_bukti");
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text("Approve Penerimaan Maintenance");
+            $("#modal").find("#loadmodal").load(`/pembelian/${no_bukti}/approvemtc`);
+            // $("#modal").find(".modal-dialog").addClass('modal-xl');
         });
 
     });

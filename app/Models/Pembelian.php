@@ -17,6 +17,9 @@ class Pembelian extends Model
 
     function getPembelian($no_bukti = "", Request $request = null, $kode_supplier = "")
     {
+        $role_access_all_pembelian = config('pembelian.role_access_all_pembelian');
+        $user = User::findorfail(auth()->user()->id);
+
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
         $query = Pembelian::query();
@@ -28,8 +31,12 @@ class Pembelian extends Model
             'totalbayar',
             'cek_kontrabon',
             DB::raw('IFNULL(subtotal,0) + IFNULL(penyesuaian_jk,0) as total_pembelian'),
-            'gudang_logistik_barang_masuk.no_bukti as no_bukti_gdl'
+            'gudang_logistik_barang_masuk.no_bukti as no_bukti_gdl',
+            'maintenance_barang_masuk.no_bukti as no_bukti_mtc',
         );
+
+        //Cek Maintenance
+        $query->addSelect(DB::raw('(SELECT COUNT(no_bukti) FROM pembelian_detail WHERE no_bukti = pembelian.no_bukti AND kode_akun = "1-1505") as cekmaintenance'));
         $query->join('supplier', 'pembelian.kode_supplier', '=', 'supplier.kode_supplier');
         $query->leftJoin(
             DB::raw('(
@@ -86,6 +93,7 @@ class Pembelian extends Model
         );
 
         $query->leftJoin('gudang_logistik_barang_masuk', 'pembelian.no_bukti', '=', 'gudang_logistik_barang_masuk.no_bukti');
+        $query->leftJoin('maintenance_barang_masuk', 'pembelian.no_bukti', '=', 'maintenance_barang_masuk.no_bukti');
         if (!empty($request)) {
             if (!empty($request->dari) && !empty($request->sampai)) {
                 $query->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai]);
@@ -133,6 +141,18 @@ class Pembelian extends Model
             $query->where('pembelian.kode_supplier', $kode_supplier);
             $query->where('pembelian.jenis_transaksi', '!=', 'T');
             $query->whereRaw('IFNULL(subtotal,0) != IFNULL(totalbayar,0)');
+        }
+
+        if ($user->hasRole(['admin gudang logistik'])) {
+            $query->where('pembelian.kode_asal_pengajuan', auth()->user()->kode_dept);
+        }
+
+        if ($user->hasRole(['admin maintenance'])) {
+            $query->where('pembelian.kode_asal_pengajuan', 'GAF');
+            $query->whereIn('pembelian.no_bukti', function ($query) {
+                $query->select('no_bukti')->from('pembelian_detail')->where('kode_akun', '1-1505');
+            });
+            $query->where('pembelian.tanggal', '>', '2021-02-01');
         }
         $query->orderBy('pembelian.tanggal', 'desc');
         $query->orderBy('pembelian.no_bukti', 'desc');

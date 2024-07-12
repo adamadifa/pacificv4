@@ -6,6 +6,7 @@ use App\Http\Controllers\AjuantransferdanaController;
 use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
 use App\Http\Controllers\BarangkeluargudanglogistikController;
+use App\Http\Controllers\BarangkeluarmaintenanceController;
 use App\Http\Controllers\BarangkeluarproduksiController;
 use App\Http\Controllers\BarangmasukgudangbahanController;
 use App\Http\Controllers\BarangmasukgudanglogistikController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\BarangmasukmaintenanceController;
 use App\Http\Controllers\BarangmasukproduksiController;
 use App\Http\Controllers\BarangpembelianController;
 use App\Http\Controllers\BarangproduksiController;
+use App\Http\Controllers\BengkelController;
 use App\Http\Controllers\BpbjController;
 use App\Http\Controllers\BpjskesehatanController;
 use App\Http\Controllers\BpjstenagakerjaController;
@@ -29,6 +31,7 @@ use App\Http\Controllers\HargaawalhppController;
 use App\Http\Controllers\HargaController;
 use App\Http\Controllers\HppController;
 use App\Http\Controllers\InsentifController;
+use App\Http\Controllers\ItemservicekendaraanController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\JurnalkoreksiController;
 use App\Http\Controllers\JurnalumumController;
@@ -51,6 +54,7 @@ use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\LogamtokertasController;
 use App\Http\Controllers\MutasibankController;
 use App\Http\Controllers\MutasidpbController;
+use App\Http\Controllers\MutasikendaraanController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
@@ -92,6 +96,7 @@ use App\Http\Controllers\SaldoawalkasbesarController;
 use App\Http\Controllers\SaldoawalledgerController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
+use App\Http\Controllers\ServicekendaraanController;
 use App\Http\Controllers\SetorangiroController;
 use App\Http\Controllers\SetoranpenjualanController;
 use App\Http\Controllers\SetoranpusatController;
@@ -109,6 +114,7 @@ use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
 use App\Models\Kontrabonpembelian;
 use App\Models\Permission_group;
+use App\Models\Servicekendaraan;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 
@@ -1253,6 +1259,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembelian/{no_bukti}/approvegdl', 'approvegdl')->name('pembelian.approvegdl')->can('pembelian.approvegdl');
         Route::post('/pembelian/{no_bukti}/storeapprovegdl', 'storeapprovegdl')->name('pembelian.storeapprovegdl')->can('pembelian.approvegdl');
         Route::delete('/pembelian/{no_bukti}/cancelapprovegdl', 'cancelapprovegdl')->name('pembelian.cancelapprovegdl')->can('pembelian.approvegdl');
+        Route::get('/pembelian/{no_bukti}/approvemtc', 'approvemtc')->name('pembelian.approvemtc')->can('pembelian.approvemtc');
+        Route::post('/pembelian/{no_bukti}/storeapprovemtc', 'storeapprovemtc')->name('pembelian.storeapprovemtc')->can('pembelian.approvemtc');
+        Route::delete('/pembelian/{no_bukti}/cancelapprovemtc', 'cancelapprovemtc')->name('pembelian.cancelapprovemtc')->can('pembelian.approvemtc');
         Route::get('/pembelian/{no_bukti}/edit', 'edit')->name('pembelian.edit')->can('pembelian.edit');
         Route::put('/pembelian/{no_bukti}/update', 'update')->name('pembelian.update')->can('pembelian.update');
         Route::get('/pembelian/createpotongan', 'createpotongan')->name('pembelian.createpotongan')->can('pembelian.edit');
@@ -1374,6 +1383,64 @@ Route::middleware('auth')->group(function () {
         Route::delete('/barangmasukmaintenance/{id}/delete', 'destroy')->name('barangmasukmtc.delete')->can('barangmasukmtc.delete');
     });
 
+
+    Route::controller(BarangkeluarmaintenanceController::class)->group(function () {
+        Route::get('/barangkeluarmaintenance', 'index')->name('barangkeluarmtc.index')->can('barangkeluarmtc.index');
+        Route::get('/barangkeluarmaintenance/create', 'create')->name('barangkeluarmtc.create')->can('barangkeluarmtc.create');
+        Route::post('/barangkeluarmaintenance/store', 'store')->name('barangkeluarmtc.store')->can('barangkeluarmtc.store');
+        Route::get('/barangkeluarmaintenance/{id}/show', 'show')->name('barangkeluarmtc.show')->can('barangkeluarmtc.show');
+        Route::get('/barangkeluarmaintenance/{id}/edit', 'edit')->name('barangkeluarmtc.edit')->can('barangkeluarmtc.edit');
+        Route::put('/barangkeluarmaintenance/{id}/update', 'update')->name('barangkeluarmtc.update')->can('barangkeluarmtc.update');
+        Route::delete('/barangkeluarmaintenance/{id}/delete', 'destroy')->name('barangkeluarmtc.delete')->can('barangkeluarmtc.delete');
+    });
+
+
+    Route::controller(MutasikendaraanController::class)->group(function () {
+        Route::get('/mutasikendaraan', 'index')->name('mutasikendaraan.index')->can('mutasikendaraan.index');
+        Route::get('/mutasikendaraan/create', 'create')->name('mutasikendaraan.create')->can('mutasikendaraan.create');
+        Route::post('/mutasikendaraan/store', 'store')->name('mutasikendaraan.store')->can('mutasikendaraan.store');
+        Route::get('/mutasikendaraan/{id}/show', 'show')->name('mutasikendaraan.show')->can('mutasikendaraan.show');
+        Route::get('/mutasikendaraan/{id}/edit', 'edit')->name('mutasikendaraan.edit')->can('mutasikendaraan.edit');
+        Route::put('/mutasikendaraan/{id}/update', 'update')->name('mutasikendaraan.update')->can('mutasikendaraan.update');
+        Route::delete('/mutasikendaraan/{id}/delete', 'destroy')->name('mutasikendaraan.delete')->can('mutasikendaraan.delete');
+    });
+
+
+    Route::controller(ServicekendaraanController::class)->group(function () {
+        Route::get('/servicekendaraan', 'index')->name('servicekendaraan.index')->can('servicekendaraan.index');
+        Route::get('/servicekendaraan/create', 'create')->name('servicekendaraan.create')->can('servicekendaraan.create');
+        Route::post('/servicekendaraan/store', 'store')->name('servicekendaraan.store')->can('servicekendaraan.store');
+        Route::get('/servicekendaraan/{id}/show', 'show')->name('servicekendaraan.show')->can('servicekendaraan.show');
+        Route::get('/servicekendaraan/{id}/edit', 'edit')->name('servicekendaraan.edit')->can('servicekendaraan.edit');
+        Route::put('/servicekendaraan/{id}/update', 'update')->name('servicekendaraan.update')->can('servicekendaraan.update');
+        Route::delete('/servicekendaraan/{id}/delete', 'destroy')->name('servicekendaraan.delete')->can('servicekendaraan.delete');
+    });
+
+
+    Route::controller(BengkelController::class)->group(function () {
+        Route::get('/bengkel', 'index')->name('bengkel.index')->can('servicekendaraan.index');
+        Route::get('/bengkel/create', 'create')->name('bengkel.create')->can('servicekendaraan.create');
+        Route::post('/bengkel/store', 'store')->name('bengkel.store')->can('servicekendaraan.store');
+        // Route::get('/bengkel/{id}/show', 'show')->name('bengkel.show')->can('servicekendaraan.show');
+        // Route::get('/bengkel/{id}/edit', 'edit')->name('bengkel.edit')->can('servicekendaraan.edit');
+        // Route::put('/bengkel/{id}/update', 'update')->name('bengkel.update')->can('servicekendaraan.update');
+        // Route::delete('/bengkel/{id}/delete', 'destroy')->name('bengkel.delete')->can('servicekendaraan.delete');
+
+        Route::get('/bengkel/getbengkel', 'getbengkel')->name('bengkel.getbengkel');
+    });
+
+
+    Route::controller(ItemservicekendaraanController::class)->group(function () {
+        Route::get('/itemservicekendaraan', 'index')->name('itemservicekendaraan.index')->can('servicekendaraan.index');
+        Route::get('/itemservicekendaraan/create', 'create')->name('itemservicekendaraan.create')->can('servicekendaraan.create');
+        Route::post('/itemservicekendaraan/store', 'store')->name('itemservicekendaraan.store')->can('servicekendaraan.store');
+        // Route::get('/itemservicekendaraan/{id}/show', 'show')->name('itemservicekendaraan.show')->can('itemservicekendaraan.show');
+        // Route::get('/itemservicekendaraan/{id}/edit', 'edit')->name('itemservicekendaraan.edit')->can('itemservicekendaraan.edit');
+        // Route::put('/itemservicekendaraan/{id}/update', 'update')->name('itemservicekendaraan.update')->can('itemservicekendaraan.update');
+        // Route::delete('/itemservicekendaraan/{id}/delete', 'destroy')->name('itemservicekendaraan.delete')->can('itemservicekendaraan.delete');
+
+        Route::get('/itemservicekendaraan/getitem', 'getitem')->name('itemservicekendaraan.getitem');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

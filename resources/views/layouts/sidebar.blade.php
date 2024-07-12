@@ -36,6 +36,7 @@
          @include('layouts.sidebar.keuangan')
          @include('layouts.sidebar.accounting')
          @include('layouts.sidebar.maintenance')
+         @include('layouts.sidebar.generalaffair')
 
 
 

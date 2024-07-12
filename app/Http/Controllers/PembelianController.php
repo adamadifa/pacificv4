@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barangmasukgudanglogistik;
+use App\Models\Barangmasukmaintenance;
 use App\Models\Barangpembelian;
 use App\Models\Cabang;
 use App\Models\Coa;
 use App\Models\Coadepartemen;
 use App\Models\Costratio;
 use App\Models\Detailbarangmasukgudanglogistik;
+use App\Models\Detailbarangmasukmaintenance;
 use App\Models\Detailkontrabonpembelian;
 use App\Models\Detailpembelian;
 use App\Models\Kontrabonpembelian;
@@ -749,7 +751,9 @@ class PembelianController extends Controller
         try {
 
             $pembelian = Pembelian::where('no_bukti', $no_bukti)->first();
-            $detailpembelian = Detailpembelian::where('no_bukti', $no_bukti)->get();
+            $detailpembelian = Detailpembelian::where('no_bukti', $no_bukti)
+                ->where('pembelian_detail.kode_transaksi', 'PMB')
+                ->get();
 
             $cektutuplaporan = cektutupLaporan($request->tanggal, "gudanglogistik");
             if ($cektutuplaporan > 0) {
@@ -792,13 +796,100 @@ class PembelianController extends Controller
         $no_bukti = Crypt::decrypt($no_bukti);
         DB::beginTransaction();
         try {
-            $pembelian = Pembelian::where('no_bukti', $no_bukti)->first();
-            $cektutuplaporan = cektutupLaporan($pembelian->tanggal, "gudanglogistik");
+            $barangmasuk = Barangmasukgudanglogistik::where('no_bukti', $no_bukti)->first();
+            $cektutuplaporan = cektutupLaporan($barangmasuk->tanggal, "gudanglogistik");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
             Barangmasukgudanglogistik::where('no_bukti', $no_bukti)->delete();
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil di Dibatalkan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function approvemtc($no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        $pmb = new Pembelian();
+        $data['pembelian'] = $pmb->getPembelian(no_bukti: $no_bukti)->first();
+
+        $data['detail'] = Detailpembelian::select('pembelian_detail.*', 'nama_barang')
+            ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->where('no_bukti', $no_bukti)
+            ->where('kode_akun', '1-1505')
+            ->where('pembelian_detail.kode_transaksi', 'PMB')
+            ->get();
+
+
+
+
+        $data['asal_pengajuan'] = config('pembelian.asal_pengajuan');
+        return view('pembelian.approvemtc', $data);
+    }
+
+    public function storeapprovemtc(Request $request, $no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        DB::beginTransaction();
+        try {
+
+            $pembelian = Pembelian::where('no_bukti', $no_bukti)->first();
+            $detailpembelian = Detailpembelian::where('no_bukti', $no_bukti)->where('kode_akun', '1-1505')
+                ->where('pembelian_detail.kode_transaksi', 'PMB')
+                ->get();
+
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "maintenance");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            Barangmasukmaintenance::create([
+                'no_bukti' => $pembelian->no_bukti,
+                'tanggal' => $request->tanggal,
+
+            ]);
+
+
+            foreach ($detailpembelian as $d) {
+                $detail[] = [
+                    'no_bukti' => $d->no_bukti,
+                    'kode_barang' => $d->kode_barang,
+                    'keterangan' => $d->keterangan,
+                    'jumlah' => $d->jumlah
+                ];
+            }
+
+            //dd($detail);
+            Detailbarangmasukmaintenance::insert($detail);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cancelapprovemtc($no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        DB::beginTransaction();
+        try {
+            $barangmasuk = Barangmasukmaintenance::where('no_bukti', $no_bukti)->first();
+            $cektutuplaporan = cektutupLaporan($barangmasuk->tanggal, "maintenance");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            Barangmasukmaintenance::where('no_bukti', $no_bukti)->delete();
 
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil di Dibatalkan'));

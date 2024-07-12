@@ -1,4 +1,4 @@
-<form action="{{ route('pembelian.storeapprovegdl', Crypt::encrypt($pembelian->no_bukti)) }}" id="formApprovegdl" method="POST">
+<form action="{{ route('pembelian.storeapprovemtc', Crypt::encrypt($pembelian->no_bukti)) }}" id="formApprovemtc" method="POST">
     @csrf
     <div class="row mb-3">
         <div class="col">
@@ -37,9 +37,9 @@
                         <th colspan="8">Data Pembelian</th>
                     </tr>
                     <tr>
-                        <th style="width: 10%">Kode</th>
+                        <th style="width: 15%">Kode</th>
                         <th style="width: 35%">Nama Barang</th>
-                        <th style="width: 45%">Keterangan</th>
+                        <th style="width: 40%">Keterangan</th>
                         <th style="width: 10%">Qty</th>
                         @can('pembelian.harga')
                             <th>Harga</th>
@@ -100,7 +100,7 @@
 </form>
 <script>
     $(function() {
-        const form = $("#formApprovegdl");
+        const form = $("#formApprovemtc");
         $(".flatpickr-date").flatpickr();
 
         function buttonDisable() {

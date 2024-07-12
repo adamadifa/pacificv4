@@ -1,23 +1,23 @@
 @extends('layouts.app')
-@section('titlepage', 'Barang Masuk Maintenance')
+@section('titlepage', 'Barang Keluar Maintenance')
 
 @section('content')
 @section('navigasi')
-    <span>Barang Masuk Maintenance</span>
+    <span>Barang Keluar Maintenance</span>
 @endsection
 <div class="row">
-    <div class="col-lg-7 col-md-12 col-sm-12">
+    <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
             @include('layouts.navigation_maintenance')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('barangmasukmtc.create')
+                    @can('barangkeluarmtc.create')
                         <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
                             Tambah Data</a>
                     @endcan
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('barangmasukmtc.index') }}">
+                            <form action="{{ route('barangkeluarmtc.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
@@ -53,23 +53,36 @@
                                     <thead class="table-dark">
                                         <tr>
                                             <th>No. Bukti</th>
-                                            <th>Supplier</th>
-                                            <th>Tanggal Pembelian</th>
-                                            <th>Tanggal Diterima</th>
+                                            <th>Tanggal</th>
+                                            <th>Departemen</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($barangmasuk as $d)
+                                        @foreach ($barangkeluar as $d)
                                             <tr>
                                                 <td>{{ $d->no_bukti }}</td>
-                                                <td>{{ $d->nama_supplier }}</td>
-                                                <td>{{ date('d-m-Y', strtotime($d->tanggal_pembelian)) }}</td>
                                                 <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
+                                                <td>{{ $d->nama_dept }}</td>
                                                 <td>
-                                                    <a href="#" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}" class="btnShow">
-                                                        <i class="ti ti-file-description text-info"></i>
-                                                    </a>
+                                                    <div class="d-flex">
+                                                        @can('barangkeluarmtc.show')
+                                                            <a href="#" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}" class="btnShow">
+                                                                <i class="ti ti-file-description text-info"></i>
+                                                            </a>
+                                                        @endcan
+                                                        @can('barangkeluarmtc.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('barangkeluarmtc.delete', Crypt::encrypt($d->no_bukti)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm me-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endcan
+                                                    </div>
+
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -77,7 +90,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{ $barangmasuk->links() }}
+                                {{ $barangkeluar->links() }}
                             </div>
                         </div>
                     </div>
@@ -109,11 +122,10 @@
         $("#btnCreate").click(function(e) {
             e.preventDefault();
             $("#modal").modal("show");
-            $(".modal-title").text("Tambah Data Barang Masuk");
+            $(".modal-title").text("Tambah Data Barang Keluar");
             $("#loadmodal").html(loadingElement());
-            $("#modal").find(".modal-dialog").removeClass('modal-lg');
-            $("#modal").find(".modal-dialog").addClass('modal-xl');
-            $("#loadmodal").load(`/barangmasukmaintenance/create`);
+            $("#modal").find(".modal-dialog").addClass('modal-lg');
+            $("#loadmodal").load(`/barangkeluarmaintenance/create`);
         });
 
         $(".btnShow").click(function(e) {
@@ -121,22 +133,13 @@
             var no_bukti = $(this).attr("no_bukti");
             e.preventDefault();
             $("#modal").modal("show");
-            $(".modal-title").text("Detail Barang Masuk");
+            $(".modal-title").text("Detail Barang Keluar");
             $("#loadmodal").html(loadingElement());
             $("#modal").find(".modal-dialog").addClass('modal-lg');
-            $("#loadmodal").load(`/barangmasukmaintenance/${no_bukti}/show`);
+            $("#loadmodal").load(`/barangkeluarmaintenance/${no_bukti}/show`);
         });
 
-        $(".btnEdit").click(function(e) {
-            e.preventDefault();
-            var no_bukti = $(this).attr("no_bukti");
-            e.preventDefault();
-            $("#modal").modal("show");
-            $(".modal-title").text("Edit Barang Masuk");
-            $("#loadmodal").html(loadingElement());
 
-            $("#loadmodal").load(`/barangmasukgudanglogistik/${no_bukti}/edit`);
-        });
     });
 </script>
 @endpush
