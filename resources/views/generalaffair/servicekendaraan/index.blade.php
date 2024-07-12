@@ -28,6 +28,27 @@
                                         datepicker="flatpickr-date" />
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group mb-3">
+                                        <select name="kode_kendaraan_search" id="kode_kendaraan_search"
+                                            class="form-select select2Kodekendaraansearch">
+                                            <option value=""> Pilih Kendaraan</option>
+                                            @foreach ($kendaraan as $d)
+                                                <option value="">{{ $d->no_polisi }} {{ $d->merek }} {{ $d->tipe_kendaraan }}
+                                                    {{ $d->tipe }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group mb-3">
+                                        <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search me-2"></i> Cari Data</button>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -97,6 +118,17 @@
 <script>
     $(function() {
 
+        // const select2Kodekendaraansearch = $('.select2Kodekendaraansearch');
+        // if (select2Kodekendaraansearch.length) {
+        //     select2Kodekendaraansearch.each(function() {
+        //         var $this = $(this);
+        //         $this.wrap('<div class="position-relative"></div>').select2({
+        //             placeholder: 'Pilih Kendaraan',
+        //             allowClear: true,
+        //             dropdownParent: $this.parent()
+        //         });
+        //     });
+        // }
 
         function loading() {
             $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">

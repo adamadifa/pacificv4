@@ -37,6 +37,8 @@ class ServicekendaraanController extends Controller
         $servicekendaraan = $query->paginate(15);
         $servicekendaraan->appends($request->all());
         $data['servicekendaraan'] = $servicekendaraan;
+
+        $data['kendaraan'] =  Kendaraan::all();
         return view('generalaffair.servicekendaraan.index', $data);
     }
 
