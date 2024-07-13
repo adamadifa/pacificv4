@@ -4,6 +4,7 @@ use App\Http\Controllers\AjuanfakturkreditController;
 use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AjuantransferdanaController;
 use App\Http\Controllers\AngkutanController;
+use App\Http\Controllers\BadstokgaController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
 use App\Http\Controllers\BarangkeluargudanglogistikController;
 use App\Http\Controllers\BarangkeluarmaintenanceController;
@@ -44,6 +45,8 @@ use App\Http\Controllers\KirimpusatController;
 use App\Http\Controllers\KontrabonangkutanController;
 use App\Http\Controllers\KontrabonkeuanganController;
 use App\Http\Controllers\KontrabonpembelianController;
+use App\Http\Controllers\KontrakkaryawanController;
+use App\Http\Controllers\KontrakkerjaController;
 use App\Http\Controllers\LainnyagudangjadiController;
 use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangcabangController;
@@ -1440,6 +1443,26 @@ Route::middleware('auth')->group(function () {
         // Route::delete('/itemservicekendaraan/{id}/delete', 'destroy')->name('itemservicekendaraan.delete')->can('itemservicekendaraan.delete');
 
         Route::get('/itemservicekendaraan/getitem', 'getitem')->name('itemservicekendaraan.getitem');
+    });
+
+    Route::controller(BadstokgaController::class)->group(function () {
+        Route::get('/badstokga', 'index')->name('badstokga.index')->can('badstokga.index');
+        Route::get('/badstokga/create', 'create')->name('badstokga.create')->can('badstokga.create');
+        Route::post('/badstokga/store', 'store')->name('badstokga.store')->can('badstokga.store');
+        Route::get('/badstokga/{id}/show', 'show')->name('badstokga.show')->can('badstokga.show');
+        Route::get('/badstokga/{id}/edit', 'edit')->name('badstokga.edit')->can('badstokga.edit');
+        Route::put('/badstokga/{id}/update', 'update')->name('badstokga.update')->can('badstokga.update');
+        Route::delete('/badstokga/{id}/delete', 'destroy')->name('badstokga.delete')->can('badstokga.delete');
+    });
+
+    Route::controller(KontrakkaryawanController::class)->group(function () {
+        Route::get('/kontrakkerja', 'index')->name('kontrakkerja.index')->can('kontrakkerja.index');
+        Route::get('/kontrakkerja/create', 'create')->name('kontrakkerja.create')->can('kontrakkerja.create');
+        Route::post('/kontrakkerja/store', 'store')->name('kontrakkerja.store')->can('kontrakkerja.store');
+        Route::get('/kontrakkerja/{no_kontrak}/cetak', 'cetak')->name('kontrakkerja.cetak')->can('kontrakkerja.show');
+        Route::get('/kontrakkerja/{no_kontrak}/edit', 'edit')->name('kontrakkerja.edit')->can('kontrakkerja.edit');
+        Route::put('/kontrakkerja/{no_kontrak}/update', 'update')->name('kontrakkerja.update')->can('kontrakkerja.update');
+        Route::delete('/kontrakkerja/{no_kontrak}/delete', 'destroy')->name('kontrakkerja.delete')->can('kontrakkerja.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

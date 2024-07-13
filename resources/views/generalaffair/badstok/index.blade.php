@@ -1,23 +1,22 @@
 @extends('layouts.app')
-@section('titlepage', 'Service Kendaraan')
+@section('titlepage', 'Bad Stok')
 
 @section('content')
 @section('navigasi')
-    <span>Service Kendaraan</span>
+    <span>Bad Stok</span>
 @endsection
 <div class="row">
-    <div class="col-lg-10 col-sm-12 col-xs-12">
+    <div class="col-lg-5 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('servicekendaraan.create')
-                    <a href="{{ route('servicekendaraan.create') }}" class="btn btn-primary"><i class="fa fa-plus me-2"></i> Input Service
-                        Kendaraan</a>
+                @can('badstokga.create')
+                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Bad Stok</a>
                 @endcan
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <form action="{{ route('servicekendaraan.index') }}">
+                        <form action="{{ route('badstokga.index') }}">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 col-sm-12">
                                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
@@ -29,16 +28,14 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="form-group mb-3">
-                                        <select name="kode_kendaraan_search" id="kode_kendaraan_search"
-                                            class="form-select select2Kodekendaraansearch">
-                                            <option value=""> Pilih Kendaraan</option>
-                                            @foreach ($kendaraan as $d)
-                                                <option {{ Request('kode_kendaraan_search') == $d->kode_kendaraan ? 'selected' : '' }}
-                                                    value="{{ $d->kode_kendaraan }}">
-                                                    {{ $d->no_polisi }} {{ $d->merek }}
-                                                    {{ $d->tipe_kendaraan }} {{ $d->tipe }} </option>
+                                        <select name="kode_asal_bs_search" id="" class="form-select select2Kodeasalbssearch">
+                                            <option value="">Asal Bad Stok</option>
+                                            <option value="GDG" {{ Request('kode_asal_bs_search') == 'GDG' ? 'selected' : '' }}>GUDANG</option>
+                                            @foreach ($asalbadstok as $d)
+                                                <option {{ Request('kode_asal_bs_search') == $d->kode_cabang ? 'selected' : '' }}
+                                                    value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -47,7 +44,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group mb-3">
-                                        <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search me-2"></i> Cari Data</button>
+                                        <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari Data</button>
                                     </div>
                                 </div>
                             </div>
@@ -60,35 +57,28 @@
                             <table class="table">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>No. Invoice</th>
+                                        <th>Kode BS</th>
                                         <th>Tanggal</th>
-                                        <th>No. Polisi</th>
-                                        <th>Kendaraan</th>
-                                        <th>Bengkel</th>
-                                        <th>Cabang</th>
+                                        <th>Asal Badstok</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($servicekendaraan as $d)
+                                    @foreach ($badstok as $d)
                                         <tr>
-                                            <td>{{ $d->no_invoice }}</td>
-                                            <td>{{ formatIndo($d->tanggal) }}</td>
-                                            <td>{{ $d->no_polisi }}</td>
-                                            <td>{{ $d->merek }} {{ $d->tipe }} {{ $d->tipe_kendaraan }}</td>
-                                            <td>{{ $d->nama_bengkel }}</td>
-                                            <td>{{ textupperCase($d->nama_cabang) }}</td>
+                                            <td>{{ $d->kode_bs }}</td>
+                                            <td>{{ DateToIndo($d->tanggal) }}</td>
+                                            <td>{{ $d->kode_asal_bs }}</td>
                                             <td>
                                                 <div class="d-flex">
-                                                    @can('servicekendaraan.show')
-                                                        <a href="#" class="btnShow" kode_service="{{ Crypt::encrypt($d->kode_service) }}"
-                                                            title="Detail">
+                                                    @can('badstokga.show')
+                                                        <a href="#" class="btnShow" kode_bs="{{ Crypt::encrypt($d->kode_bs) }}">
                                                             <i class="ti ti-file-description text-info"></i>
                                                         </a>
                                                     @endcan
-                                                    @can('servicekendaraan.delete')
-                                                        <form action="{{ route('servicekendaraan.delete', Crypt::encrypt($d->kode_service)) }}"
-                                                            method="post">
+                                                    @can('badstokga.delete')
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('badstokga.delete', Crypt::encrypt($d->kode_bs)) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                             <a href="#" class="delete-confirm me-1">
@@ -97,7 +87,6 @@
                                                         </form>
                                                     @endcan
                                                 </div>
-
                                             </td>
                                         </tr>
                                     @endforeach
@@ -105,7 +94,7 @@
                             </table>
                         </div>
                         <div style="float: right;">
-                            {{ $servicekendaraan->links() }}
+                            {{ $badstok->links() }}
                         </div>
                     </div>
                 </div>
@@ -113,24 +102,26 @@
         </div>
     </div>
 </div>
-<x-modal-form id="modal" show="loadmodal" title="" />
+<x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
 <script>
     $(function() {
 
-        const select2Kodekendaraansearch = $('.select2Kodekendaraansearch');
-        if (select2Kodekendaraansearch.length) {
-            select2Kodekendaraansearch.each(function() {
+        const select2Kodeasalbssearch = $('.select2Kodeasalbssearch');
+        if (select2Kodeasalbssearch.length) {
+            select2Kodeasalbssearch.each(function() {
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
-                    placeholder: 'Pilih Kendaraan',
+                    placeholder: 'Asal Bad Stok',
                     allowClear: true,
                     dropdownParent: $this.parent()
                 });
             });
         }
+
+
 
         function loading() {
             $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
@@ -145,21 +136,49 @@
             e.preventDefault();
             loading();
             $("#modal").modal("show");
-            $(".modal-title").text("Input Mutasi Kendaraan");
-            $("#loadmodal").load(`/mutasikendaraan/create`);
+            $(".modal-title").text("Input Bad Stok");
+            $("#loadmodal").load(`/badstokga/create`);
         });
-
 
         $(".btnShow").click(function(e) {
-            var kode_service = $(this).attr("kode_service");
+            var kode_bs = $(this).attr("kode_bs");
             e.preventDefault();
+            $('#modal').modal("show");
             loading();
-            $("#modal").modal("show");
-            $(".modal-title").text("Detail Service Kendaraan");
-            $("#loadmodal").load(`/servicekendaraan/${kode_service}/show`);
-            $("#modal").find(".modal-dialog").addClass("modal-xl");
+            $("#modal").find(".modal-title").text("Detail Bad Stok");
+            $("#loadmodal").load('/badstokga/' + kode_bs + '/show');
         });
 
+        $(document).on('submit', '#formBadStok', function(e) {
+            const tanggal = $(this).find("#tanggal").val();
+            const kode_asal_bs = $(this).find("#kode_asal_bs").val();
+            if (tanggal == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tanggal harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $(this).find("#tanggal").focus();
+                    },
+                });
+                return false;
+            } else if (kode_asal_bs == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Asal Bad Stok harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $(this).find("#kode_asal_bs").focus();
+                    },
+                });
+                return false;
+            } else {
+                buttonDisabled();
+                return true;
+            }
+        });
     });
 </script>
 @endpush

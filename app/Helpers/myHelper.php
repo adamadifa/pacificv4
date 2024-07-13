@@ -419,3 +419,48 @@ function removeSpecialCharacters($string)
 {
     return preg_replace('/[^a-zA-Z0-9]/', '', $string);
 }
+
+
+function pihakpertamacabang($cabang, $perusahaan)
+{
+    $kepalaadmin = [
+        'PWT' => 'Dimas Suteja',
+        'BTN' => 'Anif Ardiana',
+        'BDG' => 'M. Hirzam Purnama Dimas',
+        'SKB' => 'Aceng Cahya Sugianto',
+        'TGL' => 'Rosihul Iman',
+        'SBY' => 'Excel Delvara Bachriandy',
+        'SMR' => 'Muh. Fahmi Fadil',
+        'KLT' => 'Fikkry Yusuf',
+        'BGR' => 'Rani Silviana',
+        'GRT' => 'Nurman Susila',
+        'BKI' => 'Wahib Al Aziz',
+        'PWK' => 'Ricky Irawan',
+        'TSM' => 'Sri Maharani',
+        'TGR' => 'Excel'
+    ];
+
+
+    $kepalapenjualan = [
+        'PWT' => 'Aria Permana Wiguna',
+        'TGR' => 'Bagus Eka Winarno',
+        'BDG' => 'Oki Rahmat Effendy',
+        'SKB' => 'Agus Hanafi',
+        'TGL' => 'Imam Syafangat',
+        'SBY' => 'Stefanus Bayu',
+        'SMR' => 'Muhammad Luthfi Amri',
+        'KLT' => 'Alip Aswanto',
+        'BGR' => 'Muhammad Iqbal',
+        'GRT' => 'Radea Feryzal, ST',
+        'BKI' => 'Yohanes Dewangkorojati',
+        'PWK' => 'Alek Wijaya',
+        'TSM' => 'Aceng Saepul Anwar',
+        'BTN' => 'Robi Andes'
+    ];
+
+    if ($perusahaan == "MP") {
+        return $kepalaadmin[$cabang];
+    } else {
+        return $kepalapenjualan[$cabang];
+    }
+}

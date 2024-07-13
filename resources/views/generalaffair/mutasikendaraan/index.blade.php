@@ -105,12 +105,7 @@
             $("#loadmodal").load(`/mutasikendaraan/create`);
         });
 
-        $(".editKendaraan").click(function(e) {
-            var kode_kendaraan = $(this).attr("kode_kendaraan");
-            e.preventDefault();
-            $('#mdleditKendaraan').modal("show");
-            $("#loadeditKendaraan").load('/kendaraan/' + kode_kendaraan + '/edit');
-        });
+
     });
 </script>
 @endpush

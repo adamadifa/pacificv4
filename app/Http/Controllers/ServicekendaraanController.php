@@ -32,13 +32,16 @@ class ServicekendaraanController extends Controller
             $query->whereBetween('ga_kendaraan_service.tanggal', [$start_date, $end_date]);
         }
 
+        if (!empty($request->kode_kendaraan_search)) {
+            $query->where('ga_kendaraan_service.kode_kendaraan', $request->kode_kendaraan_search);
+        }
         $query->orderBy('ga_kendaraan_service.tanggal', 'desc');
         $query->orderBy('ga_kendaraan_service.kode_service', 'desc');
         $servicekendaraan = $query->paginate(15);
         $servicekendaraan->appends($request->all());
         $data['servicekendaraan'] = $servicekendaraan;
 
-        $data['kendaraan'] =  Kendaraan::all();
+        $data['kendaraan'] =  Kendaraan::orderBy('no_polisi', 'asc')->get();
         return view('generalaffair.servicekendaraan.index', $data);
     }
 
