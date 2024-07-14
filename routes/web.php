@@ -107,6 +107,7 @@ use App\Http\Controllers\SetorantransferController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
+use App\Http\Controllers\SuratperingatanController;
 use App\Http\Controllers\TargetkomisiController;
 use App\Http\Controllers\TransitinController;
 use App\Http\Controllers\TujuanangkutanController;
@@ -1463,6 +1464,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/kontrakkerja/{no_kontrak}/edit', 'edit')->name('kontrakkerja.edit')->can('kontrakkerja.edit');
         Route::put('/kontrakkerja/{no_kontrak}/update', 'update')->name('kontrakkerja.update')->can('kontrakkerja.update');
         Route::delete('/kontrakkerja/{no_kontrak}/delete', 'destroy')->name('kontrakkerja.delete')->can('kontrakkerja.delete');
+    });
+
+
+    Route::controller(SuratperingatanController::class)->group(function () {
+        Route::get('/suratperingatan', 'index')->name('suratperingatan.index')->can('suratperingatan.index');
+        Route::get('/suratperingatan/create', 'create')->name('suratperingatan.create')->can('suratperingatan.create');
+        Route::post('/suratperingatan/store', 'store')->name('suratperingatan.store')->can('suratperingatan.store');
+        Route::get('/suratperingatan/{id}/show', 'show')->name('suratperingatan.show')->can('suratperingatan.show');
+        Route::get('/suratperingatan/{id}/edit', 'edit')->name('suratperingatan.edit')->can('suratperingatan.edit');
+        Route::put('/suratperingatan/{id}/update', 'update')->name('suratperingatan.update')->can('suratperingatan.update');
+        Route::delete('/suratperingatan/{id}/delete', 'destroy')->name('suratperingatan.delete')->can('suratperingatan.delete');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

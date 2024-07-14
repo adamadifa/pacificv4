@@ -132,6 +132,8 @@
             });
         }
 
+
+
         function loading() {
             $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
             <div class="sk-wave-rect"></div>
