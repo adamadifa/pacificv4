@@ -33,6 +33,7 @@ use App\Http\Controllers\HargaController;
 use App\Http\Controllers\HppController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\ItemservicekendaraanController;
+use App\Http\Controllers\JasamasakerjaController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\JurnalkoreksiController;
 use App\Http\Controllers\JurnalumumController;
@@ -41,6 +42,7 @@ use App\Http\Controllers\KasbonController;
 use App\Http\Controllers\KaskecilController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\KesepakatanbersamaController;
 use App\Http\Controllers\KirimpusatController;
 use App\Http\Controllers\KontrabonangkutanController;
 use App\Http\Controllers\KontrabonkeuanganController;
@@ -70,6 +72,7 @@ use App\Http\Controllers\PembayaranpiutangkaryawanController;
 use App\Http\Controllers\PembayaranpjpController;
 use App\Http\Controllers\PembayarantransferController;
 use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\PenilaiankaryawanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
 use App\Http\Controllers\PermintaankirimanController;
@@ -1464,6 +1467,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/kontrakkerja/{no_kontrak}/edit', 'edit')->name('kontrakkerja.edit')->can('kontrakkerja.edit');
         Route::put('/kontrakkerja/{no_kontrak}/update', 'update')->name('kontrakkerja.update')->can('kontrakkerja.update');
         Route::delete('/kontrakkerja/{no_kontrak}/delete', 'destroy')->name('kontrakkerja.delete')->can('kontrakkerja.delete');
+
+        Route::post('/kontrakkerja/getlastkontrak', 'getlastkontrak')->name('kontrakkerja.getlastkontrak');
     });
 
 
@@ -1476,6 +1481,41 @@ Route::middleware('auth')->group(function () {
         Route::put('/suratperingatan/{id}/update', 'update')->name('suratperingatan.update')->can('suratperingatan.update');
         Route::delete('/suratperingatan/{id}/delete', 'destroy')->name('suratperingatan.delete')->can('suratperingatan.delete');
     });
+
+    Route::controller(JasamasakerjaController::class)->group(function () {
+        Route::get('/jasamasakerja', 'index')->name('jasamasakerja.index')->can('jasamasakerja.index');
+        Route::get('/jasamasakerja/create', 'create')->name('jasamasakerja.create')->can('jasamasakerja.create');
+        Route::post('/jasamasakerja/store', 'store')->name('jasamasakerja.store')->can('jasamasakerja.store');
+        Route::get('/jasamasakerja/{kode_jmk}/show', 'show')->name('jasamasakerja.show')->can('jasamasakerja.show');
+        Route::get('/jasamasakerja/{kode_jmk}/edit', 'edit')->name('jasamasakerja.edit')->can('jasamasakerja.edit');
+        Route::put('/jasamasakerja/{kode_jmk}/update', 'update')->name('jasamasakerja.update')->can('jasamasakerja.update');
+        Route::delete('/jasamasakerja/{kode_jmk}/delete', 'destroy')->name('jasamasakerja.delete')->can('jasamasakerja.delete');
+    });
+
+
+    Route::controller(KesepakatanbersamaController::class)->group(function () {
+        Route::get('/kesepakatanbersama', 'index')->name('kesepakatanbersama.index')->can('kb.index');
+        Route::get('/kesepakatanbersama/{no_kb}/show', 'show')->name('kesepakatanbersama.show')->can('kb.show');
+        Route::get('/kesepakatanbersama/{no_kb}/cetak', 'cetak')->name('kesepakatanbersama.cetak')->can('kb.show');
+        Route::get('/kesepakatanbersama/{no_kb}/potongan', 'potongan')->name('kesepakatanbersama.potongan')->can('kb.edit');
+        Route::post('/kesepakatanbersama/{no_kb}/storepotongan', 'storepotongan')->name('kesepakatanbersama.storepotongan')->can('kb.edit');
+        Route::put('/kesepakatanbersama/{no_kb}/update', 'update')->name('kesepakatanbersama.update')->can('kb.update');
+        Route::delete('/kesepakatanbersama/{no_kb}/delete', 'destroy')->name('kesepakatanbersama.delete')->can('kb.delete');
+        Route::get('/kesepakatanbersama/{kode_penilaian}/createkontrak', 'createkontrak')->name('kesepakatanbersama.createkontrak')->can('kontrakkerja.create');
+        Route::post('/kesepakatanbersama/{kode_penilaian}/storekontrak', 'storekontrak')->name('kesepakatanbersama.storekontrak')->can('kontrakkerja.create');
+    });
+
+    Route::controller(PenilaiankaryawanController::class)->group(function () {
+        Route::get('/penilaiankaryawan', 'index')->name('penilaiankaryawan.index')->can('penilaiankaryawan.index');
+        Route::get('/penilaiankaryawan/create', 'create')->name('penilaiankaryawan.create')->can('penilaiankaryawan.create');
+        Route::post('/penilaiankaryawan/createpenilaian', 'createpenilaian')->name('penilaiankaryawan.createpenilaian')->can('penilaiankaryawan.create');
+        Route::post('/penilaiankaryawan/store', 'store')->name('penilaiankaryawan.store')->can('penilaiankaryawan.store');
+        Route::get('/penilaiankaryawan/{id}/show', 'show')->name('penilaiankaryawan.show')->can('penilaiankaryawan.show');
+        Route::get('/penilaiankaryawan/{id}/edit', 'edit')->name('penilaiankaryawan.edit')->can('penilaiankaryawan.edit');
+        Route::put('/penilaiankaryawan/{id}/update', 'update')->name('penilaiankaryawan.update')->can('penilaiankaryawan.update');
+        Route::delete('/penilaiankaryawan/{id}/delete', 'destroy')->name('penilaiankaryawan.delete')->can('penilaiankaryawan.delete');
+    });
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

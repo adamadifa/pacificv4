@@ -1,6 +1,6 @@
-<li class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'jurnalkoreksi', 'kontrabonpembelian', 'kontrabonpembelian/*']) ? 'open' : '' }}">
-
-    @if (auth()->user()->hasAnyPermission(['pembelian.index', 'pembelian.jatuhtempo', 'jurnalkoreksi.index', 'kontrabonpmb.index']))
+@if (auth()->user()->hasAnyPermission(['pembelian.index', 'pembelian.jatuhtempo', 'jurnalkoreksi.index', 'kontrabonpmb.index']))
+    <li
+        class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'jurnalkoreksi', 'kontrabonpembelian', 'kontrabonpembelian/*']) ? 'open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
             <div>Pembelian</div>
@@ -35,5 +35,5 @@
                 </li>
             @endif
         </ul>
-    @endif
-</li>
+    </li>
+@endif

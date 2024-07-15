@@ -1,5 +1,6 @@
-<li class="menu-item {{ request()->is(['mutasikendaraan', 'servicekendaraan', 'servicekendaraan/*', 'badstokga']) ? 'open' : '' }}">
-    @if (auth()->user()->hasAnyPermission(['mutasikendaraan.index', 'servicekendaraan.index', 'badstokga.index']))
+@if (auth()->user()->hasAnyPermission(['mutasikendaraan.index', 'servicekendaraan.index', 'badstokga.index']))
+    <li class="menu-item {{ request()->is(['mutasikendaraan', 'servicekendaraan', 'servicekendaraan/*', 'badstokga']) ? 'open' : '' }}">
+
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-radioactive"></i>
             <div>General Afffair</div>
@@ -27,5 +28,5 @@
                 </li>
             @endif
         </ul>
-    @endif
-</li>
+    </li>
+@endif

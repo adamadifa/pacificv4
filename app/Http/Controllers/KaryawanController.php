@@ -103,8 +103,9 @@ class KaryawanController extends Controller
         if (!empty($request->nama_karyawan)) {
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
         }
-        $query->orderBy('tanggal_masuk', 'desc');
+        $query->orderBy('nama_karyawan', 'asc');
         $karyawan = $query->paginate(15);
+        $karyawan->appends($request->all());
         return view('datamaster.karyawan.index', compact('cabang', 'karyawan', 'departemen', 'group'));
     }
 

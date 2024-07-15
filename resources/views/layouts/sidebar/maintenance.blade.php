@@ -1,5 +1,6 @@
-<li class="menu-item {{ request()->is(['barangmasukmaintenance', 'barangkeluarmaintenance']) ? 'open' : '' }}">
-    @if (auth()->user()->hasAnyPermission(['barangmasukmtc.index', 'barangkeluarmtc.index']))
+@if (auth()->user()->hasAnyPermission(['barangmasukmtc.index', 'barangkeluarmtc.index']))
+    <li class="menu-item {{ request()->is(['barangmasukmaintenance', 'barangkeluarmaintenance']) ? 'open' : '' }}">
+
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-tools-kitchen-2"></i>
             <div>Maintenance</div>
@@ -13,5 +14,5 @@
                 </li>
             @endif
         </ul>
-    @endif
-</li>
+    </li>
+@endif

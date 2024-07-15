@@ -1,5 +1,5 @@
-<li class="menu-item {{ request()->is(['coa', 'costratio', 'jurnalumum', 'hpp', 'hargaawalhpp']) ? 'open' : '' }}">
-    @if (auth()->user()->hasAnyPermission(['coa.index', 'costratio.index', 'jurnalumum.index', 'hpp.index', 'hargawalahpp.index']))
+@if (auth()->user()->hasAnyPermission(['coa.index', 'costratio.index', 'jurnalumum.index', 'hpp.index', 'hargawalahpp.index']))
+    <li class="menu-item {{ request()->is(['coa', 'costratio', 'jurnalumum', 'hpp', 'hargaawalhpp']) ? 'open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-scale"></i>
             <div>Accounting</div>
@@ -35,5 +35,5 @@
                 </li>
             @endif
         </ul>
-    @endif
-</li>
+    </li>
+@endif

@@ -33,7 +33,9 @@ class SuratperingatanController extends Controller
 
     public function create()
     {
-        $data['karyawan'] = Karyawan::orderBy('nama_karyawan')->get();
+        $data['karyawan'] = Karyawan::orderBy('nama_karyawan')
+            ->where('status_aktif_karyawan', 1)
+            ->get();
         return view('hrd.suratperingatan.create', $data);
     }
 

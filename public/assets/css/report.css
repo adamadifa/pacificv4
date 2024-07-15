@@ -61,6 +61,40 @@
     background-color: #d4d3d3cf
 }
 
+.datatable6 {
+    border: 1px solid #161616;
+    border-collapse: collapse;
+    font-size: 12px;
+    width: 100%
+}
+
+.datatable6 td {
+    border: 1px solid #000000;
+    padding: 3px;
+}
+
+.datatable6 th {
+    border: 1px solid #4d4d4d;
+    font-weight: bold;
+    text-align: left;
+    padding: 3px;
+    text-align: center;
+    font-size: 12px;
+    background-color: #d4d3d3cf
+}
+
+
+.datatable7 {
+    border: 0px solid #161616;
+    border-collapse: collapse;
+    font-size: 12px;
+    width: 100%
+}
+
+.datatable7 td {
+    border: 0px solid #000000;
+    padding: 3px;
+}
 
 h4 {
     font-family: Arial, Helvetica, sans-serif;

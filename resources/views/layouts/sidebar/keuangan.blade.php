@@ -1,46 +1,47 @@
-<li
-    class="menu-item {{ request()->is([
-        'pembayarantransfer',
-        'pembayarangiro',
-        'setoranpenjualan',
-        'setorantransfer',
-        'setorangiro',
-        'setoranpusat',
-        'logamtokertas',
-        'sakasbesar',
-        'ajuantransfer',
-        'kaskecil',
-        'ledger',
-        'saledger',
-        'mutasibank',
-        'samutasibank',
-        'pjp',
-        'pembayaranpjp',
-        'kasbon',
-        'pembayarankasbon',
-        'piutangkaryawan',
-        'kontrabonkeuangan',
-        'kontrabonkeuangan/*',
-    ])
-        ? 'open'
-        : '' }}">
-    @if (auth()->user()->hasAnyPermission([
-                'pembayarantransfer.index',
-                'pembayarangiro.index',
-                'setorangiro.index',
-                'setoranpusat.index',
-                'ajuantransfer.index',
-                'kaskecil.index',
-                'ledger.index',
-                'saledger.index',
-                'mutasibank.index',
-                'pjp.index',
-                'kasbon.index',
-                'pembayarankasbon.index',
-                'piutangkaryawan.index',
-                'kontrabonpembelian.index',
-                'kontrabonangkutan.index',
-            ]))
+@if (auth()->user()->hasAnyPermission([
+            'pembayarantransfer.index',
+            'pembayarangiro.index',
+            'setorangiro.index',
+            'setoranpusat.index',
+            'ajuantransfer.index',
+            'kaskecil.index',
+            'ledger.index',
+            'saledger.index',
+            'mutasibank.index',
+            'pjp.index',
+            'kasbon.index',
+            'pembayarankasbon.index',
+            'piutangkaryawan.index',
+            'kontrabonpembelian.index',
+            'kontrabonangkutan.index',
+        ]))
+    <li
+        class="menu-item {{ request()->is([
+            'pembayarantransfer',
+            'pembayarangiro',
+            'setoranpenjualan',
+            'setorantransfer',
+            'setorangiro',
+            'setoranpusat',
+            'logamtokertas',
+            'sakasbesar',
+            'ajuantransfer',
+            'kaskecil',
+            'ledger',
+            'saledger',
+            'mutasibank',
+            'samutasibank',
+            'pjp',
+            'pembayaranpjp',
+            'kasbon',
+            'pembayarankasbon',
+            'piutangkaryawan',
+            'kontrabonkeuangan',
+            'kontrabonkeuangan/*',
+        ])
+            ? 'open'
+            : '' }}">
+
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-moneybag"></i>
             <div>Keuangan</div>
@@ -128,5 +129,5 @@
                 </li>
             @endif
         </ul>
-    @endif
-</li>
+    </li>
+@endif

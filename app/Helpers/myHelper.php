@@ -373,6 +373,17 @@ function calculateMonths($date1, $date2)
     return $months;
 }
 
+function hitungJumlahHari($tanggal_awal, $tanggal_akhir)
+{
+    $start_date = Carbon::parse($tanggal_awal);
+    $end_date = Carbon::parse($tanggal_akhir);
+
+    $jumlah_hari = $start_date->diffInDays($end_date);
+
+    return $jumlah_hari;
+}
+
+
 
 function hitungJmk($masa_kerja)
 {

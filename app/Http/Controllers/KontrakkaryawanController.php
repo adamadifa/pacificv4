@@ -240,4 +240,19 @@ class KontrakkaryawanController extends Controller
             return view('hrd.kontrak.cetak', $data);
         }
     }
+
+    public function getlastkontrak(Request $request)
+    {
+
+        $nik = $request->nik;
+        $lastkontrak = Kontrakkaryawan::where('nik', $nik)
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('no_kontrak', 'desc')
+            ->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Kontrak',
+            'data'    => $lastkontrak
+        ]);
+    }
 }
