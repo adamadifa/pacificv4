@@ -51,45 +51,20 @@
                             <b>A. Penilaian</b> <br>
                             Checklist bobot penilaian dibawah ini (semakin besar angka yang dipilih semakin baik
                             penilaian karyawan tersebut)
-                        <table class="table mt-3">
+                        <table class="table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width:5%">No</th>
+                                    <th style="width:75%">Faktor Penilaian</th>
+                                    <th style="width:20%">Bobot Nilai</th>
+                                </tr>
+                            </thead>
                             <tbody>
-                                @php
-                                    $no = 1;
-                                    $kode_kategori = '';
-                                    $jenis_kompetensi = '';
-                                @endphp
                                 @foreach ($penilaian_item as $d)
-                                    @if ($kode_kategori != $d->kode_kategori)
-                                        @php
-                                            $no = 1;
-                                        @endphp
-                                        <tr class="table-dark">
-                                            <th colspan="3">
-                                                {{ $d->nama_kategori }}
-                                            </th>
-                                        </tr>
-                                        <tr class="table-dark">
-                                            <th>No.</th>
-                                            <th>Sasaran Kerja</th>
-                                            <th>Nilai</th>
-
-                                        </tr>
-                                    @endif
-
-                                    @if ($d->jenis_kompetensi != 'C00' && $jenis_kompetensi != $d->jenis_kompetensi)
-                                        <tr style="text-align: center; background-color:rgba(0, 255, 72, 0.235)">
-                                            <td colspan="3" style="text-align: center">
-                                                {{ $d->jenis_kompetensi == 'C01' ? 'Kompentensi Wajib' : 'Kompetensi' }}
-                                            </td>
-                                        </tr>
-                                    @endif
                                     <tr>
-                                        <td>{{ $no }}</td>
-                                        <td>
-                                            <input type="hidden" name="kode_item" value="{{ $d->kode_item }}">
-                                            {{ $d->item_penilaian }}
-                                        </td>
-                                        <td>
+                                        <td rowspan="2">{{ $loop->iteration }}</td>
+                                        <td class="bg-info text-white">{{ $d->nama_kategori }}</td>
+                                        <td rowspan="2">
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input skor" type="radio" name="skor[{{ $d->kode_item }}]"
                                                     id="skor_{{ $d->kode_item }}_m" value="1">
@@ -103,13 +78,12 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    @php
-                                        $no++;
-                                        $kode_kategori = $d->kode_kategori;
-                                        $jenis_kompetensi = $d->jenis_kompetensi;
-                                    @endphp
+                                    <tr>
+                                        <td>
+                                            {{ $d->item_penilaian }}
+                                        </td>
+                                    </tr>
                                 @endforeach
-
                             </tbody>
                         </table>
                         </p>
@@ -146,8 +120,7 @@
                                     <label class="form-check-label" for="inlineCheckbox3">6 Bulan</label>
                                 </div>
                                 <div class="form-check form-check-inline mt-3">
-                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox4" value="KT"
-                                        name="masa_kontrak">
+                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox4" value="KT" name="masa_kontrak">
                                     <label class="form-check-label" for="inlineCheckbox4">Karyawan tetap</label>
                                 </div>
                             </div>

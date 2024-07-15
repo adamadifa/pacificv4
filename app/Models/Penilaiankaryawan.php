@@ -34,8 +34,8 @@ class Penilaiankaryawan extends Model
         if (!empty($kode_penilaian)) {
             $query->where('hrd_penilaian.kode_penilaian', $kode_penilaian);
         }
-        $query->orderBy('hrd_penilaian.status');
         $query->orderBy('hrd_penilaian.tanggal', 'desc');
+        $query->orderBy('hrd_penilaian.status');
         return $query;
     }
 }

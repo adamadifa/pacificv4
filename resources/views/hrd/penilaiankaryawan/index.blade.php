@@ -96,6 +96,20 @@
                                                     <i class="ti ti-hourglass-low text-warning"></i>
                                                 @endif
                                             </td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    @can('penilaiankaryawan.delete')
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('penilaiankaryawan.delete', Crypt::encrypt($d->kode_penilaian)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm me-1">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    @endcan
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

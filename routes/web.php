@@ -1509,7 +1509,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/penilaiankaryawan', 'index')->name('penilaiankaryawan.index')->can('penilaiankaryawan.index');
         Route::get('/penilaiankaryawan/create', 'create')->name('penilaiankaryawan.create')->can('penilaiankaryawan.create');
         Route::post('/penilaiankaryawan/createpenilaian', 'createpenilaian')->name('penilaiankaryawan.createpenilaian')->can('penilaiankaryawan.create');
-        Route::post('/penilaiankaryawan/store', 'store')->name('penilaiankaryawan.store')->can('penilaiankaryawan.store');
+        Route::post('/penilaiankaryawan/{no_kontrak}/store', 'store')->name('penilaiankaryawan.store')->can('penilaiankaryawan.store');
         Route::get('/penilaiankaryawan/{id}/show', 'show')->name('penilaiankaryawan.show')->can('penilaiankaryawan.show');
         Route::get('/penilaiankaryawan/{id}/edit', 'edit')->name('penilaiankaryawan.edit')->can('penilaiankaryawan.edit');
         Route::put('/penilaiankaryawan/{id}/update', 'update')->name('penilaiankaryawan.update')->can('penilaiankaryawan.update');

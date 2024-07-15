@@ -24,67 +24,70 @@ class Karyawan extends Model
         $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         //Direktur --> Tampilkan General Manger
-        if ($user->hasRole('direktur')) {
-            $query->where('hrd_karyawan.kode_jabatan', 'J02');
-        } elseif ($user->hasRole('gm operasional')) {
-            $query->whereIn('hrd_karyawan.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
-            $query->whereIn('hrd_karyawan.kode_jabatan', ['J04', 'J05', 'J06']);
-        } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
-            $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
-            $query->whereIn('hrd_karyawan.kode_jabatan', ['J04', 'J05', 'J06', 'J08']);
-        } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
-            $query->whereIn('hrd_karyawan.kode_dept', ['MKT']);
-            $query->whereIn('hrd_karyawan.kode_jabatan', ['J03', 'J07']);
-        } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
-            $query->where('hrd_karyawan.kode_dept', 'MKT');
-            $query->where('hrd_karyawan.kode_jabatan', 'J07');
-            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-        } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
-            $query->where('hrd_karyawan.kode_dept', 'AKT');
-            $query->where('hrd_karyawan.kode_jabatan', 'J08');
-        } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
-            $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
-            $query->where('hrd_karyawan.kode_jabatan', 'J08');
-        } else {
-            $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-            $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
-            $query->where('hrd_jabatan.kategori', 'NM');
+        if (!$user->hasRole('super admin')) {
+
+
+            if ($user->hasRole('direktur')) {
+                $query->where('hrd_karyawan.kode_jabatan', 'J02');
+            } elseif ($user->hasRole('gm operasional')) {
+                $query->whereIn('hrd_karyawan.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
+                $query->whereIn('hrd_karyawan.kode_jabatan', ['J04', 'J05', 'J06']);
+            } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
+                $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                $query->whereIn('hrd_karyawan.kode_jabatan', ['J04', 'J05', 'J06', 'J08']);
+            } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
+                $query->whereIn('hrd_karyawan.kode_dept', ['MKT']);
+                $query->whereIn('hrd_karyawan.kode_jabatan', ['J03', 'J07']);
+            } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
+                $query->where('hrd_karyawan.kode_dept', 'MKT');
+                $query->where('hrd_karyawan.kode_jabatan', 'J07');
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
+                $query->where('hrd_karyawan.kode_dept', 'AKT');
+                $query->where('hrd_karyawan.kode_jabatan', 'J08');
+            } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
+                $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                $query->where('hrd_karyawan.kode_jabatan', 'J08');
+            } else {
+                $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                $query->where('hrd_jabatan.kategori', 'NM');
+            }
+
+
+            $query->where('status_aktif_karyawan', 1);
+            $query->where('status_karyawan', 'K');
+
+            if ($user->hasRole('gm operasional')) {
+                $query->orWhere('hrd_karyawan.kode_dept', 'PDQ');
+                $query->where('status_aktif_karyawan', 1);
+                $query->where('status_karyawan', 'K');
+            } else if ($user->hasRole('gm administrasi')) {
+                $query->orwhereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                $query->where('hrd_jabatan.kategori', 'NM');
+                $query->where('hrd_karyawan.kode_cabang', 'PST');
+                $query->where('status_aktif_karyawan', 1);
+                $query->where('status_karyawan', 'K');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->orWhere('hrd_jabatan.kategori', 'NM');
+                $query->where('hrd_karyawan.kode_dept', 'MKT');
+                $query->where('status_aktif_karyawan', 1);
+                $query->where('status_karyawan', 'K');
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else if ($user->hasRole('regional operation manager')) {
+                $query->orWhere('hrd_karyawan.kode_dept', 'AKT');
+                $query->where('hrd_jabatan.kategori', 'NM');
+                $query->where('hrd_karyawan.kode_cabang', 'PST');
+                $query->where('status_aktif_karyawan', 1);
+                $query->where('status_karyawan', 'K');
+            } else if ($user->hasRole('manager keuangan')) {
+                $query->orwhereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                $query->where('hrd_jabatan.kategori', 'NM');
+                $query->where('hrd_karyawan.kode_cabang', 'PST');
+                $query->where('status_aktif_karyawan', 1);
+                $query->where('status_karyawan', 'K');
+            }
         }
-
-
-        $query->where('status_aktif_karyawan', 1);
-        $query->where('status_karyawan', 'K');
-
-        if ($user->hasRole('gm operasional')) {
-            $query->orWhere('hrd_karyawan.kode_dept', 'PDQ');
-            $query->where('status_aktif_karyawan', 1);
-            $query->where('status_karyawan', 'K');
-        } else if ($user->hasRole('gm administrasi')) {
-            $query->orwhereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
-            $query->where('hrd_jabatan.kategori', 'NM');
-            $query->where('hrd_karyawan.kode_cabang', 'PST');
-            $query->where('status_aktif_karyawan', 1);
-            $query->where('status_karyawan', 'K');
-        } else if ($user->hasRole('regional sales manager')) {
-            $query->orWhere('hrd_jabatan.kategori', 'NM');
-            $query->where('hrd_karyawan.kode_dept', 'MKT');
-            $query->where('status_aktif_karyawan', 1);
-            $query->where('status_karyawan', 'K');
-            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-        } else if ($user->hasRole('regional operation manager')) {
-            $query->orWhere('hrd_karyawan.kode_dept', 'AKT');
-            $query->where('hrd_jabatan.kategori', 'NM');
-            $query->where('hrd_karyawan.kode_cabang', 'PST');
-            $query->where('status_aktif_karyawan', 1);
-            $query->where('status_karyawan', 'K');
-        } else if ($user->hasRole('manager keuangan')) {
-            $query->orwhereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
-            $query->where('hrd_jabatan.kategori', 'NM');
-            $query->where('hrd_karyawan.kode_cabang', 'PST');
-            $query->where('status_aktif_karyawan', 1);
-            $query->where('status_karyawan', 'K');
-        }
-
         $query->orderBy('nama_karyawan');
         return $query;
     }
