@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Detailpenilaiankaryawan;
 use App\Models\Itempenilaian;
+use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
 use App\Models\Kontrakkaryawan;
 use App\Models\Penilaiankaryawan;
@@ -76,6 +77,7 @@ class PenilaiankaryawanController extends Controller
             'skor.*' => 'required',
             'rekomendasi' => 'required',
             'evaluasi' => 'required',
+            'masa_kontrak' => 'required',
 
         ]);
 
@@ -138,6 +140,80 @@ class PenilaiankaryawanController extends Controller
     }
 
 
+
+    public function edit($kode_penilaian)
+    {
+        $kode_penilaian = Crypt::decrypt($kode_penilaian);
+        $penilaiankaryawan = Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)
+            ->select(
+                'hrd_penilaian.*',
+                'nama_karyawan',
+                'nama_dept',
+                'nama_jabatan',
+                'nama_cabang'
+            )
+            ->join('hrd_karyawan', 'hrd_penilaian.nik', '=', 'hrd_karyawan.nik')
+            ->join('hrd_departemen', 'hrd_penilaian.kode_dept', '=', 'hrd_departemen.kode_dept')
+            ->join('hrd_jabatan', 'hrd_penilaian.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
+            ->join('cabang', 'hrd_penilaian.kode_cabang', '=', 'cabang.kode_cabang')
+            ->first();
+
+
+        $doc = $penilaiankaryawan->kode_doc;
+        $data['penilaiankaryawan'] = $penilaiankaryawan;
+        $data['penilaian_item'] = Detailpenilaiankaryawan::where('kode_penilaian', $kode_penilaian)
+            ->select(
+                'hrd_penilaian_detail.*',
+                'hrd_penilaian_item.item_penilaian',
+                'hrd_penilaian_item.kode_kategori',
+                'hrd_penilaian_item.jenis_kompetensi',
+                'hrd_penilaian_kategori.nama_kategori'
+            )
+            ->join('hrd_penilaian_item', 'hrd_penilaian_detail.kode_item', '=', 'hrd_penilaian_item.kode_item')
+            ->join('hrd_penilaian_kategori', 'hrd_penilaian_item.kode_kategori', '=', 'hrd_penilaian_kategori.kode_kategori')
+            ->orderBy('hrd_penilaian_item.kode_kategori')
+            ->orderBy('hrd_penilaian_item.kode_item')
+            ->get();
+        if ($doc == 1) {
+            return view('hrd.penilaiankaryawan.edit_penilaian_1', $data);
+        } else {
+            return view('hrd.penilaiankaryawan.edit_penilaian_2', $data);
+        }
+    }
+
+    public function update(Request $request, $kode_penilaian)
+    {
+        $kode_penilaian = Crypt::decrypt($kode_penilaian);
+        $request->validate([
+            'skor.*' => 'required',
+            'rekomendasi' => 'required',
+            'evaluasi' => 'required',
+            'masa_kontrak' => 'required'
+        ]);
+        DB::beginTransaction();
+        try {
+            Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update([
+                'rekomendasi' => $request->rekomendasi,
+                'evaluasi' => $request->evaluasi,
+                'masa_kontrak' => $request->masa_kontrak,
+                'sakit' => $request->sakit,
+                'alfa' => $request->alfa,
+                'izin' => $request->izin,
+                'sid' => $request->sid
+            ]);
+            foreach ($request->skor as $kode_item => $skor) {
+                Detailpenilaiankaryawan::where('kode_penilaian', $kode_penilaian)->where('kode_item', $kode_item)->update([
+                    'nilai' => $skor
+                ]);
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
     public function destroy($kode_penilaian)
     {
         $kode_penilaian = Crypt::decrypt($kode_penilaian);
@@ -146,6 +222,50 @@ class PenilaiankaryawanController extends Controller
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function cetak($kode_penilaian)
+    {
+        $kode_penilaian = Crypt::decrypt($kode_penilaian);
+        $penilaiankaryawan = Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)
+            ->select(
+                'hrd_penilaian.*',
+                'nama_karyawan',
+                'nama_dept',
+                'nama_jabatan',
+                'nama_cabang',
+                'hrd_karyawan.jenis_kelamin',
+            )
+            ->join('hrd_karyawan', 'hrd_penilaian.nik', '=', 'hrd_karyawan.nik')
+            ->join('hrd_departemen', 'hrd_penilaian.kode_dept', '=', 'hrd_departemen.kode_dept')
+            ->join('hrd_jabatan', 'hrd_penilaian.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
+            ->join('cabang', 'hrd_penilaian.kode_cabang', '=', 'cabang.kode_cabang')
+            ->first();
+        $data['penilaiankaryawan'] = $penilaiankaryawan;
+        $data['penilaian_item'] = Detailpenilaiankaryawan::where('kode_penilaian', $kode_penilaian)
+            ->select(
+                'hrd_penilaian_detail.*',
+                'hrd_penilaian_item.item_penilaian',
+                'hrd_penilaian_item.kode_kategori',
+                'hrd_penilaian_item.jenis_kompetensi',
+                'hrd_penilaian_kategori.nama_kategori'
+            )
+            ->join('hrd_penilaian_item', 'hrd_penilaian_detail.kode_item', '=', 'hrd_penilaian_item.kode_item')
+            ->join('hrd_penilaian_kategori', 'hrd_penilaian_item.kode_kategori', '=', 'hrd_penilaian_kategori.kode_kategori')
+            ->orderBy('hrd_penilaian_item.kode_kategori')
+            ->orderBy('hrd_penilaian_item.kode_item')
+            ->get();
+
+        $data['historikontrak'] = Kontrakkaryawan::where('nik', $penilaiankaryawan->nik)
+            ->orderBy('tanggal')
+            ->get();
+
+        $data['historipemutihan'] = Jasamasakerja::where('nik', $penilaiankaryawan->nik)->orderBy('tanggal')->get();
+        if ($penilaiankaryawan->kode_doc == 1) {
+            return view('hrd.penilaiankaryawan.cetak_1', $data);
+        } else {
+            return view('hrd.penilaiankaryawan.cetak_2', $data);
         }
     }
 }

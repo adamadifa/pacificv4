@@ -98,6 +98,18 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
+                                                    @can('penilaiankaryawan.edit')
+                                                        <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}"
+                                                            class="me-1">
+                                                            <i class="ti ti-edit text-success"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can('penilaiankaryawan.show')
+                                                        <a href=" {{ route('penilaiankaryawan.cetak', Crypt::encrypt($d->kode_penilaian)) }}"
+                                                            class="me-1" target="_blank">
+                                                            <i class="ti ti-printer text-primary"></i>
+                                                        </a>
+                                                    @endcan
                                                     @can('penilaiankaryawan.delete')
                                                         <form method="POST" name="deleteform" class="deleteform"
                                                             action="{{ route('penilaiankaryawan.delete', Crypt::encrypt($d->kode_penilaian)) }}">

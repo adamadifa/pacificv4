@@ -142,7 +142,7 @@
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <button class="btn btn-primary w-100"><i class="ti ti-send me-1"></i>Submit</button></button>
+                        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button></button>
                     </div>
                 </div>
             </div>

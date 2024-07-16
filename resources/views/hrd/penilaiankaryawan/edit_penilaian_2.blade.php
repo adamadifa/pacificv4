@@ -4,9 +4,8 @@
 @section('navigasi')
     <span>Buat Penilaian</span>
 @endsection
-<form action="{{ route('penilaiankaryawan.store', Crypt::encrypt($kontrak->no_kontrak)) }}" method="POST" id="formPenilaian">
-    <input type="hidden" name="tanggal" id="tanggal" value="{{ $tanggal }}">
-    <input type="hidden" name="kode_doc" id="kode_doc" value="{{ $doc }}">
+<form action="{{ route('penilaiankaryawan.update', Crypt::encrypt($penilaiankaryawan->kode_penilaian)) }}" method="POST" id="formPenilaian">
+    @method('PUT')
     @csrf
     <div class="row">
         <div class="col-lg-8 col-sm-12 col-xs-12">
@@ -17,27 +16,28 @@
                             <table class="table">
                                 <tr>
                                     <th>NIK</th>
-                                    <td class="text-end">{{ $karyawan->nik }}</td>
+                                    <td class="text-end">{{ $penilaiankaryawan->nik }}</td>
                                 </tr>
                                 <tr>
                                     <th>Nama</th>
-                                    <td class="text-end">{{ $karyawan->nama_karyawan }}</td>
+                                    <td class="text-end">{{ $penilaiankaryawan->nama_karyawan }}</td>
                                 </tr>
                                 <tr>
                                     <th>Departemen</th>
-                                    <td class="text-end">{{ $karyawan->nama_dept }}</td>
+                                    <td class="text-end">{{ $penilaiankaryawan->nama_dept }}</td>
                                 </tr>
                                 <tr>
                                     <th>Jabatan</th>
-                                    <td class="text-end">{{ $karyawan->nama_jabatan }}</td>
+                                    <td class="text-end">{{ $penilaiankaryawan->nama_jabatan }}</td>
                                 </tr>
                                 <tr>
                                     <th>Periode Kontrak</th>
-                                    <td class="text-end">{{ DateToIndo($kontrak->dari) }} s.d {{ DateToIndo($kontrak->sampai) }}</td>
+                                    <td class="text-end">{{ DateToIndo($penilaiankaryawan->kontrak_dari) }} s.d
+                                        {{ DateToIndo($penilaiankaryawan->kontrak_sampai) }}</td>
                                 </tr>
                                 <tr>
                                     <th>Tanggal</th>
-                                    <td class="text-end">{{ DateToIndo($tanggal) }}</td>
+                                    <td class="text-end">{{ DateToIndo($penilaiankaryawan->tanggal) }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -51,65 +51,39 @@
                             <b>A. Penilaian</b> <br>
                             Checklist bobot penilaian dibawah ini (semakin besar angka yang dipilih semakin baik
                             penilaian karyawan tersebut)
-                        <table class="table mt-3">
+                        <table class="table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width:5%">No</th>
+                                    <th style="width:75%">Faktor Penilaian</th>
+                                    <th style="width:20%">Bobot Nilai</th>
+                                </tr>
+                            </thead>
                             <tbody>
-                                @php
-                                    $no = 1;
-                                    $kode_kategori = '';
-                                    $jenis_kompetensi = '';
-                                @endphp
                                 @foreach ($penilaian_item as $d)
-                                    @if ($kode_kategori != $d->kode_kategori)
-                                        @php
-                                            $no = 1;
-                                        @endphp
-                                        <tr class="table-dark">
-                                            <th colspan="3">
-                                                {{ $d->nama_kategori }}
-                                            </th>
-                                        </tr>
-                                        <tr class="table-dark">
-                                            <th>No.</th>
-                                            <th>Sasaran Kerja</th>
-                                            <th>Nilai</th>
-
-                                        </tr>
-                                    @endif
-
-                                    @if ($d->jenis_kompetensi != 'C00' && $jenis_kompetensi != $d->jenis_kompetensi)
-                                        <tr style="text-align: center; background-color:rgba(0, 255, 72, 0.235)">
-                                            <td colspan="3" style="text-align: center">
-                                                {{ $d->jenis_kompetensi == 'C01' ? 'Kompentensi Wajib' : 'Kompetensi' }}
-                                            </td>
-                                        </tr>
-                                    @endif
                                     <tr>
-                                        <td>{{ $no }}</td>
-                                        <td>
-                                            <input type="hidden" name="kode_item" value="{{ $d->kode_item }}">
-                                            {{ $d->item_penilaian }}
-                                        </td>
-                                        <td>
+                                        <td rowspan="2">{{ $loop->iteration }}</td>
+                                        <td class="bg-info text-white">{{ $d->nama_kategori }}</td>
+                                        <td rowspan="2">
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input skor" type="radio" name="skor[{{ $d->kode_item }}]"
-                                                    id="skor_{{ $d->kode_item }}_m" value="1">
+                                                    id="skor_{{ $d->kode_item }}_m" value="1" {{ $d->nilai == 1 ? 'checked' : '' }}>
                                                 <label class="form-check-label" for="skor_{{ $d->kode_item }}_m">Memuaskan</label>
                                             </div>
                                             <div class="form-check-danger form-check-inline">
                                                 <input class="form-check-input skor" type="radio" name="skor[{{ $d->kode_item }}]"
-                                                    id="skor_{{ $d->kode_item }}_tm" value="0">
+                                                    id="skor_{{ $d->kode_item }}_tm" value="0" {{ $d->nilai === 0 ? 'checked' : '' }}>
                                                 <label class="form-check-label" for="skor_{{ $d->kode_item }}_tm">Tidak
                                                     Memuaskan</label>
                                             </div>
                                         </td>
                                     </tr>
-                                    @php
-                                        $no++;
-                                        $kode_kategori = $d->kode_kategori;
-                                        $jenis_kompetensi = $d->jenis_kompetensi;
-                                    @endphp
+                                    <tr>
+                                        <td>
+                                            {{ $d->item_penilaian }}
+                                        </td>
+                                    </tr>
                                 @endforeach
-
                             </tbody>
                         </table>
                         </p>
@@ -117,16 +91,16 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <x-input-with-icon-label label="Sakit" name="sakit" icon="ti ti-heart-broken" />
+                            <x-input-with-icon-label label="Sakit" name="sakit" icon="ti ti-heart-broken" :value="$penilaiankaryawan->sakit" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <x-input-with-icon-label label="Izin" name="izin" icon="ti ti-file-description" />
+                            <x-input-with-icon-label label="Izin" name="izin" icon="ti ti-file-description" :value="$penilaiankaryawan->izin" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <x-input-with-icon-label label="Alfa" name="alfa" icon="ti ti-clock-cancel" />
+                            <x-input-with-icon-label label="Alfa" name="alfa" icon="ti ti-clock-cancel" :value="$penilaiankaryawan->alfa" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <x-input-with-icon-label label="SID" name="sid" icon="ti ti-receipt" />
+                            <x-input-with-icon-label label="SID" name="sid" icon="ti ti-receipt" :value="$penilaiankaryawan->sid" />
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -134,23 +108,27 @@
                             <b>B. Masa Kontrak Kerja</b>
                             <div class="form-group mb-3">
                                 <div class="form-check form-check-inline mt-3">
-                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox1" value="TP" name="masa_kontrak">
+                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox1" value="TP" name="masa_kontrak"
+                                        {{ $penilaiankaryawan->masa_kontrak == 'TP' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="inlineCheckbox1">Tidak di Perpanjang</label>
                                 </div>
                                 <div class="form-check form-check-inline mt-3">
-                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox2" value="K3" name="masa_kontrak">
+                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox2" value="K3" name="masa_kontrak"
+                                        {{ $penilaiankaryawan->masa_kontrak == 'K3' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="inlineCheckbox2">3 Bulan</label>
                                 </div>
                                 <div class="form-check form-check-inline mt-3">
-                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox3" value="K6" name="masa_kontrak">
+                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox3" value="K6" name="masa_kontrak"
+                                        {{ $penilaiankaryawan->masa_kontrak == 'K6' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="inlineCheckbox3">6 Bulan</label>
                                 </div>
                                 <div class="form-check form-check-inline mt-3">
-                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox4" value="KT"
-                                        name="masa_kontrak">
+                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox4" value="KT" name="masa_kontrak"
+                                        {{ $penilaiankaryawan->masa_kontrak == 'KT' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="inlineCheckbox4">Karyawan tetap</label>
                                 </div>
                             </div>
+
 
                         </div>
                     </div>
@@ -158,14 +136,14 @@
                         <div class="col">
                             <b>C. Riwayat Absensi dan Rekomendasi User</b>
                             <br>
-                            <x-textarea label="Rekomendasi" name="rekomendasi" icon="ti ti-receipt" />
+                            <x-textarea label="Rekomendasi" name="rekomendasi" icon="ti ti-receipt" :value="$penilaiankaryawan->rekomendasi" />
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col">
                             <b>D. Evaluasi Skill Teknis / Kinerja (Wajib Diisi User)</b>
                             <br>
-                            <x-textarea label="Evaluasi" name="evaluasi" icon="ti ti-receipt" />
+                            <x-textarea label="Evaluasi" name="evaluasi" icon="ti ti-receipt" :value="$penilaiankaryawan->evaluasi" />
                         </div>
                     </div>
                     <div class="row mt-3">
