@@ -99,10 +99,12 @@
                                             <td>
                                                 <div class="d-flex">
                                                     @can('penilaiankaryawan.edit')
-                                                        <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}"
-                                                            class="me-1">
-                                                            <i class="ti ti-edit text-success"></i>
-                                                        </a>
+                                                        @if ($d->status === '0')
+                                                            <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}"
+                                                                class="me-1">
+                                                                <i class="ti ti-edit text-success"></i>
+                                                            </a>
+                                                        @endif
                                                     @endcan
                                                     @can('penilaiankaryawan.show')
                                                         <a href=" {{ route('penilaiankaryawan.cetak', Crypt::encrypt($d->kode_penilaian)) }}"
@@ -111,14 +113,16 @@
                                                         </a>
                                                     @endcan
                                                     @can('penilaiankaryawan.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('penilaiankaryawan.delete', Crypt::encrypt($d->kode_penilaian)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm me-1">
-                                                                <i class="ti ti-trash text-danger"></i>
-                                                            </a>
-                                                        </form>
+                                                        @if ($d->status === '0')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('penilaiankaryawan.delete', Crypt::encrypt($d->kode_penilaian)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm me-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endif
                                                     @endcan
                                                 </div>
                                             </td>

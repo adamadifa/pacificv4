@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detailpenilaiankaryawan;
+use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Itempenilaian;
 use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
 use App\Models\Kontrakkaryawan;
 use App\Models\Penilaiankaryawan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -130,6 +132,47 @@ class PenilaiankaryawanController extends Controller
                     'nilai' => $skor
                 ]);
             }
+
+
+            //Store Disposisi
+            // Cek Departemen dan Cabang
+
+            //Jika Departemen Akunting dan Cabang != Pusat
+            if ($karyawan->kode_jabatan == 'AKT'  || $karyawan->kode_cabang != 'PST') {
+                $roles_approve = config('hrd.roles_approve_akt_cabang');
+                $cek_user_approve = User::role($roles_approve[0])->where('kode_cabang', $karyawan->kode_cabang)
+                    ->where('status', 1)
+                    ->first();
+                if ($cek_user_approve == null) {
+                    for ($i = 1; $i < count($roles_approve); $i++) {
+                        $cek_user_approve = User::role($roles_approve[$i])
+                            ->where('status', 1)
+                            ->first();
+                        if ($cek_user_approve != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $tanggal_hariini = date('Y-m-d');
+            $lastdisposisi = Disposisipenilaiankaryawan::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            $format = "DPPK" . date('Ymd');
+            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+
+            Disposisipenilaiankaryawan::create([
+                'kode_disposisi' => $kode_disposisi,
+                'kode_penilaian' => $kode_penilaian,
+                'id_pengirim' => auth()->user()->id,
+                'id_penerima' => $cek_user_approve->id,
+                'status' => 0
+            ]);
+
+            //Jika Departemen Marketing dan Cabang != Pusat
 
             DB::commit();
             return redirect('/penilaiankaryawan')->with(messageSuccess('Data Berhasil Ditambah'));
