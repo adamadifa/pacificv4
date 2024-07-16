@@ -1514,6 +1514,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/penilaiankaryawan/{id}/edit', 'edit')->name('penilaiankaryawan.edit')->can('penilaiankaryawan.edit');
         Route::put('/penilaiankaryawan/{kode_penilaian}/update', 'update')->name('penilaiankaryawan.update')->can('penilaiankaryawan.update');
         Route::delete('/penilaiankaryawan/{id}/delete', 'destroy')->name('penilaiankaryawan.delete')->can('penilaiankaryawan.delete');
+
+        Route::get('/penilaiankaryawan/{kode_penilaian}/approve', 'approve')->name('penilaiankaryawan.approve')->can('penilaiankaryawan.approve');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {

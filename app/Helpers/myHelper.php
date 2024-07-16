@@ -431,6 +431,31 @@ function removeSpecialCharacters($string)
     return preg_replace('/[^a-zA-Z0-9]/', '', $string);
 }
 
+function formatName($fullName)
+{
+    // Pisahkan string menjadi array kata-kata
+    $words = explode(' ', $fullName);
+
+    // Jika ada lebih dari 3 kata
+    if (count($words) >= 3) {
+        // Ambil dua kata pertama
+        $firstTwoWords = array_slice($words, 0, 2);
+
+        // Ambil huruf pertama dari setiap kata setelah dua kata pertama
+        $initials = array_map(function ($word) {
+            return strtoupper($word[0]);
+        }, array_slice($words, 2));
+
+        // Gabungkan dua kata pertama dengan inisial-inisial
+        $formattedName = implode(' ', $firstTwoWords) . ' ' . implode('', $initials);
+    } else {
+        // Jika tidak lebih dari 3 kata, gunakan nama asli
+        $formattedName = $fullName;
+    }
+
+    return $formattedName;
+}
+
 
 function pihakpertamacabang($cabang, $perusahaan)
 {

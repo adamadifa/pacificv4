@@ -72,7 +72,7 @@
                                             <td>{{ $d->kode_penilaian }}</td>
                                             <td>{{ formatIndo($d->tanggal) }}</td>
                                             <td>{{ $d->nik }}</td>
-                                            <td>{{ $d->nama_karyawan }}</td>
+                                            <td>{{ formatName($d->nama_karyawan) }}</td>
                                             <td>
                                                 @if (!empty($d->alias_jabatan))
                                                     {{ $d->alias_jabatan }}
@@ -88,7 +88,9 @@
                                                     <i class="ti ti-checks text-success"></i>
                                                 @endif
                                             </td>
-                                            <td></td>
+                                            <td>
+                                                <span class="badge bg-primary">{{ textCamelCase($d->posisi_ajuan) }}</span>
+                                            </td>
                                             <td class="text-center">
                                                 @if ($d->status == '1')
                                                     <i class="ti ti-checks text-success"></i>
@@ -97,6 +99,7 @@
                                                 @endif
                                             </td>
                                             <td>
+
                                                 <div class="d-flex">
                                                     @can('penilaiankaryawan.edit')
                                                         @if ($d->status === '0')
@@ -112,6 +115,14 @@
                                                             <i class="ti ti-printer text-primary"></i>
                                                         </a>
                                                     @endcan
+                                                    @can('penilaiankaryawan.approve')
+                                                        @if ($level_user == $d->posisi_ajuan && $d->status === '0')
+                                                            <a href="#" class="btnApprove me-1"
+                                                                kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}">
+                                                                <i class="ti ti-external-link text-success"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endcan
                                                     @can('penilaiankaryawan.delete')
                                                         @if ($d->status === '0')
                                                             <form method="POST" name="deleteform" class="deleteform"
@@ -124,6 +135,7 @@
                                                             </form>
                                                         @endif
                                                     @endcan
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -162,7 +174,20 @@
             $("#modal").modal("show");
             $(".modal-title").text("Buat Penilaian Karyawan");
             $("#loadmodal").load(`/penilaiankaryawan/create`);
+            $("#modal").find(".modal-dialog").removeClass('modal-lg');
         });
+
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
+            var kode_penilaian = $(this).attr("kode_penilaian");
+            loading();
+            $("#modal").modal("show");
+            $(".modal-title").text("Approve Penilaian Karyawan");
+            $("#loadmodal").load(`/penilaiankaryawan/${kode_penilaian}/approve`);
+            $("#modal").find(".modal-dialog").addClass('modal-lg');
+
+        });
+
     });
 </script>
 @endpush

@@ -311,4 +311,18 @@ class PenilaiankaryawanController extends Controller
             return view('hrd.penilaiankaryawan.cetak_2', $data);
         }
     }
+
+
+
+    public function approve($kode_penilaian)
+    {
+        $kode_penilaian = Crypt::decrypt($kode_penilaian);
+        $pk = new Penilaiankaryawan();
+        $penilaiankaryawan = $pk->getPenilaiankaryawan($kode_penilaian)->first();
+        $data['doc'] = $penilaiankaryawan->kode_doc;
+        $data['penilaiankaryawan'] = $penilaiankaryawan;
+        $data['total_score'] = Detailpenilaiankaryawan::where('kode_penilaian', $kode_penilaian)
+            ->select(DB::raw('SUM(nilai) as total_score'))->first();
+        return view('hrd.penilaiankaryawan.approve', $data);
+    }
 }
