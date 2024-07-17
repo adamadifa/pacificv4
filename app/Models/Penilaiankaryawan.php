@@ -56,6 +56,7 @@ class Penilaiankaryawan extends Model
         $query->join('hrd_departemen', 'hrd_penilaian.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->leftjoin('hrd_kontrak_penilaian', 'hrd_penilaian.kode_penilaian', '=', 'hrd_kontrak_penilaian.kode_penilaian');
         $query->leftJoin('hrd_kesepakatanbersama', 'hrd_penilaian.kode_penilaian', '=', 'hrd_kesepakatanbersama.kode_penilaian');
+        
         $query->leftJoin('hrd_kontrak', 'hrd_penilaian.no_kontrak', '=', 'hrd_kontrak.no_kontrak');
         $query->leftJoin('hrd_kontrak_gaji', 'hrd_kontrak.no_kontrak', '=', 'hrd_kontrak_gaji.no_kontrak');
         $query->leftJoin('hrd_gaji', 'hrd_kontrak_gaji.kode_gaji', '=', 'hrd_gaji.kode_gaji');
