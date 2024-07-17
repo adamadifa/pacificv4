@@ -55,6 +55,59 @@ class KesepakatanbersamaController extends Controller
         return view('hrd.kesepakatanbersama.index', $data);
     }
 
+    public function create($kode_penialaian)
+    {
+        $kode_penialaian = Crypt::decrypt($kode_penialaian);
+        $data['kode_penilaian'] = $kode_penialaian;
+        return view('hrd.kesepakatanbersama.create', $data);
+    }
+
+    public function store(Request $request, $kode_penialaian)
+    {
+        $kode_penialaian = Crypt::decrypt($kode_penialaian);
+        $penialaiankaryawan = Penilaiankaryawan::where('kode_penilaian', $kode_penialaian)->first();
+        $request->validate([
+            'tanggal' => 'required',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $lastkb = Kesepakatanbersama::select('no_kb')
+                ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->tanggal)) . '"')
+                ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
+                ->orderBy("no_kb", "desc")
+                ->first();
+            $last_no_kb = $lastkb != null ? $lastkb->no_kb : '';
+            $no_kb  = buatkode($last_no_kb, "KB" . date('my', strtotime($request->tanggal)), 3);
+
+            //$last Kontrak
+            $kontrak = Kontrakkaryawan::where('nik', $penialaiankaryawan->nik)
+                ->where('status_kontrak', 1)
+                ->first();
+
+            $gaji = Gaji::where('nik', $penialaiankaryawan->nik)
+                ->where('tanggal_berlaku', '<=', $request->tanggal)
+                ->orderBy('tanggal_berlaku', 'desc')
+                ->first();
+
+
+            Kesepakatanbersama::create([
+                'no_kb' => $no_kb,
+                'tanggal' => $request->tanggal,
+                'nik' => $penialaiankaryawan->nik,
+                'kode_penilaian' => $penialaiankaryawan->kode_penilaian,
+                'no_kontrak' => $kontrak->no_kontrak,
+                'kode_gaji' => $gaji->kode_gaji,
+            ]);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Ditambahkan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
     public function potongan($no_kb)
     {
         $no_kb = Crypt::decrypt($no_kb);
@@ -144,35 +197,8 @@ class KesepakatanbersamaController extends Controller
         $data['jabatan'] = Jabatan::orderBy('kode_jabatan')->get();
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
-        $data['kesepakatanbersama'] =  Kesepakatanbersama::select(
-            'hrd_kesepakatanbersama.*',
-            'nama_karyawan',
-            'hrd_penilaian.kode_jabatan',
-            'hrd_penilaian.kode_perusahaan',
-            'nama_jabatan',
-            'hrd_karyawan.tanggal_masuk',
-            'hrd_karyawan.no_ktp',
-            'hrd_karyawan.alamat as alamat_karyawan',
-            'hrd_penilaian.kode_dept',
-            'hrd_penilaian.kode_cabang',
-            'nama_cabang',
-            'alamat_cabang',
-            'nama_pt',
-            'hrd_gaji.gaji_pokok',
-            'hrd_gaji.t_jabatan',
-            'hrd_gaji.t_tanggungjawab',
-            'hrd_gaji.t_makan',
-            'hrd_gaji.t_skill',
-            'hrd_kontrak_penilaian.no_kontrak as no_kontrak_baru'
-        )
-            ->join('hrd_karyawan', 'hrd_kesepakatanbersama.nik', '=', 'hrd_karyawan.nik')
-            ->join('hrd_penilaian', 'hrd_kesepakatanbersama.kode_penilaian', '=', 'hrd_penilaian.kode_penilaian')
-            ->join('hrd_jabatan', 'hrd_penilaian.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
-            ->join('cabang', 'hrd_penilaian.kode_cabang', 'cabang.kode_cabang')
-            ->leftJoin('hrd_kontrak_penilaian', 'hrd_penilaian.kode_penilaian', '=', 'hrd_kontrak_penilaian.kode_penilaian')
-            ->leftJoin('hrd_gaji', 'hrd_kesepakatanbersama.kode_gaji', 'hrd_gaji.kode_gaji')
-            ->where('hrd_kesepakatanbersama.kode_penilaian', $kode_penialaian)
-            ->first();
+        $pk = new Penilaiankaryawan();
+        $data['penilaiankaryawan'] = $pk->getPenilaianKaryawan($kode_penialaian)->first();
         return view('hrd.kesepakatanbersama.createkontrak', $data);
     }
 
@@ -269,6 +295,23 @@ class KesepakatanbersamaController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function destroy($no_kb)
+    {
+
+        $no_kb = Crypt::decrypt($no_kb);
+        try {
+            $kesepakatanbersama = Kesepakatanbersama::where('no_kb', $no_kb);
+            if (!$kesepakatanbersama) {
+                return Redirect::back()->with(messageError('Data tidak ditemukan'));
+            }
+
+            $kesepakatanbersama->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }

@@ -81,8 +81,10 @@
 
                                                     @can('kontrakkerja.create')
                                                         @if (empty($d->no_kontrak_baru))
-                                                            <a href="#" class="btnCreatekontrak btn btn-primary btn-xs me-1"
-                                                                kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}">Buat Kontrak</a>
+                                                            <a href="#" class="btnCreatekontrak  me-1"
+                                                                kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}">
+                                                                <i class="ti ti-file-plus text-danger"></i>
+                                                            </a>
                                                         @else
                                                             <a href="{{ route('kontrakkerja.cetak', Crypt::encrypt($d->no_kontrak_baru)) }}"
                                                                 class="me-1" target="_blank">

@@ -1495,6 +1495,8 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(KesepakatanbersamaController::class)->group(function () {
         Route::get('/kesepakatanbersama', 'index')->name('kesepakatanbersama.index')->can('kb.index');
+        Route::get('/kesepakatanbersama/{kode_penilaian}/create', 'create')->name('kesepakatanbersama.create')->can('kb.create');
+        Route::post('/kesepakatanbersama/{kode_penilaian}/store', 'store')->name('kesepakatanbersama.store')->can('kb.store');
         Route::get('/kesepakatanbersama/{no_kb}/show', 'show')->name('kesepakatanbersama.show')->can('kb.show');
         Route::get('/kesepakatanbersama/{no_kb}/cetak', 'cetak')->name('kesepakatanbersama.cetak')->can('kb.show');
         Route::get('/kesepakatanbersama/{no_kb}/potongan', 'potongan')->name('kesepakatanbersama.potongan')->can('kb.edit');
@@ -1516,6 +1518,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/penilaiankaryawan/{id}/delete', 'destroy')->name('penilaiankaryawan.delete')->can('penilaiankaryawan.delete');
 
         Route::get('/penilaiankaryawan/{kode_penilaian}/approve', 'approve')->name('penilaiankaryawan.approve')->can('penilaiankaryawan.approve');
+        Route::post('/penilaiankaryawan/{kode_penilaian}/storeapprove', 'storeapprove')->name('penilaiankaryawan.storeapprove')->can('penilaiankaryawan.approve');
+        Route::delete('/penilaiankaryawan/{kode_penilaian}/cancel', 'cancel')->name('penilaiankaryawan.cancel')->can('penilaiankaryawan.approve');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {

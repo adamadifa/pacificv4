@@ -1,4 +1,5 @@
-<form action="{{ route('penilaiankaryawan.approve', Crypt::encrypt($penilaiankaryawan->kode_penilaian)) }}" method="POST" id="formApprove">
+<form action="{{ route('penilaiankaryawan.storeapprove', Crypt::encrypt($penilaiankaryawan->kode_penilaian)) }}" method="POST" id="formApprove">
+    @csrf
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12 ">
             <div class="row">
@@ -91,4 +92,33 @@
             </table>
         </div>
     </div>
+    <div class="row mt-3">
+        <div class="col">
+            <button class="btn btn-primary w-100" id="btnSimpan">
+                <i class="ti ti-thumb-up me-1"></i> Setuju,
+                @if ($level_user != $end_role)
+                    Teruskan ke {{ textCamelCase($nextrole) }} ({{ $userrole->name }})
+                @endif
+
+            </button>
+        </div>
+    </div>
 </form>
+<script>
+    $(document).ready(function() {
+        const form = $("#formApprove");
+
+        function buttonDisabled() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..`);
+        }
+        form.submit(function(e) {
+            buttonDisabled();
+        })
+
+    })
+</script>

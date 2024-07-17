@@ -1,37 +1,37 @@
-<form action="{{ route('kesepakatanbersama.storekontrak', Crypt::encrypt($kesepakatanbersama->kode_penilaian)) }}" method="POST" id="formKontrak">
+<form action="{{ route('kesepakatanbersama.storekontrak', Crypt::encrypt($penilaiankaryawan->kode_penilaian)) }}" method="POST" id="formKontrak">
     @csrf
     <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kontrak" />
     <table class="table mb-3">
         <tr>
             <th>Kode Penilaian</th>
-            <td class="text-end">{{ $kesepakatanbersama->kode_penilaian }}</td>
+            <td class="text-end">{{ $penilaiankaryawan->kode_penilaian }}</td>
         </tr>
         <tr>
             <th>NIK</th>
-            <td class="text-end">{{ $kesepakatanbersama->nik }}</td>
+            <td class="text-end">{{ $penilaiankaryawan->nik }}</td>
         </tr>
         <tr>
             <th>Nama</th>
-            <td class="text-end">{{ $kesepakatanbersama->nama_karyawan }}</td>
+            <td class="text-end">{{ $penilaiankaryawan->nama_karyawan }}</td>
         </tr>
         <tr>
             <th>Jabatan</th>
-            <td class="text-end">{{ $kesepakatanbersama->nama_jabatan }}</td>
+            <td class="text-end">{{ $penilaiankaryawan->nama_jabatan }}</td>
         </tr>
     </table>
     <div class="form-group mb-3">
         <select name="kode_perusahaan" id="kode_perusahaan" class="form-select">
             <option value="">Perusahaan</option>
-            <option value="MP" {{ $kesepakatanbersama->kode_perusahaan == 'MP' ? 'selected' : '' }}>Makmur Permata</option>
-            <option value="PC" {{ $kesepakatanbersama->kode_perusahaan == 'PC' ? 'selected' : '' }}>Pacific</option>
+            <option value="MP" {{ $penilaiankaryawan->kode_perusahaan == 'MP' ? 'selected' : '' }}>Makmur Permata</option>
+            <option value="PC" {{ $penilaiankaryawan->kode_perusahaan == 'PC' ? 'selected' : '' }}>Pacific</option>
         </select>
     </div>
     <x-select label="Kantor" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-        select2="select2Kodecabang" selected="{{ $kesepakatanbersama->kode_cabang }}" />
+        select2="select2Kodecabang" selected="{{ $penilaiankaryawan->kode_cabang }}" />
     <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" select2="select2KodeDept" upperCase="true"
-        selected="{{ $kesepakatanbersama->kode_dept }}" />
+        selected="{{ $penilaiankaryawan->kode_dept }}" />
     <x-select label="Jabatan" name="kode_jabatan" :data="$jabatan" key="kode_jabatan" textShow="nama_jabatan" select2="select2KodeJabatan"
-        upperCase="true" selected="{{ $kesepakatanbersama->kode_jabatan }}" />
+        upperCase="true" selected="{{ $penilaiankaryawan->kode_jabatan }}" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon label="Tanggal Mulai" name="dari" datepicker="flatpickr-date" icon="ti ti-calendar" />
@@ -43,13 +43,13 @@
     <div class="divider">
         <div class="divider-text">Data Gaji</div>
     </div>
-    <x-input-inline-label icon="ti ti-moneybag" label="Gaji Pokok" name="gaji_pokok" money="true" align="right" :value="formatRupiah($kesepakatanbersama->gaji_pokok)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Jabatan" name="t_jabatan" money="true" align="right" :value="formatRupiah($kesepakatanbersama->t_jabatan)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Masa Kerja" name="t_masakerja" money="true" align="right" :value="formatRupiah($kesepakatanbersama->t_masakerja)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Tangg. Jawab" name="t_tanggungjawab" money="true" align="right" :value="formatRupiah($kesepakatanbersama->t_tanggungjawab)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Makan" name="t_makan" money="true" align="right" :value="formatRupiah($kesepakatanbersama->t_makan)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Istri" name="t_istri" money="true" align="right" :value="formatRupiah($kesepakatanbersama->t_istri)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Skill" name="t_skill" money="true" align="right" :value="formatRupiah($kesepakatanbersama->t_skill)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Gaji Pokok" name="gaji_pokok" money="true" align="right" :value="formatRupiah($penilaiankaryawan->gaji_pokok)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Jabatan" name="t_jabatan" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_jabatan)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Masa Kerja" name="t_masakerja" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_masakerja)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Tangg. Jawab" name="t_tanggungjawab" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_tanggungjawab)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Makan" name="t_makan" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_makan)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Istri" name="t_istri" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_istri)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Skill" name="t_skill" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_skill)" />
     <div class="row">
         <div class="form-group mb-3">
             <button class="btn btn-primary w-100" id="btnSimpan" type="submit">

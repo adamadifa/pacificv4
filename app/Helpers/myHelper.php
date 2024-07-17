@@ -500,3 +500,25 @@ function pihakpertamacabang($cabang, $perusahaan)
         return $kepalapenjualan[$cabang];
     }
 }
+
+
+function singkatString($string)
+{
+    $words = explode(' ', $string);
+
+    // Jika string terdiri dari tepat 3 kata, buat singkatan huruf besar
+    if (count($words) === 3) {
+        $abbreviation = '';
+
+        foreach ($words as $word) {
+            if (strlen($word) >= 3) {
+                $abbreviation .= strtoupper($word[0]);
+            }
+        }
+
+        return $abbreviation;
+    }
+
+    // Jika tidak, buat camelCase
+    return ucwords(strtolower($string));
+}

@@ -147,6 +147,15 @@
                         </div>
                     </div>
                     <div class="row mt-3">
+                        <div class="col">
+                            <div class="form-check form-check-inline mt-3">
+                                <input class="form-check-input" type="checkbox" id="status_pemutihan" value="1" name="status_pemutihan"
+                                    {{ $penilaiankaryawan->status_pemutihan == '1' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="status_pemutihan">Pemutihan</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
                         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button></button>
                     </div>
                 </div>
