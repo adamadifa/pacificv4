@@ -1,6 +1,13 @@
-@if (auth()->user()->hasAnyPermission(['kontrakkerja.index', 'suratperingatan.index', 'jasamasakerja.index', 'kb.index', 'penilaiankaryawan.index']))
+@if (auth()->user()->hasAnyPermission([
+            'kontrakkerja.index',
+            'suratperingatan.index',
+            'jasamasakerja.index',
+            'kb.index',
+            'penilaiankaryawan.index',
+            'jadwalshift.index',
+        ]))
     <li
-        class="menu-item {{ request()->is(['kontrakkerja', 'suratperingatan', 'jasamasakerja', 'kesepakatanbersama', 'penilaiankaryawan', 'penilaiankaryawan/*']) ? 'open' : '' }}">
+        class="menu-item {{ request()->is(['kontrakkerja', 'suratperingatan', 'jasamasakerja', 'kesepakatanbersama', 'penilaiankaryawan', 'penilaiankaryawan/*', 'jadwalshift', 'jadwalshift/*']) ? 'open' : '' }}">
 
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-users-group"></i>
@@ -43,7 +50,13 @@
                     </a>
                 </li>
             @endif
-
+            @if (auth()->user()->hasAnyPermission(['jadwalshift.index']))
+                <li class="menu-item {{ request()->is(['jadwalshift', 'jadwalshift/*']) ? 'active' : '' }}">
+                    <a href="{{ route('jadwalshift.index') }}" class="menu-link">
+                        <div>Jadwal Shift</div>
+                    </a>
+                </li>
+            @endif
 
         </ul>
     </li>

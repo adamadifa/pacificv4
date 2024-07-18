@@ -33,6 +33,7 @@ use App\Http\Controllers\HargaController;
 use App\Http\Controllers\HppController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\ItemservicekendaraanController;
+use App\Http\Controllers\JadwalshiftController;
 use App\Http\Controllers\JasamasakerjaController;
 use App\Http\Controllers\JenisprodukController;
 use App\Http\Controllers\JurnalkoreksiController;
@@ -1522,6 +1523,22 @@ Route::middleware('auth')->group(function () {
         Route::delete('/penilaiankaryawan/{kode_penilaian}/cancel', 'cancel')->name('penilaiankaryawan.cancel')->can('penilaiankaryawan.approve');
     });
 
+    Route::controller(JadwalshiftController::class)->group(function () {
+        Route::get('/jadwalshift', 'index')->name('jadwalshift.index')->can('jadwalshift.index');
+        Route::get('/jadwalshift/create', 'create')->name('jadwalshift.create')->can('jadwalshift.create');
+        Route::post('/jadwalshift/store', 'store')->name('jadwalshift.store')->can('jadwalshift.store');
+        Route::get('/jadwalshift/{kode_jadwalshift}/show', 'show')->name('jadwalshift.show')->can('jadwalshift.show');
+        Route::get('/jadwalshift/{kode_jadwalshift}/edit', 'edit')->name('jadwalshift.edit')->can('jadwalshift.edit');
+        Route::put('/jadwalshift/{kode_jadwalshift}/update', 'update')->name('jadwalshift.update')->can('jadwalshift.update');
+        Route::delete('/jadwalshift/{kode_jadwalshift}/delete', 'destroy')->name('jadwalshift.delete')->can('jadwalshift.delete');
+
+        Route::get('/jadwalshift/{kode_jadwalshift}/aturjadwal', 'aturjadwal')->name('jadwalshift.aturjadwal')->can('jadwalshift.create');
+        Route::post('/jadwalshift/getshift', 'getshift')->name('jadwalshift.getshift');
+        Route::get('/jadwalshift/{shift}/{kode_jadwalshift}/aturshift', 'aturshift')->name('jadwalshift.aturshift');
+        Route::get('/jadwalshift/{kode_group}/{kode_jadwalshift}/getgroup', 'getgroup')->name('jadwalshift.getgroup');
+        Route::post('/jadwalshift/updatejadwal', 'updatejadwal')->name('jadwalshift.updatejadwal');
+        Route::post('/jadwalshift/tambahkansemua', 'tambahkansemua')->name('jadwalshift.tambahkansemua');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 
