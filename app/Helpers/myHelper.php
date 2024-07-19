@@ -522,3 +522,9 @@ function singkatString($string)
     // Jika tidak, buat camelCase
     return ucwords(strtolower($string));
 }
+
+function formatName2($name)
+{
+    $words = explode(' ', $name);
+    return implode(' ', array_slice($words, 0, 2));
+}

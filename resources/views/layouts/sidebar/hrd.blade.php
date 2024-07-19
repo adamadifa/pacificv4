@@ -5,9 +5,23 @@
             'kb.index',
             'penilaiankaryawan.index',
             'jadwalshift.index',
+            'harilibur.index',
         ]))
     <li
-        class="menu-item {{ request()->is(['kontrakkerja', 'suratperingatan', 'jasamasakerja', 'kesepakatanbersama', 'penilaiankaryawan', 'penilaiankaryawan/*', 'jadwalshift', 'jadwalshift/*']) ? 'open' : '' }}">
+        class="menu-item {{ request()->is([
+            'kontrakkerja',
+            'suratperingatan',
+            'jasamasakerja',
+            'kesepakatanbersama',
+            'penilaiankaryawan',
+            'penilaiankaryawan/*',
+            'jadwalshift',
+            'jadwalshift/*',
+            'harilibur',
+            'harilibur/*',
+        ])
+            ? 'open'
+            : '' }}">
 
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-users-group"></i>
@@ -58,6 +72,14 @@
                 </li>
             @endif
 
+
+            @if (auth()->user()->hasAnyPermission(['harilibur.index']))
+                <li class="menu-item {{ request()->is(['harilibur', 'harilibur/*']) ? 'active' : '' }}">
+                    <a href="{{ route('jadwalshift.index') }}" class="menu-link">
+                        <div>Hari Libur</div>
+                    </a>
+                </li>
+            @endif
         </ul>
     </li>
 @endif

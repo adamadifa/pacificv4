@@ -30,6 +30,7 @@ use App\Http\Controllers\FsthpController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\HargaawalhppController;
 use App\Http\Controllers\HargaController;
+use App\Http\Controllers\HariliburController;
 use App\Http\Controllers\HppController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\ItemservicekendaraanController;
@@ -1538,6 +1539,27 @@ Route::middleware('auth')->group(function () {
         Route::get('/jadwalshift/{kode_group}/{kode_jadwalshift}/getgroup', 'getgroup')->name('jadwalshift.getgroup');
         Route::post('/jadwalshift/updatejadwal', 'updatejadwal')->name('jadwalshift.updatejadwal');
         Route::post('/jadwalshift/tambahkansemua', 'tambahkansemua')->name('jadwalshift.tambahkansemua');
+        Route::post('/jadwalshift/batalkansemua', 'batalkansemua')->name('jadwalshift.batalkansemua');
+        Route::post('/jadwalshift/deleteshift', 'deleteshift')->name('jadwalshift.deleteshift');
+
+        //Ganti Shift
+        Route::get('/jadwalshift/{kode_jadwalshift}/gantishift', 'gantishift')->name('jadwalshift.gantishift');
+        Route::get('/jadwalshift/{kode_jadwalshift}/getgantishift', 'getgantishift')->name('jadwalshift.getgantishift');
+        Route::post('/jadwalshift/storegantishift', 'storegantishift')->name('jadwalshift.storegantishift');
+        Route::post('/jadwalshift/deletegantishift', 'deletegantishift')->name('jadwalshift.deletegantishift');
+    });
+
+    Route::controller(HariliburController::class)->group(function () {
+        Route::get('/harilibur', 'index')->name('harilibur.index')->can('harilibur.index');
+        Route::get('/harilibur/create', 'create')->name('harilibur.create')->can('harilibur.create');
+        Route::post('/harilibur/store', 'store')->name('harilibur.store')->can('harilibur.store');
+        Route::get('/harilibur/{kode_libur}/show', 'show')->name('harilibur.show')->can('harilibur.show');
+        Route::get('/harilibur/{kode_libur}/edit', 'edit')->name('harilibur.edit')->can('harilibur.edit');
+        Route::put('/harilibur/{kode_libur}/update', 'update')->name('harilibur.update')->can('harilibur.update');
+        Route::delete('/harilibur/{kode_libur}/delete', 'destroy')->name('harilibur.delete')->can('harilibur.delete');
+        Route::get('/harilibur/{kode_libur}/approve', 'approve')->name('harilibur.approve')->can('harilibur.approve');
+        Route::post('/harilibur/{kode_libur}/storeapprove', 'storeapprove')->name('harilibur.storeapprove')->can('harilibur.approve');
+        Route::delete('/harilibur/{kode_libur}/cancel', 'cancel')->name('harilibur.cancel')->can('harilibur.approve');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

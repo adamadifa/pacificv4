@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detailjadwalshift;
+use App\Models\Gantishift;
 use App\Models\Group;
 use App\Models\Jadwalshift;
 use App\Models\Karyawan;
@@ -202,6 +203,105 @@ class JadwalshiftController extends Controller
 
 
             return response()->json(['success' => true, 'message' => 'Update Success']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function batalkansemua(Request $request)
+    {
+        try {
+            if ($request->shift == 1) {
+                $kode_jadwal = "JD002";
+            } else if ($request->shift == 2) {
+                $kode_jadwal = "JD003";
+            } else if ($request->shift == 3) {
+                $kode_jadwal = "JD004";
+            }
+
+            // Delete Semua Karyawan di Detail Jadwal Shift Sesuai Kode Group
+            Detailjadwalshift::join('hrd_karyawan', 'hrd_jadwalshift_detail.nik', '=', 'hrd_karyawan.nik')
+                ->where('kode_group', $request->kode_group)
+                ->where('hrd_jadwalshift_detail.kode_jadwalshift', $request->kode_jadwalshift)
+                ->delete();
+
+
+            return response()->json(['success' => true, 'message' => 'Update Success']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function deleteshift(Request $request)
+    {
+        try {
+            Detailjadwalshift::where('nik', $request->nik)->where('kode_jadwalshift', $request->kode_jadwalshift)->delete();
+            return response()->json(['success' => true, 'message' => 'Delete Success']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+
+    public function gantishift($kode_jadwalshift)
+    {
+        $data['kode_jadwalshift'] = $kode_jadwalshift;
+        $data['karyawan'] = Detailjadwalshift::select('hrd_jadwalshift_detail.nik', 'nama_karyawan')->where('kode_jadwalshift', $kode_jadwalshift)
+            ->join('hrd_karyawan', 'hrd_jadwalshift_detail.nik', '=', 'hrd_karyawan.nik')
+            ->get();
+        $data['jadwalshift'] = Jadwalshift::where('kode_jadwalshift', $kode_jadwalshift)->first();
+        return view('hrd.jadwalshift.gantishift', $data);
+    }
+
+    public function storegantishift(Request $request)
+    {
+
+        try {
+            $cek = Gantishift::where('nik', $request->nik)
+                ->where('tanggal', $request->tanggal)
+                ->first();
+            if ($cek != null) {
+                return response()->json(['success' => false, 'message' => 'Data Sudah Ada']);
+            }
+
+            $lastgantishift = Gantishift::select('kode_gs')->whereRaw('MID(kode_gs,3,2)="' . date('y', strtotime($request->tanggal)) . '"')
+                ->orderBy('kode_gs', 'desc')->first();
+            $last_kode_gs = $lastgantishift != null ? $lastgantishift->kode_gs : '';
+            $kode_gs = buatkode($last_kode_gs, "GS" . date('y', strtotime($request->tanggal)), 3);
+
+
+            Gantishift::create([
+                'kode_gs' => $kode_gs,
+                'nik' => $request->nik,
+                'tanggal' => $request->tanggal,
+                'kode_jadwal' => $request->kode_jadwal,
+                'kode_jadwalshift' => $request->kode_jadwalshift,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Data Berhasil Disimpan']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+
+    public function getgantishift($kode_jadwalshift)
+    {
+        $kode_jadwalshift = Crypt::decrypt($kode_jadwalshift);
+        $data['gantishift'] = Gantishift::where('kode_jadwalshift', $kode_jadwalshift)
+            ->join('hrd_karyawan', 'hrd_gantishift.nik', '=', 'hrd_karyawan.nik')
+            ->join('hrd_jadwalkerja', 'hrd_gantishift.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
+            ->get();
+
+        return view('hrd.jadwalshift.getgantishift', $data);
+    }
+
+    public function deletegantishift(Request $request)
+    {
+        try {
+            Gantishift::where('kode_gs', $request->kode_gs)
+                ->delete();
+            return response()->json(['success' => true, 'message' => 'Delete Success']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }

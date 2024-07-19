@@ -173,6 +173,39 @@
                     }
                 }
             });
+        });
+
+        $("#batalkansemua").click(function() {
+            const kode_jadwalshift = "{{ $kode_jadwalshift }}";
+            const shift = "{{ $shift }}";
+            const kode_group = $('.nav-link.active').attr('kode_group');
+            $("#loadgroup").html(`<tr><td colspan="5" class="text-center">Tunggu Sebentar....</td></tr>`);
+            $.ajax({
+                type: 'POST',
+                url: `/jadwalshift/batalkansemua`,
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_jadwalshift: kode_jadwalshift,
+                    shift: shift,
+                    kode_group: kode_group
+                },
+                cache: false,
+                success: function(respond) {
+                    if (respond.success == true) {
+                        loadgroup();
+                        loadshift(1, "JD002");
+                        loadshift(2, "JD003");
+                        loadshift(3, "JD004");
+                    } else {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: respond.message,
+                            icon: "warning",
+                            showConfirmButton: true,
+                        });
+                    }
+                }
+            });
         })
     });
 </script>
