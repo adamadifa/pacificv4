@@ -245,9 +245,13 @@ class JadwalshiftController extends Controller
 
     public function gantishift($kode_jadwalshift)
     {
+        $user = User::findorfail(auth()->user()->id);
+        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
         $data['kode_jadwalshift'] = $kode_jadwalshift;
-        $data['karyawan'] = Detailjadwalshift::select('hrd_jadwalshift_detail.nik', 'nama_karyawan')->where('kode_jadwalshift', $kode_jadwalshift)
+        $data['karyawan'] = Detailjadwalshift::select('hrd_jadwalshift_detail.nik', 'nama_karyawan')
             ->join('hrd_karyawan', 'hrd_jadwalshift_detail.nik', '=', 'hrd_karyawan.nik')
+            ->where('kode_jadwalshift', $kode_jadwalshift)
+            ->whereIn('hrd_karyawan.kode_dept', $dept_access)
             ->get();
         $data['jadwalshift'] = Jadwalshift::where('kode_jadwalshift', $kode_jadwalshift)->first();
         return view('hrd.jadwalshift.gantishift', $data);

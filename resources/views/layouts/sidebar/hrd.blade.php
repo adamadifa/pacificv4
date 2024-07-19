@@ -75,7 +75,7 @@
 
             @if (auth()->user()->hasAnyPermission(['harilibur.index']))
                 <li class="menu-item {{ request()->is(['harilibur', 'harilibur/*']) ? 'active' : '' }}">
-                    <a href="{{ route('jadwalshift.index') }}" class="menu-link">
+                    <a href="{{ route('harilibur.index') }}" class="menu-link">
                         <div>Hari Libur</div>
                     </a>
                 </li>

@@ -43,7 +43,7 @@
                                                             <i class="ti ti-edit text-success"></i>
                                                         </a>
                                                     @endcan
-                                                    @can('jadwalshift.create')
+                                                    @can('jadwalshift.setjadwal')
                                                         <a href="{{ route('jadwalshift.aturjadwal', Crypt::encrypt($d->kode_jadwalshift)) }}"
                                                             class="me-1">
                                                             <i class="ti ti-settings-cog text-primary"></i>

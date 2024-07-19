@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Kategorilibur extends Model
 {
     use HasFactory;
+    protected $table = "hrd_harilibur_kategori";
+    protected $primaryKey = "kode_kategori";
+    protected $guarded = [];
+    public $incrementing = false;
 }

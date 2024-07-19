@@ -1533,7 +1533,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/jadwalshift/{kode_jadwalshift}/update', 'update')->name('jadwalshift.update')->can('jadwalshift.update');
         Route::delete('/jadwalshift/{kode_jadwalshift}/delete', 'destroy')->name('jadwalshift.delete')->can('jadwalshift.delete');
 
-        Route::get('/jadwalshift/{kode_jadwalshift}/aturjadwal', 'aturjadwal')->name('jadwalshift.aturjadwal')->can('jadwalshift.create');
+        Route::get('/jadwalshift/{kode_jadwalshift}/aturjadwal', 'aturjadwal')->name('jadwalshift.aturjadwal')->can('jadwalshift.setjadwal');
         Route::post('/jadwalshift/getshift', 'getshift')->name('jadwalshift.getshift');
         Route::get('/jadwalshift/{shift}/{kode_jadwalshift}/aturshift', 'aturshift')->name('jadwalshift.aturshift');
         Route::get('/jadwalshift/{kode_group}/{kode_jadwalshift}/getgroup', 'getgroup')->name('jadwalshift.getgroup');
@@ -1560,6 +1560,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/harilibur/{kode_libur}/approve', 'approve')->name('harilibur.approve')->can('harilibur.approve');
         Route::post('/harilibur/{kode_libur}/storeapprove', 'storeapprove')->name('harilibur.storeapprove')->can('harilibur.approve');
         Route::delete('/harilibur/{kode_libur}/cancel', 'cancel')->name('harilibur.cancel')->can('harilibur.approve');
+
+        Route::get('/harilibur/{kode_libur}/aturharilibur', 'aturharilibur')->name('harilibur.aturharilibur')->can('harilibur.setharilibur');
+        Route::get('/harilibur/{kode_libur}/getkaryawanlibur', 'getkaryawanlibur')->name('harilibur.getkaryawanlibur');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
