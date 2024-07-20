@@ -58,6 +58,7 @@ use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporangudanglogistikController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\LedgerController;
+use App\Http\Controllers\LemburController;
 use App\Http\Controllers\LogamtokertasController;
 use App\Http\Controllers\MutasibankController;
 use App\Http\Controllers\MutasidpbController;
@@ -1569,6 +1570,27 @@ Route::middleware('auth')->group(function () {
         Route::post('/harilibur/tambahkansemua', 'tambahkansemua')->name('harilibur.tambahkansemua');
         Route::post('/harilibur/batalkansemua', 'batalkansemua')->name('harilibur.batalkansemua');
         Route::post('/harilibur/deletekaryawanlibur', 'deletekaryawanlibur')->name('harilibur.deletekaryawanlibur');
+    });
+
+    Route::controller(LemburController::class)->group(function () {
+        Route::get('/lembur', 'index')->name('lembur.index')->can('lembur.index');
+        Route::get('/lembur/create', 'create')->name('lembur.create')->can('lembur.create');
+        Route::post('/lembur/store', 'store')->name('lembur.store')->can('lembur.store');
+        Route::get('/lembur/{kode_lembur}/show', 'show')->name('lembur.show')->can('lembur.show');
+        Route::get('/lembur/{kode_lembur}/edit', 'edit')->name('lembur.edit')->can('lembur.edit');
+        Route::put('/lembur/{kode_lembur}/update', 'update')->name('lembur.update')->can('lembur.update');
+        Route::delete('/lembur/{kode_lembur}/delete', 'destroy')->name('lembur.delete')->can('lembur.delete');
+        Route::get('/lembur/{kode_lembur}/approve', 'approve')->name('lembur.approve')->can('lembur.approve');
+        Route::post('/lembur/{kode_lembur}/storeapprove', 'storeapprove')->name('lembur.storeapprove')->can('lembur.approve');
+        Route::delete('/lembur/{kode_lembur}/cancel', 'cancel')->name('lembur.cancel')->can('lembur.approve');
+        Route::get('/lembur/{kode_lembur}/aturlembur', 'aturlembur')->name('lembur.aturlembur')->can('lembur.setlembur');
+        Route::get('/lembur/{kode_lembur}/getkaryawanlembur', 'getkaryawanlembur')->name('lembur.getkaryawanlembur');
+        Route::get('/lembur/{kode_lembur}/aturkaryawan', 'aturkaryawan')->name('lembur.aturkaryawan');
+        Route::post('/lembur/getkaryawan', 'getkaryawan')->name('lembur.getkaryawan');
+        Route::post('/lembur/updateliburkaryawan', 'updateliburkaryawan')->name('lembur.updateliburkaryawan');
+        Route::post('/lembur/tambahkansemua', 'tambahkansemua')->name('lembur.tambahkansemua');
+        Route::post('/lembur/batalkansemua', 'batalkansemua')->name('lembur.batalkansemua');
+        Route::post('/lembur/deletekaryawanlembur', 'deletekaryawanlembur')->name('lembur.deletekaryawanlembur');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

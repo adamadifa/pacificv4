@@ -39,17 +39,7 @@
 <script>
     $(document).ready(function() {
         const form = $('#frmKaryawan');
-        // const select2Group = $('.select2Group');
-        // if (select2Group.length > 0) {
-        //     select2Group.each(function() {
-        //         var $this = $(this);
-        //         $this.wrap('<div class="position-relative"></div>').select2({
-        //             placeholder: 'Pilih Group',
-        //             allowClear: true,
-        //             dropdownParent: $this.parent()
-        //         });
-        //     });
-        // }
+
 
         function loadliburkaryawan() {
             const kode_libur = "{{ Crypt::encrypt($harilibur->kode_libur) }}";
@@ -91,7 +81,7 @@
             loadkaryawan();
         });
 
-        $(document).on('click', '#tabelkaryawan .updateLibur', function(e) {
+        $(document).off('click').on('click', '#tabelkaryawan .updateLibur', function(e) {
             e.preventDefault();
             const nik = $(this).attr('nik');
             const kode_libur = "{{ $harilibur->kode_libur }}";

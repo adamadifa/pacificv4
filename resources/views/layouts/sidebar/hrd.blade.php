@@ -6,6 +6,7 @@
             'penilaiankaryawan.index',
             'jadwalshift.index',
             'harilibur.index',
+            'lembur.index',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -19,6 +20,8 @@
             'jadwalshift/*',
             'harilibur',
             'harilibur/*',
+            'lembur',
+            'lembur/*',
         ])
             ? 'open'
             : '' }}">
@@ -77,6 +80,14 @@
                 <li class="menu-item {{ request()->is(['harilibur', 'harilibur/*']) ? 'active' : '' }}">
                     <a href="{{ route('harilibur.index') }}" class="menu-link">
                         <div>Hari Libur</div>
+                    </a>
+                </li>
+            @endif
+
+            @if (auth()->user()->hasAnyPermission(['lembur.index']))
+                <li class="menu-item {{ request()->is(['lembur', 'lembur/*']) ? 'active' : '' }}">
+                    <a href="{{ route('lembur.index') }}" class="menu-link">
+                        <div>Lembur</div>
                     </a>
                 </li>
             @endif
