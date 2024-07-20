@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Departemen;
 use App\Models\Detailharilibur;
+use App\Models\Group;
 use App\Models\Harilibur;
+use App\Models\Karyawan;
 use App\Models\Kategorilibur;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class HariliburController extends Controller
@@ -162,7 +165,204 @@ class HariliburController extends Controller
     {
         $kode_libur = Crypt::decrypt($kode_libur);
         $data['detailharilibur'] = Detailharilibur::join('hrd_karyawan', 'hrd_harilibur_detail.nik', '=', 'hrd_karyawan.nik')
+            ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
             ->where('kode_libur', $kode_libur)->get();
         return view('hrd.harilibur.getkaryawanlibur', $data);
+    }
+
+    public function aturkaryawan($kode_libur)
+    {
+        $kode_libur = Crypt::decrypt($kode_libur);
+        $hl = new Harilibur();
+        $harilibur = $hl->getHarilibur(kode_libur: $kode_libur)->first();
+        $data['harilibur'] = $harilibur;
+        if ($harilibur->kode_cabang != 'PST') {
+            $data['group'] = Karyawan::where('kode_cabang', $harilibur->kode_cabang)
+                ->select('hrd_karyawan.kode_group', 'nama_group')
+                ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
+                ->orderBy('hrd_karyawan.kode_group')
+                ->groupBy('hrd_karyawan.kode_group', 'nama_group')
+                ->get();
+        } else {
+            $data['group'] = Karyawan::where('kode_dept', $harilibur->kode_dept)
+                ->select('hrd_karyawan.kode_group', 'nama_group')
+                ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
+                ->orderBy('hrd_karyawan.kode_group')
+                ->groupBy('hrd_karyawan.kode_group', 'nama_group')->get();
+        }
+
+
+        return view('hrd.harilibur.aturkaryawan', $data);
+    }
+
+    function getkaryawan(Request $request)
+    {
+        $kode_libur = Crypt::decrypt($request->kode_libur);
+        $hl = new Harilibur();
+        $harilibur = $hl->getHarilibur(kode_libur: $kode_libur)->first();
+        $data['harilibur'] = $harilibur;
+        $query = Karyawan::query();
+        $query->select('hrd_karyawan.nik', 'hrd_karyawan.nama_karyawan', 'hrd_karyawan.kode_group', 'hrd_group.nama_group', 'harilibur.nik as ceklibur');
+        if ($harilibur->kode_cabang != 'PST') {
+            $query->where('kode_cabang', $harilibur->kode_cabang);
+        } else {
+            $query->where('kode_dept', $harilibur->kode_dept);
+        }
+
+        if (!empty($request->kode_group)) {
+            $query->where('hrd_karyawan.kode_group', $request->kode_group);
+        }
+
+        if (!empty($request->nama_karyawan)) {
+            $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+        }
+
+        //left join ke detail hari libur berdasarkan kode libur
+        $query->leftJoin(
+            DB::raw("(
+                SELECT nik FROM hrd_harilibur_detail
+                WHERE kode_libur = '$kode_libur'
+            ) harilibur"),
+            function ($join) {
+                $join->on('hrd_karyawan.nik', '=', 'harilibur.nik');
+            }
+        );
+        $query->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $query->orderBy('hrd_karyawan.kode_group');
+        $query->orderBy('nama_karyawan');
+        $data['karyawan'] = $query->get();
+        return view('hrd.harilibur.getkaryawan', $data);
+    }
+
+    public function updateliburkaryawan(Request $request)
+    {
+        try {
+            $cek = Detailharilibur::where('nik', $request->nik)->where('kode_libur', $request->kode_libur)->first();
+            if ($cek != null) {
+                Detailharilibur::where('nik', $request->nik)->where('kode_libur', $request->kode_libur)->delete();
+            } else {
+                Detailharilibur::create([
+                    'nik' => $request->nik,
+                    'kode_libur' => $request->kode_libur,
+                ]);
+            }
+            return response()->json(['success' => true, 'message' => 'Update Success']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+
+    public function tambahkansemua(Request $request)
+    {
+        $kode_libur = $request->kode_libur;
+        $hl = new Harilibur();
+        $harilibur = $hl->getHarilibur(kode_libur: $kode_libur)->first();
+        $data['harilibur'] = $harilibur;
+        $query = Karyawan::query();
+        $query->select('hrd_karyawan.nik', 'hrd_karyawan.nama_karyawan', 'hrd_karyawan.kode_group', 'hrd_group.nama_group', 'harilibur.nik as ceklibur');
+        if ($harilibur->kode_cabang != 'PST') {
+            $query->where('kode_cabang', $harilibur->kode_cabang);
+        } else {
+            $query->where('kode_dept', $harilibur->kode_dept);
+        }
+
+        if (!empty($request->kode_group)) {
+            $query->where('hrd_karyawan.kode_group', $request->kode_group);
+        }
+
+        if (!empty($request->nama_karyawan)) {
+            $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+        }
+        //left join ke detail hari libur berdasarkan kode libur
+        $query->leftJoin(
+            DB::raw("(
+                SELECT nik FROM hrd_harilibur_detail
+                WHERE kode_libur = '$kode_libur'
+            ) harilibur"),
+            function ($join) {
+                $join->on('hrd_karyawan.nik', '=', 'harilibur.nik');
+            }
+        );
+        $query->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $query->orderBy('hrd_karyawan.kode_group');
+        $query->orderBy('nama_karyawan');
+        $karyawan = $query->get();
+
+        try {
+            //Hapus Data Libur
+            Detailharilibur::where('kode_libur', $request->kode_libur)->delete();
+            foreach ($karyawan as $d) {
+                Detailharilibur::create([
+                    'nik' => $d->nik,
+                    'kode_libur' => $request->kode_libur,
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Update Success']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+
+    public function batalkansemua(Request $request)
+    {
+        $kode_libur = $request->kode_libur;
+        $hl = new Harilibur();
+        $harilibur = $hl->getHarilibur(kode_libur: $kode_libur)->first();
+        $data['harilibur'] = $harilibur;
+        $query = Karyawan::query();
+        $query->select('hrd_karyawan.nik', 'hrd_karyawan.nama_karyawan', 'hrd_karyawan.kode_group', 'hrd_group.nama_group', 'harilibur.nik as ceklibur');
+        if ($harilibur->kode_cabang != 'PST') {
+            $query->where('kode_cabang', $harilibur->kode_cabang);
+        } else {
+            $query->where('kode_dept', $harilibur->kode_dept);
+        }
+
+        if (!empty($request->kode_group)) {
+            $query->where('hrd_karyawan.kode_group', $request->kode_group);
+        }
+
+        if (!empty($request->nama_karyawan)) {
+            $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+        }
+        //left join ke detail hari libur berdasarkan kode libur
+        $query->leftJoin(
+            DB::raw("(
+                SELECT nik FROM hrd_harilibur_detail
+                WHERE kode_libur = '$kode_libur'
+            ) harilibur"),
+            function ($join) {
+                $join->on('hrd_karyawan.nik', '=', 'harilibur.nik');
+            }
+        );
+        $query->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $query->orderBy('hrd_karyawan.kode_group');
+        $query->orderBy('nama_karyawan');
+        $karyawan = $query->get();
+
+        try {
+            //Hapus Data Libur
+
+            foreach ($karyawan as $d) {
+                Detailharilibur::where('kode_libur', $request->kode_libur)->where('nik', $d->nik)->delete();
+            }
+
+            return response()->json(['success' => true, 'message' => 'Update Success']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+
+    public function deletekaryawanlibur(Request $request)
+    {
+        try {
+            Detailharilibur::where('nik', $request->nik)->where('kode_libur', $request->kode_libur)->delete();
+            return response()->json(['success' => true, 'message' => 'Delete Success']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 }

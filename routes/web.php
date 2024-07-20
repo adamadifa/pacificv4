@@ -1563,6 +1563,12 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/harilibur/{kode_libur}/aturharilibur', 'aturharilibur')->name('harilibur.aturharilibur')->can('harilibur.setharilibur');
         Route::get('/harilibur/{kode_libur}/getkaryawanlibur', 'getkaryawanlibur')->name('harilibur.getkaryawanlibur');
+        Route::get('/harilibur/{kode_libur}/aturkaryawan', 'aturkaryawan')->name('harilibur.aturkaryawan');
+        Route::post('/harilibur/getkaryawan', 'getkaryawan')->name('harilibur.getkaryawan');
+        Route::post('/harilibur/updateliburkaryawan', 'updateliburkaryawan')->name('harilibur.updateliburkaryawan');
+        Route::post('/harilibur/tambahkansemua', 'tambahkansemua')->name('harilibur.tambahkansemua');
+        Route::post('/harilibur/batalkansemua', 'batalkansemua')->name('harilibur.batalkansemua');
+        Route::post('/harilibur/deletekaryawanlibur', 'deletekaryawanlibur')->name('harilibur.deletekaryawanlibur');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
