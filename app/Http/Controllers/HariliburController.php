@@ -177,14 +177,14 @@ class HariliburController extends Controller
         $harilibur = $hl->getHarilibur(kode_libur: $kode_libur)->first();
         $data['harilibur'] = $harilibur;
         if ($harilibur->kode_cabang != 'PST') {
-            $data['group'] = Karyawan::where('kode_cabang', $harilibur->kode_cabang)
+            $data['group'] = Karyawan::where('hrd_karyawan.kode_cabang', $harilibur->kode_cabang)
                 ->select('hrd_karyawan.kode_group', 'nama_group')
                 ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
                 ->orderBy('hrd_karyawan.kode_group')
                 ->groupBy('hrd_karyawan.kode_group', 'nama_group')
                 ->get();
         } else {
-            $data['group'] = Karyawan::where('kode_dept', $harilibur->kode_dept)
+            $data['group'] = Karyawan::where('hrd_karyawan.kode_dept', $harilibur->kode_dept)
                 ->select('hrd_karyawan.kode_group', 'nama_group')
                 ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
                 ->orderBy('hrd_karyawan.kode_group')
@@ -204,9 +204,9 @@ class HariliburController extends Controller
         $query = Karyawan::query();
         $query->select('hrd_karyawan.nik', 'hrd_karyawan.nama_karyawan', 'hrd_karyawan.kode_group', 'hrd_group.nama_group', 'harilibur.nik as ceklibur');
         if ($harilibur->kode_cabang != 'PST') {
-            $query->where('kode_cabang', $harilibur->kode_cabang);
+            $query->where('hrd_karyawan.kode_cabang', $harilibur->kode_cabang);
         } else {
-            $query->where('kode_dept', $harilibur->kode_dept);
+            $query->where('hrd_karyawan.kode_dept', $harilibur->kode_dept);
         }
 
         if (!empty($request->kode_group)) {
@@ -262,9 +262,9 @@ class HariliburController extends Controller
         $query = Karyawan::query();
         $query->select('hrd_karyawan.nik', 'hrd_karyawan.nama_karyawan', 'hrd_karyawan.kode_group', 'hrd_group.nama_group', 'harilibur.nik as ceklibur');
         if ($harilibur->kode_cabang != 'PST') {
-            $query->where('kode_cabang', $harilibur->kode_cabang);
+            $query->where('hrd_karyawan.kode_cabang', $harilibur->kode_cabang);
         } else {
-            $query->where('kode_dept', $harilibur->kode_dept);
+            $query->where('hrd_karyawan.kode_dept', $harilibur->kode_dept);
         }
 
         if (!empty($request->kode_group)) {
@@ -315,9 +315,9 @@ class HariliburController extends Controller
         $query = Karyawan::query();
         $query->select('hrd_karyawan.nik', 'hrd_karyawan.nama_karyawan', 'hrd_karyawan.kode_group', 'hrd_group.nama_group', 'harilibur.nik as ceklibur');
         if ($harilibur->kode_cabang != 'PST') {
-            $query->where('kode_cabang', $harilibur->kode_cabang);
+            $query->where('hrd_karyawan.kode_cabang', $harilibur->kode_cabang);
         } else {
-            $query->where('kode_dept', $harilibur->kode_dept);
+            $query->where('hrd_karyawan.kode_dept', $harilibur->kode_dept);
         }
 
         if (!empty($request->kode_group)) {
@@ -363,6 +363,55 @@ class HariliburController extends Controller
             return response()->json(['success' => true, 'message' => 'Delete Success']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function destroy($kode_libur)
+    {
+        $kode_libur = Crypt::decrypt($kode_libur);
+        try {
+            Harilibur::where('kode_libur', $kode_libur)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function approve($kode_libur)
+    {
+        $kode_libur = Crypt::decrypt($kode_libur);
+        $lb = new Harilibur();
+        $data['harilibur'] = $lb->getHarilibur(kode_libur: $kode_libur)->first();
+        $data['detail'] = Detailharilibur::join('hrd_karyawan', 'hrd_harilibur_detail.nik', '=', 'hrd_karyawan.nik')
+            ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
+            ->where('kode_libur', $kode_libur)->get();
+        return view('hrd.harilibur.approve', $data);
+    }
+
+    public function storeapprove($kode_libur, Request $request)
+    {
+        $kode_libur = Crypt::decrypt($kode_libur);
+        try {
+            Harilibur::where('kode_libur', $kode_libur)->update([
+                'status' => 1
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Diapprove'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cancel($kode_libur)
+    {
+        $kode_libur = Crypt::decrypt($kode_libur);
+        try {
+            Harilibur::where('kode_libur', $kode_libur)->update([
+                'status' => 0
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 }

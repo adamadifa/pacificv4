@@ -81,12 +81,18 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
+
                                                     @can('lembur.edit')
                                                         @if ($l->status === '0')
                                                             <a href="#" kode_lembur="{{ Crypt::encrypt($l->kode_lembur) }}" class="btnEdit me-1">
                                                                 <i class="ti ti-edit text-success"></i>
                                                             </a>
                                                         @endif
+                                                    @endcan
+                                                    @can('lembur.setlembur')
+                                                        <a href="{{ route('lembur.aturlembur', Crypt::encrypt($l->kode_libur)) }}" class="me-1">
+                                                            <i class="ti ti-settings-cog text-primary"></i>
+                                                        </a>
                                                     @endcan
                                                     @can('lembur.delete')
                                                         @if ($l->status === '0')

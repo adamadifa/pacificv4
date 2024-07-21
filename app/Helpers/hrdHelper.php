@@ -101,3 +101,19 @@ function listApprovepenilaian($kode_dept, $level = "")
     }
     return $list_approve;
 }
+
+
+function hitungjamdesimal($jam1, $jam2)
+{
+    $j1 = strtotime($jam1);
+    $j2 = strtotime($jam2);
+
+    $diffterlambat = $j2 - $j1;
+
+    $jamterlambat = floor($diffterlambat / (60 * 60));
+    $menitterlambat = floor(($diffterlambat - ($jamterlambat * (60 * 60))) / 60);
+
+    $desimalterlambat = $jamterlambat + ROUND(($menitterlambat / 60), 2);
+
+    return $desimalterlambat;
+}

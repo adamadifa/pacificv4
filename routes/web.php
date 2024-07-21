@@ -1584,10 +1584,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/lembur/{kode_lembur}/storeapprove', 'storeapprove')->name('lembur.storeapprove')->can('lembur.approve');
         Route::delete('/lembur/{kode_lembur}/cancel', 'cancel')->name('lembur.cancel')->can('lembur.approve');
         Route::get('/lembur/{kode_lembur}/aturlembur', 'aturlembur')->name('lembur.aturlembur')->can('lembur.setlembur');
+
         Route::get('/lembur/{kode_lembur}/getkaryawanlembur', 'getkaryawanlembur')->name('lembur.getkaryawanlembur');
         Route::get('/lembur/{kode_lembur}/aturkaryawan', 'aturkaryawan')->name('lembur.aturkaryawan');
         Route::post('/lembur/getkaryawan', 'getkaryawan')->name('lembur.getkaryawan');
-        Route::post('/lembur/updateliburkaryawan', 'updateliburkaryawan')->name('lembur.updateliburkaryawan');
+        Route::post('/lembur/updatelemburkaryawan', 'updatelemburkaryawan')->name('lembur.updatelemburkaryawan');
         Route::post('/lembur/tambahkansemua', 'tambahkansemua')->name('lembur.tambahkansemua');
         Route::post('/lembur/batalkansemua', 'batalkansemua')->name('lembur.batalkansemua');
         Route::post('/lembur/deletekaryawanlembur', 'deletekaryawanlembur')->name('lembur.deletekaryawanlembur');

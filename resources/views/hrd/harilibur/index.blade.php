@@ -100,8 +100,36 @@
                                                     @endcan
                                                     @can('harilibur.setharilibur')
                                                         <a href="{{ route('harilibur.aturharilibur', Crypt::encrypt($d->kode_libur)) }}" class="me-1">
-                                                            <i class="ti ti-settings-cog text-primary"></i>
+                                                            <i class="ti ti-settings-cog text-info"></i>
                                                         </a>
+                                                    @endcan
+                                                    @can('harilibur.approve')
+                                                        @if ($d->status === '0')
+                                                            <a href="#" class="btnApprove me-1" kode_libur="{{ Crypt::encrypt($d->kode_libur) }}">
+                                                                <i class="ti ti-external-link"></i>
+                                                            </a>
+                                                        @else
+                                                            <form action="{{ route('harilibur.cancel', Crypt::encrypt($d->kode_libur)) }}" method="POST"
+                                                                id="formApprove">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="cancel-confirm me-1">
+                                                                    <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endif
+                                                    @endcan
+                                                    @can('harilibur.delete')
+                                                        @if ($d->status === '0')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('harilibur.delete', Crypt::encrypt($d->kode_libur)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm me-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endif
                                                     @endcan
                                                 </div>
                                             </td>
@@ -165,6 +193,7 @@
             $("#modal").modal("show");
             $(".modal-title").text("Buat Hari Libur");
             $("#loadmodal").load(`/harilibur/create`);
+            $("#modal").find(".modal-dialog").removeClass("modal-lg");
         });
 
         $(".btnEdit").click(function(e) {
@@ -174,6 +203,17 @@
             $("#modal").modal("show");
             $(".modal-title").text("Edit Hari Libur");
             $("#loadmodal").load(`/harilibur/${kode_libur}/edit`);
+            $("#modal").find(".modal-dialog").removeClass("modal-lg");
+        });
+
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
+            const kode_libur = $(this).attr("kode_libur");
+            loading();
+            $("#modal").modal("show");
+            $(".modal-title").text("Approve Hari Libur");
+            $("#loadmodal").load(`/harilibur/${kode_libur}/approve`);
+            $("#modal").find(".modal-dialog").addClass("modal-lg");
         });
     });
 </script>

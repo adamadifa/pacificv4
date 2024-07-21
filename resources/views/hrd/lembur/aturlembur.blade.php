@@ -1,19 +1,17 @@
 @extends('layouts.app')
-@section('titlepage', 'Atur Hari Libur')
+@section('titlepage', 'Atur Lembur')
 
 @section('content')
 @section('navigasi')
-    <span>Atur Hari Libur</span>
+    <span>Atur Lembur</span>
 @endsection
 
 <div class="row">
     <div class="col-lg-6 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('harilibur.setharilibur')
-                    @if ($harilibur->status === '0')
-                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Karyawan</a>
-                    @endif
+                @can('lembur.setlembur')
+                    <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Karyawan</a>
                 @endcan
             </div>
             <div class="card-body">
@@ -21,42 +19,47 @@
                     <div class="col">
                         <table class="table">
                             <tr>
-                                <th>Kode Libur</th>
-                                <td class="text-end">{{ $harilibur->kode_libur }}</td>
+                                <th>Kode Lembur</th>
+                                <td class="text-end">{{ $lembur->kode_lembur }}</td>
                             </tr>
                             <tr>
                                 <th>Tanggal</th>
-                                <td class="text-end">{{ DateToIndo($harilibur->tanggal) }}</td>
+                                <td class="text-end">{{ DateToIndo($lembur->tanggal) }}</td>
                             </tr>
                             <tr>
-                                <th>Kategori</th>
-                                <td class="text-end">{{ $harilibur->nama_kategori }}</td>
+                                <th>Mulai</th>
+                                <td class="text-end">{{ date('d-m-Y H:i', strtotime($lembur->tanggal_dari)) }}</td>
                             </tr>
-                            @if (!empty($harilibur->tanggal_diganti))
-                                <tr>
-                                    <th>Pengganti Tanggal</th>
-                                    <td class="text-end">{{ DateToIndo($harilibur->tanggal_diganti) }}</td>
-                                </tr>
-                            @endif
-                            @if (!empty($harilibur->tanggal_limajam))
-                                <tr>
-                                    <th>Tanggal 5 Jam</th>
-                                    <td class="text-end">{{ DateToIndo($harilibur->tanggal_limajam) }}</td>
-                                </tr>
-                            @endif
                             <tr>
-                                <th>Cabang</th>
-                                <td class="text-end">{{ $harilibur->nama_cabang }}</td>
+                                <th>Selesai</th>
+                                <td class="text-end">{{ date('d-m-Y H:i', strtotime($lembur->tanggal_sampai)) }}</td>
                             </tr>
-                            @if ($harilibur->kode_cabang == 'PST')
-                                <tr>
-                                    <th>Departemen</th>
-                                    <td class="text-end">{{ $harilibur->nama_dept }}</td>
-                                </tr>
-                            @endif
+                            <tr>
+                                <th>Istirahat</th>
+                                <td class="text-end">
+                                    @if ($lembur->istirahat == 1)
+                                        <i class="ti ti-checks text-success"></i>
+                                    @else
+                                        <i class="ti ti-square-rounded-x text-danger"></i>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Jumla Jam</th>
+                                <td class="text-end">
+                                    @php
+                                        $istirahat = $lembur->istirahat == 1 ? 1 : 0;
+                                        $jmljam = hitungjamdesimal($lembur->tanggal_dari, $lembur->tanggal_sampai);
+                                        $jmljam = $jmljam > 7 ? 7 : $jmljam - $istirahat;
+                                    @endphp
+                                    {{ $jmljam }} Jam
+                                </td>
+                            </tr>
+                            <th>Departemen</th>
+                            <td class="text-end">{{ $lembur->nama_dept }}</td>
                             <tr>
                                 <th>Keterangan</th>
-                                <td class="text-end">{{ $harilibur->keterangan }}</td>
+                                <td class="text-end">{{ $lembur->keterangan }}</td>
                             </tr>
                         </table>
                     </div>
@@ -73,7 +76,7 @@
                                     <th>#</th>
                                 </tr>
                             </thead>
-                            <tbody id="loadliburkaryawan">
+                            <tbody id="loadlemburkaryawan">
 
                             </tbody>
                         </table>
@@ -88,12 +91,12 @@
 @push('myscript')
 <script>
     $(function() {
-        function loadliburkaryawan() {
-            const kode_libur = "{{ Crypt::encrypt($harilibur->kode_libur) }}";
-            $("#loadliburkaryawan").html(`<tr><td colspan="4" class="text-center">Loading...</td></tr>`);
-            $("#loadliburkaryawan").load(`/harilibur/${kode_libur}/getkaryawanlibur`);
+        function loadlemburkaryawan() {
+            const kode_lembur = "{{ Crypt::encrypt($lembur->kode_lembur) }}";
+            $("#loadlemburkaryawan").html(`<tr><td colspan="4" class="text-center">Loading...</td></tr>`);
+            $("#loadlemburkaryawan").load(`/lembur/${kode_lembur}/getkaryawanlembur`);
         }
-        loadliburkaryawan();
+        loadlemburkaryawan();
 
 
         function loading() {
@@ -105,16 +108,17 @@
             <div class="sk-wave-rect"></div>
             </div>`);
         }
+
         $("#btnCreate").click(function() {
             loading();
-            const kode_libur = "{{ Crypt::encrypt($harilibur->kode_libur) }}";
+            const kode_lembur = "{{ Crypt::encrypt($lembur->kode_lembur) }}";
             $("#modal").modal("show");
-            $(".modal-title").text("Input Hari Libur");
-            $("#loadmodal").load(`/harilibur/${kode_libur}/aturkaryawan`);
+            $(".modal-title").text("Input Lembur");
+            $("#loadmodal").load(`/lembur/${kode_lembur}/aturkaryawan`);
         });
 
         $(document).on('click', '.delete', function(e) {
-            const kode_libur = "{{ $harilibur->kode_libur }}";
+            const kode_lembur = "{{ $lembur->kode_lembur }}";
             const nik = $(this).attr("nik");
             Swal.fire({
                 title: "Are you sure?",
@@ -128,16 +132,16 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
-                        url: `/harilibur/deletekaryawanlibur`,
+                        url: `/lembur/deletekaryawanlembur`,
                         data: {
                             _token: "{{ csrf_token() }}",
-                            kode_libur: kode_libur,
+                            kode_lembur: kode_lembur,
                             nik: nik
                         },
                         cache: false,
                         success: function(respond) {
                             if (respond.success == true) {
-                                loadliburkaryawan();
+                                loadlemburkaryawan();
                             } else {
                                 Swal.fire({
                                     title: "Oops!",
@@ -148,10 +152,10 @@
                             }
                         }
                     });
-                    loadliburkaryawan();
                 }
             })
         });
+
     });
 </script>
 @endpush

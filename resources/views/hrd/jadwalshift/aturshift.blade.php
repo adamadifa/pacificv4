@@ -105,7 +105,7 @@
         }
 
 
-        $(document).on('click', '#tabelgroup .updateJadwal', function(e) {
+        $(document).off('click').on('click', '#tabelgroup .updateJadwal', function(e) {
             e.preventDefault();
             const nik = $(this).attr('nik');
             const kode_jadwalshift = "{{ $kode_jadwalshift }}";
