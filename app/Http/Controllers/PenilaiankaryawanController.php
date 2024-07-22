@@ -147,7 +147,7 @@ class PenilaiankaryawanController extends Controller
             //Store Disposisi
             // Cek Departemen dan Cabang
 
-            //Jika Departemen Akunting dan Cabang != Pusat
+
 
             $roles_approve = cekRoleapprove($karyawan->kode_dept, $karyawan->kode_cabang, $karyawan->kategori, $karyawan->kode_jabatan);
 
@@ -488,7 +488,7 @@ class PenilaiankaryawanController extends Controller
             return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            //dd($e);
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }

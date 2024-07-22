@@ -15,6 +15,9 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
     } else if ($kode_dept == 'AKT' && $kode_cabang == 'PST' && $kategori_jabatan == 'NM') {
         //Akunting Pusat Non Manajemen
         $roles_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
+    } else if ($kode_dept == 'KEU' && $kode_cabang == 'PST' && $kategori_jabatan == 'NM') {
+        //Akunting Pusat Non Manajemen
+        $roles_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     } else if ($kode_jabatan == 'J08') {
         //Operation Manager
         $roles_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
@@ -46,6 +49,7 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
 
     return $roles_approve;
 }
+
 
 
 function listApprovepenilaian($kode_dept, $level = "")
@@ -103,6 +107,62 @@ function listApprovepenilaian($kode_dept, $level = "")
 }
 
 
+
+function cekRoleapprovelembur($kode_dept)
+{
+    if ($kode_dept == "GAF") {
+        $roles_approve =  ['manager general affair', 'gm operasional', 'asst. manager hrd', 'direktur'];
+    } else if ($kode_dept == "MTC") {
+        $roles_approve =  ['manager maintenance', 'gm operasional', 'asst. manager hrd', 'direktur'];
+    } else if ($kode_dept == "PRD") {
+        $roles_approve =  ['manager produksi', 'gm operasional', 'asst. manager hrd', 'direktur'];
+    } else if ($kode_dept == "PDQ") {
+        $roles_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
+    } else if ($kode_dept == "GDG") {
+        $roles_approve =  ['manager gudang', 'gm operasional', 'asst. manager hrd', 'direktur'];
+    }
+
+    return $roles_approve;
+}
+
+
+function cekRoleapprovepresensi($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabatan = "")
+{
+    // Cek Role Name
+    $role = Auth::user()->roles->pluck('name')[0];
+
+    if ($kode_dept == 'AKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') {  //Akunting Cabang Non Manajemen
+        $roles_approve =  ['operation manager', 'asst. manager hrd'];
+    } else if (in_array($kode_dept, ['AKT', 'KEU']) && $kode_cabang == 'PST' && $kategori_jabatan == 'NM') { //Akunting dan  Keuangan Pusat Non Manajemen
+        $roles_approve =  ['manager keuangan', 'asst. manager hrd'];
+    } else if ($kode_jabatan == 'J08') { //Operation Manager
+        $roles_approve =  ['manager keuangan', 'asst. manager hrd'];
+    } else if ($kode_dept == 'MKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') { //Marketing Cabang Non Manajemen
+        $roles_approve =  ['sales marketing manager',  'asst. manager hrd'];
+    } else if ($kode_jabatan == 'J07') { //Sales Marketing Manager
+        $roles_approve =  ['gm marketing', 'asst. manager hrd', 'direktur'];
+    } else if (in_array($kode_dept, ['GAF', 'PMB', 'GDG', 'MTC', 'PRD', 'PDQ']) && in_array($kode_jabatan, ['J05', 'J06'])) { //GAF, PMB, GDG, MTC, PRD, PDQ MANAGER / ASST. MANAGER HRD
+        $roles_approve =  ['gm operasional', 'asst. manager hrd'];
+    } else if ($kode_dept == 'GAF'  && $kategori_jabatan == 'NM') { //GAF Non Manajemen
+        $roles_approve =  ['manager general affair', 'asst. manager hrd'];
+    } else if ($kode_dept == 'PDQ') {
+        $roles_approve =  ['gm operasional', 'asst. manager hrd'];
+    } else if ($kode_dept == 'GDG' && $kategori_jabatan == "NM") { // Gudang Non Manajemen
+        $roles_approve =  ['manager gudang', 'asst. manager hrd'];
+    } else if ($kode_dept == 'HRD' && $kategori_jabatan == "NM") { // HRD Non Manajemen
+        $roles_approve =  ['asst. manager hrd'];
+    } else if ($kode_dept == 'MTC' && $kategori_jabatan == "NM") { // Maintenance Non Manajemen
+        $roles_approve =  ['manager maintenance', 'asst. manager hrd'];
+    } else if ($kode_dept == 'PMB' && $kategori_jabatan == "NM") { //Pembelian Non Manajemen
+        $roles_approve =  ['manager pembelian',  'asst. manager hrd'];
+    } else if ($kode_dept == 'PRD' && $kategori_jabatan == "NM") { //Produksi Non Manajemen
+        $roles_approve =  ['manager produksi', 'asst. manager hrd'];
+    } else {
+        $roles_approve =  ['asst. manager hrd'];
+    }
+
+    return $roles_approve;
+}
 function hitungjamdesimal($jam1, $jam2)
 {
     $j1 = strtotime($jam1);
@@ -116,4 +176,21 @@ function hitungjamdesimal($jam1, $jam2)
     $desimalterlambat = $jamterlambat + ROUND(($menitterlambat / 60), 2);
 
     return $desimalterlambat;
+}
+
+
+function hitungHari($startDate, $endDate)
+{
+    if ($startDate && $endDate) {
+        $start = new DateTime($startDate);
+        $end = new DateTime($endDate);
+
+        // Tambahkan 1 hari agar penghitungan inklusif
+        $interval = $start->diff($end);
+        $dayDifference = $interval->days + 1;
+
+        return  $dayDifference;
+    } else {
+        return 0;
+    }
 }

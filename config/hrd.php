@@ -10,4 +10,6 @@ return [
     //Approve Departemen AKT Cabang
     'roles_approve_akt_cabang' => ['operation manager', 'manager keuangan', 'gm administrasi', 'direktur'],
     'roles_approve_mkt_cabang' => ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'],
+
+    'dept_lembur' =>  ['GDG', 'PRD', 'PDQ', 'GAF', 'MTC'],
 ];

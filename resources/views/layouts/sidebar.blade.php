@@ -4,9 +4,9 @@
      <div class="app-brand demo">
          <a href="index.html" class="app-brand-link">
              <span class="app-brand-logo demo">
-                 <img src="{{ asset('assets/img/logo/pcf.png') }}" alt="" width="32">
+                 <img src="{{ asset('assets/img/logo/logoportal64.png') }}" alt="" width="64">
              </span>
-             <span class="app-brand-text demo menu-text fw-bold"><i><b>P</b></i>acific</span>
+             <span class="app-brand-text demo menu-text fw-bold">ortal</span>
          </a>
 
          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Departemen;
 use App\Models\Detaillembur;
+use App\Models\Disposisilembur;
 use App\Models\Karyawan;
 use App\Models\Lembur;
 use App\Models\User;
@@ -16,10 +17,14 @@ class LemburController extends Controller
 {
     public function index(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
         $lb = new Lembur();
         $lembur = $lb->getLembur(request: $request)->paginate(15);
         $lembur->appends(request()->all());
         $data['lembur'] = $lembur;
+        $dept_lembur = config('hrd.dept_lembur');
+        $data['departemen'] = Departemen::whereIn('kode_dept', $dept_lembur)->orderBy('kode_dept')->get();
+        $data['listApprovepenilaian'] = listApprovepenilaian(auth()->user()->kode_dept, $user->getRoleNames()->first());
         return view('hrd.lembur.index', $data);
     }
 
@@ -52,7 +57,7 @@ class LemburController extends Controller
 
         $kode_dept = in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi']) ? $request->kode_dept : $user->kode_dept;
         $kode_cabang = $user->kode_cabang;
-
+        DB::beginTransaction();
         try {
             $lastlembur = Lembur::whereRaw('MID(kode_lembur,3,2)="' . date('y', strtotime($request->tanggal)) . '"')
                 ->orderBy('kode_lembur', 'desc')->first();
@@ -74,8 +79,52 @@ class LemburController extends Controller
                 'status' => 0,
                 'keterangan' => $request->keterangan,
             ]);
+
+            $roles_approve = cekRoleapprovelembur($kode_dept);
+
+            if (in_array($role, $roles_approve)) {
+                $index_role = array_search($role, $roles_approve);
+            } else {
+                $index_role = 0;
+            }
+            // Jika Tidak Ada di dalam array
+
+            $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+
+
+
+            if ($cek_user_approve == null) {
+                for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
+                    $cek_user_approve = User::role($roles_approve[$i])
+                        ->where('status', 1)
+                        ->first();
+                    if ($cek_user_approve != null) {
+                        break;
+                    }
+                }
+            }
+
+
+            $tanggal_hariini = date('Y-m-d');
+            $lastdisposisi = Disposisilembur::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            $format = "DPLB" . date('Ymd');
+            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+
+            Disposisilembur::create([
+                'kode_disposisi' => $kode_disposisi,
+                'kode_lembur' => $kode_lembur,
+                'id_pengirim' => auth()->user()->id,
+                'id_penerima' => $cek_user_approve->id,
+                'status' => 0
+            ]);
+            DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
+            DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
@@ -148,8 +197,9 @@ class LemburController extends Controller
     {
         $kode_lembur = Crypt::decrypt($kode_lembur);
         $data['detail'] = Detaillembur::join('hrd_karyawan', 'hrd_lembur_detail.nik', '=', 'hrd_karyawan.nik')
+            ->join('hrd_lembur', 'hrd_lembur_detail.kode_lembur', '=', 'hrd_lembur.kode_lembur')
             ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
-            ->where('kode_lembur', $kode_lembur)->get();
+            ->where('hrd_lembur_detail.kode_lembur', $kode_lembur)->get();
         return view('hrd.lembur.getkaryawanlembur', $data);
     }
 
@@ -341,6 +391,151 @@ class LemburController extends Controller
         }
     }
 
+    public function approve($kode_lembur)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $role = $user->getRoleNames()->first();
+        $kode_lembur = Crypt::decrypt($kode_lembur);
+        $lb = new Lembur();
+        $lembur = $lb->getLembur($kode_lembur)->first();
+        $data['lembur'] = $lembur;
+        $data['detail'] = Detaillembur::join('hrd_karyawan', 'hrd_lembur_detail.nik', '=', 'hrd_karyawan.nik')
+            ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
+            ->where('hrd_lembur_detail.kode_lembur', $kode_lembur)->get();
+
+
+        $roles_approve = cekRoleapprovelembur($lembur->kode_dept);
+        $end_role = end($roles_approve);
+        if ($role != $end_role) {
+            $cek_index = array_search($role, $roles_approve) + 1;
+        } else {
+            $cek_index = count($roles_approve) - 1;
+        }
+
+        $nextrole = $roles_approve[$cek_index];
+        $userrole = User::role($nextrole)
+            ->where('status', 1)
+            ->first();
+
+        $index_start = $cek_index + 1;
+        if ($userrole == null) {
+            for ($i = $index_start; $i < count($roles_approve); $i++) {
+                $userrole = User::role($roles_approve[$i])
+                    ->where('status', 1)
+                    ->first();
+                if ($userrole != null) {
+                    $nextrole = $roles_approve[$i];
+                    break;
+                }
+            }
+        }
+
+        $data['nextrole'] = $nextrole;
+        $data['userrole'] = $userrole;
+        $data['end_role'] = $end_role;
+        return view('hrd.lembur.approve', $data);
+    }
+
+
+    public function storeapprove($kode_lembur, Request $request)
+    {
+        $kode_lembur = Crypt::decrypt($kode_lembur);
+        $user = User::findorfail(auth()->user()->id);
+        $lb = new Lembur();
+        $lembur = $lb->getLembur($kode_lembur)->first();
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovelembur($lembur->kode_dept);
+        $end_role = end($roles_approve);
+
+        if ($role != $end_role) {
+            $cek_index = array_search($role, $roles_approve);
+            $nextrole = $roles_approve[$cek_index + 1];
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
+        }
+
+        //dd($userrole);
+
+        DB::beginTransaction();
+        try {
+            // Upadate Disposisi Pengirim
+
+            // dd($kode_penilaian);
+            Disposisilembur::where('kode_lembur', $kode_lembur)
+                ->where('id_penerima', auth()->user()->id)
+                ->update([
+                    'status' => 1
+                ]);
+
+            //Insert Dispsosi ke Penerima
+            $tanggal_hariini = date('Y-m-d');
+            $lastdisposisi = Disposisilembur::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            $format = "DPLB" . date('Ymd');
+            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+
+
+
+            if ($role == $end_role) {
+                Lembur::where('kode_lembur', $kode_lembur)
+                    ->update([
+                        'status' => 1
+                    ]);
+            } else {
+
+                Disposisilembur::create([
+                    'kode_disposisi' => $kode_disposisi,
+                    'kode_lembur' => $kode_lembur,
+                    'id_pengirim' => auth()->user()->id,
+                    'id_penerima' => $userrole->id,
+                    'status' => 0,
+                ]);
+            }
+
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            //dd($e);
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cancel($kode_lembur)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $role = $user->getRoleNames()->first();
+        $kode_lembur = Crypt::decrypt($kode_lembur);
+        try {
+            Disposisilembur::where('kode_lembur', $kode_lembur)
+                ->where('id_pengirim', auth()->user()->id)
+                ->where('id_penerima', '!=', auth()->user()->id)
+                ->delete();
+
+            Disposisilembur::where('kode_lembur', $kode_lembur)
+                ->where('id_penerima', auth()->user()->id)
+                ->update([
+                    'status' => 0
+                ]);
+
+            if ($role == 'direktur') {
+                Lembur::where('kode_lembur', $kode_lembur)
+                    ->update([
+                        'status' => 0
+                    ]);
+            }
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+            //throw $th;
+        }
+    }
     public function destroy($kode_lembur)
     {
         $kode_lembur = Crypt::decrypt($kode_lembur);

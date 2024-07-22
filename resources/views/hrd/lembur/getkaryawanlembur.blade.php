@@ -5,9 +5,13 @@
         <td>{{ $d->kode_dept }}</td>
         <td>{{ $d->nama_group }}</td>
         <td>
-            <a href="#" class="delete" nik="{{ $d->nik }}">
-                <i class="ti ti-circle-minus text-danger"></i>
-            </a>
+            @if ($d->status === '0')
+                <a href="#" class="delete" nik="{{ $d->nik }}">
+                    <i class="ti ti-circle-minus text-danger"></i>
+                </a>
+            @endif
+
+
         </td>
     </tr>
 @endforeach

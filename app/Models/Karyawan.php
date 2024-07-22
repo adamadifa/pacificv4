@@ -107,4 +107,22 @@ class Karyawan extends Model
 
         return $query;
     }
+
+    public function getkaryawanpresensi()
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $role = $user->getRoleNames()->first();
+
+
+        $query = Karyawan::query();
+        if (!in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
+            $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+            if ($user->kode_cabang == 'PST') {
+                $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
+            }
+        }
+        $query->where('status_aktif_karyawan', 1);
+        $query->orderBy('nama_karyawan');
+        return $query;
+    }
 }

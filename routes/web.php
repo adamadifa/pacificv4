@@ -34,6 +34,7 @@ use App\Http\Controllers\HariliburController;
 use App\Http\Controllers\HppController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\ItemservicekendaraanController;
+use App\Http\Controllers\IzinabsenController;
 use App\Http\Controllers\JadwalshiftController;
 use App\Http\Controllers\JasamasakerjaController;
 use App\Http\Controllers\JenisprodukController;
@@ -1592,6 +1593,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/lembur/tambahkansemua', 'tambahkansemua')->name('lembur.tambahkansemua');
         Route::post('/lembur/batalkansemua', 'batalkansemua')->name('lembur.batalkansemua');
         Route::post('/lembur/deletekaryawanlembur', 'deletekaryawanlembur')->name('lembur.deletekaryawanlembur');
+    });
+
+    Route::controller(IzinabsenController::class)->group(function () {
+        Route::get('/izinabsen', 'index')->name('izinabsen.index')->can('izinabsen.index');
+        Route::get('/izinabsen/create', 'create')->name('izinabsen.create')->can('izinabsen.create');
+        Route::post('/izinabsen/store', 'store')->name('izinabsen.store')->can('izinabsen.store');
+        Route::get('/izinabsen/{kode_izin}/show', 'show')->name('izinabsen.show')->can('izinabsen.show');
+        Route::get('/izinabsen/{kode_izin}/edit', 'edit')->name('izinabsen.edit')->can('izinabsen.edit');
+        Route::put('/izinabsen/{kode_izin}/update', 'update')->name('izinabsen.update')->can('izinabsen.update');
+        Route::delete('/izinabsen/{kode_izin}/delete', 'destroy')->name('izinabsen.delete')->can('izinabsen.delete');
+        Route::get('/izinabsen/{kode_izin}/approve', 'approve')->name('izinabsen.approve')->can('izinabsen.approve');
+        Route::post('/izinabsen/{kode_izin}/storeapprove', 'storeapprove')->name('izinabsen.storeapprove')->can('izinabsen.approve');
+        Route::delete('/izinabsen/{kode_izin}/cancel', 'cancel')->name('izinabsen.cancel')->can('izinabsen.approve');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

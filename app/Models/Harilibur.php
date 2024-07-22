@@ -51,6 +51,14 @@ class Harilibur extends Model
             if (!empty($request->kode_dept)) {
                 $query->where('hrd_harilibur.kode_dept', $request->kode_dept);
             }
+
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->where('hrd_harilibur.status', '0');
+                } else if ($request->status == "disetujui") {
+                    $query->where('hrd_harilibur.status', '1');
+                }
+            }
         }
         $query->orderBy('hrd_harilibur.tanggal', 'desc');
         return $query;

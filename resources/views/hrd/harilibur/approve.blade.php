@@ -6,7 +6,7 @@
 
     }
 </style>
-<form action="{{ route('harilibur.storeapprove', Crypt::encrypt($harilibur->kode_libur)) }}" method="POST" id="formApprove">
+<form action="{{ route('harilibur.storeapprove', Crypt::encrypt($harilibur->kode_libur)) }}" method="POST" id="formApprovehrd">
     @csrf
     <div class="row">
         <div class="col">
@@ -80,7 +80,7 @@
 </form>
 <script>
     $(function() {
-        const form = $('#formApprove');
+        const form = $('#formApprovehrd');
         $(".table-modal").freezeTable({
             'scrollable': true,
             'freezeColumn': false,

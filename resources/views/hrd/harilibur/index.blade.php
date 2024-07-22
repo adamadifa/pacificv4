@@ -33,7 +33,7 @@
                                         :selected="Request('kategori')" />
                                 </div>
                             </div>
-                            @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
+                            @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi', 'direktur']))
                                 <div class="row">
                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
@@ -45,6 +45,19 @@
                                     </div>
                                 </div>
                             @endif
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group mb-3">
+                                        <select name="status" id="status" class="form-select">
+                                            <option value="">Status</option>
+                                            <option value="pending" {{ Request('status') === 'pending' ? 'selected' : '' }}>
+                                                Pending</option>
+                                            <option value="disetujui" {{ Request('status') === 'disetujui' ? 'selected' : '' }}>
+                                                Disetujui</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group mb-3">
                                 <button class="btn btn-primary w-100" id="btnSearch"><i class="ti ti-search me-1"></i>Cari</button>
                             </div>

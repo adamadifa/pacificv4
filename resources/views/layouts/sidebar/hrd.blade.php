@@ -7,6 +7,7 @@
             'jadwalshift.index',
             'harilibur.index',
             'lembur.index',
+            'izinabsen.index',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -22,6 +23,7 @@
             'harilibur/*',
             'lembur',
             'lembur/*',
+            'izinabsen',
         ])
             ? 'open'
             : '' }}">
@@ -88,6 +90,14 @@
                 <li class="menu-item {{ request()->is(['lembur', 'lembur/*']) ? 'active' : '' }}">
                     <a href="{{ route('lembur.index') }}" class="menu-link">
                         <div>Lembur</div>
+                    </a>
+                </li>
+            @endif
+
+            @if (auth()->user()->hasAnyPermission(['izinabsen.index']))
+                <li class="menu-item {{ request()->is(['izinabsen', 'izinabsen/*']) ? 'active' : '' }}">
+                    <a href="{{ route('izinabsen.index') }}" class="menu-link">
+                        <div>Pengajuan Izin</div>
                     </a>
                 </li>
             @endif
