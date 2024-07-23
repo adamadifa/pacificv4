@@ -122,6 +122,206 @@ class IzinabsenController extends Controller
         }
     }
 
+    public function edit($kode_izin)
+    {
+        $kode_izin = Crypt::decrypt($kode_izin);
+        $data['izinabsen'] = Izinabsen::where('kode_izin', $kode_izin)->first();
+        $k = new Karyawan();
+        $data['karyawan'] = $k->getkaryawanpresensi()->get();
+        return view('hrd.pengajuanizin.izinabsen.edit', $data);
+    }
+
+
+    public function update(Request $request, $kode_izin)
+    {
+        $kode_izin = Crypt::decrypt($kode_izin);
+        $request->validate([
+            'dari' => 'required',
+            'sampai' => 'required',
+            'keterangan' => 'required',
+        ]);
+        DB::beginTransaction();
+        try {
+            $jmlhari = hitungHari($request->dari, $request->sampai);
+            if ($jmlhari > 3) {
+                return Redirect::back()->with(messageError('Tidak Boleh Lebih dari 3 Hari!'));
+            }
+
+            Izinabsen::where('kode_izin', $kode_izin)->update([
+                'tanggal' => $request->dari,
+                'dari' => $request->dari,
+                'sampai' => $request->sampai,
+                'keterangan' => $request->keterangan,
+            ]);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function approve($kode_izin)
+    {
+        $kode_izin = Crypt::decrypt($kode_izin);
+        $user = User::find(auth()->user()->id);
+        $i_absen = new Izinabsen();
+        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+        $data['izinabsen'] = $izinabsen;
+
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
+        $end_role = end($roles_approve);
+        if ($role != $end_role) {
+            $cek_index = array_search($role, $roles_approve) + 1;
+        } else {
+            $cek_index = count($roles_approve) - 1;
+        }
+
+        $nextrole = $roles_approve[$cek_index];
+        if ($nextrole == "regional sales manager") {
+            $userrole = User::role($nextrole)
+                ->where('kode_regional', $izinabsen->kode_regional)
+                ->where('status', 1)
+                ->first();
+        } else {
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
+        }
+
+        $index_start = $cek_index + 1;
+        if ($userrole == null) {
+            for ($i = $index_start; $i < count($roles_approve); $i++) {
+                if ($roles_approve[$i] == 'regional sales manager') {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('kode_regional', $izinabsen->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                } else {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('status', 1)
+                        ->first();
+                }
+
+                if ($userrole != null) {
+                    $nextrole = $roles_approve[$i];
+                    break;
+                }
+            }
+        }
+
+        $data['nextrole'] = $nextrole;
+        $data['userrole'] = $userrole;
+        $data['end_role'] = $end_role;
+        return view('hrd.pengajuanizin.izinabsen.approve', $data);
+    }
+
+    public function storeapprove($kode_izin, Request $request)
+    {
+        $kode_izin = Crypt::decrypt($kode_izin);
+        $user = User::findorfail(auth()->user()->id);
+        $i_absen = new Izinabsen();
+        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
+        $end_role = end($roles_approve);
+
+        if ($role != $end_role) {
+            $cek_index = array_search($role, $roles_approve);
+            $nextrole = $roles_approve[$cek_index + 1];
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
+        }
+
+        //dd($userrole);
+
+        DB::beginTransaction();
+        try {
+            // Upadate Disposisi Pengirim
+
+            // dd($kode_penilaian);
+            Disposisiizinabsen::where('kode_izin', $kode_izin)
+                ->where('id_penerima', auth()->user()->id)
+                ->update([
+                    'status' => 1
+                ]);
+
+            //Insert Dispsosi ke Penerima
+            $tanggal_hariini = date('Y-m-d');
+            $lastdisposisi = Disposisiizinabsen::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            $format = "DPIA" . date('Ymd');
+            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+
+
+
+            if ($role == $end_role) {
+                Izinabsen::where('kode_izin', $kode_izin)
+                    ->update([
+                        'status' => 1
+                    ]);
+            } else {
+
+                Disposisiizinabsen::create([
+                    'kode_disposisi' => $kode_disposisi,
+                    'kode_izin' => $kode_izin,
+                    'id_pengirim' => auth()->user()->id,
+                    'id_penerima' => $userrole->id,
+                    'status' => 0,
+                ]);
+            }
+
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            //dd($e);
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function cancel($kode_izin)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $role = $user->getRoleNames()->first();
+        $kode_izin = Crypt::decrypt($kode_izin);
+        $i_absen = new Izinabsen();
+        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
+        $end_role = end($roles_approve);
+        try {
+            Disposisiizinabsen::where('kode_izin', $kode_izin)
+                ->where('id_pengirim', auth()->user()->id)
+                ->where('id_penerima', '!=', auth()->user()->id)
+                ->delete();
+
+            Disposisiizinabsen::where('kode_izin', $kode_izin)
+                ->where('id_penerima', auth()->user()->id)
+                ->update([
+                    'status' => 0
+                ]);
+
+            if ($role == $end_role) {
+                Izinabsen::where('kode_izin', $kode_izin)
+                    ->update([
+                        'status' => 0
+                    ]);
+            }
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+            //throw $th;
+        }
+    }
+
 
     public function destroy($kode_izin)
     {

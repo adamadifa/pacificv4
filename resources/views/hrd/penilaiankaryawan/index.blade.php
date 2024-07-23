@@ -111,7 +111,6 @@
                                 <tbody>
                                     @foreach ($penilaiankaryawan as $d)
                                         @php
-
                                             $roles_approve = cekRoleapprove($d->kode_dept, $d->kode_cabang, $d->kategori_jabatan, $d->kode_jabatan);
                                             $end_role = end($roles_approve);
                                             if ($level_user != $end_role) {

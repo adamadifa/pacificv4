@@ -10,6 +10,7 @@ use App\Models\Ledgerpjp;
 use App\Models\Pjp;
 use App\Models\Pjppotonggaji;
 use App\Models\Rencanacicilanpjp;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -33,12 +34,7 @@ class PjpController extends Controller
 
     public function create()
     {
-        if (!in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
-            $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
-            if ($user->kode_cabang == 'PST') {
-                $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            }
-        }
+
         return view('keuangan.pjp.create');
     }
 

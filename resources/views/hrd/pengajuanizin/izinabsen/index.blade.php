@@ -53,7 +53,7 @@
                                             <th>Dept</th>
                                             <th>Cabang</th>
                                             <th>Lama</th>
-                                            <th>Keterangan</th>
+                                            {{-- <th style="width: 15%">Keterangan</th> --}}
                                             <th>Posisi</th>
                                             <th>Status</th>
                                             <th>#</th>
@@ -61,6 +61,23 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($izinabsen as $d)
+                                            @php
+                                                $roles_approve = cekRoleapprovepresensi(
+                                                    $d->kode_dept,
+                                                    $d->kode_cabang,
+                                                    $d->kategori_jabatan,
+                                                    $d->kode_jabatan,
+                                                );
+                                                $end_role = end($roles_approve);
+                                                if ($level_user != $end_role) {
+                                                    $index_role = array_search($level_user, $roles_approve);
+                                                    $next_role = $roles_approve[$index_role + 1];
+                                                } else {
+                                                    $lastindex = count($roles_approve) - 1;
+                                                    $next_role = $roles_approve[$lastindex];
+                                                }
+
+                                            @endphp
                                             <tr>
                                                 <td>{{ $d->kode_izin }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
@@ -71,13 +88,13 @@
                                                 <td>{{ $d->kode_cabang }}</td>
                                                 <td>
                                                     @php
-                                                        $jmlhari = hitungJumlahHari($d->dari, $d->sampai);
+                                                        $jmlhari = hitungHari($d->dari, $d->sampai);
                                                     @endphp
                                                     {{ $jmlhari }} Hari
                                                 </td>
-                                                <td style="width: 20%">
+                                                {{-- <td>
                                                     {{ $d->keterangan }}
-                                                </td>
+                                                </td> --}}
                                                 <td>
                                                     <span class="badge bg-primary">
                                                         {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
@@ -92,15 +109,57 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        @can('izinabsen.delete')
-                                                            <form class="delete-form me-1"
-                                                                action="{{ route('izinabsen.delete', Crypt::encrypt($d->kode_izin)) }}" method="POST">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm">
-                                                                    <i class="ti ti-trash text-danger"></i>
+                                                        @can('izinabsen.edit')
+                                                            @if (
+                                                                ($d->status === '0' && $d->id_penerima === $d->id_user) ||
+                                                                    ($d->status === '0' && $d->id_penerima === $d->id_user && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
+                                                                    (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
+                                                                <a href="#" class="btnEdit me-1" kode_izin = "{{ Crypt::encrypt($d->kode_izin) }}">
+                                                                    <i class="ti ti-edit text-success"></i>
                                                                 </a>
-                                                            </form>
+                                                            @endif
+                                                        @endcan
+                                                        @can('izinabsen.approve')
+                                                            @if ($level_user == $d->posisi_ajuan && $d->status === '0')
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @elseif ($d->posisi_ajuan == $next_role && $d->status === '0')
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('izinabsen.cancel', Crypt::encrypt($d->kode_izin)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="cancel-confirm me-1">
+                                                                        <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @elseif ($level_user == $d->posisi_ajuan && $d->status === '1')
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('izinabsen.cancel', Crypt::encrypt($d->kode_izin)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="cancel-confirm me-1">
+                                                                        <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @endif
+                                                        @endcan
+                                                        @can('izinabsen.delete')
+                                                            @if (
+                                                                ($d->status === '0' && $d->id_penerima === $d->id_user) ||
+                                                                    ($d->status === '0' && $d->id_penerima === $d->id_user && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
+                                                                    (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
+                                                                <form class="delete-form me-1"
+                                                                    action="{{ route('izinabsen.delete', Crypt::encrypt($d->kode_izin)) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm">
+                                                                        <i class="ti ti-trash text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @endif
                                                         @endcan
                                                     </div>
                                                 </td>
@@ -141,6 +200,22 @@
             loading();
             $("#modal").find(".modal-title").text("Buat Izin Absen");
             $("#loadmodal").load("/izinabsen/create");
+        });
+
+        $(".btnEdit").click(function() {
+            const kode_izin = $(this).attr("kode_izin");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Edit Izin Absen");
+            $("#loadmodal").load(`/izinabsen/${kode_izin}/edit`);
+        });
+
+        $(".btnApprove").click(function() {
+            const kode_izin = $(this).attr("kode_izin");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Approve Izin Absen");
+            $("#loadmodal").load(`/izinabsen/${kode_izin}/approve`);
         });
     });
 </script>

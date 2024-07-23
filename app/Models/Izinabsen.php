@@ -23,12 +23,18 @@ class Izinabsen extends Model
             'hrd_izinabsen.*',
             'nama_karyawan',
             'nama_jabatan',
+            'hrd_jabatan.kategori as kategori_jabatan',
             'disposisi.id_pengirim',
             'disposisi.id_penerima',
             'roles.name as posisi_ajuan',
+            'cabang.nama_cabang',
+            'nama_dept',
+            'cabang.kode_regional'
         );
         $query->join('hrd_karyawan', 'hrd_izinabsen.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_izinabsen.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_departemen', 'hrd_izinabsen.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->join('cabang', 'hrd_izinabsen.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftJoin('hrd_izinabsen_disposisi as disposisi', function ($join) {
             $join->on('hrd_izinabsen.kode_izin', '=', 'disposisi.kode_izin')
                 ->whereRaw('disposisi.kode_disposisi IN (SELECT MAX(kode_disposisi) FROM hrd_izinabsen_disposisi GROUP BY kode_izin)');
@@ -126,7 +132,7 @@ class Izinabsen extends Model
             }
             $query->WhereIn('hrd_izinabsen.kode_izin', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin');
-                $query->from('hrd_izinabsen as disposisi');
+                $query->from('hrd_izinabsen_disposisi as disposisi');
                 $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
                 $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
                 $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
@@ -225,7 +231,7 @@ class Izinabsen extends Model
             $query->where('hrd_izinabsen.status', '1');
             $query->orWhereIn('hrd_izinabsen.kode_izin', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin');
-                $query->from('hrd_izinabsen as disposisi');
+                $query->from('hrd_izinabsen_disposisi as disposisi');
                 $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
                 $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
                 $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
