@@ -14,6 +14,13 @@
             </a>
         </li>
     @endcan
+    @can('dashboard.hrd')
+        <li class="nav-item" role="presentation">
+            <a type="button" href="{{ route('dashboard.hrd') }}" class="nav-link {{ request()->is(['dashboard/hrd']) ? 'active' : '' }}">
+                <i class="tf-icons ti ti-users ti-xs me-1"></i> HRD
+            </a>
+        </li>
+    @endcan
     @can('dashboard.produksi')
         <li class="nav-item" role="presentation">
             <a href="{{ route('dashboard.produksi') }}" class="nav-link {{ request()->is(['dashboard/produksi']) ? 'active' : '' }}">

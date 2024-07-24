@@ -8,14 +8,16 @@
         }
     </style>
 @section('navigasi')
-    <span>Dashboard</span>
+    @include('dashboard.navigasi')
 @endsection
 <div class="row">
     <div class="col-xl-12">
+        @include('dashboard.welcome')
         <div class="nav-align-top mb-4">
             <ul class="nav nav-pills mb-3" role="tablist">
                 @include('layouts.navigation_dashboard')
             </ul>
+
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="navs-pills-justified-home" role="tabpanel">
                     <div class="row mb-3">
@@ -31,8 +33,8 @@
                                                 <select name="bulan_realisasi" id="bulan_realisasi" class="form-select">
                                                     <option value="">Bulan</option>
                                                     @foreach ($list_bulan as $d)
-                                                        <option {{ date('m') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                            value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}
+                                                        <option {{ date('m') == $d['kode_bulan'] ? 'selected' : '' }} value="{{ $d['kode_bulan'] }}">
+                                                            {{ $d['nama_bulan'] }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -41,8 +43,8 @@
                                                 <select name="tahun_realiasi" id="tahun_realisasi" class="form-select">
                                                     <option value="">Tahun</option>
                                                     @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                        <option {{ date('Y') == $t ? 'selected' : '' }}
-                                                            value="{{ $t }}">{{ $t }}</option>
+                                                        <option {{ date('Y') == $t ? 'selected' : '' }} value="{{ $t }}">
+                                                            {{ $t }}</option>
                                                     @endfor
                                                 </select>
                                             </div>
@@ -67,12 +69,11 @@
                                                 <div class="row">
                                                     <div class="col">
                                                         <div class="form-group mb-3">
-                                                            <select name="tahun_hasil_produksi"
-                                                                id="tahun_hasil_produksi" class="form-select">
+                                                            <select name="tahun_hasil_produksi" id="tahun_hasil_produksi" class="form-select">
                                                                 <option value="">Tahun</option>
                                                                 @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                                    <option {{ date('Y') == $t ? 'selected' : '' }}
-                                                                        value="{{ $t }}">{{ $t }}
+                                                                    <option {{ date('Y') == $t ? 'selected' : '' }} value="{{ $t }}">
+                                                                        {{ $t }}
                                                                     </option>
                                                                 @endfor
                                                             </select>
@@ -83,8 +84,7 @@
                                                 <div class="row">
                                                     <div class="col">
                                                         <div class="table-responsive">
-                                                            <table
-                                                                class="table table-striped table-hover table-bordered">
+                                                            <table class="table table-striped table-hover table-bordered">
                                                                 <thead class="table-dark">
                                                                     <tr>
                                                                         <th rowspan="2">Produk</th>
@@ -96,8 +96,7 @@
                                                                         @endfor
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody id="loadrekaphasilproduksi"
-                                                                    style="font-size: 12px">
+                                                                <tbody id="loadrekaphasilproduksi" style="font-size: 12px">
                                                                 </tbody>
                                                             </table>
                                                         </div>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Karyawan extends Model
 {
@@ -124,5 +125,70 @@ class Karyawan extends Model
         $query->where('status_aktif_karyawan', 1);
         $query->orderBy('nama_karyawan');
         return $query;
+    }
+
+    function getRekapstatuskaryawan()
+    {
+        $query = Karyawan::query();
+        $query->select(
+            DB::raw("SUM(IF(status_karyawan = 'K', 1, 0)) as jml_kontrak"),
+            DB::raw("SUM(IF(status_karyawan = 'T', 1, 0)) as jml_tetap"),
+            DB::raw("SUM(IF(status_karyawan = 'O', 1, 0)) as jml_outsourcing"),
+            DB::raw("SUM(IF(status_aktif_karyawan = '1', 1, 0)) as jml_aktif"),
+        );
+        return $query->first();
+    }
+
+    public function getRekapkontrak($kategori)
+    {
+        $bulanini = date("m");
+        $tahunini = date("Y");
+        $start_date_bulanini = $tahunini . "-" . $bulanini . "-01";
+        $end_date_bulanini = date("Y-m-t", strtotime($start_date_bulanini));
+        //Jika Bulan + 1 Lebih dari 12 Maka Bulan + 1 - 12 dan Tahun + 1 Jika Tidak Maka Bulan Depan = Bulan + 1
+        $bulandepan = date("m") + 1 > 12 ? (date("m") + 1) - 12 : date("m") + 1;
+        $tahunbulandepan = date("m") + 1 > 12 ? $tahunini + 1 : $tahunini;
+        $start_date_bulandepan = $tahunbulandepan . "-" . $bulandepan . "-01";
+        $end_date_bulandepan = date("Y-m-t", strtotime($start_date_bulandepan));
+
+        //Jika Bulan + 2 Lebih dari 12 Maka Bulan + 2 - 12 dan Tahun + 1 Jika Tidak Maka Bulan Depan = Bulan + 2
+        //Sampel Jika Bulan = Desember (12) Maka Dua bulan adalah Februari (2) (12+2-12);
+        $duabulan = date("m") + 2 > 12 ? (date("m") + 2) - 12 : date("m") + 2;
+        $tahunduabulan = date("m") + 2 > 12 ? $tahunini + 1 : $tahunini;
+        $start_date_duabulan = $tahunduabulan . "-" . $duabulan . "-01";
+        $end_date_duabulan = date("Y-m-t", strtotime($start_date_duabulan));
+        $query = Kontrakkaryawan::query();
+        $query->select('hrd_kontrak.no_kontrak', 'hrd_kontrak.nik', 'hrd_kontrak.sampai', 'hrd_karyawan.nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'hrd_karyawan.kode_cabang', 'nama_cabang');
+        $query->join('hrd_karyawan', 'hrd_kontrak.nik', '=', 'hrd_karyawan.nik');
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        if ($kategori == 0) { // Lewat Jatuh Tempo
+            $query->where('sampai', '<', $start_date_bulanini);
+        } else if ($kategori == 1) { // Jatuh Tempo Bulan Ini
+            $query->whereBetween('sampai', [$start_date_bulanini, $end_date_bulanini]);
+        } else if ($kategori == 2) { // Jatuh Tempo Bulan Depan
+            $query->whereBetween('sampai', [$start_date_bulandepan, $end_date_bulandepan]);
+        } else if ($kategori == 3) { // Jatuh Tempo Dua Bulan
+            $query->whereBetween('sampai', [$start_date_duabulan, $end_date_duabulan]);
+        }
+        $query->where('status_aktif_karyawan', 1);
+        $query->where('status_karyawan', 'K');
+        $query->where('status_kontrak', 1);
+        $query->orderBy('hrd_kontrak.sampai');
+        $query->orderBy('hrd_karyawan.nama_karyawan');
+        return $query->get();
+    }
+
+
+    function getRekapkaryawancabang()
+    {
+
+        $query = Karyawan::query();
+        $query->select('hrd_karyawan.kode_cabang', 'nama_cabang', DB::raw("COUNT(nik) as jml_karyawancabang"));
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->where('status_aktif_karyawan', 1);
+        $query->groupBy('hrd_karyawan.kode_cabang', 'cabang.nama_cabang');
+        $query->orderBy('hrd_karyawan.kode_cabang');
+        return $query->get();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Charts\HasilproduksiChart;
+use App\Models\Karyawan;
 use App\Models\Kendaraan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -54,6 +55,19 @@ class DashboardController extends Controller
         $data['pajaklimatahun_duabulan'] = $kendaraan->getPajak5tahunjatuhtempo(3)->get();
 
         $data['rekapkendaraan'] = $kendaraan->getRekapkendaraancabang()->get();
+        $data['jmlkendaraan'] = Kendaraan::count();
         return view('dashboard.generalaffair', $data);
+    }
+
+    public function hrd()
+    {
+        $sk = new Karyawan();
+        $data['status_karyawan'] = $sk->getRekapstatuskaryawan();
+        $data['kontrak_lewat'] = $sk->getRekapkontrak(0);
+        $data['kontrak_bulanini'] = $sk->getRekapkontrak(1);
+        $data['kontrak_bulandepan'] = $sk->getRekapkontrak(2);
+        $data['kontrak_duabulan'] = $sk->getRekapkontrak(3);
+        $data['karyawancabang'] = $sk->getRekapkaryawancabang();
+        return view('dashboard.hrd', $data);
     }
 }
