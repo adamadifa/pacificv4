@@ -45,7 +45,7 @@ class Izinabsen extends Model
         $query->leftJoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
         $query->leftJoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
         $query->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
-        if (!in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
+        if (!in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi', 'direktur'])) {
             if ($user->hasRole('gm operasional')) {
                 $query->whereIn('hrd_izinabsen.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izinabsen.kode_jabatan', ['J05', 'J06']);
@@ -86,6 +86,10 @@ class Izinabsen extends Model
 
                 if (!empty($request->kode_dept)) {
                     $query->where('hrd_izinabsen.kode_dept', $request->kode_dept);
+                }
+
+                if (!empty($request->nama_karyawan)) {
+                    $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                 }
 
                 if (!empty($request->status)) {
@@ -157,6 +161,10 @@ class Izinabsen extends Model
                     $query->where('hrd_izinabsen.kode_dept', $request->kode_dept);
                 }
 
+                if (!empty($request->nama_karyawan)) {
+                    $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+                }
+
                 if (!empty($request->status)) {
                     if ($request->status == 'pending') {
                         $query->where('hrd_izinabsen.status', '0');
@@ -186,6 +194,10 @@ class Izinabsen extends Model
                         $query->where('hrd_izinabsen.kode_dept', $request->kode_dept);
                     }
 
+                    if (!empty($request->nama_karyawan)) {
+                        $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+                    }
+
                     if (!empty($request->status)) {
                         if ($request->status == 'pending') {
                             $query->where('hrd_izinabsen.status', '0');
@@ -200,36 +212,7 @@ class Izinabsen extends Model
                 }
             }
         } else if ($user->hasRole('direktur')) {
-            if (!empty($request)) {
-                if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_izinabsen.tanggal', [$request->dari, $request->sampai]);
-                }
-
-                if (!empty($request->kode_cabang)) {
-                    $query->where('hrd_izinabsen.kode_cabang', $request->kode_cabang);
-                }
-
-                if (!empty($request->kode_dept)) {
-                    $query->where('hrd_izinabsen.kode_dept', $request->kode_dept);
-                }
-
-                if (!empty($request->status)) {
-                    if ($request->status == 'pending') {
-                        $query->where('hrd_izinabsen.status', '0');
-                    } else if ($request->status == "disetujui") {
-                        $query->where('hrd_izinabsen.status', '1');
-                    }
-                }
-
-                if (!empty($request->posisi_ajuan)) {
-                    $query->where('roles.name', $request->posisi_ajuan);
-                }
-            }
-
-
-
-            $query->where('hrd_izinabsen.status', '1');
-            $query->orWhereIn('hrd_izinabsen.kode_izin', function ($query) use ($user) {
+            $query->WhereIn('hrd_izinabsen.kode_izin', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin');
                 $query->from('hrd_izinabsen_disposisi as disposisi');
                 $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
@@ -256,11 +239,15 @@ class Izinabsen extends Model
                     $query->where('hrd_izinabsen.kode_dept', $request->kode_dept);
                 }
 
+                if (!empty($request->nama_karyawan)) {
+                    $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+                }
+
                 if (!empty($request->status)) {
                     if ($request->status == 'pending') {
-                        $query->where('hrd_izinabsen.status', '0');
+                        $query->where('hrd_izinabsen.direktur', '0');
                     } else if ($request->status == "disetujui") {
-                        $query->where('hrd_izinabsen.status', '1');
+                        $query->where('hrd_izinabsen.direktur', '1');
                     }
                 }
 
@@ -271,21 +258,32 @@ class Izinabsen extends Model
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_lembur.tanggal', [$request->dari, $request->sampai]);
+                    $query->whereBetween('hrd_izinabsen.tanggal', [$request->dari, $request->sampai]);
                 }
 
-                if (!empty($request->kategori)) {
-                    $query->where('hrd_lembur.kategori', $request->kategori);
+
+                if (!empty($request->kode_cabang)) {
+                    $query->where('hrd_izinabsen.kode_cabang', $request->kode_cabang);
                 }
 
                 if (!empty($request->kode_dept)) {
-                    $query->where('hrd_lembur.kode_dept', $request->kode_dept);
+                    $query->where('hrd_izinabsen.kode_dept', $request->kode_dept);
                 }
+
+                if (!empty($request->nama_karyawan)) {
+                    $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+                }
+
                 if (!empty($request->status)) {
                     if ($request->status == 'pending') {
-                        $query->where('hrd_lembur.status', '0');
+                        $query->where('hrd_izinabsen.status', '0');
                     } else if ($request->status == "disetujui") {
-                        $query->where('hrd_lembur.status', '1');
+                        $query->where('hrd_izinabsen.status', '1');
+                    } else if ($request->status == "direktur") {
+                        $query->where('hrd_izinabsen.direktur', '1');
+                    } else if ($request->status == "pendingdirektur") {
+                        $query->where('roles.name', 'direktur');
+                        $query->where('hrd_izinabsen.direktur', '0');
                     }
                 }
 
@@ -301,6 +299,7 @@ class Izinabsen extends Model
         }
 
         $query->orderBy('hrd_izinabsen.tanggal', 'desc');
+        $query->orderBy('hrd_izinabsen.created_at', 'desc');
         return $query;
     }
 }

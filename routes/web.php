@@ -160,6 +160,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('dashboard');
         Route::get('/dashboard/produksi', 'produksi')->name('dashboard.produksi')->can('dashboard.produksi');
+        Route::get('/dashboard/generalaffair', 'generalaffair')->name('dashboard.generalaffair')->can('dashboard.generalaffair');
     });
 
     //Setings
@@ -202,6 +203,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{id}/edit', 'edit')->name('users.edit');
         Route::put('/users/{id}/update', 'update')->name('users.update');
         Route::delete('/users/{id}/delete', 'destroy')->name('users.delete');
+
+        Route::get('/users/{id}/createuserpermission', 'createuserpermission')->name('users.createuserpermission');
+        Route::post('/users/{id}/storeuserpermission', 'storeuserpermission')->name('users.storeuserpermission');
     });
 
 

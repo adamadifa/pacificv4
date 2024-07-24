@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -141,6 +142,47 @@ class UserController extends Controller
         }
     }
 
+
+    public function createuserpermission($id)
+    {
+        $id = Crypt::decrypt($id);
+        $permissions = Permission::selectRaw('id_permission_group,permission_groups.name as group_name,GROUP_CONCAT(permissions.id,"-",permissions.name) as permissions')
+            ->join('permission_groups', 'permissions.id_permission_group', '=', 'permission_groups.id')
+            ->orderBy('id_permission_group')
+            ->groupBy('id_permission_group')
+            ->groupBy('permission_groups.name')
+            ->get();
+
+        $user = User::find($id);
+        //Cek Role ID dari User
+
+        $userpermissions = $user->permissions->pluck('name')->toArray();
+        $role = Role::findByName($user->getRoleNames()[0]);
+        $rolepermissions = $role->permissions->pluck('name')->toArray();
+        // dd($rolepermissions);
+        return view('settings.users.create_user_permissions', compact('permissions', 'user', 'userpermissions', 'rolepermissions'));
+    }
+
+    public function storeuserpermission($id, Request $request)
+    {
+        $id = Crypt::decrypt($id);
+        $permissions = $request->permission;
+        $user = User::find($id);
+        $old_permissions = $user->permissions->pluck('name')->toArray();
+
+
+        if (empty($permissions)) {
+            return Redirect::back()->with(['warning' => 'Data Permission Harus Di Pilih']);
+        }
+
+        try {
+            $user->revokePermissionTo($old_permissions);
+            $user->givePermissionTo($permissions);
+            return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
+        } catch (\Exception $e) {
+            return Redirect::back()->with(['error' => $e->getMessage()]);
+        }
+    }
 
     public function destroy($id)
     {

@@ -3,9 +3,9 @@
 
 @section('content')
 @section('navigasi')
-    <span class="text-muted fw-light">Roles</span> / Set Role Permission {{ ucwords($role->name) }}
+    <span class="text-muted fw-light">Roles</span> / Set User Permission {{ ucwords($user->name) }}
 @endsection
-<form action="{{ route('roles.storerolepermission', Crypt::encrypt($role->id)) }}" method="POST">
+<form action="{{ route('users.storeuserpermission', Crypt::encrypt($user->id)) }}" method="POST">
     @csrf
     <div class="row">
         @php
@@ -26,7 +26,7 @@
                                 $permission = explode('-', $p);
                                 $permission_id = $permission[0];
                                 $permission_name = $permission[1];
-                                $cek = in_array($permission_name, $rolepermissions);
+                                $cek = in_array($permission_name, $userpermissions) || in_array($permission_name, $rolepermissions);
 
                             @endphp
                             <div class="form-check mt-1">

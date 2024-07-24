@@ -18,12 +18,11 @@
                         <form action="{{ route('users.index') }}">
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari User" value="{{ Request('name') }}" name="name"
-                                        icon="ti ti-search" />
+                                    <x-input-with-icon label="Cari User" value="{{ Request('name') }}" name="name" icon="ti ti-search" />
                                 </div>
                                 <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                                        textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
+                                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                        selected="{{ Request('kode_cabang') }}" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
                                     <button class="btn btn-primary">Cari</button>
@@ -68,8 +67,13 @@
                                             <td>
                                                 <div class="d-flex">
                                                     <div>
-                                                        <a href="#" class="me-2 editUser"
-                                                            id="{{ Crypt::encrypt($d->id) }}">
+                                                        <a href="{{ route('users.createuserpermission', Crypt::encrypt($d->id)) }}" class="me-2"
+                                                            id="{{ $d->id }}">
+                                                            <i class="ti ti-shield-lock-filled text-info"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div>
+                                                        <a href="#" class="me-2 editUser" id="{{ Crypt::encrypt($d->id) }}">
                                                             <i class="ti ti-edit text-success"></i>
                                                         </a>
                                                     </div>
