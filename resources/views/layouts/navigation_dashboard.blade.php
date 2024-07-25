@@ -9,7 +9,7 @@
 
     @can('dashboard.gudang')
         <li class="nav-item" role="presentation">
-            <a type="button" class="nav-link">
+            <a href="{{ route('dashboard.gudang') }}" class="nav-link  {{ request()->is(['dashboard/gudang']) ? 'active' : '' }}">
                 <i class="tf-icons ti ti-building-warehouse ti-xs me-1"></i> Gudang
             </a>
         </li>

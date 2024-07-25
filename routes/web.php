@@ -162,6 +162,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/produksi', 'produksi')->name('dashboard.produksi')->can('dashboard.produksi');
         Route::get('/dashboard/generalaffair', 'generalaffair')->name('dashboard.generalaffair')->can('dashboard.generalaffair');
         Route::get('/dashboard/hrd', 'hrd')->name('dashboard.hrd')->can('dashboard.hrd');
+        Route::get('/dashboard/gudang', 'gudang')->name('dashboard.gudang')->can('dashboard.gudang');
     });
 
     //Setings

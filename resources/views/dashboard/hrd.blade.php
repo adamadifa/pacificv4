@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('titlepage', 'Dashboard General Affair')
+@section('titlepage', 'Dashboard HRD')
 @section('content')
     <style>
         #tab-content-main {
