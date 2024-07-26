@@ -1,20 +1,20 @@
-<div class="nav-align-top nav-tabs-shadow mb-4">
+<div class="nav-align-top nav-tabs mb-4">
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#lewatjatuhtempo" aria-controls="lewatjatuhtempo"
-                aria-selected="true">
+            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#rekappenjualan"
+                aria-controls="rekappenjualan" aria-selected="true">
                 Rekap Penjualan
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#bulanini" aria-controls="bulanini"
+            <button type="button" class="nav-link " role="tab" data-bs-toggle="tab" data-bs-target="#rekapkasbesar" aria-controls="rekapkasbesar"
                 aria-selected="false" tabindex="-1">
                 Rekap Kas Besar
             </button>
         </li>
     </ul>
-    <div class="tab-content">
-        <div class="tab-pane fade " id="lewatjatuhtempo" role="tabpanel">
+    <div class="tab-content" id="tab-content-main">
+        <div class="tab-pane fade  active show" id="lewatjatuhtempo" role="tabpanel">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover">
                     <thead class="table-dark">
