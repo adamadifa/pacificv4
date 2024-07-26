@@ -163,6 +163,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/generalaffair', 'generalaffair')->name('dashboard.generalaffair')->can('dashboard.generalaffair');
         Route::get('/dashboard/hrd', 'hrd')->name('dashboard.hrd')->can('dashboard.hrd');
         Route::get('/dashboard/gudang', 'gudang')->name('dashboard.gudang')->can('dashboard.gudang');
+        Route::get('/dashboard/marketing', 'marketing')->name('dashboard.marketing')->can('dashboard.marketing');
+
+
+        //Rekap Penjualan
+        Route::post('/dashboard/rekappenjualan', 'rekappenjualan')->name('dashboard.rekappenjualan');
     });
 
     //Setings

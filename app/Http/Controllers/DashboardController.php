@@ -10,6 +10,7 @@ use App\Models\Detailsaldoawalgudangjadi;
 use App\Models\Karyawan;
 use App\Models\Kendaraan;
 use App\Models\Mutasigudangjadi;
+use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
 use App\Models\Saldoawalgudangjadi;
@@ -32,7 +33,11 @@ class DashboardController extends Controller
 
     public function marketing()
     {
-        return view('dashboard.marketing');
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        return view('dashboard.marketing', $data);
     }
 
 
@@ -82,6 +87,7 @@ class DashboardController extends Controller
     }
 
 
+
     public function gudang()
     {
 
@@ -109,7 +115,7 @@ class DashboardController extends Controller
         $selectColumnsBuffer = [];
         $selectColumnsMaxstok = [];
         $selectColumnsPenjualan = [];
-        $selectColumnsSaldoawalgudang = [];
+        $selectColumnsSuratjalangudang = [];
         $selectColumns = [];
         foreach ($products as $produk) {
             $kodeProduk = $produk->kode_produk;
@@ -120,7 +126,7 @@ class DashboardController extends Controller
             $selectColumnsBuffer[] = DB::raw('SUM(IF(buffer_stok_detail.kode_produk="' . $kodeProduk . '", buffer_stok_detail.jumlah,0)) as buffer_' . $kodeProduk);
             $selectColumnsMaxstok[] = DB::raw('SUM(IF(max_stok_detail.kode_produk="' . $kodeProduk . '", max_stok_detail.jumlah,0)) as max_' . $kodeProduk);
             $selectColumnsPenjualan[] = DB::raw('SUM(IF(produk_harga.kode_produk="' . $kodeProduk . '", marketing_penjualan_detail.jumlah,0)) as penjualan_' . $kodeProduk);
-
+            $selectColumnsSuratjalangudang[] = DB::raw('SUM(IF(gudang_jadi_mutasi_detail.kode_produk="' . $kodeProduk . '", gudang_jadi_mutasi_detail.jumlah,0)) as suratjalan_' . $kodeProduk);
             //Gudang Jadi
             $selectColumnsGudang[] = DB::raw('SUM(IF(produk.kode_produk = "' . $kodeProduk . '", subquerySaldoAwalgudang.saldo_awal + subqueryMutasigudang.sisa_mutasi, 0)) AS saldoakhir_' . $kodeProduk);
 
@@ -131,6 +137,7 @@ class DashboardController extends Controller
             $selectColumns[] = 'buffer_' . $kodeProduk;
             $selectColumns[] = 'max_' . $kodeProduk;
             $selectColumns[] = 'penjualan_' . $kodeProduk;
+            $selectColumns[] = 'suratjalan_' . $kodeProduk;
         }
 
         // Subquery untuk menghitung saldo awal per produk dengan kondisi 'GS'
@@ -212,8 +219,27 @@ class DashboardController extends Controller
                 ...$selectColumnsPenjualan
             )
             ->groupBy('salesman.kode_cabang');
-        // dd($subqueryMutasi);
 
+
+        $subquerySuratjalan = DB::table('gudang_jadi_mutasi_detail')
+            ->join('gudang_jadi_mutasi', 'gudang_jadi_mutasi_detail.no_mutasi', '=', 'gudang_jadi_mutasi.no_mutasi')
+            ->join('marketing_permintaan_kiriman', 'gudang_jadi_mutasi.no_permintaan', '=', 'marketing_permintaan_kiriman.no_permintaan')
+            ->joinSub($subqueryLastDate, 'subqueryLastDate', function ($join) {
+                $join->on('marketing_permintaan_kiriman.kode_cabang', '=', 'subqueryLastDate.kode_cabang');
+            })
+            ->whereBetween('gudang_jadi_mutasi.tanggal', [
+                DB::raw('subqueryLastDate.last_date'),
+                $today
+            ])
+            ->where('jenis_mutasi', 'SJ')
+            ->where('status_surat_jalan', 0)
+            ->select(
+                'marketing_permintaan_kiriman.kode_cabang',
+                ...$selectColumnsSuratjalangudang
+            )
+
+            ->groupBy('marketing_permintaan_kiriman.kode_cabang');
+        //dd($subquerySuratjalan);
         // Query utama
         $query = Cabang::query();
 
@@ -239,11 +265,16 @@ class DashboardController extends Controller
         $query->leftJoinSub($subqueryPenjualan, 'subqueryPenjualan', function ($join) {
             $join->on('cabang.kode_cabang', '=', 'subqueryPenjualan.kode_cabang');
         });
+
+        $query->leftJoinSub($subquerySuratjalan, 'subquerySuratjalan', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'subquerySuratjalan.kode_cabang');
+        });
         $query->select('cabang.kode_cabang', 'cabang.nama_cabang', ...$selectColumns);
 
         if ($role == 'regional sales manager') {
             $query->where('cabang.kode_regional', auth()->user()->kode_regional);
         }
+
         $query->get();
         $results = $query->get();
 
@@ -264,6 +295,8 @@ class DashboardController extends Controller
             ->select('gudang_jadi_mutasi_detail.kode_produk', DB::raw('SUM(IF(in_out="I",gudang_jadi_mutasi_detail.jumlah,0)) - SUM(IF(in_out="O",gudang_jadi_mutasi_detail.jumlah,0)) as sisa_mutasi'))
             ->groupBy('gudang_jadi_mutasi_detail.kode_produk');
 
+
+
         $rekapgudang = Produk::where('status_aktif_produk', 1)
             //leftjoin ke tabel gudang_jadi_saldoawal_detail untuk mengambil Saldo Awal Terakhir Berdasarkan Tanggal
             ->leftJoinSub($subquerySaldoawalgudang, 'subquerySaldoawalgudang', function ($join) {
@@ -282,5 +315,81 @@ class DashboardController extends Controller
         $data['rekappersediaancabang'] = $results;
         $data['products'] = $products;
         return view('dashboard.gudang', $data);
+    }
+
+
+
+
+
+    //Rekap Penjualan
+    public function rekappenjualan(Request $request)
+    {
+        $exclude = ['TSM', 'GRT'];
+        $salesgarut = ['STSM05', 'STSM09', 'STSM11'];
+        $start_date = $request->tahun . "-" . $request->bulan . "-01";
+        $end_date = date("Y-m-t", strtotime($start_date));
+
+
+        $subqueryDetailpenjualan = DB::table('marketing_penjualan_detail')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto'),
+            )
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->groupBy('salesman.kode_cabang');
+
+        $subqueryRetur = DB::table('marketing_retur_detail')
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur'),
+            )
+            ->whereBetween('marketing_retur.tanggal', [$start_date, $end_date])
+            ->where('jenis_retur', 'PF')
+            ->groupBy('salesman.kode_cabang');
+
+        $subqueryPenjualan = DB::table('marketing_penjualan')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                DB::raw('SUM(marketing_penjualan.ppn) as total_ppn'),
+            )
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->groupBy('salesman.kode_cabang');
+
+        $query = Cabang::query();
+        $query->select(
+            'cabang.kode_cabang',
+            'nama_cabang',
+            'total_bruto',
+            'total_retur',
+            'total_potongan',
+            'total_potongan_istimewa',
+            'total_penyesuaian',
+            'total_ppn',
+        );
+
+        $query->leftJoinSub($subqueryDetailpenjualan, 'subqueryDetailpenjualan', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'subqueryDetailpenjualan.kode_cabang');
+        });
+
+        $query->leftJoinSub($subqueryRetur, 'subqueryRetur', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'subqueryRetur.kode_cabang');
+        });
+
+        $query->leftJoinSub($subqueryPenjualan, 'subqueryPenjualan', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'subqueryPenjualan.kode_cabang');
+        });
+        $rekappenjualan = $query->get();
+
+        $data['rekappenjualan'] = $rekappenjualan;
+        return view('dashboard.marketing.rekappenjualan', $data);
     }
 }

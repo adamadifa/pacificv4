@@ -1,7 +1,7 @@
 @if (auth()->user()->hasAnyPermission(['dashboard.marketing', 'dashboard.gudang', 'dashboard.produksi', 'dashboard.generalaffair']))
     @can('dashboard.marketing')
         <li class="nav-item" role="presentation">
-            <a type="button" class="nav-link {{ request()->is(['dashboard', 'dashboard/marketing']) ? 'active' : '' }}">
+            <a href="{{ route('dashboard.marketing') }}" class="nav-link {{ request()->is(['dashboard', 'dashboard/marketing']) ? 'active' : '' }}">
                 <i class="tf-icons ti ti-chart-histogram ti-xs me-1"></i> Marketing
             </a>
         </li>
