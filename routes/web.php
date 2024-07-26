@@ -168,6 +168,8 @@ Route::middleware('auth')->group(function () {
 
         //Rekap Penjualan
         Route::post('/dashboard/rekappenjualan', 'rekappenjualan')->name('dashboard.rekappenjualan');
+        Route::post('/dashboard/rekapkendaraan', 'rekapkendaraan')->name('dashboard.rekapkendaraan');
+        Route::post('/dashboard/rekapdppp', 'rekapdppp')->name('dashboard.rekapdppp');
     });
 
     //Setings

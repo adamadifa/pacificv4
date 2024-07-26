@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Charts\HasilproduksiChart;
 use App\Models\Cabang;
+use App\Models\Detailmutasigudangcabang;
 use App\Models\Detailmutasigudangjadi;
 use App\Models\Detailsaldoawalgudangcabang;
 use App\Models\Detailsaldoawalgudangjadi;
+use App\Models\Dpb;
+use App\Models\Historibayarpenjualan;
 use App\Models\Karyawan;
 use App\Models\Kendaraan;
 use App\Models\Mutasigudangjadi;
@@ -14,6 +17,7 @@ use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
 use App\Models\Saldoawalgudangjadi;
+use App\Models\Salesman;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -328,68 +332,254 @@ class DashboardController extends Controller
         $salesgarut = ['STSM05', 'STSM09', 'STSM11'];
         $start_date = $request->tahun . "-" . $request->bulan . "-01";
         $end_date = date("Y-m-t", strtotime($start_date));
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = auth()->user()->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+        if (!empty($kode_cabang)) {
+            $subqueryDetailpenjualan = DB::table('marketing_penjualan_detail')
+                ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->select(
+                    'marketing_penjualan.kode_salesman',
+                    DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto'),
+                )
+                ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+                ->groupBy('marketing_penjualan.kode_salesman');
 
+            $subqueryRetur = DB::table('marketing_retur_detail')
+                ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+                ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->select(
+                    'marketing_penjualan.kode_salesman',
+                    DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur'),
+                )
+                ->whereBetween('marketing_retur.tanggal', [$start_date, $end_date])
+                ->where('jenis_retur', 'PF')
+                ->groupBy('marketing_penjualan.kode_salesman');
 
-        $subqueryDetailpenjualan = DB::table('marketing_penjualan_detail')
-            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->select(
+            $subqueryPenjualan = DB::table('marketing_penjualan')
+                ->select(
+                    'marketing_penjualan.kode_salesman',
+                    DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                    DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                    DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                    DB::raw('SUM(marketing_penjualan.ppn) as total_ppn'),
+                )
+                ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+                ->groupBy('marketing_penjualan.kode_salesman');
+
+            $query = Penjualan::query();
+            $query->select(
+                'marketing_penjualan.kode_salesman',
+                'salesman.nama_salesman',
+                'total_bruto',
+                'total_retur',
+                'total_potongan',
+                'total_potongan_istimewa',
+                'total_penyesuaian',
+                'total_ppn',
+            );
+
+            $query->leftJoinSub($subqueryDetailpenjualan, 'subqueryDetailpenjualan', function ($join) {
+                $join->on('marketing_penjualan.kode_salesman', '=', 'subqueryDetailpenjualan.kode_salesman');
+            });
+
+            $query->leftJoinSub($subqueryRetur, 'subqueryRetur', function ($join) {
+                $join->on('marketing_penjualan.kode_salesman', '=', 'subqueryRetur.kode_salesman');
+            });
+
+            $query->leftJoinSub($subqueryPenjualan, 'subqueryPenjualan', function ($join) {
+                $join->on('marketing_penjualan.kode_salesman', '=', 'subqueryPenjualan.kode_salesman');
+            });
+            $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+
+            $query->where('salesman.kode_cabang', $kode_cabang);
+            $query->where('nama_salesman', '!=', '-');
+            $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
+            $query->groupBy('marketing_penjualan.kode_salesman', 'salesman.kode_cabang', 'salesman.nama_salesman', 'total_bruto', 'total_retur', 'total_potongan', 'total_potongan_istimewa', 'total_penyesuaian', 'total_ppn');
+            $query->orderBy('salesman.nama_salesman');
+            $rekappenjualan = $query->get();
+            $data['rekappenjualan'] = $rekappenjualan;
+
+            $qpembayaran = Historibayarpenjualan::query();
+            $qpembayaran->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
+            $qpembayaran->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $qpembayaran->select(
+                'marketing_penjualan_historibayar.kode_salesman',
+                'nama_salesman',
+                DB::raw('SUM(IF(voucher="1",jumlah,0)) as total_voucher'),
+                DB::raw('SUM(IF(voucher="0",jumlah,0)) as total_cashin'),
+            );
+
+            $qpembayaran->where('cabang.kode_cabang', $kode_cabang);
+            $qpembayaran->where('nama_salesman', '!=', '-');
+            $qpembayaran->whereBetween('marketing_penjualan_historibayar.tanggal', [$start_date, $end_date]);
+            $qpembayaran->groupBy('salesman.kode_salesman', 'nama_salesman');
+            $qpembayaran->orderBy('salesman.nama_salesman');
+            $data['rekapkasbesar'] = $qpembayaran->get();
+
+            return view('dashboard.marketing.rekappenjualansalesman', $data);
+        } else {
+            $subqueryDetailpenjualan = DB::table('marketing_penjualan_detail')
+                ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->select(
+                    'salesman.kode_cabang',
+                    DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto'),
+                )
+                ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+                ->groupBy('salesman.kode_cabang');
+
+            $subqueryRetur = DB::table('marketing_retur_detail')
+                ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+                ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->select(
+                    'salesman.kode_cabang',
+                    DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur'),
+                )
+                ->whereBetween('marketing_retur.tanggal', [$start_date, $end_date])
+                ->where('jenis_retur', 'PF')
+                ->groupBy('salesman.kode_cabang');
+
+            $subqueryPenjualan = DB::table('marketing_penjualan')
+                ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->select(
+                    'salesman.kode_cabang',
+                    DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                    DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                    DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                    DB::raw('SUM(marketing_penjualan.ppn) as total_ppn'),
+                )
+                ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+                ->groupBy('salesman.kode_cabang');
+
+            $query = Cabang::query();
+            $query->select(
+                'cabang.kode_cabang',
+                'nama_cabang',
+                'total_bruto',
+                'total_retur',
+                'total_potongan',
+                'total_potongan_istimewa',
+                'total_penyesuaian',
+                'total_ppn',
+            );
+
+            $query->leftJoinSub($subqueryDetailpenjualan, 'subqueryDetailpenjualan', function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'subqueryDetailpenjualan.kode_cabang');
+            });
+
+            $query->leftJoinSub($subqueryRetur, 'subqueryRetur', function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'subqueryRetur.kode_cabang');
+            });
+
+            $query->leftJoinSub($subqueryPenjualan, 'subqueryPenjualan', function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'subqueryPenjualan.kode_cabang');
+            });
+
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                } else {
+                    $query->where('cabang.kode_cabang', auth()->user()->kode_cabang);
+                }
+            }
+            $rekappenjualan = $query->get();
+
+            $data['rekappenjualan'] = $rekappenjualan;
+            $qpembayaran = Historibayarpenjualan::query();
+            $qpembayaran->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
+            $qpembayaran->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $qpembayaran->select(
                 'salesman.kode_cabang',
-                DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto'),
-            )
-            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
-            ->groupBy('salesman.kode_cabang');
+                'nama_cabang',
+                DB::raw('SUM(IF(voucher="1",jumlah,0)) as total_voucher'),
+                DB::raw('SUM(IF(voucher="0",jumlah,0)) as total_cashin'),
+            );
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $qpembayaran->where('cabang.kode_regional', auth()->user()->kode_regional);
+                } else {
+                    $qpembayaran->where('cabang.kode_cabang', auth()->user()->kode_cabang);
+                }
+            }
+            $qpembayaran->whereBetween('marketing_penjualan_historibayar.tanggal', [$start_date, $end_date]);
+            $qpembayaran->groupBy('salesman.kode_cabang', 'nama_cabang');
+            $data['rekapkasbesar'] = $qpembayaran->get();
+            return view('dashboard.marketing.rekappenjualan', $data);
+        }
+        //Berdasarkan Cabang
 
-        $subqueryRetur = DB::table('marketing_retur_detail')
-            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
-            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+    }
+
+    public function rekapkendaraan(Request $request)
+    {
+        $start_date = $request->tahun . "-" . $request->bulan . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+
+        $subqueryPenjualan = Detailmutasigudangcabang::join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi')
+            ->join('gudang_cabang_dpb', 'gudang_cabang_mutasi.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
+            ->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk')
             ->select(
-                'salesman.kode_cabang',
-                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur'),
+                'gudang_cabang_dpb.kode_kendaraan',
+                DB::raw('ROUND(SUM(jumlah / isi_pcs_dus),2) as jml_penjualan'),
             )
-            ->whereBetween('marketing_retur.tanggal', [$start_date, $end_date])
-            ->where('jenis_retur', 'PF')
-            ->groupBy('salesman.kode_cabang');
+            ->whereBetween('gudang_cabang_mutasi.tanggal', [$start_date, $end_date])
+            ->where('jenis_mutasi', 'PJ')
+            ->groupBy('gudang_cabang_dpb.kode_kendaraan');
 
-        $subqueryPenjualan = DB::table('marketing_penjualan')
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->select(
-                'salesman.kode_cabang',
-                DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
-                DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
-                DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
-                DB::raw('SUM(marketing_penjualan.ppn) as total_ppn'),
-            )
-            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
-            ->groupBy('salesman.kode_cabang');
-
-        $query = Cabang::query();
+        $query = Dpb::query();
         $query->select(
-            'cabang.kode_cabang',
-            'nama_cabang',
-            'total_bruto',
-            'total_retur',
-            'total_potongan',
-            'total_potongan_istimewa',
-            'total_penyesuaian',
-            'total_ppn',
+            'gudang_cabang_dpb.kode_kendaraan',
+            'no_polisi',
+            'merek',
+            'tipe_kendaraan',
+            'tipe',
+            DB::raw('COUNT(no_dpb) as jml_berangkat'),
+            'jml_penjualan',
         );
-
-        $query->leftJoinSub($subqueryDetailpenjualan, 'subqueryDetailpenjualan', function ($join) {
-            $join->on('cabang.kode_cabang', '=', 'subqueryDetailpenjualan.kode_cabang');
+        $query->join('kendaraan', 'gudang_cabang_dpb.kode_kendaraan', '=', 'kendaraan.kode_kendaraan');
+        $query->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->leftJoinSub($subqueryPenjualan, 'penjualan', function ($join) {
+            $join->on('kendaraan.kode_kendaraan', '=', 'penjualan.kode_kendaraan');
         });
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                if (!empty($request->kode_cabang)) {
+                    $query->where('salesman.kode_cabang', $request->kode_cabang);
+                } else {
+                    $query->where('salesman.kode_regional', auth()->user()->kode_regional);
+                }
+            } else {
+                $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+            }
+        } else {
+            if (!empty($request->kode_cabang)) {
+                $query->where('salesman.kode_cabang', $request->kode_cabang);
+            }
+        }
+        $query->whereBetween('gudang_cabang_dpb.tanggal_ambil', [$start_date, $end_date]);
 
-        $query->leftJoinSub($subqueryRetur, 'subqueryRetur', function ($join) {
-            $join->on('cabang.kode_cabang', '=', 'subqueryRetur.kode_cabang');
-        });
+        $query->groupBy('gudang_cabang_dpb.kode_kendaraan', 'no_polisi', 'merek', 'tipe_kendaraan', 'tipe', 'jml_penjualan');
+        $rekapkendaraan = $query->get();
+        $data['rekapkendaraan'] = $rekapkendaraan;
+        return view('dashboard.marketing.rekapkendaraan', $data);
+    }
 
-        $query->leftJoinSub($subqueryPenjualan, 'subqueryPenjualan', function ($join) {
-            $join->on('cabang.kode_cabang', '=', 'subqueryPenjualan.kode_cabang');
-        });
-        $rekappenjualan = $query->get();
 
-        $data['rekappenjualan'] = $rekappenjualan;
-        return view('dashboard.marketing.rekappenjualan', $data);
+    public function rekapdppp()
+    {
     }
 }

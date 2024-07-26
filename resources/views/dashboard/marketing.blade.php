@@ -27,8 +27,10 @@
                                 </div>
                                 <div class="card-body">
                                     <form action="#" id="formRekappenjualan">
-                                        <x-select label="Cabang" name="kode_cabang_rekappenjualan" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" select2="select2Kodecabangrekappenjualan" upperCase="true" />
+                                        @hasanyrole($roles_show_cabang)
+                                            <x-select label="Cabang" name="kode_cabang_rekappenjualan" :data="$cabang" key="kode_cabang"
+                                                textShow="nama_cabang" select2="select2Kodecabangrekappenjualan" upperCase="true" />
+                                        @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
@@ -60,8 +62,10 @@
                                 </div>
                                 <div class="card-body">
                                     <form action="#" id="formAup">
-                                        <x-select label="Cabang" name="kode_cabang_aup" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                            select2="select2KodecabangAup" upperCase="true" />
+                                        @hasanyrole($roles_show_cabang)
+                                            <x-select label="Cabang" name="kode_cabang_aup" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                                select2="select2KodecabangAup" upperCase="true" />
+                                        @endhasanyrole
                                         <x-input-with-icon label="Lihat per Tanggal" name="tanggal" icon="ti ti-calendar"
                                             datepicker="flatpickr-date" />
                                         <div class="form-group mb-3">
@@ -86,8 +90,10 @@
                                 </div>
                                 <div class="card-body">
                                     <form action="#" id="formDppp">
-                                        <x-select label="Cabang" name="kode_cabang_rekapdppp" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" select2="select2Kodecabangrekapdppp" upperCase="true" />
+                                        @hasanyrole($roles_show_cabang)
+                                            <x-select label="Cabang" name="kode_cabang_rekapdppp" :data="$cabang" key="kode_cabang"
+                                                textShow="nama_cabang" select2="select2Kodecabangrekapdppp" upperCase="true" />
+                                        @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
@@ -118,8 +124,10 @@
                                 </div>
                                 <div class="card-body">
                                     <form action="#" id="formRekapkendaraan">
-                                        <x-select label="Cabang" name="kode_cabang_rekapkendaraan" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" select2="select2Kodecabangrekapkendaraan" upperCase="true" />
+                                        @hasanyrole($roles_show_cabang)
+                                            <x-select label="Cabang" name="kode_cabang_rekapkendaraan" :data="$cabang" key="kode_cabang"
+                                                textShow="nama_cabang" select2="select2Kodecabangrekapkendaraan" upperCase="true" />
+                                        @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
@@ -153,7 +161,7 @@
 
 
 </div>
-<x-modal-form id="modal" show="loadmodal" title="" size="modal-xxl" />
+<x-modal-form id="modal" show="loadmodal" title="" size="" />
 @endsection
 
 @push('myscript')
@@ -250,6 +258,8 @@
             } else {
                 $("#modal").modal("show");
                 $("#modal").find(".modal-title").text('Rekap Penjualan');
+                $("#modal").find(".modal-dialog").addClass('modal-xxl');
+                $("#modal").find(".modal-dialog").removeClass('modal-xl');
                 loading();
                 $.ajax({
                     type: "POST",
@@ -266,6 +276,100 @@
                 });
             }
         });
+
+        formRekapkendaraan.submit(function(e) {
+            e.preventDefault();
+            const kode_cabang = formRekapkendaraan.find('#kode_cabang_rekapkendaraan').val();
+            const bulan = formRekapkendaraan.find('#bulan').val();
+            const tahun = formRekapkendaraan.find('#tahun').val();
+            if (bulan == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Bulan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formRekapkendaraan.find('#bulan').focus();
+                    },
+                })
+            } else if (tahun == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tahun Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formRekapkendaraan.find('#tahun').focus();
+                    },
+                })
+            } else {
+                $("#modal").modal("show");
+                $("#modal").find(".modal-title").text('Rekap Kendaraan');
+                $("#modal").find(".modal-dialog").removeClass('modal-xxl');
+                $("#modal").find(".modal-dialog").addClass('modal-xl');
+                loading();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('dashboard.rekapkendaraan') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        bulan: bulan,
+                        tahun: tahun,
+                        kode_cabang: kode_cabang
+                    },
+                    success: function(response) {
+                        $("#loadmodal").html(response);
+                    }
+                });
+            }
+        });
+
+        formDppp.submit(function(e) {
+            e.preventDefault();
+            const kode_cabang = formDppp.find('#kode_cabang_dppp').val();
+            const bulan = formDppp.find('#bulan').val();
+            const tahun = formDppp.find('#tahun').val();
+            if (bulan == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Bulan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formDppp.find('#bulan').focus();
+                    },
+                })
+            } else if (tahun == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tahun Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formDppp.find('#tahun').focus();
+                    },
+                })
+            } else {
+                $("#modal").modal("show");
+                $("#modal").find(".modal-title").text('DPPP');
+                $("#modal").find(".modal-dialog").removeClass('modal-xl');
+                $("#modal").find(".modal-dialog").addClass('modal-xxl');
+                loading();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('dashboard.rekapdppp') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        bulan: bulan,
+                        tahun: tahun,
+                        kode_cabang: kode_cabang
+                    },
+                    success: function(response) {
+                        $("#loadmodal").html(response);
+                    }
+                });
+            }
+        })
     });
 </script>
 @endpush

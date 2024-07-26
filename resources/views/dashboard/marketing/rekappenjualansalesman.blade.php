@@ -7,7 +7,7 @@
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button type="button" class="nav-link " role="tab" data-bs-toggle="tab" data-bs-target="#rekapkabesar" aria-controls="rekapkabesar"
+            <button type="button" class="nav-link " role="tab" data-bs-toggle="tab" data-bs-target="#rekapkasbesar" aria-controls="rekapkasbesar"
                 aria-selected="false" tabindex="-1">
                 Rekap Kas Besar
             </button>
@@ -19,10 +19,11 @@
                 <table class="table table-bordered table-striped table-hover">
                     <thead class="table-dark">
                         <tr>
-                            <th colspan="9">Rekap Penjualan</th>
+                            <th colspan="10">Rekap Penjualan</th>
                         </tr>
                         <tr>
-                            <th>Cabang</th>
+                            <th>Kode</th>
+                            <th>Salesman</th>
                             <th>Bruto</th>
                             <th>Retur</th>
                             <th>Potongan</th>
@@ -58,7 +59,8 @@
                                 $total_netto += $netto;
                             @endphp
                             <tr>
-                                <td>{{ textUpperCase($d->nama_cabang) }}</td>
+                                <td>{{ $d->kode_salesman }}</td>
+                                <td>{{ textUpperCase($d->nama_salesman) }}</td>
                                 <td class="text-end">{{ formatAngka($d->total_bruto) }}</td>
                                 <td class="text-end">{{ formatAngka($d->total_retur) }}</td>
                                 <td class="text-end">{{ formatAngka($d->total_potongan) }}</td>
@@ -73,13 +75,13 @@
                     </tbody>
                     <tfoot class="table-dark">
                         <tr>
-                            <td>Total</td>
+                            <td colspan="2">Total</td>
                             <td class="text-end">{{ formatAngka($total_bruto) }}</td>
                             <td class="text-end">{{ formatAngka($total_retur) }}</td>
                             <td class="text-end">{{ formatAngka($total_potongan) }}</td>
                             <td class="text-end">{{ formatAngka($total_potongan_istimewa) }}</td>
                             <td class="text-end">{{ formatAngka($total_penyesuaian) }}</td>
-                            <td class="text-end">{{ formatAngka($total_netto) }}</td>
+                            <td class="text-end">{{ formatAngka($total_dpp) }}</td>
                             <td class="text-end">{{ formatAngka($total_ppn) }}</td>
                             <td class="text-end">{{ formatAngka($total_netto) }}</td>
                         </tr>
@@ -88,14 +90,15 @@
 
             </div>
         </div>
-        <div class="tab-pane fade" id="rekapkabesar" role="tabpanel">
+        <div class="tab-pane fade" id="rekapkasbesar" role="tabpanel">
             <div class="row">
-                <div class="col-lg-6 col-md-12 col-sm-12">
+                <div class="col-lg-8 col-md-12 col-sm-12">
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>Cabang</th>
+                                    <th>Kode</th>
+                                    <th>Salesman</th>
                                     <th>Voucher</th>
                                     <th>Cash IN</th>
                                     <th>Total</th>
@@ -115,7 +118,8 @@
                                         $grandtotal += $total;
                                     @endphp
                                     <tr>
-                                        <td>{{ textUpperCase($d->nama_cabang) }}</td>
+                                        <td>{{ $d->kode_salesman }}</td>
+                                        <td>{{ textUpperCase($d->nama_salesman) }}</td>
                                         <td class="text-end">{{ formatAngka($d->total_voucher) }}</td>
                                         <td class="text-end">{{ formatAngka($d->total_cashin) }}</td>
                                         <td class="text-end">{{ formatAngka($total) }}</td>
@@ -124,7 +128,7 @@
                             </tbody>
                             <tfoot class="table-dark">
                                 <tr>
-                                    <td>Total</td>
+                                    <td colspan="2">Total</td>
                                     <td class="text-end">{{ formatAngka($total_voucher) }}</td>
                                     <td class="text-end">{{ formatAngka($total_cashin) }}</td>
                                     <td class="text-end">{{ formatAngka($grandtotal) }}</td>
