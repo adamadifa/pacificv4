@@ -57,9 +57,9 @@ class TargetkomisiController extends Controller
                     $join->on('marketing_komisi_target.kode_target', '=', 'disposisi.kode_target');
                 }
             );
-            $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-            $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-            $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
+            $query->leftjoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
+            $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
+            $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
             $query->orderBy('tahun', 'desc');
             $query->orderBy('bulan');
         } else {
@@ -79,9 +79,9 @@ class TargetkomisiController extends Controller
                     $join->on('marketing_komisi_target.kode_target', '=', 'disposisi.kode_target');
                 }
             );
-            $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-            $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-            $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
+            $query->leftjoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
+            $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
+            $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
             $query->orderBy('tahun', 'desc');
             $query->orderBy('bulan');
         }

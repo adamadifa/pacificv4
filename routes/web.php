@@ -170,6 +170,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/dashboard/rekappenjualan', 'rekappenjualan')->name('dashboard.rekappenjualan');
         Route::post('/dashboard/rekapkendaraan', 'rekapkendaraan')->name('dashboard.rekapkendaraan');
         Route::post('/dashboard/rekapdppp', 'rekapdppp')->name('dashboard.rekapdppp');
+        Route::post('/dashboard/rekapaup', 'rekapaup')->name('dashboard.rekapaup');
+        Route::post('/dashboard/rekapaupcabang ', 'rekapaupcabang')->name('dashboard.rekapaupcabang');
     });
 
     //Setings

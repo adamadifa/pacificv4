@@ -883,6 +883,11 @@ class PenjualanController extends Controller
             Detailpenjualan::where('no_faktur', $no_faktur)->delete();
             Detailpenjualan::insert($detail);
 
+            $retur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))
+                ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+                ->where('no_faktur', $no_faktur)
+                ->where('jenis_retur', 'PF')
+                ->first();
             if ($jenis_transaksi == 'T') {
                 $cekbayar = Historibayarpenjualan::where('no_faktur', $no_faktur)
                     ->where('voucher', 0)
@@ -902,7 +907,7 @@ class PenjualanController extends Controller
                     if ($cekbayar != null) {
                         Historibayarpenjualan::where('no_bukti', $cekbayar->no_bukti)->update([
                             'tanggal' => $request->tanggal,
-                            'jumlah' => $total_netto - $voucher,
+                            'jumlah' => $total_netto - $voucher - $retur->total_retur,
                             'id_user' => auth()->user()->id
                         ]);
                     }

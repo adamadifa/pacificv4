@@ -69,7 +69,7 @@
                                         <x-input-with-icon label="Lihat per Tanggal" name="tanggal" icon="ti ti-calendar"
                                             datepicker="flatpickr-date" />
                                         <div class="form-group mb-3">
-                                            <select name="exlude" id="exlude" class="form-select">
+                                            <select name="exclude" id="exclude" class="form-select">
                                                 <option value="1">Exclude Pusat</option>
                                                 <option value="2">Include Pusat</option>
                                             </select>
@@ -258,8 +258,10 @@
             } else {
                 $("#modal").modal("show");
                 $("#modal").find(".modal-title").text('Rekap Penjualan');
-                $("#modal").find(".modal-dialog").addClass('modal-xxl');
                 $("#modal").find(".modal-dialog").removeClass('modal-xl');
+                $("#modal").find(".modal-dialog").removeClass('modal-xxl');
+                $("#modal").find(".modal-dialog").removeClass('modal-xxxl');
+                $("#modal").find(".modal-dialog").addClass('modal-xxl');
                 loading();
                 $.ajax({
                     type: "POST",
@@ -279,7 +281,7 @@
 
         formRekapkendaraan.submit(function(e) {
             e.preventDefault();
-            const kode_cabang = formRekapkendaraan.find('#kode_cabang_rekapkendaraan').val();
+            const kode_cabang = formRekapkendaraan.find('#kode_cabangrekapkendaraan').val();
             const bulan = formRekapkendaraan.find('#bulan').val();
             const tahun = formRekapkendaraan.find('#tahun').val();
             if (bulan == "") {
@@ -305,7 +307,9 @@
             } else {
                 $("#modal").modal("show");
                 $("#modal").find(".modal-title").text('Rekap Kendaraan');
+                $("#modal").find(".modal-dialog").removeClass('modal-xl');
                 $("#modal").find(".modal-dialog").removeClass('modal-xxl');
+                $("#modal").find(".modal-dialog").removeClass('modal-xxxl');
                 $("#modal").find(".modal-dialog").addClass('modal-xl');
                 loading();
                 $.ajax({
@@ -326,7 +330,7 @@
 
         formDppp.submit(function(e) {
             e.preventDefault();
-            const kode_cabang = formDppp.find('#kode_cabang_dppp').val();
+            const kode_cabang = formDppp.find('#kode_cabang_rekapdppp').val();
             const bulan = formDppp.find('#bulan').val();
             const tahun = formDppp.find('#tahun').val();
             if (bulan == "") {
@@ -353,7 +357,9 @@
                 $("#modal").modal("show");
                 $("#modal").find(".modal-title").text('DPPP');
                 $("#modal").find(".modal-dialog").removeClass('modal-xl');
-                $("#modal").find(".modal-dialog").addClass('modal-xxl');
+                $("#modal").find(".modal-dialog").removeClass('modal-xxl');
+                $("#modal").find(".modal-dialog").removeClass('modal-xxxl');
+                $("#modal").find(".modal-dialog").addClass('modal-xxxl');
                 loading();
                 $.ajax({
                     type: "POST",
@@ -363,6 +369,48 @@
                         bulan: bulan,
                         tahun: tahun,
                         kode_cabang: kode_cabang
+                    },
+                    success: function(response) {
+                        $("#loadmodal").html(response);
+                    }
+                });
+            }
+        })
+
+        formAup.submit(function(e) {
+            e.preventDefault();
+            const kode_cbg = "{{ auth()->user()->kode_cabang }}";
+            const kode_cabang = kode_cbg != 'PST' ? kode_cbg : formAup.find('#kode_cabang_aup').val();
+            // alert(kode_cabang);
+            const tanggal = formAup.find('#tanggal').val();
+            const exclude = formAup.find('#exclude').val();
+            const address = kode_cabang == "" ? "/dashboard/rekapaup" : "/dashboard/rekapaupcabang";
+            if (tanggal == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tanggal Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formAup.find('#tanggal').focus();
+                    },
+                })
+            } else {
+                $("#modal").modal("show");
+                $("#modal").find(".modal-title").text('AUP');
+                $("#modal").find(".modal-dialog").removeClass('modal-xl');
+                $("#modal").find(".modal-dialog").removeClass('modal-xxl');
+                $("#modal").find(".modal-dialog").removeClass('modal-xxxl');
+                $("#modal").find(".modal-dialog").addClass('modal-xxl');
+                loading();
+                $.ajax({
+                    type: "POST",
+                    url: address,
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        tanggal: tanggal,
+                        kode_cabang: kode_cabang,
+                        exclude: exclude
                     },
                     success: function(response) {
                         $("#loadmodal").html(response);

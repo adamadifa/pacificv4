@@ -6,8 +6,12 @@ use App\Charts\HasilproduksiChart;
 use App\Models\Cabang;
 use App\Models\Detailmutasigudangcabang;
 use App\Models\Detailmutasigudangjadi;
+use App\Models\Detailpenjualan;
+use App\Models\Detailretur;
 use App\Models\Detailsaldoawalgudangcabang;
 use App\Models\Detailsaldoawalgudangjadi;
+use App\Models\Detailsaldoawalpiutangpelanggan;
+use App\Models\Detailtargetkomisi;
 use App\Models\Dpb;
 use App\Models\Historibayarpenjualan;
 use App\Models\Karyawan;
@@ -579,7 +583,831 @@ class DashboardController extends Controller
     }
 
 
-    public function rekapdppp()
+    public function rekapdppp(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        $lastyear = $request->tahun - 1;
+        $start_date_lastyear = $lastyear . "-" . $request->bulan . "-01";
+        $end_date_lastyear = date('Y-m-t', strtotime($start_date_lastyear));
+
+        $start_date = $request->tahun . "-" . $request->bulan . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+
+        $start_year_date_lastyear = $lastyear . "-01-01";
+        $start_year_date = $request->tahun . "-01-01";
+
+
+        $subqueryPenjualanlastyear = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'produk_harga.kode_produk',
+                DB::raw('SUM(marketing_penjualan_detail.jumlah) as realisasi_penjualan_lastyear'),
+            )
+
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('salesman.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('salesman.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date_lastyear, $end_date_lastyear])
+            ->groupBy('produk_harga.kode_produk');
+
+
+        $subqueryPenjualanlastyearsampaibulanini = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'produk_harga.kode_produk',
+                DB::raw('SUM(marketing_penjualan_detail.jumlah) as realisasi_penjualan_lastyear_sampaibulanini'),
+            )
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('salesman.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('salesman.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->whereBetween('marketing_penjualan.tanggal', [$start_year_date_lastyear, $end_date_lastyear])
+            ->groupBy('produk_harga.kode_produk');
+
+        $subqueryPenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'produk_harga.kode_produk',
+                DB::raw('SUM(marketing_penjualan_detail.jumlah) as realisasi_penjualan'),
+            )
+
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('salesman.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('salesman.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->groupBy('produk_harga.kode_produk');
+
+        $subqueryPenjualansampaibulanini = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'produk_harga.kode_produk',
+                DB::raw('SUM(marketing_penjualan_detail.jumlah) as realisasi_penjualan_sampaibulanini'),
+            )
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('salesman.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('salesman.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->whereBetween('marketing_penjualan.tanggal', [$start_year_date, $end_date])
+            ->groupBy('produk_harga.kode_produk');
+
+        $subqueryTarget = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+            ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'marketing_komisi_target_detail.kode_produk',
+                DB::raw('SUM(marketing_komisi_target_detail.jumlah) as target')
+            )
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('marketing_komisi_target.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('marketing_komisi_target.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('marketing_komisi_target.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->where('marketing_komisi_target.tahun', $request->tahun)
+            ->where('marketing_komisi_target.bulan', $request->bulan)
+            ->groupBy('marketing_komisi_target_detail.kode_produk');
+
+        $subqueryTargetsampaibulanini = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+            ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'marketing_komisi_target_detail.kode_produk',
+                DB::raw('SUM(marketing_komisi_target_detail.jumlah) as target_sampaibulanini')
+            )
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('marketing_komisi_target.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('marketing_komisi_target.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('marketing_komisi_target.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->where('marketing_komisi_target.tahun', $request->tahun)
+            ->where('marketing_komisi_target.bulan', '<=', $request->bulan)
+            ->groupBy('marketing_komisi_target_detail.kode_produk');
+
+
+        $query = Produk::query();
+        $query->leftJoinSub($subqueryPenjualanlastyear, 'penjualanlastyear', function ($join) {
+            $join->on('produk.kode_produk', '=', 'penjualanlastyear.kode_produk');
+        });
+
+        $query->leftJoinSub($subqueryPenjualan, 'penjualan', function ($join) {
+            $join->on('produk.kode_produk', '=', 'penjualan.kode_produk');
+        });
+
+
+        $query->leftJoinSub($subqueryPenjualanlastyearsampaibulanini, 'penjualanlastyearsampaibulanini', function ($join) {
+            $join->on('produk.kode_produk', '=', 'penjualanlastyearsampaibulanini.kode_produk');
+        });
+
+
+        $query->leftJoinSub($subqueryPenjualansampaibulanini, 'penjualansampaibulanini', function ($join) {
+            $join->on('produk.kode_produk', '=', 'penjualansampaibulanini.kode_produk');
+        });
+
+
+        $query->leftJoinSub($subqueryTarget, 'target', function ($join) {
+            $join->on('produk.kode_produk', '=', 'target.kode_produk');
+        });
+
+
+        $query->leftJoinSub($subqueryTargetsampaibulanini, 'target_sampaibulanini', function ($join) {
+            $join->on('produk.kode_produk', '=', 'target_sampaibulanini.kode_produk');
+        });
+
+
+
+        $query->select(
+            'produk.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'penjualanlastyear.realisasi_penjualan_lastyear',
+            'penjualan.realisasi_penjualan',
+            'penjualanlastyearsampaibulanini.realisasi_penjualan_lastyear_sampaibulanini',
+            'penjualansampaibulanini.realisasi_penjualan_sampaibulanini',
+            'target.target',
+            'target_sampaibulanini.target_sampaibulanini',
+
+        );
+        $query->whereNotNull('penjualanlastyear.realisasi_penjualan_lastyear');
+        $query->orwhereNotNull('penjualan.realisasi_penjualan');
+        $query->orwhereNotNull('penjualanlastyearsampaibulanini.realisasi_penjualan_lastyear_sampaibulanini');
+        $query->orwhereNotNull('penjualansampaibulanini.realisasi_penjualan_sampaibulanini');
+        $query->orwhereNotNull('target.target');
+        $query->orwhereNotNull('target_sampaibulanini.target_sampaibulanini');
+        $query->orderBy('kode_produk');
+        $dppp = $query->get();
+
+
+
+
+        //Selling Out
+
+        $subquerySellingoutlastyear = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'produk_harga.kode_produk',
+                DB::raw('SUM(marketing_penjualan_detail.jumlah) as selling_out_lastyear'),
+            )
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('salesman.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('salesman.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->where('marketing_penjualan.status', 1)
+            ->whereBetween('marketing_penjualan.tanggal_pelunasan', [$start_date_lastyear, $end_date_lastyear])
+            ->groupBy('produk_harga.kode_produk');
+
+
+        $subquerySellingoutlastyearsampaibulanini = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'produk_harga.kode_produk',
+                DB::raw('SUM(marketing_penjualan_detail.jumlah) as selling_out_lastyear_sampaibulanini'),
+            )
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('salesman.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('salesman.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->where('marketing_penjualan.status', 1)
+            ->whereBetween('marketing_penjualan.tanggal_pelunasan', [$start_year_date_lastyear, $end_date_lastyear])
+            ->groupBy('produk_harga.kode_produk');
+
+
+
+        $subquerySellingout = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'produk_harga.kode_produk',
+                DB::raw('SUM(marketing_penjualan_detail.jumlah) as selling_out'),
+            )
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('salesman.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('salesman.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->where('marketing_penjualan.status', 1)
+            ->whereBetween('marketing_penjualan.tanggal_pelunasan', [$start_date, $end_date])
+            ->groupBy('produk_harga.kode_produk');
+
+        $subquerySellingoutsampaibulanini = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'produk_harga.kode_produk',
+                DB::raw('SUM(marketing_penjualan_detail.jumlah) as selling_out_sampaibulanini'),
+            )
+            ->where(function ($query) use ($user, $roles_access_all_cabang, $request) {
+                if (!$user->hasRole($roles_access_all_cabang)) {
+                    if ($user->hasRole('regional sales manager')) {
+                        if (!empty($request->kode_cabang)) {
+                            $query->where('salesman.kode_cabang', $request->kode_cabang);
+                        } else {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    } else {
+                        $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    }
+                } else {
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('salesman.kode_cabang', $request->kode_cabang);
+                    }
+                }
+            })
+            ->where('marketing_penjualan.status', 1)
+            ->whereBetween('marketing_penjualan.tanggal_pelunasan', [$start_year_date, $end_date])
+            ->groupBy('produk_harga.kode_produk');
+
+        $qsellingout  = Produk::query();
+        $qsellingout->select(
+            'produk.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'selling_out_lastyear',
+            'target.target',
+            'selling_out',
+            'selling_out_sampaibulanini',
+            'selling_out_lastyear_sampaibulanini',
+            'targetsampaibulanini.target_sampaibulanini'
+        );
+        $qsellingout->leftJoinSub($subquerySellingoutlastyear, 'sellingoutlastyear', function ($join) {
+            $join->on('produk.kode_produk', '=', 'sellingoutlastyear.kode_produk');
+        });
+        $qsellingout->leftJoinSub($subqueryTarget, 'target', function ($join) {
+            $join->on('produk.kode_produk', '=', 'target.kode_produk');
+        });
+
+        $qsellingout->leftJoinSub($subqueryTargetsampaibulanini, 'targetsampaibulanini', function ($join) {
+            $join->on('produk.kode_produk', '=', 'targetsampaibulanini.kode_produk');
+        });
+
+        $qsellingout->leftJoinSub($subquerySellingout, 'sellingout', function ($join) {
+            $join->on('produk.kode_produk', '=', 'sellingout.kode_produk');
+        });
+
+        $qsellingout->leftJoinSub($subquerySellingoutlastyearsampaibulanini, 'sellingoutlastyearsampaibulanini', function ($join) {
+            $join->on('produk.kode_produk', '=', 'sellingoutlastyearsampaibulanini.kode_produk');
+        });
+
+        $qsellingout->leftJoinSub($subquerySellingoutsampaibulanini, 'sellingoutsampaibulanini', function ($join) {
+            $join->on('produk.kode_produk', '=', 'sellingoutsampaibulanini.kode_produk');
+        });
+
+
+        $qsellingout->whereNotNull('sellingoutlastyear.selling_out_lastyear');
+        $qsellingout->whereNotNull('target.target');
+        $qsellingout->whereNotNull('sellingout.selling_out');
+        $qsellingout->whereNotNull('targetsampaibulanini.target_sampaibulanini');
+        $qsellingout->whereNotNull('sellingoutlastyearsampaibulanini.selling_out_lastyear_sampaibulanini');
+        $qsellingout->whereNotNull('sellingoutsampaibulanini.selling_out_sampaibulanini');
+        $qsellingout->orderBy('kode_produk');
+        $selling_out = $qsellingout->get();
+
+
+
+        $data['dppp'] = $dppp;
+        $data['selling_out'] = $selling_out;
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['lastyear'] = $lastyear;
+
+
+        return view('dashboard.marketing.rekapdppp', $data);
+    }
+
+
+    public function rekapaup(Request $request)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $start_date = date('Y', strtotime($request->tanggal)) . "-" . date('m', strtotime($request->tanggal)) . "-01";
+        $end_date = $request->tanggal;
+
+        $subqueryDetailpenjualan = Detailpenjualan::select('marketing_penjualan_detail.no_faktur', DB::raw('SUM(subtotal) as total_bruto'))
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->whereBetween('tanggal', [$start_date, $end_date])
+            ->groupBy('no_faktur');
+
+        $subqueryRetur = Detailretur::select('no_faktur', DB::raw('SUM(subtotal) as total_retur'))
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->where('jenis_retur', 'PF')
+            ->whereBetween('tanggal', [$start_date, $end_date])
+            ->groupBy('no_faktur');
+
+        $subqueryBayar = Historibayarpenjualan::select('no_faktur', DB::raw('SUM(jumlah) as total_bayar'))
+            ->whereBetween('tanggal', [$start_date, $end_date])
+            ->groupBy('no_faktur');
+
+
+
+        $query = Penjualan::query();
+        $query->select(
+            'pindahfaktur.kode_cabang_baru',
+            'nama_cabang',
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 0 and 15,
+            IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_0_15"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 16 and 31,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_16_31"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 32 and 45,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_32_45"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 46 and 60,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_46_60"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 61 and 90,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_61_90"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 91 and 180,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_91_180"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) > 180,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_lebih_180")
+        );
+        $query->leftJoinsub($subqueryDetailpenjualan, 'detailpenjualan', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'detailpenjualan.no_faktur');
+        });
+        $query->leftJoinsub($subqueryRetur, 'retur', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'retur.no_faktur');
+        });
+        $query->leftJoinsub($subqueryBayar, 'bayar', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'bayar.no_faktur');
+        });
+        $query->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    MAX(id) AS id,
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE tanggal <= '$request->tanggal'
+                GROUP BY
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru,
+                    salesman.kode_cabang
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $query->join('cabang', 'pindahfaktur.kode_cabang_baru', '=', 'cabang.kode_cabang');
+        $query->Wherebetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
+        $query->where('marketing_penjualan.jenis_transaksi', 'K');
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('pindahfaktur.kode_cabang_baru', auth()->user()->kode_cabang);
+            }
+        } else {
+            if (!empty($request->exclude)) {
+                if ($request->exclude == '1') {
+                    $query->where('pindahfaktur.kode_cabang_baru', '!=', 'PST');
+                }
+            }
+        }
+        $query->groupBy('pindahfaktur.kode_cabang_baru', 'cabang.nama_cabang');
+        $query->orderBy('pindahfaktur.kode_cabang_baru');
+        // $aup = $query->get();
+
+        $qsaldoawal = Detailsaldoawalpiutangpelanggan::query();
+        $qsaldoawal->select(
+            'pindahpiutang.kode_cabang_baru',
+            'nama_cabang',
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 0 and 15,
+            IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_0_15"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 16 and 31,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_16_31"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 32 and 45,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_32_45"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 46 and 60,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_46_60"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 61 and 90,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_61_90"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 91 and 180,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_91_180"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) > 180,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_lebih_180")
+        );
+        $qsaldoawal->join('marketing_saldoawal_piutang', 'marketing_saldoawal_piutang_detail.kode_saldo_awal', 'marketing_saldoawal_piutang.kode_saldo_awal');
+
+        $qsaldoawal->join('marketing_penjualan', 'marketing_saldoawal_piutang_detail.no_faktur', 'marketing_penjualan.no_faktur');
+        $qsaldoawal->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    MAX(id) AS id,
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE tanggal <= '$request->tanggal'
+                GROUP BY
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru,
+                    salesman.kode_cabang
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahpiutang"),
+            function ($join) {
+                $join->on('marketing_saldoawal_piutang_detail.no_faktur', '=', 'pindahpiutang.no_faktur');
+            }
+        );
+        $qsaldoawal->leftJoinsub($subqueryRetur, 'retur', function ($join) {
+            $join->on('marketing_saldoawal_piutang_detail.no_faktur', '=', 'retur.no_faktur');
+        });
+        $qsaldoawal->leftJoinsub($subqueryBayar, 'bayar', function ($join) {
+            $join->on('marketing_saldoawal_piutang_detail.no_faktur', '=', 'bayar.no_faktur');
+        });
+        $qsaldoawal->join('cabang', 'pindahpiutang.kode_cabang_baru', '=', 'cabang.kode_cabang');
+
+
+        $qsaldoawal->where('bulan', date('m', strtotime($request->tanggal)));
+        $qsaldoawal->where('tahun', date('Y', strtotime($request->tanggal)));
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $qsaldoawal->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $qsaldoawal->where('pindahpiutang.kode_cabang_baru', auth()->user()->kode_cabang);
+            }
+        } else {
+            if (!empty($request->exclude)) {
+                if ($request->exclude == '1') {
+                    $qsaldoawal->where('pindahpiutang.kode_cabang_baru', '!=', 'PST');
+                }
+            }
+        }
+        $qsaldoawal->groupBy('pindahpiutang.kode_cabang_baru', 'cabang.nama_cabang');
+        $qsaldoawal->orderBy('pindahpiutang.kode_cabang_baru');
+        // $data['aup'] = $aup;
+        $aup = $query->unionAll($qsaldoawal)->get();
+
+        $data['rekapaup'] = $aup->groupBy('kode_cabang_baru')
+            ->map(function ($item) {
+                return [
+                    'nama_cabang' => $item->first()->nama_cabang,
+                    'umur_0_15' => $item->sum(function ($row) {
+                        return  $row->umur_0_15;
+                    }),
+                    'umur_16_31' => $item->sum(function ($row) {
+                        return  $row->umur_16_31;
+                    }),
+
+                    'umur_32_45' => $item->sum(function ($row) {
+                        return  $row->umur_32_45;
+                    }),
+                    'umur_46_60' => $item->sum(function ($row) {
+                        return  $row->umur_46_60;
+                    }),
+                    'umur_61_90' => $item->sum(function ($row) {
+                        return  $row->umur_61_90;
+                    }),
+                    'umur_91_180' => $item->sum(function ($row) {
+                        return  $row->umur_91_180;
+                    }),
+                    'umur_lebih_180' => $item->sum(function ($row) {
+                        return  $row->umur_lebih_180;
+                    }),
+                ];
+            })
+            ->sortBy('nama_cabang')
+            ->values()
+            ->all();
+        return view('dashboard.marketing.rekapaup', $data);
+    }
+
+    public function rekapaupcabang(Request $request)
+    {
+
+        $start_date = date('Y', strtotime($request->tanggal)) . "-" . date('m', strtotime($request->tanggal)) . "-01";
+        $end_date = $request->tanggal;
+
+        $subqueryDetailpenjualan = Detailpenjualan::select('marketing_penjualan_detail.no_faktur', DB::raw('SUM(subtotal) as total_bruto'))
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->whereBetween('tanggal', [$start_date, $end_date])
+            ->groupBy('no_faktur');
+
+        $subqueryRetur = Detailretur::select('no_faktur', DB::raw('SUM(subtotal) as total_retur'))
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->where('jenis_retur', 'PF')
+            ->whereBetween('tanggal', [$start_date, $end_date])
+            ->groupBy('no_faktur');
+
+        $subqueryBayar = Historibayarpenjualan::select('no_faktur', DB::raw('SUM(jumlah) as total_bayar'))
+            ->whereBetween('tanggal', [$start_date, $end_date])
+            ->groupBy('no_faktur');
+
+
+
+        $query = Penjualan::query();
+        $query->select(
+            'pindahfaktur.kode_salesman_baru',
+            'nama_salesman',
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 0 and 15,
+            IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_0_15"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 16 and 31,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_16_31"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 32 and 45,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_32_45"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 46 and 60,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_46_60"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 61 and 90,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_61_90"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 91 and 180,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_91_180"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) > 180,IFNULL(total_bruto,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) + IFNULL(ppn,0) - IFNULL(total_retur,0) -IFNULL(total_bayar,0),0) ) as umur_lebih_180")
+        );
+        $query->leftJoinsub($subqueryDetailpenjualan, 'detailpenjualan', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'detailpenjualan.no_faktur');
+        });
+        $query->leftJoinsub($subqueryRetur, 'retur', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'retur.no_faktur');
+        });
+        $query->leftJoinsub($subqueryBayar, 'bayar', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'bayar.no_faktur');
+        });
+        $query->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    MAX(id) AS id,
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE tanggal <= '$request->tanggal'
+                GROUP BY
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru,
+                    salesman.kode_cabang
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $query->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
+        $query->Wherebetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
+        $query->where('marketing_penjualan.jenis_transaksi', 'K');
+        $query->where('pindahfaktur.kode_cabang_baru', $request->kode_cabang);
+        $query->groupBy('pindahfaktur.kode_salesman_baru', 'salesman.nama_salesman');
+        $query->orderBy('pindahfaktur.kode_salesman_baru', 'asc');
+        // $aup = $query->get();
+
+        $qsaldoawal = Detailsaldoawalpiutangpelanggan::query();
+        $qsaldoawal->select(
+            'pindahpiutang.kode_salesman_baru',
+            'nama_salesman',
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 0 and 15,
+            IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_0_15"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 16 and 31,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_16_31"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 32 and 45,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_32_45"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 46 and 60,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_46_60"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 61 and 90,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_61_90"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 91 and 180,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_91_180"),
+
+            DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) > 180,IFNULL(marketing_saldoawal_piutang_detail.jumlah,0) - IFNULL(total_retur,0) - IFNULL(total_bayar,0),0) ) as umur_lebih_180")
+        );
+        $qsaldoawal->join('marketing_saldoawal_piutang', 'marketing_saldoawal_piutang_detail.kode_saldo_awal', 'marketing_saldoawal_piutang.kode_saldo_awal');
+
+        $qsaldoawal->join('marketing_penjualan', 'marketing_saldoawal_piutang_detail.no_faktur', 'marketing_penjualan.no_faktur');
+        $qsaldoawal->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    MAX(id) AS id,
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE tanggal <= '$request->tanggal'
+                GROUP BY
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru,
+                    salesman.kode_cabang
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahpiutang"),
+            function ($join) {
+                $join->on('marketing_saldoawal_piutang_detail.no_faktur', '=', 'pindahpiutang.no_faktur');
+            }
+        );
+        $qsaldoawal->leftJoinsub($subqueryRetur, 'retur', function ($join) {
+            $join->on('marketing_saldoawal_piutang_detail.no_faktur', '=', 'retur.no_faktur');
+        });
+        $qsaldoawal->leftJoinsub($subqueryBayar, 'bayar', function ($join) {
+            $join->on('marketing_saldoawal_piutang_detail.no_faktur', '=', 'bayar.no_faktur');
+        });
+        $qsaldoawal->join('salesman', 'pindahpiutang.kode_salesman_baru', '=', 'salesman.kode_salesman');
+
+
+        $qsaldoawal->where('bulan', date('m', strtotime($request->tanggal)));
+        $qsaldoawal->where('tahun', date('Y', strtotime($request->tanggal)));
+        $qsaldoawal->where('pindahpiutang.kode_cabang_baru', $request->kode_cabang);
+        $qsaldoawal->groupBy('pindahpiutang.kode_salesman_baru', 'salesman.nama_salesman');
+        $qsaldoawal->orderBy('pindahpiutang.kode_salesman_baru', 'asc');
+        // $data['aup'] = $aup;
+        $aup = $query->unionAll($qsaldoawal)->get();
+
+        $data['rekapaup'] = $aup->groupBy('kode_salesman_baru')
+            ->map(function ($item) {
+                return [
+                    'nama_salesman' => $item->first()->nama_salesman,
+                    'umur_0_15' => $item->sum(function ($row) {
+                        return  $row->umur_0_15;
+                    }),
+                    'umur_16_31' => $item->sum(function ($row) {
+                        return  $row->umur_16_31;
+                    }),
+
+                    'umur_32_45' => $item->sum(function ($row) {
+                        return  $row->umur_32_45;
+                    }),
+                    'umur_46_60' => $item->sum(function ($row) {
+                        return  $row->umur_46_60;
+                    }),
+                    'umur_61_90' => $item->sum(function ($row) {
+                        return  $row->umur_61_90;
+                    }),
+                    'umur_91_180' => $item->sum(function ($row) {
+                        return  $row->umur_91_180;
+                    }),
+                    'umur_lebih_180' => $item->sum(function ($row) {
+                        return  $row->umur_lebih_180;
+                    }),
+                ];
+            })
+            ->sortBy('nama_salesman')
+            ->values()
+            ->all();
+        return view('dashboard.marketing.rekapaup_cabang', $data);
     }
 }

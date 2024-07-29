@@ -61,6 +61,7 @@ class ProdukController extends Controller
                 'kode_jenis_produk' => $request->kode_jenis_produk,
                 'status_aktif_produk' => $request->status_aktif_produk,
                 'kode_sku' => $request->kode_sku,
+                'kode_kategori_diskon' => 'D007',
                 'urutan' => $request->urutan
             ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
