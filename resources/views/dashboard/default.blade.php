@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('titlepage', 'Dashboard Gudang')
+@section('titlepage', 'Dashboard')
 @section('content')
     <style>
         #tab-content-main {
@@ -24,34 +24,9 @@
                             {{-- @include('dashboard.gudang.rekappersediaan') --}}
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
-</div>
-
-
 </div>
 @endsection
-@push('myscript')
-<script>
-    $(function() {
-
-
-        function loadrekappersediaan() {
-            $("#loadrekappersediaan").html(`<div class="sk-wave sk-primary" style="margin:auto">
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            </div>`);
-            $("#loadrekappersediaan").load('/dashboard/rekappersediaan');
-        }
-
-        loadrekappersediaan();
-    });
-</script>
-@endpush

@@ -154,7 +154,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col" id="loadrekappersediaan"></div>
+                        <div class="col-lg-9 col-md-12 col-sm-12" id="loadrekappersediaan"></div>
                     </div>
                 </div>
 
@@ -424,19 +424,16 @@
 
         function loadrekappersediaan() {
             const level_user = "{{ $level_user }}";
-            if (level_user == "direktur" || level_user == "super admin" || level_user == "gm marketing" || level_user == "gm administrasi") {
-                $("#loadrekappersediaan").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            $("#loadrekappersediaan").html(`<div class="sk-wave sk-primary" style="margin:auto">
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 </div>`);
-                $("#loadrekappersediaan").load('/dashboard/rekappersediaan');
-            }
+            $("#loadrekappersediaan").load('/dashboard/rekappersediaancabang');
 
         }
-
         loadrekappersediaan();
     });
 </script>

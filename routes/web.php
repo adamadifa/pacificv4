@@ -172,6 +172,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/dashboard/rekapdppp', 'rekapdppp')->name('dashboard.rekapdppp');
         Route::post('/dashboard/rekapaup', 'rekapaup')->name('dashboard.rekapaup');
         Route::post('/dashboard/rekapaupcabang ', 'rekapaupcabang')->name('dashboard.rekapaupcabang');
+
+        //Gudang Rekap DPB
+        Route::get('/dashboard/rekappersediaan ', 'rekappersediaan')->name('dashboard.rekappersediaan');
+        Route::get('/dashboard/rekappersediaancabang ', 'rekappersediaancabang')->name('dashboard.rekappersediaancabang');
     });
 
     //Setings

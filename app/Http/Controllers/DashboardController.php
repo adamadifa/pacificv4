@@ -31,12 +31,31 @@ class DashboardController extends Controller
 {
     public function index()
     {
+
+        $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager'];
         $user = User::findorfail(auth()->user()->id);
-        if ($user->hasRole(['super admin'])) {
+        if ($user->hasAnyRole($default_marketing)) {
             return $this->marketing();
+        } else if ($user->hasRole('operation manager')) {
+            return $this->operationmanager();
         } else {
-            return $this->marketing();
+            return $this->dashboarddefault();
         }
+    }
+
+
+    function dashboarddefault()
+    {
+        return view('dashboard.default');
+    }
+
+    function operationmanager()
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        return view('dashboard.operationmanager', $data);
     }
 
     public function marketing()
@@ -95,12 +114,8 @@ class DashboardController extends Controller
     }
 
 
-
-    public function gudang()
+    public function rekappersediaan()
     {
-
-
-
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
 
@@ -322,7 +337,47 @@ class DashboardController extends Controller
         $data['rekapgudang'] = $rekapgudang;
         $data['rekappersediaancabang'] = $results;
         $data['products'] = $products;
-        return view('dashboard.gudang', $data);
+        return view('dashboard.gudang.rekappersediaan', $data);
+    }
+
+
+
+    public function rekappersediaancabang()
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $kode_cabang = auth()->user()->kode_cabang;
+
+        $subqueryBuffer = DB::table('buffer_stok_detail')
+            ->join('buffer_stok', 'buffer_stok_detail.kode_buffer_stok', '=', 'buffer_stok.kode_buffer_stok')
+            ->select(
+                'buffer_stok_detail.kode_produk',
+                'buffer_stok_detail.jumlah as buffer_stok'
+            )
+            ->where('kode_cabang', $kode_cabang);
+
+
+        $subqueryMaxstok = DB::table('max_stok_detail')
+            ->join('max_stok', 'max_stok_detail.kode_max_stok', '=', 'max_stok.kode_max_stok')
+            ->select(
+                'max_stok_detail.kode_produk',
+                'max_stok_detail.jumlah as max_stok'
+            )
+            ->where('kode_cabang', $kode_cabang);
+
+        $data['rekappersediaan'] = Produk::where('status_aktif_produk', 1)
+            ->select('nama_produk', 'buffer_stok', 'max_stok')
+            ->leftJoinsub($subqueryBuffer, 'subqueryBuffer', function ($join) {
+                $join->on('produk.kode_produk', '=', 'subqueryBuffer.kode_produk');
+            })
+            ->leftJoinsub($subqueryMaxstok, 'subqueryMaxstok', function ($join) {
+                $join->on('produk.kode_produk', '=', 'subqueryMaxstok.kode_produk');
+            })
+            ->get();
+        return view('dashboard.gudang.rekappersediaancabang', $data);
+    }
+    public function gudang()
+    {
+        return view('dashboard.gudang');
     }
 
 
