@@ -1644,6 +1644,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(LaporanpembelianController::class)->group(function () {
         Route::get('/laporanpembelian', 'index')->name('laporanpembelian.index');
         Route::post('/laporanpembelian/cetakpembelian', 'cetakpembelian')->name('laporanpembelian.cetakpembelian')->can('pb.pembelian');
+        Route::post('/laporanpembelian/cetakpembayaran', 'cetakpembayaran')->name('laporanpembelian.cetakpembayaran')->can('pb.pembayaran');
         Route::post('/laporanpembelian/cetakrekapsupplier', 'cetakrekapsupplier')->name('laporanpembelian.cetakrekapsupplier')->can('pb.rekapsupplier');
         Route::post('/laporanpembelian/cetakrekappembelian', 'cetakrekappembelian')->name('laporanpembelian.cetakrekappembelian')->can('pb.rekappembelian');
         Route::post('/laporanpembelian/cetakkartuhutang', 'cetakkartuhutang')->name('laporanpembelian.cetakkartuhutang')->can('pb.kartuhutang');

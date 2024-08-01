@@ -18,13 +18,26 @@
                         </button>
                     </li>
                 @endcan
-
+                @can('pb.pembayaran')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#pembayaran"
+                            aria-controls="pembayaran" aria-selected="false" tabindex="-1">
+                            Pembayaran
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
                 @can('pb.pembelian')
                     <div class="tab-pane fade active show" id="pembelian" role="tabpanel">
                         @include('pembelian.laporan.pembelian')
+                    </div>
+                @endcan
+
+                @can('pb.pembayaran')
+                    <div class="tab-pane fade" id="pembayaran" role="tabpanel">
+                        @include('pembelian.laporan.pembayaran')
                     </div>
                 @endcan
             </div>

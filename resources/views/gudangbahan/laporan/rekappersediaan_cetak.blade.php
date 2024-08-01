@@ -246,11 +246,7 @@
 
                             //Lainnya
                             if (!empty($qty_lainnya)) {
-                                if (
-                                    $d->kode_barang == 'BK-45' and
-                                    date('m', strtotime($dari)) == '9' and
-                                    date('Y', strtotime($dari)) == '2021'
-                                ) {
+                                if ($d->kode_barang == 'BK-45' and date('m', strtotime($dari)) == '9' and date('Y', strtotime($dari)) == '2021') {
                                     $harga_lainnya = 9078.43;
                                 } elseif (
                                     $d->kode_barang == 'BK-44' and
@@ -277,8 +273,7 @@
 
                             //Produksi
                             $qty_masuk = $qty_saldo_awal + $qty_pembelian + $qty_lainnya + $qty_returpengganti;
-                            $jumlah_masuk =
-                                $jumlah_saldo_awal + $jumlah_pembelian + $jumlah_lainnya + $jumlah_returpengganti;
+                            $jumlah_masuk = $jumlah_saldo_awal + $jumlah_pembelian + $jumlah_lainnya + $jumlah_returpengganti;
 
                             if (!empty($qty_produksi)) {
                                 $harga_produksi = !empty($qty_masuk) ? $jumlah_masuk / $qty_masuk : 0;
@@ -332,13 +327,7 @@
                             }
                             $jumlah_lainnya_keluar = $qty_lainnya_keluar * $harga_lainnya_keluar;
 
-                            $qty_keluar =
-                                $qty_produksi +
-                                $qty_seasoning +
-                                $qty_pdqc +
-                                $qty_susut +
-                                $qty_cabang +
-                                $qty_lainnya_keluar;
+                            $qty_keluar = $qty_produksi + $qty_seasoning + $qty_pdqc + $qty_susut + $qty_cabang + $qty_lainnya_keluar;
 
                             //Saldo Akhir
                             $qty_saldo_akhir = $qty_masuk - $qty_keluar;
