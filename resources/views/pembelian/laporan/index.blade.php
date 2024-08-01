@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('titlepage', 'Laporan General Affair')
+@section('titlepage', 'Laporan Pembelian')
 
 @section('content')
 
 @section('navigasi')
-    <span>Laporan General Affair</span>
+    <span>Laporan Pembelian</span>
 @endsection
 <div class="row">
     <div class="col-xl-6 col-md-12 col-sm-12">
@@ -26,11 +26,27 @@
                         </button>
                     </li>
                 @endcan
-                @can('pb.pembayaran')
+                @can('pb.rekapsupplier')
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapsupplier"
                             aria-controls="rekapsupplier" aria-selected="false" tabindex="-1">
                             Rekap Pembelian Supplier
+                        </button>
+                    </li>
+                @endcan
+                @can('pb.rekappembelian')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekappembelian"
+                            aria-controls="rekappembelian" aria-selected="false" tabindex="-1">
+                            Rekap Pembelian
+                        </button>
+                    </li>
+                @endcan
+                @can('pb.kartuhutang')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#kartuhutang"
+                            aria-controls="kartuhutang" aria-selected="false" tabindex="-1">
+                            Kartu Hutang
                         </button>
                     </li>
                 @endcan
@@ -51,7 +67,17 @@
 
                 @can('pb.rekapsupplier')
                     <div class="tab-pane fade" id="rekapsupplier" role="tabpanel">
-                        @include('pembelian.laporan.pembeliansupplier')
+                        @include('pembelian.laporan.rekapsupplier')
+                    </div>
+                @endcan
+                @can('pb.rekappembelian')
+                    <div class="tab-pane fade" id="rekappembelian" role="tabpanel">
+                        @include('pembelian.laporan.rekappembelian')
+                    </div>
+                @endcan
+                @can('pb.kartuhutang')
+                    <div class="tab-pane fade" id="kartuhutang" role="tabpanel">
+                        @include('pembelian.laporan.kartuhutang')
                     </div>
                 @endcan
             </div>
