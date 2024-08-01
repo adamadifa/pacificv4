@@ -26,6 +26,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('pb.pembayaran')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapsupplier"
+                            aria-controls="rekapsupplier" aria-selected="false" tabindex="-1">
+                            Rekap Pembelian Supplier
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
@@ -40,9 +48,14 @@
                         @include('pembelian.laporan.pembayaran')
                     </div>
                 @endcan
+
+                @can('pb.rekapsupplier')
+                    <div class="tab-pane fade" id="rekapsupplier" role="tabpanel">
+                        @include('pembelian.laporan.pembeliansupplier')
+                    </div>
+                @endcan
             </div>
         </div>
     </div>
-
 </div>
 @endsection

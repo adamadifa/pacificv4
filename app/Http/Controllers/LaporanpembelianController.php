@@ -108,8 +108,22 @@ class LaporanpembelianController extends Controller
         $query->join('pembelian_kontrabon', 'pembelian_kontrabon_detail.no_kontrabon', '=', 'pembelian_kontrabon.no_kontrabon');
         $query->join('supplier', 'pembelian_kontrabon.kode_supplier', '=', 'supplier.kode_supplier');
         $query->whereBetween('pembelian_historibayar.tanggal', [$request->dari, $request->sampai]);
+        $query->orderBy('pembelian_historibayar.tanggal');
         $query->groupBy('pembelian_kontrabon_detail.no_kontrabon', 'pembelian_kontrabon_detail.no_bukti', 'pembelian_historibayar.tanggal', 'nama_supplier');
+        if (!empty($request->kode_supplier_pembayaran)) {
+            $query->where('pembelian_kontrabon.kode_supplier', $request->kode_supplier_pembayaran);
+        }
         $data['pembayaran'] = $query->get();
+        $data['supplier'] = Supplier::where('kode_supplier', $request->kode_supplier_pembayaran)->first();
+        $data['bank'] = $bank;
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Laporan Pembelian $request->dari-$request->sampai.xls");
+        }
         return view('pembelian.laporan.pembayaran_cetak', $data);
     }
 }
