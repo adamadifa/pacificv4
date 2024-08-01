@@ -31,6 +31,9 @@
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-building-broadcast-tower"></i>
             <div>Marketing</div>
+            @if (!empty($notifikasi_marketing))
+                <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_marketing }}</div>
+            @endif
         </a>
         <ul class="menu-sub">
             @can('permintaankiriman.index')
@@ -66,18 +69,27 @@
                     <li class="menu-item {{ request()->is(['targetkomisi', 'targetkomisi/*', 'ratiodriverhelper']) ? 'active' : '' }}">
                         <a href="{{ route('targetkomisi.index') }}" class="menu-link">
                             <div>Komisi</div>
+                            @if (!empty($notifikasi_komisi))
+                                <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_komisi }}</div>
+                            @endif
                         </a>
                     </li>
                 @elseif (auth()->user()->hasAllPermissions(['targetkomisi.index']))
                     <li class="menu-item {{ request()->is(['targetkomisi', 'targetkomisi/*', 'ratiodriverhelper']) ? 'active' : '' }}">
                         <a href="{{ route('targetkomisi.index') }}" class="menu-link">
                             <div>Komisi</div>
+                            @if (!empty($notifikasi_komisi))
+                                <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_komisi }}</div>
+                            @endif
                         </a>
                     </li>
                 @elseif (auth()->user()->hasAllPermissions(['ratiodriverhelper.index']))
                     <li class="menu-item {{ request()->is(['ratiodriverhelper', 'ratiodriverhelper/*', 'ratiodriverhelper']) ? 'active' : '' }}">
                         <a href="{{ route('ratiodriverhelper.index') }}" class="menu-link">
                             <div>Komisi</div>
+                            @if (!empty($notifikasi_komisi))
+                                <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_komisi }}</div>
+                            @endif
                         </a>
                     </li>
                 @endif
@@ -100,6 +112,10 @@
                 <li class="menu-item {{ request()->is(['ajuanlimit', 'ajuanlimit/*', 'ajuanfaktur']) ? 'active' : '' }}">
                     <a href="{{ route('ajuanlimit.index') }}" class="menu-link">
                         <div>Pengajuan</div>
+                        @if (!empty($notifikasi_pengajuan_marketing))
+                            <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_pengajuan_marketing }}</div>
+                        @endif
+
                     </a>
                 </li>
             @endif

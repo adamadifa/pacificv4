@@ -173,7 +173,7 @@ class AjuanfakturkreditController extends Controller
                     'kode_pelanggan' => $request->kode_pelanggan,
                     'kode_salesman' => $pelanggan->kode_salesman,
                     'jumlah_faktur' => toNumber($request->jumlah_faktur),
-                    'siklus_pembayaran' => $request->cod,
+                    'siklus_pembayaran' => isset($request->cod) ? $request->cod : 0,
                     'status' => 1,
                     'keterangan' => $request->keterangan
                 ]);
@@ -184,7 +184,7 @@ class AjuanfakturkreditController extends Controller
                     'kode_pelanggan' => $request->kode_pelanggan,
                     'kode_salesman' => $pelanggan->kode_salesman,
                     'jumlah_faktur' => toNumber($request->jumlah_faktur),
-                    'siklus_pembayaran' => $request->cod,
+                    'siklus_pembayaran' => isset($request->cod) ? $request->cod : 0,
                     'status' => 0,
                     'keterangan' => $request->keterangan
                 ]);

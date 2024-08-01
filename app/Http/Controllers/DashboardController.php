@@ -345,8 +345,8 @@ class DashboardController extends Controller
     public function rekappersediaancabang()
     {
         $user = User::findorfail(auth()->user()->id);
-        $kode_cabang = auth()->user()->kode_cabang;
-
+        $kode_cabang = $user->kode_cabang;
+        $today = date('Y-m-d');
         $subqueryBuffer = DB::table('buffer_stok_detail')
             ->join('buffer_stok', 'buffer_stok_detail.kode_buffer_stok', '=', 'buffer_stok.kode_buffer_stok')
             ->select(
@@ -364,13 +364,131 @@ class DashboardController extends Controller
             )
             ->where('kode_cabang', $kode_cabang);
 
+
+        $lastsaldo = Saldoawalgudangcabang::where('kode_cabang', $kode_cabang)
+            ->where('kondisi', 'GS')
+            ->orderBy('tanggal', 'DESC')->first();
+
+        $lastsaldobs = Saldoawalgudangcabang::where('kode_cabang', $kode_cabang)
+            ->where('kondisi', 'BS')
+            ->orderBy('tanggal', 'DESC')->first();
+        $subquerySaldoawal = DB::table('gudang_cabang_saldoawal_detail')
+            ->join('gudang_cabang_saldoawal', 'gudang_cabang_saldoawal_detail.kode_saldo_awal', '=', 'gudang_cabang_saldoawal.kode_saldo_awal')
+
+            ->select(
+                'gudang_cabang_saldoawal_detail.kode_produk',
+                'gudang_cabang_saldoawal_detail.jumlah as saldo_awal'
+            )
+            ->where('gudang_cabang_saldoawal_detail.kode_saldo_awal', $lastsaldo->kode_saldo_awal);
+
+        $subquerySaldoawalbs = DB::table('gudang_cabang_saldoawal_detail')
+            ->join('gudang_cabang_saldoawal', 'gudang_cabang_saldoawal_detail.kode_saldo_awal', '=', 'gudang_cabang_saldoawal.kode_saldo_awal')
+
+            ->select(
+                'gudang_cabang_saldoawal_detail.kode_produk',
+                'gudang_cabang_saldoawal_detail.jumlah as saldo_awal_bs'
+            )
+            ->where('gudang_cabang_saldoawal_detail.kode_saldo_awal', $lastsaldobs->kode_saldo_awal);
+
+
+        $subqueryMutasi = DB::table('gudang_cabang_mutasi_detail')
+            ->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi')
+            ->select(
+                'gudang_cabang_mutasi_detail.kode_produk',
+                DB::raw('SUM(IF(in_out_good="I",gudang_cabang_mutasi_detail.jumlah,0)) - SUM(IF(in_out_good="O",gudang_cabang_mutasi_detail.jumlah,0)) as sisa_mutasi')
+            )
+            ->whereBetween('gudang_cabang_mutasi.tanggal', [
+                $lastsaldo->tanggal, $today
+            ])
+            ->where('gudang_cabang_mutasi.kode_cabang', $kode_cabang)
+            ->whereIn('jenis_mutasi', ['SJ', 'TI', 'TO', 'RG', 'RP', 'RK', 'PY'])
+            ->groupBy('gudang_cabang_mutasi_detail.kode_produk');
+
+        $subqueryMutasibs = DB::table('gudang_cabang_mutasi_detail')
+            ->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi')
+            ->select(
+                'gudang_cabang_mutasi_detail.kode_produk',
+                DB::raw('SUM(IF(in_out_bad="I",gudang_cabang_mutasi_detail.jumlah,0)) - SUM(IF(in_out_bad="O",gudang_cabang_mutasi_detail.jumlah,0)) as sisa_mutasi_bs')
+            )
+            ->whereBetween('gudang_cabang_mutasi.tanggal', [
+                $lastsaldobs->tanggal, $today
+            ])
+            ->where('gudang_cabang_mutasi.kode_cabang', $kode_cabang)
+            ->groupBy('gudang_cabang_mutasi_detail.kode_produk');
+
+
+
+        $subqueryDPB = DB::table('gudang_cabang_dpb_detail')
+            ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_detail.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
+            ->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman')
+            ->select(
+                'gudang_cabang_dpb_detail.kode_produk',
+                DB::raw('SUM(gudang_cabang_dpb_detail.jml_ambil)as dpb_ambil'),
+                DB::raw('SUM(gudang_cabang_dpb_detail.jml_kembali)as dpb_kembali'),
+            )
+            ->whereBetween('gudang_cabang_dpb.tanggal_ambil', [
+                $lastsaldo->tanggal, $today
+            ])
+            ->where('kode_cabang', $kode_cabang)
+            ->groupBy('gudang_cabang_dpb_detail.kode_produk');
+
+        $subquerySuratjalan = DB::table('gudang_jadi_mutasi_detail')
+            ->join('gudang_jadi_mutasi', 'gudang_jadi_mutasi_detail.no_mutasi', '=', 'gudang_jadi_mutasi.no_mutasi')
+            ->join('marketing_permintaan_kiriman', 'gudang_jadi_mutasi.no_permintaan', '=', 'marketing_permintaan_kiriman.no_permintaan')
+            ->whereBetween('gudang_jadi_mutasi.tanggal', [
+                $lastsaldo->tanggal, $today
+            ])
+            ->where('jenis_mutasi', 'SJ')
+            ->where('status_surat_jalan', 0)
+            ->where('kode_cabang', $kode_cabang)
+            ->select(
+                'gudang_jadi_mutasi_detail.kode_produk',
+                DB::raw('SUM(gudang_jadi_mutasi_detail.jumlah)as suratjalan')
+            )
+
+            ->groupBy('gudang_jadi_mutasi_detail.kode_produk');
+
         $data['rekappersediaan'] = Produk::where('status_aktif_produk', 1)
-            ->select('nama_produk', 'buffer_stok', 'max_stok')
+            ->select(
+                'nama_produk',
+                'isi_pcs_dus',
+                'buffer_stok',
+                'max_stok',
+                'saldo_awal',
+                'saldo_awal_bs',
+                'sisa_mutasi',
+                'sisa_mutasi_bs',
+                'dpb_ambil',
+                'dpb_kembali',
+                'suratjalan'
+            )
             ->leftJoinsub($subqueryBuffer, 'subqueryBuffer', function ($join) {
                 $join->on('produk.kode_produk', '=', 'subqueryBuffer.kode_produk');
             })
             ->leftJoinsub($subqueryMaxstok, 'subqueryMaxstok', function ($join) {
                 $join->on('produk.kode_produk', '=', 'subqueryMaxstok.kode_produk');
+            })
+            ->leftJoinsub($subquerySaldoawal, 'subquerySaldoawal', function ($join) {
+                $join->on('produk.kode_produk', '=', 'subquerySaldoawal.kode_produk');
+            })
+
+            ->leftJoinSub($subquerySaldoawalbs, 'subquerySaldoawalbs', function ($join) {
+                $join->on('produk.kode_produk', '=', 'subquerySaldoawalbs.kode_produk');
+            })
+
+            ->leftJoinSub($subqueryMutasibs, 'subqueryMutasibs', function ($join) {
+                $join->on('produk.kode_produk', '=', 'subqueryMutasibs.kode_produk');
+            })
+            ->leftJoinSub($subqueryMutasi, 'subqueryMutasi', function ($join) {
+                $join->on('produk.kode_produk', '=', 'subqueryMutasi.kode_produk');
+            })
+
+            ->leftJoinSub($subqueryDPB, 'subqueryDPB', function ($join) {
+                $join->on('produk.kode_produk', '=', 'subqueryDPB.kode_produk');
+            })
+
+            ->leftJoinSub($subquerySuratjalan, 'subquerySuratjalan', function ($join) {
+                $join->on('produk.kode_produk', '=', 'subquerySuratjalan.kode_produk');
             })
             ->get();
         return view('dashboard.gudang.rekappersediaancabang', $data);

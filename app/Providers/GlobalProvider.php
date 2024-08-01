@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Disposisiajuanfaktur;
+use App\Models\Disposisiajuanlimitkredit;
+use App\Models\Disposisipenilaiankaryawan;
+use App\Models\Disposisitargetkomisi;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -28,9 +32,31 @@ class Globalprovider extends ServiceProvider
             $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             if ($auth->check()) {
                 $level_user = auth()->user()->roles->pluck('name')[0];
+                $notifikasi_limitkredit = Disposisiajuanlimitkredit::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_ajuanfaktur = Disposisiajuanfaktur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_target = Disposisitargetkomisi::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_pengajuan_marketing = $notifikasi_limitkredit + $notifikasi_ajuanfaktur;
+                $notifikasi_komisi = $notifikasi_target;
+                $notifikasi_marketing = $notifikasi_pengajuan_marketing + $notifikasi_komisi;
+
+                $notifikasi_penilaiankaryawan = Disposisipenilaiankaryawan::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_hrd = $notifikasi_penilaiankaryawan;
+                $total_notifikasi = $notifikasi_marketing + $notifikasi_hrd;
             } else {
                 $level_user = '';
+                $notifikasi_limitkredit = 0;
+                $notifikasi_ajuanfaktur = 0;
+                $notifikasi_pengajuan_marketing = 0;
+                $notifikasi_target = 0;
+                $notifikasi_komisi = 0;
+                $notifikasi_marketing = 0;
+                $notifikasi_penilaiankaryawan = 0;
+                $notifikasi_hrd = 0;
+                $total_notifikasi = 0;
             }
+
+
+
             $datamaster_request = [
                 'regional',
                 'regional/*',
@@ -384,7 +410,22 @@ class Globalprovider extends ServiceProvider
                 //Gudang Cabang
                 'gudang_cabang_request' => $gudang_cabang_request,
                 'gudang_cabang_permission' => $gudang_cabang_permission,
-                'gudang_cabang_laporan_permission' => $gudang_cabang_laporan_permission
+                'gudang_cabang_laporan_permission' => $gudang_cabang_laporan_permission,
+
+
+                //Notifikasi
+                'notifikasi_limitkredit' => $notifikasi_limitkredit,
+                'notifikasi_ajuanfaktur' => $notifikasi_ajuanfaktur,
+                'notifikasi_pengajuan_marketing' => $notifikasi_pengajuan_marketing,
+                'notifikasi_target' => $notifikasi_target,
+                'notifikasi_komisi' => $notifikasi_komisi,
+                'notifikasi_marketing' => $notifikasi_marketing,
+
+                'notifikasi_penilaiankaryawan' => $notifikasi_penilaiankaryawan,
+                'notifikasi_hrd' => $notifikasi_hrd,
+
+                'total_notifikasi' => $total_notifikasi
+
             ];
             View::share($shareddata);
         });

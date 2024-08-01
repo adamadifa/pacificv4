@@ -154,7 +154,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-9 col-md-12 col-sm-12" id="loadrekappersediaan"></div>
+                        <h4>Rekap Persediaan</h4>
+                        <div class="col-lg-6 col-md-12 col-sm-12" id="loadrekappersediaan"></div>
                     </div>
                 </div>
 

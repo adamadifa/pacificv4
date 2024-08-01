@@ -1,11 +1,23 @@
-<form method="POST" action="{{ route('laporangudangbahan.cetakbarangkeluar') }}" id="frmLaporanbarangkeluar" target="_blank">
+<form action="{{ route('laporanpembelian.cetakpembelian') }}" method="POST" id="formLapPembelian" target="_blank">
     @csrf
-    <div class="row">
-        <div class="col">
-            <x-select label="Semua Barang" name="kode_barang_keluar" :data="$barang" key="kode_barang" textShow="nama_barang"
-                select2="select2Kodebarangkeluar" upperCase="true" />
-
-        </div>
+    <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
+        select2="select2Kodesupplier" />
+    <div class="form-group mb-3">
+        <select name="kode_asal_pengajuan" id="kode_asal_pengajuan" class="form-select">
+            <option value="">Semua Asal Ajuan</option>
+            @foreach ($asal_ajuan as $d)
+                <option value="{{ $d['kode_group'] }}">
+                    {{ $d['nama_group'] }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="form-group mb-3">
+        <select name="ppn" id="ppn" class="form-select">
+            <option value="">PPN / NON PPN</option>
+            <option value="1">PPN</option>
+            <option value="0">NON PPN</option>
+        </select>
     </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
@@ -13,19 +25,6 @@
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="form-group mb-3">
-                <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
-                    <option value="">Semua Jenis Pengeluaran</option>
-                    @foreach ($list_jenis_pengeluaran as $d)
-                        <option value="{{ $d['kode_jenis_pengeluaran'] }}">
-                            {{ $d['jenis_pengeluaran'] }}</option>
-                    @endforeach
-                </select>
-            </div>
         </div>
     </div>
     <div class="row">
@@ -41,23 +40,24 @@
         </div>
     </div>
 </form>
+
 @push('myscript')
     <script>
         $(function() {
-            const select2Kodebarangkeluar = $('.select2Kodebarangkeluar');
-            if (select2Kodebarangkeluar.length) {
-                select2Kodebarangkeluar.each(function() {
+            const formLapPembelian = $('#formLapPembelian');
+            const select2KodeSupplier = $('.select2Kodesupplier');
+            if (select2KodeSupplier.length) {
+                select2KodeSupplier.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
-                        // placeholder: 'Semua Barang',
-                        dropdownParent: $this.parent(),
-                        placeholder: 'Semua Barang',
+                        placeholder: 'Semua Supplier',
                         allowClear: true,
+                        dropdownParent: $this.parent()
                     });
                 });
             }
 
-            $("#frmLaporanbarangkeluar").submit(function() {
+            formLapPembelian.submit(function(e) {
                 const dari = $(this).find("#dari").val();
                 const sampai = $(this).find("#sampai").val();
                 var start = new Date(dari);
@@ -97,6 +97,7 @@
                     return false;
                 }
             });
+
         });
     </script>
 @endpush

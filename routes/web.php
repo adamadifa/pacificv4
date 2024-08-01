@@ -53,10 +53,13 @@ use App\Http\Controllers\KontrabonpembelianController;
 use App\Http\Controllers\KontrakkaryawanController;
 use App\Http\Controllers\KontrakkerjaController;
 use App\Http\Controllers\LainnyagudangjadiController;
+use App\Http\Controllers\LaporangeneralaffairController;
 use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangcabangController;
 use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporangudanglogistikController;
+use App\Http\Controllers\LaporanmaintenanceController;
+use App\Http\Controllers\LaporanpembelianController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\LemburController;
@@ -1626,6 +1629,32 @@ Route::middleware('auth')->group(function () {
         Route::post('/izinabsen/{kode_izin}/storeapprove', 'storeapprove')->name('izinabsen.storeapprove')->can('izinabsen.approve');
         Route::delete('/izinabsen/{kode_izin}/cancel', 'cancel')->name('izinabsen.cancel')->can('izinabsen.approve');
     });
+
+    Route::controller(LaporangeneralaffairController::class)->group(function () {
+        Route::get('/laporanga', 'index')->name('laporanga.index')->can('ga.servicekendaraan', 'ga.rekapbadstok');
+        Route::post('/laporanga/cetakservicekendaraaan', 'cetakservicekendaraan')->name('laporanga.cetakservicekendaraan')->can('ga.servicekendaraan');
+        Route::post('/laporanga/cetakrekapbadstok', 'cetakrekapbadstok')->name('laporanga.cetakrekapbadstok')->can('ga.rekapbadstok');
+    });
+
+    Route::controller(LaporanmaintenanceController::class)->group(function () {
+        Route::get('/laporanmtc', 'index')->name('laporanmtc.index')->can('mtc.bahanbakar');
+        Route::post('/laporanmtc/cetakbahanbakar', 'cetakbahanbakar')->name('laporanmtc.cetakbahanbakar')->can('mtc.bahanbakar');
+    });
+
+    Route::controller(LaporanpembelianController::class)->group(function () {
+        Route::get('/laporanpembelian', 'index')->name('laporanpembelian.index');
+        Route::post('/laporanpembelian/cetakpembelian', 'cetakpembelian')->name('laporanpembelian.cetakpembelian')->can('pb.pembelian');
+        Route::post('/laporanpembelian/cetakrekapsupplier', 'cetakrekapsupplier')->name('laporanpembelian.cetakrekapsupplier')->can('pb.rekapsupplier');
+        Route::post('/laporanpembelian/cetakrekappembelian', 'cetakrekappembelian')->name('laporanpembelian.cetakrekappembelian')->can('pb.rekappembelian');
+        Route::post('/laporanpembelian/cetakkartuhutang', 'cetakkartuhutang')->name('laporanpembelian.cetakkartuhutang')->can('pb.kartuhutang');
+        Route::post('/laporanpembelian/cetakauh', 'cetakauh')->name('laporanpembelian.cetakauh')->can('pb.auh');
+        Route::post('/laporanpembelian/cetakbahankemasan', 'cetakbahankemasan')->name('laporanpembelian.cetakbahankemasan')->can('pb.bahankemasan');
+        Route::post('/laporanpembelian/cetakrekapbahankemasan', 'cetakrekapbahankemasan')->name('laporanpembelian.cetakrekapbahankemasan')->can('pb.rekapbahankemasan');
+        Route::post('/laporanpembelian/cetakjurnalkoreksi', 'cetakjurnalkoreksi')->name('laporanpembelian.cetakjurnalkoreksi')->can('pb.jurnalkoreksi');
+        Route::post('/laporanpembelian/cetakrekapakun', 'cetakrekapakun')->name('laporanpembelian.cetakrekapakun')->can('pb.rekapakun');
+        Route::post('/laporanpembelian/cetakrekapkontrabon', 'cetakrekapkontrabon')->name('laporanpembelian.cetakrekapkontrabon')->can('pb.rekapkontrabon');
+    });
+
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

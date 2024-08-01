@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-lg-9 col-md-12 col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="table-responsive">
             <table class="table  table-hover table-bordered">
                 <thead class="table-dark">
@@ -75,24 +75,7 @@
             </table>
         </div>
     </div>
-    <div class="col-lg-3 col-md-12 col-sm-12">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <tr>
-                    <td></td>
-                    <td>STOK AMAN</td>
-                </tr>
-                <tr>
-                    <td class="bg-danger"></td>
-                    <td>Stok Kurang Dari Buffer</td>
-                </tr>
-                <tr>
-                    <td class="bg-info"></td>
-                    <td>Stok Lebih dari Max. Stok</td>
-                </tr>
-            </table>
-        </div>
-    </div>
+
 </div>
 <script>
     $("#report tr:not(.master)").hide();

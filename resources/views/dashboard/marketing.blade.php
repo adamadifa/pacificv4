@@ -154,10 +154,105 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col" id="loadrekappersediaan"></div>
+                        <div class="col-lg-9 col-md-12 col-sm-12" id="loadrekappersediaan"></div>
+                        <div class="col-lg-3 col-md-12 col-sm-12">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td></td>
+                                                <td>STOK AMAN</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bg-danger"></td>
+                                                <td>Stok Kurang Dari Buffer</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bg-info"></td>
+                                                <td>Stok Lebih dari Max. Stok</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <a href="{{ route('ajuanlimit.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}">
+                                        <div class="card card-border-shadow-primary h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div class="avatar me-4">
+                                                        <span class="avatar-initial rounded bg-label-primary"><i
+                                                                class="ti ti-brand-shopee ti-28px"></i></span>
+                                                    </div>
+                                                    <h4 class="mb-0">{{ $notifikasi_limitkredit }}</h4>
+                                                </div>
+                                                <p class="mb-1">Ajuan Limit Kredit</p>
+
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <a href="{{ route('ajuanfaktur.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}">
+                                        <div class="card card-border-shadow-warning h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div class="avatar me-4">
+                                                        <span class="avatar-initial rounded bg-label-warning"><i
+                                                                class="ti ti-file-invoice ti-28px"></i></span>
+                                                    </div>
+                                                    <h4 class="mb-0">{{ $notifikasi_ajuanfaktur }}</h4>
+                                                </div>
+                                                <p class="mb-1">Ajuan Faktur Kredit</p>
+
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <a href="{{ route('penilaiankaryawan.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
+                                        <div class="card card-border-shadow-info h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div class="avatar me-4">
+                                                        <span class="avatar-initial rounded bg-label-info"><i
+                                                                class="ti ti-users ti-28px"></i></span>
+                                                    </div>
+                                                    <h4 class="mb-0">{{ $notifikasi_penilaiankaryawan }}</h4>
+                                                </div>
+                                                <p class="mb-1">Penilaian Karyawan</p>
+
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <div class="card card-border-shadow-success h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="avatar me-4">
+                                                    <span class="avatar-initial rounded bg-label-success"><i
+                                                            class="ti ti-target-arrow ti-28px"></i></span>
+                                                </div>
+                                                <h4 class="mb-0">{{ $notifikasi_target }}</h4>
+                                            </div>
+                                            <p class="mb-1">Ajuan Target Marketing</p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -284,7 +379,7 @@
 
         formRekapkendaraan.submit(function(e) {
             e.preventDefault();
-            const kode_cabang = formRekapkendaraan.find('#kode_cabangrekapkendaraan').val();
+            const kode_cabang = formRekapkendaraan.find('#kode_cabang_rekapkendaraan').val();
             const bulan = formRekapkendaraan.find('#bulan').val();
             const tahun = formRekapkendaraan.find('#tahun').val();
             if (bulan == "") {
@@ -424,16 +519,24 @@
 
         function loadrekappersediaan() {
             const level_user = "{{ $level_user }}";
-            if (level_user == "direktur" || level_user == "super admin" || level_user == "gm marketing" || level_user == "gm administrasi") {
-                $("#loadrekappersediaan").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            // if (level_user == "direktur" || level_user == "super admin" || level_user == "gm marketing" || level_user == "gm administrasi") {
+            //     $("#loadrekappersediaan").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            //     <div class="sk-wave-rect"></div>
+            //     <div class="sk-wave-rect"></div>
+            //     <div class="sk-wave-rect"></div>
+            //     <div class="sk-wave-rect"></div>
+            //     <div class="sk-wave-rect"></div>
+            //     </div>`);
+            //     $("#loadrekappersediaan").load('/dashboard/rekappersediaan');
+            // }
+            $("#loadrekappersediaan").html(`<div class="sk-wave sk-primary" style="margin:auto">
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 </div>`);
-                $("#loadrekappersediaan").load('/dashboard/rekappersediaan');
-            }
+            $("#loadrekappersediaan").load('/dashboard/rekappersediaan');
 
         }
 
