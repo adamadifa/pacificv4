@@ -90,6 +90,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('pb.rekapkontrabon')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapkontrabon"
+                            aria-controls="rekapkontrabon" aria-selected="false" tabindex="-1">
+                            Rekap Kontrabon
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
@@ -143,6 +151,11 @@
                 @can('pb.rekapakun')
                     <div class="tab-pane fade" id="rekapakun" role="tabpanel">
                         @include('pembelian.laporan.rekapakun')
+                    </div>
+                @endcan
+                @can('pb.rekapkontrabon')
+                    <div class="tab-pane fade" id="rekapkontrabon" role="tabpanel">
+                        @include('pembelian.laporan.rekapkontrabon')
                     </div>
                 @endcan
             </div>

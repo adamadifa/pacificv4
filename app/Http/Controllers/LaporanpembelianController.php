@@ -654,7 +654,96 @@ class LaporanpembelianController extends Controller
             ->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai])
             ->groupByRaw('pembelian.kode_akun,nama_akun,jurnaldebet,jurnalkredit')
             ->get();
-        dd($hutang);
-        return view('pembelian.laporan.rekapakun_cetak');
+
+        $akunpembelian = Detailpembelian::select('pembelian_detail.kode_akun')
+            ->join('pembelian', 'pembelian_detail.no_bukti', '=', 'pembelian.no_bukti')
+            ->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai])
+            ->groupBy('pembelian_detail.kode_akun')
+            ->get();
+
+        $akun_pmb = [];
+        foreach ($akunpembelian as $d) {
+            $akun_pmb[] = $d->kode_akun;
+        }
+
+        $jurnalkoreksi = Jurnalkoreksi::select(
+            'pembelian_jurnalkoreksi.kode_akun',
+            'nama_akun',
+            DB::raw('SUM(IF(debet_kredit="D",jumlah*harga,0)) as jurnaldebet'),
+            DB::raw('SUM(IF(debet_kredit="K",jumlah*harga,0)) as jurnalkredit')
+        )
+            ->join('coa', 'pembelian_jurnalkoreksi.kode_akun', 'coa.kode_akun')
+            ->whereNotIn('pembelian_jurnalkoreksi.kode_akun', $akun_pmb)
+            ->whereNotIn('pembelian_jurnalkoreksi.kode_akun', ['2-1200', '2-1300'])
+            ->whereBetween('tanggal', [$request->dari, $request->sampai])
+            ->groupByRaw('pembelian_jurnalkoreksi.kode_akun,nama_akun')
+            ->get();
+
+
+        $data['pmb'] = $pmb;
+        $data['jurnalkoreksi'] = $jurnalkoreksi;
+        $data['hutang'] = $hutang;
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        // $data['ppn'] = $request->ppn;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap Akun $request->dari-$request->sampai.xls");
+        }
+        return view('pembelian.laporan.rekapakun_cetak', $data);
+    }
+
+    public function cetakrekapkontrabon(Request $request)
+    {
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+
+        $query = Detailkontrabonpembelian::query();
+        $query->select(
+            'no_dokumen',
+            'nama_supplier',
+            DB::raw('SUM(pembelian_kontrabon_detail.jumlah) as jumlah'),
+            'ppn',
+            'no_rekening_supplier'
+        );
+
+        $query->leftJoin('pembelian_kontrabon', 'pembelian_kontrabon_detail.no_kontrabon', '=', 'pembelian_kontrabon.no_kontrabon');
+        $query->leftJoin('supplier', 'pembelian_kontrabon.kode_supplier', '=', 'supplier.kode_supplier');
+        $query->leftJoin('pembelian', 'pembelian_kontrabon_detail.no_bukti', '=', 'pembelian.no_bukti');
+        $query->whereBetween('pembelian_kontrabon.tanggal', [$request->dari, $request->sampai]);
+        $query->where('ppn', 0);
+        $query->orderBy('pembelian_kontrabon.tanggal');
+        $query->groupByRaw("pembelian_kontrabon_detail.no_kontrabon,no_dokumen,nama_supplier,ppn,no_rekening_supplier");
+        $data['kb'] = $query->get();
+
+        $query2 = Detailkontrabonpembelian::query();
+        $query2->select(
+            'no_dokumen',
+            'nama_supplier',
+            DB::raw('SUM(pembelian_kontrabon_detail.jumlah) as jumlah'),
+            'ppn',
+            'no_rekening_supplier'
+        );
+
+        $query2->leftJoin('pembelian_kontrabon', 'pembelian_kontrabon_detail.no_kontrabon', '=', 'pembelian_kontrabon.no_kontrabon');
+        $query2->leftJoin('supplier', 'pembelian_kontrabon.kode_supplier', '=', 'supplier.kode_supplier');
+        $query2->leftJoin('pembelian', 'pembelian_kontrabon_detail.no_bukti', '=', 'pembelian.no_bukti');
+        $query2->whereBetween('pembelian_kontrabon.tanggal', [$request->dari, $request->sampai]);
+        $query2->where('ppn', 1);
+        $query->orderBy('pembelian_kontrabon.tanggal');
+        $query2->groupByRaw("pembelian_kontrabon_detail.no_kontrabon,no_dokumen,nama_supplier,ppn,no_rekening_supplier");
+        $data['pf'] = $query2->get();
+
+
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap Kontrabon $request->dari-$request->sampai.xls");
+        }
+        return view('pembelian.laporan.rekapkontrabon_cetak', $data);
     }
 }
