@@ -1,21 +1,9 @@
-<form action="{{ route('laporanpembelian.cetakkartuhutang') }}" method="POST" id="formLapKartuHutang" target="_blank">
+<form action="{{ route('laporanpembelian.cetakrekapbahankemasan') }}" method="POST" id="formLapRekapBahanKemasan" target="_blank">
     @csrf
-    <x-select label="Supplier" name="kode_supplier_kartuhutang" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
-        select2="select2Kodesupplierkartuhutang" />
-    <div class="form-group mb-3">
-        <select name="jenis_hutang" id="jenis_hutang" class="form-select">
-            <option value="">Jenis Hutang</option>
-            <option value="2-1200">Hutang Dagang</option>
-            <option value="2-1300">Hutang Lainnya</option>
-        </select>
-    </div>
-    <div class="form-group mb-3">
-        <select name="formatlaporan" id="formatlaporan" class="form-select">
-            <option value="">Jenis Laporan</option>
-            <option value="1">Detail Kartu Hutang</option>
-            <option value="2">Rekap Kartu Hutang</option>
-        </select>
-    </div>
+    <x-select label="Pilih Barang" name="kode_barang" :data="$barangbahankemasan" key="kode_barang" textShow="nama_barang" upperCase="true" showKey="true"
+        select2="select2Kodebarangbahankemasan" />
+    <x-select label="Supplier" name="kode_supplier_rekapbahankemasan" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
+        select2="select2Kodesupplierrekapbahankemasan" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
@@ -40,10 +28,9 @@
 @push('myscript')
     <script>
         $(function() {
-            const formLapKartuHutang = $('#formLapKartuHutang');
-            const select2Kodesupplierkartuhutang = $('.select2Kodesupplierkartuhutang');
-            if (select2Kodesupplierkartuhutang.length) {
-                select2Kodesupplierkartuhutang.each(function() {
+            const select2Kodesupplierrekapbahankemasan = $('.select2Kodesupplierrekapbahankemasan');
+            if (select2Kodesupplierrekapbahankemasan.length) {
+                select2Kodesupplierrekapbahankemasan.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Semua Supplier',
@@ -53,23 +40,34 @@
                 });
             }
 
-            formLapKartuHutang.submit(function(e) {
-                const jenis_hutang = $(this).find("#jenis_hutang").val();
-                const formatlaporan = $(this).find("#formatlaporan").val();
-                const dari = $(this).find("#dari").val();
-                const sampai = $(this).find("#sampai").val();
+            const select2Kodebarangbahankemasan = $('.select2Kodebarangbahankemasan');
+            if (select2Kodebarangbahankemasan.length) {
+                select2Kodebarangbahankemasan.each(function() {
+                    var $this = $(this);
+                    $this.wrap('<div class="position-relative"></div>').select2({
+                        placeholder: 'Pilih  Barang',
+                        allowClear: true,
+                        dropdownParent: $this.parent()
+                    });
+                });
+            }
+
+            $("#formLapRekapBahanKemasan").submit(function(e) {
+                const kode_barang = $(this).find('#kode_barang').val();
+                const dari = $(this).find('#dari').val();
+                const sampai = $(this).find('#sampai').val();
                 const start = new Date(dari);
                 const end = new Date(sampai);
-                if (formatlaporan == "") {
+                if (kode_barang == "") {
                     Swal.fire({
                         title: "Oops!",
-                        text: 'Jenis Laporan Harus Diisi !',
+                        text: 'Barang Harus Diisi !',
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            $(this).find("#formatlaporan").focus();
+                            $(this).find('#kode_barang').focus();
                         },
-                    });
+                    })
                     return false;
                 } else if (dari == "") {
                     Swal.fire({
@@ -78,7 +76,7 @@
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            $(this).find("#dari").focus();
+                            $(this).find('#dari').focus();
                         },
                     });
                     return false;
@@ -89,7 +87,7 @@
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            $(this).find("#sampai").focus();
+                            $(this).find('#sampai').focus();
                         },
                     });
                     return false;
@@ -100,12 +98,12 @@
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            $(this).find("#sampai").focus();
-                        }
+                            $(this).find('#sampai').focus();
+                        },
                     });
                     return false;
                 }
-            })
+            });
         });
     </script>
 @endpush

@@ -50,6 +50,46 @@
                         </button>
                     </li>
                 @endcan
+                @can('pb.auh')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#auh" aria-controls="auh"
+                            aria-selected="false" tabindex="-1">
+                            Analisa Umur Hutang
+                        </button>
+                    </li>
+                @endcan
+                @can('pb.bahankemasan')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#bahankemasan"
+                            aria-controls="bahankemasan" aria-selected="false" tabindex="-1">
+                            Bahan Kemasan
+                        </button>
+                    </li>
+                @endcan
+                @can('pb.rekapbahankemasan')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapbahankemasan"
+                            aria-controls="rekapbahankemasan" aria-selected="false" tabindex="-1">
+                            Bahan Kemasan / Supplier
+                        </button>
+                    </li>
+                @endcan
+                @can('pb.jurnalkoreksi')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#jurnalkoreksi"
+                            aria-controls="jurnalkoreksi" aria-selected="false" tabindex="-1">
+                            Jurnal Koreksi
+                        </button>
+                    </li>
+                @endcan
+                @can('pb.rekapakun')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapakun"
+                            aria-controls="rekapakun" aria-selected="false" tabindex="-1">
+                            Rekap Akun
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
@@ -78,6 +118,31 @@
                 @can('pb.kartuhutang')
                     <div class="tab-pane fade" id="kartuhutang" role="tabpanel">
                         @include('pembelian.laporan.kartuhutang')
+                    </div>
+                @endcan
+                @can('pb.auh')
+                    <div class="tab-pane fade" id="auh" role="tabpanel">
+                        @include('pembelian.laporan.auh')
+                    </div>
+                @endcan
+                @can('pb.bahankemasan')
+                    <div class="tab-pane fade" id="bahankemasan" role="tabpanel">
+                        @include('pembelian.laporan.bahankemasan')
+                    </div>
+                @endcan
+                @can('pb.rekapbahankemasan')
+                    <div class="tab-pane fade" id="rekapbahankemasan" role="tabpanel">
+                        @include('pembelian.laporan.rekapbahankemasan')
+                    </div>
+                @endcan
+                @can('pb.jurnalkoreksi')
+                    <div class="tab-pane fade" id="jurnalkoreksi" role="tabpanel">
+                        @include('pembelian.laporan.jurnalkoreksi')
+                    </div>
+                @endcan
+                @can('pb.rekapakun')
+                    <div class="tab-pane fade" id="rekapakun" role="tabpanel">
+                        @include('pembelian.laporan.rekapakun')
                     </div>
                 @endcan
             </div>
