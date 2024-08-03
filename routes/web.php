@@ -58,6 +58,7 @@ use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangcabangController;
 use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporangudanglogistikController;
+use App\Http\Controllers\LaporankeuangnaController;
 use App\Http\Controllers\LaporanmaintenanceController;
 use App\Http\Controllers\LaporanpembelianController;
 use App\Http\Controllers\LaporanproduksiController;
@@ -1656,6 +1657,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanpembelian/cetakrekapkontrabon', 'cetakrekapkontrabon')->name('laporanpembelian.cetakrekapkontrabon')->can('pb.rekapkontrabon');
     });
 
+
+    Route::controller(LaporankeuangnaController::class)->group(function () {
+        Route::get('/laporankeuangan', 'index')->name('laporankeuangan.index');
+    });
     Route::controller(TutuplaporanController::class)->group(function () {
 
 

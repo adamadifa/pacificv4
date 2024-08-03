@@ -14,6 +14,20 @@
             'piutangkaryawan.index',
             'kontrabonpembelian.index',
             'kontrabonangkutan.index',
+            'keu.kaskecil',
+            'keu.ledger',
+            'keu.saldokasbesar',
+            'keu.lpu',
+            'keu.penjualan',
+            'keu.uanglogam',
+            'keu.rekapbg',
+            'keu.pinjaman',
+            'keu.kartupinjaman',
+            'keu.kasbon',
+            'keu.kartukasbon',
+            'keu.piutangkaryawan',
+            'keu.kartupiutangkaryawan',
+            'keu.rekapkartupiutang',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -38,6 +52,7 @@
             'piutangkaryawan',
             'kontrabonkeuangan',
             'kontrabonkeuangan/*',
+            'laporankeuangan',
         ])
             ? 'open'
             : '' }}">
@@ -125,6 +140,28 @@
                 <li class="menu-item {{ request()->is(['piutangkaryawan']) ? 'active' : '' }}">
                     <a href="{{ route('piutangkaryawan.index') }}" class="menu-link">
                         <div>Piutang Karyawan</div>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission([
+                        'keu.kaskecil',
+                        'keu.ledger',
+                        'keu.saldokasbesar',
+                        'keu.lpu',
+                        'keu.penjualan',
+                        'keu.uanglogam',
+                        'keu.rekapbg',
+                        'keu.pinjaman',
+                        'keu.kartupinjaman',
+                        'keu.kasbon',
+                        'keu.kartukasbon',
+                        'keu.piutangkaryawan',
+                        'keu.kartupiutangkaryawan',
+                        'keu.rekapkartupiutang',
+                    ]))
+                <li class="menu-item {{ request()->is(['laporankeuangan']) ? 'active' : '' }}">
+                    <a href="{{ route('laporankeuangan.index') }}" class="menu-link">
+                        <div>Laporan</div>
                     </a>
                 </li>
             @endif
