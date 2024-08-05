@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="co">
+        <div class="col">
             <div class="form-group mb-3">
                 <select name="tahun" id="tahun" class="form-select">
                     <option value="">Tahun</option>
@@ -29,15 +29,26 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-10 col-md-12 col-sm-12">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="ti ti-printer me-1"></i> Cetak
-            </button>
+        <div class="col">
+            <div class="form-group mb-3">
+                <select name="formatlaporan" id="formatlaporan" class="form-select">
+                    <option value="">Format Laporan</option>
+                    <option value="1">LHP - Setoran Penjualan</option>
+                    <option value="2">LHP - Seoran Pusat</option>
+                </select>
+            </div>
         </div>
-        <div class="col-lg-2 col-md-12 col-sm-12">
-            <button type="submit" name="exportButton" class="btn btn-success w-100">
-                <i class="ti ti-download"></i>
-            </button>
+        <div class="row">
+            <div class="col-lg-10 col-md-12 col-sm-12">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="ti ti-printer me-1"></i> Cetak
+                </button>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12">
+                <button type="submit" name="exportButton" class="btn btn-success w-100">
+                    <i class="ti ti-download"></i>
+                </button>
+            </div>
         </div>
     </div>
 </form>
@@ -62,6 +73,7 @@
                 const kode_cabang = formLPU.find("#kode_cabang_lpu").val();
                 const bulan = formLPU.find("#bulan").val();
                 const tahun = formLPU.find("#tahun").val();
+                const formatlaporan = formLPU.find("#formatlaporan").val();
                 if (kode_cabang == "") {
                     Swal.fire({
                         title: "Oops!",
@@ -92,6 +104,17 @@
                         showConfirmButton: true,
                         didClose: (e) => {
                             formLPU.find("#tahun").focus();
+                        },
+                    });
+                    return false;
+                } else if (formatlaporan == "") {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: 'Format Laporan Harus Diisi !',
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            formLPU.find("#formatlaporan").focus();
                         },
                     });
                     return false;

@@ -36,7 +36,6 @@
                 @endcan
             </ul>
             <div class="tab-content">
-                <!-- Laporan Persediaan-->
                 @can('keu.ledger')
                     <div class="tab-pane fade active show" id="ledger" role="tabpanel">
                         @include('keuangan.laporan.ledger')
