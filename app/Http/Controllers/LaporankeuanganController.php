@@ -3,9 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bank;
+use App\Models\Cabang;
 use App\Models\Coa;
+use App\Models\Detailgiro;
+use App\Models\Giro;
+use App\Models\Kuranglebihsetor;
 use App\Models\Ledger;
+use App\Models\Logamtokertas;
+use App\Models\Saldoawalkasbesar;
 use App\Models\Saldoawalledger;
+use App\Models\Setoranpenjualan;
+use App\Models\Setoranpusat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -16,7 +25,11 @@ class LaporankeuanganController extends Controller
     {
         $b = new Bank();
         $data['bank'] = $b->getBank()->get();
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
         $data['coa'] = Coa::orderby('kode_akun')->get();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
         return view('keuangan.laporan.index', $data);
     }
 
@@ -71,7 +84,363 @@ class LaporankeuanganController extends Controller
                 ->where('kode_bank', $request->kode_bank_ledger)
                 ->first();
 
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Ledger $request->dari-$request->sampai.xls");
+            }
             return view('keuangan.laporan.ledger_cetak', $data);
+        } else {
+            $query = Ledger::query();
+            $query->select(
+                'keuangan_ledger.kode_akun',
+                'nama_akun',
+                DB::raw('SUM(IF(debet_kredit="D",jumlah,0)) as jmldebet'),
+                DB::raw('SUM(IF(debet_kredit="K",jumlah,0)) as jmlkredit')
+            );
+
+            $query->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
+            $query->orderBy('keuangan_ledger.kode_akun');
+            $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
+            if (!empty($request->kode_bank_ledger)) {
+                $query->where('keuangan_ledger.kode_bank', $request->kode_bank_ledger);
+            }
+            $query->groupBy('keuangan_ledger.kode_akun', 'nama_akun');
+            $data['ledger'] = $query->get();
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Rekap Ledger $request->dari-$request->sampai.xls");
+            }
+            return view('keuangan.laporan.rekapledger_cetak', $data);
         }
+    }
+
+    public function cetaksaldokasbesar(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang_saldokasbesar;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang_saldokasbesar;
+        }
+
+        $setoran_dari = $request->tahun . "-" . $request->bulan . "-01";
+        $setoran_sampai = date('Y-m-t', strtotime($setoran_dari));
+        $tgl_akhir_setoran = $setoran_sampai;
+        $tgl_awal_setoran = $setoran_dari;
+
+        $nextbulan = getbulandantahunberikutnya($request->bulan, $request->tahun, "bulan");
+        $nexttahun = getbulandantahunberikutnya($request->bulan, $request->tahun, "tahun");
+
+        $lastbulan = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
+
+
+        //Jika Ada Setoran Omset Bulan Ini yang disetorkan di Bulan Berikutnya
+        $ceksetordibulanberikutnya = Setoranpusat::where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tanggal')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $nextbulan)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $nexttahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('keuangan_ledger.tanggal', 'desc')
+            ->first();
+
+        if ($ceksetordibulanberikutnya) {
+            $setoran_sampai = $ceksetordibulanberikutnya->tanggal;
+        }
+
+
+        //Jika Ada Setoran Omset Bulan Ini yang disetorkan di Bulan Lalu
+        $ceksetordibulanlalu = Setoranpusat::where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tanggal')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $lastbulan)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $lasttahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('keuangan_ledger.tanggal', 'desc')
+            ->first();
+
+        if ($ceksetordibulanlalu) {
+            $setoran_dari = $ceksetordibulanlalu->tanggal;
+        }
+
+        $data['saldo_awal'] = Saldoawalkasbesar::where('kode_cabang', $kode_cabang)
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->first();
+
+
+        $q_lhp = Setoranpenjualan::select(
+            'keuangan_setoranpenjualan.tanggal as tanggal',
+            DB::raw("SUM(setoran_kertas) as lhp_kertas"),
+            DB::raw("SUM(setoran_logam) as lhp_logam"),
+            DB::raw("SUM(setoran_giro) as lhp_giro"),
+            DB::raw("SUM(setoran_transfer) as lhp_transfer"),
+            DB::raw("SUM(setoran_lainnya) as lhp_lainnya"),
+            DB::raw("SUM(giro_to_cash) as lhp_giro_to_cash"),
+            DB::raw("SUM(giro_to_transfer) as lhp_giro_to_transfer"),
+            DB::raw("0 as kurang_logam"),
+            DB::raw("0 as kurang_kertas"),
+            DB::raw("0 as lebih_logam"),
+            DB::raw("0 as lebih_kertas"),
+            DB::raw("0 as setoran_kertas"),
+            DB::raw("0 as setoran_logam"),
+            DB::raw("0 as setoran_giro"),
+            DB::raw("0 as setoran_transfer"),
+            DB::raw("0 as setoran_lainnya"),
+            DB::raw("0 as logamtokertas")
+        )
+            ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->whereBetween('keuangan_setoranpenjualan.tanggal', [$tgl_awal_setoran, $tgl_akhir_setoran])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->groupBy('keuangan_setoranpenjualan.tanggal');
+
+
+
+        $q_kuranglebihsetor = Kuranglebihsetor::select(
+            'keuangan_kuranglebihsetor.tanggal as tanggal',
+            DB::raw("0 as lhp_kertas"),
+            DB::raw("0 as lhp_logam"),
+            DB::raw("0 as lhp_giro"),
+            DB::raw("0 as lhp_transfer"),
+            DB::raw("0 as lhp_lainnya"),
+            DB::raw("0 as lhp_giro_to_cash"),
+            DB::raw("0 as lhp_giro_to_transfer"),
+            DB::raw("SUM(IF(jenis_bayar='1',uang_logam,0)) as kurang_logam"),
+            DB::raw("SUM(IF(jenis_bayar='1',uang_kertas,0)) as kurang_kertas"),
+            DB::raw("SUM(IF(jenis_bayar='2',uang_logam,0)) as lebih_logam"),
+            DB::raw("SUM(IF(jenis_bayar='2',uang_kertas,0)) as lebih_kertas"),
+            DB::raw("0 as setoran_kertas"),
+            DB::raw("0 as setoran_logam"),
+            DB::raw("0 as setoran_giro"),
+            DB::raw("0 as setoran_transfer"),
+            DB::raw("0 as setoran_lainnya"),
+            DB::raw("0 as logamtokertas")
+        )
+            ->join('salesman', 'keuangan_kuranglebihsetor.kode_salesman', '=', 'salesman.kode_salesman')
+            ->whereBetween('tanggal', [$tgl_awal_setoran, $tgl_akhir_setoran])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->groupBy('keuangan_kuranglebihsetor.tanggal');
+
+        $q_setoranpusat = Setoranpusat::select(
+            'keuangan_setoranpusat.tanggal as tanggal',
+            DB::raw("0 as lhp_kertas"),
+            DB::raw("0 as lhp_logam"),
+            DB::raw("0 as lhp_giro"),
+            DB::raw("0 as lhp_transfer"),
+            DB::raw("0 as lhp_lainnya"),
+            DB::raw("0 as lhp_giro_to_cash"),
+            DB::raw("0 as lhp_giro_to_transfer"),
+            DB::raw("0 as kurang_logam"),
+            DB::raw("0 as kurang_kertas"),
+            DB::raw("0 as lebih_logam"),
+            DB::raw("0 as lebih_kertas"),
+            DB::raw("SUM(setoran_kertas) as setoran_kertas"),
+            DB::raw("SUM(setoran_logam) as setoran_logam"),
+            DB::raw("SUM(setoran_giro) as setoran_giro"),
+            DB::raw("SUM(setoran_transfer) as setoran_transfer"),
+            DB::raw("SUM(setoran_lainnya) as setoran_lainnya"),
+            DB::raw("0 as logamtokertas")
+        )
+            ->whereBetween('keuangan_setoranpusat.tanggal', [$setoran_dari, $setoran_sampai])
+            ->where('keuangan_setoranpusat.kode_cabang', $kode_cabang)
+            ->where('keuangan_setoranpusat.status', '1')
+            ->where('omset_bulan', $request->bulan)
+            ->where('omset_tahun', $request->tahun)
+            ->groupBy('keuangan_setoranpusat.tanggal');
+
+
+        $q_logamtokertas = Logamtokertas::select(
+            'keuangan_logamtokertas.tanggal',
+            DB::raw("0 as lhp_kertas"),
+            DB::raw("0 as lhp_logam"),
+            DB::raw("0 as lhp_giro"),
+            DB::raw("0 as lhp_transfer"),
+            DB::raw("0 as lhp_lainnya"),
+            DB::raw("0 as lhp_giro_to_cash"),
+            DB::raw("0 as lhp_giro_to_transfer"),
+            DB::raw("0 as kurang_logam"),
+            DB::raw("0 as kurang_kertas"),
+            DB::raw("0 as lebih_logam"),
+            DB::raw("0 as lebih_kertas"),
+            DB::raw("0 as setoran_kertas"),
+            DB::raw("0 as setoran_logam"),
+            DB::raw("0 as setoran_giro"),
+            DB::raw("0 as setoran_transfer"),
+            DB::raw("0 as setoran_lainnya"),
+            DB::raw("SUM(jumlah) as logamtokertas")
+        )
+            ->whereBetween('keuangan_logamtokertas.tanggal', [$setoran_dari, $tgl_akhir_setoran])
+            ->where('keuangan_logamtokertas.kode_cabang', $kode_cabang)
+            ->groupBy('keuangan_logamtokertas.tanggal');
+
+        $unionquery = $q_lhp->unionAll($q_kuranglebihsetor)->unionAll($q_setoranpusat)->unionAll($q_logamtokertas)->get();
+        $data['saldokasbesar'] = $unionquery->groupBy('tanggal')
+            ->map(function ($item) {
+                return [
+                    'tanggal' => $item->first()->tanggal,
+                    'lhp_kertas' => $item->sum('lhp_kertas'),
+                    'lhp_logam' => $item->sum('lhp_logam'),
+                    'lhp_giro' => $item->sum('lhp_giro'),
+                    'lhp_transfer' => $item->sum('lhp_transfer'),
+                    'lhp_lainnya' => $item->sum('lhp_lainnya'),
+                    'lhp_giro_to_cash' => $item->sum('lhp_giro_to_cash'),
+                    'lhp_giro_to_transfer' => $item->sum('lhp_giro_to_transfer'),
+                    'kurang_logam' => $item->sum('kurang_logam'),
+                    'kurang_kertas' => $item->sum('kurang_kertas'),
+                    'lebih_logam' => $item->sum('lebih_logam'),
+                    'lebih_kertas' => $item->sum('lebih_kertas'),
+                    'setoran_kertas' => $item->sum('setoran_kertas'),
+                    'setoran_logam' => $item->sum('setoran_logam'),
+                    'setoran_giro' => $item->sum('setoran_giro'),
+                    'setoran_transfer' => $item->sum('setoran_transfer'),
+                    'setoran_lainnya' => $item->sum('setoran_lainnya'),
+                    'logamtokertas' => $item->sum('logamtokertas'),
+
+                ];
+            })
+            ->sortBy('tanggal')
+            ->values()
+            ->all();
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Saldo Kas Besar $request->bulan-$request->tahun.xls");
+        }
+        return view('keuangan.laporan.saldokasbesar_cetak', $data);
+    }
+
+
+    public function cetaklpu(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang_lpu;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang_lpu;
+        }
+
+        $setoran_dari = $request->tahun . "-" . $request->bulan . "-01";
+        $setoran_sampai = date('Y-m-t', strtotime($setoran_dari));
+        $tgl_akhir_setoran = $setoran_sampai;
+        $tgl_awal_setoran = $setoran_dari;
+
+        $nextbulan = getbulandantahunberikutnya($request->bulan, $request->tahun, "bulan");
+        $nexttahun = getbulandantahunberikutnya($request->bulan, $request->tahun, "tahun");
+
+        $lastbulan = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
+        $dari_lastbulan = $lasttahun . "-" . $lastbulan . "-01";
+        $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
+
+        $lastduabulan = getbulandantahunlalu($lastbulan, $lasttahun, "bulan");
+        $lastduabulantahun = getbulandantahunlalu($lastbulan, $lasttahun, "tahun");
+        $dari_lastduabulan = $lastduabulantahun . "-" . $lastduabulan . "-01";
+        $sampai_lastduabulan = date('Y-m-t', strtotime($dari_lastduabulan));
+
+
+        //Jika Ada Setoran Omset Bulan Ini yang disetorkan di Bulan Berikutnya
+        $ceksetordibulanberikutnya = Setoranpusat::where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tanggal')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $nextbulan)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $nexttahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('keuangan_ledger.tanggal', 'desc')
+            ->first();
+
+        if ($ceksetordibulanberikutnya) {
+            $setoran_sampai = $ceksetordibulanberikutnya->tanggal;
+        }
+
+
+        //Jika Ada Setoran Omset Bulan Ini yang disetorkan di Bulan Lalu
+        $ceksetordibulanlalu = Setoranpusat::where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tanggal')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $lastbulan)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $lasttahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('keuangan_ledger.tanggal', 'desc')
+            ->first();
+
+        if ($ceksetordibulanlalu) {
+            $setoran_dari = $ceksetordibulanlalu->tanggal;
+        }
+
+        $salesman = Setoranpenjualan::select('keuangan_setoranpenjualan.kode_salesman', 'nama_salesman')
+            ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereBetween('keuangan_setoranpenjualan.tanggal', [$tgl_awal_setoran, $setoran_sampai])
+            ->orderBy('salesman.nama_salesman')
+            ->groupBy('keuangan_setoranpenjualan.kode_salesman', 'nama_salesman')
+            ->get();
+
+        $selectColumnLhp = [];
+        $selectColumnSetoran = [];
+        $selectColumnGirobulanlalu = [];
+
+        foreach ($salesman as $d) {
+            $selectColumnLhp[] = DB::raw("SUM(IF(salesman.kode_salesman = '$d->kode_salesman', lhp_tunai + lhp_tagihan, 0)) as lhp_" . $d->kode_salesman);
+            $selectColumnSetoran[] = DB::raw("SUM(IF(salesman.kode_salesman = '$d->kode_salesman', setoran_kertas + setoran_logam + setoran_transfer + setoran_giro + setoran_lainnya, 0)) as setoran_" . $d->kode_salesman);
+            $selectColumnGirobulanlalu[] = DB::raw("SUM(IF(IFNULL(historibayar.kode_salesman,marketing_penjualan_giro.kode_salesman) = '$d->kode_salesman', jumlah, 0)) as girobulanlalu_" . $d->kode_salesman);
+        }
+
+        $data['lpu'] = Setoranpenjualan::select('keuangan_setoranpenjualan.tanggal', ...$selectColumnLhp, ...$selectColumnSetoran)
+            ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereBetween('keuangan_setoranpenjualan.tanggal', [$tgl_awal_setoran, $setoran_sampai])
+            ->groupBy('keuangan_setoranpenjualan.tanggal')
+            ->get();
+
+        //Giro Bulan Lalu Cair Bulan Ini
+        $girobulanlalu = Detailgiro::join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin(
+                DB::raw("(SELECT kode_giro,kode_salesman,marketing_penjualan_historibayar.tanggal
+            FROM marketing_penjualan_historibayar_giro
+            INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_giro.no_bukti = marketing_penjualan_historibayar.no_bukti
+            GROUP BY kode_giro,kode_salesman,marketing_penjualan_historibayar.tanggal
+            ) historibayar"),
+                function ($join) {
+                    $join->on('marketing_penjualan_giro.kode_giro', '=', 'historibayar.kode_giro');
+                }
+            )
+            ->select(...$selectColumnGirobulanlalu)
+            ->whereBetween('marketing_penjualan_giro.tanggal', [$dari_lastduabulan, $sampai_lastbulan])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->where('omset_bulan', $request->bulan)
+            ->where('omset_tahun', $request->tahun)
+            ->first();
+
+        dd($girobulanlalu);
+
+        $data['salesman'] = $salesman;
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        return view('keuangan.laporan.lpu_cetak', $data);
     }
 }

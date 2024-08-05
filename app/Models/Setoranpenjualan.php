@@ -11,7 +11,7 @@ class Setoranpenjualan extends Model
 {
     use HasFactory;
     protected $table = "keuangan_setoranpenjualan";
-    protected $primaryKey = "kode_status_kawin";
+    protected $primaryKey = "kode_setoran";
     protected $guarded = [];
     public $incrementing  = false;
 

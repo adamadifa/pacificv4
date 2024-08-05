@@ -18,7 +18,22 @@
                         </button>
                     </li>
                 @endcan
-
+                @can('keu.saldokasbesar')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#saldokasbesar"
+                            aria-controls="saldokasbesar" aria-selected="false" tabindex="-1">
+                            Saldo Kas Besar
+                        </button>
+                    </li>
+                @endcan
+                @can('keu.lpu')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#lpu" aria-controls="lpu"
+                            aria-selected="false" tabindex="-1">
+                            LPU
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
@@ -27,8 +42,16 @@
                         @include('keuangan.laporan.ledger')
                     </div>
                 @endcan
-
-
+                @can('keu.saldokasbesar')
+                    <div class="tab-pane fade" id="saldokasbesar" role="tabpanel">
+                        @include('keuangan.laporan.saldokasbesar')
+                    </div>
+                @endcan
+                @can('keu.lpu')
+                    <div class="tab-pane fade" id="lpu" role="tabpanel">
+                        @include('keuangan.laporan.lpu')
+                    </div>
+                @endcan
             </div>
         </div>
     </div>
