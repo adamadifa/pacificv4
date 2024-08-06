@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Giro;
+use App\Models\Ledgergiro;
+use App\Models\Ledgersetoranpusat;
 use App\Models\Setoranpusat;
 use App\Models\Setoranpusatgiro;
 use Illuminate\Http\Request;
@@ -75,8 +77,8 @@ class SetorangiroController extends Controller
                 'kode_setoran' => $kode_setoran,
                 'tanggal' => $request->tanggal,
                 'kode_cabang' => $giro->kode_cabang,
-                'setoran_transfer' => $giro->total,
-                'keterangan' => 'SETOR TRANSFER PELANGGAN ' . $giro->nama_pelanggan,
+                'setoran_giro' => $giro->total,
+                'keterangan' => 'SETOR GIRO PELANGGAN ' . $giro->nama_pelanggan,
                 'status' => $giro->status,
                 'omset_bulan' => $giro->omset_bulan,
                 'omset_tahun' => $giro->omset_tahun
@@ -86,6 +88,15 @@ class SetorangiroController extends Controller
                 'kode_setoran' => $kode_setoran,
                 'kode_giro' => $kode_giro
             ]);
+
+            //Cek Ledger Transfer
+            $ledgergiro = Ledgergiro::where('kode_giro', $kode_giro)->first();
+            if ($ledgergiro) {
+                Ledgersetoranpusat::create([
+                    'no_bukti' => $ledgergiro->no_bukti,
+                    'kode_setoran' => $kode_setoran
+                ]);
+            }
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {

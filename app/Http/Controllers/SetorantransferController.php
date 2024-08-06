@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Giro;
+use App\Models\Ledgersetoranpusat;
+use App\Models\Ledgertransfer;
 use App\Models\Setoranpusat;
 use App\Models\Setoranpusattransfer;
 use App\Models\Transfer;
@@ -86,6 +88,15 @@ class SetorantransferController extends Controller
                 'kode_setoran' => $kode_setoran,
                 'kode_transfer' => $kode_transfer
             ]);
+
+            //Cek Ledger Transfer
+            $ledgertransfer = Ledgertransfer::where('kode_transfer', $kode_transfer)->first();
+            if ($ledgertransfer) {
+                Ledgersetoranpusat::create([
+                    'no_bukti' => $ledgertransfer->no_bukti,
+                    'kode_setoran' => $kode_setoran
+                ]);
+            }
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
@@ -113,6 +124,7 @@ class SetorantransferController extends Controller
             }
 
             Setoranpusat::where('kode_setoran', $kode_setoran)->delete();
+
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
         } catch (\Exception $e) {

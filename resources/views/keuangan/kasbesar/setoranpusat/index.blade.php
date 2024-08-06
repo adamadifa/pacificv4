@@ -85,10 +85,6 @@
                                                     @if ($d->status == '1')
                                                         @if (!empty($d->nama_bank))
                                                             {{ $d->nama_bank }}
-                                                        @elseif(!empty($d->nama_bank_transfer))
-                                                            {{ $d->nama_bank_transfer }}
-                                                        @elseif(!empty($d->nama_bank_giro))
-                                                            {{ $d->nama_bank_giro }}
                                                         @endif
                                                     @endif
                                                 </td>

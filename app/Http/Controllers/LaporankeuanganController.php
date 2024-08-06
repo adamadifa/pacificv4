@@ -612,7 +612,7 @@ class LaporankeuanganController extends Controller
             ->groupBy('keuangan_setoranpenjualan.kode_salesman', 'nama_salesman')
             ->get();
 
-        $bank_setoran = Ledgersetoranpusat::join('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+        $bank = Ledgersetoranpusat::join('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
             ->join('keuangan_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
             ->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank')
             ->select('keuangan_ledger.kode_bank', 'bank.nama_bank')
@@ -623,54 +623,54 @@ class LaporankeuanganController extends Controller
             ->whereBetween('keuangan_ledger.tanggal', [$tgl_awal_setoran, $setoran_sampai])
             ->groupBy('keuangan_ledger.kode_bank')
             ->get();
-        $bank_setoran_transfer = Setoranpusattransfer::join('keuangan_ledger_transfer', 'keuangan_setoranpusat_transfer.kode_transfer', '=', 'keuangan_ledger_transfer.kode_transfer')
-            ->join('keuangan_ledger', 'keuangan_ledger_transfer.no_bukti', '=', 'keuangan_ledger.no_bukti')
-            ->join('keuangan_setoranpusat', 'keuangan_setoranpusat_transfer.kode_setoran', '=', 'keuangan_setoranpusat.kode_setoran')
-            ->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank')
-            ->select('keuangan_ledger.kode_bank', 'bank.nama_bank')
-            ->where('omset_bulan', $request->bulan)
-            ->where('omset_tahun', $request->tahun)
-            ->where('keuangan_setoranpusat.kode_cabang', $kode_cabang)
-            ->where('status', '1')
-            ->whereBetween('keuangan_ledger.tanggal', [$tgl_awal_setoran, $setoran_sampai])
-            ->groupBy('keuangan_ledger.kode_bank')
-            ->get();
 
-        $bank_setoran_giro = Setoranpusatgiro::join('keuangan_ledger_giro', 'keuangan_setoranpusat_giro.kode_giro', '=', 'keuangan_ledger_giro.kode_giro')
-            ->join('keuangan_ledger', 'keuangan_ledger_giro.no_bukti', '=', 'keuangan_ledger.no_bukti')
-            ->join('keuangan_setoranpusat', 'keuangan_setoranpusat_giro.kode_setoran', '=', 'keuangan_setoranpusat.kode_setoran')
-            ->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank')
-            ->select('keuangan_ledger.kode_bank', 'bank.nama_bank')
-            ->where('omset_bulan', $request->bulan)
-            ->where('omset_tahun', $request->tahun)
-            ->where('keuangan_setoranpusat.kode_cabang', $kode_cabang)
-            ->where('status', '1')
-            ->whereBetween('keuangan_ledger.tanggal', [$tgl_awal_setoran, $setoran_sampai])
-            ->groupBy('keuangan_ledger.kode_bank')
-            ->get();
-        dd($bank_setoran_giro);
+
+
         $selectColumnLhp = [];
-        $selectColumnSetoran = [];
+        $selectColumnLhpsetoranpusat = [];
         $selectColumnGiro = [];
         $selectColumbelumsetor = [];
+        $selectColumnsetoranpusat = [];
+        $selectColumnsetoranpusatlhp = [];
+
 
         foreach ($salesman as $d) {
             $selectColumnLhp[] = DB::raw("SUM(IF(salesman.kode_salesman = '$d->kode_salesman', lhp_tunai + lhp_tagihan, 0)) as lhp_" . $d->kode_salesman);
-            $selectColumnSetoran[] = DB::raw("SUM(IF(salesman.kode_salesman = '$d->kode_salesman', setoran_kertas + setoran_logam + setoran_transfer + setoran_giro + setoran_lainnya, 0)) as setoran_" . $d->kode_salesman);
+            $selectColumnLhpsetoranpusat[] = DB::raw("0 as lhp_" . $d->kode_salesman);
             $selectColumnGiro[] = DB::raw("SUM(IF(IFNULL(historibayar.kode_salesman,marketing_penjualan_giro.kode_salesman) = '$d->kode_salesman', jumlah, 0)) as giro_" . $d->kode_salesman);
             $selectColumbelumsetor[] = DB::raw("SUM(IF(keuangan_belumsetor_detail.kode_salesman = '$d->kode_salesman', jumlah, 0)) as belumetor_" . $d->kode_salesman);
         }
 
-        $q_lhp = Setoranpenjualan::select('keuangan_setoranpenjualan.tanggal', ...$selectColumnLhp)
+
+        foreach ($bank as $d) {
+            $selectColumnsetoranpusat[] = DB::raw("SUM(IF(keuangan_ledger.kode_bank = '$d->kode_bank', setoran_kertas + setoran_logam + setoran_transfer + setoran_giro + setoran_lainnya, 0)) as setoranpusat_" . $d->kode_bank);
+            $selectColumnsetoranpusatlhp[] = DB::raw("0 as setoranpusat_" . $d->kode_bank);
+        }
+
+        $q_lhp = Setoranpenjualan::select('keuangan_setoranpenjualan.tanggal', ...$selectColumnLhp, ...$selectColumnsetoranpusatlhp)
             ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('keuangan_setoranpenjualan.tanggal', [$tgl_awal_setoran, $setoran_sampai])
-            ->groupBy('keuangan_setoranpenjualan.tanggal');
+            ->groupBy('keuangan_setoranpenjualan.tanggal')
+            ->orderBy('keuangan_setoranpenjualan.tanggal')
+            ->get();
 
-        $q_setoranpusat =
+        $q_setoranpusat = Setoranpusat::select('keuangan_ledger.tanggal', ...$selectColumnLhpsetoranpusat, ...$selectColumnsetoranpusat)
+            ->leftjoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftjoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereBetween('keuangan_ledger.tanggal', [$tgl_awal_setoran, $setoran_sampai])
+            ->where('keuangan_setoranpusat.kode_cabang', $kode_cabang)
+            ->groupBy('keuangan_ledger.tanggal')
+            ->orderBy('keuangan_ledger.tanggal')
+            ->get();
 
-            //Giro Bulan Lalu Cair Bulan Ini
-            $girobulanlalu = Detailgiro::join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+
+        $data['lhp'] = $q_lhp;
+        $data['setoranpusat'] = $q_setoranpusat;
+
+
+        //Giro Bulan Lalu Cair Bulan Ini
+        $girobulanlalu = Detailgiro::join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
             ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
             ->leftJoin(
                 DB::raw("(SELECT kode_giro,kode_salesman,marketing_penjualan_historibayar.tanggal
@@ -772,6 +772,7 @@ class LaporankeuanganController extends Controller
         $data['lastbulan'] = $lastbulan;
         $data['lasttahun'] = $lasttahun;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['bank'] = $bank;
         return view('keuangan.laporan.lpu_setoranpusat_cetak', $data);
     }
 }

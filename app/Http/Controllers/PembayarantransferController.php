@@ -8,6 +8,7 @@ use App\Models\Detailtransfer;
 use App\Models\Historibayarpenjualan;
 use App\Models\Historibayarpenjualantransfer;
 use App\Models\Ledger;
+use App\Models\Ledgersetoranpusat;
 use App\Models\Ledgertransfer;
 use App\Models\Penjualan;
 use App\Models\Salesman;
@@ -348,7 +349,7 @@ class PembayarantransferController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
-            function updatesetoran($kode_transfer, $status, $omset_bulan, $omset_tahun)
+            function updatesetoran($kode_transfer, $status, $omset_bulan, $omset_tahun, $no_bukti = null)
             {
                 $setorantransfer = Setoranpusattransfer::where('kode_transfer', $kode_transfer)->first();
                 if ($setorantransfer != null) {
@@ -357,6 +358,16 @@ class PembayarantransferController extends Controller
                         'omset_bulan' => $omset_bulan,
                         'omset_tahun' => $omset_tahun
                     ]);
+
+                    if ($status == '1') {
+                        //dd($no_bukti);
+                        Ledgersetoranpusat::create([
+                            'no_bukti' => $no_bukti,
+                            'kode_setoran' => $setorantransfer->kode_setoran
+                        ]);
+                    } else {
+                        Ledgersetoranpusat::where('kode_setoran', $setorantransfer->kode_setoran)->delete();
+                    }
                 }
             }
             function prosespending($kode_transfer)
@@ -399,7 +410,7 @@ class PembayarantransferController extends Controller
                     'omset_tahun' => $request->omset_tahun
                 ]);
 
-                updatesetoran($kode_transfer, 1, $request->omset_bulan, $request->omset_tahun);
+
 
                 //Insert Histori Byar
                 $totalbayar = 0;
@@ -464,6 +475,7 @@ class PembayarantransferController extends Controller
                     'no_bukti' => $no_bukti,
                     'kode_transfer' => $kode_transfer
                 ]);
+                updatesetoran($kode_transfer, 1, $request->omset_bulan, $request->omset_tahun, $no_bukti);
             } elseif ($request->status == '2') {
                 prosespending($kode_transfer);
                 Transfer::where('kode_transfer', $kode_transfer)->update([

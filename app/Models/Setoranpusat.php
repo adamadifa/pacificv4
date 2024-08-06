@@ -26,28 +26,28 @@ class Setoranpusat extends Model
             DB::raw("setoran_kertas + setoran_logam + setoran_transfer + setoran_giro as total"),
             'nama_cabang',
             'keuangan_ledger.tanggal as tanggal_diterima',
-            'bank.nama_bank as nama_bank',
+            'bank.nama_bank as nama_bank'
 
-            'ledger_transfer.tanggal as tanggal_diterima_transfer',
-            'bank_transfer.nama_bank as nama_bank_transfer',
+            // 'ledger_transfer.tanggal as tanggal_diterima_transfer',
+            // 'bank_transfer.nama_bank as nama_bank_transfer',
 
-            'ledger_giro.tanggal as tanggal_diterima_giro',
-            'bank_giro.nama_bank as nama_bank_giro'
+            // 'ledger_giro.tanggal as tanggal_diterima_giro',
+            // 'bank_giro.nama_bank as nama_bank_giro'
         );
         $query->join('cabang', 'keuangan_setoranpusat.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran');
         $query->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti');
         $query->leftJoin('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
 
-        $query->leftJoin('keuangan_setoranpusat_transfer', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_setoranpusat_transfer.kode_setoran');
-        $query->leftJoin('keuangan_ledger_transfer', 'keuangan_setoranpusat_transfer.kode_transfer', '=', 'keuangan_ledger_transfer.kode_transfer');
-        $query->leftJoin('keuangan_ledger as ledger_transfer', 'keuangan_ledger_transfer.no_bukti', '=', 'ledger_transfer.no_bukti');
-        $query->leftJoin('bank as bank_transfer', 'ledger_transfer.kode_bank', '=', 'bank_transfer.kode_bank');
+        // $query->leftJoin('keuangan_setoranpusat_transfer', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_setoranpusat_transfer.kode_setoran');
+        // $query->leftJoin('keuangan_ledger_transfer', 'keuangan_setoranpusat_transfer.kode_transfer', '=', 'keuangan_ledger_transfer.kode_transfer');
+        // $query->leftJoin('keuangan_ledger as ledger_transfer', 'keuangan_ledger_transfer.no_bukti', '=', 'ledger_transfer.no_bukti');
+        // $query->leftJoin('bank as bank_transfer', 'ledger_transfer.kode_bank', '=', 'bank_transfer.kode_bank');
 
-        $query->leftJoin('keuangan_setoranpusat_giro', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_setoranpusat_giro.kode_setoran');
-        $query->leftJoin('keuangan_ledger_giro', 'keuangan_setoranpusat_giro.kode_giro', '=', 'keuangan_ledger_giro.kode_giro');
-        $query->leftJoin('keuangan_ledger as ledger_giro', 'keuangan_ledger_giro.no_bukti', '=', 'ledger_giro.no_bukti');
-        $query->leftJoin('bank as bank_giro', 'ledger_giro.kode_bank', '=', 'bank_giro.kode_bank');
+        // $query->leftJoin('keuangan_setoranpusat_giro', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_setoranpusat_giro.kode_setoran');
+        // $query->leftJoin('keuangan_ledger_giro', 'keuangan_setoranpusat_giro.kode_giro', '=', 'keuangan_ledger_giro.kode_giro');
+        // $query->leftJoin('keuangan_ledger as ledger_giro', 'keuangan_ledger_giro.no_bukti', '=', 'ledger_giro.no_bukti');
+        // $query->leftJoin('bank as bank_giro', 'ledger_giro.kode_bank', '=', 'bank_giro.kode_bank');
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
