@@ -34,6 +34,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('keu.penjualan')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#penjualan" aria-controls="penjualan"
+                            aria-selected="false" tabindex="-1">
+                            Penjualan
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 @can('keu.ledger')
@@ -49,6 +57,11 @@
                 @can('keu.lpu')
                     <div class="tab-pane fade" id="lpu" role="tabpanel">
                         @include('keuangan.laporan.lpu')
+                    </div>
+                @endcan
+                @can('keu.penjualan')
+                    <div class="tab-pane fade" id="penjualan" role="tabpanel">
+                        @include('keuangan.laporan.penjualan')
                     </div>
                 @endcan
             </div>

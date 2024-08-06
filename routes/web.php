@@ -1664,6 +1664,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/cetakledger', 'cetakledger')->name('laporankeuangan.cetakledger')->can('keu.ledger');
         Route::post('/laporankeuangan/cetaksaldokasbesar', 'cetaksaldokasbesar')->name('laporankeuangan.cetaksaldokasbesar')->can('keu.saldokasbesar');
         Route::post('/laporankeuangan/cetaklpu', 'cetaklpu')->name('laporankeuangan.cetaklpu')->can('keu.lpu');
+        Route::post('/laporankeuangan/cetakpenjualan', 'cetakpenjualan')->name('laporankeuangan.cetakpenjualan')->can('keu.penjualan');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

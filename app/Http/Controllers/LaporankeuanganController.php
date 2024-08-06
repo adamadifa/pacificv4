@@ -331,6 +331,12 @@ class LaporankeuanganController extends Controller
 
     public function cetaklpu(Request $request)
     {
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Laporan Penerimaan Uang (LPU) $request->bulan-$request->tahun.xls");
+        }
         if ($request->formatlaporan == '1') {
             return $this->cetaklpusetoranpenjualan($request);
         } else if ($request->formatlaporan == '2') {
@@ -636,7 +642,7 @@ class LaporankeuanganController extends Controller
 
         foreach ($salesman as $d) {
             $selectColumnLhp[] = DB::raw("SUM(IF(salesman.kode_salesman = '$d->kode_salesman', lhp_tunai + lhp_tagihan, 0)) as lhp_" . $d->kode_salesman);
-            $selectColumnLhpsetoranpusat[] = DB::raw("0 as lhp_" . $d->kode_salesman);
+            // $selectColumnLhpsetoranpusat[] = DB::raw("0 as lhp_" . $d->kode_salesman);
             $selectColumnGiro[] = DB::raw("SUM(IF(IFNULL(historibayar.kode_salesman,marketing_penjualan_giro.kode_salesman) = '$d->kode_salesman', jumlah, 0)) as giro_" . $d->kode_salesman);
             $selectColumbelumsetor[] = DB::raw("SUM(IF(keuangan_belumsetor_detail.kode_salesman = '$d->kode_salesman', jumlah, 0)) as belumetor_" . $d->kode_salesman);
         }
@@ -644,10 +650,10 @@ class LaporankeuanganController extends Controller
 
         foreach ($bank as $d) {
             $selectColumnsetoranpusat[] = DB::raw("SUM(IF(keuangan_ledger.kode_bank = '$d->kode_bank', setoran_kertas + setoran_logam + setoran_transfer + setoran_giro + setoran_lainnya, 0)) as setoranpusat_" . $d->kode_bank);
-            $selectColumnsetoranpusatlhp[] = DB::raw("0 as setoranpusat_" . $d->kode_bank);
+            // $selectColumnsetoranpusatlhp[] = DB::raw("0 as setoranpusat_" . $d->kode_bank);
         }
 
-        $q_lhp = Setoranpenjualan::select('keuangan_setoranpenjualan.tanggal', ...$selectColumnLhp, ...$selectColumnsetoranpusatlhp)
+        $q_lhp = Setoranpenjualan::select('keuangan_setoranpenjualan.tanggal', ...$selectColumnLhp)
             ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('keuangan_setoranpenjualan.tanggal', [$tgl_awal_setoran, $setoran_sampai])
@@ -655,7 +661,7 @@ class LaporankeuanganController extends Controller
             ->orderBy('keuangan_setoranpenjualan.tanggal')
             ->get();
 
-        $q_setoranpusat = Setoranpusat::select('keuangan_ledger.tanggal', ...$selectColumnLhpsetoranpusat, ...$selectColumnsetoranpusat)
+        $q_setoranpusat = Setoranpusat::select('keuangan_ledger.tanggal', ...$selectColumnsetoranpusat)
             ->leftjoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
             ->leftjoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
             ->whereBetween('keuangan_ledger.tanggal', [$tgl_awal_setoran, $setoran_sampai])
@@ -663,6 +669,8 @@ class LaporankeuanganController extends Controller
             ->groupBy('keuangan_ledger.tanggal')
             ->orderBy('keuangan_ledger.tanggal')
             ->get();
+
+        // dd($q_setoranpusat);
 
 
         $data['lhp'] = $q_lhp;
@@ -774,5 +782,57 @@ class LaporankeuanganController extends Controller
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['bank'] = $bank;
         return view('keuangan.laporan.lpu_setoranpusat_cetak', $data);
+    }
+
+    public function cetakpenjualan(Request $request)
+    {
+
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang_penjualan;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang_penjualan;
+        }
+
+        $salesman = Setoranpenjualan::select('keuangan_setoranpenjualan.kode_salesman', 'nama_salesman')
+            ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereBetween('keuangan_setoranpenjualan.tanggal', [$request->dari, $request->sampai])
+            ->groupBy('keuangan_setoranpenjualan.kode_salesman')
+            ->get();
+
+        //dd($salesman);
+        $selectColumnsalesman = [];
+        foreach ($salesman as $d) {
+            $selectColumnsalesman[] = DB::raw("SUM(IF(keuangan_setoranpenjualan.kode_salesman = '$d->kode_salesman',lhp_tunai,0)) as lhptunai_" . $d->kode_salesman);
+            $selectColumnsalesman[] = DB::raw("SUM(IF(keuangan_setoranpenjualan.kode_salesman = '$d->kode_salesman',lhp_tagihan,0)) as lhptagihan_" . $d->kode_salesman);
+            $selectColumnsalesman[] = DB::raw("SUM(IF(keuangan_setoranpenjualan.kode_salesman = '$d->kode_salesman',lhp_tunai + lhp_tagihan,0)) as lhptotal_" . $d->kode_salesman);
+        }
+
+
+        $data['setoranpenjualan'] = Setoranpenjualan::select('keuangan_setoranpenjualan.tanggal', ...$selectColumnsalesman)
+            ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->whereBetween('keuangan_setoranpenjualan.tanggal', [$request->dari, $request->sampai])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->groupBy('keuangan_setoranpenjualan.tanggal')
+            ->get();
+
+
+
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = $salesman;
+        return view('keuangan.laporan.penjualan_cetak', $data);
     }
 }

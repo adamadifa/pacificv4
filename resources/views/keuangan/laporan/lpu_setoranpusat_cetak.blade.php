@@ -177,14 +177,14 @@
                 <table class="datatable3">
                     <thead>
                         <tr>
-                            <th colspan="{{ count($bank) + 2 }}">PENERIMAAN UANG DI PUSAT</th>
+                            <th colspan="{{ count($bank) + 2 }}" class="bg-terimauang">PENERIMAAN UANG DI PUSAT</th>
                         </tr>
                         <tr>
-                            <th>Tanggal</th>
+                            <th class="bg-terimauang">Tanggal</th>
                             @foreach ($bank as $d)
-                                <th>{{ $d->nama_bank }}</th>
+                                <th class="bg-terimauang">{{ $d->nama_bank }}</th>
                             @endforeach
-                            <th>TOTAL</th>
+                            <th class="bg-terimauang">TOTAL</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -196,9 +196,69 @@
                             @endforeach
                             <td class="right"></td>
                         </tr>
+                        @foreach ($bank as $d)
+                            @php
+                                $total_["setoranpusat_$d->kode_bank"] = 0;
+                            @endphp
+                        @endforeach
+                        {{-- {{ var_dump($setoranpusat) }} --}}
+                        @foreach ($bank as $b)
+                            @php
+                                $total_["setoranpusat_$b->kode_bank"] = 0;
+                            @endphp
+                        @endforeach
+                        @foreach ($setoranpusat as $d)
+                            <tr>
+                                <!-- LHP-->
+                                <td>{{ formatIndo($d->tanggal) }}</td>
+                                @php
+                                    $total_setoranpusat_pertanggal = 0;
+                                @endphp
+                                @foreach ($bank as $b)
+                                    @php
+                                        $total_setoranpusat_pertanggal += $d->{"setoranpusat_$b->kode_bank"};
+                                        $total_["setoranpusat_$b->kode_bank"] += $d->{"setoranpusat_$b->kode_bank"};
+                                    @endphp
+                                    <td class="right">{{ formatAngka($d->{"setoranpusat_$b->kode_bank"}) }}</td>
+                                @endforeach
+                                <td class="right">{{ formatAngka($total_setoranpusat_pertanggal) }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th style="text-align: left; " class="bg-terimauang">TOTAL</th>
+                            @php
+                                $grandtotalall_setoranpusat = 0;
+                            @endphp
+                            @foreach ($bank as $b)
+                                @php
+                                    $grandtotalall_setoranpusat += $total_["setoranpusat_$b->kode_bank"];
+                                @endphp
+                                <th class="right bg-terimauang"> {{ formatAngka($total_["setoranpusat_$b->kode_bank"]) }}</th>
+                            @endforeach
+                            <th class="right bg-terimauang"> {{ formatAngka($grandtotalall_setoranpusat) }}</th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
 
         </div>
+        <div>
+            <table style="margin-top: 35px" class="datatable3">
+                <tr>
+                    <td style="font-weight:bold; background-color:yellow">PENERIMAAN LHP</td>
+                    <td style="text-align:right; font-weight:bold;">{{ formatAngka($grandtotalall_lhp) }}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold; background-color:yellow">SETORAN SALES</td>
+                    <td style="text-align:right; font-weight:bold;">{{ formatAngka($grandtotalall_setoranpusat) }}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold; background-color:yellow">SELISIH</td>
+                    <td style="text-align:right; font-weight:bold;"><?php echo formatAngka($grandtotalall_lhp - $grandtotalall_setoranpusat); ?></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </body>
