@@ -191,16 +191,10 @@
                         <tr>
                             <!-- LHP-->
                             <td style="text-transform: uppercase; font-weight:bold"> {{ $namabulan[$lastbulan] }} {{ $lasttahun }}</td>
-                            @php
-                                $grandtotal_belumsetorbulanlalu = 0;
-                            @endphp
-                            @foreach ($salesman as $d)
-                                @php
-                                    $grandtotal_belumsetorbulanlalu += $belumsetorbulanlalu->{"belumsetor_$d->kode_salesman"};
-                                @endphp
-                                <td class="right">{{ formatAngka($belumsetorbulanlalu->{"belumsetor_$d->kode_salesman"}) }}</td>
+                            @foreach ($bank as $d)
+                                <td class="right"></td>
                             @endforeach
-                            <td class="right">{{ formatAngka($grandtotal_belumsetorbulanlalu) }}</td>
+                            <td class="right"></td>
                         </tr>
                     </tbody>
                 </table>
