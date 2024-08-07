@@ -1665,6 +1665,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/cetaksaldokasbesar', 'cetaksaldokasbesar')->name('laporankeuangan.cetaksaldokasbesar')->can('keu.saldokasbesar');
         Route::post('/laporankeuangan/cetaklpu', 'cetaklpu')->name('laporankeuangan.cetaklpu')->can('keu.lpu');
         Route::post('/laporankeuangan/cetakpenjualan', 'cetakpenjualan')->name('laporankeuangan.cetakpenjualan')->can('keu.penjualan');
+        Route::post('/laporankeuangan/cetakuanglogam', 'cetakuanglogam')->name('laporankeuangan.cetakuanglogam')->can('keu.uanglogam');
+        Route::post('/laporankeuangan/cetakrekapbg', 'cetakrekapbg')->name('laporankeuangan.cetakrekapbg')->can('keu.rekapbg');
+        Route::post('/laporankeuangan/cetakpinjaman', 'cetakpinjaman')->name('laporankeuangan.cetakpinjaman')->can('keu.pinjaman');
+        Route::post('/laporankeuangan/cetakkasbon', 'cetakkasbon')->name('laporankeuangan.cetakkasbon')->can('keu.kasbon');
+        Route::post('/laporankeuangan/cetakpiutangkaryawan', 'cetakpiutangkaryawan')->name('laporankeuangan.cetakpiutangkaryawan')->can('keu.piutangkaryawan');
+        Route::post('/laporankeuangan/cetakrekapkartupiutang', 'cetakrekapkartupiutang')->name('laporankeuangan.cetakrekapkartupiutang')->can('keu.rekapkartupiutang');
+        Route::post('/laporankeuangan/cetakkartupjp', 'cetakkartupjp')->name('laporankeuangan.cetakkartupjp')->can('keu.kartupinjaman');
+        Route::post('/laporankeuangan/cetakkartukasbon', 'cetakkartukasbon')->name('laporankeuangan.cetakkartukasbon')->can('keu.kartukasbon');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

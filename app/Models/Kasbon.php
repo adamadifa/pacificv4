@@ -63,6 +63,14 @@ class Kasbon extends Model
             $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_search);
         }
 
+        //Report Kasbon
+        if (!empty($request->kode_cabang_kasbon)) {
+            $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_kasbon);
+        }
+
+        if (!empty($request->kode_dept_kasbon)) {
+            $query->where('hrd_karyawan.kode_dept', $request->kode_dept_kasbon);
+        }
 
         if (!empty($request->nama_karyawan_search)) {
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan_search . '%');
@@ -76,9 +84,11 @@ class Kasbon extends Model
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', $user->kode_regional);
                 $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
+                $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
             } else {
                 $query->where('hrd_jabatan.kategori', 'NM');
                 $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
             }
         } else {
             if (!$user->hasRole($roles_access_all_pjp)) {

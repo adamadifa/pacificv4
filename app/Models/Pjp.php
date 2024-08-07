@@ -28,6 +28,7 @@ class Pjp extends Model
             'keuangan_pjp.*',
             'nama_karyawan',
             'nama_jabatan',
+            'hrd_jabatan.kategori as kategori_jabatan',
             'hrd_karyawan.kode_dept',
             'hrd_karyawan.kode_cabang',
             'nama_dept',
@@ -59,6 +60,15 @@ class Pjp extends Model
             $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_search);
         }
 
+        //Report Keuangan
+        if (!empty($request->kode_cabang_pinjaman)) {
+            $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_pinjaman);
+        }
+
+        if (!empty($request->kode_dept_pinjaman)) {
+            $query->where('hrd_karyawan.kode_cabang', $request->kode_dept_pinjaman);
+        }
+
 
         if (!empty($request->nama_karyawan_search)) {
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan_search . '%');
@@ -72,9 +82,11 @@ class Pjp extends Model
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', $user->kode_regional);
                 $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
+                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
             } else {
                 $query->where('hrd_jabatan.kategori', 'NM');
                 $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
             }
         } else {
             if (!$user->hasRole($roles_access_all_pjp)) {

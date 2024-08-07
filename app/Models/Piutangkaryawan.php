@@ -56,6 +56,15 @@ class Piutangkaryawan extends Model
             $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_search);
         }
 
+        //Report Piutang Karyawan
+        if (!empty($request->kode_cabang_piutangkaryawan)) {
+            $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_piutangkaryawan);
+        }
+
+        if (!empty($request->kode_dept_piutangkaryawan)) {
+            $query->where('hrd_karyawan.kode_dept', $request->kode_dept_piutangkaryawan);
+        }
+
 
         if (!empty($request->nama_karyawan_search)) {
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan_search . '%');
