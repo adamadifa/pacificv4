@@ -98,6 +98,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('keu.kartupiutangkaryawan')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#kartupiutangkaryawan"
+                            aria-controls="kartupiutangkaryawan" aria-selected="false" tabindex="-1">
+                            Kartu Piutang Karyawan
+                        </button>
+                    </li>
+                @endcan
                 @can('keu.rekapkartupiutang')
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapkartupiutang"
@@ -162,6 +170,11 @@
                 @can('keu.kartupinjaman')
                     <div class="tab-pane fade" id="kartukasbon" role="tabpanel">
                         @include('keuangan.laporan.kartukasbon')
+                    </div>
+                @endcan
+                @can('keu.kartupiutangkaryawan')
+                    <div class="tab-pane fade" id="kartupiutangkaryawan" role="tabpanel">
+                        @include('keuangan.laporan.kartupiutangkaryawan')
                     </div>
                 @endcan
                 @can('keu.rekapkartupiutang')

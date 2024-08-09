@@ -70,13 +70,13 @@ class Retur extends Model
             $query->where('marketing_retur.no_retur', $no_retur);
         }
         if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+            $query->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
         } else {
-            $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
+            $query->whereBetween('marketing_retur.tanggal', [$start_date, $end_date]);
         }
 
         if (!empty($request->no_faktur_search)) {
-            $query->where('marketing_penjualan.no_faktur', $request->no_faktur_search);
+            $query->where('marketing_retur.no_faktur', $request->no_faktur_search);
         }
 
         if (!empty($request->kode_cabang_search)) {

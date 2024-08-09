@@ -1,3 +1,33 @@
+@php
+    $laporanpermissions = [
+        'mkt.penjualan',
+        'mkt.kasbesar',
+        'mkt.retur',
+        'mkt.kartupiutang',
+        'mkt.aup',
+        'mkt.lebihsatufaktur',
+        'mkt.dppp',
+        'mkt.dpp',
+        'mkt.omsetpelanggan',
+        'mkt.rekappelanggan',
+        'mkt.rekappenjualan',
+        'mkt.rekapkendaraan',
+        'mkt.harganet',
+        'mkt.tandaterimafaktur',
+        'mkt.rekapwilayah',
+        'mkt.effectivecall',
+        'mkt.analisatransaksi',
+        'mkt.tunaitransfer',
+        'mkt.lhp',
+        'mkt.routingsalesman',
+        'mkt.salesperfomance',
+        'mkt.persentasesfa',
+        'mkt.smmactivity',
+        'mkt.rsmactivity',
+        'mkt.komisisalesman',
+        'mkt.komisidriverhelper',
+    ];
+@endphp
 @if (auth()->user()->hasAnyPermission([
             'omancabang.index',
             'oman.index',
@@ -6,6 +36,7 @@
             'penjualan.index',
             'retur.index',
             'ajuanlimit.index',
+            ...$laporanpermissions,
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -24,6 +55,7 @@
             'ajuanlimit',
             'ajuanlimit/*',
             'ajuanfaktur',
+            'laporanmarketing',
         ])
             ? 'open'
             : '' }}">
@@ -116,6 +148,13 @@
                             <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_pengajuan_marketing }}</div>
                         @endif
 
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission($laporanpermissions))
+                <li class="menu-item {{ request()->is(['laporanmarketing']) ? 'active' : '' }}">
+                    <a href="{{ route('laporanmarketing.index') }}" class="menu-link">
+                        <div>Laporan</div>
                     </a>
                 </li>
             @endif

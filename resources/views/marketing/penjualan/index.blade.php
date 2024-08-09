@@ -41,17 +41,20 @@
                         <form action="{{ route('penjualan.index') }}">
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                        datepicker="flatpickr-date" />
                                 </div>
                                 <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                        datepicker="flatpickr-date" />
                                 </div>
                             </div>
                             @hasanyrole($roles_show_cabang)
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                                            selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
+                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                            textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                            select2="select2Kodecabangsearch" />
                                     </div>
                                 </div>
                             @endrole
@@ -65,13 +68,16 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search" icon="ti ti-barcode" />
+                                    <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search"
+                                        icon="ti ti-barcode" />
                                 </div>
                                 <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}" name="kode_pelanggan_search" icon="ti ti-barcode" />
+                                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}"
+                                        name="kode_pelanggan_search" icon="ti ti-barcode" />
                                 </div>
                                 <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" name="nama_pelanggan_search" icon="ti ti-users" />
+                                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}"
+                                        name="nama_pelanggan_search" icon="ti ti-users" />
                                 </div>
                             </div>
                             <div class="row">
@@ -106,7 +112,8 @@
                                 <tbody>
                                     @foreach ($penjualan as $d)
                                         @php
-                                            $total_netto = $d->total_bruto - $d->total_retur - $d->potongan - $d->potongan_istimewa - $d->penyesuaian + $d->ppn;
+                                            $total_netto =
+                                                $d->total_bruto - $d->total_retur - $d->potongan - $d->potongan_istimewa - $d->penyesuaian + $d->ppn;
                                             if ($d->status_batal == '1') {
                                                 $color = '#ed9993';
                                                 $color_text = '#000';
@@ -146,24 +153,28 @@
                                             <td>
                                                 <div class="d-flex">
                                                     @can('penjualan.edit')
-                                                        <a class="me-1" href="/penjualan/{{ \Crypt::encrypt($d->no_faktur) }}/edit"><i class="ti ti-edit text-success"></i></a>
+                                                        <a class="me-1" href="/penjualan/{{ \Crypt::encrypt($d->no_faktur) }}/edit"><i
+                                                                class="ti ti-edit text-success"></i></a>
                                                     @endcan
                                                     @can('penjualan.show')
                                                         <div>
-                                                            <a class="me-1" href="{{ route('penjualan.show', Crypt::encrypt($d->no_faktur)) }}"><i class="ti ti-file-description text-info"></i></a>
+                                                            <a class="me-1" href="{{ route('penjualan.show', Crypt::encrypt($d->no_faktur)) }}"><i
+                                                                    class="ti ti-file-description text-info"></i></a>
                                                         </div>
                                                     @endcan
 
                                                     @can('penjualan.show')
                                                         <div me-1>
                                                             <div class="btn-group">
-                                                                <a href="#" class="dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <a href="#" class="dropdown-toggle waves-effect waves-light"
+                                                                    data-bs-toggle="dropdown" aria-expanded="false">
                                                                     <i class="ti ti-printer text-primary"></i>
                                                                 </a>
                                                                 <ul class="dropdown-menu" style="">
                                                                     @can('penjualan.cetakfaktur')
                                                                         <li>
-                                                                            <a class="dropdown-item" target="_blank" href="{{ route('penjualan.cetakfaktur', Crypt::encrypt($d->no_faktur)) }}">
+                                                                            <a class="dropdown-item" target="_blank"
+                                                                                href="{{ route('penjualan.cetakfaktur', Crypt::encrypt($d->no_faktur)) }}">
                                                                                 <i class="ti ti-printer me-1"></i>
                                                                                 CetakFaktur
                                                                             </a>
@@ -171,13 +182,15 @@
                                                                     @endcan
                                                                     @can('penjualan.cetaksuratjalan')
                                                                         <li>
-                                                                            <a class="dropdown-item" target="_blank" href="{{ route('penjualan.cetaksuratjalan', [1, Crypt::encrypt($d->no_faktur)]) }}">
+                                                                            <a class="dropdown-item" target="_blank"
+                                                                                href="{{ route('penjualan.cetaksuratjalan', [1, Crypt::encrypt($d->no_faktur)]) }}">
                                                                                 <i class="ti ti-printer me-1"></i>Cetak Surat
                                                                                 Jalan 1
                                                                             </a>
                                                                         </li>
                                                                         <li>
-                                                                            <a class="dropdown-item" target="_blank" href="{{ route('penjualan.cetaksuratjalan', [2, Crypt::encrypt($d->no_faktur)]) }}">
+                                                                            <a class="dropdown-item" target="_blank"
+                                                                                href="{{ route('penjualan.cetaksuratjalan', [2, Crypt::encrypt($d->no_faktur)]) }}">
                                                                                 <i class="ti ti-printer me-1"></i>Cetak Surat
                                                                                 Jalan 2
                                                                             </a>
@@ -189,11 +202,13 @@
                                                     @endcan
                                                     @can('penjualan.batalfaktur')
                                                         <div>
-                                                            <a href="#" class="ms-4 btnBatal" no_faktur="{{ Crypt::encrypt($d->no_faktur) }}"><i class="ti ti-file-invoice text-danger"></i></a>
+                                                            <a href="#" class="ms-4 btnBatal" no_faktur="{{ Crypt::encrypt($d->no_faktur) }}"><i
+                                                                    class="ti ti-file-invoice text-danger"></i></a>
                                                         </div>
                                                     @endcan
                                                     @can('penjualan.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform" action="/penjualan/{{ Crypt::encrypt($d->no_faktur) }}/delete">
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="/penjualan/{{ Crypt::encrypt($d->no_faktur) }}/delete">
                                                             @csrf
                                                             @method('DELETE')
                                                             <a href="#" class="delete-confirm me-1">

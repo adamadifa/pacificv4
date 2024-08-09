@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Detailsaldoawalpiutangpelanggan;
+use App\Models\Klasifikasioutlet;
 use App\Models\Pelanggan;
 use App\Models\Pengajuanfaktur;
 use App\Models\Penjualan;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Intervention\Image\Facades\Image;
 
 class PelangganController extends Controller
 {
@@ -81,7 +83,8 @@ class PelangganController extends Controller
 
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
-        return view('datamaster.pelanggan.create', compact('cabang'));
+        $klasifikasi_outlet = Klasifikasioutlet::orderBy('kode_klasifikasi')->get();
+        return view('datamaster.pelanggan.create', compact('cabang', 'klasifikasi_outlet'));
     }
 
 
@@ -164,6 +167,7 @@ class PelangganController extends Controller
             'lama_berjualan' => $request->lama_berjualan,
             'status_outlet' => $request->status_outlet,
             'type_outlet' => $request->type_outlet,
+            'kode_klasifikasi' => $request->kode_klasifikasi,
             'cara_pembayaran' => $request->cara_pembayaran,
             'lama_langganan' => $request->lama_langganan,
             'jaminan' => $request->jaminan,
@@ -196,7 +200,8 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
-        return view('datamaster.pelanggan.edit', compact('cabang', 'pelanggan'));
+        $klasifikasi_outlet = Klasifikasioutlet::orderBy('kode_klasifikasi')->get();
+        return view('datamaster.pelanggan.edit', compact('cabang', 'pelanggan', 'klasifikasi_outlet'));
     }
 
     public function update(Request $request, $kode_pelanggan)
@@ -277,6 +282,7 @@ class PelangganController extends Controller
             'lama_berjualan' => $request->lama_berjualan,
             'status_outlet' => $request->status_outlet,
             'type_outlet' => $request->type_outlet,
+            'kode_klasifikasi' => $request->kode_klasifikasi,
             'cara_pembayaran' => $request->cara_pembayaran,
             'lama_langganan' => $request->lama_langganan,
             'jaminan' => $request->jaminan,
@@ -290,7 +296,9 @@ class PelangganController extends Controller
         try {
             $simpan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->update($data);
             if ($simpan) {
+                $image = $request->file('foto');
                 if ($request->hasfile('foto')) {
+
                     Storage::delete($destination_foto_path . "/" . $pelanggan->foto);
                     $request->file('foto')->storeAs($destination_foto_path, $foto_name);
                 }
@@ -457,6 +465,26 @@ class PelangganController extends Controller
         echo "<option value=''>Pilih Faktur</option>";
         foreach ($unpaidsales as $d) {
             echo "<option value='$d->no_faktur'>$d->no_faktur</option>";
+        }
+    }
+
+    public function getpelangganbysalesman(Request $request)
+    {
+        $kode_salesman = $request->kode_salesman;
+        $kode_cabang = $request->kode_cabang;
+
+        $query = Pelanggan::query();
+        if (!empty($kode_cabang)) {
+            $query->where('pelanggan.kode_cabang', $kode_cabang);
+        }
+
+        if (!empty($kode_salesman)) {
+            $query->where('pelanggan.kode_salesman', $kode_salesman);
+        }
+        $pelanggan = $query->get();
+        echo "<option value=''>Semua Pelanggan</option>";
+        foreach ($pelanggan as $d) {
+            echo "<option value='$d->kode_pelanggan'>" . textUpperCase($d->nama_pelanggan) . "</option>";
         }
     }
 }

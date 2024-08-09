@@ -61,7 +61,9 @@ use App\Http\Controllers\LaporangudanglogistikController;
 use App\Http\Controllers\LaporankeuanganController;
 use App\Http\Controllers\LaporankeuangnaController;
 use App\Http\Controllers\LaporanmaintenanceController;
+use App\Http\Controllers\LaporanmarketingController;
 use App\Http\Controllers\LaporanpembelianController;
+use App\Http\Controllers\LaporanpenjualanController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\LemburController;
@@ -311,6 +313,7 @@ Route::middleware('auth')->group(function () {
 
         //AJAX REQUEST
         Route::get('/pelanggan/{kode_pelanggan}/getPelanggan', 'getPelanggan')->name('pelanggan.getPelanggan');
+        Route::post('/pelanggan/getpelangganbysalesman', 'getpelangganbysalesman')->name('pelanggan.getpelangganbysalesman');
         Route::get('/pelanggan/cekfotopelanggan', 'cekfotopelanggan')->name('pelanggan.cekfotopelanggan');
         Route::get('/pelanggan/cekfoto', 'cekfoto')->name('pelanggan.cekfoto');
         Route::get('/pelanggan/{kode_pelanggan}/getPiutangpelanggan', 'getPiutangpelanggan')->name('pelanggan.getPiutangpelanggan');
@@ -1673,6 +1676,37 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/cetakrekapkartupiutang', 'cetakrekapkartupiutang')->name('laporankeuangan.cetakrekapkartupiutang')->can('keu.rekapkartupiutang');
         Route::post('/laporankeuangan/cetakkartupjp', 'cetakkartupjp')->name('laporankeuangan.cetakkartupjp')->can('keu.kartupinjaman');
         Route::post('/laporankeuangan/cetakkartukasbon', 'cetakkartukasbon')->name('laporankeuangan.cetakkartukasbon')->can('keu.kartukasbon');
+        Route::post('/laporankeuangan/cetakkartupiutangkaryawan', 'cetakkartupiutangkaryawan')->name('laporankeuangan.cetakkartupiutangkaryawan')->can('keu.kartupiutangkaryawan');
+    });
+
+    Route::controller(LaporanmarketingController::class)->group(function () {
+        Route::get('/laporanmarketing', 'index')->name('laporanmarketing.index');
+        Route::post('/laporanmarketing/cetakpenjualan', 'cetakpenjualan')->name('laporanmarketing.cetakpenjualan')->can('mkt.penjualan');
+        Route::post('/laporanmarketing/cetakkasbesar', 'cetakkasbesar')->name('laporanmarketing.cetakkasbesar')->can('mkt.kasbesar');
+        Route::post('/laporanmarketing/cetakretur', 'cetakretur')->name('laporanmarketing.cetakretur')->can('mkt.retur');
+        Route::post('/laporanmarketing/cetakkartupiutang', 'cetakkartupiutang')->name('laporanmarketing.cetakkartupiutang')->can('mkt.kartupiutang');
+        Route::post('/laporanmarketing/cetakaup', 'cetakaup')->name('laporanmarketing.cetakaup')->can('mkt.aup');
+        Route::post('/laporanmarketing/cetaklebihsatufaktur', 'cetaklebihsatufaktur')->name('laporanmarketing.cetaklebihsatufaktur')->can('mkt.lebihsatufaktur');
+        Route::post('/laporanmarketing/cetakdppp', 'cetakdppp')->name('laporanmarketing.cetakdppp')->can('mkt.dppp');
+        Route::post('/laporanmarketing/cetakdpp', 'cetakdpp')->name('laporanmarketing.cetakdpp')->can('mkt.dpp');
+        Route::post('/laporanmarketing/cetakomsetpelanggan', 'cetakomsetpelanggan')->name('laporanmarketing.cetakomsetpelanggan')->can('mkt.omsetpelanggan');
+        Route::post('/laporanmarketing/cetakrekappelanggan', 'cetakrekappelanggan')->name('laporanmarketing.cetakrekappelanggan')->can('mkt.rekappelanggan');
+        Route::post('/laporanmarketing/cetakrekappenjualan', 'cetakrekappenjualan')->name('laporanmarketing.cetakrekappenjualan')->can('mkt.rekappenjualan');
+        Route::post('/laporanmarketing/cetakrekapkendaraan', 'cetakrekapkendaraan')->name('laporanmarketing.cetakrekapkendaraan')->can('mkt.rekapkendaraan');
+        Route::post('/laporanmarketing/cetakharganet', 'cetakharganet')->name('laporanmarketing.cetakharganet')->can('mkt.harganet');
+        Route::post('/laporanmarketing/cetaktandaterimafaktur', 'cetaktandaterimafaktur')->name('laporanmarketing.cetaktandaterimafaktur')->can('mkt.tandaterimafaktur');
+        Route::post('/laporanmarketing/cetakrekapwilayah', 'cetakrekapwilayah')->name('laporanmarketing.cetakrekapwilayah')->can('mkt.rekapwilayah');
+        Route::post('/laporanmarketing/cetakeffectivecall', 'cetakeffectivecall')->name('laporanmarketing.cetakeffectivecall')->can('mkt.effectivecall');
+        Route::post('/laporanmarketing/cetakanalisatransaksi', 'cetakanalisatransaksi')->name('laporanmarketing.cetakanalisatransaksi')->can('mkt.analisatransaksi');
+        Route::post('/laporanmarketing/cetaktunaitransfer', 'cetaktunaitransfer')->name('laporanmarketing.cetaktunaitransfer')->can('mkt.tunaitransfer');
+        Route::post('/laporanmarketing/cetaklhp', 'cetaklhp')->name('laporanmarketing.cetaklhp')->can('mkt.lhp');
+        Route::post('/laporanmarketing/cetarroutingsalesman', 'cetarroutingsalesman')->name('laporanmarketing.cetarroutingsalesman')->can('mkt.routingsalesman');
+        Route::post('/laporanmarketing/cetaksalesperfomance', 'cetaksalesperfomance')->name('laporanmarketing.cetaksalesperfomance')->can('mkt.salesperfomance');
+        Route::post('/laporanmarketing/cetakpersentasesfa', 'cetakpersentasesfa')->name('laporanmarketing.cetakpersentasesfa')->can('mkt.persentasesfa');
+        Route::post('/laporanmarketing/cetaksmmactivity', 'cetaksmmactivity')->name('laporanmarketing.cetaksmmactivity')->can('mkt.smmactivity');
+        Route::post('/laporanmarketing/cetaksrsmactivity', 'cetaksrsmactivity')->name('laporanmarketing.cetaksrsmactivity')->can('mkt.rsmactivity');
+        Route::post('/laporanmarketing/cetakkomisisalesman', 'cetakkomisisalesman')->name('laporanmarketing.cetakkomisisalesman')->can('mkt.komisisalesman');
+        Route::post('/laporanmarketing/cetakkomisidriverhelper', 'cetakkomisidriverhelper')->name('laporanmarketing.cetakkomisidriverhelper')->can('mkt.komisidriverhelper');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
