@@ -184,13 +184,7 @@ class LaporanmarketingController extends Controller
 
 
 
-        $subqueryRetur = Detailretur::select('marketing_retur.no_faktur', DB::raw('SUM(subtotal) as total_retur'))
-            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
-            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai])
-            ->where('jenis_retur', 'PF')
-            ->groupBy('marketing_retur.no_faktur');
+
 
 
 
@@ -785,5 +779,315 @@ class LaporanmarketingController extends Controller
             header("Content-Disposition: attachment; filename=Laporan Penjualan Format Satu Baris $request->dari-$request->sampai.xls");
         }
         return view('marketing.laporan.penjualan_formatpo_cetak', $data);
+    }
+
+    //Kasbesar
+
+    public function cetakkasbesar(Request $request)
+    {
+        if ($request->formatlaporan == '1') {
+            return $this->cetakkasbesardetail($request);
+        } else if ($request->formatlaporan == '2') {
+            return $this->cetakkasbesbesarrekap($request);
+        }
+    }
+
+    public function cetakkasbesardetail(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $query = Historibayarpenjualan::query();
+        $query->select(
+            'marketing_penjualan_historibayar.no_faktur',
+            DB::raw('datediff(marketing_penjualan_historibayar.tanggal,marketing_penjualan.tanggal) as ljt'),
+            'salesman.nama_salesman',
+            'nama_wilayah',
+            'penagih.nama_salesman as penagih',
+            'marketing_penjualan.tanggal as tgltransaksi',
+            'marketing_penjualan_historibayar.tanggal as tglbayar',
+            'marketing_penjualan_historibayar.jumlah as jmlbayar',
+            'marketing_penjualan_historibayar.jumlah as lastpayment',
+            'giro_to_cash',
+            'voucher',
+            'jenis_voucher',
+            'marketing_penjualan.status',
+            'marketing_penjualan.jenis_transaksi',
+            'marketing_penjualan_historibayar.jenis_bayar',
+            'marketing_penjualan_giro.no_giro',
+            'marketing_penjualan_giro.bank_pengirim as bank_pengirim_giro',
+            'marketing_penjualan_giro_detail.jumlah as jumlah_giro',
+
+            'marketing_penjualan_transfer.bank_pengirim as bank_pengirim_transfer',
+            'marketing_penjualan_transfer_detail.jumlah as jumlah_transfer',
+            'marketing_penjualan_historibayar.kode_salesman',
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            'users.name as nama_user',
+            'marketing_penjualan_historibayar.created_at',
+            'marketing_penjualan_historibayar.no_bukti',
+
+            'marketing_penjualan.potongan',
+            'marketing_penjualan.penyesuaian',
+            'marketing_penjualan.potongan_istimewa',
+            'marketing_penjualan.ppn',
+        );
+        $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan_historibayar.no_faktur) as total_bruto'));
+        $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
+        INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
+        WHERE no_faktur = marketing_penjualan_historibayar.no_faktur AND jenis_retur="PF") as total_retur'));
+        $query->addSelect(DB::raw('(SELECT SUM(jumlah)
+        FROM marketing_penjualan_historibayar as historibayar
+        WHERE historibayar.no_faktur = marketing_penjualan_historibayar.no_faktur
+        AND historibayar.tanggal <= marketing_penjualan_historibayar.tanggal AND historibayar.tanggal >= marketing_penjualan.tanggal) as totalbayar'));
+
+        $query->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $query->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    MAX(id) AS id,
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE tanggal <= '$request->dari'
+                GROUP BY
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru,
+                    salesman.kode_cabang
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('salesman as penagih', 'marketing_penjualan_historibayar.kode_salesman', '=', 'penagih.kode_salesman');
+
+        $query->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti');
+        $query->leftJoin('marketing_penjualan_giro', 'marketing_penjualan_historibayar_giro.kode_giro', '=', 'marketing_penjualan_giro.kode_giro');
+        $query->leftJoin('marketing_penjualan_giro_detail', function ($join) {
+            $join->on('marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+                ->on('marketing_penjualan_giro_detail.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur');
+        });
+
+        $query->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_transfer.no_bukti');
+        $query->leftJoin('marketing_penjualan_transfer', 'marketing_penjualan_historibayar_transfer.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer');
+        $query->leftJoin('marketing_penjualan_transfer_detail', function ($join) {
+            $join->on('marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+                ->on('marketing_penjualan_transfer_detail.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur');
+        });
+
+        $query->leftJoin('users', 'marketing_penjualan_historibayar.id_user', '=', 'users.id');
+        $query->join('cabang', 'pindahfaktur.kode_cabang_baru', '=', 'cabang.kode_cabang');
+        $query->orderBy('marketing_penjualan_historibayar.tanggal');
+        $query->orderBy('marketing_penjualan_historibayar.no_faktur');
+        $query->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if (empty($kode_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $query->where('kode_cabang_baru', $user->kode_cabang);
+                }
+            } else {
+                $query->where('kode_cabang_baru', $kode_cabang);
+            }
+        }
+
+        if (!empty($request->kode_salesman)) {
+            $query->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $query->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+
+        if (!empty($request->jenis_bayar)) {
+            $query->where('marketing_penjualan_historibayar.jenis_bayar', $request->jenis_bayar);
+        }
+        $query->where('voucher', 0);
+
+        $data['kasbesar'] = $query->get();
+
+        $qvoucher = Historibayarpenjualan::query();
+        $qvoucher->select(
+            'marketing_penjualan_historibayar.tanggal as tglbayar',
+            'marketing_penjualan_historibayar.no_faktur',
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'marketing_penjualan_historibayar.jumlah as jmlbayar',
+            'nama_voucher'
+
+        );
+        $qvoucher->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qvoucher->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    MAX(id) AS id,
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE tanggal <= '$request->dari'
+                GROUP BY
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru,
+                    salesman.kode_cabang
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $qvoucher->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $qvoucher->join('cabang', 'pindahfaktur.kode_cabang_baru', '=', 'cabang.kode_cabang');
+        $qvoucher->join('jenis_voucher', 'marketing_penjualan_historibayar.jenis_voucher', '=', 'jenis_voucher.id');
+        $qvoucher->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
+        $qvoucher->where('voucher', 1);
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if (empty($kode_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $qvoucher->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $qvoucher->where('kode_cabang_baru', $user->kode_cabang);
+                }
+            } else {
+                $qvoucher->where('kode_cabang_baru', $kode_cabang);
+            }
+        }
+
+        if (!empty($request->kode_salesman)) {
+            $qvoucher->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $qvoucher->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+
+        if (!empty($request->jenis_bayar)) {
+            $qvoucher->where('marketing_penjualan_historibayar.jenis_bayar', $request->jenis_bayar);
+        }
+        $query->orderBy('marketing_penjualan_historibayar.tanggal');
+        $query->orderBy('marketing_penjualan_historibayar.no_faktur');
+
+        $data['voucher'] = $qvoucher->get();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+
+        return view('marketing.laporan.kasbesar_cetak', $data);
+    }
+
+    public function cetakkasbesbesarrekap(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        if (empty($kode_cabang)) {
+            $query = Historibayarpenjualan::query();
+            $query->select(
+                'cabang.kode_cabang',
+                'cabang.nama_cabang',
+                DB::raw("SUM(IF(voucher=1,jumlah,0)) as voucher"),
+                DB::raw("SUM(IF(voucher=0,jumlah,0)) as cash_in"),
+                DB::raw("SUM(jumlah) as total"),
+            );
+            $query->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $query->where('cabang.kode_cabang', $user->kode_cabang);
+                }
+            }
+            if (!empty($request->jenis_bayar)) {
+                $query->where('marketing_penjualan_historibayar.jenis_bayar', $request->jenis_bayar);
+            }
+
+            $query->groupBy('cabang.kode_cabang', 'cabang.nama_cabang');
+            $query->orderBy('cabang.kode_cabang');
+            $data['rekap'] = $query->get();
+            $data['dari'] = $request->dari;
+            $data['sampai'] = $request->sampai;
+            return view('marketing.laporan.kasbesar_rekapcabang_cetak', $data);
+        } else {
+            $query = Historibayarpenjualan::query();
+            $query->select(
+                'marketing_penjualan_historibayar.kode_salesman',
+                'salesman.nama_salesman',
+                DB::raw("SUM(IF(voucher=1,jumlah,0)) as voucher"),
+                DB::raw("SUM(IF(voucher=0,jumlah,0)) as cash_in"),
+                DB::raw("SUM(jumlah) as total"),
+            );
+            $query->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
+
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('salesman.kode_cabang', $request->kode_cabang);
+                } else {
+                    $query->where('cabang.kode_cabang', $user->kode_cabang);
+                }
+            } else {
+                $query->where('salesman.kode_cabang', $request->kode_cabang);
+            }
+            if (!empty($request->jenis_bayar)) {
+                $query->where('marketing_penjualan_historibayar.jenis_bayar', $request->jenis_bayar);
+            }
+
+            $query->groupBy('marketing_penjualan_historibayar.kode_salesman', 'salesman.nama_salesman');
+            $query->orderBy('salesman.nama_salesman');
+            $data['rekap'] = $query->get();
+            $data['dari'] = $request->dari;
+            $data['sampai'] = $request->sampai;
+            return view('marketing.laporan.kasbesar_rekapsalesman_cetak', $data);
+        }
     }
 }
