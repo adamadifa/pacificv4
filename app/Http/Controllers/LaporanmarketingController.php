@@ -87,7 +87,7 @@ class LaporanmarketingController extends Controller
 
         $qpenjualan = Detailpenjualan::query();
         $qpenjualan->select(
-            'marketing_penjualan_detail.no_faktur',
+            'marketing_penjualan.no_faktur',
             'marketing_penjualan.tanggal',
             'marketing_penjualan.kode_pelanggan',
             'pelanggan.nama_pelanggan',
@@ -100,6 +100,7 @@ class LaporanmarketingController extends Controller
             'marketing_penjualan_detail.harga_dus',
             'marketing_penjualan_detail.harga_pack',
             'marketing_penjualan_detail.harga_pcs',
+            'marketing_penjualan_detail.status_promosi',
             'produk.isi_pcs_dus',
             'produk.isi_pcs_pack',
             'marketing_penjualan_detail.subtotal',
@@ -114,12 +115,17 @@ class LaporanmarketingController extends Controller
             'potongan',
             'ppn',
             'jenis_transaksi',
-            'status',
+            'marketing_penjualan.status',
+            'marketing_penjualan.created_at',
+            'marketing_penjualan.updated_at',
+            'users.name as nama_user'
         );
+        $qpenjualan->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'));
 
 
         $qpenjualan->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
         $qpenjualan->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+
         $qpenjualan->rightjoin('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qpenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $qpenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
@@ -130,7 +136,7 @@ class LaporanmarketingController extends Controller
             $join->on('marketing_penjualan.no_faktur', '=', 'retur.no_faktur');
         });
 
-
+        $qpenjualan->leftJoin('users', 'marketing_penjualan.id_user', '=', 'users.id');
 
 
         $qpenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
