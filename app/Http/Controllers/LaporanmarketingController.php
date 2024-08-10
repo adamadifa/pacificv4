@@ -46,10 +46,130 @@ class LaporanmarketingController extends Controller
                 return $this->cetakpenjualanformatkomisi($request);
             } else if ($request->formatlaporan == '3') {
                 return $this->cetakpenjualanformatpo($request);
+            } else if ($request->formatlaporan == '1') {
+                return $this->cetakpenjualanformatstandar($request);
             }
         }
     }
 
+
+    public function cetakpenjualanformatstandar(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+
+
+
+        $subqueryRetur = Detailretur::select('marketing_retur.no_faktur', DB::raw('SUM(subtotal) as total_retur'))
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->where('jenis_retur', 'PF')
+            ->groupBy('marketing_retur.no_faktur');
+
+
+
+
+        // dd($subqueryRetur->get());
+
+        $qpenjualan = Detailpenjualan::query();
+        $qpenjualan->select(
+            'marketing_penjualan_detail.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'pelanggan.hari',
+            'salesman.nama_salesman',
+            'klasifikasi',
+            'nama_wilayah',
+            'produk.nama_produk',
+            'marketing_penjualan_detail.jumlah',
+            'marketing_penjualan_detail.harga_dus',
+            'marketing_penjualan_detail.harga_pack',
+            'marketing_penjualan_detail.harga_pcs',
+            'produk.isi_pcs_dus',
+            'produk.isi_pcs_pack',
+            'marketing_penjualan_detail.subtotal',
+            'total_retur',
+            'potongan_aida',
+            'potongan_swan',
+            'potongan_stick',
+            'potongan_sp',
+            'potongan_sambal',
+            'potongan_istimewa',
+            'penyesuaian',
+            'potongan',
+            'ppn',
+            'jenis_transaksi',
+            'status',
+        );
+
+
+        $qpenjualan->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qpenjualan->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $qpenjualan->rightjoin('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qpenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $qpenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qpenjualan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $qpenjualan->leftJoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', 'marketing_klasifikasi_outlet.kode_klasifikasi');
+        $qpenjualan->leftJoin('wilayah', 'pelanggan.kode_wilayah', 'wilayah.kode_wilayah');
+        $qpenjualan->leftJoinsub($subqueryRetur, 'retur', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'retur.no_faktur');
+        });
+
+
+
+
+        $qpenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        $qpenjualan->where('salesman.kode_cabang', $kode_cabang);
+        if (!empty($request->kode_salesman)) {
+            $qpenjualan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $qpenjualan->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+
+        if (!empty($request->jenis_transaksi)) {
+            $qpenjualan->where('marketing_penjualan.jenis_transaksi', $request->jenis_transaksi);
+        }
+        $qpenjualan->orderBy('marketing_penjualan.tanggal');
+        $qpenjualan->orderBy('marketing_penjualan.no_faktur');
+
+
+
+
+        $penjualan = $qpenjualan->get();
+
+        //dd($penjualan);
+
+        $data['penjualan'] = $penjualan;
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Laporan Penjualan Format Satu Baris $request->dari-$request->sampai.xls");
+        }
+        return view('marketing.laporan.penjualan_formatstandar_cetak', $data);
+    }
     public function cetakrekappenjualanallcabang(Request $request)
     {
 
