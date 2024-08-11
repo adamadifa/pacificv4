@@ -42,6 +42,38 @@
                         </button>
                     </li>
                 @endcan
+                @can('mkt.dpp')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#dpp" aria-controls="dpp"
+                            aria-selected="false" tabindex="-1">
+                            DPP
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.omsetpelanggan')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#omsetpelanggan"
+                            aria-controls="omsetpelanggan" aria-selected="false" tabindex="-1">
+                            Omset Pelanggan
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.rekappelanggan')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekappelanggan"
+                            aria-controls="rekappelanggan" aria-selected="false" tabindex="-1">
+                            Rekap Pelanggan
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.rekapkendaraan')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapkendaraan"
+                            aria-controls="rekapkendaraan" aria-selected="false" tabindex="-1">
+                            Rekap Kendaraan
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 @can('mkt.penjualan')
@@ -62,6 +94,26 @@
                 @can('mkt.tunaikredit')
                     <div class="tab-pane fade" id="tunaikredit" role="tabpanel">
                         @include('marketing.laporan.tunaikredit')
+                    </div>
+                @endcan
+                @can('mkt.dpp')
+                    <div class="tab-pane fade" id="dpp" role="tabpanel">
+                        @include('marketing.laporan.dpp')
+                    </div>
+                @endcan
+                @can('mkt.dpp')
+                    <div class="tab-pane fade" id="omsetpelanggan" role="tabpanel">
+                        @include('marketing.laporan.omsetpelanggan')
+                    </div>
+                @endcan
+                @can('mkt.rekappelanggan')
+                    <div class="tab-pane fade" id="rekappelanggan" role="tabpanel">
+                        @include('marketing.laporan.rekappelanggan')
+                    </div>
+                @endcan
+                @can('mkt.rekapkendaraan')
+                    <div class="tab-pane fade" id="rekapkendaraan" role="tabpanel">
+                        @include('marketing.laporan.rekapkendaraan')
                     </div>
                 @endcan
             </div>

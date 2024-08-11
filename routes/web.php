@@ -361,6 +361,7 @@ Route::middleware('auth')->group(function () {
 
         //GET DATA FROM AJAX
         Route::post('/kendaraan/getkendaraanbycabang', 'getkendaraanbycabang');
+        Route::post('/kendaraan/getkendaraandpbbycabang', 'getkendaraandpbbycabang');
     });
 
     Route::controller(SupplierController::class)->group(function () {

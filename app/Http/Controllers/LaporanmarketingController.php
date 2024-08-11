@@ -1018,6 +1018,11 @@ class LaporanmarketingController extends Controller
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
 
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Kas Besar $request->dari-$request->sampai.xls");
+        }
         return view('marketing.laporan.kasbesar_cetak', $data);
     }
 
@@ -1064,6 +1069,11 @@ class LaporanmarketingController extends Controller
             $data['rekap'] = $query->get();
             $data['dari'] = $request->dari;
             $data['sampai'] = $request->sampai;
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Rekap Kas Besar Cabang  $request->dari-$request->sampai.xls");
+            }
             return view('marketing.laporan.kasbesar_rekapcabang_cetak', $data);
         } else {
             $query = Historibayarpenjualan::query();
@@ -1095,6 +1105,11 @@ class LaporanmarketingController extends Controller
             $data['rekap'] = $query->get();
             $data['dari'] = $request->dari;
             $data['sampai'] = $request->sampai;
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Rekap Kas Besar Salesman  $request->dari-$request->sampai.xls");
+            }
             return view('marketing.laporan.kasbesar_rekapsalesman_cetak', $data);
         }
     }
@@ -1358,6 +1373,11 @@ class LaporanmarketingController extends Controller
         $data['sampai'] = $request->sampai;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Kas Besar LHP  $request->dari-$request->sampai.xls");
+        }
         return view('marketing.laporan.kasbesar_lhp_cetak', $data);
     }
 
@@ -1543,12 +1563,380 @@ class LaporanmarketingController extends Controller
         $query->groupBy('produk_harga.kode_produk');
         $query->orderBy('produk_harga.kode_produk');
         $penjualan = $query->get();
+
+        $queryretur = Detailretur::select(
+            DB::raw('SUM(IF(jenis_transaksi="T",subtotal,0)) as retur_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi="K",subtotal,0)) as retur_kredit'),
+            DB::raw('SUM(subtotal) as retur_total')
+        );
+        $queryretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $queryretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $queryretur->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $queryretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
+        $queryretur->where('jenis_retur', 'PF');
+        if (!empty($kode_cabang)) {
+            $queryretur->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $queryretur->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $queryretur->where('salesman.kode_cabang', $user->kode_cabang);
+                }
+            }
+        }
+        if (!empty($request->kode_salesman)) {
+            $queryretur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+
+        $queryPotongan = Penjualan::select(
+            DB::raw('SUM(potongan) as potongan_total'),
+            DB::raw('SUM(potongan_istimewa) as potongan_istimewa_total'),
+            DB::raw('SUM(penyesuaian) as penyesuaian_total'),
+            DB::raw('SUM(ppn) as ppn_total'),
+            DB::raw('SUM(IF(jenis_transaksi="T", potongan, 0)) as potongan_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi="T", potongan_istimewa, 0)) as potongan_istimewa_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi="T", penyesuaian, 0)) as penyesuaian_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi="T", ppn, 0)) as ppn_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi="K", potongan, 0)) as potongan_kredit'),
+            DB::raw('SUM(IF(jenis_transaksi="K", potongan_istimewa, 0)) as potongan_istimewa_kredit'),
+            DB::raw('SUM(IF(jenis_transaksi="K", penyesuaian, 0)) as penyesuaian_kredit'),
+            DB::raw('SUM(IF(jenis_transaksi="K", ppn, 0)) as ppn_kredit')
+        );
+        $queryPotongan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $queryPotongan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $queryPotongan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($kode_cabang)) {
+            $queryPotongan->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $queryPotongan->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $queryPotongan->where('salesman.kode_cabang', $user->kode_cabang);
+                }
+            }
+        }
+        if (!empty($request->kode_salesman)) {
+            $queryPotongan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+
         $data['penjualan'] = $penjualan;
+        $data['retur'] = $queryretur->first();
+        $data['potongan'] = $queryPotongan->first();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
 
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Tunai Kredit  $request->dari-$request->sampai.xls");
+        }
         return view('marketing.laporan.tunaikredit_cetak', $data);
+    }
+
+    public function cetakdpp(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai])
+            ->when(!empty($kode_cabang), function ($query) use ($kode_cabang) {
+                return $query->where('salesman.kode_cabang', $kode_cabang);
+            })
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->get();
+
+
+        $selectColumnkodeproduk = [];
+        foreach ($produk as $d) {
+            $selectColumnkodeproduk[] = DB::raw('SUM(IF(kode_produk="' . $d->kode_produk . '",jumlah,0)) as `qty_' . $d->kode_produk . '`');
+        }
+
+        $query = Detailpenjualan::select(
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'nama_wilayah',
+            'klasifikasi',
+            'salesman.nama_salesman',
+            ...$selectColumnkodeproduk
+        );
+        $query->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $query->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->leftjoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
+        $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($kode_cabang)) {
+            $query->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $query->where('salesman.kode_cabang', $user->kode_cabang);
+                }
+            }
+        }
+        if (!empty($request->kode_salesman)) {
+            $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $query->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+
+        $query->orderBy('marketing_penjualan.tanggal', 'asc');
+        $query->orderBy('pelanggan.nama_pelanggan', 'asc');
+        $query->groupBy(
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'nama_wilayah',
+            'klasifikasi',
+            'salesman.nama_salesman'
+        );
+        $data['dpp'] = $query->get();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        $data['produk'] = $produk;
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Data Pengambilan Pelanggan  $request->dari-$request->sampai.xls");
+        }
+        return view('marketing.laporan.dpp_cetak', $data);
+    }
+
+    public function cetakomsetpelanggan(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $qdetailpenjualan = Detailpenjualan::query();
+        $qdetailpenjualan->select(
+            'marketing_penjualan_detail.no_faktur',
+            DB::raw('SUM(subtotal) as total_bruto'),
+        );
+        $qdetailpenjualan->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qdetailpenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qdetailpenjualan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $qdetailpenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($kode_cabang)) {
+            $qdetailpenjualan->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $qdetailpenjualan->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $qdetailpenjualan->where('salesman.kode_cabang', $user->kode_cabang);
+                }
+            }
+        }
+        if (!empty($request->kode_salesman)) {
+            $qdetailpenjualan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $qdetailpenjualan->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+        $qdetailpenjualan->groupBy('marketing_penjualan_detail.no_faktur');
+        $subqueryDetailpenjualan = $qdetailpenjualan;
+
+        $query =  Penjualan::query();
+        $query->select(
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            'klasifikasi',
+            DB::raw('SUM(total_bruto - potongan + penyesuaian + potongan_istimewa + ppn) as total_netto'),
+        );
+
+
+
+
+        $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->leftjoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
+        $query->leftjoinSub($subqueryDetailpenjualan, 'dp', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'dp.no_faktur');
+        });
+        $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($kode_cabang)) {
+            $query->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $query->where('salesman.kode_cabang', $user->kode_cabang);
+                }
+            }
+        }
+        if (!empty($request->kode_salesman)) {
+            $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $query->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+        $query->groupBy(
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            'klasifikasi',
+        );
+        $query->orderBy('pelanggan.nama_pelanggan', 'asc');
+
+        $data['omsetpelanggan'] = $query->get();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap Omset Pelanggan $request->dari-$request->sampai.xls");
+        }
+
+        return view('marketing.laporan.omsetpelanggan_cetak', $data);
+    }
+
+
+    public function cetakrekappelanggan(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai])
+            ->when(!empty($kode_cabang), function ($query) use ($kode_cabang) {
+                return $query->where('salesman.kode_cabang', $kode_cabang);
+            })
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->get();
+
+
+        $selectColumnkodeproduk = [];
+        foreach ($produk as $d) {
+            $selectColumnkodeproduk[] = DB::raw('SUM(IF(produk_harga.kode_produk="' . $d->kode_produk . '",jumlah,0)) as `qty_' . $d->kode_produk . '`');
+        }
+
+        $query = Detailpenjualan::select(
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'nama_wilayah',
+            'klasifikasi',
+            'salesman.nama_salesman',
+            DB::raw('COUNT(DISTINCT(kode_sku)) as total_sku'),
+            ...$selectColumnkodeproduk
+        );
+        $query->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $query->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $query->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->leftjoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
+        $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($kode_cabang)) {
+            $query->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $query->where('salesman.kode_cabang', $user->kode_cabang);
+                }
+            }
+        }
+        if (!empty($request->kode_salesman)) {
+            $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $query->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+
+
+        $query->orderBy('pelanggan.nama_pelanggan', 'asc');
+        $query->groupBy(
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'nama_wilayah',
+            'klasifikasi',
+            'salesman.nama_salesman'
+        );
+        $data['rekappelanggan'] = $query->get();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        $data['produk'] = $produk;
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap Pelanggan  $request->dari-$request->sampai.xls");
+        }
+        return view('marketing.laporan.rekappelanggan_cetak', $data);
     }
 }

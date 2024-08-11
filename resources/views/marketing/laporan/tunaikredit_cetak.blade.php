@@ -79,6 +79,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $total_bruto_tunai = 0;
+                        $total_bruto_kredit = 0;
+                        $grandtotal_bruto = 0;
+                    @endphp
                     @foreach ($penjualan as $d)
                         <!-- Tunai-->
                         @php
@@ -101,6 +106,10 @@
                             $dus_total = $jml_total[0];
                             $pack_total = $jml_total[1];
                             $pcs_total = $jml_total[2];
+
+                            $total_bruto_tunai += $d->bruto_tunai;
+                            $total_bruto_kredit += $d->bruto_kredit;
+                            $grandtotal_bruto += $d->bruto_total;
                         @endphp
                         <tr>
                             <td>{{ $d->kode_produk }}</td>
@@ -121,6 +130,84 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="5" class="green left">TOTAL</th>
+                        <th class="right green">{{ formatAngka($total_bruto_tunai) }}</th>
+                        <th colspan="3" class="green"></th>
+                        <th class="right green">{{ formatAngka($total_bruto_kredit) }}</th>
+                        <th colspan="3" class="green"></th>
+                        <th class="right green">{{ formatAngka($grandtotal_bruto) }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="5" class="left">Retur Penjualan</th>
+                        <th class="right">{{ formatAngka($retur->retur_tunai) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($retur->retur_kredit) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($retur->retur_total) }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="5" class="left">Potongan</th>
+                        <th class="right">{{ formatAngka($potongan->potongan_tunai) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($potongan->potongan_kredit) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($potongan->potongan_total) }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="5" class="left">Penyesuaian</th>
+                        <th class="right">{{ formatAngka($potongan->penyesuaian_tunai) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($potongan->penyesuaian_kredit) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($potongan->penyesuaian_total) }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="5" class="left">Potongan Istimewa</th>
+                        <th class="right">{{ formatAngka($potongan->potongan_istimewa_tunai) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($potongan->potongan_istimewa_kredit) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($potongan->potongan_istimewa_total) }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="5" class="left">PPN</th>
+                        <th class="right">{{ formatAngka($potongan->ppn_tunai) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($potongan->ppn_kredit) }}</th>
+                        <th colspan="3"></th>
+                        <th class="right">{{ formatAngka($potongan->ppn_total) }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="5" class="green left">NETTO</th>
+                        @php
+                            $netto_tunai =
+                                $total_bruto_tunai -
+                                $retur->retur_tunai -
+                                $potongan->potongan_tunai -
+                                $potongan->penyesuaian_tunai -
+                                $potongan->potongan_istimewa_tunai +
+                                $potongan->ppn_tunai;
+
+                            $netto_kredit =
+                                $total_bruto_kredit -
+                                $retur->retur_kredit -
+                                $potongan->potongan_kredit -
+                                $potongan->penyesuaian_kredit -
+                                $potongan->potongan_istimewa_kredit +
+                                $potongan->ppn_kredit;
+
+                            $netto_total = $netto_tunai + $netto_kredit;
+                        @endphp
+
+                        <th class="right green">{{ formatAngka($netto_tunai) }}</th>
+                        <th colspan="3" class="green"></th>
+                        <th class="right green">{{ formatAngka($netto_kredit) }}</th>
+                        <th colspan="3" class="green"></th>
+                        <th class="right green">{{ formatAngka($netto_total) }}</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Dpb;
 use App\Models\Kendaraan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -180,6 +181,33 @@ class KendaraanController extends Controller
             $query->where('kode_cabang', $request->kode_cabang);
         }
         $query->where('status_aktif_kendaraan', 1);
+        $kendaraan = $query->get();
+
+
+
+
+        echo "<option value=''>Kendaraan</option>";
+        foreach ($kendaraan as $d) {
+            $selected = $d->kode_kendaraan == $request->kode_kendaraan ? 'selected' : '';
+            echo "<option $selected value='$d->kode_kendaraan'>" . $d->no_polisi . "-" . textUpperCase($d->merek) . "-" . textUpperCase($d->tipe) .  "</option>";
+        }
+    }
+
+    public function getkendaraandpbbycabang(Request $request)
+    {
+
+        $kode_cabang_user = auth()->user()->kode_cabang;
+        $query = Dpb::query();
+        $query->select('gudang_cabang_dpb.kode_kendaraan', 'kendaraan.merek', 'kendaraan.tipe', 'kendaraan.no_polisi', 'kendaraan.tipe_kendaraan');
+        if ($kode_cabang_user != "PST") {
+            $query->where('salesman.kode_cabang', $kode_cabang_user);
+        } else {
+            $query->where('salesman.kode_cabang', $request->kode_cabang);
+        }
+        $query->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('kendaraan', 'gudang_cabang_dpb.kode_kendaraan', '=', 'kendaraan.kode_kendaraan');
+        $query->where('status_aktif_kendaraan', 1);
+        $query->groupBy('kendaraan.kode_kendaraan', 'kendaraan.merek', 'kendaraan.tipe', 'kendaraan.no_polisi', 'kendaraan.tipe_kendaraan');
         $kendaraan = $query->get();
 
 
