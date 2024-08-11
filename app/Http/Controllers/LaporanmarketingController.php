@@ -1489,4 +1489,66 @@ class LaporanmarketingController extends Controller
         }
         return view('marketing.laporan.retur_cetak', $data);
     }
+
+    public function cetaktunaikredit(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $query = Detailpenjualan::select(
+            'produk_harga.kode_produk',
+            'produk.nama_produk',
+            'produk.isi_pcs_dus',
+            'produk.isi_pcs_pack',
+            DB::raw("SUM(IF(jenis_transaksi = 'T', jumlah, 0)) AS qty_tunai"),
+            DB::raw("SUM(IF(jenis_transaksi = 'K', jumlah, 0)) AS qty_kredit"),
+            DB::raw("SUM(IF(jenis_transaksi = 'T', subtotal, 0)) AS bruto_tunai"),
+            DB::raw("SUM(IF(jenis_transaksi = 'K', subtotal, 0)) AS bruto_kredit"),
+            DB::raw('SUM(jumlah) as qty_total'),
+            DB::raw('SUM(subtotal) as bruto_total')
+        );
+        $query->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $query->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $query->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        $query->where('status_promosi', 0);
+        if (!empty($kode_cabang)) {
+            $query->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $query->where('salesman.kode_cabang', $user->kode_cabang);
+                }
+            }
+        }
+        if (!empty($request->kode_salesman)) {
+            $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+
+        $query->groupBy('produk_harga.kode_produk');
+        $query->orderBy('produk_harga.kode_produk');
+        $penjualan = $query->get();
+        $data['penjualan'] = $penjualan;
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        return view('marketing.laporan.tunaikredit_cetak', $data);
+    }
 }
