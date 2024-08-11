@@ -1684,6 +1684,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetakpenjualan', 'cetakpenjualan')->name('laporanmarketing.cetakpenjualan')->can('mkt.penjualan');
         Route::post('/laporanmarketing/cetakkasbesar', 'cetakkasbesar')->name('laporanmarketing.cetakkasbesar')->can('mkt.kasbesar');
         Route::post('/laporanmarketing/cetakretur', 'cetakretur')->name('laporanmarketing.cetakretur')->can('mkt.retur');
+        Route::post('/laporanmarketing/cetaktunaikredit', 'cetaktunaikredit')->name('laporanmarketing.cetaktunaikredit')->can('mkt.tunaikredit');
         Route::post('/laporanmarketing/cetakkartupiutang', 'cetakkartupiutang')->name('laporanmarketing.cetakkartupiutang')->can('mkt.kartupiutang');
         Route::post('/laporanmarketing/cetakaup', 'cetakaup')->name('laporanmarketing.cetakaup')->can('mkt.aup');
         Route::post('/laporanmarketing/cetaklebihsatufaktur', 'cetaklebihsatufaktur')->name('laporanmarketing.cetaklebihsatufaktur')->can('mkt.lebihsatufaktur');

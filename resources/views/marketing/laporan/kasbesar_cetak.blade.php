@@ -150,7 +150,7 @@
                         <tr>
                             <td>{{ formatIndo($d->tglbayar) }}</td>
                             <td>{{ $d->no_faktur }}</td>
-                            <td>{{ $d->jenistransaksi == 'T' ? 'TUNAI' : 'KREDIT' }}</td>
+                            <td>{{ $d->jenis_transaksi == 'T' ? 'TUNAI' : 'KREDIT' }}</td>
                             <td>{{ formatIndo($d->tgltransaksi) }}</td>
                             <td class="center {{ $bgcolorljt }}">{{ $d->ljt }}</td>
                             <td>{{ $d->nama_salesman }}</td>

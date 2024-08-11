@@ -145,9 +145,14 @@
                 getpelangganbySalesmanKasbesar();
             });
 
+            formKasbesar.find("#formatlaporan_kasbesar").change(function(e) {
+                showformatlaporanKasbesar();
+            })
+
             function showformatlaporanKasbesar() {
                 const kode_cabang = $("#kode_cabang_kasbesar").val();
-                if (kode_cabang == "") {
+                const formatlaporan = formKasbesar.find("#formatlaporan_kasbesar").val();
+                if (kode_cabang == "" || formatlaporan == "2") {
                     formKasbesar.find("#kode_salesman_kasbesar").prop("disabled", true);
                     formKasbesar.find("#kode_pelanggan_kasbesar").prop("disabled", true);
                     formKasbesar.find("#jenis_transaksi_kasbesar").prop("disabled", true);
