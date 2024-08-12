@@ -192,7 +192,7 @@ class DashboardController extends Controller
             $selectColumnsPenjualan[] = DB::raw('SUM(IF(produk_harga.kode_produk="' . $kodeProduk . '", marketing_penjualan_detail.jumlah,0)) as penjualan_' . $kodeProduk);
             $selectColumnsSuratjalangudang[] = DB::raw('SUM(IF(gudang_jadi_mutasi_detail.kode_produk="' . $kodeProduk . '", gudang_jadi_mutasi_detail.jumlah,0)) as suratjalan_' . $kodeProduk);
             //Gudang Jadi
-            $selectColumnsGudang[] = DB::raw('SUM(IF(produk.kode_produk = "' . $kodeProduk . '", subquerySaldoAwalgudang.saldo_awal + subqueryMutasigudang.sisa_mutasi, 0)) AS saldoakhir_' . $kodeProduk);
+            $selectColumnsGudang[] = DB::raw('SUM(IF(produk.kode_produk = "' . $kodeProduk . '", subquerySaldoawalgudang.saldo_awal + subqueryMutasigudang.sisa_mutasi, 0)) AS saldoakhir_' . $kodeProduk);
 
             $selectColumns[] = 'saldo_' . $kodeProduk;
             $selectColumns[] = 'mutasi_' . $kodeProduk;
