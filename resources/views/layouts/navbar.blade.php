@@ -18,87 +18,95 @@
         <!-- /Search -->
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
+            @if (Cookie::get('kodepelanggan') != null)
+                <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
+                    <a class="btn btn-sm btn-primary mt-1" href="/sfa/pelanggan/{{ Cookie::get('kodepelanggan') }}/show">
+                        <i class="ti ti-sm ti-user"></i> Pelanggan
+                    </a>
+                </li>
+            @endif
+            @if ($level_user != 'salesman')
+                <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                        aria-expanded="false">
+                        <i class="ti ti-layout-grid-add ti-md"></i>
+                        <span class="badge bg-danger rounded-pill badge-notifications">{{ $total_notifikasi }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end py-0">
+                        <div class="dropdown-menu-header border-bottom">
+                            <div class="dropdown-header d-flex align-items-center py-3">
+                                <h5 class="text-body mb-0 me-auto">Shortcuts</h5>
+                                <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="Add shortcuts">
+                                    <i class="ti ti-sm ti-apps"></i>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="dropdown-shortcuts-list scrollable-container">
+                            <div class="row row-bordered overflow-visible g-0">
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-brand-shopee fs-4"></i>
+                                        @if (!empty($notifikasi_limitkredit))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_limitkredit }}</span>
+                                        @endif
+
+                                    </span>
+
+                                    <a href="{{ route('ajuanlimit.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}"
+                                        class="stretched-link">Ajuan</a>
+                                    <small class="text-muted mb-0">Limit Kredit</small>
+                                </div>
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-file-invoice fs-4"></i>
+                                        @if (!empty($notifikasi_ajuanfaktur))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_ajuanfaktur }}</span>
+                                        @endif
+                                    </span>
+                                    <a href="{{ route('ajuanfaktur.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}"
+                                        class="stretched-link">Ajuan</a>
+                                    <small class="text-muted mb-0">Faktur Kredit</small>
+                                </div>
+                            </div>
+                            <div class="row row-bordered overflow-visible g-0">
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-users fs-4"></i>
+                                        @if (!empty($notifikasi_penilaiankaryawan))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_penilaiankaryawan }}</span>
+                                        @endif
+                                    </span>
+
+                                    <a href="{{ route('penilaiankaryawan.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}"
+                                        class="stretched-link">Penilaian</a>
+                                    <small class="text-muted mb-0">Karyawan</small>
+                                </div>
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-target-arrow fs-4"></i>
+                                        @if (!empty($notifikasi_target))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_target }}
+                                            </span>
+                                        @endif
+                                    </span>
+                                    <a href="app-access-roles.html" class="stretched-link">Target</a>
+                                    <small class="text-muted mb-0">Marketing</small>
+                                </div>
+                            </div>
 
 
+                        </div>
+                    </div>
+                </li>
+            @endif
             <!-- Quick links  -->
-            <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
-                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                    aria-expanded="false">
-                    <i class="ti ti-layout-grid-add ti-md"></i>
-                    <span class="badge bg-danger rounded-pill badge-notifications">{{ $total_notifikasi }}</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-end py-0">
-                    <div class="dropdown-menu-header border-bottom">
-                        <div class="dropdown-header d-flex align-items-center py-3">
-                            <h5 class="text-body mb-0 me-auto">Shortcuts</h5>
-                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Add shortcuts">
-                                <i class="ti ti-sm ti-apps"></i>
-                            </a>
 
-                        </div>
-                    </div>
-                    <div class="dropdown-shortcuts-list scrollable-container">
-                        <div class="row row-bordered overflow-visible g-0">
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-2">
-                                    <i class="ti ti-brand-shopee fs-4"></i>
-                                    @if (!empty($notifikasi_limitkredit))
-                                        <span class="badge bg-danger rounded-pill badge-notifications"
-                                            style="position: absolute; right: 50px; top:20px">{{ $notifikasi_limitkredit }}</span>
-                                    @endif
-
-                                </span>
-
-                                <a href="{{ route('ajuanlimit.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}"
-                                    class="stretched-link">Ajuan</a>
-                                <small class="text-muted mb-0">Limit Kredit</small>
-                            </div>
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-2">
-                                    <i class="ti ti-file-invoice fs-4"></i>
-                                    @if (!empty($notifikasi_ajuanfaktur))
-                                        <span class="badge bg-danger rounded-pill badge-notifications"
-                                            style="position: absolute; right: 50px; top:20px">{{ $notifikasi_ajuanfaktur }}</span>
-                                    @endif
-                                </span>
-                                <a href="{{ route('ajuanfaktur.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}"
-                                    class="stretched-link">Ajuan</a>
-                                <small class="text-muted mb-0">Faktur Kredit</small>
-                            </div>
-                        </div>
-                        <div class="row row-bordered overflow-visible g-0">
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-2">
-                                    <i class="ti ti-users fs-4"></i>
-                                    @if (!empty($notifikasi_penilaiankaryawan))
-                                        <span class="badge bg-danger rounded-pill badge-notifications"
-                                            style="position: absolute; right: 50px; top:20px">{{ $notifikasi_penilaiankaryawan }}</span>
-                                    @endif
-                                </span>
-
-                                <a href="{{ route('penilaiankaryawan.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}"
-                                    class="stretched-link">Penilaian</a>
-                                <small class="text-muted mb-0">Karyawan</small>
-                            </div>
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-2">
-                                    <i class="ti ti-target-arrow fs-4"></i>
-                                    @if (!empty($notifikasi_target))
-                                        <span class="badge bg-danger rounded-pill badge-notifications"
-                                            style="position: absolute; right: 50px; top:20px">{{ $notifikasi_target }}
-                                        </span>
-                                    @endif
-                                </span>
-                                <a href="app-access-roles.html" class="stretched-link">Target</a>
-                                <small class="text-muted mb-0">Marketing</small>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-            </li>
             <!-- Quick links -->
 
             <!-- Notification -->

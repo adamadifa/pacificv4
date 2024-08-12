@@ -52,6 +52,9 @@ class Pelanggan extends Model
             $query->where('status_aktif_pelanggan', $status);
         }
 
+        if ($user->hasRole('salesman')) {
+            $query->where('pelanggan.kode_salesman', $user->kode_salesman);
+        }
         $query->orderBy('tanggal_register', 'desc');
 
         return $query->count();

@@ -118,6 +118,7 @@ use App\Http\Controllers\SetorangiroController;
 use App\Http\Controllers\SetoranpenjualanController;
 use App\Http\Controllers\SetoranpusatController;
 use App\Http\Controllers\SetorantransferController;
+use App\Http\Controllers\SfaControler;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
@@ -326,6 +327,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkredit', 'getlistFakturkredit')->name('pelanggan.getlistFakturkredit');
         Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkreditoption', 'getlistfakturkreditoption')->name('pelanggan.getlistfakturkreditoption');
         Route::get('/pelanggan/getpelangganjson', 'getPelangganjson')->name('pelanggan.getpelangganjson');
+
+        Route::get('/sfa/pelanggan', 'index')->name('sfa.pelanggan');
     });
 
     Route::controller(WilayahController::class)->group(function () {
@@ -1715,6 +1718,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetaksrsmactivity', 'cetaksrsmactivity')->name('laporanmarketing.cetaksrsmactivity')->can('mkt.rsmactivity');
         Route::post('/laporanmarketing/cetakkomisisalesman', 'cetakkomisisalesman')->name('laporanmarketing.cetakkomisisalesman')->can('mkt.komisisalesman');
         Route::post('/laporanmarketing/cetakkomisidriverhelper', 'cetakkomisidriverhelper')->name('laporanmarketing.cetakkomisidriverhelper')->can('mkt.komisidriverhelper');
+    });
+
+    //SFA
+    Route::controller(SfaControler::class)->group(function () {
+        Route::get('/sfa/pelanggan', 'pelanggan')->name('sfa.pelanggan')->can('sfa.pelanggan');
+        Route::get('/sfa/pelanggan/create', 'createpelanggan')->name('sfa.createpelanggan')->can('sfa.pelanggan');
+        Route::post('/sfa/pelanggan/store', 'storepelanggan')->name('sfa.storepelanggan')->can('sfa.pelanggan');
+        Route::get('/sfa/pelanggan/{kode_pelanggan}/show', 'showpelanggan')->name('sfa.showpelanggan')->can('sfa.pelanggan');
+        Route::get('/sfa/pelanggan/{kode_pelanggan}/capture', 'capture')->name('sfa.capture')->can('sfa.pelanggan');
+        Route::post('/sfa/checkinstore', 'checkinstore')->name('sfa.checkinstore')->can('sfa.penjualan');
+        Route::get('/sfa/{kode_pelanggan}/checkout', 'checkout')->name('sfa.checkout')->can('sfa.penjualan');
+        Route::post('/sfa/storepelanggancapture', 'storepelanggancapture')->name('sfa.storepelangancapture')->can('sfa.pelanggan');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

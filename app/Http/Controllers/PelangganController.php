@@ -56,6 +56,9 @@ class PelangganController extends Controller
             $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
         }
 
+        if ($user->hasRole('salesman')) {
+            $query->where('pelanggan.kode_salesman', $user->kode_salesman);
+        }
         $query->orderBy('tanggal_register', 'desc');
 
         $pelanggan = $query->paginate('30');
@@ -69,6 +72,9 @@ class PelangganController extends Controller
 
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
+        if ($user->hasRole('salesman')) {
+            return view('sfa.pelanggan', compact('pelanggan'));
+        }
         return view('datamaster.pelanggan.index', compact(
             'pelanggan',
             'cabang',

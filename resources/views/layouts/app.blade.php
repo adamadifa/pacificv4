@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 
-<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-wide" dir="ltr"
-    data-theme="theme-default" data-assets-path="{{ asset('/assets/') }}" data-template="vertical-menu-template">
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-wide" dir="ltr" data-theme="theme-default"
+    data-assets-path="{{ asset('/assets/') }}" data-template="vertical-menu-template">
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
     <title>@yield('titlepage')</title>
 
@@ -46,7 +45,7 @@
                 <div class="content-wrapper">
                     <!-- Content -->
                     <div class="container-fluid flex-grow-1 container-p-y">
-                        <h4 class="py-3 mb-4">@yield('navigasi')</h4>
+                        <h4 class="py-3 mb-2">@yield('navigasi')</h4>
                         @yield('content')
                     </div>
                     <!-- / Content -->
