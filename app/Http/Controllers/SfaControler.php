@@ -5,17 +5,59 @@ namespace App\Http\Controllers;
 use App\Models\Ajuanfakturkredit;
 use App\Models\Cabang;
 use App\Models\Checkinpenjualan;
+use App\Models\Detailgiro;
+use App\Models\Detailretur;
+use App\Models\Detailtransfer;
+use App\Models\Historibayarpenjualan;
 use App\Models\Klasifikasioutlet;
 use App\Models\Pelanggan;
 use App\Models\Pengajuanfaktur;
 use App\Models\Penjualan;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Mike42\Escpos\CapabilityProfile;
+use Mike42\Escpos\EscposImage;
+use Mike42\Escpos\PrintConnectors\RawbtPrintConnector;
+use Mike42\Escpos\Printer;
+
+class item
+{
+    private $name;
+    private $price;
+    private $dollarSign;
+
+    public function __construct($name = '', $price = '', $dollarSign = false)
+    {
+        $this->name = $name;
+        $this->price = $price;
+        $this->dollarSign = $dollarSign;
+    }
+
+    public function getAsString($width = 48)
+    {
+        $rightCols = 10;
+        $leftCols = $width - $rightCols;
+        if ($this->dollarSign) {
+            $leftCols = $leftCols / 2 - $rightCols / 2;
+        }
+        $left = str_pad($this->name, $leftCols);
+
+        $sign = ($this->dollarSign ? '$ ' : '');
+        $right = str_pad($sign . $this->price, $rightCols, ' ', STR_PAD_LEFT);
+        return "$left$right\n";
+    }
+
+    public function __toString()
+    {
+        return $this->getAsString();
+    }
+}
 
 class SfaControler extends Controller
 {
@@ -295,6 +337,412 @@ class SfaControler extends Controller
                 'success' => false,
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ]);
+        }
+    }
+
+
+    public function showpenjualan($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $data['kepemilikan'] = config('pelanggan.kepemilikan');
+        $data['lama_berjualan'] = config('pelanggan.lama_berjualan');
+        $data['status_outlet'] = config('pelanggan.status_outlet');
+        $data['type_outlet'] = config('pelanggan.type_outlet');
+        $data['cara_pembayaran'] = config('pelanggan.cara_pembayaran');
+        $data['lama_langganan'] = config('pelanggan.lama_langganan');
+        $data['jenis_bayar'] = config('penjualan.jenis_bayar');
+        $pnj = new Penjualan();
+        $penjualan = $pnj->getFaktur($no_faktur);
+        $data['penjualan'] = $penjualan;
+
+        $detailpenjualan = new Penjualan();
+        $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
+
+        $data['retur'] = Detailretur::select(
+            'tanggal',
+            'marketing_retur_detail.*',
+            'jenis_retur',
+            'produk_harga.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'isi_pcs_pack',
+            'subtotal'
+        )
+            ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->where('no_faktur', $no_faktur)
+            ->get();
+
+        $data['historibayar'] = Historibayarpenjualan::select(
+            'marketing_penjualan_historibayar.*',
+            'nama_salesman',
+            'marketing_penjualan_historibayar_giro.kode_giro',
+            'no_giro',
+            'giro_to_cash',
+            'nama_voucher'
+        )
+
+            ->leftJoin('jenis_voucher', 'marketing_penjualan_historibayar.jenis_voucher', '=', 'jenis_voucher.id')
+            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
+            ->leftJoin('marketing_penjualan_giro', 'marketing_penjualan_historibayar_giro.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('no_faktur', $no_faktur)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $data['giro'] = Detailgiro::select(
+            'no_giro',
+            'marketing_penjualan_giro.tanggal',
+            'bank_pengirim',
+            'marketing_penjualan_giro_detail.*',
+            'jatuh_tempo',
+            'status',
+            'tanggal_ditolak',
+            'keterangan',
+            'historibayargiro.tanggal as tanggal_diterima',
+            // 'marketing_penjualan_historibayar_giro.no_bukti as no_bukti_giro',
+            'nama_salesman'
+        )
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin(
+                DB::raw("(
+                    SELECT kode_giro,marketing_penjualan_historibayar_giro.no_bukti,tanggal
+                    FROM marketing_penjualan_historibayar_giro
+                    INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_giro.no_bukti = marketing_penjualan_historibayar.no_bukti
+                    WHERE marketing_penjualan_historibayar.no_faktur = '$no_faktur'
+                ) historibayargiro"),
+                function ($join) {
+                    $join->on('marketing_penjualan_giro_detail.kode_giro', '=', 'historibayargiro.kode_giro');
+                }
+            )
+            ->where('marketing_penjualan_giro_detail.no_faktur', $no_faktur)
+            ->orderBy('marketing_penjualan_giro.tanggal', 'desc')
+            ->get();
+
+        $data['transfer'] = Detailtransfer::select(
+            'marketing_penjualan_transfer_detail.*',
+            'marketing_penjualan_transfer.tanggal',
+            'bank_pengirim',
+            'jatuh_tempo',
+            'status',
+            'tanggal_ditolak',
+            'keterangan',
+            'historibayartransfer.tanggal as tanggal_diterima',
+            'nama_salesman'
+        )
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin(
+                DB::raw("(
+                    SELECT kode_transfer,marketing_penjualan_historibayar_transfer.no_bukti,tanggal
+                    FROM marketing_penjualan_historibayar_transfer
+                    INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_transfer.no_bukti = marketing_penjualan_historibayar.no_bukti
+                    WHERE marketing_penjualan_historibayar.no_faktur = '$no_faktur'
+                ) historibayartransfer"),
+                function ($join) {
+                    $join->on('marketing_penjualan_transfer_detail.kode_transfer', '=', 'historibayartransfer.kode_transfer');
+                }
+            )
+            ->where('marketing_penjualan_transfer_detail.no_faktur', $no_faktur)
+            ->orderBy('marketing_penjualan_transfer.tanggal', 'desc')
+            ->get();
+
+
+        //dd($data['detail']);
+        $data['checkin'] = Checkinpenjualan::where('tanggal', $penjualan->tanggal)->where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
+        return view('sfa.penjualan_show', $data);
+    }
+
+    public function cetak($no_fak_penj)
+    {
+
+        $perusahaan = "TEST";
+        $cabang = "TEST";
+        $alamat = "TEST";
+
+        $profile = CapabilityProfile::load("POS-5890");
+        $connector = new RawbtPrintConnector();
+        $printer = new Printer($connector, $profile);
+        try {
+            /* Information for the receipt */
+            // $items = $datadetail;
+            // if (!empty($pembayaran)) {
+            //     $itemsbayar = $databayar;
+            // }
+            //dd($items);
+
+
+            /* Date is kept the same for testing */
+            // $date = date('l jS \of F Y h:i:s A');
+            $date = date("l jS \of F Y h:i:s A");
+
+            /* Start the printer */
+            // $logo = EscposImage::load($urllogo, false);
+
+            // /* Print top logo */
+            // if ($profile->getSupportsGraphics()) {
+            //     $printer->graphics($logo);
+            // }
+            // if ($profile->getSupportsBitImageRaster() && !$profile->getSupportsGraphics()) {
+            //     $printer->bitImage($logo);
+            // }
+
+            /* Name of shop */
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $printer->setEmphasis(true);
+            $printer->text($perusahaan . ".\n");
+            $printer->text($cabang . ".\n");
+            $printer->setEmphasis(false);
+            $printer->selectPrintMode();
+            $printer->text($alamat . ".\n");
+            $printer->text($date . "\n");
+
+
+            /* Title of receipt */
+            $printer->setEmphasis(true);
+            $printer->text("LEMBAR UNTUK PELANGGAN\n");
+            $printer->setEmphasis(false);
+
+            /* Items */
+            // $printer->setJustification(Printer::JUSTIFY_LEFT);
+            // $printer->setEmphasis(true);
+            // $printer->text(new item('', ''));
+            // $pelanggan_salesman = new item($faktur->no_fak_penj, $faktur->nama_karyawan);
+            // $printer->text($pelanggan_salesman->getAsString(32));
+            // $printer->text(date("d-m-Y H:i:s", strtotime($faktur->date_created)) . "\n");
+            // $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
+            // $printer->text(strtolower(ucwords($faktur->alamat_pelanggan)));
+            // $printer->text(new item('', ''));
+
+            // $printer->setEmphasis(true);
+            // foreach ($items as $item) {
+            //     $printer->text($item->getAsString(32)); // for 58mm Font A
+            // }
+
+            // $subtotal = new item('Subtotal', rupiah($faktur->subtotal));
+            // $potongan = new item('Potongan', rupiah($faktur->potongan));
+            // $totalnonppn = $faktur->subtotal - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
+            // $total = new item('Total', rupiah($totalnonppn));
+            // if (!empty($faktur->ppn)) {
+            //     $ppn = new item('PPN', rupiah($faktur->ppn));
+            // }
+            // $_grandtotal = $faktur->total - $totalretur;
+            // $retur = new item('Retur', rupiah($totalretur));
+            // $grandtotal = new item('Grand Total', rupiah($_grandtotal));
+            // //$total = new item('Total', '14.25', true);
+
+
+            // $printer->setEmphasis(true);
+            // $printer->text($subtotal->getAsString(32));
+            // $printer->setEmphasis(false);
+            // $printer->feed();
+
+            // /* Tax and total */
+            // $printer->text($potongan->getAsString(32));
+            // $printer->text($total->getAsString(32));
+            // if (!empty($faktur->ppn)) {
+            //     $printer->text($ppn->getAsString(32));
+            // }
+            // $printer->text($retur->getAsString(32));
+            // // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            // $printer->feed();
+            // $printer->setEmphasis(true);
+            // $printer->text($grandtotal->getAsString(32));
+            // $printer->feed();
+            // $printer->setJustification(Printer::JUSTIFY_CENTER);
+            // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            // $printer->text(strtoupper($faktur->jenistransaksi) . ".\n");
+            // $printer->selectPrintMode();
+
+            // /* Footer */
+
+            // if (!empty($cekpembayaran)) {
+            //     $printer->feed();
+            //     $printer->setJustification(Printer::JUSTIFY_LEFT);
+            //     $printer->text("PEMBAYARAN \n");
+            //     $printer->setEmphasis(true);
+            //     foreach ($itemsbayar as $itembayar) {
+            //         $printer->text($itembayar->getAsString(32)); // for 58mm Font A
+            //     }
+            //     $sisatagihan = $faktur->total - $totalretur - $totalbayar;
+            //     $sisa = new item('SISA TAGIHAN', rupiah($sisatagihan));
+            //     $grandtotalbayar = new item('TOTAL BAYAR', rupiah($totalbayar));
+            //     $printer->text($grandtotalbayar->getAsString(32)); // for 58mm Font A
+            //     $printer->text($sisa->getAsString(32)); // for 58mm Font A
+            // }
+
+
+
+            $printer->feed(2);
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("Tidak Di Perkenankan Transfer \n");
+            $printer->text("Ke Rekening Salesman \n");
+            $printer->text("Apapun Jenis Transaksinya \n");
+            $printer->text("Wajib Ditandatangani \n");
+            $printer->text("kedua belah pihak,\n");
+            $printer->text("Terimakasih\n");
+            $printer->text("www.pedasalami.com\n");
+            $printer->feed();
+
+            // if (!empty($faktur->signature)) {
+            //     $urlsignature = base_path('/public/storage/signature/') . $faktur->signature;
+            //     $signature = EscposImage::load($urlsignature, false);
+            //     /* Print top logo */
+            //     if ($profile->getSupportsGraphics()) {
+            //         $printer->graphics($signature);
+            //     }
+            //     if ($profile->getSupportsBitImageRaster() && !$profile->getSupportsGraphics()) {
+            //         $printer->bitImage($signature);
+            //     }
+            // }
+
+
+
+
+
+
+
+            // //Faktur PERUSAHAAN
+            // /* Name of shop */
+            // $printer->setJustification(Printer::JUSTIFY_CENTER);
+            // //$printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            // $printer->text("\n");
+            // $printer->text("\n");
+            // $printer->feed(2);
+            // // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            // $printer->setEmphasis(true);
+            // $printer->text($perusahaan . ".\n");
+            // $printer->text($cabang . ".\n");
+            // $printer->setEmphasis(false);
+            // $printer->selectPrintMode();
+            // $printer->text($alamat . ".\n");
+            // $printer->text($date . "\n");
+
+
+            // /* Title of receipt */
+            // $printer->setEmphasis(true);
+            // $printer->text("LEMBAR UNTUK PERUSAHAAN\n");
+            // $printer->setEmphasis(false);
+
+            // /* Items */
+            // $printer->setJustification(Printer::JUSTIFY_LEFT);
+            // $printer->setEmphasis(true);
+            // $printer->text(new item('', ''));
+            // $pelanggan_salesman = new item($faktur->no_fak_penj, $faktur->nama_karyawan);
+            // $printer->text($pelanggan_salesman->getAsString(32));
+            // $printer->text(date("d-m-Y H:i:s", strtotime($faktur->date_created)) . "\n");
+            // $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
+            // $printer->text(strtolower(ucwords($faktur->alamat_pelanggan)));
+            // $printer->text(new item('', ''));
+
+            // $printer->setEmphasis(true);
+            // foreach ($items as $item) {
+            //     $printer->text($item->getAsString(32)); // for 58mm Font A
+            // }
+
+            // $subtotal = new item('Subtotal', rupiah($faktur->subtotal));
+            // $potongan = new item('Potongan', rupiah($faktur->potongan));
+            // $totalnonppn = $faktur->subtotal - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
+            // $total = new item('Total', rupiah($totalnonppn));
+            // if (!empty($faktur->ppn)) {
+            //     $ppn = new item('PPN', rupiah($faktur->ppn));
+            // }
+            // $_grandtotal = $faktur->total - $totalretur;
+            // $retur = new item('Retur', rupiah($totalretur));
+            // $grandtotal = new item('Grand Total', rupiah($_grandtotal));
+            // //$total = new item('Total', '14.25', true);
+
+
+            // $printer->setEmphasis(true);
+            // $printer->text($subtotal->getAsString(32));
+            // $printer->setEmphasis(false);
+            // $printer->feed();
+
+            // /* Tax and total */
+            // $printer->text($potongan->getAsString(32));
+            // $printer->text($total->getAsString(32));
+            // if (!empty($faktur->ppn)) {
+            //     $printer->text($ppn->getAsString(32));
+            // }
+            // $printer->text($retur->getAsString(32));
+            // // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            // $printer->feed();
+            // $printer->setEmphasis(true);
+            // $printer->text($grandtotal->getAsString(32));
+            // $printer->feed();
+            // $printer->setJustification(Printer::JUSTIFY_CENTER);
+            // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            // $printer->text(strtoupper($faktur->jenistransaksi) . ".\n");
+            // $printer->selectPrintMode();
+
+            // if (!empty($cekpembayaran)) {
+            //     $printer->feed();
+            //     $printer->setJustification(Printer::JUSTIFY_LEFT);
+            //     $printer->text("PEMBAYARAN \n");
+            //     $printer->setEmphasis(true);
+            //     foreach ($itemsbayar as $itembayar) {
+            //         $printer->text($itembayar->getAsString(32)); // for 58mm Font A
+            //     }
+            //     $grandtotalbayar = new item('TOTAL BAYAR', rupiah($totalbayar));
+            //     $sisatagihan = $faktur->total - $totalretur - $totalbayar;
+            //     $sisa = new item('SISA TAGIHAN', rupiah($sisatagihan));
+            //     $printer->text($grandtotalbayar->getAsString(32)); // for 58mm Font A
+            //     $printer->text($sisa->getAsString(32)); // for 58mm Font A
+            // }
+
+            // /* Footer */
+            // $printer->feed(2);
+            // $printer->setJustification(Printer::JUSTIFY_CENTER);
+            // $printer->text("Tidak Di Perkenankan Transfer \n");
+            // $printer->text("Ke Rekening Salesman \n");
+            // $printer->text("Apapun Jenis Transaksinya \n");
+            // $printer->text("Wajib Ditandatangani \n");
+            // $printer->text("kedua belah pihak,\n");
+            // $printer->text("Terimakasih\n");
+            // $printer->text("www.pedasalami.com\n");
+            // $printer->feed();
+
+            // if (!empty($faktur->signature)) {
+            //     $urlsignature = base_path('/public/storage/signature/') . $faktur->signature;
+            //     $signature = EscposImage::load($urlsignature, false);
+            //     /* Print top logo */
+            //     if ($profile->getSupportsGraphics()) {
+            //         $printer->graphics($signature);
+            //     }
+            //     if ($profile->getSupportsBitImageRaster() && !$profile->getSupportsGraphics()) {
+            //         $printer->bitImage($signature);
+            //     }
+            // }
+
+
+
+
+            // /* Barcode Default look */
+
+            // $printer->barcode("ABC", Printer::BARCODE_CODE39);
+            // $printer->feed();
+            // $printer->feed();
+
+
+            // // Demo that alignment QRcode is the same as text
+            // $printer2 = new Printer($connector); // dirty printer profile hack !!
+            // $printer2->setJustification(Printer::JUSTIFY_CENTER);
+            // $printer2->qrCode("https://rawbt.ru/mike42", Printer::QR_ECLEVEL_M, 8);
+            // $printer2->text("rawbt.ru/mike42\n");
+            // $printer2->setJustification();
+            // $printer2->feed();
+
+
+            /* Cut the receipt and open the cash drawer */
+            $printer->cut();
+            $printer->pulse();
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        } finally {
+            $printer->close();
         }
     }
 }

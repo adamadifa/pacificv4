@@ -48,7 +48,8 @@ class Penjualan extends Model
             'nama_cabang',
             'alamat_cabang',
             'nama_pt',
-            'signature'
+            'signature',
+
         )
             ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'))
             ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail

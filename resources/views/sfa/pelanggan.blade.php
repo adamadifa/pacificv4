@@ -7,6 +7,5 @@
 @endsection
 <div class="row">
     @livewire('pelanggan')
-
 </div>
 @endsection

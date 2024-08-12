@@ -328,7 +328,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkreditoption', 'getlistfakturkreditoption')->name('pelanggan.getlistfakturkreditoption');
         Route::get('/pelanggan/getpelangganjson', 'getPelangganjson')->name('pelanggan.getpelangganjson');
 
-        Route::get('/sfa/pelanggan', 'index')->name('sfa.pelanggan');
+        // Route::get('/sfa/pelanggan', 'index')->name('sfa.pelanggan');
     });
 
     Route::controller(WilayahController::class)->group(function () {
@@ -1730,6 +1730,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/sfa/checkinstore', 'checkinstore')->name('sfa.checkinstore')->can('sfa.penjualan');
         Route::get('/sfa/{kode_pelanggan}/checkout', 'checkout')->name('sfa.checkout')->can('sfa.penjualan');
         Route::post('/sfa/storepelanggancapture', 'storepelanggancapture')->name('sfa.storepelangancapture')->can('sfa.pelanggan');
+        Route::get('/sfa/penjualan/{no_faktur}/show', 'showpenjualan')->name('sfa.showpenjualan')->can('sfa.penjualan');
+        Route::get('/sfa/penjualan/{no_faktur}/cetak', 'cetakfaktur')->name('sfa.cetakfaktur')->can('sfa.penjualan');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

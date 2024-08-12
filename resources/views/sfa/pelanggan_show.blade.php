@@ -83,7 +83,7 @@
         @endif
     </div>
 </div>
-<div class="row mt-3">
+<div class="row mt-3 mb-3">
 
     @if ($checkin == 0)
         <div class="col" id="checkinsection">
@@ -111,6 +111,11 @@
     @endif
 
 </div>
+@if (!empty(Cookie::get('kodepelanggan')))
+    @if (Crypt::decrypt(Cookie::get('kodepelanggan')) == $pelanggan->kode_pelanggan)
+        <livewire:penjualanpelanggan :kode_pelanggan="$pelanggan->kode_pelanggan" />
+    @endif
+@endif
 @endsection
 @push('myscript')
 <script>
