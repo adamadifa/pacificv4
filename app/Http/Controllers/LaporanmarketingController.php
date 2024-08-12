@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detaildpb;
 use App\Models\Detailgiro;
 use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
 use App\Models\Detailtransfer;
+use App\Models\Dpb;
 use App\Models\Historibayarpenjualan;
+use App\Models\Kendaraan;
 use App\Models\Penjualan;
 use App\Models\Salesman;
 use App\Models\User;
@@ -1938,5 +1941,98 @@ class LaporanmarketingController extends Controller
             header("Content-Disposition: attachment; filename=Rekap Pelanggan  $request->dari-$request->sampai.xls");
         }
         return view('marketing.laporan.rekappelanggan_cetak', $data);
+    }
+
+    public function cetakrekapkendaraan(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $query = Detaildpb::query();
+        $query->select(
+            'gudang_cabang_dpb_detail.kode_produk',
+            'produk.nama_produk',
+            'produk.isi_pcs_dus',
+            DB::raw('SUM(jml_ambil) as jml_ambil'),
+            DB::raw('SUM(jml_kembali) as jml_kembali'),
+            'mutasigudangcabang.jml_penjualan',
+            'mutasigudangcabang.jml_gantibarang',
+            'mutasigudangcabang.jml_pelunasanhutangkirim',
+            'mutasigudangcabang.jml_promosi',
+            'mutasigudangcabang.jml_ttr',
+            'gudang_cabang_dpb.kode_kendaraan'
+        );
+        $query->join('gudang_cabang_dpb', 'gudang_cabang_dpb_detail.no_dpb', '=', 'gudang_cabang_dpb.no_dpb');
+        $query->join('produk', 'gudang_cabang_dpb_detail.kode_produk', '=', 'produk.kode_produk');
+        $query->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->leftJoin(
+            DB::raw("(
+                    SELECT kode_produk,
+                    SUM(IF(jenis_mutasi = 'PJ',jumlah,0)) as jml_penjualan,
+                    SUM(IF(jenis_mutasi = 'PH',jumlah,0)) as jml_pelunasanhutangkirim,
+                    SUM(IF(jenis_mutasi = 'PR',jumlah,0)) as jml_promosi,
+                    SUM(IF(jenis_mutasi = 'TR',jumlah,0)) as jml_ttr,
+                    SUM(IF(jenis_mutasi = 'GB',jumlah,0)) as jml_gantibarang,
+                    SUM(IF(jenis_mutasi = 'RT',jumlah,0)) as jml_retur,
+                    SUM(IF(jenis_mutasi = 'PT',jumlah,0)) as jml_pelunasanttr,
+                    SUM(IF(jenis_mutasi = 'HK',jumlah,0)) as jml_hutangkirim,
+                    kode_kendaraan
+                    FROM gudang_cabang_mutasi_detail
+                    INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
+                    INNER JOIN gudang_cabang_dpb ON gudang_cabang_mutasi.no_dpb = gudang_cabang_dpb.no_dpb
+                    WHERE gudang_cabang_mutasi.tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_dpb.kode_kendaraan = '$request->kode_kendaraan'
+                    GROUP BY kode_produk,kode_kendaraan
+                ) mutasigudangcabang"),
+            function ($join) {
+                $join->on('gudang_cabang_dpb_detail.kode_produk', '=', 'mutasigudangcabang.kode_produk');
+            }
+        );
+        $query->whereBetween('tanggal_ambil', [$request->dari, $request->sampai]);
+        $query->where('gudang_cabang_dpb.kode_kendaraan', $request->kode_kendaraan);
+        $query->where('salesman.kode_cabang', $kode_cabang);
+        $query->groupBy(
+            'gudang_cabang_dpb_detail.kode_produk',
+            'gudang_cabang_dpb.kode_kendaraan',
+            'produk.isi_pcs_dus',
+            'jml_penjualan',
+            'jml_gantibarang',
+            'jml_pelunasanhutangkirim',
+            'jml_promosi',
+            'jml_ttr'
+        );
+
+
+
+        $qkendaraan = Dpb::query();
+        $qkendaraan->select(
+            'gudang_cabang_dpb.tanggal_ambil',
+            'kode_kendaraan',
+            DB::raw('count(no_dpb) as jml_ambil')
+        );
+        $qkendaraan->where('kode_kendaraan', $request->kode_kendaraan);
+        $qkendaraan->wherebetween('tanggal_ambil', [$request->dari, $request->sampai]);
+        $qkendaraan->groupBy('tanggal_ambil', 'kode_kendaraan');
+        $qkendaraan->orderBy('tanggal_ambil');
+
+
+
+        $data['rekapkendaraan'] = $query->get();
+        $data['historikendaraan'] = $qkendaraan->get();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['kendaraan'] = Kendaraan::where('kode_kendaraan', $request->kode_kendaraan)->first();
+
+        return view('marketing.laporan.rekapkendaraan_cetak', $data);
     }
 }

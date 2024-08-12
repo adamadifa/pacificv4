@@ -117,10 +117,18 @@ function DateToIndo($date2)
 { // fungsi atau method untuk mengubah tanggal ke format indonesia
     // variabel BulanIndo merupakan variabel array yang menyimpan nama-nama bulan
     $BulanIndo2 = array(
-        "Januari", "Februari", "Maret",
-        "April", "Mei", "Juni",
-        "Juli", "Agustus", "September",
-        "Oktober", "November", "Desember"
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember"
     );
 
     if (!empty($date2)) {
@@ -527,4 +535,53 @@ function formatName2($name)
 {
     $words = explode(' ', $name);
     return implode(' ', array_slice($words, 0, 2));
+}
+
+
+function hitungDurasi($waktuMulai, $waktuSelesai)
+{
+    // Mengubah waktu ke format DateTime
+    $mulai = new DateTime($waktuMulai);
+    $selesai = new DateTime($waktuSelesai);
+
+    // Menghitung selisih antara dua waktu
+    $interval = $mulai->diff($selesai);
+
+    // Mengambil durasi dalam jam dan menit
+    $jam = $interval->h;
+    $menit = $interval->i;
+
+    // Jika durasi negatif, tambahkan 24 jam (untuk kasus waktu selesai melewati tengah malam)
+    if ($interval->invert) {
+        $jam += 24;
+    }
+
+    return ['jam' => $jam, 'menit' => $menit];
+}
+
+function hitungJarak($lat1, $lon1, $lat2, $lon2)
+{
+    // Radius bumi dalam meter
+    $radiusBumi = 6371000;
+
+    // Mengubah derajat menjadi radian
+    $lat1Rad = deg2rad($lat1);
+    $lon1Rad = deg2rad($lon1);
+    $lat2Rad = deg2rad($lat2);
+    $lon2Rad = deg2rad($lon2);
+
+    // Menghitung perbedaan latitude dan longitude
+    $deltaLat = $lat2Rad - $lat1Rad;
+    $deltaLon = $lon2Rad - $lon1Rad;
+
+    // Rumus Haversine
+    $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
+        cos($lat1Rad) * cos($lat2Rad) *
+        sin($deltaLon / 2) * sin($deltaLon / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+    // Menghitung jarak
+    $jarak = $radiusBumi * $c;
+
+    return $jarak; // Hasil dalam meter
 }

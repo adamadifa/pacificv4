@@ -60,10 +60,10 @@ document.addEventListener('DOMContentLoaded', function (e) {
                             notEmpty: {
                                 message: 'Please enter your password'
                             },
-                            stringLength: {
-                                min: 6,
-                                message: 'Password must be more than 6 characters'
-                            }
+                            // stringLength: {
+                            //     min: 6,
+                            //     message: 'Password must be more than 6 characters'
+                            // }
                         }
                     },
                     'confirm-password': {

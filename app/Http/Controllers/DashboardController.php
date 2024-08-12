@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Charts\HasilproduksiChart;
 use App\Models\Cabang;
+use App\Models\Checkinpenjualan;
+use App\Models\Detaildpb;
 use App\Models\Detailmutasigudangcabang;
 use App\Models\Detailmutasigudangjadi;
 use App\Models\Detailpenjualan;
@@ -38,6 +40,8 @@ class DashboardController extends Controller
             return $this->marketing();
         } else if ($user->hasRole('operation manager')) {
             return $this->operationmanager();
+        } else if ($user->hasRole('salesman')) {
+            return $this->salesman();
         } else {
             return $this->dashboarddefault();
         }
@@ -47,6 +51,43 @@ class DashboardController extends Controller
     function dashboarddefault()
     {
         return view('dashboard.default');
+    }
+
+    function salesman()
+    {
+        $hariini = date('Y-m-d');
+        $data['penjualan'] = Penjualan::select()
+            ->select(
+                DB::raw("SUM(bruto - potongan - penyesuaian - potongan_istimewa + ppn) as total")
+            )
+            ->leftJoin(
+                DB::raw("(
+                SELECT
+                    marketing_penjualan_detail.no_faktur,
+                    SUM(subtotal) as bruto
+                FROM
+                    marketing_penjualan_detail
+                GROUP BY no_faktur
+            ) detailpenjualan"),
+                function ($join) {
+                    $join->on('marketing_penjualan.no_faktur', '=', 'detailpenjualan.no_faktur');
+                }
+            )
+            ->where('marketing_penjualan.kode_salesman', auth()->user()->kode_salesman)
+            ->where('marketing_penjualan.tanggal', $hariini)
+            ->first();
+
+        $data['pembayaran'] = Historibayarpenjualan::select(
+            DB::raw("SUM(jumlah) as total")
+        )
+            ->where('tanggal', $hariini)
+            ->where('kode_salesman', auth()->user()->kode_salesman)
+            ->first();
+
+        $data['jmltransaksi'] = Penjualan::where('tanggal', $hariini)->where('kode_salesman', auth()->user()->kode_salesman)->count();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        return view('dashboard.salesman', $data);
     }
 
     function operationmanager()
@@ -235,7 +276,8 @@ class DashboardController extends Controller
             ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->whereBetween('marketing_penjualan.tanggal', [
-                date('Y-m') . '-01', $today
+                date('Y-m') . '-01',
+                $today
             ])
             ->select(
                 'salesman.kode_cabang',
@@ -398,7 +440,8 @@ class DashboardController extends Controller
                 DB::raw('SUM(IF(in_out_good="I",gudang_cabang_mutasi_detail.jumlah,0)) - SUM(IF(in_out_good="O",gudang_cabang_mutasi_detail.jumlah,0)) as sisa_mutasi')
             )
             ->whereBetween('gudang_cabang_mutasi.tanggal', [
-                $lastsaldo->tanggal, $today
+                $lastsaldo->tanggal,
+                $today
             ])
             ->where('gudang_cabang_mutasi.kode_cabang', $kode_cabang)
             ->whereIn('jenis_mutasi', ['SJ', 'TI', 'TO', 'RG', 'RP', 'RK', 'PY'])
@@ -411,7 +454,8 @@ class DashboardController extends Controller
                 DB::raw('SUM(IF(in_out_bad="I",gudang_cabang_mutasi_detail.jumlah,0)) - SUM(IF(in_out_bad="O",gudang_cabang_mutasi_detail.jumlah,0)) as sisa_mutasi_bs')
             )
             ->whereBetween('gudang_cabang_mutasi.tanggal', [
-                $lastsaldobs->tanggal, $today
+                $lastsaldobs->tanggal,
+                $today
             ])
             ->where('gudang_cabang_mutasi.kode_cabang', $kode_cabang)
             ->groupBy('gudang_cabang_mutasi_detail.kode_produk');
@@ -427,7 +471,8 @@ class DashboardController extends Controller
                 DB::raw('SUM(gudang_cabang_dpb_detail.jml_kembali)as dpb_kembali'),
             )
             ->whereBetween('gudang_cabang_dpb.tanggal_ambil', [
-                $lastsaldo->tanggal, $today
+                $lastsaldo->tanggal,
+                $today
             ])
             ->where('kode_cabang', $kode_cabang)
             ->groupBy('gudang_cabang_dpb_detail.kode_produk');
@@ -436,7 +481,8 @@ class DashboardController extends Controller
             ->join('gudang_jadi_mutasi', 'gudang_jadi_mutasi_detail.no_mutasi', '=', 'gudang_jadi_mutasi.no_mutasi')
             ->join('marketing_permintaan_kiriman', 'gudang_jadi_mutasi.no_permintaan', '=', 'marketing_permintaan_kiriman.no_permintaan')
             ->whereBetween('gudang_jadi_mutasi.tanggal', [
-                $lastsaldo->tanggal, $today
+                $lastsaldo->tanggal,
+                $today
             ])
             ->where('jenis_mutasi', 'SJ')
             ->where('status_surat_jalan', 0)
@@ -1582,5 +1628,65 @@ class DashboardController extends Controller
             ->values()
             ->all();
         return view('dashboard.marketing.rekapaup_cabang', $data);
+    }
+
+    public function getcheckinsalesman(Request $request)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $data['cabang'] = Cabang::where('kode_cabang', $user->kode_cabang)->first();
+        $data['kunjungan'] = Checkinpenjualan::select(
+            'marketing_penjualan_checkin.kode_pelanggan',
+            'nama_pelanggan',
+            'alamat_pelanggan',
+            'checkin_time',
+            'checkout_time',
+            'marketing_penjualan_checkin.latitude',
+            'marketing_penjualan_checkin.longitude',
+            'foto'
+        )
+            ->join('pelanggan', 'marketing_penjualan_checkin.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+
+            ->where('marketing_penjualan_checkin.kode_salesman', $user->kode_salesman)
+            ->where('tanggal', $request->tanggal)
+            ->orderBy('checkin_time', 'asc')
+            ->get();
+
+        return view('dashboard.salesman.getcheckinsalesman', $data);
+    }
+
+    public function getdpbsalesman(Request $request)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $data['dpb'] = Detaildpb::select(
+            'gudang_cabang_dpb_detail.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'jml_ambil',
+            'detailpenjualan.jml_penjualan'
+        )
+            ->join('produk', 'gudang_cabang_dpb_detail.kode_produk', '=', 'produk.kode_produk')
+            ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_detail.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
+            ->leftJoin(
+                DB::raw("(
+                SELECT
+                    produk_harga.kode_produk,
+                    SUM(jumlah) as jml_penjualan
+                FROM
+                    marketing_penjualan_detail
+                INNER JOIN produk_harga ON marketing_penjualan_detail.kode_harga = produk_harga.kode_harga
+                INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
+                WHERE tanggal = '$request->tanggal' AND kode_salesman = '$user->kode_salesman' AND status_promosi = '0'
+                GROUP BY produk_harga.kode_produk
+            ) detailpenjualan"),
+                function ($join) {
+                    $join->on('gudang_cabang_dpb_detail.kode_produk', '=', 'detailpenjualan.kode_produk');
+                }
+            )
+            ->where('gudang_cabang_dpb.kode_salesman', $user->kode_salesman)
+            ->where('tanggal_ambil', $request->tanggal)
+            ->get();
+
+        return view('dashboard.salesman.getdpbsalesman', $data);
     }
 }

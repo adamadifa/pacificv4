@@ -549,4 +549,43 @@ class TargetkomisiController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    function gettargetsalesmandashboard(Request $request)
+    {
+
+        $user = User::findorFail(auth()->user()->id);
+        $start_date = $request->tahun . "-" . $request->bulan . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+        $data['target'] = Detailtargetkomisi::select(
+            'marketing_komisi_target_detail.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            'jumlah',
+            'realisasi'
+        )
+            ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+            ->leftJoin(
+                DB::raw("(
+                SELECT
+                    produk_harga.kode_produk,
+                    SUM(jumlah) as realisasi
+                FROM
+                    marketing_penjualan_detail
+                INNER JOIN produk_harga ON marketing_penjualan_detail.kode_harga = produk_harga.kode_harga
+                INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
+                WHERE tanggal BETWEEN '$start_date' AND '$end_date' AND kode_salesman = '$user->kode_salesman' AND status_promosi = '0'
+                GROUP BY produk_harga.kode_produk
+            ) detailpenjualan"),
+                function ($join) {
+                    $join->on('marketing_komisi_target_detail.kode_produk', '=', 'detailpenjualan.kode_produk');
+                }
+            )
+            ->where('kode_salesman', $user->kode_salesman)
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->get();
+        return view('dashboard.salesman.gettargetsalesman', $data);
+    }
 }

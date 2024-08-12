@@ -183,6 +183,11 @@ Route::middleware('auth')->group(function () {
         //Gudang Rekap DPB
         Route::get('/dashboard/rekappersediaan ', 'rekappersediaan')->name('dashboard.rekappersediaan');
         Route::get('/dashboard/rekappersediaancabang ', 'rekappersediaancabang')->name('dashboard.rekappersediaancabang');
+
+
+        //Salesman
+        Route::post('/dashboard/getcheckinsalesman', 'getcheckinsalesman')->name('penjualan.getcheckinsalesman');
+        Route::post('/dashboard/getdpbsalesman', 'getdpbsalesman')->name('penjualan.getdpbsalesman');
     });
 
     //Setings
@@ -968,6 +973,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/targetkomisi/{kode_target}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
 
         Route::post('/targetkomisi/gettargetsalesman', 'gettargetsalesman')->name('targetkomisi.gettargetsalesman');
+        Route::post('/targetkomisi/gettargetsalesmandashboard', 'gettargetsalesmandashboard')->name('targetkomisi.gettargetsalesmandashboard');
         Route::post('/targetkomisi/gettargetsalesmanedit', 'gettargetsalesmanedit')->name('targetkomisi.gettargetsalesmanedit');
     });
 
