@@ -455,7 +455,7 @@ class SfaControler extends Controller
         return view('sfa.penjualan_show', $data);
     }
 
-    public function cetak($no_fak_penj)
+    public function cetakfaktur($no_fak_penj)
     {
 
         $perusahaan = "TEST";
