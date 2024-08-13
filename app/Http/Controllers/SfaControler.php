@@ -563,7 +563,7 @@ class SfaControler extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
             $printer->setEmphasis(true);
-            $printer->text($cabang . ".\n");
+            $printer->text($nama_pt . ".\n");
             $printer->setEmphasis(false);
             $printer->selectPrintMode();
             $printer->text($alamat . ".\n");
