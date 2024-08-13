@@ -54,6 +54,7 @@
     @else
     @endif
     <div class="card mt-2">
+
         <div class="card-header">
             <h4 class="card-title">
                 @php
@@ -69,6 +70,7 @@
             </h4>
         </div>
         <div class="card-body">
+
             <div class="nav-align-top">
                 <ul class="nav nav-tabs nav-fill" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -98,6 +100,7 @@
                 </ul>
                 <div class="tab-content px-0 mx-1 pb-0">
                     <div class="tab-pane fade show active" id="detailpenjualan" role="tabpanel">
+
                         <table class="table">
                             @php
                                 $subtotal = 0;
@@ -185,57 +188,62 @@
                     </div>
 
                     <div class="tab-pane fade p-0" id="pembayaran" role="tabpanel">
-                        <table class="table">
-                            @php
-                                $total_bayar = 0;
-                            @endphp
-                            @foreach ($historibayar as $d)
-                                @php
-                                    $total_bayar += $d->jumlah;
-                                @endphp
+                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreateBayar"><i class="ti ti-plus me-1"></i>Input
+                            Pembayaran</a>
 
-                                <ul class="timeline mb-0 pb-1">
-                                    <li class="timeline-item ps-4 border-left-dashed pb-1">
-                                        <span class="timeline-indicator-advanced timeline-indicator-success">
-                                            <i class="ti ti-circle-check"></i>
-                                        </span>
-                                        <div class="timeline-event px-0 pb-0 d-flex justify-content-between">
-                                            <div>
-                                                <div class="timeline-header">
-                                                    <small class="text-success text-uppercase fw-medium">{{ $d->no_bukti }} -
-                                                        {{ $jenis_bayar[$d->jenis_bayar] }}</small>
-                                                </div>
-                                                <h6 class="mb-1">{{ DateToIndo($d->tanggal) }}</h6>
-                                                <h5 class="mb-1">{{ formatAngka($d->jumlah) }}</h5>
-                                                <p class="text-muted mb-0">{{ $d->nama_salesman }}</p>
+
+                        @php
+                            $total_bayar = 0;
+                        @endphp
+                        @foreach ($historibayar as $d)
+                            @php
+                                $total_bayar += $d->jumlah;
+                            @endphp
+
+                            <ul class="timeline mb-0 pb-1">
+                                <li class="timeline-item ps-4 border-left-dashed pb-1">
+                                    <span class="timeline-indicator-advanced timeline-indicator-success">
+                                        <i class="ti ti-circle-check"></i>
+                                    </span>
+                                    <div class="timeline-event px-0 pb-0 d-flex justify-content-between">
+                                        <div>
+                                            <div class="timeline-header">
+                                                <small class="text-success text-uppercase fw-medium">{{ $d->no_bukti }} -
+                                                    {{ $jenis_bayar[$d->jenis_bayar] }}</small>
                                             </div>
-                                            <div class="d-flex">
-                                                @if (($d->jenis_bayar == 'TP' && $penjualan->jenis_bayar != 'TN') || ($d->jenis_bayar == 'TN' && $penjualan->jenis_bayar != 'TN'))
-                                                    <div>
-                                                        <a href="#" class="me-1 btnEditBayar" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
-                                                            <i class="ti ti-edit text-primary"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div>
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            style="margin-bottom:0px !important; padding:0 !important"
-                                                            action="{{ route('pembayaranpenjualan.delete', Crypt::encrypt($d->no_bukti)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm ml-1">
-                                                                <i class="ti ti-trash text-danger"></i>
-                                                            </a>
-                                                        </form>
-                                                    </div>
-                                                @endif
-                                            </div>
+                                            <h6 class="mb-1">{{ DateToIndo($d->tanggal) }}</h6>
+                                            <h5 class="mb-1">{{ formatAngka($d->jumlah) }}</h5>
+                                            <p class="text-muted mb-0">{{ $d->nama_salesman }}</p>
                                         </div>
-                                    </li>
-                                </ul>
-                            @endforeach
-                        </table>
+                                        <div class="d-flex">
+                                            @if (($d->jenis_bayar == 'TP' && $penjualan->jenis_bayar != 'TN') || ($d->jenis_bayar == 'TN' && $penjualan->jenis_bayar != 'TN'))
+                                                <div>
+                                                    <a href="#" class="me-1 btnEditBayar" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
+                                                        <i class="ti ti-edit text-primary"></i>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <form method="POST" name="deleteform" class="deleteform" id="bayarform"
+                                                        style="margin-bottom:0px !important; padding:0 !important"
+                                                        action="{{ route('pembayaranpenjualan.delete', Crypt::encrypt($d->no_bukti)) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <a href="#" class="delete-confirm ml-1">
+                                                            <i class="ti ti-trash text-danger"></i>
+                                                        </a>
+                                                    </form>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        @endforeach
+
                     </div>
                     <div class="tab-pane fade" id="transfer" role="tabpanel">
+                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreatetransfer"><i class="ti ti-plus me-1"></i>Input
+                            Transfer</a>
                         <ul class="timeline mb-0 pb-1">
                             @foreach ($transfer as $d)
                                 <li class="timeline-item ps-4 border-left-dashed pb-1">
@@ -288,6 +296,7 @@
                         </ul>
                     </div>
                     <div class="tab-pane fade" id="giro" role="tabpanel">
+                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreategiro"><i class="ti ti-plus me-1"></i>Input Giro</a>
                         <ul class="timeline mb-0 pb-1">
                             @foreach ($giro as $d)
                                 <li class="timeline-item ps-4 border-left-dashed pb-1">
@@ -350,7 +359,7 @@
         </div>
     </div>
 @endif
-
+<x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -366,5 +375,77 @@
             b.text(b.attr('data-old'));
         })
     }
+</script>
+<script>
+    $(function() {
+        function loading() {
+            $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+        };
+
+        $("#btnCreateBayar").click(function(e) {
+            e.preventDefault();
+            loading();
+            const no_faktur = "{{ Crypt::encrypt($penjualan->no_faktur) }}";
+            $("#modal").modal("show");
+            $(".modal-title").text("Input Pembayaran");
+            $("#loadmodal").load(`/pembayaranpenjualan/${no_faktur}/create`);
+        });
+
+        $(".btnEditBayar").click(function(e) {
+            e.preventDefault();
+            loading();
+            const no_bukti = $(this).attr('no_bukti');
+            $("#modal").modal("show");
+            $(".modal-title").text("Edit Pembayaran");
+            $("#loadmodal").load(`/pembayaranpenjualan/${no_bukti}/edit`);
+        });
+
+        $("#btnCreatetransfer").click(function(e) {
+            e.preventDefault();
+            loading();
+            const no_faktur = "{{ Crypt::encrypt($penjualan->no_faktur) }}";
+            $("#modal").modal("show");
+            $(".modal-title").text("Input Transfer");
+            $("#loadmodal").load(`/pembayarantransfer/${no_faktur}/create`);
+        });
+
+        $(".btnEdittransfer").click(function(e) {
+            e.preventDefault();
+            loading();
+            const no_faktur = "{{ Crypt::encrypt($penjualan->no_faktur) }}";
+            const kode_transfer = $(this).attr("kode_transfer");
+            $("#modal").modal("show");
+            $(".modal-title").text("Edit Transfer");
+            $("#loadmodal").load(`/pembayarantransfer/${no_faktur}/${kode_transfer}/edit`);
+        });
+
+
+        $("#btnCreategiro").click(function(e) {
+            e.preventDefault();
+            loading();
+            const no_faktur = "{{ Crypt::encrypt($penjualan->no_faktur) }}";
+            $("#modal").modal("show");
+            $(".modal-title").text("Input Giro");
+            $("#loadmodal").load(`/pembayarangiro/${no_faktur}/create`);
+        });
+
+        $(".btnEditgiro").click(function(e) {
+            e.preventDefault();
+            loading();
+            const no_faktur = "{{ Crypt::encrypt($penjualan->no_faktur) }}";
+            const kode_giro = $(this).attr("kode_giro");
+            $("#modal").modal("show");
+            $(".modal-title").text("Edit Giro");
+            $("#loadmodal").load(`/pembayarangiro/${no_faktur}/${kode_giro}/edit`);
+        });
+
+
+    });
 </script>
 @endpush

@@ -45,6 +45,7 @@ class Penjualan extends Model
             'salesman.kode_kategori_salesman as pola_operasi',
             'nama_kategori_salesman',
             'salesman.kode_cabang',
+            'pelanggan.kode_cabang_pkp',
             'nama_cabang',
             'alamat_cabang',
             'nama_pt',

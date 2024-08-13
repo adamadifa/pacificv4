@@ -133,6 +133,7 @@
      $('.delete-confirm').click(function(event) {
          var form = $(this).closest("form");
          var name = $(this).data("name");
+         //  console.log($(this).closest("form").attr('action'));
          event.preventDefault();
          Swal.fire({
              title: `Apakah Anda Yakin Ingin Menghapus Data Ini ?`,
@@ -146,8 +147,10 @@
              confirmButtonText: "Yes, Hapus Saja!"
          }).then((result) => {
              /* Read more about isConfirmed, isDenied below */
+             //  console.log(result);
              if (result.isConfirmed) {
                  form.submit();
+                 //  $(".deleteform").submit();
              }
          });
      });

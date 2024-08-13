@@ -449,26 +449,100 @@ class SfaControler extends Controller
         return view('sfa.penjualan_show', $data);
     }
 
-    public function cetakfaktur($no_fak_penj)
+    public function cetakfaktur($no_faktur)
     {
+        $no_faktur = Crypt::decrypt($no_faktur);
 
-        $perusahaan = "TEST";
-        $cabang = "TEST";
-        $alamat = "TEST";
+        //Data Faktur
+        $pnj = new Penjualan();
+        $penjualan = $pnj->getFaktur($no_faktur);
+        $faktur = $penjualan;
+
+        //Detail Faktur
+        $detailpenjualan = new Penjualan();
+        $detail = $detailpenjualan->getDetailpenjualan($no_faktur);
+
+
+        //Pembayaran
+        $pembayaran = Historibayarpenjualan::select(
+            'marketing_penjualan_historibayar.*',
+            'nama_salesman',
+            'marketing_penjualan_historibayar_giro.kode_giro',
+            'no_giro',
+            'giro_to_cash',
+            'nama_voucher'
+        )
+
+            ->leftJoin('jenis_voucher', 'marketing_penjualan_historibayar.jenis_voucher', '=', 'jenis_voucher.id')
+            ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
+            ->leftJoin('marketing_penjualan_giro', 'marketing_penjualan_historibayar_giro.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('no_faktur', $no_faktur)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if (!empty($faktur->kode_cabang_pkp)) {
+            $kode_cabang = $faktur->kode_cabang_pkp;
+        } else {
+            $kode_cabang = $faktur->kode_cabang;
+        }
+
+        $cabang = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+
+
 
         $profile = CapabilityProfile::load("POS-5890");
         $connector = new RawbtPrintConnector();
         $printer = new Printer($connector, $profile);
+
+        $total = 0;
+        foreach ($detail as $d) {
+
+            $jml = convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah);
+            $qty = explode('|', $jml);
+            $dus = $qty[0];
+            $pack = $qty[1];
+            $pcs = $qty[2];
+            $total += $d->subtotal;
+
+            $datadetail[] = new item($d->nama_produk, "");
+            if (!empty($jumlah_dus)) {
+                $datadetail[] = new item($dus . " Dus x " . $d->harga_dus, formatAngka($dus * $d->harga_dus));
+            }
+            if (!empty($jumlah_pack)) {
+                $datadetail[] = new item($pack . " Pack x " . $d->harga_pack, formatAngka($pack * $d->harga_pack));
+            }
+            if (!empty($jumlah_pcs)) {
+                $datadetail[] = new item($pcs . " Pcs x " . $d->harga_pcs, formatAngka($pcs * $d->harga_pcs));
+            }
+        }
+
+        $nama_pt = strtoupper($cabang->nama_pt);
+        $alamat = $cabang->alamat_cabang;
+
+        $totalbayar = 0;
+
+        if ($pembayaran != null) {
+            foreach ($pembayaran as $d) {
+                $totalbayar += $d->jumlah;
+                $databayar[] = new item(date("d-m-y", strtotime($d->tanggal)), formatAngka($d->jumlah));
+            }
+        } else {
+            $databayar[] = new item('', '');
+        }
+
         try {
-            /* Information for the receipt */
-            // $items = $datadetail;
-            // if (!empty($pembayaran)) {
-            //     $itemsbayar = $databayar;
-            // }
-            //dd($items);
+            //Detail Penjualan
+            $items = $datadetail;
+
+            //Detail Pembayaran
+            if ($pembayaran != null) {
+                $itemsbayar = $databayar;
+            }
 
 
-            /* Date is kept the same for testing */
+            //Tanggal Input Transaksi
             // $date = date('l jS \of F Y h:i:s A');
             $date = date("l jS \of F Y h:i:s A");
 
@@ -484,10 +558,11 @@ class SfaControler extends Controller
             // }
 
             /* Name of shop */
+
+
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
             $printer->setEmphasis(true);
-            $printer->text($perusahaan . ".\n");
             $printer->text($cabang . ".\n");
             $printer->setEmphasis(false);
             $printer->selectPrintMode();
@@ -501,20 +576,20 @@ class SfaControler extends Controller
             $printer->setEmphasis(false);
 
             /* Items */
-            // $printer->setJustification(Printer::JUSTIFY_LEFT);
-            // $printer->setEmphasis(true);
-            // $printer->text(new item('', ''));
-            // $pelanggan_salesman = new item($faktur->no_fak_penj, $faktur->nama_karyawan);
-            // $printer->text($pelanggan_salesman->getAsString(32));
-            // $printer->text(date("d-m-Y H:i:s", strtotime($faktur->date_created)) . "\n");
-            // $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
-            // $printer->text(strtolower(ucwords($faktur->alamat_pelanggan)));
-            // $printer->text(new item('', ''));
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->setEmphasis(true);
+            $printer->text(new item('', ''));
+            $pelanggan_salesman = new item($faktur->no_faktur, $faktur->nama_salesman);
+            $printer->text($pelanggan_salesman->getAsString(32));
+            $printer->text(date("d-m-Y H:i:s", strtotime($faktur->created_at)) . "\n");
+            $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
+            $printer->text(strtolower(ucwords($faktur->alamat_pelanggan)));
+            $printer->text(new item('', ''));
 
-            // $printer->setEmphasis(true);
-            // foreach ($items as $item) {
-            //     $printer->text($item->getAsString(32)); // for 58mm Font A
-            // }
+            $printer->setEmphasis(true);
+            foreach ($items as $item) {
+                $printer->text($item->getAsString(32)); // for 58mm Font A
+            }
 
             // $subtotal = new item('Subtotal', rupiah($faktur->subtotal));
             // $potongan = new item('Potongan', rupiah($faktur->potongan));

@@ -2,8 +2,15 @@
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" />
     <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" />
-    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true"
-        select2="select2Kodesalesman" />
+
+    @if ($level_user == 'salesman')
+        <input type="hidden" name="kode_salesman" value="{{ Auth::user()->kode_salesman }}" />
+    @else
+        <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true"
+            select2="select2Kodesalesman" />
+    @endif
+
+
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-2">

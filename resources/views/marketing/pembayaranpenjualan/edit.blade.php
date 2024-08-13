@@ -4,34 +4,41 @@
     {{-- {{ $historibayar->no_bukti }} --}}
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" value="{{ $historibayar->tanggal }}" />
     <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" value="{{ formatAngka($historibayar->jumlah) }}" />
-    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true" select2="select2Kodesalesman"
-        selected="{{ $historibayar->kode_salesman }}" />
+    @if ($level_user !== 'salesman')
+        <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true"
+            select2="select2Kodesalesman" selected="{{ $historibayar->kode_salesman }}" />
+    @else
+        <input type="hidden" name="kode_salesman" value="{{ Auth::user()->kode_salesman }}" />
+    @endif
+
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-2">
-                <input class="form-check-input agreementvoucher" name="agreementvoucher" value="1" type="checkbox" value="" id="agreementvoucher"
-                    {{ $historibayar->voucher == 1 ? 'checked' : '' }}>
+                <input class="form-check-input agreementvoucher" name="agreementvoucher" value="1" type="checkbox" value=""
+                    id="agreementvoucher" {{ $historibayar->voucher == 1 ? 'checked' : '' }}>
                 <label class="form-check-label" for="agreementvoucher"> Bayar Menggunakan Voucher ? </label>
             </div>
         </div>
     </div>
     <div class="row" id="voucher">
         <div class="col">
-            <x-select label="Pilih Voucher" name="jenis_voucher" :data="$jenis_voucher" key="id" textShow="nama_voucher" upperCase="true" select2="select2Kodevoucher"
-                selected="{{ $historibayar->jenis_voucher }}" />
+            <x-select label="Pilih Voucher" name="jenis_voucher" :data="$jenis_voucher" key="id" textShow="nama_voucher" upperCase="true"
+                select2="select2Kodevoucher" selected="{{ $historibayar->jenis_voucher }}" />
         </div>
     </div>
     <div class="row">
         <div class="col-12">
             <div class="form-check mb-3">
-                <input class="form-check-input agreementgiro" name="agreementgiro" value="1" type="checkbox" id="agreementgiro" {{ $historibayar->giro_to_cash == '1' ? 'checked' : '' }}>
+                <input class="form-check-input agreementgiro" name="agreementgiro" value="1" type="checkbox" id="agreementgiro"
+                    {{ $historibayar->giro_to_cash == '1' ? 'checked' : '' }}>
                 <label class="form-check-label" for="agreementgiro"> Ganti Giro Ke Cash ? </label>
             </div>
         </div>
     </div>
     <div class="row" id="giroditolak">
         <div class="col">
-            <x-select label="Pilih Giro" name="kode_giro" :data="$giroditolak" key="kode_giro" textShow="no_giro" upperCase="true" select2="select2Kodegiro" selected="{{ $historibayar->kode_giro }}" />
+            <x-select label="Pilih Giro" name="kode_giro" :data="$giroditolak" key="kode_giro" textShow="no_giro" upperCase="true"
+                select2="select2Kodegiro" selected="{{ $historibayar->kode_giro }}" />
         </div>
     </div>
     <div class="row">

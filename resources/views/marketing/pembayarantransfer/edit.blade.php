@@ -3,8 +3,12 @@
     @method('PUT')
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Giro" name="tanggal" value="{{ $transfer->tanggal }}" datepicker="flatpickr-date" />
     <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" value="{{ formatAngka($transfer->jumlah) }}" />
-    <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true" select2="select2Kodesalesman"
-        selected="{{ $transfer->kode_salesman }}" />
+    @if ($level_user == 'salesman')
+        <input type="hidden" name="kode_salesman" value="{{ auth()->user()->kode_salesman }}">
+    @else
+        <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true"
+            select2="select2Kodesalesman" selected="{{ $transfer->kode_salesman }}" />
+    @endif
     <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" value="{{ $transfer->bank_pengirim }}" />
     <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $transfer->keterangan }}" />
     <div class="row">
