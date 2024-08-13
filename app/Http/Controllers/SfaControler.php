@@ -672,9 +672,9 @@ class SfaControler extends Controller
             }
 
             // /* Barcode Default look */
-            $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE128);
-            $printer->feed();
-            $printer->feed();
+            // $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE128);
+            // $printer->feed();
+            // $printer->feed();
 
 
 
@@ -802,9 +802,9 @@ class SfaControler extends Controller
 
             // /* Barcode Default look */
 
-            $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE128);
-            $printer->feed();
-            $printer->feed();
+            // $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE128);
+            // $printer->feed();
+            // $printer->feed();
 
 
             // // Demo that alignment QRcode is the same as text
