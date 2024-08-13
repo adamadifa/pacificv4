@@ -507,13 +507,13 @@ class SfaControler extends Controller
             $total += $d->subtotal;
 
             $datadetail[] = new item($d->nama_produk, "");
-            if (!empty($jumlah_dus)) {
+            if (!empty($dus)) {
                 $datadetail[] = new item($dus . " Dus x " . $d->harga_dus, formatAngka($dus * $d->harga_dus));
             }
-            if (!empty($jumlah_pack)) {
+            if (!empty($pacl)) {
                 $datadetail[] = new item($pack . " Pack x " . $d->harga_pack, formatAngka($pack * $d->harga_pack));
             }
-            if (!empty($jumlah_pcs)) {
+            if (!empty($pcs)) {
                 $datadetail[] = new item($pcs . " Pcs x " . $d->harga_pcs, formatAngka($pcs * $d->harga_pcs));
             }
         }
@@ -584,6 +584,7 @@ class SfaControler extends Controller
             $printer->text(date("d-m-Y H:i:s", strtotime($faktur->created_at)) . "\n");
             $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
             $printer->text(strtolower(ucwords($faktur->alamat_pelanggan)));
+            $printer->text(strtolower(ucwords($cabang->telepon_cabang)));
             $printer->text(new item('', ''));
 
             $printer->setEmphasis(true);
@@ -591,17 +592,17 @@ class SfaControler extends Controller
                 $printer->text($item->getAsString(32)); // for 58mm Font A
             }
 
-            // $subtotal = new item('Subtotal', rupiah($faktur->subtotal));
-            // $potongan = new item('Potongan', rupiah($faktur->potongan));
-            // $totalnonppn = $faktur->subtotal - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
-            // $total = new item('Total', rupiah($totalnonppn));
-            // if (!empty($faktur->ppn)) {
-            //     $ppn = new item('PPN', rupiah($faktur->ppn));
-            // }
-            // $_grandtotal = $faktur->total - $totalretur;
-            // $retur = new item('Retur', rupiah($totalretur));
-            // $grandtotal = new item('Grand Total', rupiah($_grandtotal));
-            // //$total = new item('Total', '14.25', true);
+            $subtotal = new item('Subtotal', formatRupiah($faktur->total_bruto));
+            $potongan = new item('Potongan', formatRupiah($faktur->potongan));
+            $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
+            $total = new item('Total', formatAngka($totalnonppn));
+            if (!empty($faktur->ppn)) {
+                $ppn = new item('PPN', formatAngka($faktur->ppn));
+            }
+            $_grandtotal = $faktur->total - $faktur->total_retur;
+            $retur = new item('Retur', formatAngka($faktur->total_retur));
+            $grandtotal = new item('Grand Total', formatAngka($_grandtotal));
+            //$total = new item('Total', '14.25', true);
 
 
             // $printer->setEmphasis(true);
