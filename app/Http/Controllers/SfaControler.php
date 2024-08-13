@@ -672,7 +672,7 @@ class SfaControler extends Controller
             }
 
             // /* Barcode Default look */
-            $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE39);
+            $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE128);
             $printer->feed();
             $printer->feed();
 
@@ -684,7 +684,10 @@ class SfaControler extends Controller
             // //Faktur PERUSAHAAN
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            //$printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $printer->text("\n");
+            $printer->text("\n");
+            $printer->feed(2);
             $printer->setEmphasis(true);
             $printer->text($nama_pt . ".\n");
             $printer->setEmphasis(false);
@@ -799,18 +802,18 @@ class SfaControler extends Controller
 
             // /* Barcode Default look */
 
-            $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE39);
+            $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE128);
             $printer->feed();
             $printer->feed();
 
 
             // // Demo that alignment QRcode is the same as text
             // $printer2 = new Printer($connector); // dirty printer profile hack !!
-            // $printer2->setJustification(Printer::JUSTIFY_CENTER);
-            // $printer2->qrCode("https://rawbt.ru/mike42", Printer::QR_ECLEVEL_M, 8);
-            // $printer2->text("rawbt.ru/mike42\n");
-            // $printer2->setJustification();
-            // $printer2->feed();
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->qrCode("https://rawbt.ru/mike42", Printer::QR_ECLEVEL_M, 8);
+            $printer->text("rawbt.ru/mike42\n");
+            $printer->setJustification();
+            $printer->feed();
 
 
             /* Cut the receipt and open the cash drawer */
