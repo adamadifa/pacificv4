@@ -90,8 +90,8 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-link-shipping"
-                            aria-controls="navs-justified-link-shipping" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#giro" aria-controls="giro"
+                            aria-selected="false" tabindex="-1">
                             Giro
                         </button>
                     </li>
@@ -193,23 +193,7 @@
                                 @php
                                     $total_bayar += $d->jumlah;
                                 @endphp
-                                {{-- <div class="card border border-primary ">
-                                    <div class="card-body p-2 d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="card-title  m-0">{{ $d->no_bukti }}</h6>
-                                            <p class="card-text m-0">{{ DateToIndo($d->tanggal) }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="card-text m-0 fw-bold"> {{ formatAngka($d->jumlah) }}</p>
-                                            <p class="card-text m-0">
-                                                <span class="badge bg-info">
-                                                    {{ $jenis_bayar[$d->jenis_bayar] }}
-                                                </span>
-                                            </p>
-                                        </div>
 
-                                    </div>
-                                </div> --}}
                                 <ul class="timeline mb-0 pb-1">
                                     <li class="timeline-item ps-4 border-left-dashed pb-1">
                                         <span class="timeline-indicator-advanced timeline-indicator-success">
@@ -258,20 +242,103 @@
                                     <span class="timeline-indicator-advanced timeline-indicator-success">
                                         <i class="ti ti-circle-check"></i>
                                     </span>
-                                    <div class="timeline-event px-0 pb-0">
-                                        <div class="timeline-header d-flex">
-                                            <small class="text-success text-uppercase fw-medium">{{ $d->kode_transfer }} -
-                                                @php
-                                                    $status_transfer = $d->status == '0' ? 'Pending' : ($d->status == '1' ? 'Diterima' : 'Ditolak');
-                                                    $bg_status = $d->status == '0' ? 'warning' : ($d->status == '1' ? 'success' : 'danger');
-                                                @endphp
-                                                <span class="badge bg-{{ $bg_status }}">{{ $status_transfer }}</span>
-                                            </small>
-                                        </div>
-                                        <h6 class="mb-1">{{ DateToIndo($d->tanggal) }}</h6>
+                                    <div class="timeline-event px-0 pb-0 d-flex justify-content-between">
+                                        <div>
+                                            <div class="timeline-header">
+                                                <small class="text-success text-uppercase fw-medium">{{ $d->kode_transfer }} -
+                                                    @php
+                                                        $status_transfer =
+                                                            $d->status == '0' ? 'Pending' : ($d->status == '1' ? 'Diterima' : 'Ditolak');
+                                                        $bg_status = $d->status == '0' ? 'warning' : ($d->status == '1' ? 'success' : 'danger');
+                                                    @endphp
+                                                    <span class="badge bg-{{ $bg_status }}">{{ $status_transfer }}</span>
+                                                </small>
+                                            </div>
+                                            <h6 class="mb-1">{{ DateToIndo($d->tanggal) }}</h6>
 
-                                        <h5 class="mb-1">{{ formatAngka($d->jumlah) }}</h5>
-                                        <p class="text-muted mb-0">{{ $d->bank_pengirim }}</p>
+                                            <h5 class="mb-1">{{ formatAngka($d->jumlah) }}</h5>
+                                            <p class="text-muted mb-0">{{ $d->bank_pengirim }}</p>
+                                        </div>
+                                        <div class="d-flex">
+                                            @if ($d->status == '0')
+                                                <div>
+                                                    <a href="#" class="me-1 btnEdittransfer"
+                                                        kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}">
+                                                        <i class="ti ti-edit text-primary"></i>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                        style="margin-bottom:0px !important; padding:0 !important"
+                                                        action="{{ route('pembayarantransfer.delete', [Crypt::encrypt($d->no_faktur), Crypt::encrypt($d->kode_transfer)]) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <a href="#" class="delete-confirm ml-1">
+                                                            <i class="ti ti-trash text-danger"></i>
+                                                        </a>
+                                                    </form>
+                                                </div>
+                                            @else
+                                                <span class="badge bg-success">Keuangan</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade" id="giro" role="tabpanel">
+                        <ul class="timeline mb-0 pb-1">
+                            @foreach ($giro as $d)
+                                <li class="timeline-item ps-4 border-left-dashed pb-1">
+                                    <span class="timeline-indicator-advanced timeline-indicator-success">
+                                        <i class="ti ti-circle-check"></i>
+                                    </span>
+                                    <div class="timeline-event px-0 pb-0 d-flex justify-content-between">
+                                        <div>
+                                            <div class="timeline-header d-flex">
+                                                <small class="text-success text-uppercase fw-medium">{{ $d->no_giro }} -
+                                                    @php
+                                                        $status_giro = $d->status == '0' ? 'Pending' : ($d->status == '1' ? 'Diterima' : 'Ditolak');
+                                                        $bg_giro = $d->status == '0' ? 'warning' : ($d->status == '1' ? 'success' : 'danger');
+                                                    @endphp
+                                                    <span class="badge bg-{{ $bg_giro }}">{{ $status_giro }}</span>
+                                                </small>
+                                            </div>
+                                            <h6 class="mb-1">{{ DateToIndo($d->tanggal) }}</h6>
+
+                                            <h5 class="mb-1">{{ formatAngka($d->jumlah) }}</h5>
+                                            <p class="text-muted mb-0">{{ $d->bank_pengirim }}</p>
+                                        </div>
+                                        @if ($d->status == '0')
+                                            <div class="d-flex">
+
+
+                                                <div>
+                                                    <a href="#" class="me-2 btnEditgiro" kode_giro="{{ Crypt::encrypt($d->kode_giro) }}">
+                                                        <i class="ti ti-edit text-success"></i>
+                                                    </a>
+                                                </div>
+
+
+
+                                                <div>
+                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                        style="margin-bottom:0px !important; padding:0 !important"
+                                                        action="{{ route('pembayarangiro.delete', [Crypt::encrypt($d->no_faktur), Crypt::encrypt($d->kode_giro)]) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <a href="#" class="delete-confirm ml-1">
+                                                            <i class="ti ti-trash text-danger"></i>
+                                                        </a>
+                                                    </form>
+                                                </div>
+
+
+                                            </div>
+                                        @else
+                                            <span class="badge bg-success">Keuangan</span>
+                                        @endif
                                     </div>
                                 </li>
                             @endforeach
