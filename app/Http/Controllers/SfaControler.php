@@ -583,8 +583,8 @@ class SfaControler extends Controller
             $printer->text($pelanggan_salesman->getAsString(32));
             $printer->text(date("d-m-Y H:i:s", strtotime($faktur->created_at)) . "\n");
             $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
-            $printer->text(strtolower(ucwords($faktur->alamat_pelanggan)));
-            $printer->text(strtolower(ucwords($cabang->telepon_cabang)));
+            $printer->text(textCamelCase($faktur->alamat_pelanggan) . "\n");
+            $printer->text(textCamelCase($faktur->telepon_cabang) . "\n");
             $printer->text(new item('', ''));
 
             $printer->setEmphasis(true);
@@ -624,7 +624,8 @@ class SfaControler extends Controller
             $printer->feed();
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $printer->text(strtoupper($faktur->jenis_transaksi) . ".\n");
+            $jenis_transaksi = $faktur->jenis_transaksi == 'T' ? 'TUNAI' : 'KREDIT';
+            $printer->text(strtoupper($jenis_transaksi) . ".\n");
             $printer->selectPrintMode();
 
             // /* Footer */
