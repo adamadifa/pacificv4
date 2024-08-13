@@ -17,7 +17,7 @@
             @endphp
         @endif
         <a href="{{ route('sfa.showpenjualan', Crypt::encrypt($d->no_faktur)) }}">
-            <div class="card mb-2 shadow-none bg-transparent border {{ $bordercolor }} p-0">
+            <div class="card mb-2 shadow-none  border  {{ $bordercolor }} p-0">
                 <div class="card-body d-flex justify-content-between p-2">
                     <div>
                         <h6 class="m-0">{{ $d->no_faktur }}</h6>

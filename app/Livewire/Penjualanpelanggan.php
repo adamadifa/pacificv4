@@ -20,6 +20,7 @@ class Penjualanpelanggan extends Component
     }
     public function render()
     {
+
         $data = Penjualan::select(
             'marketing_penjualan.no_faktur',
             'marketing_penjualan.tanggal',

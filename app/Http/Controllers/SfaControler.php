@@ -344,12 +344,6 @@ class SfaControler extends Controller
     public function showpenjualan($no_faktur)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
-        $data['kepemilikan'] = config('pelanggan.kepemilikan');
-        $data['lama_berjualan'] = config('pelanggan.lama_berjualan');
-        $data['status_outlet'] = config('pelanggan.status_outlet');
-        $data['type_outlet'] = config('pelanggan.type_outlet');
-        $data['cara_pembayaran'] = config('pelanggan.cara_pembayaran');
-        $data['lama_langganan'] = config('pelanggan.lama_langganan');
         $data['jenis_bayar'] = config('penjualan.jenis_bayar');
         $pnj = new Penjualan();
         $penjualan = $pnj->getFaktur($no_faktur);
