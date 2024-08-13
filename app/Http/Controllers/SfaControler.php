@@ -564,11 +564,11 @@ class SfaControler extends Controller
             // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
             $printer->setEmphasis(true);
             $printer->text($nama_pt . ".\n");
-            $printer->text(textCamelCase($faktur->telepon_cabang) . "\n");
             $printer->setEmphasis(false);
             $printer->selectPrintMode();
             $printer->text($alamat . ".\n");
             $printer->text($date . "\n");
+            $printer->text(textCamelCase($faktur->telepon_cabang) . "\n");
 
 
             /* Title of receipt */
@@ -671,6 +671,10 @@ class SfaControler extends Controller
                 }
             }
 
+            // /* Barcode Default look */
+            $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE39);
+            $printer->feed();
+            $printer->feed();
 
 
 
@@ -683,10 +687,10 @@ class SfaControler extends Controller
             // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
             $printer->setEmphasis(true);
             $printer->text($nama_pt . ".\n");
-            $printer->text(textCamelCase($faktur->telepon_cabang) . "\n");
             $printer->setEmphasis(false);
             $printer->selectPrintMode();
             $printer->text($alamat . ".\n");
+            $printer->text(textCamelCase($faktur->telepon_cabang) . "\n");
             $printer->text($date . "\n");
 
 
@@ -795,7 +799,7 @@ class SfaControler extends Controller
 
             // /* Barcode Default look */
 
-            $printer->barcode("ABC", Printer::BARCODE_CODE39);
+            $printer->barcode($faktur->no_faktur, Printer::BARCODE_CODE39);
             $printer->feed();
             $printer->feed();
 
