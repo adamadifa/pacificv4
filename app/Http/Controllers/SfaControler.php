@@ -564,6 +564,7 @@ class SfaControler extends Controller
             // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
             $printer->setEmphasis(true);
             $printer->text($nama_pt . ".\n");
+            $printer->text(textCamelCase($faktur->telepon_cabang) . "\n");
             $printer->setEmphasis(false);
             $printer->selectPrintMode();
             $printer->text($alamat . ".\n");
@@ -572,7 +573,7 @@ class SfaControler extends Controller
 
             /* Title of receipt */
             $printer->setEmphasis(true);
-            $printer->text("LEMBAR UNTUK PELANGGAN\n");
+            $printer->text("LEMBAR UNTUK PERUSAHAAN\n");
             $printer->setEmphasis(false);
 
             /* Items */
@@ -584,7 +585,6 @@ class SfaControler extends Controller
             $printer->text(date("d-m-Y H:i:s", strtotime($faktur->created_at)) . "\n");
             $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
             $printer->text(textCamelCase($faktur->alamat_pelanggan) . "\n");
-            $printer->text(textCamelCase($faktur->telepon_cabang) . "\n");
             $printer->text(new item('', ''));
 
             $printer->setEmphasis(true);
@@ -659,17 +659,17 @@ class SfaControler extends Controller
             $printer->text("www.pedasalami.com\n");
             $printer->feed();
 
-            // if (!empty($faktur->signature)) {
-            //     $urlsignature = base_path('/public/storage/signature/') . $faktur->signature;
-            //     $signature = EscposImage::load($urlsignature, false);
-            //     /* Print top logo */
-            //     if ($profile->getSupportsGraphics()) {
-            //         $printer->graphics($signature);
-            //     }
-            //     if ($profile->getSupportsBitImageRaster() && !$profile->getSupportsGraphics()) {
-            //         $printer->bitImage($signature);
-            //     }
-            // }
+            if (!empty($faktur->signature)) {
+                $urlsignature = base_path('/public/storage/signature/') . $faktur->signature;
+                $signature = EscposImage::load($urlsignature, false);
+                /* Print top logo */
+                if ($profile->getSupportsGraphics()) {
+                    $printer->graphics($signature);
+                }
+                if ($profile->getSupportsBitImageRaster() && !$profile->getSupportsGraphics()) {
+                    $printer->bitImage($signature);
+                }
+            }
 
 
 
@@ -678,125 +678,126 @@ class SfaControler extends Controller
 
 
             // //Faktur PERUSAHAAN
-            // /* Name of shop */
-            // $printer->setJustification(Printer::JUSTIFY_CENTER);
-            // //$printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            // $printer->text("\n");
-            // $printer->text("\n");
-            // $printer->feed(2);
-            // // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            // $printer->setEmphasis(true);
-            // $printer->text($perusahaan . ".\n");
-            // $printer->text($cabang . ".\n");
-            // $printer->setEmphasis(false);
-            // $printer->selectPrintMode();
-            // $printer->text($alamat . ".\n");
-            // $printer->text($date . "\n");
+
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $printer->setEmphasis(true);
+            $printer->text($nama_pt . ".\n");
+            $printer->text(textCamelCase($faktur->telepon_cabang) . "\n");
+            $printer->setEmphasis(false);
+            $printer->selectPrintMode();
+            $printer->text($alamat . ".\n");
+            $printer->text($date . "\n");
 
 
-            // /* Title of receipt */
-            // $printer->setEmphasis(true);
-            // $printer->text("LEMBAR UNTUK PERUSAHAAN\n");
-            // $printer->setEmphasis(false);
+            /* Title of receipt */
+            $printer->setEmphasis(true);
+            $printer->text("LEMBAR UNTUK PELANGGAN\n");
+            $printer->setEmphasis(false);
 
-            // /* Items */
-            // $printer->setJustification(Printer::JUSTIFY_LEFT);
-            // $printer->setEmphasis(true);
-            // $printer->text(new item('', ''));
-            // $pelanggan_salesman = new item($faktur->no_fak_penj, $faktur->nama_karyawan);
-            // $printer->text($pelanggan_salesman->getAsString(32));
-            // $printer->text(date("d-m-Y H:i:s", strtotime($faktur->date_created)) . "\n");
-            // $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
-            // $printer->text(strtolower(ucwords($faktur->alamat_pelanggan)));
-            // $printer->text(new item('', ''));
+            /* Items */
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->setEmphasis(true);
+            $printer->text(new item('', ''));
+            $pelanggan_salesman = new item($faktur->no_faktur, $faktur->nama_salesman);
+            $printer->text($pelanggan_salesman->getAsString(32));
+            $printer->text(date("d-m-Y H:i:s", strtotime($faktur->created_at)) . "\n");
+            $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
+            $printer->text(textCamelCase($faktur->alamat_pelanggan) . "\n");
+            $printer->text(new item('', ''));
 
-            // $printer->setEmphasis(true);
-            // foreach ($items as $item) {
-            //     $printer->text($item->getAsString(32)); // for 58mm Font A
-            // }
+            $printer->setEmphasis(true);
+            foreach ($items as $item) {
+                $printer->text($item->getAsString(32)); // for 58mm Font A
+            }
 
-            // $subtotal = new item('Subtotal', rupiah($faktur->subtotal));
-            // $potongan = new item('Potongan', rupiah($faktur->potongan));
-            // $totalnonppn = $faktur->subtotal - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
-            // $total = new item('Total', rupiah($totalnonppn));
-            // if (!empty($faktur->ppn)) {
-            //     $ppn = new item('PPN', rupiah($faktur->ppn));
-            // }
-            // $_grandtotal = $faktur->total - $totalretur;
-            // $retur = new item('Retur', rupiah($totalretur));
-            // $grandtotal = new item('Grand Total', rupiah($_grandtotal));
-            // //$total = new item('Total', '14.25', true);
+            $subtotal = new item('Subtotal', formatRupiah($faktur->total_bruto));
+            $potongan = new item('Potongan', formatRupiah($faktur->potongan));
+            $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
+            $total = new item('Total', formatAngka($totalnonppn));
+            if (!empty($faktur->ppn)) {
+                $ppn = new item('PPN', formatAngka($faktur->ppn));
+            }
+            $_grandtotal = $faktur->total - $faktur->total_retur;
+            $retur = new item('Retur', formatAngka($faktur->total_retur));
+            $grandtotal = new item('Grand Total', formatAngka($_grandtotal));
+            //$total = new item('Total', '14.25', true);
 
 
-            // $printer->setEmphasis(true);
-            // $printer->text($subtotal->getAsString(32));
-            // $printer->setEmphasis(false);
-            // $printer->feed();
+            $printer->setEmphasis(true);
+            $printer->text($subtotal->getAsString(32));
+            $printer->setEmphasis(false);
+            $printer->feed();
 
             // /* Tax and total */
-            // $printer->text($potongan->getAsString(32));
-            // $printer->text($total->getAsString(32));
-            // if (!empty($faktur->ppn)) {
-            //     $printer->text($ppn->getAsString(32));
-            // }
-            // $printer->text($retur->getAsString(32));
-            // // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            // $printer->feed();
-            // $printer->setEmphasis(true);
-            // $printer->text($grandtotal->getAsString(32));
-            // $printer->feed();
-            // $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text($potongan->getAsString(32));
+            $printer->text($total->getAsString(32));
+            if (!empty($faktur->ppn)) {
+                $printer->text($ppn->getAsString(32));
+            }
+            $printer->text($retur->getAsString(32));
             // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            // $printer->text(strtoupper($faktur->jenistransaksi) . ".\n");
-            // $printer->selectPrintMode();
-
-            // if (!empty($cekpembayaran)) {
-            //     $printer->feed();
-            //     $printer->setJustification(Printer::JUSTIFY_LEFT);
-            //     $printer->text("PEMBAYARAN \n");
-            //     $printer->setEmphasis(true);
-            //     foreach ($itemsbayar as $itembayar) {
-            //         $printer->text($itembayar->getAsString(32)); // for 58mm Font A
-            //     }
-            //     $grandtotalbayar = new item('TOTAL BAYAR', rupiah($totalbayar));
-            //     $sisatagihan = $faktur->total - $totalretur - $totalbayar;
-            //     $sisa = new item('SISA TAGIHAN', rupiah($sisatagihan));
-            //     $printer->text($grandtotalbayar->getAsString(32)); // for 58mm Font A
-            //     $printer->text($sisa->getAsString(32)); // for 58mm Font A
-            // }
+            $printer->feed();
+            $printer->setEmphasis(true);
+            $printer->text($grandtotal->getAsString(32));
+            $printer->feed();
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $jenis_transaksi = $faktur->jenis_transaksi == 'T' ? 'TUNAI' : 'KREDIT';
+            $printer->text(strtoupper($jenis_transaksi) . ".\n");
+            $printer->selectPrintMode();
 
             // /* Footer */
-            // $printer->feed(2);
-            // $printer->setJustification(Printer::JUSTIFY_CENTER);
-            // $printer->text("Tidak Di Perkenankan Transfer \n");
-            // $printer->text("Ke Rekening Salesman \n");
-            // $printer->text("Apapun Jenis Transaksinya \n");
-            // $printer->text("Wajib Ditandatangani \n");
-            // $printer->text("kedua belah pihak,\n");
-            // $printer->text("Terimakasih\n");
-            // $printer->text("www.pedasalami.com\n");
-            // $printer->feed();
 
-            // if (!empty($faktur->signature)) {
-            //     $urlsignature = base_path('/public/storage/signature/') . $faktur->signature;
-            //     $signature = EscposImage::load($urlsignature, false);
-            //     /* Print top logo */
-            //     if ($profile->getSupportsGraphics()) {
-            //         $printer->graphics($signature);
-            //     }
-            //     if ($profile->getSupportsBitImageRaster() && !$profile->getSupportsGraphics()) {
-            //         $printer->bitImage($signature);
-            //     }
-            // }
+            if ($pembayaran != null) {
+                $printer->feed();
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->text("PEMBAYARAN \n");
+                $printer->setEmphasis(true);
+                foreach ($itemsbayar as $itembayar) {
+                    $printer->text($itembayar->getAsString(32)); // for 58mm Font A
+                }
+                $total_netto = $faktur->total_bruto - $faktur->total_retur - $faktur->potongan - $faktur->potongan_istimewa - $faktur->penyesuaian + $faktur->ppn;
+                $sisatagihan = $total_netto - $totalbayar;
+                $sisa = new item('SISA TAGIHAN', formatRupiah($sisatagihan));
+                $grandtotalbayar = new item('TOTAL BAYAR', formatAngka($totalbayar));
+                $printer->text($grandtotalbayar->getAsString(32)); // for 58mm Font A
+                $printer->text($sisa->getAsString(32)); // for 58mm Font A
+            }
+
+
+
+            $printer->feed(2);
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("Tidak Di Perkenankan Transfer \n");
+            $printer->text("Ke Rekening Salesman \n");
+            $printer->text("Apapun Jenis Transaksinya \n");
+            $printer->text("Wajib Ditandatangani \n");
+            $printer->text("kedua belah pihak,\n");
+            $printer->text("Terimakasih\n");
+            $printer->text("www.pedasalami.com\n");
+            $printer->feed();
+
+            if (!empty($faktur->signature)) {
+                $urlsignature = base_path('/public/storage/signature/') . $faktur->signature;
+                $signature = EscposImage::load($urlsignature, false);
+                /* Print top logo */
+                if ($profile->getSupportsGraphics()) {
+                    $printer->graphics($signature);
+                }
+                if ($profile->getSupportsBitImageRaster() && !$profile->getSupportsGraphics()) {
+                    $printer->bitImage($signature);
+                }
+            }
 
 
 
 
             // /* Barcode Default look */
 
-            // $printer->barcode("ABC", Printer::BARCODE_CODE39);
-            // $printer->feed();
-            // $printer->feed();
+            $printer->barcode("ABC", Printer::BARCODE_CODE39);
+            $printer->feed();
+            $printer->feed();
 
 
             // // Demo that alignment QRcode is the same as text
