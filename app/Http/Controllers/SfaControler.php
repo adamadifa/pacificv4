@@ -605,44 +605,45 @@ class SfaControler extends Controller
             //$total = new item('Total', '14.25', true);
 
 
-            // $printer->setEmphasis(true);
-            // $printer->text($subtotal->getAsString(32));
-            // $printer->setEmphasis(false);
-            // $printer->feed();
+            $printer->setEmphasis(true);
+            $printer->text($subtotal->getAsString(32));
+            $printer->setEmphasis(false);
+            $printer->feed();
 
             // /* Tax and total */
-            // $printer->text($potongan->getAsString(32));
-            // $printer->text($total->getAsString(32));
-            // if (!empty($faktur->ppn)) {
-            //     $printer->text($ppn->getAsString(32));
-            // }
-            // $printer->text($retur->getAsString(32));
-            // // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            // $printer->feed();
-            // $printer->setEmphasis(true);
-            // $printer->text($grandtotal->getAsString(32));
-            // $printer->feed();
-            // $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text($potongan->getAsString(32));
+            $printer->text($total->getAsString(32));
+            if (!empty($faktur->ppn)) {
+                $printer->text($ppn->getAsString(32));
+            }
+            $printer->text($retur->getAsString(32));
             // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            // $printer->text(strtoupper($faktur->jenistransaksi) . ".\n");
-            // $printer->selectPrintMode();
+            $printer->feed();
+            $printer->setEmphasis(true);
+            $printer->text($grandtotal->getAsString(32));
+            $printer->feed();
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $printer->text(strtoupper($faktur->jenis_transaksi) . ".\n");
+            $printer->selectPrintMode();
 
             // /* Footer */
 
-            // if (!empty($cekpembayaran)) {
-            //     $printer->feed();
-            //     $printer->setJustification(Printer::JUSTIFY_LEFT);
-            //     $printer->text("PEMBAYARAN \n");
-            //     $printer->setEmphasis(true);
-            //     foreach ($itemsbayar as $itembayar) {
-            //         $printer->text($itembayar->getAsString(32)); // for 58mm Font A
-            //     }
-            //     $sisatagihan = $faktur->total - $totalretur - $totalbayar;
-            //     $sisa = new item('SISA TAGIHAN', rupiah($sisatagihan));
-            //     $grandtotalbayar = new item('TOTAL BAYAR', rupiah($totalbayar));
-            //     $printer->text($grandtotalbayar->getAsString(32)); // for 58mm Font A
-            //     $printer->text($sisa->getAsString(32)); // for 58mm Font A
-            // }
+            if ($pembayaran != null) {
+                $printer->feed();
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->text("PEMBAYARAN \n");
+                $printer->setEmphasis(true);
+                foreach ($itemsbayar as $itembayar) {
+                    $printer->text($itembayar->getAsString(32)); // for 58mm Font A
+                }
+                $total_netto = $faktur->total_bruto - $faktur->total_retur - $faktur->potongan - $faktur->potongan_istimewa - $faktur->penyesuaian + $faktur->ppn;
+                $sisatagihan = $total_netto - $totalbayar;
+                $sisa = new item('SISA TAGIHAN', formatRupiah($sisatagihan));
+                $grandtotalbayar = new item('TOTAL BAYAR', formatAngka($totalbayar));
+                $printer->text($grandtotalbayar->getAsString(32)); // for 58mm Font A
+                $printer->text($sisa->getAsString(32)); // for 58mm Font A
+            }
 
 
 
