@@ -1732,6 +1732,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/sfa/storepelanggancapture', 'storepelanggancapture')->name('sfa.storepelangancapture')->can('sfa.pelanggan');
         Route::get('/sfa/penjualan/{no_faktur}/show', 'showpenjualan')->name('sfa.showpenjualan')->can('sfa.penjualan');
         Route::get('/sfa/penjualan/{no_faktur}/cetak', 'cetakfaktur')->name('sfa.cetakfaktur')->can('sfa.penjualan');
+        Route::post('/sfa/uploadsignature', 'uploadsignature')->name('sfa.uploadsignature')->can('sfa.penjualan');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

@@ -809,11 +809,11 @@ class SfaControler extends Controller
 
             // // Demo that alignment QRcode is the same as text
             // $printer2 = new Printer($connector); // dirty printer profile hack !!
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->qrCode("https://rawbt.ru/mike42", Printer::QR_ECLEVEL_M, 8);
-            $printer->text("rawbt.ru/mike42\n");
-            $printer->setJustification();
-            $printer->feed();
+            // $printer->setJustification(Printer::JUSTIFY_CENTER);
+            // $printer->qrCode("https://rawbt.ru/mike42", Printer::QR_ECLEVEL_M, 8);
+            // $printer->text("rawbt.ru/mike42\n");
+            // $printer->setJustification();
+            // $printer->feed();
 
 
             /* Cut the receipt and open the cash drawer */
@@ -823,6 +823,31 @@ class SfaControler extends Controller
             echo $e->getMessage();
         } finally {
             $printer->close();
+        }
+    }
+
+
+    public function uploadsignature(Request $request)
+    {
+        $no_faktur = $request->no_faktur;
+        $format = $no_faktur;
+        $folderPath = "public/signature/";
+        $image_parts = explode(";base64,", $request->signed);
+        $image_type_aux = explode("image/", $image_parts[0]);
+        $image_type = $image_type_aux[1];
+        $image_base64 = base64_decode($image_parts[1]);
+        $fileName =  $format . '.png';
+        $file = $folderPath . $fileName;
+        $data = [
+            'signature' => $fileName
+        ];
+        $update = Penjualan::where('no_faktur', $no_faktur)->update($data);
+        if ($update) {
+            if (Storage::exists($file)) {
+                Storage::delete($file);
+            }
+            Storage::put($file, $image_base64);
+            return Redirect::back()->with(messageSuccess('Tanda Tangan Berhasil Disimpan'));
         }
     }
 }

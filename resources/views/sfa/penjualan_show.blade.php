@@ -5,9 +5,20 @@
 @section('navigasi')
     <span>Detail Faktur</span>
 @endsection
+<link rel="stylesheet" href="{{ asset('assets/vendor/js/signature/signature.css') }}">
 <style>
     #map {
         height: 180px;
+    }
+
+    .kbw-signature {
+        width: 100%;
+        height: 200px;
+    }
+
+    #sign canvas {
+        width: 100% !important;
+        height: auto;
     }
 </style>
 
@@ -53,6 +64,64 @@
         </div>
     @else
     @endif
+    @php
+        $path = Storage::url('signature/' . $penjualan->signature);
+    @endphp
+    @if (!empty($penjualan->signature))
+        <div class="row mb-1 mt-3">
+            <div class="col-12">
+                <img class="card-img img-fluid" src="{{ url($path) }}" alt="Card image">
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-2">
+                <form method="POST" class="deleteform" action="/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/deletesignature">
+                    @csrf
+                    @method('DELETE')
+                    <a href=" #" tanggal="{{ $penjualan->tanggal }}" class="btn btn-danger btn-block  delete-confirm">
+                        <i class="ti ti-trash"></i>
+                    </a>
+                </form>
+            </div>
+            @php
+                $file_path = storage_path('signature/' . $penjualan->signature);
+                $image = base64_encode($path);
+            @endphp
+            <div class="col-10">
+                <a href="#" onclick="return sendUrlToPrint('{{ url($path) }}');" class="btn btn-info btn-block"><i
+                        class="feather icon-printer mr-1"></i>Cetak
+                    Tanda Tangan</a>
+            </div>
+        </div>
+    @else
+        <form action="/sfa/uploadsignature" id="frmSignature" method="POST" class="mt-3">
+            @csrf
+            <input type="hidden" value="{{ $penjualan->no_faktur }}" name="no_faktur">
+            <div class="row">
+                <div class="col-12">
+                    <div id="sign"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <textarea style="display: none" name="signed" id="signature" cols="30" rows="10"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="btn-group d-flex justify-content-center">
+                            <button id="clear" class="btn btn-danger">Clear</button>
+                            <button id="save" class="btn btn-success">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    @endif
+
     <div class="card mt-2">
 
         <div class="card-header">
@@ -375,7 +444,30 @@
             b.text(b.attr('data-old'));
         })
     }
+
+    function sendUrlToPrint(url) {
+        var beforeUrl = 'intent:';
+        var afterUrl = '#Intent;';
+        // Intent call with component
+        afterUrl += 'component=ru.a402d.rawbtprinter.activity.PrintDownloadActivity;'
+        afterUrl += 'package=ru.a402d.rawbtprinter;end;';
+        document.location = beforeUrl + encodeURI(url) + afterUrl;
+        return false;
+    }
+
+
+    var sign = $("#sign").signature({
+        syncField: '#signature',
+        syncFormat: 'PNG'
+    })
+
+    $("#clear").click(function(e) {
+        e.preventDefault();
+        sign.signature('clear');
+        $("#signature").val();
+    });
 </script>
+
 <script>
     $(function() {
         function loading() {
@@ -445,6 +537,17 @@
             $("#loadmodal").load(`/pembayarangiro/${no_faktur}/${kode_giro}/edit`);
         });
 
+        $("#frmSignature").submit(function() {
+            var signature = $("#signature").val();
+            if (signature == "") {
+                swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Tanda Tangan Tidak Boleh Kosong !'
+                });
+                return false;
+            }
+        });
 
     });
 </script>
