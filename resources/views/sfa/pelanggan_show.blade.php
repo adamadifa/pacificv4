@@ -93,7 +93,7 @@
         @if (!empty(Cookie::get('kodepelanggan')))
             @if (Crypt::decrypt(Cookie::get('kodepelanggan')) == $pelanggan->kode_pelanggan)
                 <div class="col-6">
-                    <a href="/penjualan/create" class="btn btn-primary w-100"><i class="ti ti-shopping-bag me-1"></i>Penjualan</a>
+                    <a href="/sfa/penjualan/create" class="btn btn-primary w-100"><i class="ti ti-shopping-bag me-1"></i>Penjualan</a>
                 </div>
                 <div class="col-6">
                     <a href="/retur/create" class="btn btn-danger w-100"><i class="ti ti-reload me-1"></i>Retur</a>

@@ -34,6 +34,15 @@
                  </a>
              </li>
          @endif
+
+         @if (auth()->user()->hasAnyPermission(['sfa.penjualan']))
+             <li class="menu-item {{ request()->is(['sfa/penjualan']) ? 'active' : '' }}">
+                 <a href="{{ route('sfa.penjualan') }}" class="menu-link">
+                     <i class="menu-icon tf-icons ti ti-shopping-bag"></i>
+                     <div>Penjualan</div>
+                 </a>
+             </li>
+         @endif
          @include('layouts.sidebar.datamaster')
          @include('layouts.sidebar.produksi')
          @include('layouts.sidebar.gudang_bahan')

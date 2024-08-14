@@ -63,6 +63,21 @@
             </div>
         </div>
     @else
+        <div class="row mt-2">
+            <div class="btn-group" role="group" aria-label="First group">
+                <a href="{{ route('sfa.editpenjualan', Crypt::encrypt($penjualan->no_faktur)) }}" class="btn btn-success waves-effect text-white p-2">
+                    <i class="ti ti-edit"></i>
+                </a>
+                <a href="#" onclick="ajax_print('/sfa/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/cetak',this)"
+                    class="btn btn-primary w-100">
+                    <i class="ti ti-printer me-1"></i>
+                    Cetak Faktur
+                </a>
+                <a type="button" class="btn btn-warning waves-effect text-white p-2">
+                    <i class="ti ti-square-rounded-x"></i>
+                </a>
+            </div>
+        </div>
     @endif
     @php
         $path = Storage::url('signature/' . $penjualan->signature);
@@ -75,7 +90,7 @@
         </div>
         <div class="row mb-1">
             <div class="col-2">
-                <form method="POST" class="deleteform" action="/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/deletesignature">
+                <form method="POST" class="deleteform" action="/sfa/{{ Crypt::encrypt($penjualan->no_faktur) }}/deletesignature">
                     @csrf
                     @method('DELETE')
                     <a href=" #" tanggal="{{ $penjualan->tanggal }}" class="btn btn-danger btn-block  delete-confirm">
@@ -88,9 +103,10 @@
                 $image = base64_encode($path);
             @endphp
             <div class="col-10">
-                <a href="#" onclick="return sendUrlToPrint('{{ url($path) }}');" class="btn btn-info btn-block"><i
-                        class="feather icon-printer mr-1"></i>Cetak
-                    Tanda Tangan</a>
+                <a href="#" onclick="return sendUrlToPrint('{{ url($path) }}');" class="btn btn-info w-100"><i
+                        class="ti ti-printer me-1"></i>
+                    CetakTanda Tangan
+                </a>
             </div>
         </div>
     @else
@@ -199,10 +215,14 @@
                                         <td> {{ formatAngka($jumlah_dus) }} Dus x {{ formatAngka($d->harga_dus) }}</td>
                                         <td class="text-end font-weight-bold"><b>{{ formatAngka($subtotal_dus) }}</b></td>
                                     @endif
+                                </tr>
+                                <tr>
                                     @if (!empty($jumlah_pack))
                                         <td> {{ formatAngka($jumlah_pack) }} Pack x {{ formatAngka($d->harga_pack) }}</td>
                                         <td class="text-end font-weight-bold"><b>{{ formatAngka($subtotal_pack) }}</b></td>
                                     @endif
+                                </tr>
+                                <tr>
                                     @if (!empty($jumlah_pcs))
                                         <td> {{ formatAngka($jumlah_pcs) }} Pcs x {{ formatAngka($d->harga_pcs) }}</td>
                                         <td class="text-end font-weight-bold"> <b>{{ formatAngka($subtotal_pcs) }}</b></td>

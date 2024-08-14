@@ -353,6 +353,8 @@ class PenjualanController extends Controller
 
     public function store(Request $request)
     {
+        $user = User::find(auth()->user()->id);
+
         $request->validate([
             'no_faktur' => 'required',
             'tanggal' => 'required',
@@ -404,12 +406,15 @@ class PenjualanController extends Controller
 
         //Detail Produk
         $kode_harga = $request->kode_harga_produk;
+
         $isi_pcs_dus = $request->isi_pcs_dus_produk;
         $isi_pcs_pack = $request->isi_pcs_pack_produk;
+
         $hargadus = $request->harga_dus_produk;
         $hargapack = $request->harga_pack_produk;
         $hargapcs = $request->harga_pcs_produk;
         $jumlah = $request->jumlah_produk;
+
         $status_promosi = $request->status_promosi_produk;
         $total_bruto = 0;
 
@@ -421,6 +426,7 @@ class PenjualanController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
             //No. Faktur
+
             if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
                 $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
                     ->where('tanggal', '>=', $start_date)
@@ -445,10 +451,14 @@ class PenjualanController extends Controller
             for ($i = 0; $i < count($kode_harga); $i++) {
 
                 $jml = convertToduspackpcsv3($isi_pcs_dus[$i], $isi_pcs_pack[$i], $jumlah[$i]);
+
                 $jml_dus = $jml[0];
                 $jml_pack = $jml[1];
                 $jml_pcs = $jml[2];
+
+
                 $harga_dus = toNumber($hargadus[$i]);
+                // dd($harga_dus);
                 $harga_pack = toNumber($hargapack[$i]);
                 $harga_pcs = toNumber($hargapcs[$i]);
                 $subtotal = ($jml_dus * $harga_dus) + ($jml_pack * $harga_pack) + ($jml_pcs * $harga_pcs);
@@ -577,12 +587,20 @@ class PenjualanController extends Controller
                 }
             }
             DB::commit();
-            return redirect(route('penjualan.show', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+            if ($user->hasRole('salesman')) {
+                return redirect(route('sfa.showpenjualan', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+            } else {
+                return redirect(route('penjualan.show', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+            }
         } catch (\Exception $e) {
             //throw $th;
-            DB::rollBack();
-            return Redirect::back()->with(messageError($e->getMessage()));
             //dd($e);
+            DB::rollBack();
+            if ($user->hasRole('salesman')) {
+                return redirect(route('sfa.showpenjualan', Crypt::encrypt($no_faktur)))->with(messageError($e->getMessage()));
+            } else {
+                return Redirect::back()->with(messageError($e->getMessage()));
+            }
         }
     }
 
@@ -967,9 +985,19 @@ class PenjualanController extends Controller
             }
 
             DB::commit();
-            return redirect(route('penjualan.show', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+            $user = User::findorfail(auth()->user()->id);
+            if ($user->hasRole('salesman')) {
+                return redirect(route('sfa.showpenjualan', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+            } else {
+                return redirect(route('penjualan.show', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+            }
         } catch (\Exception $e) {
-            //throw $th;
+            DB::rollback();
+            if ($user->hasRole('salesman')) {
+                return redirect(route('sfa.showpenjualan', Crypt::encrypt($no_faktur)))->with(messageError($e->getMessage()));
+            } else {
+                return Redirect::back()->with(messageError($e->getMessage()));
+            }
         }
     }
 

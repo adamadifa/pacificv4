@@ -1378,6 +1378,8 @@
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
                 return false;
+            } else {
+                buttonDisable();
             }
         });
 

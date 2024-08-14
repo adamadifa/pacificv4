@@ -6,8 +6,11 @@ use App\Models\Ajuanfakturkredit;
 use App\Models\Cabang;
 use App\Models\Checkinpenjualan;
 use App\Models\Detailgiro;
+use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
 use App\Models\Detailtransfer;
+use App\Models\Diskon;
+use App\Models\Harga;
 use App\Models\Historibayarpenjualan;
 use App\Models\Klasifikasioutlet;
 use App\Models\Pelanggan;
@@ -25,6 +28,7 @@ use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\RawbtPrintConnector;
 use Mike42\Escpos\Printer;
+use Yajra\DataTables\Facades\DataTables;
 
 class item
 {
@@ -849,5 +853,90 @@ class SfaControler extends Controller
             Storage::put($file, $image_base64);
             return Redirect::back()->with(messageSuccess('Tanda Tangan Berhasil Disimpan'));
         }
+    }
+
+
+    public function deletesignature($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $data = [
+            'signature' => NULL
+        ];
+        $folderPath = "public/signature/";
+        $faktur = Penjualan::where('no_faktur', $no_faktur)->first();
+        $file = $folderPath . $faktur->signature;
+        $update = Penjualan::where('no_faktur', $no_faktur)->update($data);
+        if ($update) {
+            Storage::delete($file);
+            return Redirect::back()->with(['success' => 'Tanda Tanggan Berhasil Dihapus']);
+        }
+    }
+
+
+    public function penjualan()
+    {
+        return view('sfa.penjualan');
+    }
+
+    public function createpenjualan()
+    {
+
+
+        $kodepelanggan = Cookie::get('kodepelanggan');
+        if ($kodepelanggan == null) {
+            return Redirect::route('sfa.pelanggan')->with(messageError('Anda Belum Memilih Pelanggan'));
+        }
+
+        $data['kode_pelanggan'] = Crypt::decrypt($kodepelanggan);
+        $diskon = Diskon::orderBy('kode_kategori_diskon')->get();
+        $diskon_json = json_encode($diskon);
+        $data['diskon'] = $diskon_json;
+        return view('sfa.penjualan_create', $data);
+    }
+
+
+    public function addproduk($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $hrg = new Harga();
+        $data['harga'] = $hrg->getHargabypelanggan($kode_pelanggan);
+        return view('sfa.penjualan_addproduk', $data);
+    }
+
+    public function editpenjualan($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $pj = new Penjualan();
+        $penjualan = $pj->getFaktur($no_faktur);
+        $data['penjualan'] = $penjualan;
+        $total_netto = $penjualan->total_bruto - $penjualan->total_retur - $penjualan->potongan - $penjualan->potongan_istimewa - $penjualan->penyesuaian + $penjualan->ppn;
+        $data['total_netto'] = $total_netto;
+        $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_diskon')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->where('no_faktur', $no_faktur)
+            ->get();
+        $titipan = Historibayarpenjualan::where('tanggal', $penjualan->tanggal)
+            ->where('jenis_bayar', 'TP')
+            ->where('voucher', 0)
+            ->where('no_faktur', $no_faktur)
+            ->orderBy('no_bukti')
+            ->first();
+
+        $voucher = Historibayarpenjualan::where('tanggal', $penjualan->tanggal)
+            ->where('voucher', 1)
+            ->where('jenis_voucher', 2)
+            ->where('jenis_bayar', 'TN')
+            ->where('no_faktur', $no_faktur)
+            ->orderBy('no_bukti')
+            ->first();
+
+
+        $data['titipan'] = $titipan == null ? 0 : $titipan->jumlah;
+        $data['voucher'] = $voucher == null ? 0 : $voucher->jumlah;
+        $diskon = Diskon::orderBy('kode_kategori_diskon')->get();
+        $diskon_json = json_encode($diskon);
+        $data['diskon'] = $diskon_json;
+        return view('sfa.penjualan_edit', $data);
     }
 }

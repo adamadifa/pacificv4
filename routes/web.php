@@ -1733,6 +1733,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/sfa/penjualan/{no_faktur}/show', 'showpenjualan')->name('sfa.showpenjualan')->can('sfa.penjualan');
         Route::get('/sfa/penjualan/{no_faktur}/cetak', 'cetakfaktur')->name('sfa.cetakfaktur')->can('sfa.penjualan');
         Route::post('/sfa/uploadsignature', 'uploadsignature')->name('sfa.uploadsignature')->can('sfa.penjualan');
+        Route::delete('/sfa/{no_faktur}/deletesignature', 'deletesignature')->name('sfa.deletesignature')->can('sfa.penjualan');
+
+        Route::get('/sfa/penjualan', 'penjualan')->name('sfa.penjualan')->can('sfa.penjualan');
+        Route::get('/sfa/penjualan/create', 'createpenjualan')->name('sfa.penjualan')->can('sfa.penjualan');
+        Route::get('/sfa/penjualan/{no_faktur}/edit', 'editpenjualan')->name('sfa.editpenjualan')->can('sfa.penjualan');
+        Route::get('/sfa/penjualan/{kode_pelanggan}/addproduk', 'addproduk')->name('sfa.addproduk')->can('sfa.penjualan');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

@@ -14,10 +14,10 @@ class Penjualanpelanggan extends Component
     // public $datapenjualan;
     public $kode_pelanggan;
     public $nofaktur_search;
-    public function mount($kode_pelanggan)
-    {
-        $this->kode_pelanggan = $kode_pelanggan;
-    }
+    // public function mount($kode_pelanggan)
+    // {
+    //     $this->kode_pelanggan = $kode_pelanggan;
+    // }
     public function render()
     {
 
@@ -32,7 +32,9 @@ class Penjualanpelanggan extends Component
             'status'
         )
             ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'))
-            ->where('marketing_penjualan.kode_pelanggan', $this->kode_pelanggan)
+            ->when($this->kode_pelanggan, function ($query) {
+                $query->where('marketing_penjualan.kode_pelanggan', $this->kode_pelanggan);
+            })
             ->when($this->nofaktur_search, function ($query) {
                 $query->where('no_faktur', 'like', '%' . $this->nofaktur_search . '%');
             })
