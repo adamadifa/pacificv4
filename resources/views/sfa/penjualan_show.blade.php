@@ -113,7 +113,7 @@
             <div class="col-10">
                 <a href="#" onclick="return sendUrlToPrint('{{ url($path) }}');" class="btn btn-info w-100"><i
                         class="ti ti-printer me-1"></i>
-                    CetakTanda Tangan
+                    Cetak Tanda Tangan
                 </a>
             </div>
         </div>

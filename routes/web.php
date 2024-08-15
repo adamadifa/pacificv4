@@ -1755,6 +1755,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/sfa/retur/create', 'createretur')->name('sfa.createretur')->can('sfa.retur');
         Route::get('/sfa/retur/{kode_pelanggan}/addproduk', 'addprodukretur')->name('sfa.addprodukretur')->can('sfa.retur');
+        Route::get('/sfa/retur/{no_retur}/show', 'showretur')->name('sfa.showretur')->can('sfa.retur');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 

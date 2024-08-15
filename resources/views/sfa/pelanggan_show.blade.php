@@ -113,11 +113,40 @@
     @endif
 
 </div>
-@if (!empty(Cookie::get('kodepelanggan')))
-    @if (Crypt::decrypt(Cookie::get('kodepelanggan')) == $pelanggan->kode_pelanggan)
-        <livewire:penjualanpelanggan :kode_pelanggan="$pelanggan->kode_pelanggan" />
-    @endif
-@endif
+<div class="nav-align-top mt-2 mb-3">
+    <ul class="nav nav-tabs nav-fill" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#penjualan" aria-controls="penjualan"
+                aria-selected="true">
+                Penjualan
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#retur" aria-controls="retur"
+                aria-selected="false" tabindex="-1">
+                Retur
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content p-0 bg-transparent">
+        <div class="tab-pane fade show active" id="penjualan" role="tabpanel">
+            @if (!empty(Cookie::get('kodepelanggan')))
+                @if (Crypt::decrypt(Cookie::get('kodepelanggan')) == $pelanggan->kode_pelanggan)
+                    <livewire:penjualanpelanggan :kode_pelanggan="$pelanggan->kode_pelanggan" />
+                @endif
+            @endif
+        </div>
+        <div class="tab-pane fade" id="retur" role="tabpanel">
+            @if (!empty(Cookie::get('kodepelanggan')))
+                @if (Crypt::decrypt(Cookie::get('kodepelanggan')) == $pelanggan->kode_pelanggan)
+                    <livewire:returpelanggan :kode_pelanggan="$pelanggan->kode_pelanggan" />
+                @endif
+            @endif
+        </div>
+    </div>
+</div>
+
+
 @endsection
 @push('myscript')
 <script>

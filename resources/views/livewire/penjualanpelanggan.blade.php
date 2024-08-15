@@ -1,5 +1,5 @@
 <div>
-    <div class="form-group mb-3">
+    <div class="form-group mb-3 mt-3">
         <div class="input-group input-group-merge">
             <span class="input-group-text" id="basic-addon-search31"><i class="ti ti-barcode"></i></span>
             <input type="text" class="form-control" id="nofaktur_search" name="nofaktur_search" placeholder="Cari No. Faktur" autocomplete="off"
@@ -33,7 +33,11 @@
                         <span class="badge bg-info">
                             {{ $d->jenis_bayar == 'T' ? 'TUNAI' : 'KREDIT' }}
                         </span>
+                        <br>
 
+                        @if ($d->status_batal == '1')
+                            <span class="badge bg-danger mt-1">BATAL</span>
+                        @endif
                     </div>
                 </div>
             </div>

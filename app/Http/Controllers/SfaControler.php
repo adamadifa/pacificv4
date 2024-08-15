@@ -19,6 +19,7 @@ use App\Models\Klasifikasioutlet;
 use App\Models\Pelanggan;
 use App\Models\Pengajuanfaktur;
 use App\Models\Penjualan;
+use App\Models\Retur;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -1338,5 +1339,15 @@ class SfaControler extends Controller
         $hrg = new Harga();
         $data['harga'] = $hrg->getHargabypelanggan($kode_pelanggan);
         return view('sfa.retur_addproduk', $data);
+    }
+
+    public function showretur($no_retur)
+    {
+        $no_retur = Crypt::decrypt($no_retur);
+        $rtr = new Retur();
+        $retur = $rtr->getRetur($request = null, $no_retur)->first();
+        $data['retur'] = $retur;
+        $data['detail'] = $rtr->getDetailretur($no_retur);
+        return view('sfa.retur_show', $data);
     }
 }

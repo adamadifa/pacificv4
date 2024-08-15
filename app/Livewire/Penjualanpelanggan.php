@@ -29,7 +29,8 @@ class Penjualanpelanggan extends Component
             'potongan_istimewa',
             'penyesuaian',
             'ppn',
-            'status'
+            'status',
+            'status_batal'
         )
             ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'))
             ->when($this->kode_pelanggan, function ($query) {

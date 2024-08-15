@@ -192,9 +192,9 @@ class ReturController extends Controller
     public function destroy($no_retur)
     {
         $no_retur = Crypt::decrypt($no_retur);
-        $retur = Retur::where('no_retur', $no_retur)->first();
+        $retur = Retur::where('no_retur', $no_retur)->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')->first();
         $detailretur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))->where('no_retur', $retur->no_retur)->first();
-
+        $user = User::findorfail(auth()->user()->id);
         DB::beginTransaction();
         try {
             $cektutuplaporan = cektutupLaporan($retur->tanggal, "penjualan");
@@ -221,9 +221,15 @@ class ReturController extends Controller
             //Hapus Surat Jalan
             Retur::where('no_retur', $no_retur)->delete();
             DB::commit();
+            if ($user->hasRole('salesman')) {
+                return redirect('/sfa/pelanggan/' . Crypt::encrypt($retur->kode_pelanggan) . '/show')->with(messageSuccess('Data Berhasil Dihapus'));
+            }
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
         } catch (\Exception $e) {
             DB::rollBack();
+            if ($user->hasRole('salesman')) {
+                return redirect('/sfa/pelanggan/' . Crypt::encrypt($retur->kode_pelanggan) . '/show')->with(messageError($e->getMessage()));
+            }
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
