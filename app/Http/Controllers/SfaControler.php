@@ -708,7 +708,7 @@ class SfaControler extends Controller
             if (!empty($faktur->ppn)) {
                 $ppn = new item('PPN', formatAngka($faktur->ppn));
             }
-            $_grandtotal = $faktur->total - $faktur->total_retur;
+            $_grandtotal = $totalnonppn + $faktur->ppn - $faktur->total_retur;
             $retur = new item('Retur', formatAngka($faktur->total_retur));
             $grandtotal = new item('Grand Total', formatAngka($_grandtotal));
             //$total = new item('Total', '14.25', true);
@@ -834,7 +834,7 @@ class SfaControler extends Controller
             if (!empty($faktur->ppn)) {
                 $ppn = new item('PPN', formatAngka($faktur->ppn));
             }
-            $_grandtotal = $faktur->total - $faktur->total_retur;
+            $_grandtotal = $totalnonppn + $faktur->ppn - $faktur->total_retur;
             $retur = new item('Retur', formatAngka($faktur->total_retur));
             $grandtotal = new item('Grand Total', formatAngka($_grandtotal));
             //$total = new item('Total', '14.25', true);
