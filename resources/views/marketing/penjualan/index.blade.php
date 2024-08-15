@@ -117,6 +117,9 @@
                                             if ($d->status_batal == '1') {
                                                 $color = '#ed9993';
                                                 $color_text = '#000';
+                                            } elseif ($d->status_batal == '2') {
+                                                $color = '#edd993';
+                                                $color_text = '#000';
                                             } elseif (substr($d->no_faktur, 3, 2) == 'PR') {
                                                 $color = '#0084d14f';
                                                 $color_text = '#000';

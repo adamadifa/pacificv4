@@ -14,16 +14,18 @@
 <div class="row">
     <div class="col d-flex justify-content-between">
         <div class="btn-group" role="group" aria-label="First group">
-            <a type="button" class="btn btn-success waves-effect text-white p-2">
+            <a href="{{ route('sfa.editpelanggan', Crypt::encrypt($pelanggan->kode_pelanggan)) }}" class="btn btn-success waves-effect text-white p-3">
                 <i class="ti ti-edit"></i>
             </a>
             <a href="{{ route('sfa.capture', Crypt::encrypt($pelanggan->kode_pelanggan)) }}" class="btn btn-primary waves-effect text-white p-2">
                 <i class="ti ti-camera"></i>
             </a>
-            <a type="button" class="btn btn-primary waves-effect text-white p-2">
+            <a href="{{ route('sfa.createajuanlimit', Crypt::encrypt($pelanggan->kode_pelanggan)) }}"
+                class="btn btn-primary waves-effect text-white p-3">
                 <i class="ti ti-receipt-2"></i>
             </a>
-            <a type="button" class="btn btn-primary waves-effect text-white p-2">
+            <a href="{{ route('sfa.createajuanfaktur', Crypt::encrypt($pelanggan->kode_pelanggan)) }}"
+                class="btn btn-primary waves-effect text-white p-3">
                 <i class="ti ti-receipt"></i>
             </a>
         </div>
@@ -96,7 +98,7 @@
                     <a href="/sfa/penjualan/create" class="btn btn-primary w-100"><i class="ti ti-shopping-bag me-1"></i>Penjualan</a>
                 </div>
                 <div class="col-6">
-                    <a href="/retur/create" class="btn btn-danger w-100"><i class="ti ti-reload me-1"></i>Retur</a>
+                    <a href="/sfa/retur/create" class="btn btn-danger w-100"><i class="ti ti-reload me-1"></i>Retur</a>
                 </div>
             @else
                 <div class="col" id="checkinsection">

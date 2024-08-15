@@ -9,6 +9,7 @@ use App\Models\Historibayarpenjualan;
 use App\Models\Pelanggan;
 use App\Models\Penjualan;
 use App\Models\Retur;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -74,6 +75,7 @@ class ReturController extends Controller
 
     public function store(Request $request)
     {
+        $user = User::find(auth()->user()->id);
         $request->validate([
             'tanggal' => 'required',
             'kode_pelanggan' => 'required',
@@ -91,6 +93,7 @@ class ReturController extends Controller
         $hargapack = $request->harga_pack_produk;
         $hargapcs = $request->harga_pcs_produk;
         $jumlah = $request->jumlah_produk;
+        $faktur = Penjualan::where('no_faktur', $request->no_faktur)->first();
         DB::beginTransaction();
         try {
 
@@ -141,7 +144,7 @@ class ReturController extends Controller
                 ];
             }
             if ($request->jenis_retur == "PF") {
-                $faktur = Penjualan::where('no_faktur', $request->no_faktur)->first();
+
                 if ($faktur->jenis_bayar == "TN") {
                     $cekbayar = Historibayarpenjualan::where('no_faktur', $request->no_faktur)
                         ->where('voucher', 0)
@@ -159,11 +162,19 @@ class ReturController extends Controller
             }
             Detailretur::insert($detail);
             DB::commit();
-            return redirect(route('penjualan.show', Crypt::encrypt($request->no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+            if ($user->hasRole('salesman')) {
+                return redirect(route('sfa.showpelanggan', Crypt::encrypt($faktur->kode_pelanggan)))->with(messageSuccess('Data Berhasil Disimpan'));
+            } else {
+                return redirect(route('penjualan.show', Crypt::encrypt($request->no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+            }
         } catch (\Exception $e) {
             //dd($e);
             DB::rollBack();
-            return Redirect::back()->with(messageError($e->getMessage()));
+            if ($user->hasRole('salesman')) {
+                return redirect(route('sfa.showpelanggan', Crypt::encrypt($faktur->kode_pelanggan)))->with(messageSuccess('Data Berhasil Disimpan'));
+            } else {
+                return Redirect::back()->with(messageError($e->getMessage()));
+            }
         }
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ajuanfakturkredit;
+use App\Models\Ajuanlimitkredit;
 use App\Models\Cabang;
 use App\Models\Checkinpenjualan;
 use App\Models\Detailgiro;
@@ -10,6 +11,8 @@ use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
 use App\Models\Detailtransfer;
 use App\Models\Diskon;
+use App\Models\Disposisiajuanfaktur;
+use App\Models\Disposisiajuanlimitkredit;
 use App\Models\Harga;
 use App\Models\Historibayarpenjualan;
 use App\Models\Klasifikasioutlet;
@@ -75,6 +78,7 @@ class SfaControler extends Controller
         $klasifikasi_outlet = Klasifikasioutlet::orderBy('kode_klasifikasi')->get();
         return view('sfa.pelanggan_create', compact('klasifikasi_outlet'));
     }
+
 
     public function storepelanggan(Request $request)
     {
@@ -166,6 +170,104 @@ class SfaControler extends Controller
     }
 
 
+    public function editpelanggan($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $klasifikasi_outlet = Klasifikasioutlet::orderBy('kode_klasifikasi')->get();
+        return view('sfa.pelanggan_edit', compact('cabang', 'pelanggan', 'klasifikasi_outlet'));
+    }
+
+    public function updatepelanggan(Request $request, $kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+
+        //dd($kode_pelanggan);
+        $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+
+
+
+
+        $request->validate([
+            'nama_pelanggan' => 'required',
+            'alamat_pelanggan' => 'required',
+            'alamat_toko' => 'required',
+            'kode_wilayah' => 'required',
+            'hari' => 'required'
+        ]);
+
+
+
+
+
+
+
+        $data_foto = [];
+        if ($request->hasfile('foto')) {
+            $foto_name =  $kode_pelanggan . "." . $request->file('foto')->getClientOriginalExtension();
+            $destination_foto_path = "/public/pelanggan";
+            $foto = $foto_name;
+            $data_foto = [
+                'foto' => $foto
+            ];
+        }
+
+        if (isset($request->lokasi)) {
+            $lokasi = explode(",", $request->lokasi);
+            $latitude = $lokasi[0];
+            $longitude = $lokasi[1];
+        } else {
+            $latitude = NULL;
+            $longitude = NULL;
+        }
+
+        $data_pelanggan = [
+            'nik' => $request->nik,
+            'no_kk' => $request->no_kk,
+            'nama_pelanggan' => $request->nama_pelanggan,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'alamat_pelanggan' => $request->alamat_pelanggan,
+            'alamat_toko' => $request->alamat_toko,
+            'no_hp_pelanggan' => $request->no_hp_pelanggan,
+            'kode_wilayah' => $request->kode_wilayah,
+            'hari' => $request->hari,
+            'limit_pelanggan' => isset($request->limit_pelanggan) ?  toNumber($request->limit_pelanggan) : NULL,
+            'ljt' => $request->ljt,
+            'kepemilikan' => $request->kepemilikan,
+            'lama_berjualan' => $request->lama_berjualan,
+            'status_outlet' => $request->status_outlet,
+            'type_outlet' => $request->type_outlet,
+            'kode_klasifikasi' => $request->kode_klasifikasi,
+            'cara_pembayaran' => $request->cara_pembayaran,
+            'lama_langganan' => $request->lama_langganan,
+            'jaminan' => $request->jaminan,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'omset_toko' => isset($request->omset_toko) ?  toNumber($request->omset_toko) : NULL,
+            'status_aktif_pelanggan' => $request->status_aktif_pelanggan,
+        ];
+        $data = array_merge($data_pelanggan, $data_foto);
+        DB::beginTransaction();
+        try {
+            $simpan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->update($data);
+            if ($simpan) {
+                $image = $request->file('foto');
+                if ($request->hasfile('foto')) {
+
+                    Storage::delete($destination_foto_path . "/" . $pelanggan->foto);
+                    $request->file('foto')->storeAs($destination_foto_path, $foto_name);
+                }
+            }
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
     public function showpelanggan($kode_pelanggan)
     {
 
@@ -183,10 +285,12 @@ class SfaControler extends Controller
         $data['pelanggan'] = $pelanggan;
 
         $data['ajuanfaktur'] = Pengajuanfaktur::where('kode_pelanggan', $kode_pelanggan)
+            ->where('status', 1)
             ->orderBy('tanggal', 'desc')
             ->first();
         $data['fakturkredit'] = Penjualan::where('kode_pelanggan', $kode_pelanggan)
             ->where('status', 0)
+            ->where('status_batal', 0)
             ->where('jenis_transaksi', 'kredit')
             ->count();
 
@@ -938,5 +1042,301 @@ class SfaControler extends Controller
         $diskon_json = json_encode($diskon);
         $data['diskon'] = $diskon_json;
         return view('sfa.penjualan_edit', $data);
+    }
+
+
+    public function ubahfakturbatal($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $data['no_faktur'] = $no_faktur;
+        return view('sfa.penjualan_ubahfakturbatal', $data);
+    }
+
+    public function storeubahfakturbatal(Request $request, $no_faktur)
+    {
+
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $data = [
+            'keterangan' => $request->keterangan,
+            'status_batal' => 2
+        ];
+        $update = Penjualan::where('no_faktur', $no_faktur)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Menunggu Persetujuan Operation Manager']);
+        }
+    }
+
+
+    public function batalkanubahfakturbatal($no_faktur)
+    {
+
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $data = [
+            'status_batal' => 0
+        ];
+        $update = Penjualan::where('no_faktur', $no_faktur)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Faktur Batal Di Batalkan']);
+        }
+    }
+
+    public function createajuanfaktur($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+        $data['pelanggan'] = $pelanggan;
+        return view('sfa.ajuanfaktur_create', $data);
+    }
+
+
+    public function storeajuanfaktur(Request $request, $kode_pelanggan)
+    {
+
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+        $request->validate([
+            'tanggal' => 'required',
+            'jumlah_faktur' => 'required',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+
+            //Generate No. Pengajuan
+            $lastajuan = Pengajuanfaktur::select('no_pengajuan')
+                ->whereRaw('YEAR(tanggal) = "' . date('Y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('MID(no_pengajuan,4,3) = "' . $pelanggan->kode_cabang . '"')
+                ->orderBy('no_pengajuan', 'desc')
+                ->first();
+
+            $last_no_pengajuan = $lastajuan != null ? $lastajuan->no_pengajuan : '';
+            $no_pengajuan = buatkode($last_no_pengajuan, 'PJF' . $pelanggan->kode_cabang . substr(date('Y', strtotime($request->tanggal)), 2, 2), 5);
+
+
+            if ($pelanggan->limit_pelanggan <= 10000000 && $request->cod == '1' && $request->jumlah_faktur <= 2) {
+                Pengajuanfaktur::create([
+                    'no_pengajuan' => $no_pengajuan,
+                    'tanggal' => $request->tanggal,
+                    'kode_pelanggan' => $kode_pelanggan,
+                    'kode_salesman' => $pelanggan->kode_salesman,
+                    'jumlah_faktur' => toNumber($request->jumlah_faktur),
+                    'siklus_pembayaran' => isset($request->cod) ? $request->cod : 0,
+                    'status' => 1,
+                    'keterangan' => $request->keterangan
+                ]);
+            } else {
+                Pengajuanfaktur::create([
+                    'no_pengajuan' => $no_pengajuan,
+                    'tanggal' => $request->tanggal,
+                    'kode_pelanggan' => $kode_pelanggan,
+                    'kode_salesman' => $pelanggan->kode_salesman,
+                    'jumlah_faktur' => toNumber($request->jumlah_faktur),
+                    'siklus_pembayaran' => isset($request->cod) ? $request->cod : 0,
+                    'status' => 0,
+                    'keterangan' => $request->keterangan
+                ]);
+                //Disposisi
+
+                $tanggal_hariini = date('Y-m-d');
+                $lastdisposisi = Disposisiajuanfaktur::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                    ->orderBy('kode_disposisi', 'desc')
+                    ->first();
+                $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+                $format = "DPFK" . date('Ymd');
+                $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+
+                $regional = Cabang::where('kode_cabang', $pelanggan->kode_cabang)->first();
+                $smm = User::role('sales marketing manager')->where('kode_cabang', $pelanggan->kode_cabang)
+                    ->where('status', 1)
+                    ->first();
+
+                if ($smm != null) {
+                    $id_penerima = $smm->id;
+                } else {
+                    $rsm = User::role('regional sales manager')->where('kode_regional', $regional->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                    $id_penerima = $rsm->id;
+                    if ($rsm == NULL) {
+                        $gm = User::role('gm marketing')
+                            ->where('status', 1)
+                            ->first();
+                        $id_penerima = $gm->id;
+                    }
+                }
+
+
+                Disposisiajuanfaktur::create([
+                    'kode_disposisi' => $kode_disposisi,
+                    'no_pengajuan' => $no_pengajuan,
+                    'id_pengirim' => auth()->user()->id,
+                    'id_penerima' => $id_penerima,
+                    'catatan' => $request->keterangan,
+                    'status' => 0
+                ]);
+            }
+
+            DB::commit();
+            return redirect('/sfa/pelanggan/' . Crypt::encrypt($kode_pelanggan) . '/show')->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // dd($e);
+            return redirect('/sfa/pelanggan/' . Crypt::encrypt($kode_pelanggan) . '/show')->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function createajuanlimit($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $klasifikasi_outlet = Klasifikasioutlet::orderBy('kode_klasifikasi')->get();
+        return view('sfa.ajuanlimit_create', compact('cabang', 'pelanggan', 'klasifikasi_outlet'));
+    }
+
+
+    public function storeajuanlimit(Request $request, $kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        DB::beginTransaction();
+        try {
+            $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+            $last_ajuan_limit = Ajuanlimitkredit::select('no_pengajuan')
+                ->whereRaw('YEAR(tanggal) = "' . date('Y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('MID(no_pengajuan,4,3) = "' . $pelanggan->kode_cabang . '"')
+                ->orderBy('no_pengajuan', 'desc')
+                ->first();
+
+            if ($last_ajuan_limit == null) {
+                $last_no_pengajuan = 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($request->tanggal)), 2, 2) . '00000';
+            } else {
+                $last_no_pengajuan = $last_ajuan_limit->no_pengajuan;
+            }
+            $no_pengajuan = buatkode($last_no_pengajuan, 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($request->tanggal)), 2, 2), 5);
+
+
+            //dd($no_pengajuan);
+            $lokasi = explode(",", $request->lokasi);
+            // dd($lokasi);
+            //Update Data Pelanggan
+            Pelanggan::where('kode_pelanggan', $kode_pelanggan)->update([
+                'nik' => $request->nik,
+                'nama_pelanggan' => $request->nama_pelanggan,
+                'alamat_pelanggan' => $request->alamat_pelanggan,
+                'alamat_toko' => $request->alamat_toko,
+                // 'latitude' => $lokasi[0],
+                // 'longitude' => $lokasi[1],
+                'no_hp_pelanggan' => $request->no_hp_pelanggan,
+                'hari'  => $request->hari,
+                'status_outlet' => $request->status_outlet,
+                'type_outlet' => $request->type_outlet,
+                'cara_pembayaran' => $request->cara_pembayaran,
+                'kepemilikan' => $request->kepemilikan,
+                'lama_langganan' => $request->lama_langganan,
+                'lama_berjualan' => $request->lama_berjualan,
+                'jaminan' => $request->jaminan,
+                'kode_klasifikasi' => $request->kode_klasifikasi,
+                'omset_toko' => toNumber($request->omset_toko)
+            ]);
+
+            //Insert Pengajuan
+            Ajuanlimitkredit::create([
+                'no_pengajuan' => $no_pengajuan,
+                'tanggal' => date('Y-m-d'),
+                'kode_pelanggan' => $kode_pelanggan,
+                'limit_sebelumnya' => !empty($pelanggan->limit_pelanggan) ? $pelanggan->limit_pelanggan : 0,
+                'omset_sebelumnya' => !empty($pelanggan->omset_toko) ? $pelanggan->omset_toko : 0,
+                'jumlah'  => toNumber($request->jumlah),
+                'ljt' => $request->ljt,
+                'topup_terakhir' => $request->topup_terakhir,
+                'lama_topup' => 1,
+                'jml_faktur' => $request->jml_faktur,
+                'histori_transaksi' => $request->histori_transaksi,
+                'status_outlet' => $request->status_outlet,
+                'type_outlet' => $request->type_outlet,
+                'cara_pembayaran' => $request->cara_pembayaran,
+                'kepemilikan' => $request->kepemilikan,
+                'lama_langganan' => $request->lama_langganan,
+                'lama_berjualan' => $request->lama_berjualan,
+                'jaminan' => $request->jaminan,
+                'omset_toko' => toNumber($request->omset_toko),
+                'status' => 0,
+                'skor' => $request->skor,
+                'kode_salesman' => $pelanggan->kode_salesman,
+                'id_user' => auth()->user()->id
+            ]);
+
+
+            //Disposisi
+
+            $tanggal_hariini = date('Y-m-d');
+            $lastdisposisi = Disposisiajuanlimitkredit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            $format = "DPLK" . date('Ymd');
+            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+
+            $regional = Cabang::where('kode_cabang', $pelanggan->kode_cabang)->first();
+            $smm = User::role('sales marketing manager')->where('kode_cabang', $pelanggan->kode_cabang)
+                ->where('status', 1)
+                ->first();
+
+            if ($smm != null) {
+                $id_penerima = $smm->id;
+            } else {
+                $rsm = User::role('regional sales manager')->where('kode_regional', $regional->kode_regional)
+                    ->where('status', 1)
+                    ->first();
+                $id_penerima = $rsm->id;
+                if ($rsm == NULL) {
+                    $gm = User::role('gm marketing')
+                        ->where('status', 1)
+                        ->first();
+                    $id_penerima = $gm->id;
+                }
+            }
+
+
+            Disposisiajuanlimitkredit::create([
+                'kode_disposisi' => $kode_disposisi,
+                'no_pengajuan' => $no_pengajuan,
+                'id_pengirim' => auth()->user()->id,
+                'id_penerima' => $id_penerima,
+                'uraian_analisa' => $request->uraian_analisa,
+                'status' => 0
+            ]);
+
+            DB::commit();
+            return redirect('/sfa/pelanggan/' . Crypt::encrypt($kode_pelanggan) . '/show')->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect('/sfa/pelanggan/' . Crypt::encrypt($kode_pelanggan) . '/show')->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function createretur()
+    {
+        $kodepelanggan = Cookie::get('kodepelanggan');
+        if ($kodepelanggan == null) {
+            return Redirect::route('sfa.pelanggan')->with(messageError('Anda Belum Memilih Pelanggan'));
+        }
+
+        $data['kode_pelanggan'] = Crypt::decrypt($kodepelanggan);
+        return view('sfa.retur_create', $data);
+    }
+
+    public function addprodukretur($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $hrg = new Harga();
+        $data['harga'] = $hrg->getHargabypelanggan($kode_pelanggan);
+        return view('sfa.retur_addproduk', $data);
     }
 }

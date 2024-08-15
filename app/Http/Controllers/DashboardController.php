@@ -75,16 +75,22 @@ class DashboardController extends Controller
             )
             ->where('marketing_penjualan.kode_salesman', auth()->user()->kode_salesman)
             ->where('marketing_penjualan.tanggal', $hariini)
+            ->where('marketing_penjualan.status_batal', 0)
             ->first();
 
         $data['pembayaran'] = Historibayarpenjualan::select(
             DB::raw("SUM(jumlah) as total")
         )
-            ->where('tanggal', $hariini)
-            ->where('kode_salesman', auth()->user()->kode_salesman)
+            ->join('marketing_penjualan', 'marketing_penjualan.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur')
+            ->where('marketing_penjualan_historibayar.tanggal', $hariini)
+            ->where('marketing_penjualan_historibayar.kode_salesman', auth()->user()->kode_salesman)
+            ->where('status_batal', 0)
             ->first();
 
-        $data['jmltransaksi'] = Penjualan::where('tanggal', $hariini)->where('kode_salesman', auth()->user()->kode_salesman)->count();
+        $data['jmltransaksi'] = Penjualan::where('tanggal', $hariini)
+            ->where('kode_salesman', auth()->user()->kode_salesman)
+            ->where('status_batal', 0)
+            ->count();
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
         return view('dashboard.salesman', $data);

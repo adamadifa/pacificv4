@@ -39,6 +39,7 @@ class Penjualanpelanggan extends Component
                 $query->where('no_faktur', 'like', '%' . $this->nofaktur_search . '%');
             })
             ->orderBy('marketing_penjualan.tanggal', 'desc')
+            ->orderBy('marketing_penjualan.no_faktur', 'desc')
             ->paginate(3);
         return view('livewire.penjualanpelanggan', ['datapenjualan' => $data]);
     }

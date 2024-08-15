@@ -1,57 +1,52 @@
-<form action="#" id="formEditproduk">
+<form action="#" id="formAddproduk">
     {{-- {{ $dataproduk['index_old'] }} --}}
     <input type="hidden" name="isi_pcs_dus" id="isi_pcs_dus">
     <input type="hidden" name="isi_pcs_pack" id="isi_pcs_pack">
-    <input type="hidden" name="index_old" id="index_old" value="{{ $dataproduk['index_old'] }}">
     <div class="form-group mb-3">
-        <select name="kode_harga" id="kode_harga" class="form-select" disabled>
+        <select name="kode_harga" id="kode_harga" class="form-select">
             <option value="">Pilih Produk</option>
             @foreach ($harga as $d)
                 <option data-isi_pcs_dus = "{{ $d->isi_pcs_dus }}" data-isi_pcs_pack = "{{ $d->isi_pcs_pack }}"
                     data-harga_dus = "{{ formatAngka($d->harga_retur_dus) }}" data-harga_pack = "{{ formatAngka($d->harga_retur_pack) }}"
-                    data-harga_pcs = "{{ formatAngka($d->harga_retur_pcs) }}" {{ $dataproduk['kode_harga'] == $d->kode_harga ? 'selected' : '' }}
-                    value="{{ $d->kode_harga }}">
+                    data-harga_pcs = "{{ formatAngka($d->harga_retur_pcs) }}" value="{{ $d->kode_harga }}">
                     {{ $d->nama_produk }}</option>
             @endforeach
         </select>
     </div>
     <div class="row">
         <div class="col-lg-4 col-md-12.col-sm-12">
-            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_dus'] }}" />
+            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" />
         </div>
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <x-input-with-icon label="Harga / Dus" name="harga_dus" icon="ti ti-box" align="right" money="true"
-                value="{{ $dataproduk['harga_dus'] }}" />
+            <x-input-with-icon label="Harga / Dus" name="harga_dus" icon="ti ti-box" align="right" money="true" />
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-4 col-md-12.col-sm-12">
-            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_pack'] }}" />
+            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" />
         </div>
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <x-input-with-icon label="Harga / Pack" name="harga_pack" icon="ti ti-box" align="right" money="true"
-                value="{{ $dataproduk['harga_pack'] }}" />
+            <x-input-with-icon label="Harga / Pack" name="harga_pack" icon="ti ti-box" align="right" money="true" />
         </div>
     </div>
     <div class="row mb-2">
         <div class="col-lg-4 col-md-12.col-sm-12">
-            <x-input-with-icon label="Pcs" name="jml_pcs" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_pcs'] }}" />
+            <x-input-with-icon label="Pcs" name="jml_pcs" icon="ti ti-box" align="right" money="true" />
         </div>
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <x-input-with-icon label="Harga / Pcs" name="harga_pcs" icon="ti ti-box" align="right" money="true"
-                value="{{ $dataproduk['harga_pcs'] }}" />
+            <x-input-with-icon label="Harga / Pcs" name="harga_pcs" icon="ti ti-box" align="right" money="true" />
         </div>
     </div>
     <div class="form-group mb-3">
-        <button class="btn btn-primary w-100" type="submit" id="btnUpdateproduk"><i class="ti ti-send me-1"></i>Update</button>
+        <button class="btn btn-primary w-100" type="submit" id="btnUpdateproduk"><i class="ti ti-send me-1"></i>Tambah Produk</button>
         {{-- <a href="#" id="btnTest">Test</a> --}}
     </div>
 </form>
 <script>
     $(function() {
         $(".money").maskMoney();
-        const form = $("#formEditproduk");
+        const form = $("#formAddproduk");
         form.find("#kode_harga").change(function() {
             let selectedOption = $(this).find(':selected');
             let isi_pcs_dus = selectedOption.data('isi_pcs_dus');
@@ -61,6 +56,7 @@
             let harga_pcs = selectedOption.data('harga_pcs');
             form.find("#isi_pcs_dus").val(isi_pcs_dus);
             form.find("#isi_pcs_pack").val(isi_pcs_pack);
+            getharga();
         });
 
         function getharga() {

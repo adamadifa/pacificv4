@@ -48,7 +48,7 @@
 @if ($penjualan->status_batal == '1')
     <div class="alert alert-warning mt-3">
         <h4 class="alert-heading">Faktur Batal</h4>
-        <p>Faktur Ini Sudah Di Batalkan, dan Akan Segera di Proses Oleh OM</p>
+        <p>Faktur Ini Sudah Di Batalkan</p>
     </div>
 @else
     @if (date('Y-m-d', strtotime($penjualan->created_at)) != date('Y-m-d'))
@@ -65,7 +65,7 @@
     @else
         <div class="row mt-2">
             <div class="btn-group" role="group" aria-label="First group">
-                <a href="{{ route('sfa.editpenjualan', Crypt::encrypt($penjualan->no_faktur)) }}" class="btn btn-success waves-effect text-white p-2">
+                <a href="{{ route('sfa.editpenjualan', Crypt::encrypt($penjualan->no_faktur)) }}" class="btn btn-success waves-effect text-white ">
                     <i class="ti ti-edit"></i>
                 </a>
                 <a href="#" onclick="ajax_print('/sfa/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/cetak',this)"
@@ -73,9 +73,17 @@
                     <i class="ti ti-printer me-1"></i>
                     Cetak Faktur
                 </a>
-                <a type="button" class="btn btn-warning waves-effect text-white p-2">
-                    <i class="ti ti-square-rounded-x"></i>
-                </a>
+                @if ($penjualan->status_batal == '0')
+                    <a href="#" class="btn btn-warning waves-effect text-white ubahfakturbatal">
+                        <i class="ti ti-square-rounded-x"></i>
+                    </a>
+                @elseif($penjualan->status_batal == '2')
+                    <a href="{{ route('sfa.batalkanubahfakturbatal', Crypt::encrypt($penjualan->no_faktur)) }}"
+                        class="btn btn-danger waves-effect text-white batalkanfakturbatal">
+                        <i class="ti ti-square-rounded-x"></i>
+                    </a>
+                @endif
+
             </div>
         </div>
     @endif
@@ -567,6 +575,15 @@
                 });
                 return false;
             }
+        });
+
+        $(".ubahfakturbatal").click(function(e) {
+            e.preventDefault();
+            loading();
+            const no_faktur = "{{ Crypt::encrypt($penjualan->no_faktur) }}";
+            $("#modal").modal("show");
+            $(".modal-title").text("Ubah Faktur Batal");
+            $("#loadmodal").load(`/sfa/penjualan/${no_faktur}/ubahfakturbatal`);
         });
 
     });

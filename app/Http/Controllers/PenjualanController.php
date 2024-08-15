@@ -225,13 +225,17 @@ class PenjualanController extends Controller
     public function updatefakturbatal($no_faktur, Request $request)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
+        DB::beginTransaction();
         try {
             Penjualan::where('no_faktur', $no_faktur)->update([
                 'status_batal' => 1,
                 'keterangan' => $request->keterangan,
             ]);
+            Historibayarpenjualan::where('no_faktur', $no_faktur)->delete();
+            DB::commit();
             return Redirect::back()->with(messageSuccess('Faktur Berhasil Dibatalkan'));
         } catch (\Exception $e) {
+            DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
@@ -808,7 +812,7 @@ class PenjualanController extends Controller
         $jumlah = $request->jumlah_produk;
         $status_promosi = $request->status_promosi_produk;
         $total_bruto = 0;
-
+        $user = User::findorfail(auth()->user()->id);
         DB::beginTransaction();
         try {
             $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
@@ -985,7 +989,7 @@ class PenjualanController extends Controller
             }
 
             DB::commit();
-            $user = User::findorfail(auth()->user()->id);
+
             if ($user->hasRole('salesman')) {
                 return redirect(route('sfa.showpenjualan', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
             } else {
@@ -1004,7 +1008,9 @@ class PenjualanController extends Controller
     public function getfakturbypelanggan(Request $request)
     {
         $kode_pelanggan  = $request->kode_pelanggan;
-        $listfaktur = Penjualan::where('kode_pelanggan', $kode_pelanggan)->orderBy('created_at', 'desc')->limit(5)->get();
+        $listfaktur = Penjualan::where('kode_pelanggan', $kode_pelanggan)
+            ->where('status_batal', 0)
+            ->orderBy('created_at', 'desc')->limit(5)->get();
         echo "<option value=''>Pilih Faktur</option>";
         foreach ($listfaktur as $d) {
             echo "<option value='$d->no_faktur'>$d->no_faktur</option>";

@@ -1724,7 +1724,9 @@ Route::middleware('auth')->group(function () {
     Route::controller(SfaControler::class)->group(function () {
         Route::get('/sfa/pelanggan', 'pelanggan')->name('sfa.pelanggan')->can('sfa.pelanggan');
         Route::get('/sfa/pelanggan/create', 'createpelanggan')->name('sfa.createpelanggan')->can('sfa.pelanggan');
+        Route::get('/sfa/pelanggan/{kode_pelanggan}/edit', 'editpelanggan')->name('sfa.editpelanggan')->can('sfa.pelanggan');
         Route::post('/sfa/pelanggan/store', 'storepelanggan')->name('sfa.storepelanggan')->can('sfa.pelanggan');
+        Route::put('/sfa/pelanggan/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('sfa.updatepelanggan')->can('sfa.pelanggan');
         Route::get('/sfa/pelanggan/{kode_pelanggan}/show', 'showpelanggan')->name('sfa.showpelanggan')->can('sfa.pelanggan');
         Route::get('/sfa/pelanggan/{kode_pelanggan}/capture', 'capture')->name('sfa.capture')->can('sfa.pelanggan');
         Route::post('/sfa/checkinstore', 'checkinstore')->name('sfa.checkinstore')->can('sfa.penjualan');
@@ -1736,9 +1738,23 @@ Route::middleware('auth')->group(function () {
         Route::delete('/sfa/{no_faktur}/deletesignature', 'deletesignature')->name('sfa.deletesignature')->can('sfa.penjualan');
 
         Route::get('/sfa/penjualan', 'penjualan')->name('sfa.penjualan')->can('sfa.penjualan');
-        Route::get('/sfa/penjualan/create', 'createpenjualan')->name('sfa.penjualan')->can('sfa.penjualan');
+        Route::get('/sfa/penjualan/create', 'createpenjualan')->name('sfa.createpenjualan')->can('sfa.penjualan');
         Route::get('/sfa/penjualan/{no_faktur}/edit', 'editpenjualan')->name('sfa.editpenjualan')->can('sfa.penjualan');
         Route::get('/sfa/penjualan/{kode_pelanggan}/addproduk', 'addproduk')->name('sfa.addproduk')->can('sfa.penjualan');
+        Route::get('/sfa/penjualan/{no_faktur}/ubahfakturbatal', 'ubahfakturbatal')->name('sfa.ubahfakturbatal')->can('sfa.penjualan');
+        Route::get('/sfa/penjualan/{no_faktur}/batalkanubahfakturbatal', 'batalkanubahfakturbatal')->name('sfa.batalkanubahfakturbatal')->can('sfa.penjualan');
+        Route::post('/sfa/penjualan/{no_faktur}/storeubahfakturbatal', 'storeubahfakturbatal')->name('sfa.storeubahfakturbatal')->can('sfa.penjualan');
+
+
+        Route::get('/sfa/ajuanfaktur/{kode_pelanggan}/create', 'createajuanfaktur')->name('sfa.createajuanfaktur')->can('sfa.ajuanfaktur');
+        Route::post('/sfa/ajuanfaktur/{kode_pelanggan}/storeajuanfaktur', 'storeajuanfaktur')->name('sfa.storeajuanfaktur')->can('sfa.ajuanfaktur');
+
+        Route::get('/sfa/ajuanlimit/{kode_pelanggan}/create', 'createajuanlimit')->name('sfa.createajuanlimit')->can('sfa.limitkredit');
+        Route::post('/sfa/ajuanlimit/{kode_pelanggan}/storeajuanlimit', 'storeajuanlimit')->name('sfa.storeajuanlimit')->can('sfa.limitkredit');
+
+
+        Route::get('/sfa/retur/create', 'createretur')->name('sfa.createretur')->can('sfa.retur');
+        Route::get('/sfa/retur/{kode_pelanggan}/addproduk', 'addprodukretur')->name('sfa.addprodukretur')->can('sfa.retur');
     });
     Route::controller(TutuplaporanController::class)->group(function () {
 
