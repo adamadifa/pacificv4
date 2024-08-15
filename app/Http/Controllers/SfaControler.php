@@ -694,6 +694,9 @@ class SfaControler extends Controller
             $printer->text(date("d-m-Y H:i:s", strtotime($faktur->created_at)) . "\n");
             $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
             $printer->text(textCamelCase($faktur->alamat_pelanggan) . "\n");
+            if ($faktur->jenis_transaksi == 'K') {
+                $printer->text("Jatuh Tempo : " . date("d-m-Y", strtotime($faktur->ljt)) . "\n");
+            }
             $printer->text(new item('', ''));
 
             $printer->setEmphasis(true);
@@ -820,6 +823,9 @@ class SfaControler extends Controller
             $printer->text(date("d-m-Y H:i:s", strtotime($faktur->created_at)) . "\n");
             $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
             $printer->text(textCamelCase($faktur->alamat_pelanggan) . "\n");
+            if ($faktur->jenis_transaksi == 'K') {
+                $printer->text("Jatuh Tempo : " . date("d-m-Y", strtotime($faktur->ljt)) . "\n");
+            }
             $printer->text(new item('', ''));
 
             $printer->setEmphasis(true);

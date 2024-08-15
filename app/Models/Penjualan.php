@@ -51,6 +51,7 @@ class Penjualan extends Model
             'alamat_cabang',
             'nama_pt',
             'signature',
+            'pelanggan.ljt'
 
 
         )
