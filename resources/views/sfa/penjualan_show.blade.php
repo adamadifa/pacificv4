@@ -260,20 +260,21 @@
                                 </tr>
                             @endif
                             <tr>
-                                <td>GRAND TOTAL</td>
-                                <td class="text-end fw-bold">{{ formatAngka($total_netto) }}</td>
-                            </tr>
-                            <tr>
                                 <td>RETUR</td>
                                 <td class="text-end fw-bold text-danger">{{ formatAngka($penjualan->total_retur) }}</td>
                             </tr>
+                            <tr>
+                                <td>GRAND TOTAL</td>
+                                <td class="text-end fw-bold">{{ formatAngka($total_netto) }}</td>
+                            </tr>
+
                             <tr>
                                 <td>JUMLAH BAYAR</td>
                                 <td class="text-end fw-bold">{{ formatAngka($penjualan->total_bayar) }}</td>
                             </tr>
                             <tr>
                                 <td>SISA BAYAR</td>
-                                <td id="sisabayar">{{ formatAngka($total_netto - $penjualan->total_retur - $penjualan->total_bayar) }}</td>
+                                <td id="sisabayar">{{ formatAngka($total_netto - $penjualan->total_bayar) }}</td>
                             </tr>
                             <tr>
                                 <td colspan="2" class="{{ $penjualan->status == '1' ? 'bg-success' : 'bg-danger' }} text-white text-center">

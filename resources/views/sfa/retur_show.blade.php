@@ -29,23 +29,20 @@
         </div>
     </div>
 </div>
-<div class="row mb-1 mt-2">
-    <div class="col-2">
-        <form method="POST" class="deleteform" action="/retur/{{ Crypt::encrypt($retur->no_retur) }}/delete">
-            @csrf
-            @method('DELETE')
-            <a href=" #" class="btn btn-danger btn-block  delete-confirm">
-                <i class="ti ti-trash"></i>
-            </a>
-        </form>
+@if ($retur->tanggal == date('Y-m-d'))
+    <div class="row mb-1 mt-2">
+        <div class="col">
+            <form method="POST" class="deleteform" action="/retur/{{ Crypt::encrypt($retur->no_retur) }}/delete">
+                @csrf
+                @method('DELETE')
+                <a href=" #" class="btn btn-danger w-100  delete-confirm">
+                    <i class="ti ti-trash"></i> Hapus
+                </a>
+            </form>
+        </div>
     </div>
+@endif
 
-    <div class="col-10">
-        <a href="#" class="btn btn-primary w-100"><i class="ti ti-edit me-1"></i>
-            Edit
-        </a>
-    </div>
-</div>
 <div class="card mt-2">
     <div class="card-header">
         <h4 class="card-title">
