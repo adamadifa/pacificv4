@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Tunai Kredit {{ date('Y-m-d H:i:s') }}</title>
+    <title>Laporan Kendaraan {{ date('Y-m-d H:i:s') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="{{ asset('assets/vendor/libs/freeze/js/freeze-table.min.js') }}"></script>
@@ -32,7 +32,7 @@
 <body>
     <div class="header">
         <h4 class="title">
-            LAPORAN TUNAI KREDIT <br>
+            LAPORAN KENDARAAN <br>
         </h4>
         <h4>PERIODE : {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
         @if ($cabang != null)
@@ -194,7 +194,7 @@
                                     if (!empty($total_pengambilan)) {
                                         $rataratapengambilan = $total_barangkeluar / $total_pengambilan;
                                     } else {
-                                        $rataratapengabmilan = 0;
+                                        $rataratapengambilan = 0;
                                     }
                                     if (!empty($kendaraan->kapasitas)) {
                                         $persentase = ($rataratapengambilan / $kendaraan->kapasitas) * 100;

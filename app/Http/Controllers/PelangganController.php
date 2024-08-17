@@ -480,9 +480,7 @@ class PelangganController extends Controller
         $kode_cabang = $request->kode_cabang;
 
         $query = Pelanggan::query();
-        if (!empty($kode_cabang)) {
-            $query->where('pelanggan.kode_cabang', $kode_cabang);
-        }
+        $query->where('pelanggan.kode_cabang', $kode_cabang);
 
         if (!empty($kode_salesman)) {
             $query->where('pelanggan.kode_salesman', $kode_salesman);

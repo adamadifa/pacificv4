@@ -1,8 +1,8 @@
-<form action="{{ route('laporanmarketing.cetakrekapkendaraan') }}" method="POST" target="_blank" id="formrekapkendaraan">
+<form action="{{ route('laporanmarketing.cetakeffectivecall') }}" method="POST" target="_blank" id="formeffectivecall">
     @csrf
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
-            <select name="kode_cabang" id="kode_cabang_rekapkendaraan" class="form-select select2Kodecabangrekapkendaraan">
+            <select name="kode_cabang" id="kode_cabang_effectivecall" class="form-select select2Kodecabangeffectivecall">
                 <option value="">Cabang</option>
                 @foreach ($cabang as $d)
                     <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
@@ -11,10 +11,12 @@
         </div>
     @endrole
     <div class="form-group mb-3">
-        <select name="kode_kendaraan" id="kode_kendaraan" class="select2Kodekendaraan form-select">
+        <select name="formatlaporan" id="formatlaporan" class="form-select">
+            <option value="">Format Laporan</option>
+            <option value="1">Berdasarkan Salesman</option>
+            <option value="2">Berdasarkan Produk</option>
         </select>
     </div>
-
 
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
@@ -26,12 +28,12 @@
     </div>
     <div class="row">
         <div class="col-lg-10 col-md-12 col-sm-12">
-            <button type="submit" name="submitButton" class="btn btn-primary w-100" id="submitButtonrekapkendaraan">
+            <button type="submit" name="submitButton" class="btn btn-primary w-100" id="submitButtonEffectiveCall">
                 <i class="ti ti-printer me-1"></i> Cetak
             </button>
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <button type="submit" name="exportButton" class="btn btn-success w-100" id="exportButtonrekapkendaraan">
+            <button type="submit" name="exportButton" class="btn btn-success w-100" id="exportButtonEffectiveCall">
                 <i class="ti ti-download"></i>
             </button>
         </div>
@@ -40,10 +42,10 @@
 @push('myscript')
     <script>
         $(document).ready(function() {
-            const formrekapkendaraan = $("#formrekapkendaraan");
-            const select2Kodecabangrekapkendaraan = $(".select2Kodecabangrekapkendaraan");
-            if (select2Kodecabangrekapkendaraan.length) {
-                select2Kodecabangrekapkendaraan.each(function() {
+            const formeffectivecall = $("#formeffectivecall");
+            const select2Kodecabangeffectivecall = $(".select2Kodecabangeffectivecall");
+            if (select2Kodecabangeffectivecall.length) {
+                select2Kodecabangeffectivecall.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Cabang',
@@ -53,59 +55,16 @@
                 });
             }
 
-            const select2Kodekendaraan = $(".select2Kodekendaraan");
-            if (select2Kodekendaraan.length) {
-                select2Kodekendaraan.each(function() {
-                    var $this = $(this);
-                    $this.wrap('<div class="position-relative"></div>').select2({
-                        placeholder: 'Kendaraan',
-                        allowClear: true,
-                        dropdownParent: $this.parent()
-                    });
-                });
-            }
 
+            formeffectivecall.submit(function(e) {
 
-
-            function getkendaraanbyCabang() {
-                var kode_cabang = formrekapkendaraan.find("#kode_cabang_rekapkendaraan").val();
-                //alert(selected);
-                $.ajax({
-                    type: 'POST',
-                    url: '/kendaraan/getkendaraandpbbycabang',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        kode_cabang: kode_cabang
-                    },
-                    cache: false,
-                    success: function(respond) {
-                        console.log(respond);
-                        formrekapkendaraan.find("#kode_kendaraan").html(respond);
-                    }
-                });
-            }
-
-
-
-            getkendaraanbyCabang();
-            formrekapkendaraan.find("#kode_cabang_rekapkendaraan").change(function(e) {
-                getkendaraanbyCabang();
-            });
-
-
-
-
-
-
-
-            formrekapkendaraan.submit(function(e) {
-
-                const kode_cabang = formrekapkendaraan.find('#kode_cabang_rekapkendaraan').val();
-                const dari = formrekapkendaraan.find('#dari').val();
-                const sampai = formrekapkendaraan.find('#sampai').val();
+                const kode_cabang = formeffectivecall.find('#kode_cabang_effectivecall').val();
+                const formatlaporan = formeffectivecall.find('#formatlaporan').val();
+                const dari = formeffectivecall.find('#dari').val();
+                const sampai = formeffectivecall.find('#sampai').val();
                 const start = new Date(dari);
                 const end = new Date(sampai);
-                const kode_kendaraan = formrekapkendaraan.find('#kode_kendaraan').val();
+
                 if (kode_cabang == "") {
                     Swal.fire({
                         title: "Oops!",
@@ -113,18 +72,18 @@
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            $(this).find("#kode_cabang").focus();
+                            $(this).find("#kode_cabang_effectivecall").focus();
                         }
                     });
                     return false;
-                } else if (kode_kendaraan == "") {
+                } else if (formatlaporan == "") {
                     Swal.fire({
                         title: "Oops!",
-                        text: "Kendaraan Harus Diisi !",
+                        text: "Format Laporan Harus Diisi !",
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            $(this).find("#kode_kendaraan").focus();
+                            $(this).find("#formatlaporan").focus();
                         }
                     });
                     return false;

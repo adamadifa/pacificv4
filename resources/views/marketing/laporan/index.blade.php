@@ -42,11 +42,43 @@
                         </button>
                     </li>
                 @endcan
-                @can('mkt.dpp')
+                @can('mkt.kartupiutang')
                     <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#kartupiutang"
+                            aria-controls="kartupiutang" aria-selected="false" tabindex="-1">
+                            Kartu Piutang
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.aup')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#aup" aria-controls="aup"
+                            aria-selected="false" tabindex="-1">
+                            AUP
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.lebihsatufaktur')
+                    <li class="nav-item" role="lebihsatufaktur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#lebihsatufaktur"
+                            aria-controls="lebihsatufaktur" aria-selected="false" tabindex="-1">
+                            Lebih 1 Faktur
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.dpp')
+                    <li class="nav-item" role="dpp">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#dpp" aria-controls="dpp"
                             aria-selected="false" tabindex="-1">
                             DPP
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.dppp')
+                    <li class="nav-item" role="dppp">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#dppp" aria-controls="dppp"
+                            aria-selected="false" tabindex="-1">
+                            DPPP
                         </button>
                     </li>
                 @endcan
@@ -71,6 +103,38 @@
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapkendaraan"
                             aria-controls="rekapkendaraan" aria-selected="false" tabindex="-1">
                             Rekap Kendaraan
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.rekapwilayah')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapwilayah"
+                            aria-controls="rekapwilayah" aria-selected="false" tabindex="-1">
+                            Rekap Wilayah
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.analisatransaksi')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#analisatransaksi"
+                            aria-controls="rekapwilayah" aria-selected="false" tabindex="-1">
+                            Analisa Transaksi
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.tunaitransfer')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tunaitransfer"
+                            aria-controls="tunaitransfer" aria-selected="false" tabindex="-1">
+                            Tunai Transfer
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.effectivecall')
+                    <li class="nav-item" role="retur">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#effectivecall"
+                            aria-controls="tunaitransfer" aria-selected="false" tabindex="-1">
+                            Effective Call
                         </button>
                     </li>
                 @endcan
@@ -114,6 +178,47 @@
                 @can('mkt.rekapkendaraan')
                     <div class="tab-pane fade" id="rekapkendaraan" role="tabpanel">
                         @include('marketing.laporan.rekapkendaraan')
+                    </div>
+                @endcan
+                @can('mkt.rekapwilayah')
+                    <div class="tab-pane fade" id="rekapwilayah" role="tabpanel">
+                        @include('marketing.laporan.rekapwilayah')
+                    </div>
+                @endcan
+                @can('mkt.analisatransaksi')
+                    <div class="tab-pane fade" id="analisatransaksi" role="tabpanel">
+                        @include('marketing.laporan.analisatransaksi')
+                    </div>
+                @endcan
+                @can('mkt.tunaitransfer')
+                    <div class="tab-pane fade" id="tunaitransfer" role="tabpanel">
+                        @include('marketing.laporan.tunaitransfer')
+                    </div>
+                @endcan
+                @can('mkt.effectivecall')
+                    <div class="tab-pane fade" id="effectivecall" role="tabpanel">
+                        @include('marketing.laporan.effectivecall')
+                    </div>
+                @endcan
+                @can('mkt.kartupiutang')
+                    <div class="tab-pane fade" id="kartupiutang" role="tabpanel">
+                        @include('marketing.laporan.kartupiutang')
+                    </div>
+                @endcan
+                @can('mkt.aup')
+                    <div class="tab-pane fade" id="aup" role="tabpanel">
+                        @include('marketing.laporan.aup')
+                    </div>
+                @endcan
+                @can('mkt.lebihsatufaktur')
+                    <div class="tab-pane fade" id="lebihsatufaktur" role="tabpanel">
+                        @include('marketing.laporan.lebihsatufaktur')
+                    </div>
+                @endcan
+
+                @can('mkt.dppp')
+                    <div class="tab-pane fade" id="dppp" role="tabpanel">
+                        @include('marketing.laporan.dppp')
                     </div>
                 @endcan
             </div>

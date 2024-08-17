@@ -127,8 +127,14 @@
                             } else {
                                 $color = 'red';
                             }
+
+                            if ($d->status_batal == '1') {
+                                $bgcolor = 'red';
+                            } else {
+                                $bgcolor = '';
+                            }
                         @endphp
-                        <tr>
+                        <tr style="background-color: {{ $bgcolor }}">
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ formatIndo($d->tanggal) }}</td>
                             <td>{{ $d->no_faktur }}</td>

@@ -119,7 +119,7 @@
                     @foreach ($arr as $key => $val)
                         @foreach ($val as $k => $d)
                             @php
-                                if (!empty($d->isi_pcs_dus)) {
+                                if (!empty($d->isi_pcs_dus) && $d->status_batal == 0) {
                                     $qty = convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah);
                                     $jml = explode('|', $qty);
                                     $dus = $jml[0];
@@ -139,7 +139,7 @@
                                 }
 
                             @endphp
-                            <tr>
+                            <tr style="background-color: {{ $bgcolor }}">
                                 @if ($k == 0)
                                     <td rowspan="{{ count($val) }}">{{ formatIndo($d->tanggal) }}</td>
                                     <td rowspan="{{ count($val) }}">{{ $d->no_faktur }}</td>

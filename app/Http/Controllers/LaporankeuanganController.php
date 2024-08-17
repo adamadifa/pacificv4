@@ -296,6 +296,7 @@ class LaporankeuanganController extends Controller
             ->groupBy('keuangan_logamtokertas.tanggal');
 
         $unionquery = $q_lhp->unionAll($q_kuranglebihsetor)->unionAll($q_setoranpusat)->unionAll($q_logamtokertas)->get();
+
         $data['saldokasbesar'] = $unionquery->groupBy('tanggal')
             ->map(function ($item) {
                 return [
