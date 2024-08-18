@@ -74,9 +74,9 @@
                             $jml_barang_masuk_qty = !empty($jml_barang_masuk) ? $jml_barang_masuk : 1;
 
                             if (empty($d->bm_harga)) {
-                                $harga_masuk = $d->bm_harga + $d->bm_penyesuaian;
+                                $harga_masuk = $d->bm_harga;
                             } else {
-                                $harga_masuk = $d->bm_totalharga / $d->bm_jumlah + $d->bm_penyesuaian;
+                                $harga_masuk = $d->bm_totalharga / $d->bm_jumlah;
                             }
                             if (empty($d->saldo_awal_harga)) {
                                 $harga_keluar = $harga_masuk;
