@@ -65,6 +65,7 @@
 
                     $total_opname = 0;
                     $total_selisih = 0;
+                    $no = 0;
                 @endphp
                 @foreach ($persediaan as $d)
                     @if (!empty($d->bm_jumlah) || !empty($d->bk_jumlah))
@@ -107,9 +108,10 @@
 
                             $total_opname += $d->opname_qty;
                             $total_selisih += $selisih;
+                            $no++;
                         @endphp
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $no }}</td>
                             <td>{{ $d->kode_barang }}</td>
                             <td>{{ textUpperCase($d->nama_barang) }}</td>
                             <td>{{ textUpperCase($d->satuan) }}</td>
