@@ -33,6 +33,7 @@ class OpnamegudanglogistikController extends Controller
         if (!empty($request->kode_kategori)) {
             $query->where('gudang_logistik_opname.kode_kategori', $request->kode_kategori);
         }
+        $query->join('pembelian_barang_kategori', 'gudang_logistik_opname.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori');
         $query->orderBy('tahun', 'desc');
         $query->orderBy('bulan');
         $opname = $query->get();
