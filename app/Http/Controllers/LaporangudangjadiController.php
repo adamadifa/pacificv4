@@ -506,16 +506,19 @@ class LaporangudangjadiController extends Controller
         $query = Suratjalanangkutan::query();
         $query->select(
             'gudang_jadi_angkutan_suratjalan.*',
-            'tanggal',
+            'gudang_jadi_mutasi.tanggal',
             'nama_angkutan',
             'tujuan',
             'gudang_jadi_mutasi.keterangan',
-            DB::raw('gudang_jadi_angkutan_suratjalan.tarif+tepung+bs as total_tarif')
+            DB::raw('gudang_jadi_angkutan_suratjalan.tarif+tepung+bs as total_tarif'),
+            'gudang_jadi_angkutan_kontrabon.tanggal as tanggal_kontrabon'
         );
         $query->join('angkutan', 'gudang_jadi_angkutan_suratjalan.kode_angkutan', '=', 'angkutan.kode_angkutan');
         $query->join('angkutan_tujuan', 'gudang_jadi_angkutan_suratjalan.kode_tujuan', '=', 'angkutan_tujuan.kode_tujuan');
         $query->join('gudang_jadi_mutasi', 'gudang_jadi_angkutan_suratjalan.no_dok', '=', 'gudang_jadi_mutasi.no_dok');
-        $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+        $query->leftJoin('gudang_jadi_angkutan_kontrabon_detail', 'gudang_jadi_angkutan_suratjalan.no_dok', '=', 'gudang_jadi_angkutan_kontrabon_detail.no_dok');
+        $query->leftJoin('gudang_jadi_angkutan_kontrabon', 'gudang_jadi_angkutan_kontrabon_detail.no_kontrabon', '=', 'gudang_jadi_angkutan_kontrabon.no_kontrabon');
+        $query->whereBetween('gudang_jadi_mutasi.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_angkutan)) {
             $query->where('gudang_jadi_angkutan_suratjalan.kode_angkutan', $request->kode_angkutan);
         }

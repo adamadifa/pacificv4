@@ -31,6 +31,7 @@
                     <th>TEPUNG</th>
                     <th>BS</th>
                     <th>TOTAL</th>
+                    <th>TGL KONTRABON</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,6 +59,7 @@
                         <td class="right">{{ formatAngka($d->tepung) }}</td>
                         <td class="right">{{ formatAngka($d->bs) }}</td>
                         <td class="right">{{ formatAngka($d->total_tarif) }}</td>
+                        <td class="right">{{ DateToIndo($d->tanggal_kontrabon) }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -67,6 +69,7 @@
                 <th class="right">{{ formatAngka($total_tepung) }}</th>
                 <th class="right">{{ formatAngka($total_bs) }}</th>
                 <th class="right">{{ formatAngka($total_all_tarif) }}</th>
+                <th></th>
             </tfoot>
         </table>
     </div>

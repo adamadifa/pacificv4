@@ -25,8 +25,8 @@ class Setoranpenjualan extends Model
         $subquerycekLHP = Historibayarpenjualan::select(
             'marketing_penjualan_historibayar.kode_salesman',
             'marketing_penjualan_historibayar.tanggal',
-            DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TN' AND giro_to_cash IS NULL,jumlah,0)) as cek_lhp_tunai"),
-            DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TP' AND giro_to_cash IS NULL,jumlah,0)) as cek_lhp_tagihan"),
+            DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TN' AND giro_to_cash IS NULL AND voucher = 0,jumlah,0)) as cek_lhp_tunai"),
+            DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TP' AND giro_to_cash IS NULL AND voucher = 0,jumlah,0)) as cek_lhp_tagihan"),
             DB::raw("SUM(IF(giro_to_cash ='1',jumlah,0)) AS cek_giro_to_cash_transfer")
         )
             ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')

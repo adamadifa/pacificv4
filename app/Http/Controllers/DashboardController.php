@@ -353,6 +353,7 @@ class DashboardController extends Controller
             ->orderBy('tanggal', 'DESC')->first();
 
 
+
         $subquerySaldoawalgudang = Detailsaldoawalgudangjadi::join('gudang_jadi_saldoawal', 'gudang_jadi_saldoawal_detail.kode_saldo_awal', '=', 'gudang_jadi_saldoawal.kode_saldo_awal')
             ->where('gudang_jadi_saldoawal_detail.kode_saldo_awal', $lastsaldo->kode_saldo_awal)
             ->select(

@@ -222,6 +222,7 @@
                                                         @endphp
                                                     @else
                                                         @php
+                                                            $text_role = '';
                                                             $color = '';
                                                         @endphp
                                                     @endif

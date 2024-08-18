@@ -48,14 +48,12 @@
                             <td>{{ textUpperCase($d->nama_cabang) }}</td>
                             @foreach ($produk as $p)
                                 @php
-                                    ${"selisih_$p->kode_produk"} =
-                                        $d->{"realisasi_$p->kode_produk"} - $d->{"oman_$p->kode_produk"};
+                                    ${"selisih_$p->kode_produk"} = $d->{"realisasi_$p->kode_produk"} - $d->{"oman_$p->kode_produk"};
                                     ${"total_oman_$p->kode_produk"} += $d->{"oman_$p->kode_produk"};
                                     ${"total_realisasi_$p->kode_produk"} += $d->{"realisasi_$p->kode_produk"};
                                     ${"total_persentase_$p->kode_produk"} =
                                         ${"total_oman_$p->kode_produk"} != 0
-                                            ? (${"total_realisasi_$p->kode_produk"} / ${"total_oman_$p->kode_produk"}) *
-                                                100
+                                            ? (${"total_realisasi_$p->kode_produk"} / ${"total_oman_$p->kode_produk"}) * 100
                                             : 0;
                                     $persentase =
                                         $d->{"oman_$p->kode_produk"} != 0

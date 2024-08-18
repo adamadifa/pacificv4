@@ -50,7 +50,7 @@ class Penjualan extends Model
             'telepon_cabang',
             'alamat_cabang',
             'nama_pt',
-            'signature',
+            'marketing_penjualan.signature',
             'pelanggan.ljt'
 
 
