@@ -115,14 +115,17 @@ class SfaControler extends Controller
             ];
         }
 
-        if (isset($request->lokasi)) {
-            $lokasi = explode(",", $request->lokasi);
-            $latitude = $lokasi[0];
-            $longitude = $lokasi[1];
-        } else {
-            $latitude = NULL;
-            $longitude = NULL;
-        }
+        // if (isset($request->lokasi)) {
+        //     $lokasi = explode(",", $request->lokasi);
+        //     $latitude = $lokasi[0];
+        //     $longitude = $lokasi[1];
+        // } else {
+        //     $latitude = NULL;
+        //     $longitude = NULL;
+        // }
+
+        $latitude = NULL;
+        $longitude = NULL;
 
         $data_pelanggan = [
             'kode_pelanggan' => $kode_pelanggan,

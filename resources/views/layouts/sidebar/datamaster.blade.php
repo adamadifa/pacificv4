@@ -153,9 +153,7 @@
                      </a>
                  </li>
              @endcan
-             <li class="menu-header small text-uppercase">
-                 <span class="menu-header-text">GUDANG JADI</span>
-             </li>
+
              @can('bufferstok.index')
                  <li class="menu-item {{ request()->is(['bufferstok', 'bufferstok/*']) ? 'active' : '' }}">
                      <a href="{{ route('bufferstok.index') }}" class="menu-link">
