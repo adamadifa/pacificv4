@@ -745,7 +745,7 @@ class SfaControler extends Controller
 
             // /* Footer */
 
-            if ($pembayaran != null) {
+            if (!empty($pembayaran)) {
                 $printer->feed();
                 $printer->setJustification(Printer::JUSTIFY_LEFT);
                 $printer->text("PEMBAYARAN \n");
