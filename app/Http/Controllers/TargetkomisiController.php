@@ -41,7 +41,7 @@ class TargetkomisiController extends Controller
                 'status_ajuan'
 
             );
-            // $query->where('marketing_komisi_target_disposisi.id_penerima', auth()->user()->id);
+            $query->where('marketing_komisi_target_disposisi.id_penerima', auth()->user()->id);
             $query->join('marketing_komisi_target', 'marketing_komisi_target_disposisi.kode_target', '=', 'marketing_komisi_target.kode_target');
             $query->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang');
             $query->leftJoin(
