@@ -153,7 +153,7 @@ class Penjualan extends Model
             'nama_cabang',
             'alamat_cabang',
             'nama_pt',
-            'signature',
+            'marketing_penjualan.signature',
             DB::raw("json_arrayagg(json_object( 'kode_harga', marketing_penjualan_detail.kode_harga,
             'kode_produk',produk_harga.kode_produk,
             'nama_produk',produk.nama_produk,
