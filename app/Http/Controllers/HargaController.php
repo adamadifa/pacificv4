@@ -7,6 +7,7 @@ use App\Models\Harga;
 use App\Models\Kategorisalesman;
 use App\Models\Pelanggan;
 use App\Models\Produk;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
@@ -17,19 +18,33 @@ class HargaController extends Controller
     public function index(Request $request)
     {
 
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
         $query = Harga::query();
         $query->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $query->join('cabang', 'produk_harga.kode_cabang', '=', 'cabang.kode_cabang');
         if (!empty($request->nama_produk)) {
             $query->where('nama_produk', 'like', '%' . $request->nama_produk . '%');
         }
 
         if (!empty($request->kode_cabang)) {
-            $query->where('kode_cabang', $request->kode_cabang);
+            $query->where('produk_harga.kode_cabang', $request->kode_cabang);
         }
 
         if (!empty($request->kode_kategori_salesman)) {
             $query->where('kode_kategori_salesman', $request->kode_kategori_salesman);
         }
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('produk_harga.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
+
         $harga = $query->paginate(10);
         $harga->appends(request()->all());
 
