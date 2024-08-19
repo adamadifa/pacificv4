@@ -1788,28 +1788,10 @@ Route::get('/assignrole', function () {
 
     // dd($permissiongroup->id);
     // Daftar ID pengguna yang akan diberikan role
-    $userIds = [
-        6,
-        12,
-        13,
-        26,
-        39,
-        43,
-        47,
-        49,
-        53,
-        74,
-        89,
-        106,
-        191,
-        192,
-        203,
-        226,
-        240
-    ];
+    $userIds = [3, 230];
 
     // Ambil role yang ingin diberikan
-    $role = Role::findByName('operation manager');
+    $role = Role::findByName('admin penjualan');
 
     // Cari pengguna berdasarkan ID dan berikan role
     $users = User::whereIn('id', $userIds)->get();
