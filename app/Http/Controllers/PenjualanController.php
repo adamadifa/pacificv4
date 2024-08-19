@@ -882,6 +882,7 @@ class PenjualanController extends Controller
             $no_bukti  = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
             //Update Penjualan
             Penjualan::where('no_faktur', $no_faktur)->update([
+                'no_faktur' => $request->no_faktur,
                 'tanggal' => $request->tanggal,
                 'keterangan' => $keterangan,
 
