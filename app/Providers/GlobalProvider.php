@@ -26,7 +26,7 @@ class Globalprovider extends ServiceProvider
     public function boot(Guard $auth): void
     {
         view()->composer('*', function ($view) use ($auth) {
-            $roles_show_cabang = ['super admin', 'gm marketing', 'manager keuangan', 'direktur', 'regional sales manager', 'asst. manager hrd'];
+            $roles_show_cabang = ['super admin', 'gm marketing', 'gm administrasi', 'manager keuangan', 'direktur', 'regional sales manager', 'asst. manager hrd'];
             $start_periode = '2018-01-01';
             $end_periode = date('Y') . '-12-31';
             $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -157,16 +157,22 @@ class Globalprovider extends ServiceProvider
                 'barangkeluarproduksi.index',
                 'sabarangproduksi.index',
                 'permintaanproduksi.index',
-                'prd.mutasiproduksi', 'prd.rekapmutasi',
+                'prd.mutasiproduksi',
+                'prd.rekapmutasi',
                 'prd.pemasukan',
-                'prd.pengeluaran', 'prd.rekappersediaan'
+                'prd.pengeluaran',
+                'prd.rekappersediaan'
             ];
 
             $produksi_mutasi_produk_request = ['samutasiproduksi', 'samutasiproduksi/*', 'bpbj', 'bpbj/*', 'fsthp', 'fsthp/*'];
             $produksi_mutasi_produk_permission = ['bpbj.index', 'fsthp.index', 'samutasiproduksi.index'];
             $produksi_mutasi_barang_request = [
-                'sabarangproduksi', 'sabarangproduksi/*', 'barangmasukproduksi',
-                'barangmasukproduksi/*', 'barangkeluarproduksi', 'barangkeluarproduksi/*'
+                'sabarangproduksi',
+                'sabarangproduksi/*',
+                'barangmasukproduksi',
+                'barangmasukproduksi/*',
+                'barangkeluarproduksi',
+                'barangkeluarproduksi/*'
             ];
             $produksi_mutasi_barang_permission = ['barangmasukproduksi.index', 'barangkeluarproduksi.index', 'sabarangproduksi.index'];
             $produksi_laporan_permission = ['prd.mutasiproduksi', 'prd.rekapmutasi', 'prd.pemasukan', 'prd.pengeluaran', 'prd.rekappersediaan'];
