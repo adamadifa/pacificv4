@@ -635,7 +635,7 @@ class SfaControler extends Controller
 
         $totalbayar = 0;
 
-        if ($pembayaran != null) {
+        if (!$pembayaran->isEmpty()) {
             foreach ($pembayaran as $d) {
                 $totalbayar += $d->jumlah;
                 $databayar[] = new item(date("d-m-y", strtotime($d->tanggal)), formatAngka($d->jumlah));
@@ -649,7 +649,7 @@ class SfaControler extends Controller
             $items = $datadetail;
 
             //Detail Pembayaran
-            if ($pembayaran != null) {
+            if (!$pembayaran->isEmpty()) {
                 $itemsbayar = $databayar;
             }
 
@@ -745,7 +745,7 @@ class SfaControler extends Controller
 
             // /* Footer */
 
-            if (!empty($pembayaran)) {
+            if (!$pembayaran->isEmpty()) {
                 $printer->feed();
                 $printer->setJustification(Printer::JUSTIFY_LEFT);
                 $printer->text("PEMBAYARAN \n");
@@ -874,7 +874,7 @@ class SfaControler extends Controller
 
             // /* Footer */
 
-            if ($pembayaran != null) {
+            if (!$pembayaran->isEmpty()) {
                 $printer->feed();
                 $printer->setJustification(Printer::JUSTIFY_LEFT);
                 $printer->text("PEMBAYARAN \n");
