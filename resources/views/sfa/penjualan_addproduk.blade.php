@@ -11,7 +11,7 @@
                     data-harga_dus = "{{ formatAngka($d->harga_dus) }}" data-harga_pack = "{{ formatAngka($d->harga_pack) }}"
                     data-harga_pcs = "{{ formatAngka($d->harga_pcs) }}" data-kode_kategori_diskon = "{{ $d->kode_kategori_diskon }}"
                     value="{{ $d->kode_harga }}">
-                    {{ $d->nama_produk }}</option>
+                    {{ $d->nama_produk }} ({{ $d->kode_kategori_salesman }})</option>
             @endforeach
         </select>
     </div>

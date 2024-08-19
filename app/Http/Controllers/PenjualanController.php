@@ -907,7 +907,7 @@ class PenjualanController extends Controller
             ]);
 
             //Hapus Detail Penjualan Sebelmnya
-            Detailpenjualan::where('no_faktur', $no_faktur)->delete();
+            Detailpenjualan::where('no_faktur', $request->no_faktur)->delete();
             Detailpenjualan::insert($detail);
 
             $retur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))
