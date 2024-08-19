@@ -8,6 +8,7 @@ use App\Models\Logamtokertas;
 use App\Models\Saldoawalkasbesar;
 use App\Models\Setoranpenjualan;
 use App\Models\Setoranpusat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -17,10 +18,15 @@ class SaldoawalkasbesarController extends Controller
 {
     public function index(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+
         $list_bulan = config('global.list_bulan');
         $nama_bulan = config('global.nama_bulan');
         $start_year = config('global.start_year');
         $query = Saldoawalkasbesar::query();
+        $query->join('cabang', 'keuangan_kasbesar_saldoawal.kode_cabang', '=', 'cabang.kode_cabang');
         if (!empty($request->bulan)) {
             $query->where('bulan', $request->bulan);
         }
@@ -29,7 +35,15 @@ class SaldoawalkasbesarController extends Controller
         } else {
             $query->where('tahun', date('Y'));
         }
-        $query->join('cabang', 'keuangan_kasbesar_saldoawal.kode_cabang', '=', 'cabang.kode_cabang');
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('keuangan_kasbesar_saldoawal.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
         $query->orderBy('tahun', 'desc');
         $query->orderBy('bulan');
         $saldo_awal = $query->get();
