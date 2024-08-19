@@ -388,27 +388,30 @@ class DpbController extends Controller
                     'keterangan' => 0
                 ]);
                 $no = 1;
-                // dd($totalbarangkeluar);
-                for ($i = 0; $i < count($kode_helper); $i++) {
-                    if ($request->jenis_perhitungan == "P") {
-                        $jumlah_qty_helper = ROUND(toNumber($qty_helper[$i]) / 100 * $totalbarangkeluar, 3);
-                    } else if ($request->jenis_perhitungan == "Q") {
-                        $jumlah_qty_helper = toNumber($qty_helper[$i]);
-                    } else if ($request->jenis_perhitungan == "R") {
-                        $jumlah_qty_helper =  ROUND($totalbarangkeluar / count($kode_helper), 3);
+                if (!empty($kode_helper)) {
+                    for ($i = 0; $i < count($kode_helper); $i++) {
+                        if ($request->jenis_perhitungan == "P") {
+                            $jumlah_qty_helper = ROUND(toNumber($qty_helper[$i]) / 100 * $totalbarangkeluar, 3);
+                        } else if ($request->jenis_perhitungan == "Q") {
+                            $jumlah_qty_helper = toNumber($qty_helper[$i]);
+                        } else if ($request->jenis_perhitungan == "R") {
+                            $jumlah_qty_helper =  ROUND($totalbarangkeluar / count($kode_helper), 3);
+                        }
+                        $helper[] = [
+                            'no_dpb' => $request->no_dpb,
+                            'kode_driver_helper' => $kode_helper[$i],
+                            'kode_posisi' => 'H',
+                            'jumlah' => $jumlah_qty_helper,
+                            'keterangan' => $no
+                        ];
+
+                        $no++;
                     }
-                    $helper[] = [
-                        'no_dpb' => $request->no_dpb,
-                        'kode_driver_helper' => $kode_helper[$i],
-                        'kode_posisi' => 'H',
-                        'jumlah' => $jumlah_qty_helper,
-                        'keterangan' => $no
-                    ];
 
-                    $no++;
+                    Dpbdriverhelper::insert($helper);
                 }
+                // dd($totalbarangkeluar);
 
-                Dpbdriverhelper::insert($helper);
                 Mutasigudangcabang::where('no_dpb', $no_dpb)->update([
                     'no_dpb' => $request->no_dpb
                 ]);
