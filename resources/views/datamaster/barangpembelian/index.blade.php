@@ -9,7 +9,7 @@
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('produk.create')
+                @can('barangpembelian.create')
                     <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Tambah
                         Barang</a>
                 @endcan
@@ -20,12 +20,11 @@
                         <form action="{{ route('barangpembelian.index') }}">
                             <div class="row">
                                 <div class="col-lg-10 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Barang" value="{{ Request('nama_barang') }}"
-                                        name="nama_barang" icon="ti ti-search" />
+                                    <x-input-with-icon label="Cari Nama Barang" value="{{ Request('nama_barang') }}" name="nama_barang"
+                                        icon="ti ti-search" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i
-                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
+                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
                                 </div>
                             </div>
 
@@ -70,8 +69,7 @@
                                                 <div class="d-flex">
                                                     @can('barangpembelian.edit')
                                                         <div>
-                                                            <a href="#" class="me-2 btnEdit"
-                                                                kode_barang="{{ Crypt::encrypt($d->kode_barang) }}">
+                                                            <a href="#" class="me-2 btnEdit" kode_barang="{{ Crypt::encrypt($d->kode_barang) }}">
                                                                 <i class="ti ti-edit text-success"></i>
                                                             </a>
                                                         </div>

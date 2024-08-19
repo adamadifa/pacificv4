@@ -42,8 +42,6 @@ class DashboardController extends Controller
             return $this->operationmanager();
         } else if ($user->hasRole('salesman')) {
             return $this->salesman();
-        } else if ($user->hasRole('spv produksi')) {
-            return $this->rekappersediaan();
         } else {
             return $this->dashboarddefault();
         }
@@ -54,6 +52,7 @@ class DashboardController extends Controller
     {
         return view('dashboard.default');
     }
+
 
     function salesman()
     {
