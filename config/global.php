@@ -1,5 +1,5 @@
 <?php
-$start_year = 2018;
+$start_year = 2023;
 $hari_ini = date('Y-m-d');
 return  [
     //Nama Bulan Singkat
@@ -68,7 +68,12 @@ return  [
 
     'roles_access_all_cabang' => ['super admin', 'gm administrasi', 'gm marketing', 'manager keuangan', 'direktur', 'asst. manager hrd'],
     'roles_show_cabang' => [
-        'super admin', 'gm administrasi', 'gm marketing', 'manager keuangan', 'direktur', 'regional sales manager',
+        'super admin',
+        'gm administrasi',
+        'gm marketing',
+        'manager keuangan',
+        'direktur',
+        'regional sales manager',
         'asst. manager hrd'
     ],
 
