@@ -14,7 +14,7 @@
     <div class="col-xl-12">
         @include('dashboard.welcome')
 
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
                 <div class="card card-border-shadow-primary h-100">
                     <div class="card-body">
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-        </div>
+        </div> --}}
         <div class="row">
             <div class="nav-align-top">
                 <ul class="nav nav-tabs nav-fill rounded-0 timeline-indicator-advanced" role="tablist">
