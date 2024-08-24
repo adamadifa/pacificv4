@@ -3348,4 +3348,111 @@ class LaporanmarketingController extends Controller
         $data['produk'] = $produk;
         return view('marketing.laporan.lhp_cetak', $data);
     }
+
+    public function cetakdppp(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $lastyear = $request->tahun - 1;
+        $start_date_lastyear = $lastyear . "-" . $request->bulan . "-01";
+        $end_date_lastyear = date('Y-m-t', strtotime($start_date_lastyear));
+
+        $start_date = $request->tahun . "-" . $request->bulan . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+
+        $start_year_date_lastyear = $lastyear . "-01-01";
+        $start_year_date = $request->tahun . "-01-01";
+
+        $produk_now = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack');
+
+        $produk_last = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date_lastyear, $end_date_lastyear])
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack');
+
+
+        $qproduk = $produk_now->unionAll($produk_last)->get();
+
+        $produk = $qproduk->groupBy('kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->map(function ($item) {
+                return [
+                    'kode_produk' => $item->first()->kode_produk,
+                    'nama_produk' => $item->first()->nama_produk,
+                ];
+            })
+            ->sortBy('nama_produk')
+            ->values()
+            ->all();
+
+        if (empty($kode_cabang)) {
+            return $this->cetakdppallcabang($request, $produk);
+        }
+    }
+
+    public function cetakdppallcabang(Request $request, $produk)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $lastyear = $request->tahun - 1;
+        $start_date_lastyear = $lastyear . "-" . $request->bulan . "-01";
+        $end_date_lastyear = date('Y-m-t', strtotime($start_date_lastyear));
+
+        $start_date = $request->tahun . "-" . $request->bulan . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+
+        $start_year_date_lastyear = $lastyear . "-01-01";
+        $start_year_date = $request->tahun . "-01-01";
+
+        $selectColumnproduklastyear = [];
+        foreach ($produk as $d) {
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `realisasi_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `realisasi_sampaidengan' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_lastyear . '" AND "' . $end_date_lastyear . '", marketing_penjualan_detail.jumlah, 0))  as `realisasi_lastyear_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_year_date_lastyear . '" AND "' . $end_date_lastyear . '", marketing_penjualan_detail.jumlah, 0)) as `realisasi_lastyear_sampaidengan' . $d['kode_produk'] . '`');
+        }
+
+        $subqueryPenjualanlastyear = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'salesman.kode_cabang',
+                'cabang.nama_cabang',
+                ...$selectColumnproduklastyear
+            )
+            ->whereBetween('marketing_penjualan.tanggal', [$start_year_date_lastyear, $end_date_lastyear])
+            ->groupBy('salesman.kode_cabang');
+        dd($subqueryPenjualanlastyear->get());
+    }
 }

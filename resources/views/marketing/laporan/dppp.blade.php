@@ -79,21 +79,9 @@
 
             formdppp.submit(function(e) {
 
-                const kode_cabang = formdppp.find('#kode_cabang_dppp').val();
                 const bulan = formdppp.find('#bulan').val();
                 const tahun = formdppp.find('#tahun').val();
-                if (kode_cabang == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Cabang Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            formdppp.find("#kode_cabang_dppp").focus();
-                        },
-                    });
-                    return false;
-                } else if (bulan == "") {
+                if (bulan == "") {
                     Swal.fire({
                         title: "Oops!",
                         text: 'Bulan Harus Diisi !',
