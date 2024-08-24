@@ -52,7 +52,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2">TANGGAL</th>
-                        <th rowspan="2">KODE PELANGGAN</th>
+                        <th rowspan="2">KODE</th>
                         <th rowspan="2">NAMA PELANGGAN</th>
                         <th rowspan="2">PASAR/DAERAH</th>
                         <th rowspan="2">SALESMAN</th>
