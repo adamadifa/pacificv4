@@ -35,7 +35,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    {{-- <div class="row">
         <div class="col">
             <div class="form-group mb-3">
                 <select name="formatlaporan" id="formatlaporan" class="form-select">
@@ -45,7 +45,7 @@
                 </select>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="row">
         <div class="col-lg-10 col-md-12 col-sm-12">
             <button type="submit" name="submitButton" class="btn btn-primary w-100" id="submitButtonDppp">

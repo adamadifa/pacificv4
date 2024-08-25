@@ -13,7 +13,4 @@ class LaporanpenjualanController extends Controller
         $data['cabang'] = $cbg->getCabang();
         return view('marketing.laporan.index', $data);
     }
-
-
-    public func
 }

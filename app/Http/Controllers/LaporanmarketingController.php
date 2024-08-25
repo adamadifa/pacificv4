@@ -8,6 +8,7 @@ use App\Models\Detailgiro;
 use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
 use App\Models\Detailsaldoawalpiutangpelanggan;
+use App\Models\Detailtargetkomisi;
 use App\Models\Detailtransfer;
 use App\Models\Dpb;
 use App\Models\Historibayarpenjualan;
@@ -3398,32 +3399,24 @@ class LaporanmarketingController extends Controller
                 return [
                     'kode_produk' => $item->first()->kode_produk,
                     'nama_produk' => $item->first()->nama_produk,
+                    'isi_pcs_dus' => $item->first()->isi_pcs_dus,
                 ];
             })
             ->sortBy('nama_produk')
             ->values()
             ->all();
 
-        if (empty($kode_cabang)) {
+        if (empty($kode_cabang) && $user->hasRole($roles_access_all_cabang) || $user->hasRole('regional sales manager')) {
             return $this->cetakdppallcabang($request, $produk);
+        } else {
+            return $this->cetakdppcabang($request, $produk, $kode_cabang);
         }
     }
 
     public function cetakdppallcabang(Request $request, $produk)
     {
-        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
         $user = User::findorfail(auth()->user()->id);
-
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $kode_cabang = $request->kode_cabang;
-            } else {
-                $kode_cabang = $user->kode_cabang;
-            }
-        } else {
-            $kode_cabang = $request->kode_cabang;
-        }
-
         $lastyear = $request->tahun - 1;
         $start_date_lastyear = $lastyear . "-" . $request->bulan . "-01";
         $end_date_lastyear = date('Y-m-t', strtotime($start_date_lastyear));
@@ -3434,15 +3427,39 @@ class LaporanmarketingController extends Controller
         $start_year_date_lastyear = $lastyear . "-01-01";
         $start_year_date = $request->tahun . "-01-01";
 
+        $formatlaporan = $request->formatlaporan;
+
         $selectColumnproduklastyear = [];
+        $selectcolumnproduk = [];
+        $selectColumntarget = [];
         foreach ($produk as $d) {
             $selectColumnproduklastyear[] = DB::raw('SUM(0) as `realisasi_' . $d['kode_produk'] . '`');
-            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `realisasi_sampaidengan' . $d['kode_produk'] . '`');
-            $selectColumnproduklastyear[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_lastyear . '" AND "' . $end_date_lastyear . '", marketing_penjualan_detail.jumlah, 0))  as `realisasi_lastyear_' . $d['kode_produk'] . '`');
-            $selectColumnproduklastyear[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_year_date_lastyear . '" AND "' . $end_date_lastyear . '", marketing_penjualan_detail.jumlah, 0)) as `realisasi_lastyear_sampaidengan' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `realisasi_sampaidengan_' . $d['kode_produk'] . '`');
+
+            $selectColumnproduklastyear[] = DB::raw('SUM(IF(produk_harga.kode_produk="' . $d['kode_produk'] . '" AND marketing_penjualan.tanggal BETWEEN "' . $start_date_lastyear . '" AND "' . $end_date_lastyear . '", marketing_penjualan_detail.jumlah, 0))  as `realisasi_lastyear_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_year_date_lastyear . '" AND "' . $end_date_lastyear . '" AND produk_harga.kode_produk="' . $d['kode_produk'] . '", marketing_penjualan_detail.jumlah, 0)) as `realisasi_lastyear_sampaidengan_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `target_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `target_sampaidengan_' . $d['kode_produk'] . '`');
+
+
+            $selectcolumnproduk[] = DB::raw('SUM(IF(produk_harga.kode_produk="' . $d['kode_produk'] . '" AND marketing_penjualan.tanggal BETWEEN "' . $start_date . '" AND "' . $end_date . '", marketing_penjualan_detail.jumlah, 0))  as `realisasi_' . $d['kode_produk'] . '`');
+
+            $selectcolumnproduk[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_year_date . '" AND "' . $end_date . '" AND produk_harga.kode_produk="' . $d['kode_produk'] . '", marketing_penjualan_detail.jumlah, 0)) as `realisasi_sampaidengan_' . $d['kode_produk'] . '`');
+
+            $selectcolumnproduk[] = DB::raw('SUM(0) as `realisasi_lastyear_' . $d['kode_produk'] . '`');
+            $selectcolumnproduk[] = DB::raw('SUM(0) as `realisasi_lastyear_sampaidengan_' . $d['kode_produk'] . '`');
+            $selectcolumnproduk[] = DB::raw('SUM(0) as `target_' . $d['kode_produk'] . '`');
+            $selectcolumnproduk[] = DB::raw('SUM(0) as `target_sampaidengan_' . $d['kode_produk'] . '`');
+
+            $selectColumntarget[] = DB::raw('SUM(0) as `realisasi_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(0) as `realisasi_sampaidengan_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(0) as `realisasi_lastyear_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(0) as `realisasi_lastyear_sampaidengan_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(IF(kode_produk="' . $d['kode_produk'] . '" AND bulan="' . $request->bulan . '",jumlah,0)) as `target_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(IF(kode_produk="' . $d['kode_produk'] . '" AND bulan BETWEEN 1 AND ' . $request->bulan . ',jumlah,0)) as `target_sampaidengan_' . $d['kode_produk'] . '`');
         }
 
-        $subqueryPenjualanlastyear = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+        $penjualanlastyear = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
@@ -3451,8 +3468,216 @@ class LaporanmarketingController extends Controller
                 'cabang.nama_cabang',
                 ...$selectColumnproduklastyear
             )
+
             ->whereBetween('marketing_penjualan.tanggal', [$start_year_date_lastyear, $end_date_lastyear])
-            ->groupBy('salesman.kode_cabang');
-        dd($subqueryPenjualanlastyear->get());
+            ->when($user->hasRole('regional sales manager'), function ($query) {
+                return $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            })
+            ->where('status_promosi', 0)
+            ->where('marketing_penjualan.status_batal', 0)
+            ->groupBy('salesman.kode_cabang', 'nama_cabang');
+
+        //dd($penjualanlastyear->get());
+        $penjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'salesman.kode_cabang',
+                'cabang.nama_cabang',
+                ...$selectcolumnproduk
+            )
+
+
+            ->whereBetween('marketing_penjualan.tanggal', [$start_year_date, $end_date])
+            ->when($user->hasRole('regional sales manager'), function ($query) {
+                return $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            })
+            ->where('status_promosi', 0)
+            ->where('marketing_penjualan.status_batal', 0)
+            ->groupBy('salesman.kode_cabang', 'nama_cabang');
+
+        $target = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+            ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'marketing_komisi_target.kode_cabang',
+                'nama_cabang',
+                ...$selectColumntarget
+            )
+
+            ->where('marketing_komisi_target.tahun', $request->tahun)
+            ->where('marketing_komisi_target.bulan', '<=', $request->bulan)
+            ->when($user->hasRole('regional sales manager'), function ($query) {
+                return $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            })
+            ->groupBy('marketing_komisi_target.kode_cabang', 'nama_cabang');
+
+        // dd($penjualan->get());
+        $qdppp = $penjualan->unionAll($penjualanlastyear)->unionAll($target)->get();
+
+        $dppp = $qdppp->groupBy('kode_cabang', 'nama_cabang')
+            ->map(function ($item) use ($produk) {
+                $result =  [
+                    'kode_cabang' => $item->first()->kode_cabang,
+                    'nama_cabang' => $item->first()->nama_cabang,
+                ];
+
+                foreach ($produk as $p) {
+                    $result['realisasi_lastyear_' . $p['kode_produk']] = $item->sum('realisasi_lastyear_' . $p['kode_produk']);
+                    $result['realisasi_lastyear_sampaidengan_' . $p['kode_produk']] = $item->sum('realisasi_lastyear_sampaidengan_' . $p['kode_produk']);
+                    $result['realisasi_' . $p['kode_produk']] = $item->sum('realisasi_' . $p['kode_produk']);
+                    $result['realisasi_sampaidengan_' . $p['kode_produk']] = $item->sum('realisasi_sampaidengan_' . $p['kode_produk']);
+                    $result['target_' . $p['kode_produk']] = $item->sum('target_' . $p['kode_produk']);
+                    $result['target_sampaidengan_' . $p['kode_produk']] = $item->sum('target_sampaidengan_' . $p['kode_produk']);
+                }
+
+                return $result;
+            })
+            ->sortBy('kode_cabang')
+            ->values()
+            ->all();
+
+
+
+        $data['dppp'] = $dppp;
+        $data['produk'] = $produk;
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['lastyear'] = $lastyear;
+        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+        return view('marketing.laporan.dppp_all_cabang_cetak', $data);
+    }
+
+
+    public function cetakdppcabang(Request $request, $produk, $kode_cabang)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $lastyear = $request->tahun - 1;
+        $start_date_lastyear = $lastyear . "-" . $request->bulan . "-01";
+        $end_date_lastyear = date('Y-m-t', strtotime($start_date_lastyear));
+
+        $start_date = $request->tahun . "-" . $request->bulan . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+
+        $start_year_date_lastyear = $lastyear . "-01-01";
+        $start_year_date = $request->tahun . "-01-01";
+
+        $formatlaporan = $request->formatlaporan;
+
+        $selectColumnproduklastyear = [];
+        $selectcolumnproduk = [];
+        $selectColumntarget = [];
+        foreach ($produk as $d) {
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `realisasi_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `realisasi_sampaidengan_' . $d['kode_produk'] . '`');
+
+            $selectColumnproduklastyear[] = DB::raw('SUM(IF(produk_harga.kode_produk="' . $d['kode_produk'] . '" AND marketing_penjualan.tanggal BETWEEN "' . $start_date_lastyear . '" AND "' . $end_date_lastyear . '", marketing_penjualan_detail.jumlah, 0))  as `realisasi_lastyear_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_year_date_lastyear . '" AND "' . $end_date_lastyear . '" AND produk_harga.kode_produk="' . $d['kode_produk'] . '", marketing_penjualan_detail.jumlah, 0)) as `realisasi_lastyear_sampaidengan_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `target_' . $d['kode_produk'] . '`');
+            $selectColumnproduklastyear[] = DB::raw('SUM(0) as `target_sampaidengan_' . $d['kode_produk'] . '`');
+
+
+            $selectcolumnproduk[] = DB::raw('SUM(IF(produk_harga.kode_produk="' . $d['kode_produk'] . '" AND marketing_penjualan.tanggal BETWEEN "' . $start_date . '" AND "' . $end_date . '", marketing_penjualan_detail.jumlah, 0))  as `realisasi_' . $d['kode_produk'] . '`');
+
+            $selectcolumnproduk[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_year_date . '" AND "' . $end_date . '" AND produk_harga.kode_produk="' . $d['kode_produk'] . '", marketing_penjualan_detail.jumlah, 0)) as `realisasi_sampaidengan_' . $d['kode_produk'] . '`');
+
+            $selectcolumnproduk[] = DB::raw('SUM(0) as `realisasi_lastyear_' . $d['kode_produk'] . '`');
+            $selectcolumnproduk[] = DB::raw('SUM(0) as `realisasi_lastyear_sampaidengan_' . $d['kode_produk'] . '`');
+            $selectcolumnproduk[] = DB::raw('SUM(0) as `target_' . $d['kode_produk'] . '`');
+            $selectcolumnproduk[] = DB::raw('SUM(0) as `target_sampaidengan_' . $d['kode_produk'] . '`');
+
+            $selectColumntarget[] = DB::raw('SUM(0) as `realisasi_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(0) as `realisasi_sampaidengan_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(0) as `realisasi_lastyear_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(0) as `realisasi_lastyear_sampaidengan_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(IF(kode_produk="' . $d['kode_produk'] . '" AND bulan="' . $request->bulan . '",jumlah,0)) as `target_' . $d['kode_produk'] . '`');
+            $selectColumntarget[] = DB::raw('SUM(IF(kode_produk="' . $d['kode_produk'] . '" AND bulan BETWEEN 1 AND ' . $request->bulan . ',jumlah,0)) as `target_sampaidengan_' . $d['kode_produk'] . '`');
+        }
+
+        $penjualanlastyear = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                'salesman.nama_salesman',
+                ...$selectColumnproduklastyear
+            )
+
+            ->whereBetween('marketing_penjualan.tanggal', [$start_year_date_lastyear, $end_date_lastyear])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->where('status_promosi', 0)
+            ->where('marketing_penjualan.status_batal', 0)
+            ->groupBy('marketing_penjualan.kode_salesman', 'nama_salesman');
+
+        //dd($penjualanlastyear->get());
+        $penjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                'salesman.nama_salesman',
+                ...$selectcolumnproduk
+            )
+
+
+            ->whereBetween('marketing_penjualan.tanggal', [$start_year_date, $end_date])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->where('status_promosi', 0)
+            ->where('marketing_penjualan.status_batal', 0)
+            ->groupBy('marketing_penjualan.kode_salesman', 'nama_salesman')
+            ->where('status_promosi', 0)
+            ->where('marketing_penjualan.status_batal', 0)
+            ->groupBy('marketing_penjualan.kode_salesman', 'nama_salesman');
+
+        $target = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+            ->join('salesman', 'marketing_komisi_target_detail.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select(
+                'marketing_komisi_target_detail.kode_salesman',
+                'nama_salesman',
+                ...$selectColumntarget
+            )
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->where('marketing_komisi_target.tahun', $request->tahun)
+            ->where('marketing_komisi_target.bulan', '<=', $request->bulan)
+            ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman');
+
+        // dd($penjualan->get());
+        $qdppp = $penjualan->unionAll($penjualanlastyear)->unionAll($target)->get();
+
+        $dppp = $qdppp->groupBy('kode_salesman', 'nama_salesman')
+            ->map(function ($item) use ($produk) {
+                $result =  [
+                    'kode_salesman' => $item->first()->kode_salesman,
+                    'nama_salesman' => $item->first()->nama_salesman,
+                ];
+
+                foreach ($produk as $p) {
+                    $result['realisasi_lastyear_' . $p['kode_produk']] = $item->sum('realisasi_lastyear_' . $p['kode_produk']);
+                    $result['realisasi_lastyear_sampaidengan_' . $p['kode_produk']] = $item->sum('realisasi_lastyear_sampaidengan_' . $p['kode_produk']);
+                    $result['realisasi_' . $p['kode_produk']] = $item->sum('realisasi_' . $p['kode_produk']);
+                    $result['realisasi_sampaidengan_' . $p['kode_produk']] = $item->sum('realisasi_sampaidengan_' . $p['kode_produk']);
+                    $result['target_' . $p['kode_produk']] = $item->sum('target_' . $p['kode_produk']);
+                    $result['target_sampaidengan_' . $p['kode_produk']] = $item->sum('target_sampaidengan_' . $p['kode_produk']);
+                }
+
+                return $result;
+            })
+            ->sortBy('kode_salesman')
+            ->values()
+            ->all();
+
+
+
+        $data['dppp'] = $dppp;
+        $data['produk'] = $produk;
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['lastyear'] = $lastyear;
+        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+        return view('marketing.laporan.dppp_cabang_cetak', $data);
     }
 }
