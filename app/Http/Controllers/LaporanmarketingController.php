@@ -3406,6 +3406,11 @@ class LaporanmarketingController extends Controller
             ->values()
             ->all();
 
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Laporan Data Pertumbuhan Produk $request->bulan - $request->tahun.xls");
+        }
         if (empty($kode_cabang) && $user->hasRole($roles_access_all_cabang) || $user->hasRole('regional sales manager')) {
             return $this->cetakdppallcabang($request, $produk);
         } else {
@@ -3679,5 +3684,82 @@ class LaporanmarketingController extends Controller
         $data['lastyear'] = $lastyear;
         $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
         return view('marketing.laporan.dppp_cabang_cetak', $data);
+    }
+
+
+    public function cetakharganet(Request $request)
+    {
+        $dari = $request->tahun . "-" . $request->bulan . "-01";
+        $sampai = date('Y-m-t', strtotime($dari));
+
+        $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_produk')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->get();
+
+
+        $selectColumnproduk = [];
+        $selectColumprodukretur = [];
+        foreach ($produk as $p) {
+            $selectColumnproduk[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',marketing_penjualan_detail.subtotal,0)) as `bruto_$p->kode_produk`");
+            $selectColumnproduk[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk' AND jenis_transaksi='T',marketing_penjualan_detail.subtotal,0)) as `bruto_tunai_$p->kode_produk`");
+            $selectColumnproduk[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk' AND jenis_transaksi='K',marketing_penjualan_detail.subtotal,0)) as `bruto_kredit_$p->kode_produk`");
+            $selectColumnproduk[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',floor(marketing_penjualan_detail.jumlah /isi_pcs_dus),0)) as `qtydus_$p->kode_produk`");
+            $selectColumnproduk[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',jumlah,0)) as `qty_$p->kode_produk`");
+
+            $selectColumnkodeprodukretur[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk' AND jenis_retur ='GB',marketing_retur_detail.subtotal,0)) as `retur_gb_$p->kode_produk`");
+            $selectColumnkodeprodukretur[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk' ,marketing_retur_detail.subtotal,0)) as `retur_total_$p->kode_produk`");
+        }
+
+
+        $detail = Detailpenjualan::select(
+            DB::raw("SUM(subtotal) as bruto_total"),
+            DB::raw("SUM(IF(jenis_transaksi='T',subtotal,0)) as bruto_total_tunai"),
+            DB::raw("SUM(IF(jenis_transaksi='K',subtotal,0)) as bruto_total_kredit"),
+            DB::raw("SUM(IF( produk.kode_kategori_produk='P01' ,floor(marketing_penjualan_detail.jumlah /isi_pcs_dus),0)) as `qtyAida`"),
+            DB::raw("SUM(IF( produk.kode_kategori_produk='P02' ,floor(marketing_penjualan_detail.jumlah /isi_pcs_dus),0)) as `qtySwan`"),
+            DB::raw("SUM((marketing_penjualan_detail.jumlah /isi_pcs_dus)) as `qtyTotal`"),
+            ...$selectColumnproduk
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('status_promosi', 0)
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->first();
+
+        $penjualan = Penjualan::select(
+            DB::raw("SUM(ppn) as ppn_total"),
+            DB::raw("SUM(IF(jenis_transaksi='T',ppn,0)) as ppn_total_tunai"),
+            DB::raw("SUM(IF(jenis_transaksi='K',ppn,0)) as ppn_total_kredit"),
+            DB::raw("SUM(potongan_aida) as potongan_aida"),
+            DB::raw("SUM(potongan_swan + potongan_stick + potongan_sp + potongan_sambal) as potongan_swan"),
+            DB::raw("SUM(penyesuaian) as penyesuaian"),
+
+        )
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->first();
+
+
+        $retur = Detailretur::select(
+            ...$selectColumnkodeprodukretur
+        )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->whereBetween('marketing_retur.tanggal', [$dari, $sampai])
+            ->first();
+
+        $data['detail'] = $detail;
+        $data['penjualan'] = $penjualan;
+        $data['retur'] = $retur;
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['produk'] = $produk;
+        return view('marketing.laporan.harganet_cetak', $data);
     }
 }

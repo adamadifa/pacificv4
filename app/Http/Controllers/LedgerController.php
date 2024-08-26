@@ -133,7 +133,7 @@ class LedgerController extends Controller
         } catch (\Exception $e) {
             //dd($e);
             DB::rollBack();
-            return Redirect::back() - with(messageError($e->getMessage()));
+            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 
