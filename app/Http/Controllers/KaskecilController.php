@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Coacabang;
 use App\Models\Kaskecil;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -31,10 +32,32 @@ class KaskecilController extends Controller
         $query->orderBy('debet_kredit', 'desc');
         $query->orderBy('no_bukti');
         $kaskecil = $query->get();
+
+        $qsaldoawal = Kaskecil::query();
+        $qsaldoawal->selectRaw("SUM(IF( `debet_kredit` = 'K', jumlah, 0)) -SUM(IF( `debet_kredit` = 'D', jumlah, 0)) as saldo_awal");
+        $qsaldoawal->where('tanggal', '<', $request->dari);
+        $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
+        $saldoawal = $qsaldoawal->first();
+
+        $data['saldoawal'] = $saldoawal;
         $data['kaskecil'] = $kaskecil;
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
 
         return view('keuangan.kaskecil.index', $data);
+    }
+
+
+    public function create(Request $request)
+    {
+
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+
+        $coacabang = new Coacabang();
+        $data['coa'] = $coacabang->getCoacabang()->get();
+
+
+        return view('keuangan.kaskecil.create', $data);
     }
 }

@@ -72,12 +72,26 @@
                                             <th>Saldo</th>
                                             <th>Aksi</th>
                                         </tr>
+                                        <tr>
+                                            <th colspan="7"><b>SALDO AWAL</b></th>
+                                            <td class="text-end">{{ $saldoawal != null ? formatAngka($saldoawal->saldo_awal) : 0 }}</td>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
+                                        @php
+                                            $saldo = $saldoawal != null ? $saldoawal->saldo_awal : 0;
+                                            $total_penerimaan = 0;
+                                            $total_pengeluaran = 0;
+                                        @endphp
                                         @foreach ($kaskecil as $d)
                                             @php
                                                 $penerimaan = $d->debet_kredit == 'K' ? $d->jumlah : 0;
                                                 $pengeluaran = $d->debet_kredit == 'D' ? $d->jumlah : 0;
+                                                $color = $d->debet_kredit == 'K' ? 'success' : 'danger';
+                                                $saldo += $penerimaan - $pengeluaran;
+                                                $total_penerimaan += $penerimaan;
+                                                $total_pengeluaran += $pengeluaran;
                                             @endphp
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
@@ -85,12 +99,22 @@
                                                 <td>{{ $d->no_bukti }}</td>
                                                 <td>{{ textCamelcase($d->keterangan) }}</td>
                                                 <td>{{ $d->kode_akun }} - {{ $d->nama_akun }}</td>
-                                                <td class="text-end">{{ formatAngka($penerimaan) }}</td>
-                                                <td class="text-end">{{ formatAngka($pengeluaran) }}</td>
-                                                <td></td>
+                                                <td class="text-end text-{{ $color }}">{{ formatAngka($penerimaan) }}</td>
+                                                <td class="text-end text-{{ $color }}">{{ formatAngka($pengeluaran) }}</td>
+                                                <td class="text-end text-primary"> {{ formatAngka($saldo) }}</td>
                                             </tr>
                                         @endforeach
+
                                     </tbody>
+                                    <tfoot class="table-dark">
+                                        <tr>
+                                            <th colspan="5">TOTAL</th>
+                                            <td class="text-end">{{ formatAngka($total_penerimaan) }}</td>
+                                            <td class="text-end">{{ formatAngka($total_pengeluaran) }}</td>
+                                            <td class="text-end">{{ formatAngka($saldo) }}</td>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -118,12 +142,12 @@
             </div>`);
         };
 
-        const select2Kodebanksearch = $('.select2Kodebanksearch');
-        if (select2Kodebanksearch.length) {
-            select2Kodebanksearch.each(function() {
+        const select2Kodecabangsearch = $('.select2Kodecabangsearch');
+        if (select2Kodecabangsearch.length) {
+            select2Kodecabangsearch.each(function() {
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
-                    placeholder: 'Pilih  Bank',
+                    placeholder: 'Pilih Cabang',
                     allowClear: true,
                     dropdownParent: $this.parent()
                 });
@@ -134,8 +158,8 @@
             e.preventDefault();
             loading();
             $("#modal").modal("show");
-            $("#modal").find(".modal-title").text('Input Ledger');
-            $("#loadmodal").load('/ledger/create');
+            $("#modal").find(".modal-title").text('Input Kas Kecil');
+            $("#loadmodal").load('/kaskecil/create');
         });
 
         $(".btnEdit").click(function(e) {
