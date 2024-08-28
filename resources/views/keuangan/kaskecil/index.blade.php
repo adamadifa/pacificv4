@@ -64,7 +64,7 @@
                                         <tr>
                                             <th style="width: 3%">No</th>
                                             <th style="width: 10%">Tanggal</th>
-                                            <th style="width: 5%">No. Bukti</th>
+                                            <th style="width: 10%">No. Bukti</th>
                                             <th style="width: 20%">Keterangan</th>
                                             <th style="width: 20%">Akun</th>
                                             <th>Penerimaan</th>
@@ -102,6 +102,22 @@
                                                 <td class="text-end text-{{ $color }}">{{ formatAngka($penerimaan) }}</td>
                                                 <td class="text-end text-{{ $color }}">{{ formatAngka($pengeluaran) }}</td>
                                                 <td class="text-end text-primary"> {{ formatAngka($saldo) }}</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        @can('kaskecil.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('kaskecil.delete', Crypt::encrypt($d->id)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="cancel-confirm me-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+
+                                                                </a>
+                                                            </form>
+                                                        @endcan
+                                                    </div>
+
+                                                </td>
                                             </tr>
                                         @endforeach
 

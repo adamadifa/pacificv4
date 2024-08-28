@@ -10,4 +10,5 @@ class Kaskecil extends Model
 
     use HasFactory;
     protected $table = 'keuangan_kaskecil';
+    protected $guarded = [];
 }
