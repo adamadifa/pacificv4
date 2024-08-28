@@ -30,7 +30,7 @@
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
             <div class="form-group mb-3">
-                <select name="kode_akun_dari" id="kode_akun_dari" class="form-select select2Kodeakundari">
+                <select name="kode_akun_sampai" id="kode_akun_sampai" class="form-select select2Kodeakunsampai">
                     <option value="">Semua Akun</option>
                     @foreach ($coa as $d)
                         <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ $d->nama_akun }}</option>
