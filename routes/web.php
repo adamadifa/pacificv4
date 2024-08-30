@@ -47,6 +47,7 @@ use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KesepakatanbersamaController;
 use App\Http\Controllers\KirimpusatController;
+use App\Http\Controllers\KlaimkaskecilController;
 use App\Http\Controllers\KontrabonangkutanController;
 use App\Http\Controllers\KontrabonkeuanganController;
 use App\Http\Controllers\KontrabonpembelianController;
@@ -1191,6 +1192,25 @@ Route::middleware('auth')->group(function () {
         Route::delete('/kaskecil/{id}/delete', 'destroy')->name('kaskecil.delete')->can('kaskecil.delete');
     });
 
+    Route::controller(KlaimkaskecilController::class)->group(function () {
+        Route::get('/klaimkaskecil', 'index')->name('klaimkaskecil.index')->can('klaimkaskecil.index');
+        Route::get('/klaimkaskecil/create', 'create')->name('klaimkaskecil.create')->can('klaimkaskecil.create');
+        Route::post('/klaimkaskecil/store', 'store')->name('klaimkaskecil.store')->can('klaimkaskecil.store');
+        Route::get('/klaimkaskecil/{kode_klaim}/edit', 'edit')->name('klaimkaskecil.edit')->can('klaimkaskecil.edit');
+        Route::put('/klaimkaskecil/{kode_klaim}/update', 'update')->name('klaimkaskecil.update')->can('klaimkaskecil.update');
+        Route::delete('/klaimkaskecil/{kode_klaim}/delete', 'destroy')->name('klaimkaskecil.delete')->can('klaimkaskecil.delete');
+        Route::get('/klaimkaskecil/{kode_klaim}/show', 'show')->name('klaimkaskecil.show')->can('klaimkaskecil.show');
+        Route::get('/klaimkaskecil/{kode_klaim}/{export}/cetak', 'cetak')->name('klaimkaskecil.cetak')->can('klaimkaskecil.show');
+        Route::get('/klaimkaskecil/{kode_klaim}/proses', 'proses')->name('klaimkaskecil.proses')->can('klaimkaskecil.proses');
+        Route::post('/klaimkaskecil/{kode_klaim}/storeproses', 'storeproses')->name('klaimkaskecil.storeproses')->can('klaimkaskecil.proses');
+        Route::delete('/klaimkaskecil/{no_bukti}/cancelproses', 'cancelproses')->name('klaimkaskecil.cancelproses')->can('klaimkaskecil.proses');
+
+        Route::get('/klaimkaskecil/{kode_klaim}/approve', 'approve')->name('klaimkaskecil.approve')->can('klaimkaskecil.approve');
+        Route::delete('/klaimkaskecil/{no_bukti}/cancelapprove', 'cancelapprove')->name('klaimkaskecil.cancelapprove')->can('klaimkaskecil.approve');
+
+        Route::post('/klaimkaskecil/getdata', 'getData')->name('klaimkaskecil.getdata')->can('klaimkaskecil.create');
+    });
+
     Route::controller(LedgerController::class)->group(function () {
         Route::get('/ledger', 'index')->name('ledger.index')->can('ledger.index');
         Route::get('/ledger/create', 'create')->name('ledger.create')->can('ledger.create');
@@ -1675,6 +1695,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(LaporankeuanganController::class)->group(function () {
         Route::get('/laporankeuangan', 'index')->name('laporankeuangan.index');
+        Route::post('/laporankeuangan/cetakkaskecil', 'cetakkaskecil')->name('laporankeuangan.cetakkaskecil')->can('keu.kaskecil');
         Route::post('/laporankeuangan/cetakledger', 'cetakledger')->name('laporankeuangan.cetakledger')->can('keu.ledger');
         Route::post('/laporankeuangan/cetaksaldokasbesar', 'cetaksaldokasbesar')->name('laporankeuangan.cetaksaldokasbesar')->can('keu.saldokasbesar');
         Route::post('/laporankeuangan/cetaklpu', 'cetaklpu')->name('laporankeuangan.cetaklpu')->can('keu.lpu');

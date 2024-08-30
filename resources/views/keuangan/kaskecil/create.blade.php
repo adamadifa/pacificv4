@@ -1,14 +1,16 @@
 <form action="{{ route('kaskecil.store') }}" method="POST" id="formKaskecil">
     <input type="hidden" id="cektutuplaporan">
     @csrf
-    <div class="form-group mb-4">
-        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-            <option value="">Pilih Cabang</option>
-            @foreach ($cabang as $d)
-                <option value="{{ $d->kode_cabang }}">{{ textuppercase($d->nama_cabang) }}</option>
-            @endforeach
-        </select>
-    </div>
+    @hasanyrole($roles_show_cabang)
+        <div class="form-group mb-4">
+            <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
+                <option value="">Pilih Cabang</option>
+                @foreach ($cabang as $d)
+                    <option value="{{ $d->kode_cabang }}">{{ textuppercase($d->nama_cabang) }}</option>
+                @endforeach
+            </select>
+        </div>
+    @endhasanyrole
     <x-input-with-icon label="No Bukti" name="no_bukti" icon="ti ti-barcode" />
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
     <hr>

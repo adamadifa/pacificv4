@@ -10,9 +10,17 @@
     <div class="col-xl-8 col-md-12 col-sm-12">
         <div class="nav-align-left nav-tabs-shadow mb-4">
             <ul class="nav nav-tabs" role="tablist">
+                @can('keu.kaskecil')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#kaskecil"
+                            aria-controls="kaskecil" aria-selected="false" tabindex="-1">
+                            Kaskecil
+                        </button>
+                    </li>
+                @endcan
                 @can('keu.ledger')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#ledger" aria-controls="pembelian"
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#ledger" aria-controls="ledger"
                             aria-selected="false" tabindex="-1">
                             Ledger
                         </button>
@@ -117,8 +125,13 @@
 
             </ul>
             <div class="tab-content">
+                @can('keu.kaskecil')
+                    <div class="tab-pane fade active show" id="kaskecil" role="tabpanel">
+                        @include('keuangan.laporan.kaskecil')
+                    </div>
+                @endcan
                 @can('keu.ledger')
-                    <div class="tab-pane fade active show" id="ledger" role="tabpanel">
+                    <div class="tab-pane fade" id="ledger" role="tabpanel">
                         @include('keuangan.laporan.ledger')
                     </div>
                 @endcan

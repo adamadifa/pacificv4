@@ -5,6 +5,7 @@
             'setoranpusat.index',
             'ajuantransfer.index',
             'kaskecil.index',
+            'klaimkaskecil.index',
             'ledger.index',
             'saledger.index',
             'mutasibank.index',
@@ -53,6 +54,7 @@
             'kontrabonkeuangan',
             'kontrabonkeuangan/*',
             'laporankeuangan',
+            'klaimkaskecil',
         ])
             ? 'open'
             : '' }}">
@@ -99,8 +101,8 @@
                 </li>
             @endif
 
-            @if (auth()->user()->hasAnyPermission(['kaskecil.index']))
-                <li class="menu-item {{ request()->is(['kaskecil']) ? 'active' : '' }}">
+            @if (auth()->user()->hasAnyPermission(['kaskecil.index', 'klaimkaskecil.inde']))
+                <li class="menu-item {{ request()->is(['kaskecil', 'klaimkaskecil']) ? 'active' : '' }}">
                     <a href="{{ route('kaskecil.index') }}" class="menu-link">
                         <div>Kas Kecil</div>
                     </a>

@@ -92,9 +92,10 @@
                                                 $saldo += $penerimaan - $pengeluaran;
                                                 $total_penerimaan += $penerimaan;
                                                 $total_pengeluaran += $pengeluaran;
+                                                $colorklaim = !empty($d->kode_klaim) ? 'bg-success text-white' : '';
                                             @endphp
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td class="{{ $colorklaim }}">{{ $loop->iteration }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->no_bukti }}</td>
                                                 <td>{{ textCamelcase($d->keterangan) }}</td>
@@ -103,19 +104,30 @@
                                                 <td class="text-end text-{{ $color }}">{{ formatAngka($pengeluaran) }}</td>
                                                 <td class="text-end text-primary"> {{ formatAngka($saldo) }}</td>
                                                 <td>
-                                                    <div class="d-flex">
-                                                        @can('kaskecil.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('kaskecil.delete', Crypt::encrypt($d->id)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="cancel-confirm me-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-
+                                                    @if ($d->keterangan != 'Penerimaan Kas Kecil')
+                                                        <div class="d-flex">
+                                                            @can('kaskecil.edit')
+                                                                <a href="#" class="btnEdit me-1" id="{{ Crypt::encrypt($d->id) }}"><i
+                                                                        class="ti ti-edit text-success"></i>
                                                                 </a>
-                                                            </form>
-                                                        @endcan
-                                                    </div>
+                                                            @endcan
+                                                            @can('kaskecil.delete')
+                                                                @if (empty($d->kode_klaim))
+                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                        action="{{ route('kaskecil.delete', Crypt::encrypt($d->id)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="cancel-confirm me-1">
+                                                                            <i class="ti ti-trash text-danger"></i>
+
+                                                                        </a>
+                                                                    </form>
+                                                                @endif
+                                                            @endcan
+
+                                                        </div>
+                                                    @endif
+
 
                                                 </td>
                                             </tr>
@@ -181,10 +193,10 @@
         $(".btnEdit").click(function(e) {
             e.preventDefault();
             loading();
-            const no_bukti = $(this).attr('no_bukti');
+            const id = $(this).attr('id');
             $("#modalEdit").modal("show");
-            $("#modalEdit").find(".modal-title").text('Edit Ledger');
-            $("#modalEdit").find("#loadmodalEdit").load(`/ledger/${no_bukti}/edit`);
+            $("#modalEdit").find(".modal-title").text('Edit Kaskecil');
+            $("#modalEdit").find("#loadmodalEdit").load(`/kaskecil/${id}/edit`);
         });
 
     });

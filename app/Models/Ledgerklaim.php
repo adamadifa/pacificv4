@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Detailklaimkaskecil extends Model
+class Ledgerklaim extends Model
 {
     use HasFactory;
-    protected $table = "keuangan_kaskecil_klaim_detail";
+    protected $table = "keuangan_ledger_klaim";
     protected $guarded = [];
 }

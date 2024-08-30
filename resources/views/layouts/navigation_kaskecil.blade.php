@@ -8,7 +8,13 @@
                 </a>
             </li>
         @endcan
-
+        @can('klaimkaskecil.index')
+            <li class="nav-item" role="presentation">
+                <a href="{{ route('klaimkaskecil.index') }}" class="nav-link {{ request()->is(['klaimkaskecil']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Klaim
+                </a>
+            </li>
+        @endcan
 
     </ul>
 @endif

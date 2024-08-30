@@ -20,8 +20,14 @@ class KaskecilController extends Controller
     {
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        $awal_kas_kecil = '2019-04-30';
+        $sehariSebelumDari = date('Y-m-d', strtotime('-1 day', strtotime($request->dari)));
+
         $query = Kaskecil::query();
+        $query->select('keuangan_kaskecil.*', 'nama_akun', 'kode_klaim');
         $query->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
+        $query->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id');
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('kode_cabang', $request->kode_cabang_search);
@@ -32,8 +38,7 @@ class KaskecilController extends Controller
             $query->where('kode_cabang', $request->kode_cabang_search);
         }
 
-        $awal_kas_kecil = '2019-04-30';
-        $sehariSebelumDari = date('Y-m-d', strtotime('-1 day', strtotime($request->dari)));
+
 
         $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
         $query->orderBy('tanggal');
@@ -156,11 +161,134 @@ class KaskecilController extends Controller
             return redirect()->back()->with(['success' => 'Data Berhasil Disimpan']);
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            // dd($e);
             return redirect()->back()->with(['warning' => $e->getMessage()]);
         }
     }
 
+
+    public function edit($id)
+    {
+        $id = Crypt::decrypt($id);
+        $data['kaskecil'] = Kaskecil::where('keuangan_kaskecil.id', $id)
+            ->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id')
+            ->first();
+
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+
+        $coacabang = new Coacabang();
+        $data['coa'] = $coacabang->getCoacabang()->get();
+
+
+        return view('keuangan.kaskecil.edit', $data);
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        $id = Crypt::decrypt($id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        DB::beginTransaction();
+        try {
+
+            $kaskecil = Kaskecil::where('keuangan_kaskecil.id', $id)
+                ->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id')
+                ->first();
+            $cektutuplaporankaskecil = cektutupLaporan($kaskecil->tanggal, "kaskecil");
+            if ($cektutuplaporankaskecil > 0) {
+                return Redirect::back()->with(['warning' => 'Laporan sudah tutup']);
+            }
+
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "kaskecil");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(['warning' => 'Laporan sudah tutup']);
+            }
+
+
+            if (empty($kaskecil->kode_klaim)) {
+                $kaskecil->update([
+                    'kode_cabang' => $kode_cabang,
+                    'no_bukti' => $request->no_bukti,
+                    'tanggal' => $request->tanggal,
+                    'keterangan' => $request->keterangan,
+                    'debet_kredit' => $request->debet_kredit,
+                    'kode_akun' => $request->kode_akun,
+                    'jumlah' => toNumber($request->jumlah),
+                ]);
+            } else {
+                $kaskecil->update([
+
+
+                    'tanggal' => $request->tanggal,
+                    'keterangan' => $request->keterangan,
+                    'kode_akun' => $request->kode_akun,
+
+                ]);
+            }
+
+
+
+            $cekCostratio = Kaskecilcostratio::where('id', $id)->first();
+
+            $cekAkun = substr($request->kode_akun, 0, 3);
+            //Inseert Cost Ratio
+            if ($request->debet_kredit == 'D' and in_array($cekAkun, ['6-1', '6-2'])) {
+                if (!$cekCostratio) {
+                    $lastcostratio = Costratio::select('kode_cr')
+                        ->whereRaw('LEFT(kode_cr,6) ="CR' . date('my', strtotime($request->tanggal)) . '"')
+                        ->orderBy('kode_cr', 'desc')
+                        ->first();
+                    $last_kode_cr = $lastcostratio ? $lastcostratio->kode_cr : '';
+
+                    $kode_cr = buatkode($last_kode_cr, "CR" . date('my', strtotime($request->tanggal)), 4);
+                    Costratio::create([
+                        'kode_cr' => $kode_cr,
+                        'tanggal' => $request->tanggal,
+                        'kode_akun' => $request->kode_akun,
+                        'keterangan' => $request->keterangan,
+                        'kode_cabang' => $kode_cabang,
+                        'kode_sumber' => 1,
+                        'jumlah' => toNumber($request->jumlah),
+                    ]);
+
+                    Kaskecilcostratio::create([
+                        'kode_cr' => $kode_cr,
+                        'id' => $kaskecil->id,
+                    ]);
+                } else {
+                    Costratio::where('kode_cr', $cekCostratio->kode_cr)->update([
+                        'kode_akun' => $request->kode_akun,
+                        'keterangan' => $request->keterangan,
+                        'kode_cabang' => $kode_cabang,
+                        'jumlah' => toNumber($request->jumlah),
+                    ]);
+                }
+            } else {
+                if ($cekCostratio) {
+                    Costratio::where('kode_cr', $cekCostratio->kode_cr)->delete();
+                }
+            }
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 
     public function destroy($id)
     {

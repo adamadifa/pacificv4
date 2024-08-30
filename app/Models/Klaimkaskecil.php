@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Detailklaimkaskecil extends Model
+class Klaimkaskecil extends Model
 {
     use HasFactory;
-    protected $table = "keuangan_kaskecil_klaim_detail";
+    protected $table = "keuangan_kaskecil_klaim";
+    protected $primaryKey = "kode_klaim";
     protected $guarded = [];
+    public $incrementing = false;
 }
