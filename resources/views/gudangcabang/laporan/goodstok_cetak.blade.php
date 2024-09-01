@@ -160,7 +160,7 @@
 
                             $saldo_akhir_jumlah = $saldo_akhir_jumlah + $jml_penerimaan - $jml_pengeluaran;
                             $saldo_akhir_real = $saldo_akhir_real + $jml_penerimaan - $jml_pengeluaran;
-                            $saldo_akhir_real = $saldo_akhir_jumlah;
+                            // $saldo_akhir_real = $saldo_akhir_jumlah;
                             $saldo_akhir_jumlah = $saldo_akhir_jumlah < 0 ? $saldo_akhir_jumlah * -1 : $saldo_akhir_jumlah;
                             $saldo_akhir_desimal = $saldo_akhir_real / $d->isi_pcs_dus;
 
