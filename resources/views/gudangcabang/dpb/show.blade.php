@@ -366,20 +366,31 @@
                         isi_pcs_pack: isi_pcs_pack
                     },
                     success: function(respond) {
-                        const msg = respond.split("|");
-                        console.log(msg);
-                        Swal.fire({
-                            title: msg[2],
-                            text: msg[1],
-                            icon: msg[0],
-                            didClose: (e) => {
-                                if (msg[0] == "success") {
+                        if (respond.status == 'success') {
+                            Swal.fire({
+                                title: "Success!",
+                                text: respond.message,
+                                icon: "success",
+                                showConfirmButton: true,
+                                didClose: (e) => {
                                     getmutasidpb();
                                     getdetailmutasidpb();
                                     $("#modalMutasi").modal("hide");
-                                }
-                            },
-                        });
+                                },
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Oops!",
+                                text: respond.message,
+                                icon: "error",
+                                showConfirmButton: true,
+                                didClose: (e) => {
+                                    getmutasidpb();
+                                    getdetailmutasidpb();
+                                    $(this).find("#submitMutasiDpb").prop('disabled', false);
+                                },
+                            });
+                        }
 
 
                     }

@@ -133,12 +133,12 @@ class MutasidpbController extends Controller
 
                 Detailmutasigudangcabang::insert($detail);
                 DB::commit();
-                return "success|Data Berhasil Disimpan|Berhasil";
+                return response()->json(['status' => 'success', 'message' => 'Data Berhasilimpan']);
             }
         } catch (\Exception $e) {
             // dd($e);
             DB::rollBack();
-            return "error|" . $e->getMessage() . "|Error";
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 
