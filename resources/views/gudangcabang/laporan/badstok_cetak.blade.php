@@ -129,7 +129,8 @@
                             <td class="right">{{ formatAngkaDesimal($repack) }}</td>
                             <td class="right">{{ formatAngkaDesimal($penyesuaian_out) }}</td>
                             <td class="right {{ $color_sa }}">
-                                {{ !empty($saldo_akhir_jumlah) ? formatAngkaDesimal($saldo_akhir_desimal) : '' }} ({{ $saldo_akhir_jumlah }})
+                                {{ !empty($saldo_akhir_jumlah) ? formatAngkaDesimal($saldo_akhir_desimal) : '' }} ({{ $saldo_akhir_jumlah }}) +
+                                ({{ $jml_penerimaan }}) - ({{ $jml_pengeluaran }})
                             </td>
                             <td class="right {{ $color_sa }}">{{ formatAngka($saldo_akhir_dus) }}</td>
                             <td class="right {{ $color_sa }}">{{ formatAngka($saldo_akhir_pack) }}</td>
