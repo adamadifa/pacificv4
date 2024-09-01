@@ -117,37 +117,52 @@ class HargaController extends Controller
 
     public function update(Request $request, $kode_harga)
     {
+        $user = User::findorFail(auth()->user()->id);
         $kode_harga = Crypt::decrypt($kode_harga);
         $request->validate([
 
-            'kode_produk' => 'required',
+            'kode_produk' => $user->hasRole('super admin') ? 'required' : '',
             'harga_dus' => 'required',
             'harga_pack' => 'required',
             'harga_pcs' => 'required',
             'harga_retur_dus' => 'required',
             'harga_retur_pack' => 'required',
             'harga_retur_pcs' => 'required',
-            'status_aktif_harga' => 'required',
-            'status_promo' => 'required',
-            'kode_kategori_salesman' => 'required',
-            'kode_cabang' => 'required'
+            'status_aktif_harga' => $user->hasRole('super admin') ? 'required' : '',
+            'status_promo' => $user->hasRole('super admin') ? 'required' : '',
+            'kode_kategori_salesman' => $user->hasRole('super admin') ? 'required' : '',
+            'kode_cabang' => $user->hasRole('super admin') ? 'required' : '',
         ]);
 
         try {
-            Harga::where('kode_harga', $kode_harga)->update([
-                'kode_produk' => $request->kode_produk,
-                'harga_dus' =>  toNumber($request->harga_dus),
-                'harga_pack' => toNumber($request->harga_pack),
-                'harga_pcs' => toNumber($request->harga_pcs),
-                'harga_retur_dus' => toNumber($request->harga_retur_dus),
-                'harga_retur_pack' => toNumber($request->harga_retur_pack),
-                'harga_retur_pcs' => toNumber($request->harga_retur_pcs),
-                'status_aktif_harga' => $request->status_aktif_harga,
-                'status_promo' => $request->status_promo,
-                'status_ppn' => $request->status_ppn,
-                'kode_kategori_salesman' => $request->kode_kategori_salesman,
-                'kode_cabang' => $request->kode_cabang,
-            ]);
+            if ($user->hasRole('super admin')) {
+                Harga::where('kode_harga', $kode_harga)->update([
+                    'kode_produk' => $request->kode_produk,
+                    'harga_dus' =>  toNumber($request->harga_dus),
+                    'harga_pack' => toNumber($request->harga_pack),
+                    'harga_pcs' => toNumber($request->harga_pcs),
+                    'harga_retur_dus' => toNumber($request->harga_retur_dus),
+                    'harga_retur_pack' => toNumber($request->harga_retur_pack),
+                    'harga_retur_pcs' => toNumber($request->harga_retur_pcs),
+                    'status_aktif_harga' => $request->status_aktif_harga,
+                    'status_promo' => $request->status_promo,
+                    'status_ppn' => $request->status_ppn,
+                    'kode_kategori_salesman' => $request->kode_kategori_salesman,
+                    'kode_cabang' => $request->kode_cabang,
+                ]);
+            } else {
+                Harga::where('kode_harga', $kode_harga)->update([
+
+                    'harga_dus' =>  toNumber($request->harga_dus),
+                    'harga_pack' => toNumber($request->harga_pack),
+                    'harga_pcs' => toNumber($request->harga_pcs),
+                    'harga_retur_dus' => toNumber($request->harga_retur_dus),
+                    'harga_retur_pack' => toNumber($request->harga_retur_pack),
+                    'harga_retur_pcs' => toNumber($request->harga_retur_pcs),
+
+                ]);
+            }
+
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
