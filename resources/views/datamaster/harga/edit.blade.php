@@ -46,22 +46,25 @@
             <option value="EX" {{ $harga->status_ppn === 'EX' ? 'selected' : '' }}>EXCLUDE</option>
         </select>
     </div>
-    <div class="form-group mb-3">
-        <select name="status_promo" id="status_promo" class="form-select">
-            <option value="">Status Promo</option>
-            <option value="1" {{ $harga->status_promo === '1' ? 'selected' : '' }}>Aktif</option>
-            <option value="0" {{ $harga->status_promo === '0' ? 'selected' : '' }}>Non Aktif</option>
-        </select>
-    </div>
-
+    @hasanyrole('super admin')
+        <div class="form-group mb-3">
+            <select name="status_promo" id="status_promo" class="form-select">
+                <option value="">Status Promo</option>
+                <option value="1" {{ $harga->status_promo === '1' ? 'selected' : '' }}>Aktif</option>
+                <option value="0" {{ $harga->status_promo === '0' ? 'selected' : '' }}>Non Aktif</option>
+            </select>
+        </div>
+    @endhasanyrole
     <x-select label="Kategori" name="kode_kategori_salesman" :data="$kategori_salesman" key="kode_kategori_salesman" textShow="nama_kategori_salesman"
         selected="{{ $harga->kode_kategori_salesman }}" />
     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" selected="{{ $harga->kode_cabang }}" />
-    <div class="form-group mb-3">
-        <select name="kode_pelanggan" id="kode_pelanggan" class="form-select">
-            <option value="">Kode Pelanggan</option>
-        </select>
-    </div>
+    @hasanyrole('super admin')
+        <div class="form-group mb-3">
+            <select name="kode_pelanggan" id="kode_pelanggan" class="form-select">
+                <option value="">Kode Pelanggan</option>
+            </select>
+        </div>
+    @endhasanyrole
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
