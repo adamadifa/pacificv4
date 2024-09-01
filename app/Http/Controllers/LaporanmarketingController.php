@@ -3206,7 +3206,6 @@ class LaporanmarketingController extends Controller
     {
 
         $request->validate([
-            'kode_cabang' => 'required',
             'kode_salesman' => 'required',
             'tanggal' => 'required'
         ]);
