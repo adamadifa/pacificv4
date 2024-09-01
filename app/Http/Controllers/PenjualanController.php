@@ -845,7 +845,7 @@ class PenjualanController extends Controller
                 $subtotal = ($jml_dus * $harga_dus) + ($jml_pack * $harga_pack) + ($jml_pcs * $harga_pcs);
                 $total_bruto += $subtotal;
                 $detail[] = [
-                    'no_faktur' => $no_faktur,
+                    'no_faktur' => $request->no_faktur,
                     'kode_harga' => $kode_harga[$i],
                     'jumlah' => $jumlah[$i],
                     'harga_dus' => $harga_dus,
@@ -880,7 +880,10 @@ class PenjualanController extends Controller
                 ->first();
             $last_no_bukti = $lastbayar != null ? $lastbayar->no_bukti : '';
             $no_bukti  = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
-            //Update Penjualan
+
+            //Hapus Detail Penjualan Sebelmnya
+            Detailpenjualan::where('no_faktur', $no_faktur)->delete();
+
             Penjualan::where('no_faktur', $no_faktur)->update([
                 'no_faktur' => $request->no_faktur,
                 'tanggal' => $request->tanggal,
@@ -906,8 +909,7 @@ class PenjualanController extends Controller
                 'id_user' => auth()->user()->id
             ]);
 
-            //Hapus Detail Penjualan Sebelmnya
-            Detailpenjualan::where('no_faktur', $request->no_faktur)->delete();
+
             Detailpenjualan::insert($detail);
 
             $retur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))
