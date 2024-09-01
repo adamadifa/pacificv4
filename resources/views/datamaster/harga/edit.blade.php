@@ -1,6 +1,7 @@
 <form action="{{ route('harga.update', Crypt::encrypt($harga->kode_harga)) }}" id="formeditHarga" method="POST">
     @csrf
     @method('PUT')
+    {{ $harga->kode_produk }}
     <x-input-with-icon icon="ti ti-barcode" label="Kode Harga" name="kode_harga" value="{{ $harga->kode_harga }}" disabled="true" />
     <x-select label="Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk" selected="{{ $harga->kode_produk }}"
         upperCase="true" />
