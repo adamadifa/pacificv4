@@ -1,7 +1,7 @@
 <form action="{{ route('harga.update', Crypt::encrypt($harga->kode_harga)) }}" id="formeditHarga" method="POST">
     @csrf
     @method('PUT')
-    {{ $harga->kode_produk }}
+    {{-- {{ $harga->kode_produk }} --}}
     <x-input-with-icon icon="ti ti-barcode" label="Kode Harga" name="kode_harga" value="{{ $harga->kode_harga }}" disabled="true" />
     <x-select label="Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk" selected="{{ $harga->kode_produk }}"
         upperCase="true" />
@@ -40,13 +40,15 @@
             <option value="0" {{ $harga->status_aktif_harga === '0' ? 'selected' : '' }}>Non Aktif</option>
         </select>
     </div>
-    <div class="form-group mb-3">
-        <select name="status_ppn" id="status_ppn" class="form-select">
-            <option value="">Status PPN</option>
-            <option value="IN" {{ $harga->status_ppn === 'IN' ? 'selected' : '' }}>INCLUDE</option>
-            <option value="EX" {{ $harga->status_ppn === 'EX' ? 'selected' : '' }}>EXCLUDE</option>
-        </select>
-    </div>
+    @hasanyrole('super admin')
+        <div class="form-group mb-3">
+            <select name="status_ppn" id="status_ppn" class="form-select">
+                <option value="">Status PPN</option>
+                <option value="IN" {{ $harga->status_ppn === 'IN' ? 'selected' : '' }}>INCLUDE</option>
+                <option value="EX" {{ $harga->status_ppn === 'EX' ? 'selected' : '' }}>EXCLUDE</option>
+            </select>
+        </div>
+    @endhasanyrole
     @hasanyrole('super admin')
         <div class="form-group mb-3">
             <select name="status_promo" id="status_promo" class="form-select">
