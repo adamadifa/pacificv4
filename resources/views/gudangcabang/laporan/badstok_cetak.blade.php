@@ -92,6 +92,7 @@
 
                             $jml_penerimaan = $d->reject_pasar + $d->reject_mobil + $d->reject_gudang + $d->penyesuaian_bad_in;
                             $jml_pengeluaran = $d->kirim_pusat + $d->repack + $d->penyesuaian_bad_out;
+                            echo $saldo_akhir_jumlah . '+' . $jml_penerimaan . '-' . $jml_pengeluaran;
                             $saldo_akhir_jumlah = $saldo_akhir_jumlah + $jml_penerimaan - $jml_pengeluaran;
                             $saldo_akhir_real = $saldo_akhir_jumlah;
                             $saldo_akhir_jumlah = $saldo_akhir_jumlah < 0 ? $saldo_akhir_jumlah * -1 : $saldo_akhir_jumlah;
@@ -129,8 +130,7 @@
                             <td class="right">{{ formatAngkaDesimal($repack) }}</td>
                             <td class="right">{{ formatAngkaDesimal($penyesuaian_out) }}</td>
                             <td class="right {{ $color_sa }}">
-                                {{ !empty($saldo_akhir_jumlah) ? formatAngkaDesimal($saldo_akhir_desimal) : '' }} ({{ $saldo_akhir_jumlah }}) +
-                                ({{ $jml_penerimaan }}) - ({{ $jml_pengeluaran }})
+                                {{ !empty($saldo_akhir_jumlah) ? formatAngkaDesimal($saldo_akhir_desimal) : '' }}
                             </td>
                             <td class="right {{ $color_sa }}">{{ formatAngka($saldo_akhir_dus) }}</td>
                             <td class="right {{ $color_sa }}">{{ formatAngka($saldo_akhir_pack) }}</td>
