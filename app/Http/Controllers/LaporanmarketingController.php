@@ -2032,7 +2032,9 @@ class LaporanmarketingController extends Controller
             'kode_kendaraan',
             DB::raw('count(no_dpb) as jml_ambil')
         );
+        $qkendaraan->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman');
         $qkendaraan->where('kode_kendaraan', $request->kode_kendaraan);
+        $qkendaraan->where('salesman.kode_cabang', $kode_cabang);
         $qkendaraan->wherebetween('tanggal_ambil', [$request->dari, $request->sampai]);
         $qkendaraan->groupBy('tanggal_ambil', 'kode_kendaraan');
         $qkendaraan->orderBy('tanggal_ambil');
