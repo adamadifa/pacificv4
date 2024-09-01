@@ -2037,7 +2037,7 @@ class LaporanmarketingController extends Controller
         $qkendaraan->where('salesman.kode_cabang', $kode_cabang);
         $qkendaraan->wherebetween('tanggal_ambil', [$request->dari, $request->sampai]);
         $qkendaraan->groupBy('tanggal_ambil', 'kode_kendaraan');
-        $qkendaraan->orderBy('tanggal_ambil');
+        $qkendaraan->orderBy('gudang_cabang_dpb_detail.kode_produk');
 
 
 
