@@ -171,7 +171,7 @@ class DpbController extends Controller
                     'keterangan' => 0
                 ];
 
-                if (!empty($driver)) {
+                if (!empty($request->kode_driver)) {
                     $driverhelper[] = $driver;
                 }
 
@@ -214,7 +214,9 @@ class DpbController extends Controller
 
                 // dd($driverhelper);
                 //Simpan Driver Helper
-                Dpbdriverhelper::insert($driverhelper);
+                if (!empty($driverhelper)) {
+                    Dpbdriverhelper::insert($driverhelper);
+                }
 
                 DB::commit();
                 return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
