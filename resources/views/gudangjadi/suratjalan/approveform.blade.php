@@ -1,5 +1,4 @@
-<form action="{{ route('suratjalan.approve', Crypt::encrypt($surat_jalan->no_mutasi)) }}" method="post"
-    id="formApprovesuratjalan">
+<form action="{{ route('suratjalan.approve', Crypt::encrypt($surat_jalan->no_mutasi)) }}" method="post" id="formApprovesuratjalan">
     @csrf
     <input type="hidden" id="cektutuplaporan">
     <div class="row mb-3">
@@ -69,8 +68,7 @@
             <option value="2">Transit Out</option>
         </select>
     </div>
-    <x-input-with-icon label="Tanggal Diterima / Transit Out" name="tanggal" icon="ti ti-calendar"
-        datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal Diterima / Transit Out" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
     <div class="form-group mb-3" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
@@ -109,6 +107,16 @@
         $("#tanggal").change(function(e) {
             cektutuplaporan($(this).val(), "gudangcabang");
         });
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..
+         `);
+        }
         form.submit(function() {
             const status = form.find("#status").val();
             const tanggal = form.find("#tanggal").val();
@@ -142,6 +150,8 @@
             } else if (cektutuplaporan === '1') {
                 Swal.fire("Oops!", "Laporan Untuk Periode Ini Sudah Ditutup", "warning");
                 return false;
+            } else {
+                buttonDisable();
             }
         });
     });
