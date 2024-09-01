@@ -946,6 +946,8 @@
             } else if ($('#loadproduk tr').length == 0) {
                 SwalWarning('nama_produk', 'Detail Produk Tidak Boleh Kosong');
                 return false;
+            } else {
+                buttonDisable();
             }
         });
 

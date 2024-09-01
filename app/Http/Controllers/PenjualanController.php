@@ -1002,14 +1002,14 @@ class PenjualanController extends Controller
             DB::commit();
 
             if ($user->hasRole('salesman')) {
-                return redirect(route('sfa.showpenjualan', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+                return redirect(route('sfa.showpenjualan', Crypt::encrypt($request->no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
             } else {
-                return redirect(route('penjualan.show', Crypt::encrypt($no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
+                return redirect(route('penjualan.show', Crypt::encrypt($request->no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
             }
         } catch (\Exception $e) {
             DB::rollback();
             if ($user->hasRole('salesman')) {
-                return redirect(route('sfa.showpenjualan', Crypt::encrypt($no_faktur)))->with(messageError($e->getMessage()));
+                return redirect(route('sfa.showpenjualan', Crypt::encrypt($request->no_faktur)))->with(messageError($e->getMessage()));
             } else {
                 return Redirect::back()->with(messageError($e->getMessage()));
             }
