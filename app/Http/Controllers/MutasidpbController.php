@@ -275,7 +275,7 @@ class MutasidpbController extends Controller
 
 
             if (empty($detail)) {
-                return  "warning|Data Masih Kosong|Error";
+                return response()->json(['status' => 'error', 'message' => 'Produk Tidak Boleh Kosong !']);
             } else {
 
                 Detailmutasigudangcabang::where('no_mutasi', $no_mutasi)->delete();
@@ -291,12 +291,12 @@ class MutasidpbController extends Controller
 
                 Detailmutasigudangcabang::insert($detail);
                 DB::commit();
-                return "success|Data Berhasil Disimpan|Berhasil";
+                return response()->json(['status' => 'success', 'message' => 'Data Berhasil Disimpan']);
             }
         } catch (\Exception $e) {
             dd($e);
             DB::rollBack();
-            return "error|" . $e->getMessage() . "|Error";
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
     public function show($no_mutasi)
