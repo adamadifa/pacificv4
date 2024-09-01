@@ -23,7 +23,7 @@
                 <select name="kode_akun_dari" id="kode_akun_dari" class="form-select select2Kodeakundari">
                     <option value="">Semua Akun</option>
                     @foreach ($coa as $d)
-                        <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ $d->nama_akun }}</option>
+                        <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ truncateText($d->nama_akun) }}</option>
                     @endforeach
                 </select>
             </div>
@@ -33,7 +33,7 @@
                 <select name="kode_akun_sampai" id="kode_akun_sampai" class="form-select select2Kodeakunsampai">
                     <option value="">Semua Akun</option>
                     @foreach ($coa as $d)
-                        <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ $d->nama_akun }}</option>
+                        <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ truncateText($d->nama_akun) }}</option>
                     @endforeach
                 </select>
             </div>

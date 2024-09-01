@@ -615,3 +615,13 @@ function hitungJarak($lat1, $lon1, $lat2, $lon2)
 
     return $jarak; // Hasil dalam meter
 }
+
+
+function truncateText($text, $wordLimit = 4)
+{
+    $words = explode(' ', $text); // Memisahkan teks menjadi array kata
+    if (count($words) > $wordLimit) {
+        return implode(' ', array_slice($words, 0, $wordLimit)) . '...';
+    }
+    return $text; // Jika jumlah kata tidak lebih dari batas, kembalikan teks asli
+}

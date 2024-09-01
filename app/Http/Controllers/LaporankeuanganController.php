@@ -12,6 +12,7 @@ use App\Models\Detailgiro;
 use App\Models\Giro;
 use App\Models\Karyawan;
 use App\Models\Kasbon;
+use App\Models\Kaskecil;
 use App\Models\Kuranglebihsetor;
 use App\Models\Ledger;
 use App\Models\Ledgersetoranpusat;
@@ -1757,5 +1758,106 @@ class LaporankeuanganController extends Controller
         $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_kartupiutangkaryawan)->first();
         $data['departemen'] = Departemen::where('kode_dept', $request->kode_dept_kartupiutangkaryawan)->first();
         return view('keuangan.laporan.kartupiutangkaryawan_cetak', $data);
+    }
+
+    public function cetakkaskecil(Request $request)
+    {
+
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $awal_kas_kecil = '2019-04-30';
+        $sehariSebelumDari = date('Y-m-d', strtotime('-1 day', strtotime($request->dari)));
+
+        $qsaldoawal = Kaskecil::query();
+        $qsaldoawal->selectRaw("SUM(IF( `debet_kredit` = 'K', jumlah, 0)) -SUM(IF( `debet_kredit` = 'D', jumlah, 0)) as saldo_awal");
+        $qsaldoawal->whereBetween('tanggal', [$awal_kas_kecil, $sehariSebelumDari]);
+        $qsaldoawal->where('kode_cabang', $request->kode_cabang);
+        $saldoawal = $qsaldoawal->first();
+
+
+        if ($request->formatlaporan == '1') {
+            $query = Kaskecil::query();
+            $query->select('keuangan_kaskecil.*', 'nama_akun', 'kode_klaim');
+            $query->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
+            $query->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id');
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('kode_cabang', $request->kode_cabang);
+                } else {
+                    $query->where('kode_cabang', auth()->user()->kode_cabang);
+                }
+            } else {
+                $query->where('kode_cabang', $request->kode_cabang);
+            }
+
+
+
+            $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+            $query->orderBy('tanggal');
+            $query->orderBy('debet_kredit', 'desc');
+            $query->orderBy('no_bukti');
+            $kaskecil = $query->get();
+
+
+
+            $data['saldoawal'] = $saldoawal;
+            $data['kaskecil'] = $kaskecil;
+            $data['dari'] = $request->dari;
+            $data['sampai'] = $request->sampai;
+            $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Kas Kecil $request->dari-$request->sampai.xls");
+            }
+            return view('keuangan.laporan.kaskecil_cetak', $data);
+        } else {
+
+            $query = Kaskecil::query();
+            $query->select(
+                'keuangan_kaskecil.kode_akun',
+                'nama_akun',
+                DB::raw("SUM(IF('D' = debet_kredit, jumlah, 0)) as pengeluaran"),
+                DB::raw("SUM(IF('K' = debet_kredit, jumlah, 0)) as penerimaan"),
+            );
+            $query->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
+            $query->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id');
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('kode_cabang', $request->kode_cabang);
+                } else {
+                    $query->where('kode_cabang', auth()->user()->kode_cabang);
+                }
+            } else {
+                $query->where('kode_cabang', $request->kode_cabang);
+            }
+
+
+
+            $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+            $query->groupBy('keuangan_kaskecil.kode_akun', 'nama_akun');
+            $query->orderBy('keuangan_kaskecil.kode_akun');
+            $kaskecil = $query->get();
+
+
+
+            $data['saldoawal'] = $saldoawal;
+            $data['kaskecil'] = $kaskecil;
+            $data['dari'] = $request->dari;
+            $data['sampai'] = $request->sampai;
+            $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Kas Kecil $request->dari-$request->sampai.xls");
+            }
+            return view('keuangan.laporan.kaskecil_rekap_cetak', $data);
+        }
     }
 }

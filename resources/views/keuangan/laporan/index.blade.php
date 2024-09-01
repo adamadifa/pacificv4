@@ -14,7 +14,7 @@
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#kaskecil"
                             aria-controls="kaskecil" aria-selected="false" tabindex="-1">
-                            Kaskecil
+                            Kas Kecil
                         </button>
                     </li>
                 @endcan
