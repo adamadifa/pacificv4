@@ -251,7 +251,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <button class="btn btn-primary w-100"><i class="ti ti-send me-1"></i>Submit</button>
+            <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
         </div>
     </div>
 </form>
