@@ -112,7 +112,7 @@
                                                 <td>{{ DateToIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nama_pelanggan }}</td>
                                                 <td class="text-end">{{ formatAngka($d->limit_pelanggan) }}</td>
-                                                <td class="text-end">{{ formatAngka($d->jumlah_faktur) }}</td>
+                                                <td class="text-center">{{ formatAngka($d->jumlah_faktur) }}</td>
                                                 <td class="text-center">
                                                     @if ($d->siklus_pembayaran == '1')
                                                         <i class="ti ti-square-rounded-check text-success"></i>
