@@ -7,7 +7,7 @@
     <title>Laporan Penjualan {{ date('Y-m-d H:i:s') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
-    <script src="{{ asset('assets/vendor/libs/freeze/js/freeze-table.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/js/freeze-table.js') }}"></script>
     <style>
         .freeze-table {
             height: auto;
