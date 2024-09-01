@@ -111,7 +111,7 @@
                             $retur = $d->retur / $d->isi_pcs_dus;
                             //Lain Lain IN
                             if ($d->jenis_mutasi == 'HK') {
-                                $jml_lainlain_in = $d->hutangkirim;
+                                $jml_lainlain_in = $d->hutang_kirim;
                             } elseif ($d->jenis_mutasi == 'PT') {
                                 $jml_lainlain_in = $d->pelunasan_ttr;
                             } elseif ($d->jenis_mutasi == 'PB') {
