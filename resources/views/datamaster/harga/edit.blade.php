@@ -61,7 +61,8 @@
             </div>
         @endhasanyrole
         <x-select label="Kategori" name="kode_kategori_salesman" :data="$kategori_salesman" key="kode_kategori_salesman" textShow="nama_kategori_salesman"
-            selected="{{ $harga->kode_kategori_salesman }}" upperCase="true" disabled="{{ !$user->hasRole('super admin') ? 'disabled' : '' }}" />
+            selected="{{ $harga->kode_kategori_salesman }}" upperCase="true"
+            disabled="{{ !auth()->user()->hasRole('super admin') ? 'disabled' : '' }}" />
         @hasanyrole('super admin')
             <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" selected="{{ $harga->kode_cabang }}"
                 select2="select2Kodecabang" />
