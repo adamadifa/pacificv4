@@ -1103,7 +1103,7 @@ class LaporanmarketingController extends Controller
                 if ($user->hasRole('regional sales manager')) {
                     $query->where('salesman.kode_cabang', $request->kode_cabang);
                 } else {
-                    $query->where('cabang.kode_cabang', $user->kode_cabang);
+                    $query->where('salesman.kode_cabang', $user->kode_cabang);
                 }
             } else {
                 $query->where('salesman.kode_cabang', $request->kode_cabang);
