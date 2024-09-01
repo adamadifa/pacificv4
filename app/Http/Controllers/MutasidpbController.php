@@ -117,7 +117,7 @@ class MutasidpbController extends Controller
 
 
             if (empty($detail)) {
-                return  "warning|Data Masih Kosong|Error";
+                return response()->json(['status' => 'error', 'message' => 'Data Masih Kosong']);
             } else {
                 Mutasigudangcabang::create([
                     'no_mutasi'  => $no_mutasi,
