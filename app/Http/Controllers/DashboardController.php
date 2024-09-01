@@ -59,41 +59,41 @@ class DashboardController extends Controller
     function salesman()
     {
         $hariini = date('Y-m-d');
-        // $data['penjualan'] = Penjualan::select()
-        //     ->select(
-        //         DB::raw("SUM(bruto - potongan - penyesuaian - potongan_istimewa + ppn) as total")
-        //     )
-        //     ->leftJoin(
-        //         DB::raw("(
-        //         SELECT
-        //             marketing_penjualan_detail.no_faktur,
-        //             SUM(subtotal) as bruto
-        //         FROM
-        //             marketing_penjualan_detail
-        //         GROUP BY no_faktur
-        //     ) detailpenjualan"),
-        //         function ($join) {
-        //             $join->on('marketing_penjualan.no_faktur', '=', 'detailpenjualan.no_faktur');
-        //         }
-        //     )
-        //     ->where('marketing_penjualan.kode_salesman', auth()->user()->kode_salesman)
-        //     ->where('marketing_penjualan.tanggal', $hariini)
-        //     ->where('marketing_penjualan.status_batal', 0)
-        //     ->first();
+        $data['penjualan'] = Penjualan::select()
+            ->select(
+                DB::raw("SUM(bruto - potongan - penyesuaian - potongan_istimewa + ppn) as total")
+            )
+            ->leftJoin(
+                DB::raw("(
+                SELECT
+                    marketing_penjualan_detail.no_faktur,
+                    SUM(subtotal) as bruto
+                FROM
+                    marketing_penjualan_detail
+                GROUP BY no_faktur
+            ) detailpenjualan"),
+                function ($join) {
+                    $join->on('marketing_penjualan.no_faktur', '=', 'detailpenjualan.no_faktur');
+                }
+            )
+            ->where('marketing_penjualan.kode_salesman', auth()->user()->kode_salesman)
+            ->where('marketing_penjualan.tanggal', $hariini)
+            ->where('marketing_penjualan.status_batal', 0)
+            ->first();
 
-        // $data['pembayaran'] = Historibayarpenjualan::select(
-        //     DB::raw("SUM(jumlah) as total")
-        // )
-        //     ->join('marketing_penjualan', 'marketing_penjualan.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur')
-        //     ->where('marketing_penjualan_historibayar.tanggal', $hariini)
-        //     ->where('marketing_penjualan_historibayar.kode_salesman', auth()->user()->kode_salesman)
-        //     ->where('status_batal', 0)
-        //     ->first();
+        $data['pembayaran'] = Historibayarpenjualan::select(
+            DB::raw("SUM(jumlah) as total")
+        )
+            ->join('marketing_penjualan', 'marketing_penjualan.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur')
+            ->where('marketing_penjualan_historibayar.tanggal', $hariini)
+            ->where('marketing_penjualan_historibayar.kode_salesman', auth()->user()->kode_salesman)
+            ->where('status_batal', 0)
+            ->first();
 
-        // $data['jmltransaksi'] = Penjualan::where('tanggal', $hariini)
-        //     ->where('kode_salesman', auth()->user()->kode_salesman)
-        //     ->where('status_batal', 0)
-        //     ->count();
+        $data['jmltransaksi'] = Penjualan::where('tanggal', $hariini)
+            ->where('kode_salesman', auth()->user()->kode_salesman)
+            ->where('status_batal', 0)
+            ->count();
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
         return view('dashboard.salesman', $data);
