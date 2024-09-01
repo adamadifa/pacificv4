@@ -1458,7 +1458,7 @@ class LaporanmarketingController extends Controller
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->tanggal'
+                WHERE tanggal <= '$request->dari'
                 GROUP BY
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru,
