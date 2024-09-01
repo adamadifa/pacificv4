@@ -20,6 +20,7 @@ use App\Models\Salesman;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class LaporanmarketingController extends Controller
 {
@@ -3210,6 +3211,10 @@ class LaporanmarketingController extends Controller
             'tanggal' => 'required'
         ]);
 
+        if (lockreport($request->tanggal) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+
         $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
@@ -3345,8 +3350,8 @@ class LaporanmarketingController extends Controller
             ->get();
         $data['detailproduk'] = $detailproduk;
         $data['lhp'] = $lhp;
-        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        $data['cabang'] = Cabang::where('kode_cabang', $data['salesman']->kode_cabang)->first();
         $data['tanggal'] = $request->tanggal;
         $data['produk'] = $produk;
         return view('marketing.laporan.lhp_cetak', $data);
