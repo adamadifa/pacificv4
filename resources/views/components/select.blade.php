@@ -1,4 +1,15 @@
-@props(['name', 'label', 'data', 'key', 'textShow', 'selected' => '', 'upperCase' => false, 'select2' => '', 'showKey' => false, 'disabled' => false])
+@props([
+    'name',
+    'label',
+    'data',
+    'key',
+    'textShow',
+    'selected' => '',
+    'upperCase' => false,
+    'select2' => '',
+    'showKey' => false,
+    'disabled' => false,
+])
 
 
 
