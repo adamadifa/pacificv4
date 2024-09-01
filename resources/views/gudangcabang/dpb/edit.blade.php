@@ -606,7 +606,15 @@
         });
 
         //   form.find("#no_dpb").mask("00000");
-
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..
+         `);
+        }
         form.submit(function() {
             const no_dpb = form.find("#no_dpb").val();
             const tanggal_ambil = form.find("#tanggal_ambil").val();
@@ -768,6 +776,8 @@
                     },
                 });
                 return false;
+            } else {
+                buttonDisable();
             }
         });
 
