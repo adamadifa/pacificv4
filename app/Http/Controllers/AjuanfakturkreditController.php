@@ -125,7 +125,7 @@ class AjuanfakturkreditController extends Controller
 
 
         // dd($query->get());
-        $ajuanfaktur = $query->cursorPaginate(15);
+        $ajuanfaktur = $query->paginate(15);
         $ajuanfaktur->appends(request()->all());
         $data['ajuanfaktur'] = $ajuanfaktur;
 
