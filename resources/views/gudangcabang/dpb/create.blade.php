@@ -102,7 +102,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <button class="btn btn-primary w-100"><i class="ti ti-send me-1"></i>Submit</button>
+            <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
         </div>
     </div>
 </form>
@@ -110,6 +110,17 @@
     $(function() {
         $(".money").maskMoney();
         const form = $("#formDPB");
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..
+         `);
+        }
+
 
         $(".flatpickr-date").flatpickr({
             enable: [{
@@ -393,6 +404,8 @@
                 });
 
                 return false;
+            } else {
+                buttonDisable();
             }
             // else if (kode_driver == "") {
             //     Swal.fire({
