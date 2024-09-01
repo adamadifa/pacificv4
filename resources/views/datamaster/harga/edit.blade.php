@@ -33,13 +33,15 @@
                 value="{{ formatRupiah($harga->harga_retur_pcs) }}" />
         </div>
     </div>
-    <div class="form-group mb-3">
-        <select name="status_aktif_harga" id="status_aktif_harga" class="form-select">
-            <option value="">Status</option>
-            <option value="1" {{ $harga->status_aktif_harga === '1' ? 'selected' : '' }}>Aktif</option>
-            <option value="0" {{ $harga->status_aktif_harga === '0' ? 'selected' : '' }}>Non Aktif</option>
-        </select>
-    </div>
+    @hasanyrole('super admin')
+        <div class="form-group mb-3">
+            <select name="status_aktif_harga" id="status_aktif_harga" class="form-select">
+                <option value="">Status</option>
+                <option value="1" {{ $harga->status_aktif_harga === '1' ? 'selected' : '' }}>Aktif</option>
+                <option value="0" {{ $harga->status_aktif_harga === '0' ? 'selected' : '' }}>Non Aktif</option>
+            </select>
+        </div>
+    @endhasanyrole
     @hasanyrole('super admin')
         <div class="form-group mb-3">
             <select name="status_ppn" id="status_ppn" class="form-select">
