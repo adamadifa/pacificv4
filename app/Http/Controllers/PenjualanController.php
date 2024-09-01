@@ -914,16 +914,16 @@ class PenjualanController extends Controller
 
             $retur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))
                 ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
-                ->where('no_faktur', $no_faktur)
+                ->where('no_faktur', $request->no_faktur)
                 ->where('jenis_retur', 'PF')
                 ->first();
             if ($jenis_transaksi == 'T') {
-                $cekbayar = Historibayarpenjualan::where('no_faktur', $no_faktur)
+                $cekbayar = Historibayarpenjualan::where('no_faktur', $request->no_faktur)
                     ->where('voucher', 0)
                     ->where('tanggal', $request->tanggal)
                     ->orderBy('no_bukti')
                     ->first();
-                $cekvoucher = Historibayarpenjualan::where('no_faktur', $no_faktur)
+                $cekvoucher = Historibayarpenjualan::where('no_faktur', $request->no_faktur)
                     ->where('voucher', 1)
                     ->where('jenis_voucher', 2)
                     ->where('jenis_bayar', 'TN')
@@ -971,7 +971,7 @@ class PenjualanController extends Controller
                     }
                 }
             } else {
-                $cektitipan = Historibayarpenjualan::where('no_faktur', $no_faktur)
+                $cektitipan = Historibayarpenjualan::where('no_faktur', $request->no_faktur)
                     ->where('voucher', 0)
                     ->where('tanggal', $request->tanggal)
                     ->orderBy('no_bukti')
@@ -988,7 +988,7 @@ class PenjualanController extends Controller
                     if (!empty($titipan)) {
                         Historibayarpenjualan::create([
                             'no_bukti' => $no_bukti,
-                            'no_faktur' => $no_faktur,
+                            'no_faktur' => $request->no_faktur,
                             'tanggal' => $request->tanggal,
                             'jenis_bayar' => $jenis_bayar,
                             'jumlah' => $titipan,
