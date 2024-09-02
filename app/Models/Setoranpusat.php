@@ -26,7 +26,8 @@ class Setoranpusat extends Model
             DB::raw("setoran_kertas + setoran_logam + setoran_transfer + setoran_giro as total"),
             'nama_cabang',
             'keuangan_ledger.tanggal as tanggal_diterima',
-            'bank.nama_bank as nama_bank'
+            'bank.nama_bank as nama_bank',
+            'keuangan_setoranpusat_ajuantransfer.no_pengajuan'
 
             // 'ledger_transfer.tanggal as tanggal_diterima_transfer',
             // 'bank_transfer.nama_bank as nama_bank_transfer',
@@ -38,6 +39,7 @@ class Setoranpusat extends Model
         $query->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran');
         $query->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti');
         $query->leftJoin('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
+        $query->leftJoin('keuangan_setoranpusat_ajuantransfer', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_setoranpusat_ajuantransfer.kode_setoran');
 
         // $query->leftJoin('keuangan_setoranpusat_transfer', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_setoranpusat_transfer.kode_setoran');
         // $query->leftJoin('keuangan_ledger_transfer', 'keuangan_setoranpusat_transfer.kode_transfer', '=', 'keuangan_ledger_transfer.kode_transfer');

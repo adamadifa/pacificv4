@@ -127,7 +127,7 @@
                                                             @endif
                                                         @endcan
                                                         @can('setoranpusat.edit')
-                                                            @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro))
+                                                            @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro) && empty($d->no_pengajuan))
                                                                 <div>
                                                                     <a href="#" class="btnEdit me-1"
                                                                         kode_setoran="{{ Crypt::encrypt($d->kode_setoran) }}">
@@ -137,7 +137,7 @@
                                                             @endif
                                                         @endcan
                                                         @can('setoranpusat.delete')
-                                                            @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro))
+                                                            @if ($d->status == '0' && empty($d->setoran_transfer) && empty($d->setoran_giro) && empty($d->no_pengajuan))
                                                                 <div>
                                                                     <form method="POST" name="deleteform" class="deleteform me-1"
                                                                         action="{{ route('setoranpusat.delete', Crypt::encrypt($d->kode_setoran)) }}">
