@@ -265,6 +265,7 @@ class AjuanlimitkreditController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
