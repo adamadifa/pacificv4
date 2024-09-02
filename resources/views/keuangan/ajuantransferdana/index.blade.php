@@ -81,7 +81,14 @@
                                 <tbody>
                                     @foreach ($ajuantransfer as $d)
                                         <tr>
-                                            <td style="width: 10%">{{ $d->no_pengajuan }}</td>
+                                            <td style="width: 10%">
+                                                @if (!empty($d->bukti))
+                                                    <a href="{{ $d->bukti }}">{{ $d->no_pengajuan }}</a>
+                                                @else
+                                                    {{ $d->no_pengajuan }}
+                                                @endif
+
+                                            </td>
                                             <td style="width: 10%">{{ formatIndo($d->tanggal) }}</td>
                                             <td style="width: 20%">{{ $d->nama }}</td>
                                             <td style="width: 10%">{{ $d->nama_bank }}</td>
