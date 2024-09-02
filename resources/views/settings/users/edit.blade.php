@@ -1,11 +1,12 @@
 <form action="{{ route('users.update', Crypt::encrypt($user->id)) }}" id="formeditUser" method="POST">
+    {{-- {{ var_dump($user) }} --}}
     @csrf
     @method('PUT')
     <x-input-with-icon icon="ti ti-user" label="Nama User" name="name" value="{{ $user->name }}" />
     <x-input-with-icon icon="ti ti-user" label="Username" name="username" value="{{ $user->username }}" />
     <x-input-with-icon icon="ti ti-mail" label="Email" name="email" value="{{ $user->email }}" />
     <x-input-with-icon icon="ti ti-key" label="Password" name="password" type="password" />
-    <x-select label="Role" name="role" :data="$roles" key="name" textShow="name" />
+    <x-select label="Role" name="role" :data="$roles" key="name" textShow="name" selected="" select2="select2Role" upperCase="true" />
     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" selected="{{ $user->kode_cabang }}" />
 
     <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" selected="{{ $user->kode_dept }}" />
@@ -36,3 +37,18 @@
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/users/edit.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        const select2Role = $(".select2Role");
+        if (select2Role.length > 0) {
+            select2Role.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Pilih Role',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+    });
+</script>

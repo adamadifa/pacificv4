@@ -47,6 +47,8 @@ class UserController extends Controller
     {
         $id = Crypt::decrypt($id);
         $user = User::with('roles')->where('id', $id)->first();
+        //get Roles name from user
+        // dd();
         $roles = Role::orderBy('name')->get();
         $cabang = Cabang::orderBy('nama_cabang')->get();
         $regional = Regional::orderBy('kode_regional')->get();
