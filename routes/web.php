@@ -1791,7 +1791,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/worksheetom/komisisalesman', 'WorksheetomController@komisisalesman')->name('worksheetom.komisisalesman')->can('worksheetom.komisisalesman');
     Route::get('/worksheetom/insentifom', 'WorksheetomController@insentifom')->name('worksheetom.insentifom')->can('worksheetom.insentifom');
     Route::get('/worksheetom/komisidriverhelper', 'WorksheetomController@komisidriverhelper')->name('worksheetom.komisidriverhelper')->can('worksheetom.komisidriverhelper');
-    Route::get('/worksheetom/costratio', 'CostratioController@index')->name('worksheetom.costratio')->can('worksheetom.costratio');
+    Route::get('/worksheetom/costratio', [CostratioController::class, 'index'])->name('worksheetom.costratio')->can('worksheetom.costratio');
     Route::get('/worksheetom/visitpelanggan', 'WorksheetomController@visitpelanggan')->name('worksheetom.visitpelanggan')->can('worksheetom.visitpelanggan');
     Route::get('/worksheetom/monitoringretur', 'WorksheetomController@monitoringretur')->name('worksheetom.monitoringretur')->can('worksheetom.monitoringretur');
     Route::get('/worksheetom/monitoringprogram', 'WorksheetomController@monitoringprogram')->name('worksheetom.monitoringprogram')->can('worksheetom.monitoringprogram');
