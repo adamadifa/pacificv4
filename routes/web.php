@@ -1787,7 +1787,7 @@ Route::middleware('auth')->group(function () {
     });
 
 
-    Route::get('/worksheetom/oman', 'OmancabangController@index')->name('worksheetom.oman')->can('worksheetom.oman');
+    Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');
     Route::get('/worksheetom/komisisalesman', 'WorksheetomController@komisisalesman')->name('worksheetom.komisisalesman')->can('worksheetom.komisisalesman');
     Route::get('/worksheetom/insentifom', 'WorksheetomController@insentifom')->name('worksheetom.insentifom')->can('worksheetom.insentifom');
     Route::get('/worksheetom/komisidriverhelper', 'WorksheetomController@komisidriverhelper')->name('worksheetom.komisidriverhelper')->can('worksheetom.komisidriverhelper');

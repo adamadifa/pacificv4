@@ -38,12 +38,6 @@
             <div>Worksheet OM</div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ request()->is('worksheetom/omancabang') ? 'open' : '' }}">
-                <a href="{{ route('omancabang.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-box"></i>
-                    <div>OMAN Cabang</div>
-                </a>
-            </li>
             <li class="menu-item {{ request()->is('worksheetom/oman') ? 'open' : '' }}">
                 <a href="{{ route('worksheetom.oman') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-box"></i>
