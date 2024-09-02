@@ -1176,9 +1176,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajuantransfer/{no_pengajuan}/approve', 'approve')->name('ajuantransfer.approve')->can('ajuantransfer.approve');
         Route::get('/ajuantransfer/{no_pengajuan}/cancelapprove', 'cancelApprove')->name('ajuantransfer.cancelapprove')->can('ajuantransfer.approve');
         Route::get('/ajuantransfer/{no_pengajuan}/proses', 'proses')->name('ajuantransfer.proses')->can('ajuantransfer.proses');
-        Route::post('/ajuantransfer/{no_pengajuan}/prosesstore', 'prosesstore')->name('ajuantransfer.prosesstore')->can('ajuantransfer.approve');
+        Route::post('/ajuantransfer/{no_pengajuan}/prosesstore', 'prosesstore')->name('ajuantransfer.prosesstore')->can('ajuantransfer.proses');
         Route::delete('/ajuantransfer/{no_pengajuan}/cancelproses', 'cancelProses')->name('ajuantransfer.cancelproses')->can('ajuantransfer.proses');
-        Route::post('/ajuantransfer/{no_pengajuan}/cancelproses', 'cancelProses')->name('ajuantransfer.cancelproses')->can('ajuantransfer.proses');
+        // Route::post('/ajuantransfer/{no_pengajuan}/cancelproses', 'cancelProses')->name('ajuantransfer.cancelproses')->can('ajuantransfer.proses');
         Route::delete('/ajuantransfer/{no_pengajuan}/delete', 'delete')->name('ajuantransfer.delete')->can('ajuantransfer.delete');
         Route::get('/ajuantransfer/cetak', 'cetak')->name('ajuantransfer.cetak')->can('ajuantransfer.show');
     });

@@ -122,13 +122,13 @@ class Setoranpenjualan extends Model
             $join->on('keuangan_setoranpenjualan.kode_salesman', '=', 'cekkuranglebihsetor.kode_salesman')
                 ->on('keuangan_setoranpenjualan.tanggal', '=', 'cekkuranglebihsetor.tanggal');
         });
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-            } else {
-                $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
-            }
-        }
+        // if (!$user->hasRole($roles_access_all_cabang)) {
+        //     if ($user->hasRole('regional sales manager')) {
+        //         $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+        //     } else {
+        //         $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+        //     }
+        // }
 
         $query->whereBetween('keuangan_setoranpenjualan.tanggal', [$request->dari, $request->sampai]);
         $query->where('salesman.kode_cabang', $kode_cabang);
