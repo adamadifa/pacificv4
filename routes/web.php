@@ -1786,12 +1786,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/tutuplaporan/cektutuplaporan', 'cektutuplaporan');
     });
 
-    Route::get('/worksheetom/omancabang', 'OmanCabangController@index')->name('omancabang.index')->can('omancabang.index');
-    Route::get('/worksheetom/oman', 'WorksheetomController@oman')->name('worksheetom.oman')->can('worksheetom.oman');
+
+    Route::get('/worksheetom/oman', 'OmancabangController@index')->name('worksheetom.oman')->can('worksheetom.oman');
     Route::get('/worksheetom/komisisalesman', 'WorksheetomController@komisisalesman')->name('worksheetom.komisisalesman')->can('worksheetom.komisisalesman');
     Route::get('/worksheetom/insentifom', 'WorksheetomController@insentifom')->name('worksheetom.insentifom')->can('worksheetom.insentifom');
     Route::get('/worksheetom/komisidriverhelper', 'WorksheetomController@komisidriverhelper')->name('worksheetom.komisidriverhelper')->can('worksheetom.komisidriverhelper');
-    Route::get('/worksheetom/costratio', 'WorksheetomController@costratio')->name('worksheetom.costratio')->can('worksheetom.costratio');
+    Route::get('/worksheetom/costratio', 'CostratioController@index')->name('worksheetom.costratio')->can('worksheetom.costratio');
     Route::get('/worksheetom/visitpelanggan', 'WorksheetomController@visitpelanggan')->name('worksheetom.visitpelanggan')->can('worksheetom.visitpelanggan');
     Route::get('/worksheetom/monitoringretur', 'WorksheetomController@monitoringretur')->name('worksheetom.monitoringretur')->can('worksheetom.monitoringretur');
     Route::get('/worksheetom/monitoringprogram', 'WorksheetomController@monitoringprogram')->name('worksheetom.monitoringprogram')->can('worksheetom.monitoringprogram');
