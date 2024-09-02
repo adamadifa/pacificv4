@@ -1,11 +1,12 @@
 <form action="{{ route('users.update', Crypt::encrypt($user->id)) }}" id="formeditUser" method="POST">
+
     @csrf
     @method('PUT')
     <x-input-with-icon icon="ti ti-user" label="Nama User" name="name" value="{{ $user->name }}" />
     <x-input-with-icon icon="ti ti-user" label="Username" name="username" value="{{ $user->username }}" />
     <x-input-with-icon icon="ti ti-mail" label="Email" name="email" value="{{ $user->email }}" />
     <x-input-with-icon icon="ti ti-key" label="Password" name="password" type="password" />
-    <x-select label="Role" name="role" :data="$roles" key="name" textShow="name" />
+    <x-select label="Role" name="role" :data="$roles" key="name" textShow="name" selected="{{ $user->role }}" />
     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" selected="{{ $user->kode_cabang }}" />
 
     <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" selected="{{ $user->kode_dept }}" />
