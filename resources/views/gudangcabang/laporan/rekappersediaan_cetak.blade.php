@@ -82,7 +82,7 @@
                             $reject_mobil = $d->reject_mobil / $d->isi_pcs_dus;
                             $reject_gudang = $d->reject_gudang / $d->isi_pcs_dus;
                             $transit_out = $d->transit_out / $d->isi_pcs_dus;
-                            $jml_lainlain_out = $d->pelunasan_hutangkirimm + $d->ganti_barang + $d->ttr;
+                            $jml_lainlain_out = $d->pelunasan_hutangkirim + $d->ganti_barang + $d->ttr;
                             $lainlain_out = $jml_lainlain_out / $d->isi_pcs_dus;
                             $penyesuaian_out = $d->penyesuaian_out / $d->isi_pcs_dus;
                             $jml_pengeluaran =
