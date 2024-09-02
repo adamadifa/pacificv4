@@ -82,7 +82,7 @@
                         </button>
                     </li>
                 @endcan
-                @can('keu.kasbon')
+                @can('keu.piutangkaryawan')
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#piutangkaryawan"
                             aria-controls="piutangkaryawan" aria-selected="false" tabindex="-1">
