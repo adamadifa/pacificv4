@@ -38,7 +38,7 @@ class DashboardController extends Controller
         $user = User::findorfail(auth()->user()->id);
         if ($user->hasAnyRole($default_marketing)) {
             return $this->marketing();
-        } else if ($user->hasRole('operation manager')) {
+        } else if ($user->hasRole(['operation manager', 'sales marketing manager'])) {
             return $this->operationmanager();
         } else if ($user->hasRole('salesman')) {
             return $this->salesman();
