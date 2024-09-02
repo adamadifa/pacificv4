@@ -20,7 +20,15 @@ class Setoranpenjualan extends Model
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
 
-
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
 
         $subquerycekLHP = Historibayarpenjualan::select(
             'marketing_penjualan_historibayar.kode_salesman',
@@ -123,7 +131,7 @@ class Setoranpenjualan extends Model
         }
 
         $query->whereBetween('keuangan_setoranpenjualan.tanggal', [$request->dari, $request->sampai]);
-        $query->where('salesman.kode_cabang', $request->kode_cabang_search);
+        $query->where('salesman.kode_cabang', $kode_cabang);
         if (!empty($request->kode_salesman_search)) {
             $query->where('keuangan_setoranpenjualan.kode_salesman', $request->kode_salesman_search);
         }

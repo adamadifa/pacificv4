@@ -243,12 +243,17 @@ class AjuanlimitkreditController extends Controller
                 $rsm = User::role('regional sales manager')->where('kode_regional', $regional->kode_regional)
                     ->where('status', 1)
                     ->first();
-                $id_penerima = $rsm->id;
-                if ($rsm == NULL) {
+                if ($rsm == null) {
+                    $id_penerima = $rsm->id;
+                } else {
                     $gm = User::role('gm marketing')
                         ->where('status', 1)
                         ->first();
-                    $id_penerima = $gm->id;
+                    if ($gm != null) {
+                        $id_penerima = $gm->id;
+                    } else {
+                        return Redirect::back()->with(messageError('User GM Marketing Tidak Ditemukan'));
+                    }
                 }
             }
 
