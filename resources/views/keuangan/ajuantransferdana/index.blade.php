@@ -83,7 +83,7 @@
                                         <tr>
                                             <td style="width: 10%">
                                                 @if (!empty($d->bukti))
-                                                    <a href="{{ $d->bukti }}">{{ $d->no_pengajuan }}</a>
+                                                    <a href="{{ $d->bukti }}" target="_blank"> {{ $d->no_pengajuan }}</a>
                                                 @else
                                                     {{ $d->no_pengajuan }}
                                                 @endif
