@@ -22,7 +22,12 @@
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#ledger" aria-controls="ledger"
                             aria-selected="false" tabindex="-1">
-                            Ledger
+                            @if (auth()->user()->kode_cabang == 'PST')
+                                Ledger
+                            @else
+                                Mutasi Bank
+                            @endif
+
                         </button>
                     </li>
                 @endcan
