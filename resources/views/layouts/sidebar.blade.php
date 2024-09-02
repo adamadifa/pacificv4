@@ -56,6 +56,7 @@
          @include('layouts.sidebar.maintenance')
          @include('layouts.sidebar.generalaffair')
          @include('layouts.sidebar.hrd')
+         @include('layouts.sidebar.worksheetom')
 
 
          @if (auth()->user()->hasRole('super admin'))

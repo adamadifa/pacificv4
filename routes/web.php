@@ -1780,12 +1780,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/sfa/retur/{no_retur}/show', 'showretur')->name('sfa.showretur')->can('sfa.retur');
         Route::get('/sfa/retur/{no_retur}/edit', 'editretur')->name('sfa.editretur')->can('sfa.retur');
     });
+
     Route::controller(TutuplaporanController::class)->group(function () {
-
-
         //Ajax Request
         Route::post('/tutuplaporan/cektutuplaporan', 'cektutuplaporan');
     });
+
+    Route::get('/worksheetom/omancabang', 'OmanCabangController@index')->name('omancabang.index')->can('omancabang.index');
 });
 
 
