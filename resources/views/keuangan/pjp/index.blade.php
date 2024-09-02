@@ -136,7 +136,7 @@
                                                             </div>
                                                         @endcan
                                                         @can('pjp.delete')
-                                                            @if ($d->status === '0')
+                                                            @if ($d->status === '0' && $d->tanggal > '2023-05-01')
                                                                 <div>
                                                                     <form method="POST" name="deleteform" class="deleteform"
                                                                         action="{{ route('pjp.delete', Crypt::encrypt($d->no_pinjaman)) }}">
