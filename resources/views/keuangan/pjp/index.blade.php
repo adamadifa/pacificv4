@@ -62,7 +62,7 @@
                                             <th>No. PJP</th>
                                             <th>Tanggal</th>
                                             <th>NIK</th>
-                                            <th style="width: 20%">Nama Karyawan</th>
+                                            <th style="width: 10%">Nama Karyawan</th>
                                             <th>Kantor</th>
                                             <th>Jabatan</th>
                                             <th>Jumlah</th>
