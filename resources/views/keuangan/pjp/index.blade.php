@@ -59,7 +59,7 @@
                                 <table class="table  table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th>No. Pinjaman</th>
+                                            <th>No. PJP</th>
                                             <th>Tanggal</th>
                                             <th>NIK</th>
                                             <th>Nama Karyawan</th>
