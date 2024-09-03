@@ -3144,15 +3144,10 @@ class LaporanmarketingController extends Controller
         $qpelangganBelumlunas2faktur->select('kode_pelanggan');
         $qpelangganBelumlunas2faktur->groupBy('kode_pelanggan');
         $qpelangganBelumlunas2faktur->join('salesman', 'salesman.kode_salesman', '=', 'marketing_penjualan.kode_salesman');
-
+        $qpelangganBelumlunas2faktur->where('status_batal', 0);
         // $qpelangganBelumlunas2faktur->where('status', 0);
-        $qpelangganBelumlunas2faktur->where('status', 0);
-        $qpelangganBelumlunas2faktur->where('status_batal', 0);
+        $qpelangganBelumlunas2faktur->whereRaw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn - IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal <= '$request->tanggal'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal <= '$request->tanggal'),0)  > 0");
         $qpelangganBelumlunas2faktur->where('marketing_penjualan.tanggal', '<=', $request->tanggal);
-        $qpelangganBelumlunas2faktur->orwhere('status', 1);
-        $qpelangganBelumlunas2faktur->where('status_batal', 0);
-        $qpelangganBelumlunas2faktur->where('marketing_penjualan.tanggal', '<=', $request->tanggal);
-        $qpelangganBelumlunas2faktur->where('marketing_penjualan.tanggal_pelunasan', '>', $request->tanggal);
         $qpelangganBelumlunas2faktur->having(DB::raw('COUNT(no_faktur)'), '>', 1);
         if (!empty($kode_cabang)) {
             $qpelangganBelumlunas2faktur->where('salesman.kode_cabang', $kode_cabang);
@@ -3184,18 +3179,12 @@ class LaporanmarketingController extends Controller
         $query->join('salesman', 'salesman.kode_salesman', '=', 'marketing_penjualan.kode_salesman');
         $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
-        $query->where('status', 0);
         $query->where('status_batal', 0);
 
-        // $query->whereRaw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn - IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal <= '$request->tanggal'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal <= '$request->tanggal'),0)  > 0");
+        $query->whereRaw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn - IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal <= '$request->tanggal'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal <= '$request->tanggal'),0)  > 0");
 
         $query->whereIn('marketing_penjualan.kode_pelanggan', $kode_pelanggan);
         $query->where('marketing_penjualan.tanggal', '<=', $request->tanggal);
-        $query->where('status', 1);
-        $query->where('status_batal', 0);
-        $query->whereIn('marketing_penjualan.kode_pelanggan', $kode_pelanggan);
-        $query->where('marketing_penjualan.tanggal', '<=', $request->tanggal);
-        $query->where('marketing_penjualan.tanggal_pelunasan', '>', $request->tanggal);
         if (!empty($kode_cabang)) {
             $query->where('salesman.kode_cabang', $kode_cabang);
         }
