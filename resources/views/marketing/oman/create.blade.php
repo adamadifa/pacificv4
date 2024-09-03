@@ -189,18 +189,17 @@
                     minggu_ke: minggu_ke
                 },
                 cache: false,
-                success: function(respond) {
-                    var res = respond.split("|");
-                    console.log(res);
-                    if (res[0] == "warning") {
+                success: function(response) {
+
+                    if (response.status == "warning") {
                         Swal.fire({
-                            title: res[1],
-                            text: res[2],
-                            icon: res[0]
+                            title: 'Oops!',
+                            text: response.message,
+                            icon: 'warning',
                         });
                     } else {
                         $('#mdleditOmancabang').modal("show");
-                        $("#loadeditOmancabang").html(respond);
+                        $("#loadeditOmancabang").html(response);
                     }
                 }
             });

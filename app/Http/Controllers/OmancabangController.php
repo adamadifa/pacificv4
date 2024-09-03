@@ -310,9 +310,15 @@ class OmancabangController extends Controller
         $cek = Oman::where('bulan', $bulan)->where('tahun', $tahun)->count();
         $minggu_ke = $request->minggu_ke;
         if ($cektutuplaporan > 0) {
-            return "warning|Oops|Laporan Periode Ini Sudah Ditutup";
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'Periode Laporan Sudah Ditutup !'
+            ]);
         } else if ($cek > 0) {
-            return "warning|Oops|Data Untuk Periode Ini Sudah Ada, Untuk Melakukan Update Silahkan Hapus Data Dulu";
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'Data Untuk Periode Ini Sudah Ada, Untuk Melakukan Update Silahkan Hapus Data Dulu !'
+            ]);
         } else {
             $produk = Produk::where('kode_produk', $request->kode_produk)->first();
             $data = Detailomancabang::join('marketing_oman_cabang', 'marketing_oman_cabang_detail.kode_oman', '=', 'marketing_oman_cabang.kode_oman')
