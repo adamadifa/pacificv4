@@ -80,8 +80,8 @@ return  [
     'roles_access_all_karyawan' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur', 'asst. manager hrd', 'spv presensi', 'spv recruitment'],
 
     //Pinjaman
-    'roles_access_all_pjp' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur'],
-    'roles_access_all_kasbon' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur'],
+    'roles_access_all_pjp' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur', 'gm marketing'],
+    'roles_access_all_kasbon' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur', 'gm marketing'],
 
 
 
