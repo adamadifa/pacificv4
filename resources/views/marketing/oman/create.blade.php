@@ -66,8 +66,7 @@
     </div>
     <div class="row mt-2">
         <div class="col-12">
-            <button class="btn btn-primary w-100" type="submit" name="submit"><i
-                    class="ti ti-send me-1"></i>Submit</button>
+            <button class="btn btn-primary w-100" type="submit" name="submit"><i class="ti ti-send me-1"></i>Submit</button>
         </div>
     </div>
 </form>
@@ -192,6 +191,7 @@
                 cache: false,
                 success: function(respond) {
                     var res = respond.split("|");
+                    console.log(res);
                     if (res[0] == "warning") {
                         Swal.fire({
                             title: res[1],
