@@ -333,6 +333,10 @@ class KaryawanController extends Controller
             } else {
                 if (!$user->hasRole($role_access_all_pjp)) {
                     $query->where('hrd_jabatan.kategori', 'NM');
+                } else {
+                    if (!$user->hasRole(['super admin', 'manager keuangan', 'gm administrasi'])) {
+                        $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
+                    }
                 }
             }
             $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
