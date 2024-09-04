@@ -91,6 +91,9 @@ class Pjp extends Model
         } else {
             if (!$user->hasRole($roles_access_all_pjp)) {
                 $query->where('hrd_jabatan.kategori', 'NM');
+                if (!$user->hasRole(['super admin', 'manager keuangan', 'gm administrasi'])) {
+                    $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
+                }
             }
         }
 
