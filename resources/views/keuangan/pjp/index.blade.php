@@ -62,7 +62,7 @@
                                             <th>No. PJP</th>
                                             <th>Tanggal</th>
                                             <th>NIK</th>
-                                            <th style="width: 10%">Nama Karyawan</th>
+                                            <th style="width: 15%">Nama Karyawan</th>
                                             <th>Kantor</th>
                                             <th>Jabatan</th>
                                             <th>Jumlah</th>
@@ -84,7 +84,7 @@
                                                 <td>{{ $d->nik }}</td>
                                                 <td>{{ $d->nama_karyawan }}</td>
                                                 <td>{{ $d->kode_cabang }}</td>
-                                                <td>{{ $d->nama_jabatan }}</td>
+                                                <td>{{ singkatString($d->nama_jabatan) }}</td>
                                                 <td class="text-end">{{ formatAngka($d->jumlah_pinjaman) }}</td>
                                                 <td class="text-end">{{ formatRupiah($d->totalpembayaran) }}</td>
                                                 <td class="text-end">{{ formatRupiah($sisatagihan) }}</td>
