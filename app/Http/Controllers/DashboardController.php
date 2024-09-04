@@ -34,7 +34,7 @@ class DashboardController extends Controller
     public function index()
     {
 
-        $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager', 'gm operasional'];
+        $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager'];
         $user = User::findorfail(auth()->user()->id);
         if ($user->hasAnyRole($default_marketing)) {
             return $this->marketing();
@@ -44,6 +44,8 @@ class DashboardController extends Controller
             return $this->salesman();
         } else if ($user->hasRole('admin penjualan')) {
             return $this->operationmanager();
+        } else if ($user->hasRole('gm operasional')) {
+            return $this->operasional();
         } else {
             return $this->dashboarddefault();
         }
