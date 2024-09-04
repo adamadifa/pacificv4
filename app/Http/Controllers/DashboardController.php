@@ -118,6 +118,15 @@ class DashboardController extends Controller
     }
 
 
+    public function operasional()
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        return view('dashboard.operasional', $data);
+    }
+
     public function produksi()
     {
         $data['start_year'] = config('global.start_year');
