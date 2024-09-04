@@ -80,7 +80,7 @@
                                             <td>{{ $d->nik }}</td>
                                             <td>{{ $d->nama_karyawan }}</td>
                                             <td>{{ $d->kode_cabang }}</td>
-                                            <td>{{ $d->nama_jabatan }}</td>
+                                            <td>{{ singkatString($d->nama_jabatan) }}</td>
                                             <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
                                             <td class="text-end">{{ formatAngka($d->totalpembayaran) }}</td>
                                             <td class="text-end">{{ formatAngka($sisatagihan) }}</td>
