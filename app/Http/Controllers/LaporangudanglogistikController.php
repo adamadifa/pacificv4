@@ -47,7 +47,7 @@ class LaporangudanglogistikController extends Controller
         $query->leftJoin('pembelian', 'gudang_logistik_barang_masuk.no_bukti', '=', 'pembelian.no_bukti');
         $query->leftJoin('supplier', 'pembelian.kode_supplier', '=', 'supplier.kode_supplier');
         $query->whereBetween('gudang_logistik_barang_masuk.tanggal', [$request->dari, $request->sampai]);
-        $query->where('pembelian_barang.status', '1');
+        // $query->where('pembelian_barang.status', '1');
         $query->where('pembelian_barang.kode_group', 'GDL');
         if (!empty($request->kode_kategori)) {
             $query->where('pembelian_barang.kode_kategori', $request->kode_kategori);
@@ -94,7 +94,7 @@ class LaporangudanglogistikController extends Controller
         $query->leftJoin('pembelian_barang', 'gudang_logistik_barang_keluar_detail.kode_barang', '=', 'pembelian_barang.kode_barang');
         $query->leftJoin('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori');
         $query->whereBetween('gudang_logistik_barang_keluar.tanggal', [$request->dari, $request->sampai]);
-        $query->where('pembelian_barang.status', '1');
+        // $query->where('pembelian_barang.status', '1');
         $query->where('pembelian_barang.kode_group', "GDL");
         if (!empty($request->kode_jenis_pengeluaran)) {
             $query->where('gudang_logistik_barang_keluar.kode_jenis_pengeluaran', $request->kode_jenis_pengeluaran);
