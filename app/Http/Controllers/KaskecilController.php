@@ -28,7 +28,7 @@ class KaskecilController extends Controller
         $query->select('keuangan_kaskecil.*', 'nama_akun', 'kode_klaim', 'kode_cr');
         $query->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
         $query->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id');
-        $query->leftJoin('kuangan_kaskecil_costratio', 'keuangan_kaskecil.id', '=', 'kuangan_kaskecil_costratio.id');
+        $query->leftJoin('keuangan_kaskecil_costratio', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_costratio.id');
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('kode_cabang', $request->kode_cabang_search);
