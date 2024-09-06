@@ -6,6 +6,8 @@ use App\Models\Bank;
 use App\Models\Cabang;
 use App\Models\Detailkontrabonpembelian;
 use App\Models\Historibayarpembelian;
+use App\Models\Kaskecil;
+use App\Models\Kaskecilkontrabon;
 use App\Models\Kontrabonpembelian;
 use App\Models\Ledger;
 use App\Models\Ledgerkontrabon;
@@ -334,6 +336,20 @@ class KontrabonpembelianController extends Controller
             ]);
 
             if ($request->kode_bank == 'BK071') {
+                $kaskecil = Kaskecil::create([
+                    'no_bukti' => $request->no_bkk,
+                    'tanggal' => $request->tanggal,
+                    'keterangan' => $request->keterangan . " " . implode(",", $list_no_bukti),
+                    'jumlah' => $totalbayar,
+                    'debet_kredit' => 'D',
+                    'kode_cabang' => $request->kode_cabang,
+                    'kode_akun' => $request->kode_akun
+                ]);
+
+                Kaskecilkontrabon::create([
+                    'id_kaskecil' => $kaskecil->id,
+                    'no_kontrabon' => $no_kontrabon
+                ]);
             } else {
                 Ledger::create([
                     'no_bukti' => $no_bukti,
@@ -366,7 +382,7 @@ class KontrabonpembelianController extends Controller
         $no_kontrabon = Crypt::decrypt($no_kontrabon);
         DB::beginTransaction();
         try {
-            $kontrabon = Kontrabonpembelian::where('no_kontrabon', $no_kontrabon)->first();
+            $kontrabon = Historibayarpembelian::where('no_kontrabon', $no_kontrabon)->first();
             // dd($kontrabon->tanggal);
             $cektutuplaporan = cektutupLaporan($kontrabon->tanggal, "ledger");
             // dd($cektutuplaporan);
@@ -374,18 +390,24 @@ class KontrabonpembelianController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
-            //Hapus Histori Pembayaran
-            Historibayarpembelian::where('no_kontrabon', $no_kontrabon)->delete();
+            if ($kontrabon->kode_bank == 'BK071') {
+                $kaskecilkontrabon = Kaskecilkontrabon::where('no_kontrabon', $no_kontrabon)->first();
+                Historibayarpembelian::where('no_kontrabon', $no_kontrabon)->delete();
+                //Hapus Histori Pembayaran
 
-            //Cek no Bukti Ledger
-            $ledgerkontrabon = Ledgerkontrabon::where('no_kontrabon', $no_kontrabon)->first();
-            //Hapus Ledger
-            Ledger::where('no_bukti', $ledgerkontrabon->no_bukti)->delete();
+                Kaskecil::where('id', $kaskecilkontrabon->id_kaskecil)->delete();
+            } else {
+                $ledgerkontrabon = Ledgerkontrabon::where('no_kontrabon', $no_kontrabon)->first();
+                Historibayarpembelian::where('no_kontrabon', $no_kontrabon)->delete();
+                //Cek no Bukti Ledger
+                //Hapus Ledger
+                Ledger::where('no_bukti', $ledgerkontrabon->no_bukti)->delete();
+            }
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil di Batalkan'));
         } catch (\Exception $e) {
             DB::rollBack();
-            return Redirect::back()->with(messageSuccess($e->getMessage()));
+            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 }

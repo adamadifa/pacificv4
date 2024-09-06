@@ -74,6 +74,9 @@
                     <option value="2-1200">2-1200 - Hutang Dagang</option>
                 </select>
             </div>
+            <div class="row" id="kaskecil">
+                <x-input-with-icon label="No. BKK" name="no_bkk" icon="ti ti-file-barcode" />
+            </div>
             <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
             <div class="row form-group mb-3">
                 <div class="col-12">
@@ -87,6 +90,8 @@
                 <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
                     select2="select2Kodecabang" />
             </div>
+
+            {{-- BK071 --}}
             <div class="form-group mb-3">
                 <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
             </div>
@@ -97,6 +102,21 @@
     $(function() {
         const form = $("#formProseskontrabon");
 
+
+        function showkaskecil() {
+            const kode_bank = form.find("#kode_bank").val();
+            if (kode_bank == "BK071") {
+                $("#kaskecil").show();
+            } else {
+                $("#kaskecil").hide();
+            }
+        }
+
+        showkaskecil();
+
+        form.find("#kode_bank").on("change", function() {
+            showkaskecil();
+        });
         $(".flatpickr-date").flatpickr();
 
         function buttonDisable() {
@@ -146,7 +166,7 @@
             const keterangan = form.find("#keterangan").val();
             const kode_cabang = form.find("#kode_cabang").val();
             const kode_bank = form.find("#kode_bank").val();
-
+            const no_bkk = form.find("#no_bkk").val();
             if (tanggal == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -169,6 +189,16 @@
                     },
                 });
                 return false;
+            } else if (kode_bank == "BK071" && no_bkk == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "No BKK Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#no_bkk").focus();
+                    }
+                })
             } else if (kode_akun == "") {
                 Swal.fire({
                     title: "Oops!",
