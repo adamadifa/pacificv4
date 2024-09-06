@@ -93,11 +93,12 @@
                                                 $total_penerimaan += $penerimaan;
                                                 $total_pengeluaran += $pengeluaran;
                                                 $colorklaim = !empty($d->kode_klaim) ? 'bg-success text-white' : '';
+                                                $colorcr = !empty($d->kode_cr) ? 'bg-primary text-white' : '';
                                             @endphp
                                             <tr>
                                                 <td class="{{ $colorklaim }}">{{ $loop->iteration }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
-                                                <td>{{ $d->no_bukti }}</td>
+                                                <td class="{{ $colorcr }}">{{ $d->no_bukti }}</td>
                                                 <td>{{ textCamelcase($d->keterangan) }}</td>
                                                 <td>{{ $d->kode_akun }} - {{ $d->nama_akun }}</td>
                                                 <td class="text-end text-{{ $color }}">{{ formatAngka($penerimaan) }}</td>
