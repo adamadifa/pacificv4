@@ -59,6 +59,21 @@ class UserController extends Controller
         return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'deptchunks', 'dept_access'));
     }
 
+    public function ubahpassword()
+    {
+        $id = auth()->user()->id;
+        $user = User::with('roles')->where('id', $id)->first();
+        //get Roles name from user
+        // dd();
+        $roles = Role::orderBy('name')->get();
+        $cabang = Cabang::orderBy('nama_cabang')->get();
+        $regional = Regional::orderBy('kode_regional')->get();
+        $departemen = Departemen::orderBy('kode_dept')->get();
+        $deptchunks = $departemen->chunk(2);
+        $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
+
+        return view('settings.users.ubahpassword', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'deptchunks', 'dept_access'));
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -138,6 +153,39 @@ class UserController extends Controller
                 $user->assignRole($request->role);
             }
 
+            return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
+        } catch (\Exception $e) {
+            return Redirect::back()->with(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function updateprofile(Request $request)
+    {
+        $id = auth()->user()->id;
+
+
+        $request->validate([
+            'name' => 'required',
+            'username' => 'required',
+            'email' => 'required|email',
+        ]);
+
+        try {
+
+            if (isset($request->password)) {
+                User::where('id', $id)->update([
+                    'name' => $request->name,
+                    'username' => $request->username,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                ]);
+            } else {
+                User::where('id', $id)->update([
+                    'name' => $request->name,
+                    'username' => $request->username,
+                    'email' => $request->email,
+                ]);
+            }
             return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
         } catch (\Exception $e) {
             return Redirect::back()->with(['error' => $e->getMessage()]);

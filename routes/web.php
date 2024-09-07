@@ -231,6 +231,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/create', 'create')->name('users.create');
         Route::post('/users', 'store')->name('users.store');
         Route::get('/users/{id}/edit', 'edit')->name('users.edit');
+        Route::get('/users/ubahpassword', 'ubahpassword')->name('users.ubahpassword');
+        Route::put('/users/updateprofile', 'updateprofile')->name('users.updateprofile');
         Route::put('/users/{id}/update', 'update')->name('users.update');
         Route::delete('/users/{id}/delete', 'destroy')->name('users.delete');
 
