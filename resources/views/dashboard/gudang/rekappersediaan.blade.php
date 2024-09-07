@@ -28,8 +28,7 @@
                             @foreach ($products as $product)
                                 @php
                                     ${"saldo_akhir_$product->kode_produk"} =
-                                        ($data->{"suratjalan_$product->kode_produk"} +
-                                            $data->{"saldo_$product->kode_produk"} +
+                                        ($data->{"saldo_$product->kode_produk"} +
                                             $data->{"mutasi_$product->kode_produk"} -
                                             $data->{"ambil_$product->kode_produk"} +
                                             $data->{"kembali_$product->kode_produk"}) /
