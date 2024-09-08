@@ -56,7 +56,7 @@
                                 <table class="table  table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th rowspan="2" class="align-middle">Tanggal</th>
+                                            <th rowspan="2" class="align-middle" style="width: 5%">Tanggal</th>
                                             <th rowspan="2" style="width:20%">Keterangan</th>
                                             <th colspan="4" class="text-center">Setoran</th>
                                             <th rowspan="2" class="align-middle">Jumlah</th>
