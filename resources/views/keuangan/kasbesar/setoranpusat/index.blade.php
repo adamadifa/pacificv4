@@ -83,9 +83,10 @@
                                                 <td class="text-end fw-bold">{{ formatAngka($d->total) }}</td>
                                                 <td>
                                                     @if ($d->status == '1')
-                                                        @if (!empty($d->nama_bank))
-                                                            {{ $d->nama_bank }}
-                                                        @endif
+                                                        @php
+                                                            $nama_bank = !empty($d->nama_bank_alias) ? $d->nama_bank_alias : $d->nama_bank;
+                                                        @endphp
+                                                        {{ $nama_bank }}
                                                     @endif
                                                 </td>
                                                 <td class="text-center">

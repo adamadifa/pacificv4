@@ -27,6 +27,7 @@ class Setoranpusat extends Model
             'nama_cabang',
             'keuangan_ledger.tanggal as tanggal_diterima',
             'bank.nama_bank as nama_bank',
+            'bank.nama_bank_alias as nama_bank_alias',
             'keuangan_setoranpusat_ajuantransfer.no_pengajuan'
 
             // 'ledger_transfer.tanggal as tanggal_diterima_transfer',
