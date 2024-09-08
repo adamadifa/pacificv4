@@ -543,7 +543,7 @@ class LaporanmarketingController extends Controller
         $qpenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $qpenjualan->leftJoin(
             DB::raw("(
-                SELECT
+                  SELECT
                     marketing_penjualan.no_faktur,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
@@ -552,18 +552,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->dari'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -871,7 +866,7 @@ class LaporanmarketingController extends Controller
         $query->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $query->leftJoin(
             DB::raw("(
-                SELECT
+                 SELECT
                     marketing_penjualan.no_faktur,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
@@ -880,18 +875,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->dari'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -965,7 +955,7 @@ class LaporanmarketingController extends Controller
         $qvoucher->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qvoucher->leftJoin(
             DB::raw("(
-                SELECT
+                 SELECT
                     marketing_penjualan.no_faktur,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
@@ -974,18 +964,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->dari'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -1443,7 +1428,7 @@ class LaporanmarketingController extends Controller
         $qretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qretur->leftJoin(
             DB::raw("(
-                SELECT
+                 SELECT
                     marketing_penjualan.no_faktur,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
@@ -1452,18 +1437,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->dari'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -2557,7 +2537,7 @@ class LaporanmarketingController extends Controller
         $querysaldoawal->join('marketing_penjualan', 'marketing_saldoawal_piutang_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $querysaldoawal->leftJoin(
             DB::raw("(
-                SELECT
+                 SELECT
                     marketing_penjualan.no_faktur,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
@@ -2566,18 +2546,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->dari'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -2649,7 +2624,7 @@ class LaporanmarketingController extends Controller
         );
         $querysaldoawalbulanini->leftJoin(
             DB::raw("(
-                SELECT
+                 SELECT
                     marketing_penjualan.no_faktur,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
@@ -2658,18 +2633,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->dari'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -2753,18 +2723,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->dari'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -2898,7 +2863,7 @@ class LaporanmarketingController extends Controller
         $querysaldoawal->join('marketing_penjualan', 'marketing_saldoawal_piutang_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $querysaldoawal->leftJoin(
             DB::raw("(
-                SELECT
+                 SELECT
                     marketing_penjualan.no_faktur,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
@@ -2907,18 +2872,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->tanggal'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->tanggal'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -3006,7 +2966,7 @@ class LaporanmarketingController extends Controller
         );
         $querypenjualan->leftJoin(
             DB::raw("(
-                SELECT
+                 SELECT
                     marketing_penjualan.no_faktur,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
@@ -3015,18 +2975,13 @@ class LaporanmarketingController extends Controller
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE tanggal <= '$request->tanggal'
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->tanggal'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
