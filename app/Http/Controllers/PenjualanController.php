@@ -110,7 +110,7 @@ class PenjualanController extends Controller
 
 
         if (!empty($request->nama_pelanggan_search)) {
-            $query->WhereRaw("MATCH(nama_pelanggan) AGAINST('" . $request->nama_pelanggan_search .  "')");
+            $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan_search . '%');
         }
 
         $query->orderBy('marketing_penjualan.tanggal', 'desc');
