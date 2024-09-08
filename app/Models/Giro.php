@@ -70,7 +70,7 @@ class Giro extends Model
 
 
         if (!empty($request->nama_pelanggan_search)) {
-            $query->WhereRaw("MATCH(nama_pelanggan) AGAINST('" . $request->nama_pelanggan_search .  "')");
+            $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan_search . '%');
         }
         if (!empty($request->no_giro)) {
             $query->where('marketing_penjualan_giro.no_giro', $request->no_giro);
