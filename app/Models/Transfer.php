@@ -69,7 +69,7 @@ class Transfer extends Model
 
 
         if (!empty($request->nama_pelanggan_search)) {
-            $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
+            $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan_search . '%');
         }
 
         if (!empty($kode_transfer)) {
