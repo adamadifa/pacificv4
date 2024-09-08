@@ -43,7 +43,7 @@ class Setoranpenjualan extends Model
             ->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai])
             ->groupBy('marketing_penjualan_historibayar.kode_salesman', 'marketing_penjualan_historibayar.tanggal');
 
-        dd($subquerycekLHP->get());
+
         $subquerycekGiro = Detailgiro::select(
             'marketing_penjualan_giro.kode_salesman',
             'marketing_penjualan_giro.tanggal',
@@ -101,7 +101,7 @@ class Setoranpenjualan extends Model
             'kurangsetorkertas',
             'kurangsetorlogam',
             'lebihsetorkertas',
-            'lebihsetorlogam'
+            'lebihsetorlogamd'
         );
         $query->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
