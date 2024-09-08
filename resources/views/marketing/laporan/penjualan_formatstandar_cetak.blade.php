@@ -127,15 +127,17 @@
                                     $pcs = $jml[2];
                                     $total += $d->subtotal;
                                     if ($d->status_promosi == '1') {
-                                        $bgcolor = 'yellow';
+                                        $bgcolorpromosi = 'yellow';
                                     } else {
-                                        $bgcolor = '';
+                                        $bgcolorpromosi = '';
                                     }
+                                    $bgcolor = '';
                                 } else {
                                     $dus = 0;
                                     $pack = 0;
                                     $pcs = 0;
                                     $bgcolor = 'red';
+                                    $bgcolorpromosi = '';
                                 }
 
                             @endphp
@@ -150,17 +152,21 @@
                                     <td rowspan="{{ count($val) }}">{{ $d->klasifikasi }}</td>
                                     <td rowspan="{{ count($val) }}">{{ $d->nama_wilayah }}</td>
                                 @endif
-                                <td style="background-color: {{ $bgcolor }}">{{ $d->nama_produk }}</td>
-                                <td class="center" style="background-color: {{ $bgcolor }}">{{ formatAngka($dus) }}</td>
-                                <td class="right" style="background-color: {{ $bgcolor }}">
+                                <td style="background-color: {{ !empty($bgcolorpromosi) ? $bgcolorpromosi : $bgcolor }}">{{ $d->nama_produk }}</td>
+                                <td class="center" style="background-color:  {{ !empty($bgcolorpromosi) ? $bgcolorpromosi : $bgcolor }}">
+                                    {{ formatAngka($dus) }}</td>
+                                <td class="right" style="background-color:  {{ !empty($bgcolorpromosi) ? $bgcolorpromosi : $bgcolor }}">
                                     {{ !empty($dus) ? formatAngka($d->harga_dus) : '' }}</td>
-                                <td class="center" style="background-color: {{ $bgcolor }}">{{ formatAngka($pack) }}</td>
-                                <td class="right" style="background-color: {{ $bgcolor }}">
+                                <td class="center" style="background-color:  {{ !empty($bgcolorpromosi) ? $bgcolorpromosi : $bgcolor }}">
+                                    {{ formatAngka($pack) }}</td>
+                                <td class="right" style="background-color:  {{ !empty($bgcolorpromosi) ? $bgcolorpromosi : $bgcolor }}">
                                     {{ !empty($pack) ? formatAngka($d->harga_pack) : '' }}</td>
-                                <td class="center" style="background-color: {{ $bgcolor }}">{{ formatAngka($pcs) }}</td>
-                                <td class="right" style="background-color: {{ $bgcolor }}">
+                                <td class="center" style="background-color:  {{ !empty($bgcolorpromosi) ? $bgcolorpromosi : $bgcolor }}">
+                                    {{ formatAngka($pcs) }}</td>
+                                <td class="right" style="background-color:  {{ !empty($bgcolorpromosi) ? $bgcolorpromosi : $bgcolor }}">
                                     {{ !empty($pcs) ? formatAngka($d->harga_pcs) : '' }}</td>
-                                <td class="right" style="background-color: {{ $bgcolor }}">{{ formatAngka($d->subtotal) }}</td>
+                                <td class="right" style="background-color:  {{ !empty($bgcolorpromosi) ? $bgcolorpromosi : $bgcolor }}">
+                                    {{ formatAngka($d->subtotal) }}</td>
 
 
                                 @if ($k == 0)
