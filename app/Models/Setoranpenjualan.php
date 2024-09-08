@@ -22,12 +22,12 @@ class Setoranpenjualan extends Model
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
-                $kode_cabang = $request->kode_cabang;
+                $kode_cabang = $request->kode_cabang_search;
             } else {
                 $kode_cabang = $user->kode_cabang;
             }
         } else {
-            $kode_cabang = $request->kode_cabang;
+            $kode_cabang = $request->kode_cabang_search;
         }
 
         $subquerycekLHP = Historibayarpenjualan::select(
@@ -101,7 +101,7 @@ class Setoranpenjualan extends Model
             'kurangsetorkertas',
             'kurangsetorlogam',
             'lebihsetorkertas',
-            'lebihsetorlogamd'
+            'lebihsetorlogam'
         );
         $query->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
