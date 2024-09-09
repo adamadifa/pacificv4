@@ -1771,20 +1771,18 @@ class LaporankeuanganController extends Controller
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $awal_kas_kecil = '2019-04-30';
         $sehariSebelumDari = date('Y-m-d', strtotime('-1 day', strtotime($request->dari)));
-        dd($user->hasRole($roles_access_all_cabang));
+
         $qsaldoawal = Kaskecil::query();
         $qsaldoawal->selectRaw("SUM(IF( `debet_kredit` = 'K', jumlah, 0)) -SUM(IF( `debet_kredit` = 'D', jumlah, 0)) as saldo_awal");
         $qsaldoawal->whereBetween('tanggald', [$awal_kas_kecil, $sehariSebelumDari]);
         $qsaldoawal->where('kode_cabang', $request->kode_cabang);
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
-
                 $qsaldoawal->where('kode_cabang', $request->kode_cabang);
-
-                $qsaldoawal->where('kode_cabang', auth()->user()->kode_cabang);
+            } else {
+                $qsaldoawal->where('kode_cabangd', auth()->user()->kode_cabang);
             }
         } else {
-
             $qsaldoawal->where('kode_cabang', $request->kode_cabang);
         }
         $saldoawal = $qsaldoawal->first();
