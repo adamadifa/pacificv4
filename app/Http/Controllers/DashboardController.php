@@ -63,7 +63,7 @@ class DashboardController extends Controller
         $hariini = date('Y-m-d');
         $data['penjualan'] = Penjualan::select()
             ->select(
-                DB::raw("SUM((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn)) as total")
+                DB::raw("SUM((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn) as total")
             )
             ->where('marketing_penjualan.kode_salesman', auth()->user()->kode_salesman)
             ->where('marketing_penjualan.tanggal', $hariini)
