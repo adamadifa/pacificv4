@@ -1001,6 +1001,7 @@ class PenjualanController extends Controller
 
             DB::commit();
 
+            dd($request->no_faktur);
             if ($user->hasRole('salesman')) {
                 return redirect(route('sfa.showpenjualan', Crypt::encrypt($request->no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
             } else {
