@@ -215,6 +215,7 @@ class Globalprovider extends ServiceProvider
                 'gj.realisasikiriman',
                 'gj.realisasioman',
                 'gj.angkutan',
+                'suratjalanangkutan.index'
             ];
 
             $gudang_jadi_mutasi_request = [
