@@ -90,6 +90,7 @@ class BarangkeluargudangbahanController extends Controller
 
             $bulan = date('m', strtotime($request->tanggal));
             $tahun = date('Y', strtotime($request->tanggal));
+            $thn = substr($tahun, 2, 2);
             $dari = $tahun . "-" . $bulan . "-01";
             $sampai = date("Y-m-t", strtotime($dari));
             $lastpengeluaran = Barangkeluargudangbahan::select('no_bukti')
@@ -97,7 +98,7 @@ class BarangkeluargudangbahanController extends Controller
                 ->orderBy('no_bukti', 'desc')
                 ->first();
             $last_no_bukti = $lastpengeluaran != null ? $lastpengeluaran->nobukti_pengeluaran : '';
-            $no_bukti = buatkode($last_no_bukti, 'GBK/' . $bulan . $tahun . "/", 3);
+            $no_bukti = buatkode($last_no_bukti, 'GBK/' . $bulan . $thn . "/", 3);
 
 
             Barangkeluargudangbahan::create([
