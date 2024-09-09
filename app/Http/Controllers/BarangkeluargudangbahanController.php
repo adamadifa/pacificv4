@@ -97,7 +97,7 @@ class BarangkeluargudangbahanController extends Controller
                 ->whereBetween('tanggal', [$dari, $sampai])
                 ->orderBy('no_bukti', 'desc')
                 ->first();
-            $last_no_bukti = $lastpengeluaran != null ? $lastpengeluaran->nobukti_pengeluaran : '';
+            $last_no_bukti = $lastpengeluaran != null ? $lastpengeluaran->no_bukti : '';
             $no_bukti = buatkode($last_no_bukti, 'GBK/' . $bulan . $thn . "/", 3);
 
 
