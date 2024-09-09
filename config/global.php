@@ -82,6 +82,7 @@ return  [
         'gm marketing',
         'manager keuangan',
         'direktur',
+        'staff keuangan',
         'regional sales manager',
         'asst. manager hrd'
     ],
