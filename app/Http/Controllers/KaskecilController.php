@@ -197,8 +197,9 @@ class KaskecilController extends Controller
     public function update(Request $request, $id)
     {
 
-        dd($id);
+
         $id = Crypt::decrypt($id);
+        dd($id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
         if (!$user->hasRole($roles_access_all_cabang)) {
