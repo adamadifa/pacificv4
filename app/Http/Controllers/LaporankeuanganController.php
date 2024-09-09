@@ -1778,11 +1778,13 @@ class LaporankeuanganController extends Controller
         $qsaldoawal->where('kode_cabang', $request->kode_cabang);
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
+                echo 1;
                 $qsaldoawal->where('kode_cabang', $request->kode_cabang);
-            } else {
+                echo 2;
                 $qsaldoawal->where('kode_cabang', auth()->user()->kode_cabang);
             }
         } else {
+            echo 3;
             $qsaldoawal->where('kode_cabang', $request->kode_cabang);
         }
         $saldoawal = $qsaldoawal->first();
