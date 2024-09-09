@@ -18,6 +18,7 @@ class InsentifController extends Controller
     public function index(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_pjp = config('global.roles_access_all_pjp');
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $departemen = Departemen::orderBy('kode_dept')->get();
@@ -40,6 +41,8 @@ class InsentifController extends Controller
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
         }
         $query->join('hrd_karyawan', 'hrd_insentif.nik', '=', 'hrd_karyawan.nik');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+
         $query->leftJoin(
             DB::raw("(
                 SELECT
@@ -51,6 +54,10 @@ class InsentifController extends Controller
                 $join->on('hrd_insentif.kode_insentif', '=', 'lastinsentif.kode_insentif');
             }
         );
+
+        if (!$user->hasRole($roles_access_all_pjp)) {
+            $query->where('hrd_jabatan.kategori', 'NM');
+        }
         $query->orderBy('kode_insentif', 'desc');
         $insentif = $query->paginate('15');
         return view('datamaster.insentif.index', compact('cabang', 'departemen', 'group', 'insentif'));
