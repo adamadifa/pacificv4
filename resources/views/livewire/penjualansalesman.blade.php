@@ -61,7 +61,7 @@
                         </div>
                         <div>
                             <span class="badge bg-info">
-                                {{ $d->jenis_bayar == 'T' ? 'TUNAI' : 'KREDIT' }}
+                                {{ $d->jenis_transaksi == 'T' ? 'TUNAI' : 'KREDIT' }}
                             </span>
 
                         </div>
