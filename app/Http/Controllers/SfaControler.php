@@ -623,7 +623,7 @@ class SfaControler extends Controller
             if (!empty($dus)) {
                 $datadetail[] = new item($dus . " Dus x " . $d->harga_dus, formatAngka($dus * $d->harga_dus));
             }
-            if (!empty($pacl)) {
+            if (!empty($pack)) {
                 $datadetail[] = new item($pack . " Pack x " . $d->harga_pack, formatAngka($pack * $d->harga_pack));
             }
             if (!empty($pcs)) {
