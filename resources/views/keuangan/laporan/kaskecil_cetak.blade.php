@@ -87,7 +87,7 @@
                 </tbody>
                 <tfoot class="table-dark">
                     <tr>
-                        <th colspan="5">TOTAL</th>
+                        <th colspan="6">TOTAL</th>
                         <th class="right">{{ formatAngka($total_penerimaan) }}</th>
                         <th class="right">{{ formatAngka($total_pengeluaran) }}</th>
                         <th class="right">{{ formatAngka($saldo) }}</th>
