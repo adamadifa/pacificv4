@@ -407,7 +407,34 @@
 
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
 <x-modal-form id="modaleditProduk" size="" show="loadmodaleditProduk" title="" />
-
+<div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel18">Data Pelanggan</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table" id="tabelpelanggan" width="100%">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>No.</th>
+                                <th>Kode</th>
+                                <th>Nama Pelanggan</th>
+                                <th>Salesman</th>
+                                <th>Wilayah</th>
+                                <th>Status</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @push('myscript')
 <script type="text/javascript">
@@ -438,7 +465,77 @@
 
 
 
+        $('#tabelpelanggan').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [
+                [2, 'asc']
+            ],
+            ajax: '{{ url()->current() }}',
+            bAutoWidth: false,
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false,
+                    width: '5%'
+                },
+                {
+                    data: 'kode_pelanggan',
+                    name: 'kode_pelanggan',
+                    orderable: true,
+                    searchable: true,
+                    width: '10%'
+                },
+                {
+                    data: 'nama_pelanggan',
+                    name: 'nama_pelanggan',
+                    orderable: true,
+                    searchable: true,
+                    width: '30%'
+                },
+                {
+                    data: 'nama_salesman',
+                    name: 'nama_salesman',
+                    orderable: true,
+                    searchable: false,
+                    width: '20%'
+                },
 
+                {
+                    data: 'nama_wilayah',
+                    name: 'nama_wilayah',
+                    orderable: true,
+                    searchable: false,
+                    width: '30%'
+                },
+                {
+                    data: 'status_pelanggan',
+                    name: 'status_pelanggan',
+                    orderable: true,
+                    searchable: false,
+                    width: '30%'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    width: '5%'
+                }
+            ],
+
+            rowCallback: function(row, data, index) {
+                if (data.status_pelanggan == "NonAktif") {
+                    $("td", row).addClass("bg-danger text-white");
+                }
+            }
+        });
+
+        // $("#nama_pelanggan").on('click focus', function(e) {
+        //     e.preventDefault();
+        //     $("#modalPelanggan").modal("show");
+        // });
 
         //Cek file Foto Pelanggan
         function checkFileExistence(fileFoto) {
@@ -497,30 +594,34 @@
                     const unpaid_faktur = response.data.unpaid_faktur - 1;
                     const max_faktur = response.data.jml_faktur;
                     const siklus_pembayaran = response.data.siklus_pembayaran;
-                    if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0') {
-                        SwalWarning("nama_pelanggan", "Melebihi Maksimal Faktur Kredit");
-                        $("#no_faktur").val("");
-                        $("#tanggal").val("");
-                        $("#nama_pelanggan").val("");
-                        $("#kode_pelanggan").val("");
-                        $("#kode_salesman").val("");
-                        $("#nama_salesman").val("");
-                        $('#latitude').text("");
-                        $('#longitude').text("");
-                        $('#no_hp_pelanggan').text("");
-                        $('#limit_pelanggan_text').text("");
-                        $('#limit_pelanggan').val("");
-                        $('#alamat_pelanggan').text("");
-                        $('#sisa_piutang_text').text("");
-                        $("#jmlfaktur_kredit").text("");
-                        let fileFoto = "notfound.jpg";
-                        checkFileExistence(fileFoto);
-                        //Data Salesman
-                    } else {
-                        $("#jmlfaktur_kredit").text(response.data.unpaid_faktur - 1);
-                        $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
-                        $("#max_kredit").val(response.data.jml_faktur);
-                    }
+                    // if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0') {
+                    //     SwalWarning("nama_pelanggan", "Melebihi Maksimal Faktur Kredit");
+                    //     $("#no_faktur").val("");
+                    //     $("#tanggal").val("");
+                    //     $("#nama_pelanggan").val("");
+                    //     $("#kode_pelanggan").val("");
+                    //     $("#kode_salesman").val("");
+                    //     $("#nama_salesman").val("");
+                    //     $('#latitude').text("");
+                    //     $('#longitude').text("");
+                    //     $('#no_hp_pelanggan').text("");
+                    //     $('#limit_pelanggan_text').text("");
+                    //     $('#limit_pelanggan').val("");
+                    //     $('#alamat_pelanggan').text("");
+                    //     $('#sisa_piutang_text').text("");
+                    //     $("#jmlfaktur_kredit").text("");
+                    //     let fileFoto = "notfound.jpg";
+                    //     checkFileExistence(fileFoto);
+                    //     //Data Salesman
+                    // } else {
+                    //     $("#jmlfaktur_kredit").text(response.data.unpaid_faktur - 1);
+                    //     $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
+                    //     $("#max_kredit").val(response.data.jml_faktur);
+                    // }
+
+                    $("#jmlfaktur_kredit").text(response.data.unpaid_faktur - 1);
+                    $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
+                    $("#max_kredit").val(response.data.jml_faktur);
 
                     buttonEnable();
                 }
@@ -1369,20 +1470,22 @@
             } else if (jenis_transaksi == "T" && jenis_bayar == "") {
                 SwalWarning('jenis_bayar', 'Jenis Bayar Tidak Boleh Kosong');
                 return false;
-            } else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >
-                parseInt(limit_pelanggan)) {
-                SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
-                return false;
-            } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
-                parseInt(limit_pelanggan)) {
-                SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
-                return false;
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
                 return false;
             } else {
                 buttonDisable();
             }
+            // else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >
+            //     parseInt(limit_pelanggan)) {
+            //     SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+            //     return false;
+            // } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
+            //     parseInt(limit_pelanggan)) {
+            //     SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+            //     return false;
+
+            // }
         });
 
     });

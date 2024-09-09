@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barangpembelian;
 use App\Models\Kategoribarangpembelian;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
@@ -14,12 +15,20 @@ class BarangpembelianController extends Controller
 
     public function index(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
         $query = Barangpembelian::query();
         if (!empty($request->nama_barang)) {
             $query->where('nama_barang', 'like', '%' . $request->nama_barang . '%');
         }
         $query->select('pembelian_barang.*', 'nama_kategori');
         $query->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori');
+        if ($user->hasRole('admin gudang bahan')) {
+            $query->where('pembelian_barang.kode_group', 'GDB');
+        } else if ($user->hasRole('admin ga')) {
+            $query->where('pembelian_barang.kode_group', 'GAF');
+        } else if ($user->hasRole('admin gudang logistik')) {
+            $query->where('pembelian_barang.kode_group', 'GDL');
+        }
         $query->orderBy('created_at', 'desc');
         $barang = $query->paginate(10);
         $barang->appends(request()->all());

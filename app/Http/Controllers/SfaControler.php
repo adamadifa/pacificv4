@@ -459,6 +459,7 @@ class SfaControler extends Controller
         $data['jenis_bayar'] = config('penjualan.jenis_bayar');
         $pnj = new Penjualan();
         $penjualan = $pnj->getFaktur($no_faktur);
+        // dd($penjualan);
         $data['penjualan'] = $penjualan;
 
         $detailpenjualan = new Penjualan();
@@ -622,7 +623,7 @@ class SfaControler extends Controller
             if (!empty($dus)) {
                 $datadetail[] = new item($dus . " Dus x " . $d->harga_dus, formatAngka($dus * $d->harga_dus));
             }
-            if (!empty($pacl)) {
+            if (!empty($pack)) {
                 $datadetail[] = new item($pack . " Pack x " . $d->harga_pack, formatAngka($pack * $d->harga_pack));
             }
             if (!empty($pcs)) {

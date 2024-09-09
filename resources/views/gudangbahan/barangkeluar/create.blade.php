@@ -1,6 +1,6 @@
 <form action="{{ route('barangkeluargudangbahan.store') }}" method="post" id="formcreateBarangkeluargudangbahan">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_bukti" readonly="true" />
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
     <div class="form-group mb-3">
         <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
@@ -12,8 +12,8 @@
     </div>
     <div class="row" id="cabang-section">
         <div class="col">
-            <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                select2="select2Kodecabang" upperCase="true" />
+            <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
+                upperCase="true" />
         </div>
     </div>
     <div class="row" id="unit-section">
@@ -40,8 +40,8 @@
     </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang"
-                upperCase="true" select2="select2Kodebarang" showKey="true" />
+            <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang" upperCase="true"
+                select2="select2Kodebarang" showKey="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-box" label="Qty Unit" name="qty_unit" align="right" numberFormat="true" />
@@ -77,8 +77,7 @@
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-3">
-                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox"
-                    value="" id="defaultCheck3">
+                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value="" id="defaultCheck3">
                 <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
             </div>
             <div class="form-group" id="saveButton">
@@ -321,18 +320,6 @@
                     showConfirmButton: true,
                     didClose: (e) => {
                         formCreate.find("#kode_barang").focus();
-                    },
-                });
-
-                return false;
-            } else if (no_bukti == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "No. Bukti Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        formCreate.find("#no_bukti").focus();
                     },
                 });
 

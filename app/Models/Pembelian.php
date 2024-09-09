@@ -144,7 +144,7 @@ class Pembelian extends Model
         }
 
         if ($user->hasRole(['admin gudang logistik'])) {
-            $query->where('pembelian.kode_asal_pengajuan', auth()->user()->kode_dept);
+            $query->where('pembelian.kode_asal_pengajuan', 'GDL');
         }
 
         if ($user->hasRole(['admin maintenance'])) {

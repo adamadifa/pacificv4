@@ -172,6 +172,12 @@ class PenjualanController extends Controller
         $penjualan = $pnj->getFaktur($no_faktur);
         $data['penjualan'] = $penjualan;
 
+        if (!empty($penjualan->kode_cabang_pkp)) {
+            $kode_cabang = $penjualan->kode_cabang_pkp;
+        } else {
+            $kode_cabang = $penjualan->kode_cabang;
+        }
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $detailpenjualan = new Penjualan();
         $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
 
@@ -188,6 +194,14 @@ class PenjualanController extends Controller
 
         $detailpenjualan = new Penjualan();
         $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
+
+        if (!empty($penjualan->kode_cabang_pkp)) {
+            $kode_cabang = $penjualan->kode_cabang_pkp;
+        } else {
+            $kode_cabang = $penjualan->kode_cabang;
+        }
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
         if ($type == 1) {
             return view('marketing.penjualan.cetaksuratjalan1', $data);
         } else {
@@ -348,7 +362,7 @@ class PenjualanController extends Controller
         if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
             $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
                 ->where('tanggal', '>=', $start_date)
-                ->where('kode_sales', $salesman->kode_sales)
+                ->whereRaw('MID(no_faktur,6,1)="' . $salesman->kode_sales . '"')
                 ->where('salesman.kode_cabang', $salesman->kode_cabang)
                 ->whereRaw('YEAR(tanggal)="' . $thn . '"')
                 ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
@@ -440,9 +454,18 @@ class PenjualanController extends Controller
             //No. Faktur
 
             if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
+                // $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                //     ->where('tanggal', '>=', $start_date)
+                //     ->where('kode_sales', $salesman->kode_sales)
+                //     ->where('salesman.kode_cabang', $salesman->kode_cabang)
+                //     ->whereRaw('YEAR(tanggal)="' . $thn . '"')
+                //     ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
+                //     ->orderBy('no_faktur', 'desc')
+                //     ->first();
+
                 $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
                     ->where('tanggal', '>=', $start_date)
-                    ->where('kode_sales', $salesman->kode_sales)
+                    ->whereRaw('MID(no_faktur,6,1)="' . $salesman->kode_sales . '"')
                     ->where('salesman.kode_cabang', $salesman->kode_cabang)
                     ->whereRaw('YEAR(tanggal)="' . $thn . '"')
                     ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
@@ -619,6 +642,35 @@ class PenjualanController extends Controller
     public function edit($no_faktur)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (request()->ajax()) {
+            $query = Pelanggan::query();
+            $query->select(
+                'pelanggan.*',
+                'wilayah.nama_wilayah',
+                'salesman.nama_salesman',
+                DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan")
+            );
+            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                } else {
+                    $query->where('pelanggan.kode_cabang', auth()->user()->kode_cabang);
+                }
+            }
+            $pelanggan = $query;
+            return DataTables::of($pelanggan)
+                ->addIndexColumn()
+                ->addColumn('action', function ($item) {
+                    $button =   '<a href="#" kode_pelanggan="' . Crypt::encrypt($item->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    return $button;
+                })
+                ->make();
+        }
         $pj = new Penjualan();
         $penjualan = $pj->getFaktur($no_faktur);
         $data['penjualan'] = $penjualan;
@@ -1001,6 +1053,7 @@ class PenjualanController extends Controller
 
             DB::commit();
 
+            //dd($request->no_faktur);
             if ($user->hasRole('salesman')) {
                 return redirect(route('sfa.showpenjualan', Crypt::encrypt($request->no_faktur)))->with(messageSuccess('Data Berhasil Disimpan'));
             } else {

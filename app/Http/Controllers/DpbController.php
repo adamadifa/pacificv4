@@ -278,7 +278,7 @@ class DpbController extends Controller
             'kode_salesman' => 'required',
             'kode_kendaraan' => 'required',
             'tujuan' => 'required',
-            'kode_driver' => 'required'
+            // 'kode_driver' => 'required'
         ]);
 
         $kode_produk = $request->kode_produk;

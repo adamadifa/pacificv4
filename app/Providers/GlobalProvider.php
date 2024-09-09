@@ -34,7 +34,8 @@ class Globalprovider extends ServiceProvider
                 'direktur',
                 'regional sales manager',
                 'asst. manager hrd',
-                'staff keuangan'
+                'staff keuangan',
+                'admin pajak',
             ];
             $start_periode = '2023-01-01';
             $end_periode = date('Y') . '-12-31';

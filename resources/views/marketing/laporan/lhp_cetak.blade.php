@@ -106,6 +106,7 @@
                     @foreach ($produk as $d)
                         @php
                             ${"total_qty_$d->kode_produk"} = 0;
+                            ${"total_qty_batal_$d->kode_produk"} = 0;
                         @endphp
                     @endforeach
                     @php
@@ -115,23 +116,60 @@
                         $total_giro = 0;
                         $total_voucher = 0;
                         $total_kredit = 0;
+
+                        $total_tunai_batal = 0;
+                        $total_titipan_batal = 0;
+                        $total_transfer_batal = 0;
+                        $total_giro_batal = 0;
+                        $total_voucher_batal = 0;
+                        $total_kredit_batal = 0;
                     @endphp
                     @foreach ($lhp as $d)
                         @php
-                            $total_tunai += $d['jml_tunai'];
-                            $total_titipan += $d['jml_titipan'];
-                            $total_voucher += $d['jml_voucher'];
-                            $total_kredit += $d['jml_kredit'];
-                            $total_transfer += $d['jml_transfer'];
-                            $total_giro += $d['jml_giro'];
+
+                            if ($d['status_batal'] == 1) {
+                                $color = 'red';
+                                $total_tunai_batal += $d['jml_tunai'];
+                                $total_titipan_batal += $d['jml_titipan'];
+                                $total_voucher_batal += $d['jml_voucher'];
+                                $total_kredit_batal += $d['jml_kredit'];
+                                $total_transfer_batal += $d['jml_transfer'];
+                                $total_giro_batal += $d['jml_giro'];
+
+                                $total_tunai += 0;
+                                $total_titipan += 0;
+                                $total_voucher += 0;
+                                $total_kredit += 0;
+                                $total_transfer += 0;
+                                $total_giro += 0;
+                            } else {
+                                $color = '';
+                                $total_tunai += $d['jml_tunai'];
+                                $total_titipan += $d['jml_titipan'];
+                                $total_voucher += $d['jml_voucher'];
+                                $total_kredit += $d['jml_kredit'];
+                                $total_transfer += $d['jml_transfer'];
+                                $total_giro += $d['jml_giro'];
+
+                                $total_tunai_batal += 0;
+                                $total_titipan_batal += 0;
+                                $total_voucher_batal += 0;
+                                $total_kredit_batal += 0;
+                                $total_transfer_batal += 0;
+                                $total_giro_batal += 0;
+                            }
                         @endphp
-                        <tr>
-                            <td>{{ formatName2($d['nama_pelanggan']) }}</td>
+                        <tr style="background-color: {{ $color }}">
+                            <td>{{ $d['nama_pelanggan'] }}</td>
                             <td>{{ $d['no_faktur'] }}</td>
                             @if (!$produk->isEmpty())
                                 @foreach ($produk as $p)
                                     @php
-                                        ${"total_qty_$p->kode_produk"} += $d["qty_$p->kode_produk"];
+                                        if ($d['status_batal'] == 1) {
+                                            ${"total_qty_batal_$p->kode_produk"} += $d["qty_$p->kode_produk"];
+                                        } else {
+                                            ${"total_qty_$p->kode_produk"} += $d["qty_$p->kode_produk"];
+                                        }
                                         $qty = $d["qty_$p->kode_produk"] / $p->isi_pcs_dus;
                                     @endphp
                                     <td class="center">{{ formatAngkaDesimal($qty) }}</td>
@@ -168,6 +206,26 @@
                         <th class="right">{{ formatAngka($total_transfer) }}</th>
                         <th class="right">{{ formatAngka($total_giro) }}</th>
                         <th class="right">{{ formatAngka($total_voucher) }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">BATAL</th>
+                        @if (!$produk->isEmpty())
+                            @foreach ($produk as $d)
+                                @php
+                                    $total_qty = ${"total_qty_batal_$d->kode_produk"} / $d->isi_pcs_dus;
+                                @endphp
+                                <th class="center">{{ formatAngkaDesimal($total_qty) }}</th>
+                            @endforeach
+                        @else
+                            <th style="background-color: red"></th>
+                        @endif
+                        <th class="right">{{ formatAngka($total_tunai_batal) }}</th>
+                        <th class="right">{{ formatAngka($total_kredit_batal) }}</th>
+                        <th class="right">{{ formatAngka($total_titipan_batal) }}</th>
+                        <th class="right">{{ formatAngka($total_transfer_batal) }}</th>
+                        <th class="right">{{ formatAngka($total_giro_batal) }}</th>
+                        <th class="right">{{ formatAngka($total_voucher_batal) }}</th>
+
                     </tr>
                     <tr>
                         <th colspan="2">BS</th>

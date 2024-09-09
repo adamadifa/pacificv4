@@ -87,8 +87,22 @@ class BarangkeluargudangbahanController extends Controller
             } else {
                 $keterangan_barang_keluar = $request->keterangan_barang_keluar;
             }
+
+            $bulan = date('m', strtotime($request->tanggal));
+            $tahun = date('Y', strtotime($request->tanggal));
+            $thn = substr($tahun, 2, 2);
+            $dari = $tahun . "-" . $bulan . "-01";
+            $sampai = date("Y-m-t", strtotime($dari));
+            $lastpengeluaran = Barangkeluargudangbahan::select('no_bukti')
+                ->whereBetween('tanggal', [$dari, $sampai])
+                ->orderBy('no_bukti', 'desc')
+                ->first();
+            $last_no_bukti = $lastpengeluaran != null ? $lastpengeluaran->no_bukti : '';
+            $no_bukti = buatkode($last_no_bukti, 'GBK/' . $bulan . $thn . "/", 3);
+
+
             Barangkeluargudangbahan::create([
-                'no_bukti' => $request->no_bukti,
+                'no_bukti' => $no_bukti,
                 'tanggal' => $request->tanggal,
                 'kode_jenis_pengeluaran' => $request->kode_jenis_pengeluaran,
                 'keterangan' => $keterangan_barang_keluar,
@@ -99,7 +113,7 @@ class BarangkeluargudangbahanController extends Controller
             //Simpan Detail
             for ($i = 0; $i < count($kode_barang); $i++) {
                 $detail[] = [
-                    'no_bukti' => $request->no_bukti,
+                    'no_bukti' => $no_bukti,
                     'kode_barang' => $kode_barang[$i],
                     'qty_unit' => toNumber($qty_unit[$i]),
                     'qty_berat' => toNumber($qty_berat[$i]),

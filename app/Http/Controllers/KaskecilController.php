@@ -50,7 +50,17 @@ class KaskecilController extends Controller
         $qsaldoawal = Kaskecil::query();
         $qsaldoawal->selectRaw("SUM(IF( `debet_kredit` = 'K', jumlah, 0)) -SUM(IF( `debet_kredit` = 'D', jumlah, 0)) as saldo_awal");
         $qsaldoawal->whereBetween('tanggal', [$awal_kas_kecil, $sehariSebelumDari]);
-        $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
+            } else {
+                $qsaldoawal->where('kode_cabang', auth()->user()->kode_cabang);
+            }
+        } else {
+            $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
+        }
+
+        // $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
         $saldoawal = $qsaldoawal->first();
 
         $data['saldoawal'] = $saldoawal;
@@ -172,6 +182,7 @@ class KaskecilController extends Controller
     {
         $id = Crypt::decrypt($id);
         $data['kaskecil'] = Kaskecil::where('keuangan_kaskecil.id', $id)
+            ->select('keuangan_kaskecil.*', 'kode_klaim')
             ->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id')
             ->first();
 
@@ -188,7 +199,9 @@ class KaskecilController extends Controller
     public function update(Request $request, $id)
     {
 
+
         $id = Crypt::decrypt($id);
+        // dd($id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
         if (!$user->hasRole($roles_access_all_cabang)) {
@@ -201,12 +214,15 @@ class KaskecilController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
+        // dd($id);
         DB::beginTransaction();
         try {
 
             $kaskecil = Kaskecil::where('keuangan_kaskecil.id', $id)
                 ->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id')
                 ->first();
+
+            //dd($kaskecil);
             $cektutuplaporankaskecil = cektutupLaporan($kaskecil->tanggal, "kaskecil");
             if ($cektutuplaporankaskecil > 0) {
                 return Redirect::back()->with(['warning' => 'Laporan sudah tutup']);
