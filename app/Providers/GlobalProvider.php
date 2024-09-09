@@ -125,7 +125,9 @@ class Globalprovider extends ServiceProvider
                 'bpjstenagakerja.index',
                 'barangproduksi.index',
                 'bufferstok.index',
-                'driverhelper.index'
+                'driverhelper.index',
+                'angkutan.index',
+                'tujuanangkutan.index'
             ];
 
             //Produksi
