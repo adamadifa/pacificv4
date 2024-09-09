@@ -348,7 +348,7 @@ class PenjualanController extends Controller
         if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
             $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
                 ->where('tanggal', '>=', $start_date)
-                ->where('kode_sales', $salesman->kode_sales)
+                ->whereRaw('MID(no_faktur,6,1)="' . $salesman->kode_sales . '"')
                 ->where('salesman.kode_cabang', $salesman->kode_cabang)
                 ->whereRaw('YEAR(tanggal)="' . $thn . '"')
                 ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
