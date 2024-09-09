@@ -1774,8 +1774,8 @@ class LaporankeuanganController extends Controller
 
         $qsaldoawal = Kaskecil::query();
         $qsaldoawal->selectRaw("SUM(IF( `debet_kredit` = 'K', jumlah, 0)) -SUM(IF( `debet_kredit` = 'D', jumlah, 0)) as saldo_awal");
-        $qsaldoawal->whereBetween('tanggald', [$awal_kas_kecil, $sehariSebelumDari]);
-        $qsaldoawal->where('kode_cabang', $request->kode_cabang);
+        $qsaldoawal->whereBetween('tanggal', [$awal_kas_kecil, $sehariSebelumDari]);
+        // $qsaldoawal->where('kode_cabang', $request->kode_cabang);
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $qsaldoawal->where('kode_cabang', $request->kode_cabang);
