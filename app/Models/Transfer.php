@@ -20,7 +20,7 @@ class Transfer extends Model
     {
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        dd($roles_access_all_cabang);
+        // dd($roles_access_all_cabang);
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
         $query = Transfer::query();
