@@ -24,8 +24,6 @@ class BarangpembelianController extends Controller
         $query->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori');
         if ($user->hasRole('admin gudang bahan')) {
             $query->where('pembelian_barang.kode_group', 'GDB');
-        } else if ($user->hasRole('admin gudang logistik')) {
-            $query->where('pembelian_barang.kode_group', 'GDL');
         } else if ($user->hasRole('admin ga')) {
             $query->where('pembelian_barang.kode_group', 'GAF');
         }
