@@ -25,7 +25,7 @@ class Kasbon extends Model
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
 
-
+        dd($dept_access);
         $query = Kasbon::query();
         $query->select(
             'keuangan_kasbon.*',
