@@ -70,7 +70,7 @@ class DashboardController extends Controller
             ->where('marketing_penjualan.status_batal', 0)
             ->first();
 
-        dd($data['penjualan']);
+        // dd($data['penjualan']);
 
         $data['pembayaran'] = Historibayarpenjualan::select(
             DB::raw("SUM(jumlah) as total")
