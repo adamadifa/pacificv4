@@ -532,10 +532,10 @@
             }
         });
 
-        $("#nama_pelanggan").on('click focus', function(e) {
-            e.preventDefault();
-            $("#modalPelanggan").modal("show");
-        });
+        // $("#nama_pelanggan").on('click focus', function(e) {
+        //     e.preventDefault();
+        //     $("#modalPelanggan").modal("show");
+        // });
 
         //Cek file Foto Pelanggan
         function checkFileExistence(fileFoto) {
