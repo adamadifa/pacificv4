@@ -210,6 +210,7 @@ class KaskecilController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
+        dd($id);
         DB::beginTransaction();
         try {
 
