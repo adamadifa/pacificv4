@@ -24,7 +24,7 @@
                     <div class="card">
                         <div class="card-body">
                             <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode" value="{{ $penjualan->no_faktur }}"
-                                disabled="true" />
+                                readonly="true" />
                             <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date"
                                 value="{{ $penjualan->tanggal }}" />
                             <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user" readonly="true" />
