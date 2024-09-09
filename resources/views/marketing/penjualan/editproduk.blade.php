@@ -139,14 +139,16 @@
 
                 if (isi_pcs_pack == "" || isi_pcs_pack === 0) {
                     form.find("#harga_pack").prop('disabled', true);
+                    form.find("#harga_pack").prop('disabled', true);
                 } else {
+                    form.find("#harga_pack").prop('disabled', false);
                     form.find("#harga_pack").prop('disabled', false);
                 }
                 form.find("#harga_pcs").prop('disabled', false);
             } else {
-                form.find("#harga_dus").prop('disabled', true);
-                form.find("#harga_pack").prop('disabled', true);
-                form.find("#harga_pcs").prop('disabled', true);
+                // form.find("#harga_dus").prop('disabled', true);
+                // form.find("#harga_pack").prop('disabled', true);
+                // form.find("#harga_pcs").prop('disabled', true);
             }
         }
 
