@@ -821,7 +821,7 @@ class LaporanmarketingController extends Controller
 
         $query = Historibayarpenjualan::query();
         $query->select(
-            'marketing_penjualan_historibayar.no_faktur',
+            'marketing_penjualan_historibayar.no_fakturd',
             DB::raw('datediff(marketing_penjualan_historibayar.tanggal,marketing_penjualan.tanggal) as ljt'),
             'salesman.nama_salesman',
             'nama_wilayah',
