@@ -594,30 +594,34 @@
                     const unpaid_faktur = response.data.unpaid_faktur - 1;
                     const max_faktur = response.data.jml_faktur;
                     const siklus_pembayaran = response.data.siklus_pembayaran;
-                    if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0') {
-                        SwalWarning("nama_pelanggan", "Melebihi Maksimal Faktur Kredit");
-                        $("#no_faktur").val("");
-                        $("#tanggal").val("");
-                        $("#nama_pelanggan").val("");
-                        $("#kode_pelanggan").val("");
-                        $("#kode_salesman").val("");
-                        $("#nama_salesman").val("");
-                        $('#latitude').text("");
-                        $('#longitude').text("");
-                        $('#no_hp_pelanggan').text("");
-                        $('#limit_pelanggan_text').text("");
-                        $('#limit_pelanggan').val("");
-                        $('#alamat_pelanggan').text("");
-                        $('#sisa_piutang_text').text("");
-                        $("#jmlfaktur_kredit").text("");
-                        let fileFoto = "notfound.jpg";
-                        checkFileExistence(fileFoto);
-                        //Data Salesman
-                    } else {
-                        $("#jmlfaktur_kredit").text(response.data.unpaid_faktur - 1);
-                        $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
-                        $("#max_kredit").val(response.data.jml_faktur);
-                    }
+                    // if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0') {
+                    //     SwalWarning("nama_pelanggan", "Melebihi Maksimal Faktur Kredit");
+                    //     $("#no_faktur").val("");
+                    //     $("#tanggal").val("");
+                    //     $("#nama_pelanggan").val("");
+                    //     $("#kode_pelanggan").val("");
+                    //     $("#kode_salesman").val("");
+                    //     $("#nama_salesman").val("");
+                    //     $('#latitude').text("");
+                    //     $('#longitude').text("");
+                    //     $('#no_hp_pelanggan').text("");
+                    //     $('#limit_pelanggan_text').text("");
+                    //     $('#limit_pelanggan').val("");
+                    //     $('#alamat_pelanggan').text("");
+                    //     $('#sisa_piutang_text').text("");
+                    //     $("#jmlfaktur_kredit").text("");
+                    //     let fileFoto = "notfound.jpg";
+                    //     checkFileExistence(fileFoto);
+                    //     //Data Salesman
+                    // } else {
+                    //     $("#jmlfaktur_kredit").text(response.data.unpaid_faktur - 1);
+                    //     $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
+                    //     $("#max_kredit").val(response.data.jml_faktur);
+                    // }
+
+                    $("#jmlfaktur_kredit").text(response.data.unpaid_faktur - 1);
+                    $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
+                    $("#max_kredit").val(response.data.jml_faktur);
 
                     buttonEnable();
                 }
