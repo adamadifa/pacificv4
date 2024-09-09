@@ -14,7 +14,7 @@
             'pembayarankasbon.index',
             'piutangkaryawan.index',
             'kontrabonpembelian.index',
-            'kontrabonangkutan.index',
+            // 'kontrabonangkutan.index',
             'keu.kaskecil',
             'keu.ledger',
             'keu.saldokasbesar',
