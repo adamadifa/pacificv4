@@ -73,7 +73,8 @@ return  [
         'gm operasional',
         'manager keuangan',
         'direktur',
-        'asst. manager hrd'
+        'asst. manager hrd',
+        'staff keuangan'
     ],
     'roles_show_cabang' => [
         'super admin',
@@ -92,7 +93,8 @@ return  [
         'direktur',
         'asst. manager hrd',
         'spv presensi',
-        'spv recruitment'
+        'spv recruitment',
+        'staff keuangan'
     ],
 
     //Pinjaman
