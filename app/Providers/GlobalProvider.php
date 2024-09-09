@@ -127,7 +127,8 @@ class Globalprovider extends ServiceProvider
                 'bufferstok.index',
                 'driverhelper.index',
                 'angkutan.index',
-                'tujuanangkutan.index'
+                'tujuanangkutan.index',
+                'barangpembelian.index'
             ];
 
             //Produksi
