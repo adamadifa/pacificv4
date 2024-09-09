@@ -42,6 +42,7 @@ class GajiController extends Controller
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
         }
         $query->join('hrd_karyawan', 'hrd_gaji.nik', '=', 'hrd_karyawan.nik');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->leftJoin(
             DB::raw("(
                 SELECT
