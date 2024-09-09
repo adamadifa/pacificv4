@@ -106,6 +106,7 @@
                     @foreach ($produk as $d)
                         @php
                             ${"total_qty_$d->kode_produk"} = 0;
+                            ${"total_qty_batal_$d->kode_produk"} = 0;
                         @endphp
                     @endforeach
                     @php
@@ -164,7 +165,11 @@
                             @if (!$produk->isEmpty())
                                 @foreach ($produk as $p)
                                     @php
-                                        ${"total_qty_$p->kode_produk"} += $d["qty_$p->kode_produk"];
+                                        if ($d['status_batal'] == 1) {
+                                            ${"total_qty_batal_$p->kode_produk"} += $d["qty_$p->kode_produk"];
+                                        } else {
+                                            ${"total_qty_$p->kode_produk"} += $d["qty_$p->kode_produk"];
+                                        }
                                         $qty = $d["qty_$p->kode_produk"] / $p->isi_pcs_dus;
                                     @endphp
                                     <td class="center">{{ formatAngkaDesimal($qty) }}</td>
@@ -207,7 +212,7 @@
                         @if (!$produk->isEmpty())
                             @foreach ($produk as $d)
                                 @php
-                                    $total_qty = ${"total_qty_$d->kode_produk"} / $d->isi_pcs_dus;
+                                    $total_qty = ${"total_qty_batal_$d->kode_produk"} / $d->isi_pcs_dus;
                                 @endphp
                                 <th class="center">{{ formatAngkaDesimal($total_qty) }}</th>
                             @endforeach
