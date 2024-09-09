@@ -76,6 +76,7 @@ return  [
         'asst. manager hrd',
         'staff keuangan',
         'admin pajak',
+
     ],
     'roles_show_cabang' => [
         'super admin',

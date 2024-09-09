@@ -17,7 +17,9 @@ class GajiController extends Controller
 {
     public function index(Request $request)
     {
+
         $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_pjp = config('global.roles_access_all_pjp');
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $departemen = Departemen::orderBy('kode_dept')->get();
@@ -51,6 +53,9 @@ class GajiController extends Controller
                 $join->on('hrd_gaji.kode_gaji', '=', 'lastgaji.kode_gaji');
             }
         );
+        if (!$user->hasRole($roles_access_all_pjp)) {
+            $query->where('hrd_jabatan.kategori', 'NM');
+        }
         $query->orderBy('kode_gaji', 'desc');
         $gaji = $query->paginate('15');
         return view('datamaster.gaji.index', compact(
