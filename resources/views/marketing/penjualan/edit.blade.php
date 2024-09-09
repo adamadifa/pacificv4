@@ -407,7 +407,34 @@
 
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
 <x-modal-form id="modaleditProduk" size="" show="loadmodaleditProduk" title="" />
-
+<div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel18">Data Pelanggan</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table" id="tabelpelanggan" width="100%">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>No.</th>
+                                <th>Kode</th>
+                                <th>Nama Pelanggan</th>
+                                <th>Salesman</th>
+                                <th>Wilayah</th>
+                                <th>Status</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @push('myscript')
 <script type="text/javascript">
@@ -438,7 +465,77 @@
 
 
 
+        $('#tabelpelanggan').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [
+                [2, 'asc']
+            ],
+            ajax: '{{ url()->current() }}',
+            bAutoWidth: false,
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false,
+                    width: '5%'
+                },
+                {
+                    data: 'kode_pelanggan',
+                    name: 'kode_pelanggan',
+                    orderable: true,
+                    searchable: true,
+                    width: '10%'
+                },
+                {
+                    data: 'nama_pelanggan',
+                    name: 'nama_pelanggan',
+                    orderable: true,
+                    searchable: true,
+                    width: '30%'
+                },
+                {
+                    data: 'nama_salesman',
+                    name: 'nama_salesman',
+                    orderable: true,
+                    searchable: false,
+                    width: '20%'
+                },
 
+                {
+                    data: 'nama_wilayah',
+                    name: 'nama_wilayah',
+                    orderable: true,
+                    searchable: false,
+                    width: '30%'
+                },
+                {
+                    data: 'status_pelanggan',
+                    name: 'status_pelanggan',
+                    orderable: true,
+                    searchable: false,
+                    width: '30%'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    width: '5%'
+                }
+            ],
+
+            rowCallback: function(row, data, index) {
+                if (data.status_pelanggan == "NonAktif") {
+                    $("td", row).addClass("bg-danger text-white");
+                }
+            }
+        });
+
+        $("#nama_pelanggan").on('click focus', function(e) {
+            e.preventDefault();
+            $("#modalPelanggan").modal("show");
+        });
 
         //Cek file Foto Pelanggan
         function checkFileExistence(fileFoto) {
