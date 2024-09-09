@@ -728,18 +728,19 @@
                     },
                 });
                 return false;
-            } else if (kode_driver == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Driver Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        form.find("#kode_driver").focus();
-                    },
-                });
+                // }
+                //  else if (kode_driver == "") {
+                //     Swal.fire({
+                //         title: "Oops!",
+                //         text: "Driver Harus Diisi !",
+                //         icon: "warning",
+                //         showConfirmButton: true,
+                //         didClose: (e) => {
+                //             form.find("#kode_driver").focus();
+                //         },
+                //     });
 
-                return false;
+                //     return false;
             } else if (jenis_perhitungan == "") {
                 Swal.fire({
                     title: "Oops!",
