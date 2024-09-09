@@ -36,7 +36,7 @@ class Globalprovider extends ServiceProvider
                 'asst. manager hrd',
                 'staff keuangan'
             ];
-            $start_periode = '2018-01-01';
+            $start_periode = '2023-01-01';
             $end_periode = date('Y') . '-12-31';
             $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             if ($auth->check()) {
