@@ -54,7 +54,7 @@ class KaskecilController extends Controller
             if ($user->hasRole('regional sales manager')) {
                 $qsaldoawal->where('kode_cabang', $request->kode_cabang);
             } else {
-                $qsaldoawal->where('kode_cabang', auth()->user()->kode_cabang);
+                $qsaldoawal->where('kode_cabangd', auth()->user()->kode_cabang);
             }
         } else {
             $qsaldoawal->where('kode_cabang', $request->kode_cabang);
