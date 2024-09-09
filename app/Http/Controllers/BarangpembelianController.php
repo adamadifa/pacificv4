@@ -23,11 +23,11 @@ class BarangpembelianController extends Controller
         $query->select('pembelian_barang.*', 'nama_kategori');
         $query->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori');
         if ($user->hasRole('admin gudang bahan')) {
-            $query->where('kode_group', 'GDB');
+            $query->where('pembelian_barang.kode_group', 'GDB');
         } else if ($user->hasRole('admin gudang logistik')) {
-            $query->where('kode_group', 'GDL');
+            $query->where('pembelian_barang.kode_group', 'GDL');
         } else if ($user->hasRole('admin ga')) {
-            $query->where('kode_group', 'GAF');
+            $query->where('pembelian_barang.kode_group', 'GAF');
         }
         $query->orderBy('created_at', 'desc');
         $barang = $query->paginate(10);
