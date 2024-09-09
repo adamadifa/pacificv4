@@ -172,6 +172,12 @@ class PenjualanController extends Controller
         $penjualan = $pnj->getFaktur($no_faktur);
         $data['penjualan'] = $penjualan;
 
+        if (!empty($penjualan->kode_cabang_pkp)) {
+            $kode_cabang = $penjualan->kode_cabang_pkp;
+        } else {
+            $kode_cabang = $penjualan->kode_cabang;
+        }
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $detailpenjualan = new Penjualan();
         $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
 
@@ -188,6 +194,14 @@ class PenjualanController extends Controller
 
         $detailpenjualan = new Penjualan();
         $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
+
+        if (!empty($penjualan->kode_cabang_pkp)) {
+            $kode_cabang = $penjualan->kode_cabang_pkp;
+        } else {
+            $kode_cabang = $penjualan->kode_cabang;
+        }
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
         if ($type == 1) {
             return view('marketing.penjualan.cetaksuratjalan1', $data);
         } else {
