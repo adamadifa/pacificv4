@@ -80,7 +80,7 @@ class DashboardController extends Controller
             )
             ->where('marketing_penjualan.kode_salesman', auth()->user()->kode_salesman)
             ->where('marketing_penjualan.tanggal', $hariini)
-            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_batald', 0)
             ->first();
 
         dd($data['penjualan']);
