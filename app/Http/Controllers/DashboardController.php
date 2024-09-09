@@ -41,7 +41,7 @@ class DashboardController extends Controller
         } else if ($user->hasRole(['operation manager', 'sales marketing manager'])) {
             return $this->operationmanager();
         } else if ($user->hasRole('salesman')) {
-            return $this->dashboarddefault();
+            return $this->salesman();
         } else if ($user->hasRole('admin penjualan')) {
             return $this->operationmanager();
         } else if ($user->hasRole('gm operasional') || $user->hasRole('spv produksi') || $user->hasRole('manager produksi') || $user->hasRole('admin gudang pusat')) {
@@ -82,6 +82,8 @@ class DashboardController extends Controller
             ->where('marketing_penjualan.tanggal', $hariini)
             ->where('marketing_penjualan.status_batal', 0)
             ->first();
+
+        dd($data['penjualan']);
 
         $data['pembayaran'] = Historibayarpenjualan::select(
             DB::raw("SUM(jumlah) as total")
