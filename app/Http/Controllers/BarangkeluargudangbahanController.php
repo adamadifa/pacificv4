@@ -87,8 +87,21 @@ class BarangkeluargudangbahanController extends Controller
             } else {
                 $keterangan_barang_keluar = $request->keterangan_barang_keluar;
             }
+
+            $bulan = date('m', strtotime($request->tanggal));
+            $tahun = date('Y', strtotime($request->tanggal));
+            $dari = $tahun . "-" . $bulan . "-01";
+            $sampai = date("Y-m-t", strtotime($dari));
+            $lastpengeluaran = Barangkeluargudangbahan::select('no_bukti')
+                ->whereBetween('tanggal', [$dari, $sampai])
+                ->orderBy('no_bukti', 'desc')
+                ->first();
+            $last_no_bukti = $lastpengeluaran != null ? $lastpengeluaran->nobukti_pengeluaran : '';
+            $no_bukti = buatkode($last_no_bukti, 'GBK/' . $bulan . $tahun . "/", 3);
+
+
             Barangkeluargudangbahan::create([
-                'no_bukti' => $request->no_bukti,
+                'no_bukti' => $no_bukti,
                 'tanggal' => $request->tanggal,
                 'kode_jenis_pengeluaran' => $request->kode_jenis_pengeluaran,
                 'keterangan' => $keterangan_barang_keluar,
