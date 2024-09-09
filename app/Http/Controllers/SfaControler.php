@@ -459,7 +459,7 @@ class SfaControler extends Controller
         $data['jenis_bayar'] = config('penjualan.jenis_bayar');
         $pnj = new Penjualan();
         $penjualan = $pnj->getFaktur($no_faktur);
-        dd($penjualan);
+        // dd($penjualan);
         $data['penjualan'] = $penjualan;
 
         $detailpenjualan = new Penjualan();
