@@ -59,7 +59,8 @@ class KaskecilController extends Controller
         } else {
             $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
         }
-        $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
+
+        // $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
         $saldoawal = $qsaldoawal->first();
 
         $data['saldoawal'] = $saldoawal;
