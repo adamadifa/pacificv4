@@ -112,7 +112,7 @@ class BarangkeluargudangbahanController extends Controller
             //Simpan Detail
             for ($i = 0; $i < count($kode_barang); $i++) {
                 $detail[] = [
-                    'no_bukti' => $request->no_bukti,
+                    'no_bukti' => $no_bukti,
                     'kode_barang' => $kode_barang[$i],
                     'qty_unit' => toNumber($qty_unit[$i]),
                     'qty_berat' => toNumber($qty_berat[$i]),
