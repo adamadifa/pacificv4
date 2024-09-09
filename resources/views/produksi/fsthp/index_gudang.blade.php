@@ -38,3 +38,18 @@
     </div>
 </div>
 @endsection
+<x-modal-form id="mdldetailFsthp" size="modal-lg" show="loaddetailFsthp" title="Detail FSTHP " />
+@push('myscript')
+<script>
+    $(function() {
+
+
+        $(".showFsthp").click(function(e) {
+            var no_mutasi = $(this).attr("no_mutasi");
+            e.preventDefault();
+            $('#mdldetailFsthp').modal("show");
+            $("#loaddetailFsthp").load('/fsthp/' + no_mutasi + '/show');
+        });
+    });
+</script>
+@endpush
