@@ -86,21 +86,12 @@
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->hasAnyPermission(['kontrabonpembelian.index', 'kontrabonangkutan.index']))
-                @if (auth()->user()->hasRole('admin gudang pusat'))
-                    <li class="menu-item {{ request()->is(['kontrabonangkutan']) ? 'active' : '' }}">
-                        <a href="{{ route('kontrabonangkutan.index') }}" class="menu-link">
-                            <div>Kontrabon</div>
-                        </a>
-                    </li>
-                @else
-                    <li class="menu-item {{ request()->is(['kontrabonpembelian', 'kontrabonangkutan']) ? 'active' : '' }}">
-                        <a href="{{ route('kontrabonpembelian.index') }}" class="menu-link">
-                            <div>Kontrabon</div>
-                        </a>
-                    </li>
-                @endif
-
+            @if (auth()->user()->hasAnyPermission(['kontrabonpembelian.index']))
+                <li class="menu-item {{ request()->is(['kontrabonpembelian', 'kontrabonangkutan']) ? 'active' : '' }}">
+                    <a href="{{ route('kontrabonpembelian.index') }}" class="menu-link">
+                        <div>Kontrabon</div>
+                    </a>
+                </li>
             @endif
             @if (auth()->user()->hasAnyPermission(['ajuantransfer.index']))
                 <li class="menu-item {{ request()->is(['ajuantransfer']) ? 'active' : '' }}">
