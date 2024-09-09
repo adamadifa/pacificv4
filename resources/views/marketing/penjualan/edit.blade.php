@@ -1470,20 +1470,22 @@
             } else if (jenis_transaksi == "T" && jenis_bayar == "") {
                 SwalWarning('jenis_bayar', 'Jenis Bayar Tidak Boleh Kosong');
                 return false;
-            } else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >
-                parseInt(limit_pelanggan)) {
-                SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
-                return false;
-            } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
-                parseInt(limit_pelanggan)) {
-                SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
-                return false;
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
                 return false;
             } else {
                 buttonDisable();
             }
+            // else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >
+            //     parseInt(limit_pelanggan)) {
+            //     SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+            //     return false;
+            // } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
+            //     parseInt(limit_pelanggan)) {
+            //     SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+            //     return false;
+
+            // }
         });
 
     });
