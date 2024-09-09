@@ -200,7 +200,7 @@ class KaskecilController extends Controller
 
 
         $id = Crypt::decrypt($id);
-        dd($id);
+        // dd($id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
         if (!$user->hasRole($roles_access_all_cabang)) {
@@ -213,7 +213,7 @@ class KaskecilController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
-        dd($id);
+        // dd($id);
         DB::beginTransaction();
         try {
 
