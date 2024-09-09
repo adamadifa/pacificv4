@@ -134,6 +134,13 @@
                                 $total_kredit_batal += $d['jml_kredit'];
                                 $total_transfer_batal += $d['jml_transfer'];
                                 $total_giro_batal += $d['jml_giro'];
+
+                                $total_tunai += 0;
+                                $total_titipan += 0;
+                                $total_voucher += 0;
+                                $total_kredit += 0;
+                                $total_transfer += 0;
+                                $total_giro += 0;
                             } else {
                                 $color = '';
                                 $total_tunai += $d['jml_tunai'];
@@ -142,6 +149,13 @@
                                 $total_kredit += $d['jml_kredit'];
                                 $total_transfer += $d['jml_transfer'];
                                 $total_giro += $d['jml_giro'];
+
+                                $total_tunai_batal += 0;
+                                $total_titipan_batal += 0;
+                                $total_voucher_batal += 0;
+                                $total_kredit_batal += 0;
+                                $total_transfer_batal += 0;
+                                $total_giro_batal += 0;
                             }
                         @endphp
                         <tr style="background-color: {{ $color }}">
