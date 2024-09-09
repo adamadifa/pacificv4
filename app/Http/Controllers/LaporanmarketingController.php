@@ -821,7 +821,7 @@ class LaporanmarketingController extends Controller
 
         $query = Historibayarpenjualan::query();
         $query->select(
-            'marketing_penjualan_historibayar.no_fakturs',
+            'marketing_penjualan_historibayar.no_faktur',
             DB::raw('datediff(marketing_penjualan_historibayar.tanggal,marketing_penjualan.tanggal) as ljt'),
             'salesman.nama_salesman',
             'nama_wilayah',
@@ -918,13 +918,13 @@ class LaporanmarketingController extends Controller
                 if ($user->hasRole('regional sales manager')) {
                     $query->where('cabang.kode_regional', $user->kode_regional);
                 } else {
-                    $query->where('kode_cabang_baru', $user->kode_cabang);
+                    $query->where('kode_cabang_baru', $kode_cabang);
                 }
             } else {
                 $query->where('kode_cabang_baru', $kode_cabang);
             }
         } else {
-            $query->where('kode_cabang_baru', $user->kode_cabang);
+            $query->where('kode_cabang_baru', $kode_cabang);
         }
 
         if (!empty($request->kode_salesman)) {
