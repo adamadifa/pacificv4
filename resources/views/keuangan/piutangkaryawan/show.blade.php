@@ -54,7 +54,7 @@
 </div>
 <div class="row">
     <div class="col">
-        @can('pembayaranpjp.create')
+        @can('pembayaranpk.create')
             <a href="#" class="btn btn-primary mb-2" id="btnBayar" no_pinjaman="{{ Crypt::encrypt($piutangkaryawan->no_pinjaman) }}">
                 <i class="ti ti-moneybag me-1"></i>Input Pembayaran
             </a>
