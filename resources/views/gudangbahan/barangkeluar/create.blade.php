@@ -324,18 +324,6 @@
                 });
 
                 return false;
-            } else if (no_bukti == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "No. Bukti Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        formCreate.find("#no_bukti").focus();
-                    },
-                });
-
-                return false;
             } else if (tanggal == "") {
                 Swal.fire({
                     title: "Oops!",
