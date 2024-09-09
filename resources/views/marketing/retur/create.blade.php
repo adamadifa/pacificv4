@@ -524,9 +524,16 @@
                 }
                 $("#harga_pcs").prop('disabled', false);
             } else {
-                $("#harga_dus").prop('disabled', true);
-                $("#harga_pack").prop('disabled', true);
-                $("#harga_pcs").prop('disabled', true);
+                // $("#harga_dus").prop('disabled', true);
+                // $("#harga_pack").prop('disabled', true);
+                // $("#harga_pcs").prop('disabled', true);
+                $("#harga_dus").prop('disabled', false);
+                if (isi_pcs_pack == "" || isi_pcs_pack === '0') {
+                    $("#harga_pack").prop('disabled', true);
+                } else {
+                    $("#harga_pack").prop('disabled', false);
+                }
+                $("#harga_pcs").prop('disabled', false);
             }
 
             $("#modal").modal("hide");
