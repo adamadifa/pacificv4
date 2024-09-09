@@ -216,6 +216,8 @@ class KaskecilController extends Controller
             $kaskecil = Kaskecil::where('keuangan_kaskecil.id', $id)
                 ->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id')
                 ->first();
+
+            dd($kaskecil);
             $cektutuplaporankaskecil = cektutupLaporan($kaskecil->tanggal, "kaskecil");
             if ($cektutuplaporankaskecil > 0) {
                 return Redirect::back()->with(['warning' => 'Laporan sudah tutup']);
