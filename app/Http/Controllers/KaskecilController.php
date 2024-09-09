@@ -181,6 +181,7 @@ class KaskecilController extends Controller
     {
         $id = Crypt::decrypt($id);
         $data['kaskecil'] = Kaskecil::where('keuangan_kaskecil.id', $id)
+            ->select('keuangan_kaskecil.*', 'kode_klaim')
             ->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id')
             ->first();
 
