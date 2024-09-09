@@ -197,6 +197,7 @@ class KaskecilController extends Controller
     public function update(Request $request, $id)
     {
 
+        dd($id);
         $id = Crypt::decrypt($id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
@@ -218,7 +219,7 @@ class KaskecilController extends Controller
                 ->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id')
                 ->first();
 
-            dd($kaskecil);
+            //dd($kaskecil);
             $cektutuplaporankaskecil = cektutupLaporan($kaskecil->tanggal, "kaskecil");
             if ($cektutuplaporankaskecil > 0) {
                 return Redirect::back()->with(['warning' => 'Laporan sudah tutup']);
