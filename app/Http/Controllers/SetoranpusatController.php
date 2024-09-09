@@ -53,14 +53,14 @@ class SetoranpusatController extends Controller
             $request->validate([
                 'tanggal' => 'required',
                 'kode_cabang' => 'required',
-                'total_setoran' => 'required|numeric|min:1',
+                // 'total_setoran' => 'required|numeric|min:1',
                 'keterangan' => 'required'
             ]);
         } else {
             $kode_cabang = auth()->user()->kode_cabang;
             $request->validate([
                 'tanggal' => 'required',
-                'total_setoran' => 'required|numeric|min:1',
+                // 'total_setoran' => 'required|numeric|min:1',
                 'keterangan' => 'required'
             ]);
         }
