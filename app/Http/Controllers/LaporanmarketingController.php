@@ -3200,6 +3200,7 @@ class LaporanmarketingController extends Controller
             DB::raw("SUM(0) as jml_giro"),
             DB::raw("SUM(0) as jml_transfer"),
             DB::raw("SUM(0) as jml_voucher"),
+            'status_batal',
 
             ...$selectColumnkodeproduk
 
@@ -3224,6 +3225,7 @@ class LaporanmarketingController extends Controller
             DB::raw("SUM(0) as jml_giro"),
             DB::raw("SUM(0) as jml_transfer"),
             DB::raw("SUM(IF( marketing_penjualan_historibayar.voucher = '1',jumlah,0)) as jml_voucher"),
+            DB::raw('0 as status_batal'),
             ...$selectColumnkodeprodukhb
         );
         $qhistoribayar->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
@@ -3245,6 +3247,7 @@ class LaporanmarketingController extends Controller
             DB::raw("SUM(jumlah) as jml_giro"),
             DB::raw("SUM(0) as jml_transfer"),
             DB::raw("SUM(0) as jml_voucher"),
+            DB::raw('0 as status_batal'),
             ...$selectColumnkodeprodukhb
         );
         $qgiro->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro');
@@ -3263,6 +3266,7 @@ class LaporanmarketingController extends Controller
             DB::raw("SUM(0) as jml_giro"),
             DB::raw("SUM(jumlah) as jml_transfer"),
             DB::raw("SUM(0) as jml_voucher"),
+            DB::raw('0 as status_batal'),
             ...$selectColumnkodeprodukhb
         );
         $qtransfer->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer');
@@ -3282,7 +3286,8 @@ class LaporanmarketingController extends Controller
                     'jml_titipan' => $item->sum('jml_titipan'),
                     'jml_giro' => $item->sum('jml_giro'),
                     'jml_transfer' => $item->sum('jml_transfer'),
-                    'jml_voucher' => $item->sum('jml_voucher')
+                    'jml_voucher' => $item->sum('jml_voucher'),
+                    'status_batal' => $item->first()->status_batal,
                 ];
                 foreach ($produk as $p) {
                     $result['qty_' . $p->kode_produk] = $item->sum('qty_' . $p->kode_produk);
@@ -3300,6 +3305,7 @@ class LaporanmarketingController extends Controller
             ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', DB::raw('SUM(jumlah) as qty'))
             ->where('marketing_penjualan.kode_salesman', $request->kode_salesman)
             ->where('marketing_penjualan.tanggal', $request->tanggal)
+            ->where('status_batal', 0)
             ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
             ->orderBy('produk_harga.kode_produk')
             ->get();

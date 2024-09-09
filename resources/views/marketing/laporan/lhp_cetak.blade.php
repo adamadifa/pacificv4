@@ -124,9 +124,14 @@
                             $total_kredit += $d['jml_kredit'];
                             $total_transfer += $d['jml_transfer'];
                             $total_giro += $d['jml_giro'];
+                            if ($d['status_batal'] == 1) {
+                                $color = 'red';
+                            } else {
+                                $color = '';
+                            }
                         @endphp
-                        <tr>
-                            <td>{{ formatName2($d['nama_pelanggan']) }}</td>
+                        <tr style="background-color: {{ $color }}">
+                            <td>{{ $d['nama_pelanggan'] }}</td>
                             <td>{{ $d['no_faktur'] }}</td>
                             @if (!$produk->isEmpty())
                                 @foreach ($produk as $p)
