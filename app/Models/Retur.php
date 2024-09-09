@@ -18,6 +18,8 @@ class Retur extends Model
 
     function getRetur($request, $no_retur)
     {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
         $query = Retur::query();
@@ -46,17 +48,13 @@ class Retur extends Model
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur)
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -94,6 +92,14 @@ class Retur extends Model
 
         if (!empty($request->nama_pelanggan_search)) {
             $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan_search . '%');
+        }
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('kode_cabang_baru', auth()->user()->kode_cabang);
+            }
         }
 
         $query->orderBy('marketing_retur.tanggal', 'desc');
