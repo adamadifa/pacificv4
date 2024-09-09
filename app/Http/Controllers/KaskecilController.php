@@ -52,14 +52,14 @@ class KaskecilController extends Controller
         $qsaldoawal->whereBetween('tanggal', [$awal_kas_kecil, $sehariSebelumDari]);
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
-                $qsaldoawal->where('kode_cabang', $request->kode_cabang);
+                $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
             } else {
-                $qsaldoawal->where('kode_cabangd', auth()->user()->kode_cabang);
+                $qsaldoawal->where('kode_cabang', auth()->user()->kode_cabang);
             }
         } else {
-            $qsaldoawal->where('kode_cabang', $request->kode_cabang);
+            $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
         }
-        // $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
+        $qsaldoawal->where('kode_cabang', $request->kode_cabang_search);
         $saldoawal = $qsaldoawal->first();
 
         $data['saldoawal'] = $saldoawal;
