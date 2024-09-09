@@ -88,7 +88,7 @@
             @endif
             @if (auth()->user()->hasAnyPermission(['kontrabonpembelian.index', 'kontrabonangkutan.index']))
                 <li class="menu-item {{ request()->is(['kontrabonkeuangan', 'kontrabonkeuangan/*']) ? 'active' : '' }}">
-                    <a href="{{ route('kontrabonkeuangan.pembelian') }}" class="menu-link">
+                    <a href="{{ route('kontrabonkeuangan.angkutan') }}" class="menu-link">
                         <div>Kontrabon</div>
                     </a>
                 </li>
