@@ -123,16 +123,15 @@
                 });
             })
 
-        // console.log(cameras[0]);
         Webcam.set('constraints', {
             width: 590,
             height: 460,
             image_format: 'jpeg',
             jpeg_quality: 80,
-            // sourceId: cameras[1],
-            // facingMode: {
-            //     exact: 'environment'
-            // },
+            sourceId: cameras[0],
+            facingMode: {
+                exact: 'environment'
+            },
 
         });
 
