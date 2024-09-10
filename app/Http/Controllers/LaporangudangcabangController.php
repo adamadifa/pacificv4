@@ -777,7 +777,7 @@ class LaporangudangcabangController extends Controller
 
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
-        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_rekonsiliasi)->first();
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         return view('gudangcabang.laporan.rekonsiliasibj_cetak', $data);
     }
 }
