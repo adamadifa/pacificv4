@@ -39,6 +39,17 @@ class Globalprovider extends ServiceProvider
                 'manager audit',
                 'audit'
             ];
+
+            $roles_show_cabang_pjp = [
+                'super admin',
+                'gm marketing',
+                'gm administrasi',
+                'manager keuangan',
+                'direktur',
+                'regional sales manager',
+                'asst. manager hrd',
+                'staff keuangan',
+            ];
             $start_periode = '2023-01-01';
             $end_periode = date('Y') . '-12-31';
             $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
