@@ -352,7 +352,7 @@
                 });
             } else {
                 //alert(no_dpb);
-                return false;
+                //return false;
                 let baris = 1;
                 $(this).find("#submitMutasiDpb").prop('disabled', true);
                 //  alert(`Baris Ke ${baris+1}`);
