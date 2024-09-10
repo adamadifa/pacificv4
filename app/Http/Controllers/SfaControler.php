@@ -104,7 +104,7 @@ class SfaControler extends Controller
         $last_kode_pelanggan = $lastpelanggan->kode_pelanggan;
         $kode_pelanggan =  buatkode($last_kode_pelanggan, $kode_cabang . '-', 5);
 
-        dd($lastpelanggan);
+        dd($lastpelanggan . " " . $kode_pelanggan);
 
         $data_foto = [];
         if ($request->hasfile('foto')) {
