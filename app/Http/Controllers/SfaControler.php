@@ -1213,6 +1213,7 @@ class SfaControler extends Controller
     public function storeajuanlimit(Request $request, $kode_pelanggan)
     {
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        dd($kode_pelanggan);
         DB::beginTransaction();
         try {
             $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
@@ -1221,6 +1222,7 @@ class SfaControler extends Controller
                 ->whereRaw('MID(no_pengajuan,4,3) = "' . $pelanggan->kode_cabang . '"')
                 ->orderBy('no_pengajuan', 'desc')
                 ->first();
+
 
             if ($last_ajuan_limit == null) {
                 $last_no_pengajuan = 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($request->tanggal)), 2, 2) . '00000';
