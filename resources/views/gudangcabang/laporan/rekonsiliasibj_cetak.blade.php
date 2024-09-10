@@ -55,8 +55,13 @@
                         <th rowspan="2">Produk</th>
                         <th colspan="3">TUNAI KREDIT</th>
                         <th colspan="3">PERSEDIAAN</th>
+                        <th colspan="3">SELISIH</th>
                     </tr>
                     <tr>
+                        <th>DUS</th>
+                        <th>PACK</th>
+                        <th>PCS</th>
+
                         <th>DUS</th>
                         <th>PACK</th>
                         <th>PCS</th>
@@ -69,27 +74,38 @@
                 <tbody>
                     @foreach ($rekonsiliasi as $d)
                         @php
-                            $qty_penjualan = convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->totalpenjualan);
-                            $jml_penjualan = explode('|', $qty_penjualan);
-                            $dus_penjualan = $jml_penjualan[0];
-                            $pack_penjualan = $jml_penjualan[1];
-                            $pcs_penjualan = $jml_penjualan[2];
+                            $qty_total = convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->total);
+                            $jml_total = explode('|', $qty_total);
+                            $dus_total = $jml_total[0];
+                            $pack_total = $jml_total[1];
+                            $pcs_total = $jml_total[2];
 
                             $qty_persediaan = convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->totalpersediaan);
                             $jml_persediaan = explode('|', $qty_persediaan);
                             $dus_persediaan = $jml_persediaan[0];
                             $pack_persediaan = $jml_persediaan[1];
                             $pcs_persediaan = $jml_persediaan[2];
+
+                            $selisih = $d->total - $d->totalpersediaan;
+
+                            $qty_selisih = convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $selisih);
+                            $jml_selisih = explode('|', $qty_selisih);
+                            $dus_selisih = $jml_selisih[0];
+                            $pack_selisih = $jml_selisih[1];
+                            $pcs_selisih = $jml_selisih[2];
                         @endphp
                         <tr>
                             <td>{{ $d->kode_produk }}</td>
                             <td>{{ $d->nama_produk }}</td>
-                            <td class="center">{{ !empty($dus_penjualan) ? formatAngka($dus_penjualan) : '' }}</td>
-                            <td class="center">{{ !empty($pack_penjualan) ? formatAngka($pack_penjualan) : '' }}</td>
-                            <td class="center">{{ !empty($pcs_penjualan) ? formatAngka($pcs_penjualan) : '' }}</td>
+                            <td class="center">{{ !empty($dus_total) ? formatAngka($dus_total) : '' }}</td>
+                            <td class="center">{{ !empty($pack_total) ? formatAngka($pack_total) : '' }}</td>
+                            <td class="center">{{ !empty($pcs_total) ? formatAngka($pcs_total) : '' }}</td>
                             <td class="center">{{ !empty($dus_persediaan) ? formatAngka($dus_persediaan) : '' }}</td>
                             <td class="center">{{ !empty($pack_persediaan) ? formatAngka($pack_persediaan) : '' }}</td>
                             <td class="center">{{ !empty($pcs_persediaan) ? formatAngka($pcs_persediaan) : '' }}</td>
+                            <td class="center">{{ !empty($dus_selisih) ? formatAngka($dus_selisih) : '' }}</td>
+                            <td class="center">{{ !empty($pack_selisih) ? formatAngka($pack_selisih) : '' }}</td>
+                            <td class="center">{{ !empty($pcs_selisih) ? formatAngka($pcs_selisih) : '' }}</td>
 
                         </tr>
                     @endforeach

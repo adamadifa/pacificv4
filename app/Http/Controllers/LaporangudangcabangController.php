@@ -651,12 +651,12 @@ class LaporangudangcabangController extends Controller
                 'isi_pcs_dus',
                 'isi_pack_dus',
                 'isi_pcs_pack',
-                'totalpenjualan',
+                'total',
                 'totalpersediaan'
             )
                 ->leftJoin(
                     DB::raw("(
-                    SELECT kode_produk, SUM(jumlah) as totalpenjualan
+                    SELECT kode_produk, SUM(jumlah) as total
                     FROM marketing_penjualan_detail
                     INNER JOIN produk_harga ON marketing_penjualan_detail.kode_harga = produk_harga.kode_harga
                     INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
@@ -675,6 +675,87 @@ class LaporangudangcabangController extends Controller
                     INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
                     LEFT JOIN gudang_cabang_dpb ON gudang_cabang_mutasi.no_dpb = gudang_cabang_dpb.no_dpb
                     WHERE jenis_mutasi = 'PJ'
+                    AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$kode_cabang'
+                    GROUP BY kode_produk
+                ) persediaan"),
+                    function ($join) {
+                        $join->on('produk.kode_produk', '=', 'persediaan.kode_produk');
+                    }
+                )
+                ->where('status_aktif_produk', 1)
+                ->get();
+        } else if ($request->jenis_rekonsiliasi == '2') {
+            $data['rekonsiliasi'] = Produk::select(
+                'produk.kode_produk',
+                'nama_produk',
+                'isi_pcs_dus',
+                'isi_pack_dus',
+                'isi_pcs_pack',
+                'total',
+                'totalpersediaan'
+            )
+                ->leftJoin(
+                    DB::raw("(
+                    SELECT kode_produk, SUM(jumlah) as total
+                    FROM marketing_retur_detail
+                    INNER JOIN produk_harga ON marketing_retur_detail.kode_harga = produk_harga.kode_harga
+                    INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
+                    INNER JOIN marketing_penjualan ON marketing_retur.no_faktur = marketing_penjualan.no_faktur
+                    INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                    WHERE marketing_retur.tanggal BETWEEN '$request->dari' AND '$request->sampai' AND salesman.kode_cabang ='$kode_cabang'
+                    GROUP BY kode_produk
+                ) detailpenjualan"),
+                    function ($join) {
+                        $join->on('produk.kode_produk', '=', 'detailpenjualan.kode_produk');
+                    }
+                )
+                ->leftJoin(
+                    DB::raw("(
+                    SELECT kode_produk,SUM(jumlah) as totalpersediaan
+                    FROM gudang_cabang_mutasi_detail
+                    INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
+                    LEFT JOIN gudang_cabang_dpb ON gudang_cabang_mutasi.no_dpb = gudang_cabang_dpb.no_dpb
+                    WHERE jenis_mutasi = 'RT'
+                    AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$kode_cabang'
+                    GROUP BY kode_produk
+                ) persediaan"),
+                    function ($join) {
+                        $join->on('produk.kode_produk', '=', 'persediaan.kode_produk');
+                    }
+                )
+                ->where('status_aktif_produk', 1)
+                ->get();
+        } elseif ($request->jenis_rekonsiliasi == '3') {
+            $data['rekonsiliasi'] = Produk::select(
+                'produk.kode_produk',
+                'nama_produk',
+                'isi_pcs_dus',
+                'isi_pack_dus',
+                'isi_pcs_pack',
+                'total',
+                'totalpersediaan'
+            )
+                ->leftJoin(
+                    DB::raw("(
+                    SELECT kode_produk, SUM(jumlah) as total
+                    FROM marketing_penjualan_detail
+                    INNER JOIN produk_harga ON marketing_penjualan_detail.kode_harga = produk_harga.kode_harga
+                    INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
+                    INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai' AND salesman.kode_cabang ='$kode_cabang' AND status_promosi = '1'
+                    GROUP BY kode_produk
+                ) detailpenjualan"),
+                    function ($join) {
+                        $join->on('produk.kode_produk', '=', 'detailpenjualan.kode_produk');
+                    }
+                )
+                ->leftJoin(
+                    DB::raw("(
+                    SELECT kode_produk,SUM(jumlah) as totalpersediaan
+                    FROM gudang_cabang_mutasi_detail
+                    INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
+                    LEFT JOIN gudang_cabang_dpb ON gudang_cabang_mutasi.no_dpb = gudang_cabang_dpb.no_dpb
+                    WHERE jenis_mutasi = 'PR'
                     AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$kode_cabang'
                     GROUP BY kode_produk
                 ) persediaan"),
