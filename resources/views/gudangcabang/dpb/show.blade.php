@@ -296,7 +296,7 @@
             const no_dpb = $("#no_dpb_text").text();
 
 
-            alert(no_dpb);
+            // alert(no_dpb);
 
             // return false;
             $(".kode_produk").each(function() {
