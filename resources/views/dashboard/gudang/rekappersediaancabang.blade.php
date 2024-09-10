@@ -33,7 +33,7 @@
                         <td>{{ $d->nama_produk }}</td>
                         <td class="text-end">{{ formatAngka($d->buffer_stok) }}</td>
                         <td class="text-end">{{ formatAngka($d->max_stok) }}</td>
-                        <td class="text-end {{ $color }}">{{ formatAngkaDesimal(floor($saldo_akhir)) }}</td>
+                        <td class="text-end {{ $color }}">{{ $saldo_akhir }}</td>
                         <td class="text-end ">{{ formatAngkaDesimal(floor($saldo_akhir_bs)) }}</td>
 
                     </tr>
