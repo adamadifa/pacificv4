@@ -248,7 +248,7 @@ class AjuantransferdanaController extends Controller
                 'tanggal' => $ajuantransfer->tanggal,
                 'kode_cabang' => $ajuantransfer->kode_cabang,
                 'setoran_kertas' => $ajuantransfer->jumlah,
-                'keterangan' => $ajuantransfer->keterangan,
+                'keterangan' => 'Transfer ke Pihak ke 3 ' . $ajuantransfer->nama,
                 'status' => 0
             ]);
 
