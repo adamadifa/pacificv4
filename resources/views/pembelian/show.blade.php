@@ -164,4 +164,47 @@
             </table>
         </div>
     </div>
+@else
+    <div class="row">
+        <div class="col">
+            <table class="table table-bordered  table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th colspan="4">Data Pembelian</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 10%">Kode</th>
+                        <th style="width: 25%">Nama Barang</th>
+                        <th style="width: 20%">Keterangan</th>
+                        <th style="width: 10%">Qty</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $total_pembelian = 0;
+                    @endphp
+                    @foreach ($detail as $d)
+                        @php
+                            $subtotal = $d->jumlah * $d->harga;
+                            $total = $subtotal + $d->penyesuaian;
+                            $total_pembelian += $total;
+                            $bg = '';
+                            if (!empty($d->kode_cr)) {
+                                $bg = 'bg-info text-white';
+                            }
+                        @endphp
+                        <tr class="{{ $bg }}">
+                            <td>{{ $d->kode_barang }}</td>
+                            <td>{{ textCamelCase($d->nama_barang) }}</td>
+                            <td>{{ textCamelCase($d->keterangan) }}</td>
+                            <td class="text-center">{{ formatAngkaDesimal($d->jumlah) }}</td>
+
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 @endcan
