@@ -405,6 +405,7 @@ class Globalprovider extends ServiceProvider
 
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
+                'roles_show_cabang_pjp' => $roles_show_cabang_pjp,
                 'start_periode' => $start_periode,
                 'end_periode' => $end_periode,
                 'namabulan' => $namabulan,
