@@ -381,14 +381,17 @@ class DpbController extends Controller
                 }
 
 
+                if (isset($request->kode_driver)) {
+                    Dpbdriverhelper::create([
+                        'no_dpb' => $request->no_dpb,
+                        'kode_driver_helper' => $request->kode_driver,
+                        'kode_posisi' => 'D',
+                        'jumlah' => 0,
+                        'keterangan' => 0
+                    ]);
+                }
 
-                Dpbdriverhelper::create([
-                    'no_dpb' => $request->no_dpb,
-                    'kode_driver_helper' => $request->kode_driver,
-                    'kode_posisi' => 'D',
-                    'jumlah' => 0,
-                    'keterangan' => 0
-                ]);
+
                 $no = 1;
                 if (!empty($kode_helper)) {
                     for ($i = 0; $i < count($kode_helper); $i++) {
