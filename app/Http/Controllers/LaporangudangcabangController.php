@@ -644,7 +644,7 @@ class LaporangudangcabangController extends Controller
             $kode_cabang = auth()->user()->kode_cabang;
         }
 
-        if (!empty($request->kode_salesman_rekonsiliasi)) {
+        if (!empty($request->kode_salesman)) {
             $whereSalesman = "AND marketing_penjualan.kode_salesman = '$request->kode_salesman_rekonsiliasi'";
             $whereSalesmandpb = "AND gudang_cabang_dpb.kode_salesman = '$request->kode_salesman_rekonsiliasi'";
         }
