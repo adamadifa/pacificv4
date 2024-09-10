@@ -700,7 +700,8 @@ class SfaControler extends Controller
             $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
             $printer->text(textCamelCase($faktur->alamat_pelanggan) . "\n");
             if ($faktur->jenis_transaksi == 'K') {
-                $printer->text("Jatuh Tempo : " . date("d-m-Y", strtotime($faktur->ljt)) . "\n");
+                $jatuhtempo = date("Y-m-d", strtotime("+$faktur->ljt days", strtotime($faktur->tanggal)));
+                $printer->text("Jatuh Tempo : " . date("d-m-Y", strtotime($jatuhtempo)) . "\n");
             }
             $printer->text(new item('', ''));
 
@@ -829,7 +830,8 @@ class SfaControler extends Controller
             $printer->text($faktur->kode_pelanggan . " - " . $faktur->nama_pelanggan . "\n");
             $printer->text(textCamelCase($faktur->alamat_pelanggan) . "\n");
             if ($faktur->jenis_transaksi == 'K') {
-                $printer->text("Jatuh Tempo : " . date("d-m-Y", strtotime($faktur->ljt)) . "\n");
+                $jatuhtempo = date("Y-m-d", strtotime("+$faktur->ljt days", strtotime($faktur->tanggal)));
+                $printer->text("Jatuh Tempo : " . date("d-m-Y", strtotime($jatuhtempo)) . "\n");
             }
             $printer->text(new item('', ''));
 
