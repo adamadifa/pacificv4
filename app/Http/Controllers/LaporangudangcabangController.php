@@ -710,7 +710,7 @@ class LaporangudangcabangController extends Controller
                     INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
                     INNER JOIN marketing_penjualan ON marketing_retur.no_faktur = marketing_penjualan.no_faktur
                     INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                    WHERE marketing_retur.tanggal BETWEEN '$request->dari' AND '$request->sampai' AND salesman.kode_cabang ='$kode_cabang'
+                    WHERE marketing_retur.tanggal BETWEEN '$request->dari' AND '$request->sampai' AND salesman.kode_cabang ='$kode_cabang'." . $whereSalesman . "
                     GROUP BY kode_produk
                 ) detailpenjualan"),
                     function ($join) {
@@ -724,7 +724,7 @@ class LaporangudangcabangController extends Controller
                     INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
                     LEFT JOIN gudang_cabang_dpb ON gudang_cabang_mutasi.no_dpb = gudang_cabang_dpb.no_dpb
                     WHERE jenis_mutasi = 'RT'
-                    AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$kode_cabang'
+                    AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$kode_cabang'" . $whereSalesmandpb . "
                     GROUP BY kode_produk
                 ) persediaan"),
                     function ($join) {
