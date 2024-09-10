@@ -249,7 +249,7 @@
 
         $("#btnCreatemutasidpb").click(function(e) {
             e.preventDefault();
-            const no_dpb = "{{ $dpb->no_dpb }}";
+            const no_dpb = $("#no_dpb_text").text();
             $("#loadmodalMutasi").html(loadingElement());
             $("#modalMutasi").modal("show");
             $("#modalMutasi").find(".modal-title").text("Tambah Data Mutasi DPB. " + no_dpb);
@@ -296,9 +296,9 @@
             const no_dpb = $("#no_dpb_text").text();
 
 
-            alert(no_dpb);
+            // // alert(no_dpb);
 
-            return false;
+            // return false;
             $(".kode_produk").each(function() {
                 kode_produk.push($(this).val());
             });
@@ -418,7 +418,7 @@
             let jml_pcs = [];
             let isi_pcs_dus = [];
             let isi_pcs_pack = [];
-            const no_dpb = "{{ $dpb->no_dpb }}";
+            const no_dpb = $("#no_dpb_text").text();
 
             $(".kode_produk").each(function() {
                 kode_produk.push($(this).val());
@@ -540,7 +540,7 @@
 
         $(document).on("click", ".btnEditmutasidpb", function(e) {
             e.preventDefault();
-            const no_dpb = "{{ $dpb->no_dpb }}";
+            const no_dpb = $("#no_dpb_text").text();
             const no_mutasi = $(this).attr('no_mutasi');
             $("#loadmodalMutasi").html(loadingElement());
             $("#modalMutasi").modal("show");
