@@ -645,8 +645,11 @@ class LaporangudangcabangController extends Controller
         }
 
         if (!empty($request->kode_salesman)) {
-            $whereSalesman = "AND marketing_penjualan.kode_salesman = '$request->kode_salesman_rekonsiliasi'";
-            $whereSalesmandpb = "AND gudang_cabang_dpb.kode_salesman = '$request->kode_salesman_rekonsiliasi'";
+            $whereSalesman = "AND marketing_penjualan.kode_salesman = '$request->kode_salesman'";
+            $whereSalesmandpb = "AND gudang_cabang_dpb.kode_salesman = '$request->kode_salesman'";
+        } else {
+            $whereSalesman = "";
+            $whereSalesmandpb = "";
         }
         // dd('test');
         if ($request->jenis_rekonsiliasi == '1') {
