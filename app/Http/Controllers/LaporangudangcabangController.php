@@ -631,9 +631,21 @@ class LaporangudangcabangController extends Controller
 
     public function cetakrekonsiliasibj(Request $request)
     {
+
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang_rekonsiliasi;
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+        }
         // dd('test');
         if ($request->jenis_rekonsiliasi == '1') {
-            $rekonsiliasi = Produk::select(
+            $data['rekonsiliasi'] = Produk::select(
                 'produk.kode_produk',
                 'nama_produk',
                 'isi_pcs_dus',
@@ -649,7 +661,7 @@ class LaporangudangcabangController extends Controller
                     INNER JOIN produk_harga ON marketing_penjualan_detail.kode_harga = produk_harga.kode_harga
                     INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
                     INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai' AND salesman.kode_cabang ='$request->kode_cabang' AND status_promosi = '0'
+                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai' AND salesman.kode_cabang ='$kode_cabang' AND status_promosi = '0'
                     GROUP BY kode_produk
                 ) detailpenjualan"),
                     function ($join) {
@@ -663,7 +675,7 @@ class LaporangudangcabangController extends Controller
                     INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
                     LEFT JOIN gudang_cabang_dpb ON gudang_cabang_mutasi.no_dpb = gudang_cabang_dpb.no_dpb
                     WHERE jenis_mutasi = 'PJ'
-                    AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$request->kode_cabang'
+                    AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$kode_cabang'
                     GROUP BY kode_produk
                 ) persediaan"),
                     function ($join) {
@@ -672,8 +684,11 @@ class LaporangudangcabangController extends Controller
                 )
                 ->where('status_aktif_produk', 1)
                 ->get();
-
-            dd($rekonsiliasi);
         }
+
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_rekonsiliasi)->first();
+        return view('gudangcabang.laporan.rekonsiliasibj_cetak', $data);
     }
 }

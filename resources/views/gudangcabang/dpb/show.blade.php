@@ -294,6 +294,11 @@
             let isi_pcs_dus = [];
             let isi_pcs_pack = [];
             const no_dpb = "{{ $dpb->no_dpb }}";
+
+
+            alert(no_dpb);
+
+            return false;
             $(".kode_produk").each(function() {
                 kode_produk.push($(this).val());
             });

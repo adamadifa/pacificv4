@@ -65,10 +65,7 @@
                     $penjualan_pcs = $penjualan[2];
 
                     //Pelunasan Hutang Kirim
-                    $pelunasanhutangkirim = explode(
-                        '|',
-                        convertToduspackpcs($d->kode_produk, $d->jml_pelunasanhutangkirim),
-                    );
+                    $pelunasanhutangkirim = explode('|', convertToduspackpcs($d->kode_produk, $d->jml_pelunasanhutangkirim));
                     $pelunasanhutangkirim_dus = $pelunasanhutangkirim[0];
                     $pelunasanhutangkirim_pack = $pelunasanhutangkirim[1];
                     $pelunasanhutangkirim_pcs = $pelunasanhutangkirim[2];
