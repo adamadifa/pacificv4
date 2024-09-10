@@ -36,6 +36,21 @@ class Globalprovider extends ServiceProvider
                 'asst. manager hrd',
                 'staff keuangan',
                 'admin pajak',
+                'manager audit',
+                'audit',
+                'rom',
+                'crm'
+            ];
+
+            $roles_show_cabang_pjp = [
+                'super admin',
+                'gm marketing',
+                'gm administrasi',
+                'manager keuangan',
+                'direktur',
+                'regional sales manager',
+                'asst. manager hrd',
+                'staff keuangan',
             ];
             $start_periode = '2023-01-01';
             $end_periode = date('Y') . '-12-31';
@@ -392,6 +407,7 @@ class Globalprovider extends ServiceProvider
 
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
+                'roles_show_cabang_pjp' => $roles_show_cabang_pjp,
                 'start_periode' => $start_periode,
                 'end_periode' => $end_periode,
                 'namabulan' => $namabulan,

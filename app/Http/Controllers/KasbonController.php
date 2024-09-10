@@ -101,10 +101,12 @@ class KasbonController extends Controller
 
             $lastkasbon = Kasbon::select('no_kasbon')
                 ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->tanggal)) . '"')
+                ->whereRaw('LENGTH(no_kasbon)=9')
                 ->orderBy("no_kasbon", "desc")
                 ->first();
             $last_nokasbon = $lastkasbon != null ? $lastkasbon->no_kasbon : '';
-            $no_kasbon  = buatkode($last_nokasbon, "KB" . date('y', strtotime($request->tanggal)), 3);
+            $no_kasbon  = buatkode($last_nokasbon, "KB" . date('y', strtotime($request->tanggal)) . date('m', strtotime($request->tanggal)), 3);
 
             Kasbon::create([
                 'no_kasbon' => $no_kasbon,

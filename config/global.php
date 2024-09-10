@@ -76,6 +76,10 @@ return  [
         'asst. manager hrd',
         'staff keuangan',
         'admin pajak',
+        'manager audit',
+        'audit',
+        'rom',
+        'crm'
     ],
     'roles_show_cabang' => [
         'super admin',
@@ -87,6 +91,10 @@ return  [
         'regional sales manager',
         'asst. manager hrd',
         'admin pajak',
+        'manager audit',
+        'audit',
+        'rom',
+        'crm'
     ],
 
     'roles_access_all_karyawan' => [

@@ -932,7 +932,8 @@ class PenjualanController extends Controller
                 ->first();
             $last_no_bukti = $lastbayar != null ? $lastbayar->no_bukti : '';
             $no_bukti  = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
-
+            $datapenjualan = Penjualan::where('no_faktur', $no_faktur)->first();
+            //dd($datapenjualan);
             //Hapus Detail Penjualan Sebelmnya
             Detailpenjualan::where('no_faktur', $no_faktur)->delete();
 
@@ -972,7 +973,7 @@ class PenjualanController extends Controller
             if ($jenis_transaksi == 'T') {
                 $cekbayar = Historibayarpenjualan::where('no_faktur', $request->no_faktur)
                     ->where('voucher', 0)
-                    ->where('tanggal', $request->tanggal)
+                    ->where('tanggal', $datapenjualan->tanggal)
                     ->orderBy('no_bukti')
                     ->first();
                 $cekvoucher = Historibayarpenjualan::where('no_faktur', $request->no_faktur)
@@ -983,7 +984,7 @@ class PenjualanController extends Controller
                     ->orderBy('no_bukti')
                     ->first();
 
-
+                // dd($cekbayar . "-" . $jenis_bayar);
                 if ($jenis_bayar == "TN") {
                     if ($cekbayar != null) {
                         Historibayarpenjualan::where('no_bukti', $cekbayar->no_bukti)->update([
