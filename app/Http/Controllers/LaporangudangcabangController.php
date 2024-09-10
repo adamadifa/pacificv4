@@ -764,7 +764,7 @@ class LaporangudangcabangController extends Controller
                     INNER JOIN gudang_cabang_mutasi ON gudang_cabang_mutasi_detail.no_mutasi = gudang_cabang_mutasi.no_mutasi
                     LEFT JOIN gudang_cabang_dpb ON gudang_cabang_mutasi.no_dpb = gudang_cabang_dpb.no_dpb
                     WHERE jenis_mutasi = 'PR'
-                    AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$kode_cabang'
+                    AND tanggal BETWEEN '$request->dari' AND '$request->sampai' AND gudang_cabang_mutasi.kode_cabang ='$kode_cabang'" . $whereSalesmandpb . "
                     GROUP BY kode_produk
                 ) persediaan"),
                     function ($join) {
