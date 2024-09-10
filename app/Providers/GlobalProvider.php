@@ -37,7 +37,9 @@ class Globalprovider extends ServiceProvider
                 'staff keuangan',
                 'admin pajak',
                 'manager audit',
-                'audit'
+                'audit',
+                'rom',
+                'crm'
             ];
 
             $roles_show_cabang_pjp = [
