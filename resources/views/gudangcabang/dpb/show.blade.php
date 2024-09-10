@@ -275,7 +275,7 @@
         function getmutasidpb() {
             const jenis_mutasi = $("#jenis_mutasi_search").val();
             const jm = jenis_mutasi != '' ? jenis_mutasi : null;
-            const no_dpb = "{{ Crypt::encrypt($dpb->no_dpb) }}";
+            const no_dpb = $("#no_dpb_text").text();
             $("#loadmutasidpb").html(loadingonTable(4));
             $("#loadmutasidpb").load(`/mutasidpb/${no_dpb}/${jm}/getmutasidpb`);
         }
@@ -351,7 +351,7 @@
 
                 });
             } else {
-                alert(no_dpb);
+                //alert(no_dpb);
                 return false;
                 let baris = 1;
                 $(this).find("#submitMutasiDpb").prop('disabled', true);

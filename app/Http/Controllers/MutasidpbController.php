@@ -314,7 +314,7 @@ class MutasidpbController extends Controller
     }
     public function getmutasidpb($no_dpb, $jenis_mutasi)
     {
-        $no_dpb = Crypt::decrypt($no_dpb);
+        // $no_dpb = Crypt::decrypt($no_dpb);
 
 
         $query = Mutasigudangcabang::query();
