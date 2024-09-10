@@ -78,7 +78,7 @@ return  [
         'admin pajak',
         'manager audit',
         'audit',
-        'rom',
+        'regional operation manager',
         'crm'
     ],
     'roles_show_cabang' => [
@@ -93,7 +93,7 @@ return  [
         'admin pajak',
         'manager audit',
         'audit',
-        'rom',
+        'regional operation manager',
         'crm'
     ],
 
@@ -109,8 +109,25 @@ return  [
     ],
 
     //Pinjaman
-    'roles_access_all_pjp' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur', 'gm marketing', 'gm operasional', 'staff keuangan'],
-    'roles_access_all_kasbon' => ['super admin', 'gm administrasi', 'manager keuangan', 'direktur', 'gm marketing', 'gm operasional', 'staff keuangan'],
+    'roles_access_all_pjp' => [
+        'super admin',
+        'gm administrasi',
+        'manager keuangan',
+        'direktur',
+        'gm marketing',
+        'gm operasional',
+        'staff keuangan',
+
+    ],
+    'roles_access_all_kasbon' => [
+        'super admin',
+        'gm administrasi',
+        'manager keuangan',
+        'direktur',
+        'gm marketing',
+        'gm operasional',
+        'staff keuangan'
+    ],
 
 
 
