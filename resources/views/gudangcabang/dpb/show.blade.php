@@ -3,7 +3,7 @@
         <table class="table">
             <tr>
                 <th style="width: 30%">No. DPB</th>
-                <td>{{ $dpb->no_dpb }}</td>
+                <td id="no_dpb_text">{{ $dpb->no_dpb }}</td>
             </tr>
             <tr>
                 <th>Tanggal</th>
@@ -293,7 +293,7 @@
             let jml_pcs = [];
             let isi_pcs_dus = [];
             let isi_pcs_pack = [];
-            const no_dpb = "{{ $dpb->no_dpb }}";
+            const no_dpb = $("#no_dpb_text").text();
 
 
             alert(no_dpb);
