@@ -177,8 +177,10 @@ class KendaraanController extends Controller
         $query = Kendaraan::query();
         if ($kode_cabang_user != "PST") {
             $query->where('kode_cabang', $kode_cabang_user);
+            $query->orWhere('kode_kendaraan', 'KD0092');
         } else {
             $query->where('kode_cabang', $request->kode_cabang);
+            $query->orWhere('kode_kendaraan', 'KD0092');
         }
         $query->where('status_aktif_kendaraan', 1);
         $kendaraan = $query->get();
