@@ -66,6 +66,34 @@
                         <th>PCS</th>
                     </tr>
                 </thead>
+                <tbody>
+                    @foreach ($rekonsiliasi as $d)
+                        @php
+                            $qty_penjualan = convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->totalpenjualan);
+                            $jml_penjualan = explode('|', $qty_penjualan);
+                            $dus_penjualan = $jml_penjualan[0];
+                            $pack_penjualan = $jml_penjualan[1];
+                            $pcs_penjualan = $jml_penjualan[2];
+
+                            $qty_persediaan = convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->totalpersediaan);
+                            $jml_persediaan = explode('|', $qty_persediaan);
+                            $dus_persediaan = $jml_persediaan[0];
+                            $pack_persediaan = $jml_persediaan[1];
+                            $pcs_persediaan = $jml_persediaan[2];
+                        @endphp
+                        <tr>
+                            <td>{{ $d->kode_produk }}</td>
+                            <td>{{ $d->nama_produk }}</td>
+                            <td class="center">{{ !empty($dus_penjualan) ? formatAngka($dus_penjualan) : '' }}</td>
+                            <td class="center">{{ !empty($pack_penjualan) ? formatAngka($pack_penjualan) : '' }}</td>
+                            <td class="center">{{ !empty($pcs_penjualan) ? formatAngka($pcs_penjualan) : '' }}</td>
+                            <td class="center">{{ !empty($dus_persediaan) ? formatAngka($dus_persediaan) : '' }}</td>
+                            <td class="center">{{ !empty($pack_persediaan) ? formatAngka($pack_persediaan) : '' }}</td>
+                            <td class="center">{{ !empty($pcs_persediaan) ? formatAngka($pcs_persediaan) : '' }}</td>
+
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
         </div>
     </div>
