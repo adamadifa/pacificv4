@@ -154,7 +154,7 @@ class KontrabonangkutanController extends Controller
                 ->join('gudang_jadi_mutasi', 'gudang_jadi_angkutan_suratjalan.no_dok', '=', 'gudang_jadi_mutasi.no_dok')
                 ->where('no_kontrabon', $no_kontrabon)->first();
 
-            dd($detailkontrabon);
+            //dd($detailkontrabon);
             if ($detailkontrabon == null) {
                 return Redirect::back()->with(messageError('Detail Kontrabon Kosong'));;
             } else {
@@ -193,7 +193,7 @@ class KontrabonangkutanController extends Controller
                     'keterangan' => $request->keterangan,
                     'kode_bank' => $request->kode_bank,
                     'kode_akun' => '2-1800',
-                    'jumlah' => $jumlah_angkutan,
+                    'jumlah' => $jumlah_hutang,
                     'debet_kredit' => 'D',
                     'kode_peruntukan' => 'MP',
                     'keterangan_peruntukan' => 'PST'
