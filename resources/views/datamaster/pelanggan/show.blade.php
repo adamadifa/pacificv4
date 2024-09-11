@@ -95,6 +95,10 @@
                             Toko:</span> <span>{{ textCamelCase($pelanggan->alamat_toko) }}</span>
                     </li>
                     <li class="d-flex align-items-center mb-3">
+                        <i class="ti ti-map-pin text-heading"></i><span class="fw-medium mx-2 text-heading">Lokasi
+                            :</span> <span>{{ $pelanggan->latitude }}, {{ $pelanggan->longitude }}</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-3">
                         <i class="ti ti-map-pin text-heading"></i><span class="fw-medium mx-2 text-heading">Wilayah/Rute
                             :</span> <span>{{ textCamelCase($pelanggan->nama_wilayah) }}</span>
                     </li>
