@@ -263,11 +263,24 @@
                         </button>
                     </li>
                 @endcan
+                @can('mkt.komisidriverhelper')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#komisidriverhelper"
+                            aria-controls="komisidriverhelper" aria-selected="false" tabindex="-1">
+                            Komisi Driver Helper
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 @can('mkt.komisisalesman')
                     <div class="tab-pane fade show active" id="komisisalesman" role="tabpanel">
                         @include('marketing.laporan.komisisalesman')
+                    </div>
+                @endcan
+                @can('mkt.komisidriverhelper')
+                    <div class="tab-pane fade" id="komisidriverhelper" role="tabpanel">
+                        @include('marketing.laporan.komisidriverhelper')
                     </div>
                 @endcan
             </div>

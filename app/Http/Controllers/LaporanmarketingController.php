@@ -11,6 +11,7 @@ use App\Models\Detailsaldoawalpiutangpelanggan;
 use App\Models\Detailtargetkomisi;
 use App\Models\Detailtransfer;
 use App\Models\Dpb;
+use App\Models\Dpbdriverhelper;
 use App\Models\Historibayarpenjualan;
 use App\Models\Kategorikomisi;
 use App\Models\Kendaraan;
@@ -4025,5 +4026,34 @@ class LaporanmarketingController extends Controller
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['produk'] = $produk;
         return view('marketing.laporan.komisi_salesman_cetak', $data);
+    }
+
+    public function cetakkomisidriverhelper(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $data['komisi'] = Dpbdriverhelper::select(
+            'gudang_cabang_dpb_driverhelper.kode_driver_helper',
+            'driver_helper.nama_driver_helper',
+            DB::raw('SUM(CASE WHEN gudang_cabang_dpb_driverhelper.kode_posisi = \'D\' THEN (SELECT SUM(ROUND(gudang_cabang_dpb_detail.jml_penjualan / produk.isi_pcs_dus, 3)) FROM gudang_cabang_dpb_detail JOIN produk ON gudang_cabang_dpb_detail.kode_produk = produk.kode_produk WHERE gudang_cabang_dpb_detail.no_dpb = gudang_cabang_dpb_driverhelper.no_dpb) ELSE 0 END) AS jml_qty_driver'),
+            DB::raw('SUM(CASE WHEN gudang_cabang_dpb_driverhelper.kode_posisi = \'H\' THEN gudang_cabang_dpb_driverhelper.jumlah ELSE 0 END) AS jml_qty_helper')
+        )
+            ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_driverhelper.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
+            ->join('driver_helper', 'gudang_cabang_dpb_driverhelper.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
+            ->whereBetween('gudang_cabang_dpb.tanggal_ambil', [$request->dari, $request->sampai])
+            ->groupBy('gudang_cabang_dpb_driverhelper.kode_driver_helper', 'driver_helper.nama_driver_helper')
+            ->get();
+        return view('marketing.laporan.komisi_driver_helper_cetak', $data);
     }
 }
