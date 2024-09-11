@@ -111,8 +111,8 @@
                             <td>{{ $d->kode_driver_helper }}</td>
                             <td>{{ $d->nama_driver_helper }}</td>
                             <td>{{ $posisi[$d->posisi] }}</td>
-                            <td class="text-end">{{ formatAngkaDesimal($d->qty_driver) }}</td>
-                            <td class="text-end">{{ formatAngkaDesimal($d->qty_helper) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($d->qty_driver) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($d->qty_helper) }}</td>
                             <td></td>
                         </tr>
                     @endforeach
