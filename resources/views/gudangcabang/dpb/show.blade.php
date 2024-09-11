@@ -32,7 +32,8 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>DRIVER</th>
-                                <td colspan="2">{{ $driver->kode_driver_helper }} - {{ $driver->nama_driver_helper }}</td>
+                                <td colspan="2">{{ $driver != null ? $driver->kode_driver_helper : '-' }} -
+                                    {{ $driver != null ? $driver->nama_driver_helper : '-' }}</td>
                             </tr>
                             <tr>
                                 <th>Kode</th>

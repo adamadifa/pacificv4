@@ -3747,6 +3747,13 @@ class LaporanmarketingController extends Controller
         } else {
             $kode_cabang = $request->kode_cabang;
         }
+
+        $bulanlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'bulan');
+        $tahunlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'tahun');
+
+        $start_date_bulanlalu = $tahunlalu . "-" . $bulanlalu . "-01";
+        $end_date_bulanlalu = date('Y-m-t', strtotime($start_date_bulanlalu));
+
         $dari = $request->tahun . "-" . $request->bulan . "-01";
         $sampai = date('Y-m-t', strtotime($dari));
 
@@ -3847,6 +3854,31 @@ class LaporanmarketingController extends Controller
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->where('status_batal', 0)
             ->groupBy('marketing_penjualan.kode_salesman');
+
+        //Penjualan vs AVG
+        $subqueryPenjvsavgdata = DB::table('marketing_penjualan')->select(
+            'marketing_penjualan.kode_pelanggan',
+            'marketing_penjualan.kode_salesman',
+            DB::raw("SUM(IF(marketing_penjualan.tanggal BETWEEN '$start_date_bulanlalu' AND '$end_date_bulanlalu',(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur GROUP BY no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn,0)) as penjualanbulanlalu"),
+            DB::raw("SUM(IF(marketing_penjualan.tanggal BETWEEN '$dari' AND '$sampai',(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur GROUP BY no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn,0)) as penjualanbulanini"),
+        )
+
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date_bulanlalu, $sampai])
+            ->where('status_batal', 0)
+            ->groupBy('marketing_penjualan.kode_pelanggan', 'marketing_penjualan.kode_salesman');
+
+
+        $subqueryPenjvsavg = DB::table(DB::raw("({$subqueryPenjvsavgdata->toSql()}) as sub"))
+            ->mergeBindings($subqueryPenjvsavgdata) // Bind subquery bindings
+            ->select('kode_salesman')
+            ->whereRaw('penjualanbulanini > penjualanbulanlalu')
+            ->where('penjualanbulanlalu', '>', 0)
+            ->get();
+
+        dd($subqueryPenjvsavg);
+
         $data['kategori_komisi'] = $kategori_komisi;
         $data['komisi'] = Salesman::select(
             'salesman.kode_salesman',
