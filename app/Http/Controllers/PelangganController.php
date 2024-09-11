@@ -534,7 +534,7 @@ class PelangganController extends Controller
             'type_outlet',
             'cara_pembayaran',
             'lama_langganan',
-            'penjualan',
+
             'cabang'
         ));
     }
