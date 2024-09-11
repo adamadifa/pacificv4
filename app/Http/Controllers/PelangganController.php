@@ -512,11 +512,12 @@ class PelangganController extends Controller
             $kode_cabang = $request->kode_cabang_search;
         }
 
-        $pelanggan = Pelanggan::leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
-            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang')
-            ->where('salesman.kode_cabang', $kode_cabang)
-            ->get();
+        $query = Pelanggan::query();
+        $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->where('salesman.kode_cabang', $kode_cabang);
+        $pelanggan = $query->get();
         $kepemilikan = config('pelanggan.kepemilikan');
         $lama_berjualan = config('pelanggan.lama_berjualan');
         $status_outlet = config('pelanggan.status_outlet');
