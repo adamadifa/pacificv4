@@ -4052,8 +4052,12 @@ class LaporanmarketingController extends Controller
             ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_driverhelper.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
             ->join('driver_helper', 'gudang_cabang_dpb_driverhelper.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
             ->whereBetween('gudang_cabang_dpb.tanggal_ambil', [$request->dari, $request->sampai])
+            ->where('driver_helper.kode_cabang', $kode_cabang)
             ->groupBy('gudang_cabang_dpb_driverhelper.kode_driver_helper', 'driver_helper.nama_driver_helper')
             ->get();
-        return view('marketing.laporan.komisi_driver_helper_cetak', $data);
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        return view('marketing.laporan.komisidriverhelper_cetak', $data);
     }
 }

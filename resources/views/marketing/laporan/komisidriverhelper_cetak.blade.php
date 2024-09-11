@@ -74,8 +74,7 @@
         <h4 class="title">
             KOMISI SALESMAN <br>
         </h4>
-        <h4>BULAN :{{ $namabulan[$bulan] }}</h4>
-        <h4>TAHUN :{{ $tahun }}</h4>
+        <h4>PERIODE {{ DateToIndo($dari) }} - {{ DateToIndo($sampai) }}</h4>
         @if ($cabang != null)
             <h4>
                 {{ textUpperCase($cabang->nama_cabang) }}
