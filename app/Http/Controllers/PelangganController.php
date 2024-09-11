@@ -127,7 +127,7 @@ class PelangganController extends Controller
 
 
 
-        $lastpelanggan = Pelanggan::where('kode_cabang', $kode_cabang)
+        $lastpelanggan = Pelanggan::whereRaw('LEFT(kode_pelanggan,3)="' . $kode_cabang . '"')
             ->orderBy('kode_pelanggan', 'desc')
             ->first();
         $last_kode_pelanggan = $lastpelanggan->kode_pelanggan;
