@@ -117,7 +117,7 @@ class SuratjalanController extends Controller
     public function create($no_permintaan)
     {
         $no_permintaan = Crypt::decrypt($no_permintaan);
-        $data['tujuan_angkutan'] = Tujuanangkutan::orderBy('kode_tujuan')->get();
+        $data['tujuan_angkutan'] = Tujuanangkutan::orderBy('kode_tujuan')->where('status', 1)->get();
         $data['angkutan'] = Angkutan::orderBy('kode_angkutan')->get();
         $data['pk'] = Permintaankiriman::where('no_permintaan', $no_permintaan)
             ->join('cabang', 'marketing_permintaan_kiriman.kode_cabang', '=', 'cabang.kode_cabang')

@@ -16,6 +16,7 @@ class TujuanangkutanController extends Controller
         if (!empty($request->tujuan_search)) {
             $query->where('tujuan', 'like', '%' . $request->tujuan_search . '%');
         }
+        $query->where('status', 1);
         $tujuanangkutan = $query->paginate(10);
         $tujuanangkutan->appends(request()->all());
         $data['tujuanangkutan'] = $tujuanangkutan;
