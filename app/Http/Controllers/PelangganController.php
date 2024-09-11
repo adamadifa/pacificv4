@@ -515,7 +515,7 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
             ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang')
-            ->where('kode_cabang', $kode_cabang)
+            ->where('salesman.kode_cabang', $kode_cabang)
             ->get();
         $kepemilikan = config('pelanggan.kepemilikan');
         $lama_berjualan = config('pelanggan.lama_berjualan');
