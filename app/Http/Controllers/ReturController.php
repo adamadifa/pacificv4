@@ -206,6 +206,7 @@ class ReturController extends Controller
         $user = User::findorfail(auth()->user()->id);
         DB::beginTransaction();
         try {
+            dd($retur->tanggal);
             $cektutuplaporan = cektutupLaporan($retur->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));

@@ -150,7 +150,7 @@ function cektutupLaporan($tgl, $jenislaporan)
     $bulan = $tanggal[1];
     $tahun = $tanggal[0];
     $cek = Tutuplaporan::where('jenis_laporan', $jenislaporan)
-        ->where('buland', $bulan)
+        ->where('bulan', $bulan)
         ->where('tahun', $tahun)
         ->where('status', 1)
         ->count();
