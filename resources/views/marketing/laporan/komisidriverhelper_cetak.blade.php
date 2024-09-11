@@ -87,10 +87,15 @@
             <table class="datatable3">
                 <thead>
                     <tr>
-                        <th>Kode</th>
-                        <th>Nama</th>
-                        <th>Posisi</th>
-                        <th colspan="2">Quantity</th>
+                        <th rowspan="2">Kode</th>
+                        <th rowspan="2">Nama</th>
+                        <th rowspan="2">Posisi</th>
+                        <th colspan="3">Quantity</th>
+                    </tr>
+                    <tr>
+                        <th>DRIVER</th>
+                        <th>HELPER</th>
+                        <th>GUDANG</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,7 +111,9 @@
                             <td>{{ $d->kode_driver_helper }}</td>
                             <td>{{ $d->nama_driver_helper }}</td>
                             <td>{{ $posisi[$d->posisi] }}</td>
-
+                            <td class="text-end">{{ formatAngkaDesimal($d->qty_driver) }}</td>
+                            <td class="text-end">{{ formatAngkaDesimal($d->qty_helper) }}</td>
+                            <td></td>
                         </tr>
                     @endforeach
                 </tbody>
