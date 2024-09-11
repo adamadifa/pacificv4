@@ -97,6 +97,7 @@
                         <th rowspan="2" colspan="2" class="orange">Total Poin</th>
                         <th rowspan="2" colspan="2" class="biru1">KENDARAAN</th>
                         <th rowspan="2" colspan="2" class="bg-warna-campuran1">OA</th>
+                        <th rowspan="2" colspan="2" class="bg-warna-campuran2">PENJUALAN VS AVG</th>
                     </tr>
                     <tr>
                         @foreach ($kategori_komisi as $d)
@@ -117,6 +118,9 @@
 
                         <th class="bg-warna-campuran1">REALISASI</th>
                         <th class="bg-warna-campuran1">REWARD</th>
+
+                        <th class="bg-warna-campuran2">REALISASI</th>
+                        <th class="bg-warna-campuran2">REWARD</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -210,6 +214,13 @@
                                     $reward_oa = $d->status_komisi == 1 ? $d->realisasi_oa * 2000 : 0;
                                 @endphp
                                 {{ formatAngka($reward_oa) }}
+                            </td>
+                            <td class="center">{{ formatAngka($d->realisasi_penjvsavg) }}</td>
+                            <td class="right">
+                                @php
+                                    $reward_penjvsavg = $d->status_komisi == 1 ? $d->realisasi_penjvsavg * 2000 : 0;
+                                @endphp
+                                {{ formatAngka($reward_penjvsavg) }}
                             </td>
                         </tr>
                     @endforeach

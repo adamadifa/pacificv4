@@ -3751,11 +3751,44 @@ class LaporanmarketingController extends Controller
         $bulanlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'bulan');
         $tahunlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'tahun');
 
+        if ($bulanlalu == 1) {
+            $blnlast1 = 12;
+            $thnlast1 = $request->tahun - 1;
+        } else {
+            $blnlast1 = $bulanlalu - 1;
+            $thnlast1 = $request->tahun;
+        }
+
+        if ($request->bulan == 12) {
+            $bln = 1;
+            $thn = $request->tahun + 1;
+        } else {
+            $bln = $request->bulan + 1;
+            $thn = $request->tahun;
+        }
+
         $start_date_bulanlalu = $tahunlalu . "-" . $bulanlalu . "-01";
         $end_date_bulanlalu = date('Y-m-t', strtotime($start_date_bulanlalu));
 
         $dari = $request->tahun . "-" . $request->bulan . "-01";
         $sampai = date('Y-m-t', strtotime($dari));
+
+        $ceknextBulan = DB::table('keuangan_setoranpusat')->where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tgl_diterimapusat')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $bln)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $thn)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('tgl_diterimapusat', 'desc')
+            ->first();
+
+        if ($ceknextBulan ==  null) {
+            $end = date("Y-m-t", strtotime($dari));
+        } else {
+            $end = $ceknextBulan->tgl_diterimapusat;
+        }
+
 
         $kategori_komisi = Kategorikomisi::orderBy('kode_kategori')->get();
         $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
@@ -3872,12 +3905,14 @@ class LaporanmarketingController extends Controller
 
         $subqueryPenjvsavg = DB::table(DB::raw("({$subqueryPenjvsavgdata->toSql()}) as sub"))
             ->mergeBindings($subqueryPenjvsavgdata) // Bind subquery bindings
-            ->select('kode_salesman')
-            ->whereRaw('penjualanbulanini > penjualanbulanlalu')
+            ->select('kode_salesman', DB::raw('COUNT(kode_pelanggan) as realisasi_penjvsavg'))
+            ->whereRaw('penjualanbulanini >= penjualanbulanlalu')
             ->where('penjualanbulanlalu', '>', 0)
-            ->get();
+            ->groupBy('kode_salesman');
 
-        dd($subqueryPenjvsavg);
+
+
+
 
         $data['kategori_komisi'] = $kategori_komisi;
         $data['komisi'] = Salesman::select(
@@ -3885,6 +3920,7 @@ class LaporanmarketingController extends Controller
             'salesman.nama_salesman',
             'status_komisi_salesman as status_komisi',
             'realisasi_oa',
+            'realisasi_penjvsavg',
             ...$selectTarget,
             ...$selectRealisasi,
             ...$selectKendaraan
@@ -3903,6 +3939,80 @@ class LaporanmarketingController extends Controller
                 $join->on('salesman.kode_salesman', '=', 'oa.kode_salesman');
             })
 
+            ->leftjoinSub($subqueryPenjvsavg, 'penjvsavg', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'penjvsavg.kode_salesman');
+            })
+
+            ->leftJoin(
+                DB::raw("(
+                SELECT salesman.kode_salesman,
+                (IFNULL(jml_belumsetorbulanlalu,0)+IFNULL(totalsetoran,0)) + IFNULL(jml_gmlast,0) - IFNULL(jml_gmnow,0) - IFNULL(jml_belumsetorbulanini,0) as realisasi_cashin
+                FROM karyawan
+                LEFT JOIN (
+                    SELECT kode_salesman,jumlah as jml_belumsetorbulanlalu FROM keuangan_belumsetor_detail
+                    INNER JOIN keuangan_belumsetor ON belumsetor_detail.kode_belumsetor = keuangan_belumsetor.kode_belumsetor
+                    WHERE bulan='$bulanlalu' AND tahun='$tahunlalu'
+                ) bs ON (salesman.kode_salesman = bs.kode_salesman)
+
+                LEFT JOIN (
+                    SELECT kode_salesman, SUM(lhp_tunai+lhp_tagihan) as totalsetoran FROM setoran_penjualan
+                    WHERE tanggal BETWEEN '$dari' AND '$sampai' GROUP BY kode_salesman
+                ) sp ON (salesman.kode_salesman = sp.kode_salesman)
+
+                LEFT JOIN (
+                    SELECT
+                    IFNULL(hb.kode_salesman,marketing_penjualan_giro.kode_salesman) as kode_salesman,
+                    SUM(jumlah) AS jml_gmlast
+                    FROM
+                    marketing_penjualan_giro_detail
+                    INNER JOIN marketing_penjualan_giro ON marketing_penjualan_giro_detail.kode_giro = marketing_penjualan_giro.kode_giro
+                    INNER JOIN marketing_penjualan ON marketing_penjualan_giro_detail.no_faktur = marketing_penjualan.no_faktur
+                    LEFT JOIN ( SELECT kode_giro,kode_salesman FROM marketing_penjualan_historibayar_giro GROUP BY kode_giro,kode_salesman, ) AS hb ON marketing_penjualan_giro.kode_giro = hb.kode_giro
+                    WHERE
+                    MONTH (marketing_penjualan_giro.tanggal) = '$bulanlalu'
+                    AND YEAR (marketing_penjualan_giro.tanggal) = '$tahunlalu'
+                    AND omset_tahun = '$request->tahun'
+                    AND omset_bulan = '$request->bulan'
+                    OR  MONTH (marketing_penjualan_giro.tanggal) = '$blnlast1'
+                    AND YEAR (marketing_penjualan_giro.tanggal) = '$thnlast1'
+                    AND omset_tahun = '$request->tahun'
+                    AND omset_bulan = '$request->bulan'
+                    GROUP BY
+                    IFNULL( hb.kode_salesman, marketing_penjualan_giro.kode_salesman )
+                ) gmlast ON (salesman.kode_salesman = gmlast.kode_salesman)
+                LEFT JOIN (
+                SELECT
+                    IFNULL(hb.kode_salesman,marketing_penjualan_giro.kode_salesman) as kode_salesman,
+                    SUM(jumlah) AS jml_gmnow
+                FROM
+                    marketing_penjualan_giro_detail
+                    INNER JOIN marketing_penjualan_giro ON marketing_penjualan_giro_detail.kode_giro = marketing_penjualan_giro.kode_giro
+                    INNER JOIN marketing_penjualan ON marketing_penjualan_giro_detail.no_faktur = marketing_penjualan.no_faktur
+                    LEFT JOIN ( SELECT kode_giro,kode_salesman, tanggal as tglbayar FROM marketing_penjualan_historibayar
+                    LEFT JOIN marketing_penjualan_historibayar_giro ON marketing_penjualan_historibayar.no_bukti = marketing_penjualan_historibayar_giro.no_bukti
+                    GROUP BY kode_giro, tanggal,kode_salesman ) AS hb ON marketing_penjualan_giro.kode_giro = hb.kode_giro
+                WHERE
+                    marketing_penjualan_giro.tanggal >= '$dari'
+                    AND marketing_penjualan_giro.tanggal <= '$sampai' AND tglbayar IS NULL AND omset_bulan = '0' AND omset_tahun = '0'
+                    OR  marketing_penjualan_giro.tanggal >= '$dari'
+                    AND marketing_penjualan_giro.tanggal <= '$sampai' AND tglbayar >= '$end'
+                    AND omset_bulan > '$request->bulan'
+                    AND omset_tahun >= '$request->tahun'
+                GROUP BY
+                IFNULL( hb.kode_salesman, marketing_penjualan_giro.kode_salesman )
+                ) gmnow ON (salesman.kode_salesman = gmnow.kode_salesman)
+
+                LEFT JOIN (
+                    SELECT keuangan_belumsetor_detail.kode_salesman, SUM(jumlah) as jml_belumsetorbulanini
+                    FROM keuangan_belumsetor_detail
+                    INNER JOIN keuangan_belumsetor ON keuangan_belumsetor_detail.kode_belumsetor = belumsetor.kode_belumsetor
+                    WHERE bulan ='$request->bulan' AND tahun ='$request->tahun' GROUP BY kode_salesman
+                ) bsnow ON (salesman.kode_salesman = bsnow.kode_salesman)
+                ) hb"),
+                function ($join) {
+                    $join->on('salesman.kode_salesman', '=', 'hb.kode_salesman');
+                }
+            )
             ->whereIn('salesman.kode_salesman', $salesman_target)
             ->orderBy('nama_salesman')
             ->get();
