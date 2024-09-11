@@ -201,6 +201,7 @@ class ReturController extends Controller
     public function destroy($no_retur)
     {
         $no_retur = Crypt::decrypt($no_retur);
+        dd($no_retur);
         $retur = Retur::where('no_retur', $no_retur)->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')->first();
         $detailretur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))->where('no_retur', $retur->no_retur)->first();
         $user = User::findorfail(auth()->user()->id);
