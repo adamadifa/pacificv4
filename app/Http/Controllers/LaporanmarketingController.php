@@ -4045,6 +4045,7 @@ class LaporanmarketingController extends Controller
 
         $data['komisi'] = Dpbdriverhelper::select(
             'gudang_cabang_dpb_driverhelper.kode_driver_helper',
+            'posisi',
             'driver_helper.nama_driver_helper',
             DB::raw('SUM(CASE WHEN gudang_cabang_dpb_driverhelper.kode_posisi = \'D\' THEN (SELECT SUM(ROUND(gudang_cabang_dpb_detail.jml_penjualan / produk.isi_pcs_dus, 3)) FROM gudang_cabang_dpb_detail JOIN produk ON gudang_cabang_dpb_detail.kode_produk = produk.kode_produk WHERE gudang_cabang_dpb_detail.no_dpb = gudang_cabang_dpb_driverhelper.no_dpb) ELSE 0 END) AS jml_qty_driver'),
             DB::raw('SUM(CASE WHEN gudang_cabang_dpb_driverhelper.kode_posisi = \'H\' THEN gudang_cabang_dpb_driverhelper.jumlah ELSE 0 END) AS jml_qty_helper')
