@@ -201,13 +201,15 @@ class ReturController extends Controller
     public function destroy($no_retur)
     {
         $no_retur = Crypt::decrypt($no_retur);
-        dd($no_retur);
-        $retur = Retur::where('no_retur', $no_retur)->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')->first();
+
+        $retur = Retur::where('no_retur', $no_retur)
+            ->select('marketing_retur.no_faktur', 'marketing_retur.tanggal', 'kode_pelanggan')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')->first();
         $detailretur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))->where('no_retur', $retur->no_retur)->first();
         $user = User::findorfail(auth()->user()->id);
         DB::beginTransaction();
         try {
-            dd($retur->tanggal);
+            //dd($retur->tanggal);
             $cektutuplaporan = cektutupLaporan($retur->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
