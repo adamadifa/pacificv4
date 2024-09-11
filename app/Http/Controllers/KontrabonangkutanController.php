@@ -144,6 +144,7 @@ class KontrabonangkutanController extends Controller
 
             $kontrabon = Kontrabonangkutan::select('gudang_jadi_angkutan_kontrabon.*', 'nama_angkutan')
                 ->join('angkutan', 'gudang_jadi_angkutan_kontrabon.kode_angkutan', '=', 'angkutan.kode_angkutan')
+                ->where('no_kontrabon', $no_kontrabon)
                 ->first();
 
             $detailkontrabon = Detailkontrabonangkutan::select(
