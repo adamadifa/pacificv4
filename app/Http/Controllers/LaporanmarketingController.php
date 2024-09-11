@@ -12,11 +12,13 @@ use App\Models\Detailtargetkomisi;
 use App\Models\Detailtransfer;
 use App\Models\Dpb;
 use App\Models\Historibayarpenjualan;
+use App\Models\Kategorikomisi;
 use App\Models\Kendaraan;
 use App\Models\Penjualan;
 use App\Models\Retur;
 use App\Models\Saldoawalpiutangpelanggan;
 use App\Models\Salesman;
+use App\Models\Targetkomisi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -3729,5 +3731,154 @@ class LaporanmarketingController extends Controller
         $data['tahun'] = $request->tahun;
         $data['produk'] = $produk;
         return view('marketing.laporan.harganet_cetak', $data);
+    }
+
+    public function cetakkomisisalesman(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+        $dari = $request->tahun . "-" . $request->bulan . "-01";
+        $sampai = date('Y-m-t', strtotime($dari));
+
+        $kategori_komisi = Kategorikomisi::orderBy('kode_kategori')->get();
+        $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->get();
+
+        $selectColumntarget = [];
+        $selectColumnRealisasi = [];
+        $selectColumnRealisasikendaraan = [];
+
+        $selectTarget = [];
+        $selectRealisasi = [];
+        $selectKendaraan = [];
+        foreach ($kategori_komisi as $k) {
+            $selectColumntarget[] = DB::raw("SUM(IF(produk.kode_kategori_komisi='$k->kode_kategori',jumlah,0)) as `target_$k->kode_kategori`");
+            $selectColumnRealisasi[] = DB::raw("SUM(IF(produk.kode_kategori_komisi='$k->kode_kategori',jumlah / isi_pcs_dus,0)) as `realisasi_$k->kode_kategori`");
+            $selectTarget[] = "target_$k->kode_kategori";
+            $selectRealisasi[] = "realisasi_$k->kode_kategori";
+        }
+
+        foreach ($produk as $p) {
+            $selectColumnRealisasikendaraan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',jumlah/isi_pcs_dus,0)) as `qty_kendaraan_$p->kode_produk`");
+            $selectKendaraan[] = "qty_kendaraan_$p->kode_produk";
+        }
+        $salesman_target = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+            ->select('kode_salesman')
+            ->where('kode_cabang', $kode_cabang)
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->groupBy('kode_salesman');
+
+        $subqueryTarget = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+            ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
+            ->where('marketing_komisi_target.kode_cabang', $kode_cabang)
+            ->where('marketing_komisi_target.bulan', $request->bulan)
+            ->where('marketing_komisi_target.tahun', $request->tahun)
+            ->select('kode_salesman', ...$selectColumntarget)
+            ->groupBy('kode_salesman');
+
+        $subqueryRealisasi = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->leftJoin(
+                DB::raw("(
+                      SELECT
+                        marketing_penjualan.no_faktur,
+                        IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                        IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                    FROM
+                        marketing_penjualan
+                    INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                    LEFT JOIN (
+                    SELECT
+                        no_faktur,
+                        marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                        salesman.kode_cabang AS cabangbaru
+                    FROM
+                        marketing_penjualan_movefaktur
+                        INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                    WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$dari'
+                    ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+                ) pindahfaktur"),
+                function ($join) {
+                    $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+                }
+            )
+            ->where('kode_cabang_baru', $kode_cabang)
+            ->whereBetween('marketing_penjualan.tanggal_pelunasan', [$dari, $sampai])
+            ->where('status_promosi', 0)
+            ->where('status_batal', 0)
+            ->select('kode_salesman_baru', ...$selectColumnRealisasi)
+            ->groupBy('kode_salesman_baru');
+
+        $subqueryKendaraan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('status_promosi', 0)
+            ->where('status_batal', 0)
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->select('marketing_penjualan.kode_salesman', ...$selectColumnRealisasikendaraan)
+            ->groupBy('marketing_penjualan.kode_salesman');
+        // dd($subqueryRealisasi->get());
+
+        $subqueryOA = Penjualan::select('marketing_penjualan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa'))
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->where('status_batal', 0)
+            ->groupBy('marketing_penjualan.kode_salesman');
+        $data['kategori_komisi'] = $kategori_komisi;
+        $data['komisi'] = Salesman::select(
+            'salesman.kode_salesman',
+            'salesman.nama_salesman',
+            'status_komisi_salesman as status_komisi',
+            'realisasi_oa',
+            ...$selectTarget,
+            ...$selectRealisasi,
+            ...$selectKendaraan
+        )
+            ->leftjoinSub($subqueryTarget, 'target', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'target.kode_salesman');
+            })
+            ->leftjoinSub($subqueryRealisasi, 'realisasi', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'realisasi.kode_salesman_baru');
+            })
+            ->leftjoinSub($subqueryKendaraan, 'kendaraan', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'kendaraan.kode_salesman');
+            })
+
+            ->leftjoinSub($subqueryOA, 'oa', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'oa.kode_salesman');
+            })
+
+            ->whereIn('salesman.kode_salesman', $salesman_target)
+            ->orderBy('nama_salesman')
+            ->get();
+
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['produk'] = $produk;
+        return view('marketing.laporan.komisi_salesman_cetak', $data);
     }
 }
