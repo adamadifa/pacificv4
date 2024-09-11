@@ -3921,6 +3921,7 @@ class LaporanmarketingController extends Controller
             'status_komisi_salesman as status_komisi',
             'realisasi_oa',
             'realisasi_penjvsavg',
+            'realisasi_cashin',
             ...$selectTarget,
             ...$selectRealisasi,
             ...$selectKendaraan
@@ -3947,15 +3948,15 @@ class LaporanmarketingController extends Controller
                 DB::raw("(
                 SELECT salesman.kode_salesman,
                 (IFNULL(jml_belumsetorbulanlalu,0)+IFNULL(totalsetoran,0)) + IFNULL(jml_gmlast,0) - IFNULL(jml_gmnow,0) - IFNULL(jml_belumsetorbulanini,0) as realisasi_cashin
-                FROM karyawan
+                FROM salesman
                 LEFT JOIN (
                     SELECT kode_salesman,jumlah as jml_belumsetorbulanlalu FROM keuangan_belumsetor_detail
-                    INNER JOIN keuangan_belumsetor ON belumsetor_detail.kode_belumsetor = keuangan_belumsetor.kode_belumsetor
+                    INNER JOIN keuangan_belumsetor ON keuangan_belumsetor_detail.kode_belumsetor = keuangan_belumsetor.kode_belumsetor
                     WHERE bulan='$bulanlalu' AND tahun='$tahunlalu'
                 ) bs ON (salesman.kode_salesman = bs.kode_salesman)
 
                 LEFT JOIN (
-                    SELECT kode_salesman, SUM(lhp_tunai+lhp_tagihan) as totalsetoran FROM setoran_penjualan
+                    SELECT kode_salesman, SUM(lhp_tunai+lhp_tagihan) as totalsetoran FROM keuangan_setoranpenjualan
                     WHERE tanggal BETWEEN '$dari' AND '$sampai' GROUP BY kode_salesman
                 ) sp ON (salesman.kode_salesman = sp.kode_salesman)
 
@@ -3967,7 +3968,9 @@ class LaporanmarketingController extends Controller
                     marketing_penjualan_giro_detail
                     INNER JOIN marketing_penjualan_giro ON marketing_penjualan_giro_detail.kode_giro = marketing_penjualan_giro.kode_giro
                     INNER JOIN marketing_penjualan ON marketing_penjualan_giro_detail.no_faktur = marketing_penjualan.no_faktur
-                    LEFT JOIN ( SELECT kode_giro,kode_salesman FROM marketing_penjualan_historibayar_giro GROUP BY kode_giro,kode_salesman, ) AS hb ON marketing_penjualan_giro.kode_giro = hb.kode_giro
+                    LEFT JOIN ( SELECT kode_giro,kode_salesman, tanggal as tglbayar FROM marketing_penjualan_historibayar
+                    LEFT JOIN marketing_penjualan_historibayar_giro ON marketing_penjualan_historibayar.no_bukti = marketing_penjualan_historibayar_giro.no_bukti
+                    GROUP BY kode_giro, tanggal,kode_salesman ) AS hb ON marketing_penjualan_giro.kode_giro = hb.kode_giro
                     WHERE
                     MONTH (marketing_penjualan_giro.tanggal) = '$bulanlalu'
                     AND YEAR (marketing_penjualan_giro.tanggal) = '$tahunlalu'
@@ -4005,7 +4008,7 @@ class LaporanmarketingController extends Controller
                 LEFT JOIN (
                     SELECT keuangan_belumsetor_detail.kode_salesman, SUM(jumlah) as jml_belumsetorbulanini
                     FROM keuangan_belumsetor_detail
-                    INNER JOIN keuangan_belumsetor ON keuangan_belumsetor_detail.kode_belumsetor = belumsetor.kode_belumsetor
+                    INNER JOIN keuangan_belumsetor ON keuangan_belumsetor_detail.kode_belumsetor = keuangan_belumsetor.kode_belumsetor
                     WHERE bulan ='$request->bulan' AND tahun ='$request->tahun' GROUP BY kode_salesman
                 ) bsnow ON (salesman.kode_salesman = bsnow.kode_salesman)
                 ) hb"),
