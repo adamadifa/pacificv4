@@ -80,10 +80,10 @@
                         </form>
                     @endcan
                 </div>
-                @can('pelanggan.create')
+                {{-- @can('pelanggan.create')
                     <a href="#" class="btn btn-primary" id="btncreatePelanggan"><i class="fa fa-plus me-2"></i> Tambah
                         Pelanggan</a>
-                @endcan
+                @endcan --}}
             </div>
             <div class="card-body">
                 <div class="row">
