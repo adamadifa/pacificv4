@@ -494,4 +494,48 @@ class PelangganController extends Controller
             echo "<option value='$d->kode_pelanggan'>" . textUpperCase($d->nama_pelanggan) . "</option>";
         }
     }
+
+
+    public function export(Request $request)
+    {
+
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang_search;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang_search;
+        }
+
+        $pelanggan = Pelanggan::leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('kode_cabang', $kode_cabang)
+            ->get();
+        $kepemilikan = config('pelanggan.kepemilikan');
+        $lama_berjualan = config('pelanggan.lama_berjualan');
+        $status_outlet = config('pelanggan.status_outlet');
+        $type_outlet = config('pelanggan.type_outlet');
+        $cara_pembayaran = config('pelanggan.cara_pembayaran');
+        $lama_langganan = config('pelanggan.lama_langganan');
+        $cabang = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+
+        return view('datamaster.pelanggan.export', compact(
+            'pelanggan',
+            'kepemilikan',
+            'lama_berjualan',
+            'status_outlet',
+            'type_outlet',
+            'cara_pembayaran',
+            'lama_langganan',
+            'penjualan',
+            'cabang'
+        ));
+    }
 }
