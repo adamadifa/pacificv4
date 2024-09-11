@@ -13,7 +13,7 @@
             <tbody>
                 @foreach ($rekappersediaan as $d)
                     @php
-                        $saldo_akhir = ($d->suratjalan + $d->saldo_awal + $d->sisa_mutasi - $d->dpb_ambil + $d->dpb_kembali) / $d->isi_pcs_dus;
+                        $saldo_akhir = ($d->saldo_awal + $d->sisa_mutasi - $d->dpb_ambil + $d->dpb_kembali) / $d->isi_pcs_dus;
                         if ($saldo_akhir <= $d->buffer_stok) {
                             $color = 'bg-danger text-white opacity-60';
                         } elseif ($saldo_akhir >= $d->max_stok) {
