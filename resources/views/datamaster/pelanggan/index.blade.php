@@ -74,7 +74,9 @@
                         <form action="/pelanggan/export" method="GET" id="formCetak" target="_blank">
                             <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
                             <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
-                            <input type="hidden" name="kode_cabang_search" id="kode_cabang_cetak" value="{{ Request('kode_cabang_search') }}" />
+                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang') }}" />
+                            <input type="hidden" name="kode_salesman" id="kode_salesman_cetak" value="{{ Request('kode_salesman') }}" />
+                            <input type="hidden" name="status" id="status_cetak" value="{{ Request('status') }}" />
                             <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
                             <button class="btn btn-success" name="exportButton"><i class="ti ti-download me-1"></i>Export Excel</button>
                         </form>
@@ -89,6 +91,29 @@
                 <div class="row">
                     <div class="col-12">
                         <form action="{{ route('pelanggan.index') }}">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12 col-md-12">
+                                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                                datepicker="flatpickr-date" />
+                                        </div>
+                                        <div class="col-lg-6 col-sm-12 col-md-12">
+                                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                                datepicker="flatpickr-date" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <select name="status" id="status" class="form-select">
+                                        <option value="">Status</option>
+                                        <option value="aktif" {{ Request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                        <option value="nonaktif" {{ Request('status') == 'nonaktif' ? 'selected' : '' }}>Non Aktif</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="row">
                                 @hasanyrole($roles_show_cabang)
                                     <div class="col-lg-2 col-sm-12 col-md-12">

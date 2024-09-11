@@ -56,6 +56,18 @@ class PelangganController extends Controller
             $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
         }
 
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('pelanggan.tanggal_register', [$request->dari, $request->sampai]);
+        }
+
+        if (!empty($request->status)) {
+            if ($request->status == 'aktif') {
+                $query->where('pelanggan.status_aktif_pelanggan', '1');
+            } elseif ($request->status == 'nonaktif') {
+                $query->where('pelanggan.status_aktif_pelanggan', '0');
+            }
+        }
+
         if ($user->hasRole('salesman')) {
             $query->where('pelanggan.kode_salesman', $user->kode_salesman);
         }
@@ -504,19 +516,36 @@ class PelangganController extends Controller
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
-                $kode_cabang = $request->kode_cabang_search;
+                $kode_cabang = $request->kode_cabang;
             } else {
                 $kode_cabang = $user->kode_cabang;
             }
         } else {
-            $kode_cabang = $request->kode_cabang_search;
+            $kode_cabang = $request->kode_cabang;
         }
 
         $query = Pelanggan::query();
         $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->where('salesman.kode_cabang', $kode_cabang);
+        if (!empty($kode_cabang)) {
+            $query->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $query->where('pelanggan.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('pelanggan.tanggal_register', [$request->dari, $request->sampai]);
+        }
+
+        if (!empty($request->status)) {
+            if ($request->status == 'aktif') {
+                $query->where('pelanggan.status_aktif_pelanggan', '1');
+            } elseif ($request->status == 'nonaktif') {
+                $query->where('pelanggan.status_aktif_pelanggand', '0');
+            }
+        }
         $pelanggan = $query->get();
         $kepemilikan = config('pelanggan.kepemilikan');
         $lama_berjualan = config('pelanggan.lama_berjualan');
@@ -526,7 +555,11 @@ class PelangganController extends Controller
         $lama_langganan = config('pelanggan.lama_langganan');
         $cabang = Cabang::where('kode_cabang', $kode_cabang)->first();
 
-
+        if (isset($_GET['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Data Pelanggan $request->dari-$request->sampai.xls");
+        }
         return view('datamaster.pelanggan.export', compact(
             'pelanggan',
             'kepemilikan',

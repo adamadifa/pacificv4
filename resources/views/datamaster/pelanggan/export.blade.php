@@ -16,7 +16,7 @@
         {{-- <h4>PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4> --}}
     </div>
     <div class="body">
-        <table class="datatable3" border="1">
+        <table class="datatable3" border="1" style="width: 300%;">
             <thead>
                 <tr>
                     <th>Kode Pelanggan</th>
@@ -30,8 +30,7 @@
                     <th>No. HP Pelanggan</th>
                     <th>Kode Wilayah</th>
                     <th>Hari</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
+                    <th>Koordinat</th>
                     <th>Status Lokasi</th>
                     <th>LJT</th>
                     <th>Status Outlet</th>
@@ -45,11 +44,43 @@
                     <th>Limit Pelanggan</th>
                     <th>Kode Salesman</th>
                     <th>Kode Cabang</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach ($pelanggan as $d)
+                    @php
+                        $color_status = $d->status_aktif_pelanggan == 0 ? 'red' : '';
+                    @endphp
+                    <tr style="background-color: {{ $color_status }};">
+                        <td>{{ $d->kode_pelanggan }}</td>
+                        <td>{{ $d->nama_pelanggan }}</td>
+                        <td>{{ $d->nik }}</td>
+                        <td>{{ $d->no_kk }}</td>
+                        <td>{{ $d->nama_pelanggan }}</td>
+                        <td>{{ !empty($d->tanggal_lahir) ? formatIndo($d->tanggal_lahir) : '' }}</td>
+                        <td>{{ $d->alamat_pelanggan }}</td>
+                        <td>{{ $d->alamat_toko }}</td>
+                        <td>{{ !empty($d->no_hp_pelanggan) ? $d->no_hp_pelanggan : '-' }}</td>
+                        <td>{{ $d->nama_wilayah }}</td>
+                        <td>{{ $d->nama_wilayah }}</td>
+                        <td>{{ $d->hari }}</td>
+                        <td>{{ $d->latitude }} , {{ $d->longitude }}</td>
+                        <td>{{ $d->ljt }}</td>
+                        <td>{{ !empty($d->status_outlet) ? $status_outlet[$d->status_outlet] : '' }}</td>
+                        <td>{{ !empty($d->type_outlet) ? $type_outlet[$d->type_outlet] : '' }}</td>
+                        <td>{{ !empty($d->cara_pembayaran) ? $cara_pembayaran[$d->cara_pembayaran] : '' }}</td>
+                        <td>{{ !empty($d->kepemilikan) ? $kepemilikan[$d->kepemilikan] : '' }}</td>
+                        <td>{{ !empty($d->lama_langganan) ? $lama_langganan[$d->lama_langganan] : '' }}</td>
+                        <td>{{ $d->jaminan == 1 ? 'Ada' : 'Tidak' }}</td>
+                        <td class="right">{{ formatAngka($d->omset_toko) }}</td>
+                        <td class="center">{{ !empty($d->foto) ? '✓' : '✗' }}</td>
+                        <td class="right">{{ formatAngka($d->limit_pelanggan) }}</td>
+                        <td>{{ $d->nama_salesman }}</td>
+                        <td>{{ $d->nama_cabang }}</td>
+                        <td>{{ $d->status_aktif_pelanggan == 1 ? 'Aktif' : 'Tidak Aktif' }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
