@@ -91,6 +91,7 @@
                         <th rowspan="2">Nama</th>
                         <th rowspan="2">Posisi</th>
                         <th colspan="6">Quantity</th>
+                        <th rowspan="2">TOTAL</th>
                     </tr>
                     <tr>
                         <th class="green">DRIVER</th>
@@ -98,8 +99,10 @@
                         <th class="green">TOTAL</th>
                         <th class="red">HELPER</th>
                         <th class="red">RATIO</th>
-                        <th class="red">ToTAL</th>
-
+                        <th class="red">TOTAL</th>
+                    </tr>
+                    <tr>
+                        <th>TOTAL</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -133,6 +136,12 @@
                                 {{ formatAngkaDesimal($ratio_helper) }}
                             </td>
                             <td class="right">{{ formatAngkaDesimal($total_komisi_helper) }}</td>
+                            <td class="right">
+                                @php
+                                    $total_komisi = $total_komisi_driver + $total_komisi_helper;
+                                @endphp
+                                {{ formatAngkaDesimal($total_komisi) }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
