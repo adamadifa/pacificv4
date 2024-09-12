@@ -164,8 +164,8 @@
                                     }
                                     $total_poin += $poin;
                                 @endphp
-                                <td class="center">{{ formatAngka($d->{"target_$k->kode_kategori"}) }}</td>
-                                <td class="center">{{ formatAngka($d->{"realisasi_$k->kode_kategori"}) }}</td>
+                                <td class="center">{{ formatAngkaDesimal($d->{"target_$k->kode_kategori"}) }}</td>
+                                <td class="center">{{ formatAngkaDesimal($d->{"realisasi_$k->kode_kategori"}) }}</td>
                                 <td class="center">{{ formatAngkaDesimal($poin) }}</td>
                             @endforeach
                             <td class="center">{{ formatAngkaDesimal($total_poin) }}</td>
