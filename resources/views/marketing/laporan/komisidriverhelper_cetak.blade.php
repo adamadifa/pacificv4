@@ -83,78 +83,124 @@
 
     </div>
     <div class="content">
-        <div class="freeze-table">
-            <table class="datatable3">
-                <thead>
-                    <tr>
-                        <th rowspan="2">Kode</th>
-                        <th rowspan="2">Nama</th>
-                        <th rowspan="2">Posisi</th>
-                        <th colspan="6">Quantity</th>
-                        <th rowspan="2">TOTAL</th>
-                    </tr>
-                    <tr>
-                        <th class="green">DRIVER</th>
-                        <th class="green">RATIO</th>
-                        <th class="green">TOTAL</th>
-                        <th class="red">HELPER</th>
-                        <th class="red">RATIO</th>
-                        <th class="red">TOTAL</th>
-                    </tr>
 
-                </thead>
-                <tbody>
-                    @php
-                        $posisi = [
-                            'D' => 'Driver',
-                            'H' => 'Helper',
-                            'G' => 'Gudang',
-                        ];
-                        $grandtotal_komisi = 0;
-                    @endphp
-                    @foreach ($komisi as $d)
-                        <tr>
-                            <td>{{ $d->kode_driver_helper }}</td>
-                            <td>{{ $d->nama_driver_helper }}</td>
-                            <td>{{ $posisi[$d->posisi] }}</td>
-                            <td class="right">{{ formatAngkaDesimal($d->qty_driver) }}</td>
-                            <td class="center">
-                                @php
-                                    $ratio_driver = $d->posisi == 'D' ? $d->ratio_default : 0;
-                                    $total_komisi_driver = $d->qty_driver * $ratio_driver;
-                                @endphp
-                                {{ formatAngkaDesimal($ratio_driver) }}
-                            </td>
-                            <td class="right">{{ formatAngkaDesimal($total_komisi_driver) }}</td>
-                            <td class="right">{{ formatAngkaDesimal($d->qty_helper) }}</td>
-                            <td class="center">
-                                @php
-                                    $ratio_helper = $d->posisi == 'H' ? $d->ratio_default : $d->ratio_helper;
-                                    $total_komisi_helper = $d->qty_helper * $ratio_helper;
-                                @endphp
-                                {{ formatAngkaDesimal($ratio_helper) }}
-                            </td>
-                            <td class="right">{{ formatAngkaDesimal($total_komisi_helper) }}</td>
-                            <td class="right" style="font-weight: bold">
-                                @php
-                                    $total_komisi = $total_komisi_driver + $total_komisi_helper;
-                                @endphp
-                                {{ formatAngkaDesimal($total_komisi) }}
-                            </td>
-                            @php
-                                $grandtotal_komisi += $total_komisi;
-                            @endphp
-                        </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
+        <table class="datatable3">
+            <thead>
+                <tr>
+                    <th rowspan="2">Kode</th>
+                    <th rowspan="2">Nama</th>
+                    <th rowspan="2">Posisi</th>
+                    <th colspan="6">Quantity</th>
+                    <th rowspan="2">TOTAL</th>
+                </tr>
+                <tr>
+                    <th class="green">DRIVER</th>
+                    <th class="green">RATIO</th>
+                    <th class="green">TOTAL</th>
+                    <th class="red">HELPER</th>
+                    <th class="red">RATIO</th>
+                    <th class="red">TOTAL</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @php
+                    $posisi = [
+                        'D' => 'Driver',
+                        'H' => 'Helper',
+                        'G' => 'Gudang',
+                    ];
+                    $grandtotal_komisi = 0;
+                @endphp
+                @foreach ($komisi as $d)
                     <tr>
-                        <th colspan="9">GRAND TOTAL</th>
-                        <th class="right">{{ formatAngkaDesimal($grandtotal_komisi) }}</th>
+                        <td>{{ $d->kode_driver_helper }}</td>
+                        <td>{{ $d->nama_driver_helper }}</td>
+                        <td>{{ $posisi[$d->posisi] }}</td>
+                        <td class="right">{{ formatAngkaDesimal($d->qty_driver) }}</td>
+                        <td class="center">
+                            @php
+                                $ratio_driver = $d->posisi == 'D' ? $d->ratio_default : 0;
+                                $total_komisi_driver = $d->qty_driver * $ratio_driver;
+                            @endphp
+                            {{ formatAngkaDesimal($ratio_driver) }}
+                        </td>
+                        <td class="right">{{ formatAngkaDesimal($total_komisi_driver) }}</td>
+                        <td class="right">{{ formatAngkaDesimal($d->qty_helper) }}</td>
+                        <td class="center">
+                            @php
+                                $ratio_helper = $d->posisi == 'H' ? $d->ratio_default : $d->ratio_helper;
+                                $total_komisi_helper = $d->qty_helper * $ratio_helper;
+                            @endphp
+                            {{ formatAngkaDesimal($ratio_helper) }}
+                        </td>
+                        <td class="right">{{ formatAngkaDesimal($total_komisi_helper) }}</td>
+                        <td class="right" style="font-weight: bold">
+                            @php
+                                $total_komisi = $total_komisi_driver + $total_komisi_helper;
+                            @endphp
+                            {{ formatAngkaDesimal($total_komisi) }}
+                        </td>
+                        @php
+                            $grandtotal_komisi += $total_komisi;
+                        @endphp
                     </tr>
-                </tfoot>
-            </table>
-        </div>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="9">GRAND TOTAL</th>
+                    <th class="right">{{ formatAngkaDesimal($grandtotal_komisi) }}</th>
+                </tr>
+            </tfoot>
+        </table>
+        <br>
+        <br>
+        <br>
+        <table class="datatable3">
+            <thead>
+                <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>Posisi</th>
+                    <th>Quantity</th>
+                    <th>RATIO</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $total_komisi_gudang = 0;
+                @endphp
+                @foreach ($komisigudang as $d)
+                    @php
+                        $total_komisi_gudang += $d->qty_gudang * $d->ratio_default;
+                    @endphp
+                    <tr>
+                        <td>{{ $d->kode_driver_helper }}</td>
+                        <td>{{ $d->nama_driver_helper }}</td>
+                        <td>{{ $posisi[$d->posisi] }}</td>
+                        <td class="right">{{ formatAngkaDesimal($d->qty_gudang) }}</td>
+                        <td class="center">{{ formatAngkaDesimal($d->ratio_default) }}</td>
+                        <td class="right">{{ formatAngkaDesimal($d->qty_gudang * $d->ratio_default) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5">GRAND TOTAL</th>
+                    <th class="right">{{ formatAngkaDesimal($total_komisi_gudang) }}</th>
+                </tr>
+            </tfoot>
+        </table>
+        <br>
+
+        <table class="datatable3">
+            <tr>
+                <th>TOTAL KOMISI</th>
+                <th class="right">{{ formatAngkaDesimal($grandtotal_komisi + $total_komisi_gudang) }}</th>
+            </tr>
+        </table>
     </div>
 </body>
 

@@ -13,6 +13,7 @@ use App\Models\Detailtargetkomisi;
 use App\Models\Detailtransfer;
 use App\Models\Dpb;
 use App\Models\Dpbdriverhelper;
+use App\Models\Driverhelper;
 use App\Models\Historibayarpenjualan;
 use App\Models\Kategorikomisi;
 use App\Models\Kendaraan;
@@ -4185,6 +4186,29 @@ class LaporanmarketingController extends Controller
             ->where('driver_helper.kode_cabang', $kode_cabang)
             ->groupBy('gudang_cabang_dpb_driverhelper.kode_driver_helper', 'driver_helper.nama_driver_helper', 'ratio_default', 'ratio_helper', 'posisi')
             ->get();
+
+        $data['komisigudang'] = Driverhelper::select(
+            'driver_helper.kode_driver_helper',
+            'nama_driver_helper',
+            'posisi',
+            DB::raw('(SELECT SUM(gudang_cabang_dpb_detail.jml_penjualan / produk.isi_pcs_dus)
+            FROM gudang_cabang_dpb_detail
+            JOIN produk ON gudang_cabang_dpb_detail.kode_produk = produk.kode_produk
+            INNER JOIN gudang_cabang_dpb ON gudang_cabang_dpb_detail.no_dpb = gudang_cabang_dpb.no_dpb
+            INNER JOIN salesman ON gudang_cabang_dpb.kode_salesman = salesman.kode_salesman
+            WHERE tanggal_ambil BETWEEN "' . $request->dari . '" AND "' . $request->sampai . '" AND salesman.kode_cabang = "' . $kode_cabang . '" ) AS qty_gudang'),
+        )
+
+            ->leftjoinSub($subqueryRatio, 'ratio', function ($join) {
+                $join->on('driver_helper.kode_driver_helper', '=', 'ratio.kode_driver_helper');
+            })
+            ->where('kode_cabang', $kode_cabang)
+            ->where('posisi', 'G')
+            ->get();
+
+        //dd($data['komisigudang']);
+
+
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
