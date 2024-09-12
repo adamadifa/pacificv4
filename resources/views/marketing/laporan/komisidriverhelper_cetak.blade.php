@@ -101,9 +101,7 @@
                         <th class="red">RATIO</th>
                         <th class="red">TOTAL</th>
                     </tr>
-                    <tr>
-                        <th>TOTAL</th>
-                    </tr>
+
                 </thead>
                 <tbody>
                     @php
