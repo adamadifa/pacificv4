@@ -6,6 +6,7 @@ use App\Models\Cabang;
 use App\Models\Detaildpb;
 use App\Models\Detailgiro;
 use App\Models\Detailpenjualan;
+use App\Models\Detailratiodriverhelper;
 use App\Models\Detailretur;
 use App\Models\Detailsaldoawalpiutangpelanggan;
 use App\Models\Detailtargetkomisi;
@@ -16,6 +17,7 @@ use App\Models\Historibayarpenjualan;
 use App\Models\Kategorikomisi;
 use App\Models\Kendaraan;
 use App\Models\Penjualan;
+use App\Models\Ratiokomisidriverhelper;
 use App\Models\Retur;
 use App\Models\Saldoawalpiutangpelanggan;
 use App\Models\Salesman;
@@ -4043,18 +4045,30 @@ class LaporanmarketingController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
+        $last_ratio = Ratiokomisidriverhelper::where('kode_cabang', $kode_cabang)->orderBy('tanggal_berlaku', 'desc')->first();
+        if ($last_ratio == null) {
+            return Redirect::back()->with(messageError('Ratio Belum Diset'));
+        }
+
+
+        $subqueryRatio = Detailratiodriverhelper::where('kode_ratio', $last_ratio->kode_ratio);
         $data['komisi'] = Dpbdriverhelper::select(
             'gudang_cabang_dpb_driverhelper.kode_driver_helper',
             'posisi',
             'driver_helper.nama_driver_helper',
+            'ratio_default',
+            'ratio_helper',
             DB::raw('SUM(CASE WHEN gudang_cabang_dpb_driverhelper.kode_posisi = \'D\' THEN (SELECT SUM(ROUND(gudang_cabang_dpb_detail.jml_penjualan / produk.isi_pcs_dus, 3)) FROM gudang_cabang_dpb_detail JOIN produk ON gudang_cabang_dpb_detail.kode_produk = produk.kode_produk WHERE gudang_cabang_dpb_detail.no_dpb = gudang_cabang_dpb_driverhelper.no_dpb) ELSE 0 END) AS qty_driver'),
             DB::raw('SUM(CASE WHEN gudang_cabang_dpb_driverhelper.kode_posisi = \'H\' THEN gudang_cabang_dpb_driverhelper.jumlah ELSE 0 END) AS qty_helper')
         )
             ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_driverhelper.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
             ->join('driver_helper', 'gudang_cabang_dpb_driverhelper.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
+            ->leftjoinSub($subqueryRatio, 'ratio', function ($join) {
+                $join->on('gudang_cabang_dpb_driverhelper.kode_driver_helper', '=', 'ratio.kode_driver_helper');
+            })
             ->whereBetween('gudang_cabang_dpb.tanggal_ambil', [$request->dari, $request->sampai])
             ->where('driver_helper.kode_cabang', $kode_cabang)
-            ->groupBy('gudang_cabang_dpb_driverhelper.kode_driver_helper', 'driver_helper.nama_driver_helper')
+            ->groupBy('gudang_cabang_dpb_driverhelper.kode_driver_helper', 'driver_helper.nama_driver_helper', 'ratio_default', 'ratio_helper', 'posisi')
             ->get();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
