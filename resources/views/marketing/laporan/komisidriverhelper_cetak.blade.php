@@ -110,6 +110,7 @@
                             'H' => 'Helper',
                             'G' => 'Gudang',
                         ];
+                        $grandtotal_komisi = 0;
                     @endphp
                     @foreach ($komisi as $d)
                         <tr>
@@ -134,15 +135,24 @@
                                 {{ formatAngkaDesimal($ratio_helper) }}
                             </td>
                             <td class="right">{{ formatAngkaDesimal($total_komisi_helper) }}</td>
-                            <td class="right">
+                            <td class="right" style="font-weight: bold">
                                 @php
                                     $total_komisi = $total_komisi_driver + $total_komisi_helper;
                                 @endphp
                                 {{ formatAngkaDesimal($total_komisi) }}
                             </td>
+                            @php
+                                $grandtotal_komisi += $d->total_komisi;
+                            @endphp
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="9">GRAND TOTAL</th>
+                        <th class="right">{{ formatAngkaDesimal($grandtotal_komisi) }}</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
