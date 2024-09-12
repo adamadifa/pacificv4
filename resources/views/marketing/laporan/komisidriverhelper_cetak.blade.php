@@ -142,7 +142,7 @@
                                 {{ formatAngkaDesimal($total_komisi) }}
                             </td>
                             @php
-                                $grandtotal_komisi += $d->total_komisi;
+                                $grandtotal_komisi += $total_komisi;
                             @endphp
                         </tr>
                     @endforeach
