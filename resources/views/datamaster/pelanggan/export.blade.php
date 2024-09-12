@@ -31,7 +31,6 @@
                     <th>Kode Wilayah</th>
                     <th>Hari</th>
                     <th>Koordinat</th>
-                    <th>Status Lokasi</th>
                     <th>LJT</th>
                     <th>Status Outlet</th>
                     <th>Type Outlet</th>
@@ -62,7 +61,6 @@
                         <td>{{ $d->alamat_pelanggan }}</td>
                         <td>{{ $d->alamat_toko }}</td>
                         <td>{{ !empty($d->no_hp_pelanggan) ? $d->no_hp_pelanggan : '-' }}</td>
-                        <td>{{ $d->nama_wilayah }}</td>
                         <td>{{ $d->nama_wilayah }}</td>
                         <td>{{ $d->hari }}</td>
                         <td>{{ $d->latitude }} , {{ $d->longitude }}</td>
