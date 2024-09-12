@@ -182,7 +182,7 @@
                         <tr>
                             <th class="bg-terimauang">Tanggal</th>
                             @foreach ($bank as $d)
-                                <th class="bg-terimauang">{{ $d->nama_bank }}</th>
+                                <th class="bg-terimauang">{{ !empty($d->nama_bank_alias) ? $d->nama_bank_alias : $d->nama_bank }}</th>
                             @endforeach
                             <th class="bg-terimauang">TOTAL</th>
                         </tr>

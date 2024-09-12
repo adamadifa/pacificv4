@@ -629,7 +629,7 @@ class LaporankeuanganController extends Controller
         $bank = Ledgersetoranpusat::join('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
             ->join('keuangan_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
             ->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank')
-            ->select('keuangan_ledger.kode_bank', 'bank.nama_bank')
+            ->select('keuangan_ledger.kode_bank', 'bank.nama_bank', 'bank.nama_bank_alias')
             ->where('omset_bulan', $request->bulan)
             ->where('omset_tahun', $request->tahun)
             ->where('keuangan_setoranpusat.kode_cabang', $kode_cabang)
