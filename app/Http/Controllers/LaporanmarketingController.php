@@ -4044,7 +4044,7 @@ class LaporanmarketingController extends Controller
                                     salesman.kode_cabang AS cabangbaru
                                 FROM
                                     marketing_penjualan_movefaktur move_faktur
-                                INNER JOIN salesman ON move_faktur.kode_salesman = salesman.kode_salesman
+                                INNER JOIN salesman ON move_faktur.kode_salesman_baru = salesman.kode_salesman
                                 WHERE id IN ( SELECT max( id ) FROM marketing_penjualan_movefaktur WHERE tanggal <= '$sampai' GROUP BY no_faktur )
                             ) move_fak ON ( pj.no_faktur = move_fak.no_faktur )
                         ) pjmove ON ( marketing_penjualan.no_faktur = pjmove.no_faktur )
