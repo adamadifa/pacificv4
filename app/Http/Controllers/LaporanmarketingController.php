@@ -4191,6 +4191,7 @@ class LaporanmarketingController extends Controller
             'driver_helper.kode_driver_helper',
             'nama_driver_helper',
             'posisi',
+            'ratio_default',
             DB::raw('(SELECT SUM(gudang_cabang_dpb_detail.jml_penjualan / produk.isi_pcs_dus)
             FROM gudang_cabang_dpb_detail
             JOIN produk ON gudang_cabang_dpb_detail.kode_produk = produk.kode_produk
