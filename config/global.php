@@ -79,7 +79,8 @@ return  [
         'manager audit',
         'audit',
         'regional operation manager',
-        'crm'
+        'crm',
+        'spv accounting'
     ],
     'roles_show_cabang' => [
         'super admin',
@@ -94,7 +95,8 @@ return  [
         'manager audit',
         'audit',
         'regional operation manager',
-        'crm'
+        'crm',
+        'spv accounting'
     ],
 
     'roles_access_all_karyawan' => [
@@ -105,7 +107,7 @@ return  [
         'asst. manager hrd',
         'spv presensi',
         'spv recruitment',
-        'staff keuangan'
+        'staff keuangan',
     ],
 
     //Pinjaman
