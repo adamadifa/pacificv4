@@ -4019,6 +4019,85 @@ class LaporanmarketingController extends Controller
                     $join->on('salesman.kode_salesman', '=', 'hb.kode_salesman');
                 }
             )
+
+            ->leftJoin(
+                DB::raw("(
+                    SELECT
+                        salesbarunew,IFNULL( SUM(jumlah ), 0 ) - SUM(IFNULL( totalretur, 0 )) - SUM(IFNULL( totalbayar, 0 )) AS sisapiutangsaldo
+                    FROM
+                    marketing_saldoawal_piutang_detail spf
+                    INNER JOIN marketing_saldoawal_piutang ON spf.kode_saldo_awal = marketing_saldoawal_piutang.kode_saldo_awal
+                    INNER JOIN marketing_penjualan ON spf.no_faktur = marketing_penjualan.no_faktur
+                    INNER JOIN pelanggan ON marketing_penjualan.kode_pelanggan = pelanggan.kode_pelanggan
+                    LEFT JOIN (
+                            SELECT
+                                pj.no_faktur,IF( salesbaru IS NULL, pj.kode_salesman, salesbaru ) AS salesbarunew,salesman.nama_salesman AS nama_sales,
+                                IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS cabangbarunew
+                            FROM
+                                marketing_penjualan pj
+                            INNER JOIN salesman ON pj.kode_salesman = salesman.kode_salesman
+                            LEFT JOIN (
+                                SELECT
+                                    id,
+                                    no_faktur,
+                                    move_faktur.kode_salesman_baru AS salesbaru,
+                                    salesman.kode_cabang AS cabangbaru
+                                FROM
+                                    marketing_penjualan_movefaktur move_faktur
+                                INNER JOIN salesman ON move_faktur.kode_salesman = salesman.kode_salesman
+                                WHERE id IN ( SELECT max( id ) FROM marketing_penjualan_movefaktur WHERE tanggal <= '$sampai' GROUP BY no_faktur )
+                            ) move_fak ON ( pj.no_faktur = move_fak.no_faktur )
+                        ) pjmove ON ( marketing_penjualan.no_faktur = pjmove.no_faktur )
+                        LEFT JOIN (
+                            SELECT
+                                marketing_retur.no_faktur AS no_faktur,
+                                SUM((SELECT(subtotal) FROM marketing_retur_detail WHERE no_retur = marketing_retur.no_retur)) AS totalretur
+                            FROM
+                                marketing_retur
+                            WHERE
+                                tanggal BETWEEN '$dari' AND '$sampai' AND jenis_retur='PF'
+                            GROUP BY
+                                marketing_retur.no_faktur
+                        ) r ON ( marketing_penjualan.no_faktur = r.no_faktur )
+                        LEFT JOIN (
+                            SELECT no_faktur, sum( marketing_penjualan_historibayar.jumlah ) AS totalbayar
+                            FROM marketing_penjualan_historibayar
+                            WHERE tanggal BETWEEN '$dari' AND '$sampai' GROUP BY no_faktur
+                        ) hb ON ( marketing_penjualan.no_faktur = hb.no_faktur )
+                    WHERE
+                        datediff( '$sampai', marketing_penjualan.tanggal ) > 30 AND bulan = '$bulan' AND tahun = '$tahun'
+                    GROUP BY
+                        salesbarunew
+                ) spf"),
+                function ($join) {
+                    $join->on('salesman.kode_salesman', '=', 'spf.salesbarunew');
+                }
+            );
+
+            //Penjualan VS AVG
+            ->leftjoin(
+                DB::raw("(
+                    SELECT karyawan.id_karyawan,COUNT(kode_pelanggan) as realisasipenjvsavg
+                    FROM karyawan
+                    LEFT JOIN (
+                    SELECT penjualan.id_karyawan,penjualan.kode_pelanggan,SUM(total) as totalpenjualanbulanini,totalpenjualanbulanlalu
+                    FROM penjualan
+                    LEFT JOIN (
+                        SELECT penjualan.kode_pelanggan, SUM(total) as totalpenjualanbulanlalu
+                        FROM penjualan
+                        WHERE tgltransaksi BETWEEN '$lastmonth_dari' AND '$lastmonth_sampai'
+                        GROUP BY kode_pelanggan
+                    ) penjlalu ON (penjualan.kode_pelanggan = penjlalu.kode_pelanggan)
+                    WHERE tgltransaksi BETWEEN '$dari' AND '$sampai' AND totalpenjualanbulanlalu IS NOT NULL
+                    GROUP BY penjualan.kode_pelanggan,penjualan.id_karyawan,totalpenjualanbulanlalu
+                    HAVING (SUM(total) >= totalpenjualanbulanlalu) ) jmlpelanggan ON (karyawan.id_karyawan = jmlpelanggan.id_karyawan)
+                    GROUP BY karyawan.id_karyawan
+                ) penjualanvsavg"),
+                function ($join) {
+                    $join->on('karyawan.id_karyawan', '=', 'penjualanvsavg.id_karyawan');
+                }
+            );
+
             ->whereIn('salesman.kode_salesman', $salesman_target)
             ->orderBy('nama_salesman')
             ->get();
