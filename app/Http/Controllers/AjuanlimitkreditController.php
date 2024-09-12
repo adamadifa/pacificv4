@@ -376,7 +376,11 @@ class AjuanlimitkreditController extends Controller
     public function approvestore($no_pengajuan, Request $request)
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
-        $ajuanlimit = Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->first();
+        $ajuanlimit = Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+            ->select('marketing_ajuan_limitkredit.*', 'kode_regional')
+            ->join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->first();
 
         DB::beginTransaction();
         try {
@@ -440,6 +444,7 @@ class AjuanlimitkreditController extends Controller
                         return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
                     } else {
                         $rsm = User::role('regional sales manager')
+                            ->where('kode_regional', $ajuanlimit->kode_regional)
                             ->where('status', 1)
                             ->first();
                         if ($rsm != NULL) {
