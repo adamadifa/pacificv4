@@ -4072,7 +4072,7 @@ class LaporanmarketingController extends Controller
                 function ($join) {
                     $join->on('salesman.kode_salesman', '=', 'spf.salesbarunew');
                 }
-            );
+            )
 
             //Penjualan VS AVG
             ->leftjoin(
