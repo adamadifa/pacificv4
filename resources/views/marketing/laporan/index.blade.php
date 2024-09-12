@@ -252,39 +252,41 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-6 col-md-12 col-sm-12">
-        <div class="nav-align-left nav-tabs-shadow mb-4">
-            <ul class="nav nav-tabs" role="tablist">
-                @can('mkt.komisisalesman')
-                    <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#komisisalesman"
-                            aria-controls="komisisalesman" aria-selected="false" tabindex="-1">
-                            Komisi Salesman
-                        </button>
-                    </li>
-                @endcan
-                @can('mkt.komisidriverhelper')
-                    <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#komisidriverhelper"
-                            aria-controls="komisidriverhelper" aria-selected="false" tabindex="-1">
-                            Komisi Driver Helper
-                        </button>
-                    </li>
-                @endcan
-            </ul>
-            <div class="tab-content">
-                @can('mkt.komisisalesman')
-                    <div class="tab-pane fade show active" id="komisisalesman" role="tabpanel">
-                        @include('marketing.laporan.komisisalesman')
-                    </div>
-                @endcan
-                @can('mkt.komisidriverhelper')
-                    <div class="tab-pane fade" id="komisidriverhelper" role="tabpanel">
-                        @include('marketing.laporan.komisidriverhelper')
-                    </div>
-                @endcan
+    @if (auth()->user()->hasAnyPermission(['mkt.komisisalesman', 'mkt.komisidriverhelper']))
+        <div class="col-xl-6 col-md-12 col-sm-12">
+            <div class="nav-align-left nav-tabs-shadow mb-4">
+                <ul class="nav nav-tabs" role="tablist">
+                    @can('mkt.komisisalesman')
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#komisisalesman"
+                                aria-controls="komisisalesman" aria-selected="false" tabindex="-1">
+                                Komisi Salesman
+                            </button>
+                        </li>
+                    @endcan
+                    @can('mkt.komisidriverhelper')
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#komisidriverhelper"
+                                aria-controls="komisidriverhelper" aria-selected="false" tabindex="-1">
+                                Komisi Driver Helper
+                            </button>
+                        </li>
+                    @endcan
+                </ul>
+                <div class="tab-content">
+                    @can('mkt.komisisalesman')
+                        <div class="tab-pane fade show active" id="komisisalesman" role="tabpanel">
+                            @include('marketing.laporan.komisisalesman')
+                        </div>
+                    @endcan
+                    @can('mkt.komisidriverhelper')
+                        <div class="tab-pane fade" id="komisidriverhelper" role="tabpanel">
+                            @include('marketing.laporan.komisidriverhelper')
+                        </div>
+                    @endcan
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 </div>
 @endsection
