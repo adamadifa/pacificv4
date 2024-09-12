@@ -90,12 +90,16 @@
                         <th rowspan="2">Kode</th>
                         <th rowspan="2">Nama</th>
                         <th rowspan="2">Posisi</th>
-                        <th colspan="3">Quantity</th>
+                        <th colspan="6">Quantity</th>
                     </tr>
                     <tr>
-                        <th>DRIVER</th>
-                        <th>HELPER</th>
-                        <th>GUDANG</th>
+                        <th class="green">DRIVER</th>
+                        <th class="green">RATIO</th>
+                        <th class="green">TOTAL</th>
+                        <th class="red">HELPER</th>
+                        <th class="red">RATIO</th>
+                        <th class="red">ToTAL</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -112,8 +116,23 @@
                             <td>{{ $d->nama_driver_helper }}</td>
                             <td>{{ $posisi[$d->posisi] }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->qty_driver) }}</td>
+                            <td class="center">
+                                @php
+                                    $ratio_driver = $d->posisi == 'D' ? $d->ratio_default : 0;
+                                    $total_komisi_driver = $d->qty_driver * $ratio_driver;
+                                @endphp
+                                {{ formatAngkaDesimal($ratio_driver) }}
+                            </td>
+                            <td class="right">{{ formatAngkaDesimal($total_komisi_driver) }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->qty_helper) }}</td>
-                            <td></td>
+                            <td class="center">
+                                @php
+                                    $ratio_helper = $d->posisi == 'H' ? $d->ratio_default : $d->ratio_helper;
+                                    $total_komisi_helper = $d->qty_helper * $ratio_helper;
+                                @endphp
+                                {{ formatAngkaDesimal($ratio_helper) }}
+                            </td>
+                            <td class="right">{{ formatAngkaDesimal($total_komisi_helper) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
