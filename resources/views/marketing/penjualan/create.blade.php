@@ -359,6 +359,10 @@
 @push('myscript')
 <script type="text/javascript">
     $(document).ready(function() {
+
+        const kode_cabang_user = '{{ Auth::user()->kode_cabang }}';
+        // alert(kode_cabang_user);
+
         function convertToRupiah(number) {
             if (number) {
                 var rupiah = "";
@@ -694,7 +698,7 @@
             } else {
                 $("#jml_pack").prop('disabled', false);
             }
-            if (nama_pelanggan.includes('KPBN') || nama_pelanggan.includes('RSB')) {
+            if (nama_pelanggan.includes('KPBN') || nama_pelanggan.includes('RSB') || kode_cabang_user == 'PST') {
                 $("#harga_dus").prop('disabled', false);
                 if (isi_pcs_pack == "" || isi_pcs_pack === '0') {
                     $("#harga_pack").prop('disabled', true);

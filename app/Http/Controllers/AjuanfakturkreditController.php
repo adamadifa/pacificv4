@@ -276,7 +276,10 @@ class AjuanfakturkreditController extends Controller
     public function approvestore($no_pengajuan, Request $request)
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
-        $ajuanfaktur = Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->first();
+        $ajuanfaktur = Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)
+            ->join('salesman', 'marketing_ajuan_faktur.kode_salesman', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', 'cabang.kode_cabang')
+            ->first();
 
         DB::beginTransaction();
         try {
@@ -330,6 +333,7 @@ class AjuanfakturkreditController extends Controller
 
                 if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' || auth()->user()->roles->pluck('name')[0] == "operation manager") {
                     $rsm = User::role('regional sales manager')
+                        ->where('kode_rgional', $ajuanfaktur->kode_rgional)
                         ->where('status', 1)
                         ->first();
                     if ($rsm != NULL) {

@@ -235,10 +235,13 @@ class SalesmanController extends Controller
     //GET DATA FROM AJAX
     public function getsalesmanbycabang(Request $request)
     {
+        $user = User::findorFail(auth()->user()->id);
+
+
 
         $kode_cabang_user = auth()->user()->kode_cabang;
         $query = Salesman::query();
-        if ($kode_cabang_user != "PST") {
+        if ($kode_cabang_user != "PST" || $user->hasRole('admin pusat')) {
             $query->where('kode_cabang', $kode_cabang_user);
         } else {
             $query->where('kode_cabang', $request->kode_cabang);

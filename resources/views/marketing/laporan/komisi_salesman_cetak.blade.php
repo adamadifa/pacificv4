@@ -99,6 +99,7 @@
                         <th rowspan="2" colspan="2" class="bg-warna-campuran1">OA</th>
                         <th rowspan="2" colspan="2" class="bg-warna-campuran2">PENJUALAN VS AVG</th>
                         <th rowspan="2" colspan="2" class="bg-warna-campuran2">CASHIN</th>
+                        <th rowspan="2" colspan="3" class="bg-warna-campuran3">LJT</th>
                     </tr>
                     <tr>
                         @foreach ($kategori_komisi as $d)
@@ -125,6 +126,10 @@
 
                         <th class="bg-warna-campuran2">REALISASI</th>
                         <th class="bg-warna-campuran2">REWARD</th>
+
+                        <th class="bg-warna-campuran3">REALISASI</th>
+                        <th class="bg-warna-campuran3">RATIO</th>
+                        <th class="bg-warna-campuran3">REWARD</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -159,8 +164,8 @@
                                     }
                                     $total_poin += $poin;
                                 @endphp
-                                <td class="center">{{ formatAngka($d->{"target_$k->kode_kategori"}) }}</td>
-                                <td class="center">{{ formatAngka($d->{"realisasi_$k->kode_kategori"}) }}</td>
+                                <td class="center">{{ formatAngkaDesimal($d->{"target_$k->kode_kategori"}) }}</td>
+                                <td class="center">{{ formatAngkaDesimal($d->{"realisasi_$k->kode_kategori"}) }}</td>
                                 <td class="center">{{ formatAngkaDesimal($poin) }}</td>
                             @endforeach
                             <td class="center">{{ formatAngkaDesimal($total_poin) }}</td>
@@ -233,6 +238,38 @@
                                     $reward_cashin = $d->status_komisi == 1 ? $d->realisasi_cashin * ($ratio_cashin / 100) : 0;
                                 @endphp
                                 {{ formatAngka($reward_cashin) }}
+                            </td>
+                            <td class="right">{{ formatAngka($d->saldo_akhir_piutang) }}</td>
+                            <td class="center">
+                                @php
+                                    $ratioljt = !empty($d->realisasi_cashin) ? ($d->saldo_akhir_piutang / $d->realisasi_cashin) * 100 : 0;
+                                    if ($ratioljt > 0) {
+                                        $ratioljt = $ratioljt;
+                                    } else {
+                                        $ratioljt = 0;
+                                    }
+                                @endphp
+                                {{ formatAngka($ratioljt) }} %
+                            </td>
+                            <td class="right">
+                                @php
+                                    if ($d->status_komisi == 1) {
+                                        if ($ratioljt >= 0 and $ratioljt <= 0.5) {
+                                            $rewardljt = 300000;
+                                        } elseif ($ratioljt > 0.5 and $ratioljt <= 1) {
+                                            $rewardljt = 225000;
+                                        } elseif ($ratioljt > 1 and $ratioljt <= 1.5) {
+                                            $rewardljt = 150000;
+                                        } elseif ($ratioljt > 1.5 and $ratioljt <= 2) {
+                                            $rewardljt = 75000;
+                                        } else {
+                                            $rewardljt = 0;
+                                        }
+                                    } else {
+                                        $rewardljt = 0;
+                                    }
+                                @endphp
+                                {{ formatAngka($rewardljt) }}
                             </td>
                         </tr>
                     @endforeach

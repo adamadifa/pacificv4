@@ -188,7 +188,7 @@ class KontrabonangkutanController extends Controller
                 echo $cek2 = 1;
                 $no_bukti_hutang = !empty($jumlah_angkutan) ?  buatkode($no_bukti, 'LRPST' . date('y', strtotime($request->tanggal)), 5) : $no_bukti;
                 Ledger::create([
-                    'no_bukti' => $no_bukti,
+                    'no_bukti' => $no_bukti_hutang,
                     'tanggal' => $request->tanggal,
                     'pelanggan' => $kontrabon->nama_angkutan,
                     'keterangan' => $request->keterangan,
