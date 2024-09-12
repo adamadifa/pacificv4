@@ -51,7 +51,8 @@ class Penjualan extends Model
             'alamat_cabang',
             'nama_pt',
             'marketing_penjualan.signature',
-            'pelanggan.ljt'
+            'pelanggan.ljt',
+            'kode_visit'
 
 
         )
@@ -61,6 +62,7 @@ class Penjualan extends Model
         WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'))
             ->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'))
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->leftJoin('worksheetom_visitpelanggan', 'marketing_penjualan.no_faktur', '=', 'worksheetom_visitpelanggan.no_faktur')
             ->leftJoin(
                 DB::raw("(
                 SELECT
@@ -72,17 +74,13 @@ class Penjualan extends Model
                 INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                 LEFT JOIN (
                 SELECT
-                    MAX(id) AS id,
                     no_faktur,
                     marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
                     salesman.kode_cabang AS cabangbaru
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                GROUP BY
-                    no_faktur,
-                    marketing_penjualan_movefaktur.kode_salesman_baru,
-                    salesman.kode_cabang
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur)
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
                 function ($join) {

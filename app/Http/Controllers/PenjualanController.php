@@ -42,7 +42,8 @@ class PenjualanController extends Controller
             'marketing_penjualan.*',
             'nama_pelanggan',
             'nama_salesman',
-            'nama_cabang'
+            'nama_cabang',
+            'kode_visit'
         );
         $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'));
         $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
@@ -50,6 +51,7 @@ class PenjualanController extends Controller
         WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'));
         $query->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'));
         $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->leftJoin('worksheetom_visitpelanggan', 'marketing_penjualan.no_faktur', '=', 'worksheetom_visitpelanggan.no_faktur');
         $query->leftJoin(
             DB::raw("(
                 SELECT

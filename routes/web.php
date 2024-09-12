@@ -129,6 +129,7 @@ use App\Http\Controllers\TransitinController;
 use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VisitpelangganController;
 use App\Http\Controllers\WilayahController;
 use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
@@ -1746,6 +1747,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetakkomisidriverhelper', 'cetakkomisidriverhelper')->name('laporanmarketing.cetakkomisidriverhelper')->can('mkt.komisidriverhelper');
     });
 
+    Route::controller(VisitpelangganController::class)->group(function () {
+        Route::get('/visitpelanggan', 'index')->name('visitpelanggan.index')->can('visitpelanggan.index');
+        Route::get('/visitpelanggan/{no_faktur}/create', 'create')->name('visitpelanggan.create')->can('visitpelanggan.create');
+        Route::post('/visitpelanggan/{no_faktur}/store', 'store')->name('visitpelanggan.store')->can('visitpelanggan.store');
+        Route::get('/visitpelanggan/{kode_visit}/edit', 'edit')->name('visitpelanggan.edit')->can('visitpelanggan.edit');
+        Route::put('/visitpelanggan/{kode_visit}', 'update')->name('visitpelanggan.update')->can('visitpelanggan.update');
+        Route::delete('/visitpelanggan/{kode_visit}/delete', 'destroy')->name('visitpelanggan.delete')->can('visitpelanggan.delete');
+        Route::get('/visitpelanggan/{kode_visit}/show', 'show')->name('visitpelanggan.show')->can('visitpelanggan.show');
+        Route::get('/visitpelanggan/cetak', 'cetak')->name('visitpelanggan.cetak')->can('visitpelanggan.show');
+    });
+
+
     //SFA
     Route::controller(SfaControler::class)->group(function () {
         Route::get('/sfa/pelanggan', 'pelanggan')->name('sfa.pelanggan')->can('sfa.pelanggan');
@@ -1796,7 +1809,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/worksheetom/insentifom', 'WorksheetomController@insentifom')->name('worksheetom.insentifom')->can('worksheetom.insentifom');
     Route::get('/worksheetom/komisidriverhelper', 'WorksheetomController@komisidriverhelper')->name('worksheetom.komisidriverhelper')->can('worksheetom.komisidriverhelper');
     Route::get('/worksheetom/costratio', [CostratioController::class, 'index'])->name('worksheetom.costratio')->can('worksheetom.costratio');
-    Route::get('/worksheetom/visitpelanggan', 'WorksheetomController@visitpelanggan')->name('worksheetom.visitpelanggan')->can('worksheetom.visitpelanggan');
+    Route::get('/worksheetom/visitpelanggan', [VisitpelangganController::class, 'index'])->name('worksheetom.visitpelanggan')->can('worksheetom.visitpelanggan');
     Route::get('/worksheetom/monitoringretur', 'WorksheetomController@monitoringretur')->name('worksheetom.monitoringretur')->can('worksheetom.monitoringretur');
     Route::get('/worksheetom/monitoringprogram', 'WorksheetomController@monitoringprogram')->name('worksheetom.monitoringprogram')->can('worksheetom.monitoringprogram');
     Route::get('/worksheetom/kebutuhancabang', 'WorksheetomController@kebutuhancabang')->name('worksheetom.kebutuhancabang')->can('worksheetom.kebutuhancabang');

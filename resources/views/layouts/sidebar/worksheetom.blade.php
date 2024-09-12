@@ -21,7 +21,7 @@
             'worksheetom/insentifom',
             'worksheetom/komisidriverhelper',
             'worksheetom/costratio',
-            'worksheetom/visitpelanggan',
+            'visitpelanggan',
             'worksheetom/monitoringretur',
             'worksheetom/monitoringprogram',
             'worksheetom/kebutuhancabang',
@@ -69,7 +69,7 @@
                     <div>Cost Ratio</div>
                 </a>
             </li>
-            <li class="menu-item {{ request()->is('worksheetom/visitpelanggan') ? 'active' : '' }}">
+            <li class="menu-item {{ request()->is('visitpelanggan') ? 'active' : '' }}">
                 <a href="{{ route('worksheetom.visitpelanggan') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-box"></i>
                     <div>Visit Pelanggan</div>

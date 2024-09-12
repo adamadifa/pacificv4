@@ -226,6 +226,16 @@
                                                             </a>
                                                         @endif
                                                     @endcan
+                                                    @can('visitpelanggan.create')
+                                                        {{-- {{ $d->kode_visit }} --}}
+                                                        @if (!empty($d->kode_visit))
+                                                            <i class="ti ti-checks text-success"></i>
+                                                        @else
+                                                            <a href="#" no_faktur = "{{ Crypt::encrypt($d->no_faktur) }}" class="btnVisit">
+                                                                <i class="ti ti-gps text-primary me-1"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>
@@ -262,6 +272,15 @@
             $("#modal").modal("show");
             $(".modal-title").text("Cetak Surat Jalan");
             $("#loadmodal").load(`/penjualan/filtersuratjalan`);
+        });
+
+        $(".btnVisit").click(function(e) {
+            e.preventDefault();
+            no_faktur = $(this).attr('no_faktur');
+            loading();
+            $("#modal").modal("show");
+            $(".modal-title").text("Input Visit Pelanggan");
+            $("#loadmodal").load(`/visitpelanggan/${no_faktur}/create`);
         });
 
         $(".btnBatal").click(function(e) {

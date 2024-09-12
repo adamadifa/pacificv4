@@ -240,7 +240,6 @@
                                                         </div>
                                                     @endcan
 
-
                                                 </div>
                                             </td>
                                         </tr>
