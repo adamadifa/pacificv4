@@ -162,7 +162,7 @@ class AjuanlimitkreditController extends Controller
                 ->whereRaw('YEAR(tanggal) = "' . date('Y', strtotime($request->tanggal)) . '"')
                 ->whereRaw('MID(no_pengajuan,4,3) = "' . $pelanggan->kode_cabang . '"')
                 ->whereRaw('MID(no_pengajuan,5,2) = "' . date('y', strtotime($request->tanggal)) . '"')
-                ->orderBy('no_pengajuand', 'desc')
+                ->orderBy('no_pengajuan', 'desc')
                 ->first();
 
             if ($last_ajuan_limit == null) {
