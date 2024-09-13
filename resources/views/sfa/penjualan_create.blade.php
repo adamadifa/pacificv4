@@ -346,6 +346,10 @@
 @push('myscript')
 <script type="text/javascript">
     $(document).ready(function() {
+
+        let jmlfakturbelumlunas = 0;
+        let jmlmaxfaktur = 0;
+
         function convertToRupiah(number) {
             if (number) {
                 var rupiah = "";
@@ -427,42 +431,47 @@
                     const unpaid_faktur = response.data.unpaid_faktur;
                     const max_faktur = response.data.jml_faktur;
                     const siklus_pembayaran = response.data.siklus_pembayaran;
+                    jmlfakturbelumlunas = unpaid_faktur;
+                    jmlmaxfaktur = max_faktur;
+                    console.log(jmlfakturbelumlunas);
+                    console.log(jmlmaxfaktur);
+                    // if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0' || unpaid_faktur >= max_faktur &&
+                    //     siklus_pembayaran == '0') {
+                    //     Swal.fire({
+                    //         title: "Oops!",
+                    //         text: "Melebih Maksimal Faktur Kredit !, Maksimal Faktur Kredit Adalah : " + max_faktur,
+                    //         icon: "warning",
+                    //         showConfirmButton: true,
+                    //         didClose: (e) => {
+                    //             $("#no_faktur").val("");
+                    //             $("#tanggal").val("");
+                    //             $("#nama_pelanggan").val("");
+                    //             $("#kode_pelanggan").val("");
+                    //             $("#kode_salesman").val("");
+                    //             $("#nama_salesman").val("");
+                    //             $('#latitude').text("");
+                    //             $('#longitude').text("");
+                    //             $('#no_hp_pelanggan').text("");
+                    //             $('#limit_pelanggan_text').text("");
+                    //             $('#limit_pelanggan').val("");
+                    //             $('#alamat_pelanggan').text("");
+                    //             $('#sisa_piutang_text').text("");
+                    //             $("#jmlfaktur_kredit").text("");
+                    //             let fileFoto = "notfound.jpg";
+                    //             checkFileExistence(fileFoto);
+                    //             window.location.href = "/sfa/pelanggan/{{ Crypt::encrypt($kode_pelanggan) }}/show";
+                    //         },
+                    //     });
 
-                    if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0' || unpaid_faktur >= max_faktur &&
-                        siklus_pembayaran == '0') {
-                        Swal.fire({
-                            title: "Oops!",
-                            text: "Melebih Maksimal Faktur Kredit !, Maksimal Faktur Kredit Adalah : " + max_faktur,
-                            icon: "warning",
-                            showConfirmButton: true,
-                            didClose: (e) => {
-                                $("#no_faktur").val("");
-                                $("#tanggal").val("");
-                                $("#nama_pelanggan").val("");
-                                $("#kode_pelanggan").val("");
-                                $("#kode_salesman").val("");
-                                $("#nama_salesman").val("");
-                                $('#latitude').text("");
-                                $('#longitude').text("");
-                                $('#no_hp_pelanggan').text("");
-                                $('#limit_pelanggan_text').text("");
-                                $('#limit_pelanggan').val("");
-                                $('#alamat_pelanggan').text("");
-                                $('#sisa_piutang_text').text("");
-                                $("#jmlfaktur_kredit").text("");
-                                let fileFoto = "notfound.jpg";
-                                checkFileExistence(fileFoto);
-                                window.location.href = "/sfa/pelanggan/{{ Crypt::encrypt($kode_pelanggan) }}/show";
-                            },
-                        });
-
-                        //Data Salesman
-                    } else {
-                        $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
-                        $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
-                        $("#max_kredit").val(response.data.jml_faktur);
-                    }
-
+                    //     //Data Salesman
+                    // } else {
+                    //     $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
+                    //     $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
+                    //     $("#max_kredit").val(response.data.jml_faktur);
+                    // }
+                    $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
+                    $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
+                    $("#max_kredit").val(response.data.jml_faktur);
                     buttonEnable();
                 }
             });
@@ -1116,10 +1125,14 @@
                 parseInt(limit_pelanggan)) {
                 SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
                 return false;
+            } else if (jenis_transaksi == "K" && parseInt(jmlfakturbelumlunas) >= parseInt(jmlmaxfaktur)) {
+                SwalWarning('keterangan', 'Melebihi Batas Jumlah Max. Faktur Kredit');
+                return false;
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
                 return false;
             } else {
+                //return false;
                 buttonDisable();
             }
         });

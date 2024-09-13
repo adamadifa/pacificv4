@@ -252,7 +252,7 @@
                                         <tr style="background-color: {{ $color }}; color:{{ $color_text }}">
                                             <td>{{ $d->no_faktur }} </td>
                                             <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
-                                            <td>{{ $d->nama_pelanggan }}</td>
+                                            <td>{{ $d->nama_salesman }}</td>
                                             <td class="text-end">{{ formatAngka($total_netto) }}</td>
                                             <td>
                                                 {{-- {{ $d->jenis_transaksi }} --}}

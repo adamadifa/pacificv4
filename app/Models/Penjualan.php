@@ -494,6 +494,7 @@ class Penjualan extends Model
             ->leftJoinSub($subqueryTotalBruto, 'bruto', 'marketing_penjualan.no_faktur', '=', 'bruto.no_faktur')
             ->leftJoinSub($subqueryTotalRetur, 'retur', 'marketing_penjualan.no_faktur', '=', 'retur.no_faktur')
             ->leftJoinSub($subqueryTotalPembayaran, 'pembayaran', 'marketing_penjualan.no_faktur', '=', 'pembayaran.no_faktur')
+            ->where('marketing_penjualan.status_batal', 0)
             ->where('kode_pelanggan', $kode_pelanggan)
             ->havingRaw('sisa_piutang > 0');
         return $unpaidSales;
@@ -540,6 +541,7 @@ class Penjualan extends Model
             ->leftJoinSub($subqueryTotalRetur, 'retur', 'marketing_penjualan.no_faktur', '=', 'retur.no_faktur')
             ->leftJoinSub($subqueryTotalPembayaran, 'pembayaran', 'marketing_penjualan.no_faktur', '=', 'pembayaran.no_faktur')
             ->where('marketing_penjualan.no_faktur', $no_faktur)
+            ->where('marketing_penjualan.status_batal', 0)
             ->havingRaw('sisa_piutang > 0');
         return $unpaidSales;
     }

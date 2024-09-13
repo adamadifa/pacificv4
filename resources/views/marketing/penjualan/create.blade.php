@@ -362,6 +362,8 @@
 
         const kode_cabang_user = '{{ Auth::user()->kode_cabang }}';
         // alert(kode_cabang_user);
+        let jmlfakturbelumlunas = 0;
+        let jmlfakturmax = 0;
 
         function convertToRupiah(number) {
             if (number) {
@@ -512,31 +514,40 @@
                     const unpaid_faktur = response.data.unpaid_faktur;
                     const max_faktur = response.data.jml_faktur;
                     const siklus_pembayaran = response.data.siklus_pembayaran;
-                    if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0') {
-                        SwalWarning("nama_pelanggan", "Melebihi Maksimal Faktur Kredit");
-                        $("#no_faktur").val("");
-                        $("#tanggal").val("");
-                        $("#nama_pelanggan").val("");
-                        $("#kode_pelanggan").val("");
-                        $("#kode_salesman").val("");
-                        $("#nama_salesman").val("");
-                        $('#latitude').text("");
-                        $('#longitude').text("");
-                        $('#no_hp_pelanggan').text("");
-                        $('#limit_pelanggan_text').text("");
-                        $('#limit_pelanggan').val("");
-                        $('#alamat_pelanggan').text("");
-                        $('#sisa_piutang_text').text("");
-                        $("#jmlfaktur_kredit").text("");
-                        let fileFoto = "notfound.jpg";
-                        checkFileExistence(fileFoto);
-                        //Data Salesman
-                    } else {
-                        $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
-                        $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
-                        $("#max_kredit").val(response.data.jml_faktur);
-                    }
+                    jmlfakturbelumlunas = unpaid_faktur;
+                    jmlfakturmax = max_faktur;
 
+                    console.log(jmlfakturbelumlunas);
+                    console.log(jmlfakturmax);
+
+                    // if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0') {
+                    //     SwalWarning("nama_pelanggan", "Melebihi Maksimal Faktur Kredit");
+                    //     $("#no_faktur").val("");
+                    //     $("#tanggal").val("");
+                    //     $("#nama_pelanggan").val("");
+                    //     $("#kode_pelanggan").val("");
+                    //     $("#kode_salesman").val("");
+                    //     $("#nama_salesman").val("");
+                    //     $('#latitude').text("");
+                    //     $('#longitude').text("");
+                    //     $('#no_hp_pelanggan').text("");
+                    //     $('#limit_pelanggan_text').text("");
+                    //     $('#limit_pelanggan').val("");
+                    //     $('#alamat_pelanggan').text("");
+                    //     $('#sisa_piutang_text').text("");
+                    //     $("#jmlfaktur_kredit").text("");
+                    //     let fileFoto = "notfound.jpg";
+                    //     checkFileExistence(fileFoto);
+                    //     //Data Salesman
+                    // } else {
+                    //     $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
+                    //     $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
+                    //     $("#max_kredit").val(response.data.jml_faktur);
+                    // }
+
+                    $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
+                    $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
+                    $("#max_kredit").val(response.data.jml_faktur);
                     buttonEnable();
                 }
             });
@@ -1378,6 +1389,9 @@
             } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
                 parseInt(limit_pelanggan)) {
                 SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+                return false;
+            } else if (jenis_transaksi == "K" && jmlfakturbelumlunas >= jmlfakturmax) {
+                SwalWarning('keterangan', 'Melebihi Batas Jumlah Faktur Kredit !');
                 return false;
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
