@@ -1761,6 +1761,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(MonitoringreturController::class)->group(function () {
         Route::get('/monitoringretur/{no_retur}/create', 'create')->name('monitoringretur.index')->can('worksheetom.monitoringretur');
+        Route::post('/monitoringretur/{no_retur}/store', 'store')->name('monitoringretur.store')->can('worksheetom.monitoringretur');
     });
 
 

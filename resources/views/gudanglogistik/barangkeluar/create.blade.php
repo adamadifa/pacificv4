@@ -26,7 +26,7 @@
             <select name="kode_barang" id="kode_barang" class="form-select select2Kodebarang">
                 <option value="">Pilih Barang</option>
                 @foreach ($barang as $d)
-                    <option value="{{ $d->kode_barang }}">{{ $d->kode_barang }} {{ $d->nama_barang }} ({{ $d->satuan }})</option>
+                    <option value="{{ $d->kode_barang }}">{{ $d->kode_barang }}|{{ $d->nama_barang }} ({{ $d->satuan }})</option>
                 @endforeach
             </select>
             {{-- <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang" upperCase="true"
