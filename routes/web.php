@@ -78,6 +78,7 @@ use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
 use App\Http\Controllers\OpnamegudanglogistikController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PelunasanreturController;
 use App\Http\Controllers\PembayarangiroController;
 use App\Http\Controllers\PembayarankasbonController;
 use App\Http\Controllers\PembayaranpenjualanController;
@@ -889,6 +890,7 @@ Route::middleware('auth')->group(function () {
         //AJAX REQUEST
         Route::get('/dpb/{no_dpb}/getdetailmutasidpb', 'getdetailmutasidpb')->name('dpb.getdetailmutasidpb');
         Route::post('/dpb/generatenodpb', 'generatenodpb')->name('dpb.generatenodpb');
+        Route::post('/dpb/getautocompletedpb', 'getautocompletedpb')->name('dpb.getautocompletedpb');
     });
 
     Route::controller(MutasidpbController::class)->group(function () {
@@ -1764,6 +1766,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/monitoringretur/{no_retur}/store', 'store')->name('monitoringretur.store')->can('worksheetom.monitoringretur');
     });
 
+    Route::controller(PelunasanreturController::class)->group(function () {
+        Route::get('/pelunasanretur/{no_retur}/create', 'create')->name('monitoringretur.index')->can('worksheetom.monitoringretur');
+        Route::get('/pelunasanretur/{no_retur}/store', 'store')->name('pelunasanretur.store')->can('worksheetom.monitoringretur');
+    });
 
 
     //SFA

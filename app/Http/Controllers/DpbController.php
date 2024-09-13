@@ -543,4 +543,60 @@ class DpbController extends Controller
         }
         return $kode_pt . substr($tahun, 2, 2);
     }
+
+    public function getautocompletedpb(Request $request)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $kode_cabang = auth()->user()->kode_cabang;
+        }
+        $search = $request->search;
+        if ($search == '') {
+            $query = Dpb::query();
+            $query->select('gudang_cabang_dpb.*', 'nama_salesman', 'salesman.kode_cabang', 'no_polisi');
+            $query->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->join('kendaraan', 'gudang_cabang_dpb.kode_kendaraan', '=', 'kendaraan.kode_kendaraan');
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                $query->where('salesman.kode_cabang', $kode_cabang);
+            }
+            $query->orderBy('tanggal_ambil', 'desc');
+            $query->orderby('no_dpb', 'desc');
+            $query->limit(10);
+            $autocomplate = $query->get();
+        } else {
+            $query = Dpb::query();
+            $query->select('gudang_cabang_dpb.*', 'nama_salesman', 'salesman.kode_cabang', 'no_polisi');
+            $query->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->join('kendaraan', 'gudang_cabang_dpb.kode_kendaraan', '=', 'kendaraan.kode_kendaraan');
+
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                $query->where('no_dpb', 'like', '%' . $search . '%');
+                $query->where('salesman.kode_cabang', $kode_cabang);
+                $query->orWhere('nama_salesman', 'like', '%' . $search . '%');
+                $query->where('salesman.kode_cabang', $kode_cabang);
+            } else {
+                $query->where('no_dpb', 'like', '%' . $search . '%');
+                $query->orWhere('nama_salesman', 'like', '%' . $search . '%');
+            }
+            $query->orderBy('tanggal_ambil', 'desc');
+            $query->orderby('no_dpb', 'desc');
+            $query->limit(10);
+            $autocomplate = $query->get();
+        }
+
+
+        //dd($autocomplate);
+        $response = array();
+        foreach ($autocomplate as $autocomplate) {
+            $label = $autocomplate->no_dpb . " - " . $autocomplate->nama_salesman . " - " . $autocomplate->kode_cabang . " - " . $autocomplate->tujuan . " - " . $autocomplate->no_polisi;
+            $response[] = array("value" => $autocomplate->nama_salesman, "label" => $label, 'val' => $autocomplate->no_dpb);
+        }
+
+        echo json_encode($response);
+        exit;
+    }
 }

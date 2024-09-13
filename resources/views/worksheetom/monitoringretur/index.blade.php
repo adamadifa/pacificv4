@@ -102,7 +102,8 @@
                                             <td>
                                                 <div class="d-flex">
                                                     @can('worksheetom.monitoringretur')
-                                                        <a href="#" class="btnDetail" no_retur = "{{ Crypt::encrypt($d->no_retur) }}">
+                                                        <a href="#" class="btnPelunasan" no_retur = "{{ Crypt::encrypt($d->no_retur) }}"
+                                                            title="{{ $d->no_retur }}">
                                                             <i class="ti ti-file-description me-1 text-info"></i>
                                                         </a>
                                                         <a href="#" class="btnCheck" no_retur = "{{ Crypt::encrypt($d->no_retur) }}">
@@ -196,6 +197,15 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Checking Retur");
             $("#loadmodal").load(`/monitoringretur/${no_retur}/create`);
+        });
+
+        $(".btnPelunasan").click(function(e) {
+            e.preventDefault();
+            const no_retur = $(this).attr('no_retur');
+            const title = $(this).attr('title');
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text("Pelunasan Retur " + title);
+            $("#loadmodal").load(`/pelunasanretur/${no_retur}/create`);
         });
     });
 </script>
