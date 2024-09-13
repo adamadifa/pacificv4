@@ -308,8 +308,7 @@ class VisitpelangganController extends Controller
         if (!empty($request->nama_pelanggan)) {
             $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
         }
-        $visit = $query->paginate(15);
-        $visit->appends($request->all());
+        $visit = $query->get();
         $data['visit'] = $visit;
 
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();

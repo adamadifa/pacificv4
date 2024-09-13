@@ -140,9 +140,9 @@
                                 </tbody>
                             </table>
                         </div>
-                        {{-- <div style="float: right;">
-                            {{ $penjualan->links() }}
-                        </div> --}}
+                        <div style="float: right;">
+                            {{ $visit->links() }}
+                        </div>
                     </div>
                 </div>
             </div>
