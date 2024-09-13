@@ -15,9 +15,10 @@ class Pelanggan extends Component
             ->where('kode_salesman', auth()->user()->kode_salesman)
             ->when($this->namapelanggan_search, function ($query) {
                 $query->where('nama_pelanggan', 'like', '%' . $this->namapelanggan_search . '%');
+                $query->orwhere('kode_pelanggan', 'like', '%' . $this->namapelanggan_search . '%');
             })
             ->orderBy('tanggal_register', 'desc')
-            ->limit(20)
+            ->limit(30)
             ->get();
         return view('livewire.pelanggan');
     }
