@@ -98,8 +98,8 @@ class SfaControler extends Controller
 
 
 
-        $lastpelanggan = Pelanggan::whereRaw('LEFT(kode_pelanggan,3)="' . $kode_cabang . '"')
-            ->orderBy('kode_pelanggan', 'desc')
+        $lastpelanggan = pelanggan::whereraw('left(kode_pelanggan,3)="' . $kode_cabang . '"')
+            ->orderby('kode_pelanggan', 'desc')
             ->first();
         $last_kode_pelanggan = $lastpelanggan->kode_pelanggan;
         $kode_pelanggan =  buatkode($last_kode_pelanggan, $kode_cabang . '-', 5);
@@ -1223,16 +1223,17 @@ class SfaControler extends Controller
             $last_ajuan_limit = Ajuanlimitkredit::select('no_pengajuan')
                 ->whereRaw('YEAR(tanggal) = "' . date('Y', strtotime($tanggal)) . '"')
                 ->whereRaw('MID(no_pengajuan,4,3) = "' . $pelanggan->kode_cabang . '"')
+                ->whereRaw('MID(no_pengajuan,5,2) = "' . date('y', strtotime($tanggal)) . '"')
                 ->orderBy('no_pengajuan', 'desc')
                 ->first();
 
 
             if ($last_ajuan_limit == null) {
-                $last_no_pengajuan = 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($request->tanggal)), 2, 2) . '00000';
+                $last_no_pengajuan = 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($tanggal)), 2, 2) . '00000';
             } else {
                 $last_no_pengajuan = $last_ajuan_limit->no_pengajuan;
             }
-            $no_pengajuan = buatkode($last_no_pengajuan, 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($request->tanggal)), 2, 2), 5);
+            $no_pengajuan = buatkode($last_no_pengajuan, 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($tanggal)), 2, 2), 5);
 
 
             //dd($no_pengajuan);
