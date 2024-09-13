@@ -165,6 +165,7 @@ class AjuanlimitkreditController extends Controller
                 ->orderBy('no_pengajuand', 'desc')
                 ->first();
 
+            dd($last_ajuan_limit);
             if ($last_ajuan_limit == null) {
                 $last_no_pengajuan = 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($request->tanggal)), 2, 2) . '00000';
             } else {
