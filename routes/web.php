@@ -156,7 +156,7 @@ use Spatie\Permission\Models\Role;
 //     return view('welcome');
 // });
 
-
+Route::post('/screen-resolution', [App\Http\Controllers\ScreenController::class, 'store'])->name('screen.resolution');
 
 Route::middleware('auth')->group(function () {
 
@@ -1762,6 +1762,8 @@ Route::middleware('auth')->group(function () {
     Route::controller(MonitoringreturController::class)->group(function () {
         Route::get('/monitoringretur/{no_retur}/create', 'create')->name('monitoringretur.index')->can('worksheetom.monitoringretur');
     });
+
+
 
     //SFA
     Route::controller(SfaControler::class)->group(function () {

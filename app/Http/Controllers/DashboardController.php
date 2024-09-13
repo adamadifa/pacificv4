@@ -28,15 +28,20 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Jenssegers\Agent\Agent;
 
 class DashboardController extends Controller
 {
+
     public function index()
     {
+        // dd(session('screen_width'), session('screen_height'));
+
 
         $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager'];
         $user = User::findorfail(auth()->user()->id);
         if ($user->hasAnyRole($default_marketing)) {
+
             return $this->marketing();
         } else if ($user->hasRole(['operation manager', 'sales marketing manager'])) {
             return $this->operationmanager();
@@ -55,6 +60,11 @@ class DashboardController extends Controller
     function dashboarddefault()
     {
         return view('dashboard.default');
+    }
+
+    public function mobilemarketing()
+    {
+        return view('dashboard.mobile.marketing');
     }
 
 
@@ -105,7 +115,12 @@ class DashboardController extends Controller
         $data['start_year'] = config('global.start_year');
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
-        return view('dashboard.marketing', $data);
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            return view('dashboard.mobile.marketing', $data);
+        } else {
+            return view('dashboard.marketing', $data);
+        }
     }
 
 
