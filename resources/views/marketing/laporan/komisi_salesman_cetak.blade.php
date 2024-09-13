@@ -231,7 +231,9 @@
                                 @endphp
                                 {{ formatAngka($reward_penjvsavg) }}
                             </td>
-                            <td class="right">{{ formatAngka($d->realisasi_cashin) }}</td>
+                            <td class="right">
+                                {{ formatAngka($d->realisasi_cashin) }}
+                            </td>
                             <td class="right">
                                 @php
                                     $ratio_cashin = 0.1;
