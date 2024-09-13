@@ -157,7 +157,7 @@
             const keterangan = form.find("#keterangan").val();
             const debet_kredit = form.find("#debet_kredit").val();
             const kode_peruntukan = form.find("#kode_peruntukan").val();
-            const kode_cabang = form.find("#kode_cabang").val();
+            const kode_cabang = kode_peruntukan == 'MP' ? '' : form.find("#kode_cabang").val();
             const bgperuntukan = "";
             const kredit = debet_kredit == 'K' ? jumlah : '';
             const debet = debet_kredit == 'D' ? jumlah : '';

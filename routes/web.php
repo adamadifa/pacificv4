@@ -69,6 +69,7 @@ use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\LemburController;
 use App\Http\Controllers\LogamtokertasController;
+use App\Http\Controllers\MonitoringreturController;
 use App\Http\Controllers\MutasibankController;
 use App\Http\Controllers\MutasidpbController;
 use App\Http\Controllers\MutasikendaraanController;
@@ -1758,6 +1759,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/visitpelanggan/cetak', 'cetak')->name('visitpelanggan.cetak')->can('visitpelanggan.show');
     });
 
+    Route::controller(MonitoringreturController::class)->group(function () {
+        Route::get('/monitoringretur/{no_retur}/create', 'create')->name('monitoringretur.index')->can('worksheetom.monitoringretur');
+    });
 
     //SFA
     Route::controller(SfaControler::class)->group(function () {
@@ -1810,7 +1814,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/worksheetom/komisidriverhelper', [LaporanmarketingController::class, 'index'])->name('worksheetom.komisidriverhelper')->can('worksheetom.komisidriverhelper');
     Route::get('/worksheetom/costratio', [CostratioController::class, 'index'])->name('worksheetom.costratio')->can('worksheetom.costratio');
     Route::get('/worksheetom/visitpelanggan', [VisitpelangganController::class, 'index'])->name('worksheetom.visitpelanggan')->can('worksheetom.visitpelanggan');
-    Route::get('/worksheetom/monitoringretur', 'WorksheetomController@monitoringretur')->name('worksheetom.monitoringretur')->can('worksheetom.monitoringretur');
+    Route::get('/worksheetom/monitoringretur', [MonitoringreturController::class, 'index'])->name('worksheetom.monitoringretur')->can('worksheetom.monitoringretur');
     Route::get('/worksheetom/monitoringprogram', 'WorksheetomController@monitoringprogram')->name('worksheetom.monitoringprogram')->can('worksheetom.monitoringprogram');
     Route::get('/worksheetom/kebutuhancabang', 'WorksheetomController@kebutuhancabang')->name('worksheetom.kebutuhancabang')->can('worksheetom.kebutuhancabang');
     Route::get('/worksheetom/produkexpired', 'WorksheetomController@produkexpired')->name('worksheetom.produkexpired')->can('worksheetom.produkexpired');
