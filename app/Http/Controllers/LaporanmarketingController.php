@@ -4327,6 +4327,13 @@ class LaporanmarketingController extends Controller
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['produk'] = $produk;
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Komisi Salesman.xls");
+        }
+
         return view('marketing.laporan.komisi_salesman_cetak', $data);
     }
 

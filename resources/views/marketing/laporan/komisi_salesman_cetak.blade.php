@@ -276,6 +276,11 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th>TOTAL</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
