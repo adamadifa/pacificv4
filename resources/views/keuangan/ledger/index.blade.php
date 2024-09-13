@@ -60,11 +60,11 @@
                                 <table class="table  table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th style="width: 8%">Tanggal</th>
+                                            <th style="width: 10%">Tanggal</th>
                                             <th style="width: 5%">Penerimaan</th>
                                             <th style="width: 10%">Pelanggan</th>
                                             <th style="width: 15%">Keterangan</th>
-                                            <th style="width: 25%">Kode Akun</th>
+                                            <th style="width: 20%">Kode Akun</th>
                                             <th style="width: 5%">PRT</th>
                                             <th style="width: 5%">Debet</th>
                                             <th style="width: 5%">Kredit</th>
