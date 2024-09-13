@@ -17,7 +17,7 @@ class Pelanggan extends Component
                 $query->where('nama_pelanggan', 'like', '%' . $this->namapelanggan_search . '%');
             })
             ->orderBy('tanggal_register', 'desc')
-            ->limit(10)
+            ->limit(20)
             ->get();
         return view('livewire.pelanggan');
     }
