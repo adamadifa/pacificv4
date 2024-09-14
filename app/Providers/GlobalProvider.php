@@ -40,7 +40,9 @@ class Globalprovider extends ServiceProvider
                 'audit',
                 'regional operation manager',
                 'crm',
-                'spv accounting'
+                'spv accounting',
+                'manager general affair',
+                'general affair',
             ];
 
             $roles_show_cabang_pjp = [

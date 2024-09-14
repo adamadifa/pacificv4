@@ -80,7 +80,9 @@ return  [
         'audit',
         'regional operation manager',
         'crm',
-        'spv accounting'
+        'spv accounting',
+        'manager general affair',
+        'general affair',
     ],
     'roles_show_cabang' => [
         'super admin',
@@ -96,7 +98,9 @@ return  [
         'audit',
         'regional operation manager',
         'crm',
-        'spv accounting'
+        'spv accounting',
+        'manager general affair',
+        'general affair',
     ],
 
     'roles_access_all_karyawan' => [
