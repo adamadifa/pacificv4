@@ -617,15 +617,15 @@ class PembelianController extends Controller
                 Detailpembelian::insert($detailpotongan);
 
                 $jml_kontrabon = $total_pembelian - $total_potongan;
-
-                if ($request->jenis_transaksi == 'T') {
-                    Detailkontrabonpembelian::where('no_bukti', $request->no_bukti)->update([
-                        'jumlah' => $jml_kontrabon
-                    ]);
-                }
+            } else {
+                $jml_kontrabon = $total_pembelian;
             }
 
-
+            if ($request->jenis_transaksi == 'T') {
+                Detailkontrabonpembelian::where('no_bukti', $request->no_bukti)->update([
+                    'jumlah' => $jml_kontrabon
+                ]);
+            }
             DB::commit();
             return redirect(route('pembelian.edit', Crypt::encrypt($request->no_bukti)))->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
