@@ -7,6 +7,7 @@ use App\Models\Pelunasanretur;
 use App\Models\Retur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class PelunasanreturController extends Controller
@@ -32,6 +33,11 @@ class PelunasanreturController extends Controller
             ->where('marketing_retur_detail.no_retur', $no_retur)
             ->get();
         $data['detail'] = $detail;
+
+        $data['pelunasan'] = Pelunasanretur::join('produk_harga', 'worksheetom_retur_pelunasan.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->select('worksheetom_retur_pelunasan.kode_harga', 'nama_produk', 'jumlah', 'no_dpb', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->where('no_retur', $no_retur)->orderBy('nama_produk')->get();
         $data['no_retur'] = $no_retur;
         return view('worksheetom.pelunasanretur.create', $data);
     }
@@ -46,7 +52,9 @@ class PelunasanreturController extends Controller
         $kode_item_harga = $request->kode_harga_item;
         $jml = $request->jml_item;
         $no_dpb = $request->no_dpb_item;
+        DB::beginTransaction();
         try {
+            Pelunasanretur::where('no_retur', $no_retur)->delete();
             for ($i = 0; $i < count($request->kode_harga_item); $i++) {
                 Pelunasanretur::create([
                     'no_retur' => $no_retur,
@@ -55,8 +63,10 @@ class PelunasanreturController extends Controller
                     'no_dpb' => $no_dpb[$i],
                 ]);
             }
+            DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
+            DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }

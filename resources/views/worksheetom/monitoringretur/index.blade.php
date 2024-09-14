@@ -8,6 +8,24 @@
 <div class="row">
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-end">
+                    @can('pelanggan.show')
+                        <form action="/monitoringretur/cetak" method="GET" id="formCetak" target="_blank">
+                            <input type="hidden" name="status_search" id='status_search' value="{{ Request('status_search') }}" />
+                            <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
+                            <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
+                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang_search') }}" />
+                            <input type="hidden" name="kode_salesman" id="kode_salesman_cetak" value="{{ Request('kode_salesman_search') }}" />
+                            <input type="hidden" name="no_faktur" id="no_faktur_cetak" value="{{ Request('no_faktur_search') }}" />
+                            <input type="hidden" name="kode_pelanggan" id="kode_pelanggan_cetak" value="{{ Request('kode_pelanggan_search') }}" />
+                            <input type="hidden" name="nama_pelanggan" id="nama_pelanggan_cetak" value="{{ Request('nama_pelanggan_search') }}" />
+                            <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
+                            <button class="btn btn-success" name="exportButton"><i class="ti ti-download me-1"></i>Export Excel</button>
+                        </form>
+                    @endcan
+                </div>
+            </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">

@@ -56,7 +56,7 @@
                         <th rowspan="2">Nama Produk</th>
                         <th colspan="3">Retur</th>
                         <th colspan="3" class="bg-success">Pelunasan</th>
-                        <th colspan="3">Sisa</th>
+                        <th colspan="3" class="bg-danger">Sisa</th>
                     </tr>
                     <tr>
                         <th class="text-center">Dus</th>
@@ -67,9 +67,9 @@
                         <th class="text-center bg-success">Pack</th>
                         <th class="text-center bg-success">Pcs</th>
 
-                        <th class="text-center">Dus</th>
-                        <th class="text-center">Pack</th>
-                        <th class="text-center">Pcs</th>
+                        <th class="text-center bg-danger">Dus</th>
+                        <th class="text-center bg-danger">Pack</th>
+                        <th class="text-center bg-danger">Pcs</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -169,7 +169,35 @@
                         <th>#</th>
                     </tr>
                 </thead>
-                <tbody id="loadproduk"></tbody>
+                <tbody id="loadproduk">
+                    @foreach ($pelunasan as $d)
+                        @php
+                            $jumlah = explode('|', convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah));
+                            $jumlah_dus = $jumlah[0];
+                            $jumlah_pack = $jumlah[1];
+                            $jumlah_pcs = $jumlah[2];
+                        @endphp
+                        <tr id="index_{{ $d->kode_harga }}">
+                            <td>
+                                <input type="hidden" name="kode_harga_item[]" value="{{ $d->kode_harga }}">
+                                <input type="hidden" name="jml_item[]" value="{{ $d->jumlah }}">
+
+                                <input type="hidden" name="isi_pcs_pack_item[]" value="{{ $d->isi_pcs_pack }}">
+                                <input type="hidden" name="isi_pcs_dus_item[]" value="{{ $d->isi_pcs_dus }}">
+                                <input type="hidden" name="no_dpb_item[]" value="{{ $d->no_dpb }}">
+                                {{ $d->kode_harga }}
+                            </td>
+                            <td>{{ $d->nama_produk }}</td>
+                            <td class="text-center">{{ formatAngka($jumlah_dus) }}</td>
+                            <td class="text-center">{{ formatAngka($jumlah_pack) }}</td>
+                            <td class="text-center">{{ formatAngka($jumlah_pcs) }}</td>
+                            <td class="text-center">{{ $d->no_dpb }}</td>
+                            <td>
+                                <a href="#" key="{{ $d->kode_harga }}" class="delete"><i class="ti ti-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
         </div>
     </div>
