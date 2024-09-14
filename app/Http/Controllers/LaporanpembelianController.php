@@ -212,6 +212,10 @@ class LaporanpembelianController extends Controller
             $join->on('pembelian_detail.kode_barang', '=', 'subqueryJurnalkoreksi.kode_barang');
         });
         $query->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai]);
+
+        if (!empty($request->kode_jenis_barang)) {
+            $query->where('kode_jenis_barang', $request->kode_jenis_barang);
+        }
         if ($request->sortby == "supplier") {
             $query->orderBy('pembelian.kode_supplier');
         } else {
