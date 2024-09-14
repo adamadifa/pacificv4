@@ -334,7 +334,10 @@ class PermintaankirimanController extends Controller
                 ->where('kode_produk', $request->kode_produk)
                 ->count();
             if ($cek > 0) {
-                return 1;
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data Sudah Ada',
+                ]);
             }
             Detailpermintaankirimantemp::create([
                 'kode_produk' => $request->kode_produk,
@@ -342,9 +345,15 @@ class PermintaankirimanController extends Controller
                 'id_user' => auth()->user()->id
             ]);
 
-            return 0;
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Berhasil Ditambahkan',
+            ]);
         } catch (\Exception $e) {
-            return $e;
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 

@@ -238,17 +238,15 @@
                     cache: false,
                     success: function(respond) {
                         console.log(respond);
-                        if (respond === '0') {
+                        if (respond.success == true) {
                             Swal.fire("Saved!", "", "success");
                             $("#jumlah").val("");
                             loaddetailtemp();
                             $('.select2Kodeproduk').val('').trigger("change");
 
 
-                        } else if (respond === '1') {
-                            Swal.fire("Oops!", "Data Sudah Ada", "warning");
                         } else {
-                            Swal.fire("Error", respond, "error");
+                            Swal.fire("Oops!", respond.message, "error");
                         }
                         $("#tambahproduk").prop('disabled', false);
                     }
