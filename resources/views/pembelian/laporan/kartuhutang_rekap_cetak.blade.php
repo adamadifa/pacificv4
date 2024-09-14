@@ -29,11 +29,14 @@
             </h4>
         @endif
         @if (!empty($jenis_hutang))
-            @if ($jenis_hutang == '2-1200')
-                HUTANG DAGANG
-            @else
-                HUTANG LAINNYA
-            @endif
+            <h4>
+                @if ($jenis_hutang == '2-1200')
+                    HUTANG DAGANG
+                @else
+                    HUTANG LAINNYA
+                @endif
+            </h4>
+
         @endif
     </div>
     <div class="content">
