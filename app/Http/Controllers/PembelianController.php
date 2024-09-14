@@ -598,7 +598,8 @@ class PembelianController extends Controller
 
             //Jika Ada Potongan
             $total_potongan = 0;
-            if (count($keterangan_potongan) > 0) {
+
+            if (!empty($keterangan_potongan)) {
                 for ($i = 0; $i < count($keterangan_potongan); $i++) {
                     $subtotal_potongan = toNumber($jumlah_potongan[$i]) * toNumber($harga_potongan[$i]);
                     $total_potongan += $subtotal_potongan;
