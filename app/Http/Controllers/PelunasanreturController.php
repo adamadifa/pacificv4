@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detailretur;
+use App\Models\Pelunasanretur;
 use App\Models\Retur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Redirect;
 
 class PelunasanreturController extends Controller
 {
@@ -32,5 +34,30 @@ class PelunasanreturController extends Controller
         $data['detail'] = $detail;
         $data['no_retur'] = $no_retur;
         return view('worksheetom.pelunasanretur.create', $data);
+    }
+
+    public function store(Request $request, $no_retur)
+    {
+        $no_retur = Crypt::decrypt($no_retur);
+        $request->validate([
+            'kode_harga_item' => 'required',
+        ]);
+
+        $kode_item_harga = $request->kode_harga_item;
+        $jml = $request->jml_item;
+        $no_dpb = $request->no_dpb_item;
+        try {
+            for ($i = 0; $i < count($request->kode_harga_item); $i++) {
+                Pelunasanretur::create([
+                    'no_retur' => $no_retur,
+                    'kode_harga' => $kode_item_harga[$i],
+                    'jumlah' => $jml[$i],
+                    'no_dpb' => $no_dpb[$i],
+                ]);
+            }
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

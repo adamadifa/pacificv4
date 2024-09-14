@@ -16,7 +16,7 @@ class Retur extends Model
     public $incrementing = false;
 
 
-    function getRetur($request, $no_retur)
+    function getRetur($request, $no_retur, $jenis_retur = "")
     {
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
@@ -30,9 +30,12 @@ class Retur extends Model
             'marketing_penjualan.kode_pelanggan',
             'nama_pelanggan',
             'alamat_pelanggan',
+            'kode_cabang_baru',
             'nama_cabang',
             'nama_salesman',
-            'jenis_retur'
+            'jenis_retur',
+            DB::raw('(SELECT SUM(jumlah) FROM marketing_retur_detail WHERE no_retur = marketing_retur.no_retur) as total_qty_retur'),
+            DB::raw('(SELECT SUM(jumlah) FROM worksheetom_retur_pelunasan WHERE no_retur = marketing_retur.no_retur) as total_qty_pelunasan'),
         );
         $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail WHERE no_retur = marketing_retur.no_retur) as total_retur'));
         $query->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');

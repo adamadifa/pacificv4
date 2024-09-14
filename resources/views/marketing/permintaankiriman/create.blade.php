@@ -4,8 +4,8 @@
     <input type="hidden" id="cekdetailtemp">
     <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_perminataan" readonly="true" />
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Permintaan" name="tanggal" datepicker="flatpickr-date" />
-    <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-        upperCase="true" select2="select2Kodecabang" />
+    <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
+        select2="select2Kodecabang" />
     <div class="form-group mb-3" id="salesman">
         <select name="kode_salesman" id="kode_salesman" class="select2Kodesalesman form-select">
         </select>
@@ -16,8 +16,8 @@
     </div>
     <div class="row">
         <div class="col-lg-7 col-md-12 col-sm-12">
-            <x-select label="Pilih Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk"
-                upperCase="true" select2="select2Kodeproduk" />
+            <x-select label="Pilih Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk" upperCase="true"
+                select2="select2Kodeproduk" />
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" />
@@ -41,8 +41,7 @@
     <div class="row">
         <div class="col-12">
             <div class="form-check mt-3 mb-3">
-                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox"
-                    value="" id="defaultCheck3">
+                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value="" id="defaultCheck3">
                 <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
             </div>
             <div class="form-group" id="saveButton">
@@ -238,6 +237,7 @@
                     },
                     cache: false,
                     success: function(respond) {
+                        console.log(respond);
                         if (respond === '0') {
                             Swal.fire("Saved!", "", "success");
                             $("#jumlah").val("");

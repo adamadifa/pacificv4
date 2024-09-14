@@ -75,10 +75,11 @@
                                         <th>Tanggal</th>
                                         <th>No. Faktur</th>
                                         <th>Nama Pelanggan</th>
-                                        <th>Nama Cabang</th>
+                                        <th>Cabang</th>
                                         <th>Salesman</th>
                                         <th>Jenis Retur</th>
                                         <th>Total</th>
+                                        <th>Status</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -89,7 +90,7 @@
                                             <td>{{ DateToIndo($d->tanggal) }}</td>
                                             <td>{{ $d->no_faktur }}</td>
                                             <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
-                                            <td>{{ textUpperCase($d->nama_cabang) }}</td>
+                                            <td>{{ textUpperCase($d->kode_cabang_baru) }}</td>
                                             <td>{{ textUpperCase($d->nama_salesman) }}</td>
                                             <td>
                                                 @if ($d->jenis_retur == 'GB')
@@ -99,6 +100,20 @@
                                                 @endif
                                             </td>
                                             <td class="text-end">{{ formatRupiah($d->total_retur) }}</td>
+                                            <td class="text-center">
+                                                @if ($d->jenis_retur == 'GB')
+                                                    @php
+                                                        $sisa_retur = $d->total_qty_retur - $d->total_qty_pelunasan;
+                                                    @endphp
+                                                    @if ($sisa_retur == 0)
+                                                        <span class="badge bg-success">L</span>
+                                                    @else
+                                                        <span class="badge bg-danger">BL</span>
+                                                    @endif
+                                                @else
+                                                    <i class="ti ti-circle-minus text-warning"></i>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <div class="d-flex">
                                                     @can('worksheetom.monitoringretur')

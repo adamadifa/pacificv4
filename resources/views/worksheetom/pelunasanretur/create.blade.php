@@ -46,6 +46,7 @@
     }
 </style>
 <form action="{{ route('pelunasanretur.store', Crypt::encrypt($no_retur)) }}" id="formPelunasanRetur" method="POST">
+    @csrf
     <div class="row">
         <div class="col">
             <table class="table bordered table-hover table-striped table-bordered">
@@ -54,7 +55,7 @@
                         <th rowspan="2">Kode</th>
                         <th rowspan="2">Nama Produk</th>
                         <th colspan="3">Retur</th>
-                        <th colspan="3">Pelunasan</th>
+                        <th colspan="3" class="bg-success">Pelunasan</th>
                         <th colspan="3">Sisa</th>
                     </tr>
                     <tr>
@@ -62,9 +63,9 @@
                         <th class="text-center">Pack</th>
                         <th class="text-center">Pcs</th>
 
-                        <th class="text-center">Dus</th>
-                        <th class="text-center">Pack</th>
-                        <th class="text-center">Pcs</th>
+                        <th class="text-center bg-success">Dus</th>
+                        <th class="text-center bg-success">Pack</th>
+                        <th class="text-center bg-success">Pcs</th>
 
                         <th class="text-center">Dus</th>
                         <th class="text-center">Pack</th>
@@ -79,6 +80,8 @@
                         @php
                             $jumlah = explode('|', convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah));
                             $jumlah_pelunasan = explode('|', convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah_pelunasan));
+                            $sisa = $d->jumlah - $d->jumlah_pelunasan;
+                            $sisa_retur = explode('|', convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $sisa));
                             $jumlah_dus = $jumlah[0];
                             $jumlah_pack = $jumlah[1];
                             $jumlah_pcs = $jumlah[2];
@@ -86,6 +89,11 @@
                             $jumlah_dus_pelunasan = $jumlah_pelunasan[0];
                             $jumlah_pack_pelunasan = $jumlah_pelunasan[1];
                             $jumlah_pcs_pelunasan = $jumlah_pelunasan[2];
+
+                            $jumlah_dus_sisa_retur = $sisa_retur[0];
+                            $jumlah_pack_sisa_retur = $sisa_retur[1];
+                            $jumlah_pcs_sisa_retur = $sisa_retur[2];
+
                         @endphp
                         <tr>
                             <td>{{ $d->kode_produk }}</td>
@@ -96,6 +104,10 @@
                             <td class="text-center">{{ formatAngka($jumlah_dus_pelunasan) }}</td>
                             <td class="text-center">{{ formatAngka($jumlah_pack_pelunasan) }}</td>
                             <td class="text-center">{{ formatAngka($jumlah_pcs_pelunasan) }}</td>
+                            <td class="text-center">{{ formatAngka($jumlah_dus_sisa_retur) }}</td>
+                            <td class="text-center">{{ formatAngka($jumlah_pack_sisa_retur) }}</td>
+                            <td class="text-center">{{ formatAngka($jumlah_pcs_sisa_retur) }}</td>
+
 
                         </tr>
                     @endforeach
@@ -112,7 +124,8 @@
                         <select name="kode_harga" id="kode_harga" class="form-select">
                             <option value="">Produk</option>
                             @foreach ($detail as $d)
-                                <option isi_pcs_dus="{{ $d->isi_pcs_dus }}" isi_pcs_pack ="{{ $d->isi_pcs_pack }}" value="{{ $d->kode_harga }}">
+                                <option jumlah="{{ $d->jumlah }}" isi_pcs_dus="{{ $d->isi_pcs_dus }}" isi_pcs_pack ="{{ $d->isi_pcs_pack }}"
+                                    value="{{ $d->kode_harga }}">
                                     {{ $d->nama_produk }}</option>
                             @endforeach
                         </select>
@@ -144,7 +157,7 @@
     </div>
     <div class="row mt-3">
         <div class="col">
-            <table class="table table-bordred table-striped table-hover">
+            <table class="table table-bordered table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
                         <th>Kode</th>
@@ -159,6 +172,12 @@
                 <tbody id="loadproduk"></tbody>
             </table>
         </div>
+    </div>
+
+    <div class="row mt-3"></div>
+    <div class="col">
+        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+    </div>
     </div>
 </form>
 <script>
@@ -178,12 +197,22 @@
             e.preventDefault();
             const kode_harga = formpelunasanretur.find('#kode_harga').val();
             const nama_produk = formpelunasanretur.find('#kode_harga option:selected').text();
+            const jumlah = formpelunasanretur.find('#kode_harga option:selected').attr('jumlah');
             const jml_dus = formpelunasanretur.find('#jml_dus').val();
             const jml_pack = formpelunasanretur.find('#jml_pack').val();
             const jml_pcs = formpelunasanretur.find('#jml_pcs').val();
+
+            const jmldus = jml_dus != "" ? parseInt(jml_dus) : 0;
+            const jmlpack = jml_pack != "" ? parseInt(jml_pack) : 0;
+            const jmlpcs = jml_pcs != "" ? parseInt(jml_pcs) : 0;
+
             const no_dpb = formpelunasanretur.find('#no_dpb_val').val();
-            const isi_pcs_pack = $(this).find('option:selected').attr('isi_pcs_pack');
-            const isi_pcs_dus = $(this).find('option:selected').attr('isi_pcs_dus');
+            const isi_pcs_pack = formpelunasanretur.find('#kode_harga option:selected').attr('isi_pcs_pack');
+            const isi_pcs_dus = formpelunasanretur.find('#kode_harga option:selected').attr('isi_pcs_dus');
+
+            let jml = (parseInt(jmldus) * parseInt(isi_pcs_dus)) + (parseInt(jmlpack) * parseInt(isi_pcs_pack)) + parseInt(jmlpcs);
+
+            //alert(jml);
             if (kode_harga == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -192,6 +221,17 @@
                     showConfirmButton: true,
                     didClose: (e) => {
                         formpelunasanretur.find("#kode_harga").focus();
+                    },
+                });
+                return false;
+            } else if (parseInt(jml) > parseInt(jumlah)) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Melebihi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        formpelunasanretur.find("#jml_dus").focus();
                     },
                 });
                 return false;
@@ -221,9 +261,8 @@
                 let produk = ` <tr id="index_${kode_harga}">
                     <td>
                         <input type="hidden" name="kode_harga_item[]" value="${kode_harga}">
-                        <input type="hidden" name="jml_dus_item[]" value="${jml_dus}">
-                        <input type="hidden" name="jml_pack_item[]" value="${jml_pack}">
-                        <input type="hidden" name="jml_pcs_item[]" value="${jml_pcs}">
+                        <input type="hidden" name="jml_item[]" value="${jml}">
+
                         <input type="hidden" name="isi_pcs_pack_item[]" value="${isi_pcs_pack}">
                         <input type="hidden" name="isi_pcs_dus_item[]" value="${isi_pcs_dus}">
                         <input type="hidden" name="no_dpb_item[]" value="${no_dpb}">
@@ -295,5 +334,27 @@
                 return false;
             }
         });
+
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..
+         `);
+        }
+
+        formpelunasanretur.submit(function(e) {
+            // e.preventDefault();
+            if ($('#loadproduk tr').length == 0) {
+                SwalWarning('nama_produk', 'Detail Produk Tidak Boleh Kosong');
+                return false;
+            } else {
+                buttonDisable();
+            }
+        });
+
+
     });
 </script>

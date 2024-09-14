@@ -1768,7 +1768,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(PelunasanreturController::class)->group(function () {
         Route::get('/pelunasanretur/{no_retur}/create', 'create')->name('monitoringretur.index')->can('worksheetom.monitoringretur');
-        Route::get('/pelunasanretur/{no_retur}/store', 'store')->name('pelunasanretur.store')->can('worksheetom.monitoringretur');
+        Route::post('/pelunasanretur/{no_retur}/store', 'store')->name('pelunasanretur.store')->can('worksheetom.monitoringretur');
     });
 
 

@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Pelunasanretur extends Model
 {
     use HasFactory;
+    protected $table = "worksheetom_retur_pelunasan";
+    protected $guarded = [];
 }
