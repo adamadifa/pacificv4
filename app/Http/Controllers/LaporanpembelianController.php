@@ -334,6 +334,7 @@ class LaporanpembelianController extends Controller
         $data['kartuhutang'] = $query->get();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
+        $data['jenis_hutang'] =  $request->jenis_hutang;
         $data['supplier'] = Supplier::where('kode_supplier', $request->kode_supplier_kartuhutang)->first();
 
         if (isset($_POST['exportButton'])) {

@@ -28,6 +28,13 @@
                 {{ $supplier->kode_supplier }} - {{ $supplier->nama_supplier }}
             </h4>
         @endif
+        @if (!empty($jenis_hutang))
+            @if ($jenis_hutang == '2-1200')
+                HUTANG DAGANG
+            @else
+                HUTANG LAINNYA
+            @endif
+        @endif
     </div>
     <div class="content">
         <div class="freeze-table">
