@@ -96,12 +96,20 @@ function listApprovepenilaian($kode_dept, $level = "")
         $list_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
     } else if (in_array($level, ['super admin', 'asst. manager hrd'])) {
         $list_approve =  [
-            'operation manager', 'sales marketing manager', 'regional sales manager',
+            'operation manager',
+            'sales marketing manager',
+            'regional sales manager',
             'manager keuangan',
-            'manager gudang', 'manager maintenance', 'manager pembelian', 'manager produksi',
+            'manager gudang',
+            'manager maintenance',
+            'manager pembelian',
+            'manager produksi',
             'manager general affair',
-            'gm administrasi', 'gm marketing', 'gm operasional',
-            'asst. manager hrd', 'direktur'
+            'gm administrasi',
+            'gm marketing',
+            'gm operasional',
+            'asst. manager hrd',
+            'direktur'
         ];
     }
     return $list_approve;
@@ -116,16 +124,30 @@ function listApprovepresensi($kode_dept = "", $kode_cabang = "", $level = "")
     $list_approve = [];
     if ($kode_cabang != "PST" && $user->hasPermissionTo('izinabsen.create')) {
         $list_approve =  [
-            'operation manager', 'sales marketing manager', 'regional sales manager',
-            'manager keuangan', 'gm administrasi', 'gm marketing', 'asst. manager hrd', 'direktur'
+            'operation manager',
+            'sales marketing manager',
+            'regional sales manager',
+            'manager keuangan',
+            'gm administrasi',
+            'gm marketing',
+            'asst. manager hrd',
+            'direktur'
         ];
     } else if ($kode_cabang != "PST" && $kode_dept == "AKT") {
         $list_approve =  [
-            'operation manager', 'manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'
+            'operation manager',
+            'manager keuangan',
+            'gm administrasi',
+            'asst. manager hrd',
+            'direktur'
         ];
     } else if ($kode_cabang != "PST" && $kode_dept == "MKT") {
         $list_approve =  [
-            'sales marketing manager', 'regional sales manager', 'gm marketing', 'asst. manager hrd', 'direktur'
+            'sales marketing manager',
+            'regional sales manager',
+            'gm marketing',
+            'asst. manager hrd',
+            'direktur'
         ];
     } else if ($kode_dept == "GAF") {
         $list_approve =  ['manager general affair', 'gm operasional', 'asst. manager hrd', 'direktur'];
@@ -163,12 +185,20 @@ function listApprovepresensi($kode_dept = "", $kode_cabang = "", $level = "")
         $list_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
     } else if (in_array($level, ['super admin', 'asst. manager hrd'])) {
         $list_approve =  [
-            'operation manager', 'sales marketing manager', 'regional sales manager',
+            'operation manager',
+            'sales marketing manager',
+            'regional sales manager',
             'manager keuangan',
-            'manager gudang', 'manager maintenance', 'manager pembelian', 'manager produksi',
+            'manager gudang',
+            'manager maintenance',
+            'manager pembelian',
+            'manager produksi',
             'manager general affair',
-            'gm administrasi', 'gm marketing', 'gm operasional',
-            'asst. manager hrd', 'direktur'
+            'gm administrasi',
+            'gm marketing',
+            'gm operasional',
+            'asst. manager hrd',
+            'direktur'
         ];
     }
     return $list_approve;
@@ -281,4 +311,20 @@ function hitungSisaHari($endDate)
     }
 
     return $daysRemaining;
+}
+
+
+function getNamahari($date)
+{
+    $days = array(
+        'Sunday' => 'Minggu',
+        'Monday' => 'Senin',
+        'Tuesday' => 'Selasa',
+        'Wednesday' => 'Rabu',
+        'Thursday' => 'Kamis',
+        'Friday' => 'Jumat',
+        'Saturday' => 'Sabtu'
+    );
+    $dayName = date('l', strtotime($date));
+    return $days[$dayName];
 }

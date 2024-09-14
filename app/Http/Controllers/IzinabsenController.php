@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Departemen;
+use App\Models\Detailjadwalkerja;
+use App\Models\Detailjadwalshift;
 use App\Models\Disposisiizinabsen;
 use App\Models\Izinabsen;
 use App\Models\Karyawan;
+use App\Models\Presensi;
+use App\Models\Presensizinabsen;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -281,6 +285,53 @@ class IzinabsenController extends Controller
                             'status' => 1
                         ]);
 
+
+                    $dari = $izinabsen->dari;
+                    $sampai = $izinabsen->sampai;
+
+                    while (strtotime($dari) <= strtotime($sampai)) {
+                        //Cek Jadwal Shift
+                        $cekjadwalshift = Detailjadwalshift::join('hrd_jadwalshift', 'hrd_jadwalshift.kode_jadwalshift', 'hrd_jadwalshift_detail.kode_jadwalshift')
+                            ->whereRaw($dari . ' between dari and sampai')
+                            ->where('nik', $izinabsen->nik)
+                            ->first();
+                        if ($cekjadwalshift != null) {
+                            $kode_jadwal = $cekjadwalshift->kode_jadwal;
+                        } else {
+                            $cekjadwalkaryawan = Karyawan::where('nik', $izinabsen->nik)->first();
+                            $kode_jadwal =  $cekjadwalkaryawan->kode_jadwal;
+                        }
+
+                        $nama_hari = getNamahari($dari);
+
+
+
+
+                        $cekjamkerja = Detailjadwalkerja::where('kode_jadwal', $kode_jadwal)->where('hari', $nama_hari)->first();
+
+
+                        if ($cekjamkerja != null) {
+                            $kode_jam_kerja = $cekjamkerja->kode_jam_kerja;
+                        } else {
+                            return Redirect::back()->with(messageError('Karyawan Belum Diatur Jam Kerja'));
+                        }
+
+                        //Hapus Jika Sudah Ada Data Presensi
+                        Presensi::where('nik', $izinabsen->nik)->where('tanggal', $dari)->delete();
+                        $presensi = Presensi::create([
+                            'nik' => $izinabsen->nik,
+                            'tanggal' => $dari,
+                            'kode_jadwal' => $kode_jadwal,
+                            'kode_jam_kerja' => $kode_jam_kerja,
+                            'status' => 'i',
+                        ]);
+
+                        Presensizinabsen::create([
+                            'id_presensi' => $presensi->id,
+                            'kode_izin' => $kode_izin,
+                        ]);
+                        $dari = date('Y-m-d', strtotime($dari . ' +1 day'));
+                    }
                     if (isset($request->direktur)) {
                         $userrole = User::role('direktur')->where('status', 1)->first();
                         Disposisiizinabsen::create([
@@ -309,7 +360,7 @@ class IzinabsenController extends Controller
             return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));
         } catch (\Exception $e) {
             DB::rollBack();
-            //dd($e);
+            dd($e);
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
@@ -324,6 +375,7 @@ class IzinabsenController extends Controller
         $role = $user->getRoleNames()->first();
         $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
         $end_role = end($roles_approve);
+        DB::beginTransaction();
         try {
 
             Disposisiizinabsen::where('kode_izin', $kode_izin)
@@ -347,13 +399,25 @@ class IzinabsenController extends Controller
                         ->update([
                             'status' => 0
                         ]);
+
+                    $presensi_izinabsen = Presensizinabsen::select('id_presensi')->where('kode_izin', $kode_izin);
+                    $presensi = $presensi_izinabsen->get();
+                    $id_presensi = [];
+                    foreach ($presensi as $d) {
+                        $id_presensi[] = $d->id_presensi;
+                    }
+                    $presensi_izinabsen->delete();
+
+                    Presensi::whereIn('id', $id_presensi)->delete();
                 }
             }
 
 
-
+            DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
         } catch (\Exception $e) {
+            dd($e);
+            DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
             //throw $th;
         }

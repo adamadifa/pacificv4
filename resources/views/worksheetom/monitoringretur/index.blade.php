@@ -105,7 +105,7 @@
                                     @foreach ($retur as $d)
                                         <tr>
                                             <td>{{ $d->no_retur }}</td>
-                                            <td>{{ DateToIndo($d->tanggal) }}</td>
+                                            <td>{{ formatIndo($d->tanggal) }}</td>
                                             <td>{{ $d->no_faktur }}</td>
                                             <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
                                             <td>{{ textUpperCase($d->kode_cabang_baru) }}</td>

@@ -87,3 +87,20 @@
 
     </div>
 </form>
+<script>
+    $(document).ready(function() {
+        function buttonDisable() {
+            $('#btnSimpan').prop('disabled', true);
+            $('#btnSimpan').html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..`);
+        }
+
+        const formApproveizin = $('#formApproveizin');
+        formApproveizin.submit(function(e) {
+            buttonDisable();
+        });
+    })
+</script>
