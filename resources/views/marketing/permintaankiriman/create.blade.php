@@ -243,8 +243,6 @@
                             $("#jumlah").val("");
                             loaddetailtemp();
                             $('.select2Kodeproduk').val('').trigger("change");
-
-
                         } else {
                             Swal.fire("Oops!", respond.message, "error");
                         }
@@ -281,7 +279,7 @@
                         },
                         cache: false,
                         success: function(respond) {
-                            if (respond === '0') {
+                            if (respond.success == true) {
                                 Swal.fire({
                                     title: "Berhasil",
                                     text: "Data Berhasil Dihapus",
@@ -291,7 +289,7 @@
                             } else {
                                 Swal.fire({
                                     title: "Error",
-                                    text: respond,
+                                    text: respond.message,
                                     icon: "error"
                                 });
                             }

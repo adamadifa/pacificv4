@@ -361,9 +361,15 @@ class PermintaankirimanController extends Controller
     {
         try {
             Detailpermintaankirimantemp::where('id', $request->id)->delete();
-            return 0;
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Berhasil Dihapus',
+            ]);
         } catch (\Exception $e) {
-            return $e;
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 }
