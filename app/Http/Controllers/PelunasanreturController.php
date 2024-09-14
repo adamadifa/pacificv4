@@ -31,6 +31,7 @@ class PelunasanreturController extends Controller
                     ->on('marketing_retur_detail.kode_harga', '=', 'worksheetom_retur_pelunasan.kode_harga');
             })
             ->where('marketing_retur_detail.no_retur', $no_retur)
+            ->orderBy('nama_produk')
             ->get();
         $data['detail'] = $detail;
 
