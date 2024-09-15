@@ -36,31 +36,31 @@
             <div class="form-group mb-3">
                 <label>Hari</label><br>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input harisenin" name="hari[]" value="senin" type="checkbox" id="harisenin">
+                    <input class="form-check-input harisenin" name="hari[]" value="Senin" type="checkbox" id="harisenin">
                     <label class="form-check-label" for="harisenin"> Senin </label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input hariselasa" name="hari[]" value="selasa" type="checkbox" id="hariselasa">
+                    <input class="form-check-input hariselasa" name="hari[]" value="Selasa" type="checkbox" id="hariselasa">
                     <label class="form-check-label" for="hariselasa"> Selasa </label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input harirabu" name="hari[]" value="rabu" type="checkbox" id="harirabu">
+                    <input class="form-check-input harirabu" name="hari[]" value="Rabu" type="checkbox" id="harirabu">
                     <label class="form-check-label" for="harirabu"> Rabu </label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input harikamis" name="hari[]" value="kamis" type="checkbox" id="harikamis">
+                    <input class="form-check-input harikamis" name="hari[]" value="Kamis" type="checkbox" id="harikamis">
                     <label class="form-check-label" for="harikamis"> Kamis </label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input harijumat" name="hari[]" value="jumat" type="checkbox" id="harijumat">
+                    <input class="form-check-input harijumat" name="hari[]" value="Jumat" type="checkbox" id="harijumat">
                     <label class="form-check-label" for="harijumat"> Jumat </label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input harisabtu" name="hari[]" value="sabtu" type="checkbox" id="harisabtu">
+                    <input class="form-check-input harisabtu" name="hari[]" value="Sabtu" type="checkbox" id="harisabtu">
                     <label class="form-check-label" for="harisabtu"> Sabtu </label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input hariminggu" name="hari[]" value="minggu" type="checkbox" id="hariminggu">
+                    <input class="form-check-input hariminggu" name="hari[]" value="Minggu" type="checkbox" id="hariminggu">
                     <label class="form-check-label" for="hariminggu"> Minggu </label>
                 </div>
             </div>

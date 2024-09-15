@@ -41,37 +41,37 @@
                 <label>Hari</label><br>
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="harisenin"> Senin </label>
-                    <input class="form-check-input harisenin" name="hari[]" value="senin" type="checkbox" id="harisenin"
+                    <input class="form-check-input harisenin" name="hari[]" value="Senin" type="checkbox" id="harisenin"
                         {{ str_contains(strtolower($pelanggan->hari), 'senin') ? 'checked' : '' }}>
                 </div>
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="hariselasa"> Selasa </label>
-                    <input class="form-check-input hariselasa" name="hari[]" value="selasa" type="checkbox" id="hariselasa"
+                    <input class="form-check-input hariselasa" name="hari[]" value="Selasa" type="checkbox" id="hariselasa"
                         {{ str_contains(strtolower($pelanggan->hari), 'selasa') ? 'checked' : '' }}>
                 </div>
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="harirabu"> Rabu </label>
-                    <input class="form-check-input harirabu" name="hari[]" value="rabu" type="checkbox" id="harirabu"
+                    <input class="form-check-input harirabu" name="hari[]" value="Rabu" type="checkbox" id="harirabu"
                         {{ str_contains(strtolower($pelanggan->hari), 'rabu') ? 'checked' : '' }}>
                 </div>
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="harikamis"> Kamis </label>
-                    <input class="form-check-input harikamis" name="hari[]" value="kamis" type="checkbox" id="harikamis"
+                    <input class="form-check-input harikamis" name="hari[]" value="Kamis" type="checkbox" id="harikamis"
                         {{ str_contains(strtolower($pelanggan->hari), 'kamis') ? 'checked' : '' }}>
                 </div>
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="harijumat"> Jumat </label>
-                    <input class="form-check-input harijumat" name="hari[]" value="jumat" type="checkbox" id="harijumat"
+                    <input class="form-check-input harijumat" name="hari[]" value="Jumat" type="checkbox" id="harijumat"
                         {{ str_contains(strtolower($pelanggan->hari), 'jumat') ? 'checked' : '' }}>
                 </div>
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="harisabtu"> Sabtu </label>
-                    <input class="form-check-input harisabtu" name="hari[]" value="sabtu" type="checkbox" id="harisabtu"
+                    <input class="form-check-input harisabtu" name="hari[]" value="Sabtu" type="checkbox" id="harisabtu"
                         {{ str_contains(strtolower($pelanggan->hari), 'sabtu') ? 'checked' : '' }}>
                 </div>
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="hariminggu"> Minggu </label>
-                    <input class="form-check-input hariminggu" name="hari[]" value="minggu" type="checkbox" id="hariminggu"
+                    <input class="form-check-input hariminggu" name="hari[]" value="Minggu" type="checkbox" id="hariminggu"
                         {{ str_contains(strtolower($pelanggan->hari), 'minggu') ? 'checked' : '' }}>
                 </div>
             </div>
