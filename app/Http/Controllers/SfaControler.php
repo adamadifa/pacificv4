@@ -141,7 +141,7 @@ class SfaControler extends Controller
             'kode_cabang' => $user->kode_cabang,
             'kode_salesman' => $user->kode_salesman,
             'kode_wilayah' => $request->kode_wilayah,
-            'hari' => $request->hari,
+            'hari' => implode(",", $request->hari),
             'limit_pelanggan' => isset($request->limit_pelanggan) ?  toNumber($request->limit_pelanggan) : NULL,
             'ljt' => $request->ljt,
             'kepemilikan' => $request->kepemilikan,

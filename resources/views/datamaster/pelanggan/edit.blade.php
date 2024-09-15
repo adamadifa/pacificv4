@@ -38,16 +38,42 @@
                 </select>
             </div>
             <div class="form-group mb-3">
-                <select name="hari" id="hari" class="form-select">
-                    <option value="">Hari</option>
-                    <option value="Senin" {{ $pelanggan->hari == 'Senin' ? 'selected' : '' }}>Senin</option>
-                    <option value="Selasa" {{ $pelanggan->hari == 'Selasa' ? 'selected' : '' }}>Selasa</option>
-                    <option value="Rabu" {{ $pelanggan->hari == 'Rabu' ? 'selected' : '' }}>Rabu</option>
-                    <option value="Kamis" {{ $pelanggan->hari == 'Kamis' ? 'selected' : '' }}>Kamis</option>
-                    <option value="Jumat" {{ $pelanggan->hari == 'Jumat' ? 'selected' : '' }}>Jumat</option>
-                    <option value="Sabtu" {{ $pelanggan->hari == 'Sabtu' ? 'selected' : '' }}>Sabtu</option>
-                    <option value="Minggu" {{ $pelanggan->hari == 'Minggu' ? 'selected' : '' }}>Minggu</option>
-                </select>
+                <label>Hari</label><br>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="harisenin"> Senin </label>
+                    <input class="form-check-input harisenin" name="hari[]" value="senin" type="checkbox" id="harisenin"
+                        {{ str_contains(strtolower($pelanggan->hari), 'senin') ? 'checked' : '' }}>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="hariselasa"> Selasa </label>
+                    <input class="form-check-input hariselasa" name="hari[]" value="selasa" type="checkbox" id="hariselasa"
+                        {{ str_contains(strtolower($pelanggan->hari), 'selasa') ? 'checked' : '' }}>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="harirabu"> Rabu </label>
+                    <input class="form-check-input harirabu" name="hari[]" value="rabu" type="checkbox" id="harirabu"
+                        {{ str_contains(strtolower($pelanggan->hari), 'rabu') ? 'checked' : '' }}>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="harikamis"> Kamis </label>
+                    <input class="form-check-input harikamis" name="hari[]" value="kamis" type="checkbox" id="harikamis"
+                        {{ str_contains(strtolower($pelanggan->hari), 'kamis') ? 'checked' : '' }}>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="harijumat"> Jumat </label>
+                    <input class="form-check-input harijumat" name="hari[]" value="jumat" type="checkbox" id="harijumat"
+                        {{ str_contains(strtolower($pelanggan->hari), 'jumat') ? 'checked' : '' }}>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="harisabtu"> Sabtu </label>
+                    <input class="form-check-input harisabtu" name="hari[]" value="sabtu" type="checkbox" id="harisabtu"
+                        {{ str_contains(strtolower($pelanggan->hari), 'sabtu') ? 'checked' : '' }}>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="hariminggu"> Minggu </label>
+                    <input class="form-check-input hariminggu" name="hari[]" value="minggu" type="checkbox" id="hariminggu"
+                        {{ str_contains(strtolower($pelanggan->hari), 'minggu') ? 'checked' : '' }}>
+                </div>
             </div>
             @hasanyrole($roles_show_cabang)
                 <x-input-with-icon icon="ti ti-moneybag" label="Limit Pelanggan" name="limit_pelanggan" align="right" money="true"
@@ -192,6 +218,24 @@
 <script src="{{ asset('assets/js/pages/pelanggan/edit.js') }}"></script>
 <script>
     $(function() {
+
+
+        $('input[type="checkbox"][name="hari[]"]').on('change', function() {
+            var checkedCount = $('input[type="checkbox"][name="hari[]"]:checked').length;
+
+            if (checkedCount > 2) {
+                $(this).prop('checked', false); // Batalkan centang terakhir
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Hanya boleh memilih 2 hari',
+                })
+            } else {
+                $('#error-message').text(''); // Hapus pesan error jika valid
+            }
+        });
+
+
 
         $(".flatpickr-date").flatpickr();
 

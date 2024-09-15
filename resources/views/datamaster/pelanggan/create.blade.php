@@ -34,16 +34,35 @@
                 </select>
             </div>
             <div class="form-group mb-3">
-                <select name="hari" id="hari" class="form-select">
-                    <option value="">Hari</option>
-                    <option value="Senin">Senin</option>
-                    <option value="Selasa">Selasa</option>
-                    <option value="Rabu">Rabu</option>
-                    <option value="Kamis">Kamis</option>
-                    <option value="Jumat">Jumat</option>
-                    <option value="Sabtu">Sabtu</option>
-                    <option value="Minggu">Minggu</option>
-                </select>
+                <label>Hari</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input harisenin" name="hari[]" value="senin" type="checkbox" id="harisenin">
+                    <label class="form-check-label" for="harisenin"> Senin </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input hariselasa" name="hari[]" value="selasa" type="checkbox" id="hariselasa">
+                    <label class="form-check-label" for="hariselasa"> Selasa </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input harirabu" name="hari[]" value="rabu" type="checkbox" id="harirabu">
+                    <label class="form-check-label" for="harirabu"> Rabu </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input harikamis" name="hari[]" value="kamis" type="checkbox" id="harikamis">
+                    <label class="form-check-label" for="harikamis"> Kamis </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input harijumat" name="hari[]" value="jumat" type="checkbox" id="harijumat">
+                    <label class="form-check-label" for="harijumat"> Jumat </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input harisabtu" name="hari[]" value="sabtu" type="checkbox" id="harisabtu">
+                    <label class="form-check-label" for="harisabtu"> Sabtu </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input hariminggu" name="hari[]" value="minggu" type="checkbox" id="hariminggu">
+                    <label class="form-check-label" for="hariminggu"> Minggu </label>
+                </div>
             </div>
             @hasanyrole($roles_show_cabang)
                 <x-input-with-icon icon="ti ti-moneybag" label="Limit Pelanggan" name="limit_pelanggan" align="right" money="true" />
@@ -158,6 +177,21 @@
 <script src="{{ asset('assets/js/pages/pelanggan/create.js') }}"></script>
 <script>
     $(function() {
+
+        $('input[type="checkbox"][name="hari[]"]').on('change', function() {
+            var checkedCount = $('input[type="checkbox"][name="hari[]"]:checked').length;
+
+            if (checkedCount > 2) {
+                $(this).prop('checked', false); // Batalkan centang terakhir
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Hanya boleh memilih 2 hari',
+                })
+            } else {
+                $('#error-message').text(''); // Hapus pesan error jika valid
+            }
+        });
 
         $(".flatpickr-date").flatpickr();
 
