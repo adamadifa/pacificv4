@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Presensiizinkeluar extends Model
+class Disposisiizinterlambat extends Model
 {
     use HasFactory;
-    protected $table = "hrd_presensi_izinkeluar";
+    protected $table = "hrd_izinterlambat_disposisi";
+    protected $primaryKey = "kode_disposisi";
     protected $guarded = [];
+    public $incrementing  = false;
 }

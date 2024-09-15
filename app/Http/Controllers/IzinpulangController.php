@@ -4,41 +4,41 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Departemen;
-use App\Models\Detailjadwalkerja;
-use App\Models\Detailjadwalshift;
-use App\Models\Disposisiizinabsen;
-use App\Models\Izinabsen;
+use App\Models\Disposisiizinpulang;
+use App\Models\Izinpulang;
 use App\Models\Karyawan;
 use App\Models\Presensi;
-use App\Models\Presensizinabsen;
+use App\Models\Presensiizinpulang;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
-class IzinabsenController extends Controller
+class IzinpulangController extends Controller
 {
+
     public function index(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
-        $i_absen = new Izinabsen();
-        $izinabsen = $i_absen->getIzinabsen(request: $request)->paginate(15);
-        $izinabsen->appends(request()->all());
-        $data['izinabsen'] = $izinabsen;
+        $i_pulang = new Izinpulang();
+        $izinpulang = $i_pulang->getIzinpulang(request: $request)->paginate(15);
+        $izinpulang->appends(request()->all());
+        $data['izinpulang'] = $izinpulang;
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_approve'] = config('hrd.roles_approve_presensi');
         $data['listApprove'] = listApprovepresensi(auth()->user()->kode_dept, auth()->user()->kode_cabang, $user->getRoleNames()->first());
-        return view('hrd.pengajuanizin.izinabsen.index', $data);
+        return view('hrd.pengajuanizin.izinpulang.index', $data);
     }
 
     public function create()
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinabsen.create', $data);
+        return view('hrd.pengajuanizin.izinpulang.create', $data);
     }
+
 
     public function store(Request $request)
     {
@@ -46,35 +46,30 @@ class IzinabsenController extends Controller
         $role = $user->getRoleNames()->first();
         $request->validate([
             'nik' => 'required',
-            'dari' => 'required',
-            'sampai' => 'required',
+            'tanggal' => 'required',
+            'jam_pulang' => 'required',
             'keterangan' => 'required',
         ]);
         DB::beginTransaction();
         try {
-            $jmlhari = hitungHari($request->dari, $request->sampai);
-            if ($jmlhari > 3) {
-                return Redirect::back()->with(messageError('Tidak Boleh Lebih dari 3 Hari!'));
-            }
 
-            $lastizin = Izinabsen::select('kode_izin')
-                ->whereRaw('YEAR(dari)="' . date('Y', strtotime($request->dari)) . '"')
-                ->whereRaw('MONTH(dari)="' . date('m', strtotime($request->dari)) . '"')
-                ->orderBy("kode_izin", "desc")
+            $lastizinpulang = Izinpulang::select('kode_izin_pulang')
+                ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->tanggal)) . '"')
+                ->orderBy("kode_izin_pulang", "desc")
                 ->first();
-            $last_kode_izin = $lastizin != null ? $lastizin->kode_izin : '';
-            $kode_izin  = buatkode($last_kode_izin, "IA"  . date('ym', strtotime($request->dari)), 4);
+            $last_kode_izin_pulang = $lastizinpulang != null ? $lastizinpulang->kode_izin_pulang : '';
+            $kode_izin_pulang  = buatkode($last_kode_izin_pulang, "IP"  . date('ym', strtotime($request->dari)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
-            Izinabsen::create([
-                'kode_izin' => $kode_izin,
+            Izinpulang::create([
+                'kode_izin_pulang' => $kode_izin_pulang,
                 'nik' => $request->nik,
                 'kode_jabatan' => $karyawan->kode_jabatan,
                 'kode_dept' => $karyawan->kode_dept,
                 'kode_cabang' => $karyawan->kode_cabang,
-                'tanggal' => $request->dari,
-                'dari' => $request->dari,
-                'sampai' => $request->sampai,
+                'tanggal' => $request->tanggal,
+                'jam_pulang' => $request->tanggal . ' ' . $request->jam_pulang,
                 'keterangan' => $request->keterangan,
                 'status' => 0,
                 'direktur' => 0,
@@ -84,19 +79,13 @@ class IzinabsenController extends Controller
 
             $roles_approve = cekRoleapprovepresensi($karyawan->kode_dept, $karyawan->kode_cabang, $karyawan->kategori, $karyawan->kode_jabatan);
 
-            //dd($roles_approve);
-            // dd($karyawan->kategori);
-            // dd($roles_approve);
             if (in_array($role, $roles_approve)) {
                 $index_role = array_search($role, $roles_approve);
             } else {
                 $index_role = 0;
             }
-            // Jika Tidak Ada di dalam array
 
             $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
-
-
 
             if ($cek_user_approve == null) {
                 for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
@@ -109,19 +98,17 @@ class IzinabsenController extends Controller
                 }
             }
 
-
             $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisiizinabsen::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+            $lastdisposisi = Disposisiizinpulang::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
                 ->orderBy('kode_disposisi', 'desc')
                 ->first();
             $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPIA" . date('Ymd');
+            $format = "DPIP" . date('Ymd');
             $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
 
-
-            Disposisiizinabsen::create([
+            Disposisiizinpulang::create([
                 'kode_disposisi' => $kode_disposisi,
-                'kode_izin' => $kode_izin,
+                'kode_izin_pulang' => $kode_izin_pulang,
                 'id_pengirim' => auth()->user()->id,
                 'id_penerima' => $cek_user_approve->id,
                 'status' => 0
@@ -134,35 +121,30 @@ class IzinabsenController extends Controller
         }
     }
 
-    public function edit($kode_izin)
+    public function edit($kode_izin_pulang)
     {
-        $kode_izin = Crypt::decrypt($kode_izin);
-        $data['izinabsen'] = Izinabsen::where('kode_izin', $kode_izin)->first();
+        $kode_izin_pulang = Crypt::decrypt($kode_izin_pulang);
+        $data['izinpulang'] = Izinpulang::where('kode_izin_pulang', $kode_izin_pulang)->first();
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinabsen.edit', $data);
+        return view('hrd.pengajuanizin.izinpulang.edit', $data);
     }
 
 
-    public function update(Request $request, $kode_izin)
+    public function update(Request $request, $kode_izin_pulang)
     {
-        $kode_izin = Crypt::decrypt($kode_izin);
+        $kode_izin_pulang = Crypt::decrypt($kode_izin_pulang);
         $request->validate([
-            'dari' => 'required',
-            'sampai' => 'required',
+            'tanggal' => 'required',
+            'jam_pulang' => 'required',
             'keterangan' => 'required',
         ]);
         DB::beginTransaction();
         try {
-            $jmlhari = hitungHari($request->dari, $request->sampai);
-            if ($jmlhari > 3) {
-                return Redirect::back()->with(messageError('Tidak Boleh Lebih dari 3 Hari!'));
-            }
 
-            Izinabsen::where('kode_izin', $kode_izin)->update([
-                'tanggal' => $request->dari,
-                'dari' => $request->dari,
-                'sampai' => $request->sampai,
+            Izinpulang::where('kode_izin_pulang', $kode_izin_pulang)->update([
+                'tanggal' => $request->tanggal,
+                'jam_pulang' => $request->tanggal . ' ' . $request->jam_pulang,
                 'keterangan' => $request->keterangan,
             ]);
 
@@ -174,16 +156,28 @@ class IzinabsenController extends Controller
         }
     }
 
-    public function approve($kode_izin)
+    public function destroy($kode_izin_pulang)
     {
-        $kode_izin = Crypt::decrypt($kode_izin);
+        $kode_izin_pulang = Crypt::decrypt($kode_izin_pulang);
+        try {
+            Izinpulang::where('kode_izin_pulang', $kode_izin_pulang)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function approve($kode_izin_pulang)
+    {
+        $kode_izin_pulang = Crypt::decrypt($kode_izin_pulang);
         $user = User::find(auth()->user()->id);
-        $i_absen = new Izinabsen();
-        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
-        $data['izinabsen'] = $izinabsen;
+        $i_pulang = new Izinpulang();
+        $izinpulang = $i_pulang->getIzinpulang(kode_izin_pulang: $kode_izin_pulang)->first();
+        $data['izinpulang'] = $izinpulang;
 
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
+        $roles_approve = cekRoleapprovepresensi($izinpulang->kode_dept, $izinpulang->kode_cabang, $izinpulang->kategori_jabatan, $izinpulang->kode_jabatan);
         $end_role = end($roles_approve);
         if ($role != $end_role && in_array($role, $roles_approve)) {
             $cek_index = array_search($role, $roles_approve) + 1;
@@ -194,7 +188,7 @@ class IzinabsenController extends Controller
         $nextrole = $roles_approve[$cek_index];
         if ($nextrole == "regional sales manager") {
             $userrole = User::role($nextrole)
-                ->where('kode_regional', $izinabsen->kode_regional)
+                ->where('kode_regional', $izinpulang->kode_regional)
                 ->where('status', 1)
                 ->first();
         } else {
@@ -208,7 +202,7 @@ class IzinabsenController extends Controller
             for ($i = $index_start; $i < count($roles_approve); $i++) {
                 if ($roles_approve[$i] == 'regional sales manager') {
                     $userrole = User::role($roles_approve[$i])
-                        ->where('kode_regional', $izinabsen->kode_regional)
+                        ->where('kode_regional', $izinpulang->kode_regional)
                         ->where('status', 1)
                         ->first();
                 } else {
@@ -227,17 +221,19 @@ class IzinabsenController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izinabsen.approve', $data);
+        return view('hrd.pengajuanizin.izinpulang.approve', $data);
     }
 
-    public function storeapprove($kode_izin, Request $request)
+    public function storeapprove($kode_izin_pulang, Request $request)
     {
-        $kode_izin = Crypt::decrypt($kode_izin);
+        // dd(isset($_POST['direktur']));
+
+        $kode_izin_pulang = Crypt::decrypt($kode_izin_pulang);
         $user = User::findorfail(auth()->user()->id);
-        $i_absen = new Izinabsen();
-        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+        $i_pulang = new Izinpulang();
+        $izinpulang = $i_pulang->getIzinpulang(kode_izin_pulang: $kode_izin_pulang)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
+        $roles_approve = cekRoleapprovepresensi($izinpulang->kode_dept, $izinpulang->kode_cabang, $izinpulang->kategori_jabatan, $izinpulang->kode_jabatan);
         $end_role = end($roles_approve);
 
         if ($role != $end_role && in_array($role, $roles_approve)) {
@@ -255,7 +251,7 @@ class IzinabsenController extends Controller
             // Upadate Disposisi Pengirim
 
             // dd($kode_penilaian);
-            Disposisiizinabsen::where('kode_izin', $kode_izin)
+            Disposisiizinpulang::where('kode_izin_pulang', $kode_izin_pulang)
                 ->where('id_penerima', auth()->user()->id)
                 ->update([
                     'status' => 1
@@ -266,78 +262,44 @@ class IzinabsenController extends Controller
 
 
             if ($role == 'direktur') {
-                Izinabsen::where('kode_izin', $kode_izin)->update([
+                Izinpulang::where('kode_izin_pulang', $kode_izin_pulang)->update([
                     'direktur' => 1
                 ]);
             } else {
                 //Insert Dispsosi ke Penerima
                 $tanggal_hariini = date('Y-m-d');
-                $lastdisposisi = Disposisiizinabsen::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                $lastdisposisi = Disposisiizinpulang::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
                     ->orderBy('kode_disposisi', 'desc')
                     ->first();
                 $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-                $format = "DPIA" . date('Ymd');
+                $format = "DPIP" . date('Ymd');
                 $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
 
                 if ($role == $end_role) {
-                    Izinabsen::where('kode_izin', $kode_izin)
+                    Izinpulang::where('kode_izin_pulang', $kode_izin_pulang)
                         ->update([
                             'status' => 1
                         ]);
 
-
-                    $dari = $izinabsen->dari;
-                    $sampai = $izinabsen->sampai;
-
-                    while (strtotime($dari) <= strtotime($sampai)) {
-                        //Cek Jadwal Shift
-                        $cekjadwalshift = Detailjadwalshift::join('hrd_jadwalshift', 'hrd_jadwalshift.kode_jadwalshift', 'hrd_jadwalshift_detail.kode_jadwalshift')
-                            ->whereRaw($dari . ' between dari and sampai')
-                            ->where('nik', $izinabsen->nik)
-                            ->first();
-                        if ($cekjadwalshift != null) {
-                            $kode_jadwal = $cekjadwalshift->kode_jadwal;
-                        } else {
-                            $cekjadwalkaryawan = Karyawan::where('nik', $izinabsen->nik)->first();
-                            $kode_jadwal =  $cekjadwalkaryawan->kode_jadwal;
-                        }
-
-                        $nama_hari = getNamahari($dari);
-
-
-
-
-                        $cekjamkerja = Detailjadwalkerja::where('kode_jadwal', $kode_jadwal)->where('hari', $nama_hari)->first();
-
-
-                        if ($cekjamkerja != null) {
-                            $kode_jam_kerja = $cekjamkerja->kode_jam_kerja;
-                        } else {
-                            DB::rollback();
-                            return Redirect::back()->with(messageError('Karyawan Belum Diatur Jam Kerja'));
-                        }
-
-                        //Hapus Jika Sudah Ada Data Presensi
-                        Presensi::where('nik', $izinabsen->nik)->where('tanggal', $dari)->delete();
-                        $presensi = Presensi::create([
-                            'nik' => $izinabsen->nik,
-                            'tanggal' => $dari,
-                            'kode_jadwal' => $kode_jadwal,
-                            'kode_jam_kerja' => $kode_jam_kerja,
-                            'status' => 'i',
+                    $cekpresensi = Presensi::where('nik', $izinpulang->nik)->where('tanggal', $izinpulang->tanggal)->first();
+                    //dd($cekpresensi);
+                    if ($cekpresensi != null) {
+                        Presensiizinpulang::create([
+                            'id_presensi' => $cekpresensi->id,
+                            'kode_izin_pulang' => $kode_izin_pulang,
                         ]);
-
-                        Presensizinabsen::create([
-                            'id_presensi' => $presensi->id,
-                            'kode_izin' => $kode_izin,
-                        ]);
-                        $dari = date('Y-m-d', strtotime($dari . ' +1 day'));
+                    } else {
+                        DB::rollBack();
+                        return Redirect::back()->with(messageError('Karyawan Belum Melakukan Presesnsi Pada Tanggal Tersebut'));
                     }
+
+                    //dd($request->direktur);
                     if (isset($request->direktur)) {
+                        //dd('test');
                         $userrole = User::role('direktur')->where('status', 1)->first();
-                        Disposisiizinabsen::create([
+                        Disposisiizinpulang::create([
                             'kode_disposisi' => $kode_disposisi,
-                            'kode_izin' => $kode_izin,
+                            'kode_izin_pulang' => $kode_izin_pulang,
                             'id_pengirim' => auth()->user()->id,
                             'id_penerima' => $userrole->id,
                             'status' => 0,
@@ -345,9 +307,9 @@ class IzinabsenController extends Controller
                     }
                 } else {
 
-                    Disposisiizinabsen::create([
+                    Disposisiizinpulang::create([
                         'kode_disposisi' => $kode_disposisi,
-                        'kode_izin' => $kode_izin,
+                        'kode_izin_pulang' => $kode_izin_pulang,
                         'id_pengirim' => auth()->user()->id,
                         'id_penerima' => $userrole->id,
                         'status' => 0,
@@ -366,50 +328,42 @@ class IzinabsenController extends Controller
         }
     }
 
-    public function cancel($kode_izin)
+    public function cancel($kode_izin_pulang)
     {
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
-        $kode_izin = Crypt::decrypt($kode_izin);
-        $i_absen = new Izinabsen();
-        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+        $kode_izin_pulang = Crypt::decrypt($kode_izin_pulang);
+        $i_pulang = new Izinpulang();
+        $izinpulang = $i_pulang->getIzinpulang(kode_izin_pulang: $kode_izin_pulang)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
+        $roles_approve = cekRoleapprovepresensi($izinpulang->kode_dept, $izinpulang->kode_cabang, $izinpulang->kategori_jabatan, $izinpulang->kode_jabatan);
         $end_role = end($roles_approve);
         DB::beginTransaction();
         try {
 
-            Disposisiizinabsen::where('kode_izin', $kode_izin)
+            Disposisiizinpulang::where('kode_izin_pulang', $kode_izin_pulang)
                 ->where('id_pengirim', auth()->user()->id)
                 ->where('id_penerima', '!=', auth()->user()->id)
                 ->delete();
 
-            Disposisiizinabsen::where('kode_izin', $kode_izin)
+            Disposisiizinpulang::where('kode_izin_pulang', $kode_izin_pulang)
                 ->where('id_penerima', auth()->user()->id)
                 ->update([
                     'status' => 0
                 ]);
             if ($role == 'direktur') {
-                Izinabsen::where('kode_izin', $kode_izin)
+                Izinpulang::where('kode_izin_pulang', $kode_izin_pulang)
                     ->update([
                         'direktur' => 0
                     ]);
             } else {
                 if ($role == $end_role) {
-                    Izinabsen::where('kode_izin', $kode_izin)
+                    Izinpulang::where('kode_izin_pulang', $kode_izin_pulang)
                         ->update([
                             'status' => 0
                         ]);
 
-                    $presensi_izinabsen = Presensizinabsen::select('id_presensi')->where('kode_izin', $kode_izin);
-                    $presensi = $presensi_izinabsen->get();
-                    $id_presensi = [];
-                    foreach ($presensi as $d) {
-                        $id_presensi[] = $d->id_presensi;
-                    }
-                    $presensi_izinabsen->delete();
-
-                    Presensi::whereIn('id', $id_presensi)->delete();
+                    Presensiizinpulang::where('kode_izin_pulang', $kode_izin_pulang)->delete();
                 }
             }
 
@@ -417,22 +371,10 @@ class IzinabsenController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
             //throw $th;
-        }
-    }
-
-
-    public function destroy($kode_izin)
-    {
-        $kode_izin = Crypt::decrypt($kode_izin);
-        try {
-            Izinabsen::where('kode_izin', $kode_izin)->delete();
-            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
-        } catch (\Exception $e) {
-            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 }

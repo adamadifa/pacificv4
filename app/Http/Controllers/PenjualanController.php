@@ -571,6 +571,8 @@ class PenjualanController extends Controller
                 'jenis_bayar' => $jenis_bayar,
 
                 'jatuh_tempo' => $jatuh_tempo,
+
+                'routing' => $pelanggan->hari,
                 'id_user' => auth()->user()->id
 
             ]);

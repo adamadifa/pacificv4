@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hrd_presensi_izinkeluar', function (Blueprint $table) {
+        Schema::create('hrd_presensi_izinpulang', function (Blueprint $table) {
             $table->id('id_presensi');
-            $table->char('kode_izin_keluar', 12);
+            $table->char('kode_izin_pulang', 12);
             $table->foreign('id_presensi')->references('id')->on('hrd_presensi')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreign('kode_izin_keluar')->references('kode_izin_keluar')->on('hrd_izinkeluar')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreign('kode_izin_pulang')->references('kode_izin_pulang')->on('hrd_izinpulang')->restrictOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hrd_presensi_izinkeluar');
+        Schema::dropIfExists('hrd_presensi_izinpulang');
     }
 };

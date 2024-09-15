@@ -5,9 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Presensiizinkeluar extends Model
+class Presensiizinsakit extends Model
 {
     use HasFactory;
-    protected $table = "hrd_presensi_izinkeluar";
-    protected $guarded = [];
 }
