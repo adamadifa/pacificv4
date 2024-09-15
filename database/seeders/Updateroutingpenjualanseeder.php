@@ -15,7 +15,7 @@ class Updateroutingpenjualanseeder extends Seeder
     {
         DB::table('marketing_penjualan')
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-            ->whereBetween('marketing_penjualan.tanggal', ['2024-02-01', '2024-02-29'])
+            ->whereBetween('marketing_penjualan.tanggal', ['2024-09-01', '2024-09-30'])
             ->update([
                 'marketing_penjualan.routing' => DB::raw('pelanggan.hari')
             ]);
