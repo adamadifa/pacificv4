@@ -98,6 +98,7 @@
                         <th rowspan="2" colspan="2" class="biru1">KENDARAAN</th>
                         <th rowspan="2" colspan="2" class="bg-warna-campuran1">OA</th>
                         <th rowspan="2" colspan="2" class="bg-warna-campuran2">PENJUALAN VS AVG</th>
+                        <th rowspan="2" colspan="2" class="bg-warna-campuran2">ROUTING</th>
                         <th rowspan="2" colspan="2" class="bg-warna-campuran2">CASHIN</th>
                         <th rowspan="2" colspan="3" class="bg-warna-campuran3">LJT</th>
                         <th rowspan="3">TOTAL REWARD</th>
@@ -128,6 +129,10 @@
                         <th class="bg-warna-campuran2">REALISASI</th>
                         <th class="bg-warna-campuran2">REWARD</th>
 
+
+                        <th class="bg-warna-campuran2">REALISASI</th>
+                        <th class="bg-warna-campuran2">REWARD</th>
+
                         <th class="bg-warna-campuran3">REALISASI</th>
                         <th class="bg-warna-campuran3">RATIO</th>
                         <th class="bg-warna-campuran3">REWARD</th>
@@ -152,6 +157,7 @@
                             $total_reward_cashin = 0;
                             $total_reward_ljt = 0;
                             $total_reward_qty = 0;
+                            $total_reward_routing = 0;
                         @endphp
                     @endforeach
                     @foreach ($komisi as $d)
@@ -264,6 +270,29 @@
                                 @endphp
                                 {{ formatAngka($reward_penjvsavg) }}
                             </td>
+                            <td class="center">
+                                @php
+                                    $persentaserouting = !empty($d->jmlkunjungan) ? ($d->jmlsesuaijadwal / $d->jmlkunjungan) * 100 : 0;
+                                @endphp
+                                {{ formatAngkaDesimal($persentaserouting, 2) }}
+                            </td>
+                            <td class="right">
+                                @php
+                                    if ($d->status_komisi == 1) {
+                                        if ($persentaserouting >= 90 && $persentaserouting <= 95) {
+                                            $reward_routing = 200000;
+                                        } elseif ($persentaserouting > 95) {
+                                            $reward_routing = 400000;
+                                        } else {
+                                            $reward_routing = 0;
+                                        }
+                                    } else {
+                                        $reward_routing = 0;
+                                    }
+                                    $total_reward_routing += $reward_routing;
+                                @endphp
+                                {{ formatAngka($reward_routing) }}
+                            </td>
                             <td class="right">
                                 {{ formatAngka($d->realisasi_cashin) }}
                             </td>
@@ -311,7 +340,14 @@
                             </td>
                             <td class="right">
                                 @php
-                                    $total_reward = $reward_qty + $reward_kendaraan + $reward_oa + $reward_penjvsavg + $reward_cashin + $rewardljt;
+                                    $total_reward =
+                                        $reward_qty +
+                                        $reward_kendaraan +
+                                        $reward_oa +
+                                        $reward_penjvsavg +
+                                        $reward_routing +
+                                        $reward_cashin +
+                                        $rewardljt;
                                 @endphp
                                 {{ formatAngka($total_reward) }}
                             </td>
@@ -319,6 +355,95 @@
                     @endforeach
                 </tbody>
                 <tfoot>
+                    @if ($cabang->kode_cabang == 'BDG')
+
+
+                        <tr>
+                            <th colspan="3">spv</th>
+                            @php
+                                $total_poin_spv = 0;
+                            @endphp
+                            @foreach ($kategori_komisi as $k)
+                                <th class="right">{{ formatAngka(${"total_target_$k->kode_kategori"}) }}</th>
+                                <th class="right">{{ formatAngka(${"total_realisasi_$k->kode_kategori"}) }}</th>
+                                <th>
+                                    @php
+                                        $poinspv = (${"total_realisasi_$k->kode_kategori"} / ${"total_target_$k->kode_kategori"}) * $k->poin;
+                                        $total_poin_spv += $poinspv;
+                                    @endphp
+                                    {{ formatAngkaDesimal($poinspv) }}
+                                </th>
+                            @endforeach
+                            <th class="right">{{ formatAngkaDesimal($total_poin_spv) }}</th>
+                            <th>
+                                @php
+                                    $reward_qty_spv = $total_reward_qty / count($komisi);
+                                @endphp
+                                {{ formatAngka($reward_qty_spv) }}
+                            </th>
+                            <th>{{ formatAngkaDesimal($total_realisasi_kendaraan) }}</th>
+                            <th class="right">
+                                @php
+                                    $reward_kendaraan_spv = $total_reward_kendaraan / count($komisi);
+                                @endphp
+                                {{ formatAngka($reward_kendaraan_spv) }}
+                            </th>
+                            <th></th>
+                            <th class="right">
+                                @php
+                                    $reward_oa_spv = $total_reward_oa / count($komisi);
+                                @endphp
+                                {{ formatAngka($reward_oa_spv) }}
+                            </th>
+                            <th class="center">{{ $total_realisasi_penjvsavg }}</th>
+                            <th class="right">
+                                @php
+                                    $reward_penjvsavg_spv = $total_reward_penjvsavg / count($komisi);
+                                @endphp
+                                {{ formatAngka($reward_penjvsavg_spv) }}
+                            </th>
+                            <th></th>
+                            <th class="right">
+                                @php
+                                    $reward_routing_spv = $total_reward_routing / count($komisi);
+                                @endphp
+                                {{ formatAngka($reward_routing_spv) }}
+                            </th>
+                            <th class="right">
+                                {{ formatAngka($total_realisasi_cashin) }}
+                            </th>
+
+                            <th class="right">
+                                @php
+                                    $reward_cashin_spv = $total_reward_cashin / count($komisi);
+                                @endphp
+                                {{ formatAngka($reward_cashin_spv) }}
+                            </th>
+                            <th class="right">
+                                {{ formatAngka($total_realisasi_ljt) }}
+                            </th>
+                            <th></th>
+                            <th class="right">
+                                @php
+                                    $reward_ljt_spv = $total_reward_ljt / count($komisi);
+                                @endphp
+                                {{ formatAngka($reward_ljt_spv) }}
+                            </th>
+                            <th class="right">
+                                @php
+                                    $total_reward_spv =
+                                        $reward_qty_spv +
+                                        $reward_kendaraan_spv +
+                                        $reward_oa_spv +
+                                        $reward_penjvsavg_spv +
+                                        $reward_routing_spv +
+                                        $reward_cashin_spv +
+                                        $reward_ljt_spv;
+                                @endphp
+                                {{ formatAngka($total_reward_spv) }}
+                            </th>
+                        </tr>
+                    @endif
                     <tr>
                         <th colspan="3">SMM</th>
                         @php
@@ -363,9 +488,17 @@
                             @endphp
                             {{ formatAngka($reward_penjvsavg_smm) }}
                         </th>
+                        <th></th>
+                        <th class="right">
+                            @php
+                                $reward_routing_smm = ($total_reward_routing / count($komisi)) * 2;
+                            @endphp
+                            {{ formatAngka($reward_routing_smm) }}
+                        </th>
                         <th class="right">
                             {{ formatAngka($total_realisasi_cashin) }}
                         </th>
+
                         <th class="right">
                             @php
                                 $reward_cashin_smm = ($total_reward_cashin / count($komisi)) * 2;
@@ -389,12 +522,14 @@
                                     $reward_kendaraan_smm +
                                     $reward_oa_smm +
                                     $reward_penjvsavg_smm +
+                                    $reward_routing_smm +
                                     $reward_cashin_smm +
                                     $reward_ljt_smm;
                             @endphp
                             {{ formatAngka($total_reward_smm) }}
                         </th>
                     </tr>
+
                 </tfoot>
             </table>
         </div>

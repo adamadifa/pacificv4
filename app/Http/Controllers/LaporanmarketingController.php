@@ -4191,6 +4191,8 @@ class LaporanmarketingController extends Controller
             'status_komisi_salesman as status_komisi',
             'realisasi_oa',
             'realisasi_penjvsavg',
+            'jmlkunjungan',
+            'jmlsesuaijadwal',
             // 'realisasi_cashin',
             DB::raw('IFNULL(total_lhp, 0) + IFNULL(totalbelumsetor_bulanlalu, 0) + IFNULL(totalgiro_bulanlalu, 0) - IFNULL(totalgiro_bulanini, 0) - IFNULL(totalbelumsetor_bulanini, 0) as realisasi_cashin'),
             DB::raw('IFNULL(saldo_awal_piutang,0) + IFNULL(bruto,0) - IFNULL(penyesuaian,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) + IFNULL(ppn,0) - IFNULL(retur,0) - IFNULL(jmlbayar,0) as saldo_akhir_piutang'),
@@ -4244,6 +4246,32 @@ class LaporanmarketingController extends Controller
             ->leftJoinsub($querybelumsetorbulanlalu, 'belumsetorbulanlalu', function ($join) {
                 $join->on('salesman.kode_salesman', '=', 'belumsetorbulanlalu.kode_salesman');
             })
+
+            ->leftJoin(
+                DB::raw("(
+                    SELECT
+                    marketing_penjualan.kode_salesman,
+                    COUNT(no_faktur) as jmlkunjungan,
+                    COUNT(
+                    CASE WHEN
+                    DAYNAME(tanggal)='Monday' AND routing like '%Senin%' OR
+                    DAYNAME(tanggal)='Tuesday' AND routing like '%Selasa%' OR
+                    DAYNAME(tanggal)='Wednesday' AND routing like '%Rabu%' OR
+                    DAYNAME(tanggal)='Thursday' AND routing like '%Kamis%' OR
+                    DAYNAME(tanggal)='Friday' AND routing like '%Jumat%' OR
+                    DAYNAME(tanggal)='Saturday' AND routing like '%Sabtu%' OR
+                    DAYNAME(tanggal)='Sunday' AND routing like '%Minggu%'  THEN  marketing_penjualan.no_faktur END ) as jmlsesuaijadwal
+                    FROM
+                    `marketing_penjualan`
+                    INNER JOIN `salesman` ON `marketing_penjualan`.`kode_salesman` = `salesman`.`kode_salesman`
+                    WHERE `tanggal` BETWEEN '$dari' AND '$sampai' AND `status_batal` = '0' AND salesman.kode_cabang = '$kode_cabang'
+                    GROUP BY
+                        marketing_penjualan.kode_salesman
+                ) kunjungan"),
+                function ($join) {
+                    $join->on('salesman.kode_salesman', '=', 'kunjungan.kode_salesman');
+                }
+            )
             // ->leftJoin(
             //     DB::raw("(
             //     SELECT salesman.kode_salesman,
