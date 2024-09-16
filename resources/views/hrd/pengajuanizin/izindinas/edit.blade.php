@@ -1,32 +1,29 @@
-<form action="{{ route('izinsakit.update', Crypt::encrypt($izinsakit->kode_izin_sakit)) }}" method="POST" id="formIzin" enctype="multipart/form-data">
+<form action="{{ route('izindinas.update', Crypt::encrypt($izindinas->kode_izin_dinas)) }}" method="POST" id="formIzin" enctype="multipart/form-data">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin_sakit" disabled="true" value="{{ $izinsakit->kode_izin_sakit }}" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin_dinas" disabled="true" value="{{ $izindinas->kode_izin_dinas }}" />
     <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
-        selected="{{ $izinsakit->nik }}" disabled="true" />
+        selected="{{ $izindinas->nik }}" disabled="true" />
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" value="{{ $izinsakit->dari }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" value="{{ $izindinas->dari }}" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" value="{{ $izinsakit->sampai }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" value="{{ $izindinas->sampai }}" />
         </div>
     </div>
     <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" />
-    <x-textarea label="Keterangan" name="keterangan" value="{{ $izinsakit->keterangan }}" />
-    <x-input-file name="sid" label="sid" />
-    <div class="row mb-3 mt-2">
-        <div class="col">
-            @if (!empty($izinsakit->doc_sid))
-                @if (Storage::disk('public')->exists('/uploads/sid/' . $izinsakit->doc_sid))
-                    <img src="{{ getSid($izinsakit->doc_sid) }}" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img"
-                        width="150">
-                @else
-                    <i class="ti ti-error-404 text-danger"></i>
-                @endif
-            @endif
-        </div>
+    <div class="form-group mb-3">
+        <select name="kode_cabang_tujuan" id="kode_cabang_tujuan" class="form-select select2Kodecabangtujuan">
+            <option value="">Tujuan</option>
+            @foreach ($cabang as $d)
+                <option {{ $d->kode_cabang == $izindinas->kode_cabang_tujuan ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                    {{ textUppercase($d->nama_cabang) }}</option>
+            @endforeach
+        </select>
     </div>
+    <x-textarea label="Keterangan" name="keterangan" value="{{ $izindinas->keterangan }}" />
+
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

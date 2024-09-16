@@ -6,11 +6,11 @@ use App\Models\Cabang;
 use App\Models\Departemen;
 use App\Models\Detailjadwalkerja;
 use App\Models\Detailjadwalshift;
-use App\Models\Disposisiizinsakit;
-use App\Models\Izinsakit;
+use App\Models\Disposisiizincuti;
+use App\Models\Izincuti;
 use App\Models\Karyawan;
 use App\Models\Presensi;
-use App\Models\Presensiizinsakit;
+use App\Models\Presensiizincuti;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -18,28 +18,29 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 
-class IzinsakitController extends Controller
+class IzincutiController extends Controller
 {
+
 
     public function index(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
-        $i_sakit = new Izinsakit();
-        $izinsakit = $i_sakit->getIzinsakit(request: $request)->paginate(15);
-        $izinsakit->appends(request()->all());
-        $data['izinsakit'] = $izinsakit;
+        $i_cuti = new Izincuti();
+        $izincuti = $i_cuti->getIzincuti(request: $request)->paginate(15);
+        $izincuti->appends(request()->all());
+        $data['izincuti'] = $izincuti;
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_approve'] = config('hrd.roles_approve_presensi');
         $data['listApprove'] = listApprovepresensi(auth()->user()->kode_dept, auth()->user()->kode_cabang, $user->getRoleNames()->first());
-        return view('hrd.pengajuanizin.izinsakit.index', $data);
+        return view('hrd.pengajuanizin.izincuti.index', $data);
     }
 
     public function create()
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinsakit.create', $data);
+        return view('hrd.pengajuanizin.izincuti.create', $data);
     }
 
     public function store(Request $request)
@@ -55,28 +56,28 @@ class IzinsakitController extends Controller
         DB::beginTransaction();
         try {
 
-            $lastizinsakit = Izinsakit::select('kode_izin_sakit')
+            $lastizincuti = Izincuti::select('kode_izin_cuti')
                 ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->dari)) . '"')
                 ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->dari)) . '"')
-                ->orderBy("kode_izin_sakit", "desc")
+                ->orderBy("kode_izin_cuti", "desc")
                 ->first();
-            $last_kode_izin_sakit = $lastizinsakit != null ? $lastizinsakit->kode_izin_sakit : '';
-            $kode_izin_sakit  = buatkode($last_kode_izin_sakit, "IS"  . date('ym', strtotime($request->dari)), 4);
+            $last_kode_izin_cuti = $lastizincuti != null ? $lastizincuti->kode_izin_cuti : '';
+            $kode_izin_cuti  = buatkode($last_kode_izin_cuti, "IC"  . date('ym', strtotime($request->dari)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
 
-            $data_sid = [];
-            if ($request->hasfile('sid')) {
-                $sid_name =  $kode_izin_sakit . "." . $request->file('sid')->getClientOriginalExtension();
-                $destination_sid_path = "/public/uploads/sid";
-                $sid = $sid_name;
-                $data_sid = [
-                    'doc_sid' => $sid,
+            $data_cuti = [];
+            if ($request->hasfile('doc_cuti')) {
+                $cuti_name =  $kode_izin_cuti . "." . $request->file('doc_cuti')->getClientOriginalExtension();
+                $destination_cuti_path = "/public/uploads/cuti";
+                $cuti = $cuti_name;
+                $data_cuti = [
+                    'doc_cuti' => $cuti,
                 ];
             }
 
-            $dataizinsakit = [
-                'kode_izin_sakit' => $kode_izin_sakit,
+            $dataizincuti = [
+                'kode_izin_cuti' => $kode_izin_cuti,
                 'nik' => $request->nik,
                 'kode_jabatan' => $karyawan->kode_jabatan,
                 'kode_dept' => $karyawan->kode_dept,
@@ -90,11 +91,11 @@ class IzinsakitController extends Controller
                 'id_user' => $user->id,
             ];
 
-            $data = array_merge($dataizinsakit, $data_sid);
-            $simpandatasakit = Izinsakit::create($data);
-            if ($simpandatasakit) {
-                if ($request->hasfile('sid')) {
-                    $request->file('sid')->storeAs($destination_sid_path, $sid_name);
+            $data = array_merge($dataizincuti, $data_cuti);
+            $simpandatacuti = Izincuti::create($data);
+            if ($simpandatacuti) {
+                if ($request->hasfile('doc_cuti')) {
+                    $request->file('doc_cuti')->storeAs($destination_cuti_path, $cuti_name);
                 }
             }
 
@@ -120,16 +121,16 @@ class IzinsakitController extends Controller
             }
 
             $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisiizinsakit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+            $lastdisposisi = Disposisiizincuti::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
                 ->orderBy('kode_disposisi', 'desc')
                 ->first();
             $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPIS" . date('Ymd');
+            $format = "DPIC" . date('Ymd');
             $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
 
-            Disposisiizinsakit::create([
+            Disposisiizincuti::create([
                 'kode_disposisi' => $kode_disposisi,
-                'kode_izin_sakit' => $kode_izin_sakit,
+                'kode_izin_cuti' => $kode_izin_cuti,
                 'id_pengirim' => auth()->user()->id,
                 'id_penerima' => $cek_user_approve->id,
                 'status' => 0
@@ -142,18 +143,31 @@ class IzinsakitController extends Controller
         }
     }
 
-    public function edit($kode_izin_sakit)
+
+    public function destroy($kode_izin_cuti)
     {
-        $kode_izin_sakit = Crypt::decrypt($kode_izin_sakit);
-        $data['izinsakit'] = Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)->first();
-        $k = new Karyawan();
-        $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinsakit.edit', $data);
+        $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
+        try {
+            Izincuti::where('kode_izin_cuti', $kode_izin_cuti)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 
-    public function update(Request $request, $kode_izin_sakit)
+
+    public function edit($kode_izin_cuti)
     {
-        $kode_izin_sakit = Crypt::decrypt($kode_izin_sakit);
+        $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
+        $data['izincuti'] = Izincuti::where('kode_izin_cuti', $kode_izin_cuti)->first();
+        $k = new Karyawan();
+        $data['karyawan'] = $k->getkaryawanpresensi()->get();
+        return view('hrd.pengajuanizin.izincuti.edit', $data);
+    }
+
+    public function update(Request $request, $kode_izin_cuti)
+    {
+        $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
 
         $request->validate([
             'dari' => 'required',
@@ -162,18 +176,18 @@ class IzinsakitController extends Controller
         ]);
         DB::beginTransaction();
         try {
-            $izinsakit = Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)->first();
-            $data_sid = [];
-            if ($request->hasfile('sid')) {
-                $sid_name =  $kode_izin_sakit . "." . $request->file('sid')->getClientOriginalExtension();
-                $destination_sid_path = "/public/uploads/sid";
-                $sid = $sid_name;
-                $data_sid = [
-                    'doc_sid' => $sid,
+            $izincuti = Izincuti::where('kode_izin_cuti', $kode_izin_cuti)->first();
+            $data_cuti = [];
+            if ($request->hasfile('doc_cuti')) {
+                $cuti_name =  $kode_izin_cuti . "." . $request->file('doc_cuti')->getClientOriginalExtension();
+                $destination_cuti_path = "/public/uploads/cuti";
+                $cuti = $cuti_name;
+                $data_cuti = [
+                    'doc_cuti' => $cuti,
                 ];
             }
 
-            $dataizinsakit = [
+            $dataizincuti = [
                 'tanggal' => $request->dari,
                 'dari' => $request->dari,
                 'sampai' => $request->sampai,
@@ -181,13 +195,13 @@ class IzinsakitController extends Controller
 
             ];
 
-            $data = array_merge($dataizinsakit, $data_sid);
+            $data = array_merge($dataizincuti, $data_cuti);
 
-            $simpandatasakit = Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)->update($data);
-            if ($simpandatasakit) {
-                if ($request->hasfile('sid')) {
-                    Storage::delete($destination_sid_path . "/" . $izinsakit->doc_sid);
-                    $request->file('sid')->storeAs($destination_sid_path, $sid_name);
+            $simpandatacuti = Izincuti::where('kode_izin_cuti', $kode_izin_cuti)->update($data);
+            if ($simpandatacuti) {
+                if ($request->hasfile('doc_cuti')) {
+                    Storage::delete($destination_cuti_path . "/" . $izincuti->doc_cuti);
+                    $request->file('doc_cuti')->storeAs($destination_cuti_path, $cuti_name);
                 }
             }
             DB::commit();
@@ -198,17 +212,16 @@ class IzinsakitController extends Controller
         }
     }
 
-
-    public function approve($kode_izin_sakit)
+    public function approve($kode_izin_cuti)
     {
-        $kode_izin_sakit = Crypt::decrypt($kode_izin_sakit);
+        $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
         $user = User::find(auth()->user()->id);
-        $i_sakit = new Izinsakit();
-        $izinsakit = $i_sakit->getIzinsakit(kode_izin_sakit: $kode_izin_sakit)->first();
-        $data['izinsakit'] = $izinsakit;
+        $i_cuti = new Izincuti();
+        $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
+        $data['izincuti'] = $izincuti;
 
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinsakit->kode_dept, $izinsakit->kode_cabang, $izinsakit->kategori_jabatan, $izinsakit->kode_jabatan);
+        $roles_approve = cekRoleapprovepresensi($izincuti->kode_dept, $izincuti->kode_cabang, $izincuti->kategori_jabatan, $izincuti->kode_jabatan);
         $end_role = end($roles_approve);
         if ($role != $end_role && in_array($role, $roles_approve)) {
             $cek_index = array_search($role, $roles_approve) + 1;
@@ -219,7 +232,7 @@ class IzinsakitController extends Controller
         $nextrole = $roles_approve[$cek_index];
         if ($nextrole == "regional sales manager") {
             $userrole = User::role($nextrole)
-                ->where('kode_regional', $izinsakit->kode_regional)
+                ->where('kode_regional', $izincuti->kode_regional)
                 ->where('status', 1)
                 ->first();
         } else {
@@ -233,7 +246,7 @@ class IzinsakitController extends Controller
             for ($i = $index_start; $i < count($roles_approve); $i++) {
                 if ($roles_approve[$i] == 'regional sales manager') {
                     $userrole = User::role($roles_approve[$i])
-                        ->where('kode_regional', $izinsakit->kode_regional)
+                        ->where('kode_regional', $izincuti->kode_regional)
                         ->where('status', 1)
                         ->first();
                 } else {
@@ -252,20 +265,19 @@ class IzinsakitController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izinsakit.approve', $data);
+        return view('hrd.pengajuanizin.izincuti.approve', $data);
     }
 
-
-    public function storeapprove($kode_izin_sakit, Request $request)
+    public function storeapprove($kode_izin_cuti, Request $request)
     {
         // dd(isset($_POST['direktur']));
 
-        $kode_izin_sakit = Crypt::decrypt($kode_izin_sakit);
+        $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
         $user = User::findorfail(auth()->user()->id);
-        $i_sakit = new Izinsakit();
-        $izinsakit = $i_sakit->getIzinsakit(kode_izin_sakit: $kode_izin_sakit)->first();
+        $i_cuti = new Izincuti();
+        $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinsakit->kode_dept, $izinsakit->kode_cabang, $izinsakit->kategori_jabatan, $izinsakit->kode_jabatan);
+        $roles_approve = cekRoleapprovepresensi($izincuti->kode_dept, $izincuti->kode_cabang, $izincuti->kategori_jabatan, $izincuti->kode_jabatan);
         $end_role = end($roles_approve);
 
         if ($role != $end_role && in_array($role, $roles_approve)) {
@@ -283,7 +295,7 @@ class IzinsakitController extends Controller
             // Upadate Disposisi Pengirim
 
             // dd($kode_penilaian);
-            Disposisiizinsakit::where('kode_izin_sakit', $kode_izin_sakit)
+            Disposisiizincuti::where('kode_izin_cuti', $kode_izin_cuti)
                 ->where('id_penerima', auth()->user()->id)
                 ->update([
                     'status' => 1
@@ -294,38 +306,38 @@ class IzinsakitController extends Controller
 
 
             if ($role == 'direktur') {
-                Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)->update([
+                Izincuti::where('kode_izin_cuti', $kode_izin_cuti)->update([
                     'direktur' => 1
                 ]);
             } else {
                 //Insert Dispsosi ke Penerima
                 $tanggal_hariini = date('Y-m-d');
-                $lastdisposisi = Disposisiizinsakit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                $lastdisposisi = Disposisiizincuti::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
                     ->orderBy('kode_disposisi', 'desc')
                     ->first();
                 $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-                $format = "DPIS" . date('Ymd');
+                $format = "DPIC" . date('Ymd');
                 $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
 
                 if ($role == $end_role) {
-                    Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)
+                    Izincuti::where('kode_izin_cuti', $kode_izin_cuti)
                         ->update([
                             'status' => 1
                         ]);
 
-                    $dari = $izinsakit->dari;
-                    $sampai = $izinsakit->sampai;
+                    $dari = $izincuti->dari;
+                    $sampai = $izincuti->sampai;
 
                     while (strtotime($dari) <= strtotime($sampai)) {
                         //Cek Jadwal Shift
                         $cekjadwalshift = Detailjadwalshift::join('hrd_jadwalshift', 'hrd_jadwalshift.kode_jadwalshift', 'hrd_jadwalshift_detail.kode_jadwalshift')
                             ->whereRaw($dari . ' between dari and sampai')
-                            ->where('nik', $izinsakit->nik)
+                            ->where('nik', $izincuti->nik)
                             ->first();
                         if ($cekjadwalshift != null) {
                             $kode_jadwal = $cekjadwalshift->kode_jadwal;
                         } else {
-                            $cekjadwalkaryawan = Karyawan::where('nik', $izinsakit->nik)->first();
+                            $cekjadwalkaryawan = Karyawan::where('nik', $izincuti->nik)->first();
                             $kode_jadwal =  $cekjadwalkaryawan->kode_jadwal;
                         }
 
@@ -345,18 +357,18 @@ class IzinsakitController extends Controller
                         }
 
                         //Hapus Jika Sudah Ada Data Presensi
-                        Presensi::where('nik', $izinsakit->nik)->where('tanggal', $dari)->delete();
+                        Presensi::where('nik', $izincuti->nik)->where('tanggal', $dari)->delete();
                         $presensi = Presensi::create([
-                            'nik' => $izinsakit->nik,
+                            'nik' => $izincuti->nik,
                             'tanggal' => $dari,
                             'kode_jadwal' => $kode_jadwal,
                             'kode_jam_kerja' => $kode_jam_kerja,
-                            'status' => 's',
+                            'status' => 'c',
                         ]);
 
-                        Presensiizinsakit::create([
+                        Presensiizincuti::create([
                             'id_presensi' => $presensi->id,
-                            'kode_izin_sakit' => $kode_izin_sakit,
+                            'kode_izin_cuti' => $kode_izin_cuti,
                         ]);
                         $dari = date('Y-m-d', strtotime($dari . ' +1 day'));
                     }
@@ -365,9 +377,9 @@ class IzinsakitController extends Controller
                     if (isset($request->direktur)) {
                         //dd('test');
                         $userrole = User::role('direktur')->where('status', 1)->first();
-                        Disposisiizinsakit::create([
+                        Disposisiizincuti::create([
                             'kode_disposisi' => $kode_disposisi,
-                            'kode_izin_sakit' => $kode_izin_sakit,
+                            'kode_izin_cuti' => $kode_izin_cuti,
                             'id_pengirim' => auth()->user()->id,
                             'id_penerima' => $userrole->id,
                             'status' => 0,
@@ -375,9 +387,9 @@ class IzinsakitController extends Controller
                     }
                 } else {
 
-                    Disposisiizinsakit::create([
+                    Disposisiizincuti::create([
                         'kode_disposisi' => $kode_disposisi,
-                        'kode_izin_sakit' => $kode_izin_sakit,
+                        'kode_izin_cuti' => $kode_izin_cuti,
                         'id_pengirim' => auth()->user()->id,
                         'id_penerima' => $userrole->id,
                         'status' => 0,
@@ -397,42 +409,42 @@ class IzinsakitController extends Controller
     }
 
 
-    public function cancel($kode_izin_sakit)
+    public function cancel($kode_izin_cuti)
     {
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
-        $kode_izin_sakit = Crypt::decrypt($kode_izin_sakit);
-        $i_sakit = new Izinsakit();
-        $izinsakit = $i_sakit->getIzinsakit(kode_izin_sakit: $kode_izin_sakit)->first();
+        $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
+        $i_cuti = new Izincuti();
+        $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinsakit->kode_dept, $izinsakit->kode_cabang, $izinsakit->kategori_jabatan, $izinsakit->kode_jabatan);
+        $roles_approve = cekRoleapprovepresensi($izincuti->kode_dept, $izincuti->kode_cabang, $izincuti->kategori_jabatan, $izincuti->kode_jabatan);
         $end_role = end($roles_approve);
         DB::beginTransaction();
         try {
 
-            Disposisiizinsakit::where('kode_izin_sakit', $kode_izin_sakit)
+            Disposisiizincuti::where('kode_izin_cuti', $kode_izin_cuti)
                 ->where('id_pengirim', auth()->user()->id)
                 ->where('id_penerima', '!=', auth()->user()->id)
                 ->delete();
 
-            Disposisiizinsakit::where('kode_izin_sakit', $kode_izin_sakit)
+            Disposisiizincuti::where('kode_izin_cuti', $kode_izin_cuti)
                 ->where('id_penerima', auth()->user()->id)
                 ->update([
                     'status' => 0
                 ]);
             if ($role == 'direktur') {
-                Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)
+                Izincuti::where('kode_izin_cuti', $kode_izin_cuti)
                     ->update([
                         'direktur' => 0
                     ]);
             } else {
                 if ($role == $end_role) {
-                    Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)
+                    Izincuti::where('kode_izin_cuti', $kode_izin_cuti)
                         ->update([
                             'status' => 0
                         ]);
 
-                    $presensi_izinabsen = Presensiizinsakit::select('id_presensi')->where('kode_izin_sakit', $kode_izin_sakit);
+                    $presensi_izinabsen = Presensiizincuti::select('id_presensi')->where('kode_izin_cuti', $kode_izin_cuti);
                     $presensi = $presensi_izinabsen->get();
                     $id_presensi = [];
                     foreach ($presensi as $d) {
@@ -452,17 +464,6 @@ class IzinsakitController extends Controller
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
             //throw $th;
-        }
-    }
-
-    public function destroy($kode_izin_sakit)
-    {
-        $kode_izin_sakit = Crypt::decrypt($kode_izin_sakit);
-        try {
-            Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)->delete();
-            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
-        } catch (\Exception $e) {
-            return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
 }

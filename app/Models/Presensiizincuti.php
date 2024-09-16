@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Jadwalkerja extends Model
+class Presensiizincuti extends Model
 {
     use HasFactory;
-    protected $table = "hrd_jadwalkerja";
-    protected $primaryKey = "kode_jadwal";
+    protected $table = "hrd_presensi_izincuti";
     protected $guarded = [];
-    public $incrementing  = false;
 }

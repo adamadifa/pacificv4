@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('titlepage', 'Izin sakit')
+@section('titlepage', 'Izin dinas')
 
 @section('content')
 @section('navigasi')
-    <span>Izin sakit</span>
+    <span>Izin dinas</span>
 @endsection
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
@@ -11,13 +11,13 @@
             @include('layouts.navigation_pengajuanizin')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('izinsakit.create')
+                    @can('izindinas.create')
                         <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
                             Tambah Data</a>
                     @endcan
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('izinsakit.index') }}">
+                            <form action="{{ route('izindinas.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
@@ -98,14 +98,14 @@
                                             {{-- <th>Dept</th> --}}
                                             <th>Cabang</th>
                                             <th>Lama</th>
-                                            <th>SID</th>
+                                            <th>Tujuan</th>
                                             <th>Posisi</th>
                                             <th>Status</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($izinsakit as $d)
+                                        @foreach ($izindinas as $d)
                                             @php
                                                 $roles_approve = cekRoleapprovepresensi(
                                                     $d->kode_dept,
@@ -124,7 +124,7 @@
                                                 }
                                             @endphp
                                             <tr>
-                                                <td>{{ $d->kode_izin_sakit }}</td>
+                                                <td>{{ $d->kode_izin_dinas }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nik }}</td>
                                                 <td>{{ formatName($d->nama_karyawan) }}</td>
@@ -138,17 +138,7 @@
                                                     {{ $jmlhari }} Hari
                                                 </td>
                                                 <td>
-                                                    @if (!empty($d->doc_sid))
-                                                        @if (Storage::disk('public')->exists('/uploads/sid/' . $d->doc_sid))
-                                                            <a href="{{ getSid($d->doc_sid) }}" target="_blank">
-                                                                <i class="ti ti-paperclip"></i>
-                                                            </a>
-                                                        @else
-                                                            <i class="ti ti-error-404 text-danger"></i>
-                                                        @endif
-                                                    @else
-                                                        <i class="ti ti-x text-danger"></i>
-                                                    @endif
+                                                    {{ $d->kode_cabang_tujuan }}
                                                 </td>
                                                 <td>
                                                     @if ($level_user == 'direktur')
@@ -203,27 +193,27 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        @can('izinsakit.edit')
+                                                        @can('izindinas.edit')
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim === $level_user) ||
                                                                     ($d->status === '0' && $d->id_pengirim === $level_user && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
                                                                     (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
                                                                 <a href="#" class="btnEdit me-1"
-                                                                    kode_izin_sakit = "{{ Crypt::encrypt($d->kode_izin_sakit) }}">
+                                                                    kode_izin_dinas = "{{ Crypt::encrypt($d->kode_izin_dinas) }}">
                                                                     <i class="ti ti-edit text-success"></i>
                                                                 </a>
                                                             @endif
                                                         @endcan
-                                                        @can('izinsakit.approve')
+                                                        @can('izindinas.approve')
                                                             @if ($level_user != 'direktur')
                                                                 @if ($level_user == $d->posisi_ajuan && $d->status === '0')
                                                                     <a href="#" class="btnApprove me-1"
-                                                                        kode_izin_sakit="{{ Crypt::encrypt($d->kode_izin_sakit) }}">
+                                                                        kode_izin_dinas="{{ Crypt::encrypt($d->kode_izin_dinas) }}">
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @elseif ($d->posisi_ajuan == $next_role && $d->status === '0')
                                                                     <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('izinsakit.cancel', Crypt::encrypt($d->kode_izin_sakit)) }}">
+                                                                        action="{{ route('izindinas.cancel', Crypt::encrypt($d->kode_izin_dinas)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
@@ -232,7 +222,7 @@
                                                                     </form>
                                                                 @elseif ($level_user == $d->posisi_ajuan && $d->status === '1')
                                                                     <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('izinsakit.cancel', Crypt::encrypt($d->kode_izin_sakit)) }}">
+                                                                        action="{{ route('izindinas.cancel', Crypt::encrypt($d->kode_izin_dinas)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
@@ -241,7 +231,7 @@
                                                                     </form>
                                                                 @elseif ($level_user == 'asst. manager hrd' && $d->posisi_ajuan == 'direktur' && $d->direktur === '0')
                                                                     <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('izinsakit.cancel', Crypt::encrypt($d->kode_izin_sakit)) }}">
+                                                                        action="{{ route('izindinas.cancel', Crypt::encrypt($d->kode_izin_dinas)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
@@ -252,12 +242,12 @@
                                                             @else
                                                                 @if ($d->direktur === '0')
                                                                     <a href="#" class="btnApprove me-1"
-                                                                        kode_izin_sakit="{{ Crypt::encrypt($d->kode_izin_sakit) }}">
+                                                                        kode_izin_dinas="{{ Crypt::encrypt($d->kode_izin_dinas) }}">
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
                                                                     <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('izinsakit.cancel', Crypt::encrypt($d->kode_izin_sakit)) }}">
+                                                                        action="{{ route('izindinas.cancel', Crypt::encrypt($d->kode_izin_dinas)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
@@ -267,13 +257,13 @@
                                                                 @endif
                                                             @endif
                                                         @endcan
-                                                        @can('izinsakit.delete')
+                                                        @can('izindinas.delete')
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim === $level_user) ||
                                                                     ($d->status === '0' && $d->id_pengirim === $level_user && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
                                                                     (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
                                                                 <form class="delete-form me-1"
-                                                                    action="{{ route('izinsakit.delete', Crypt::encrypt($d->kode_izin_sakit)) }}"
+                                                                    action="{{ route('izindinas.delete', Crypt::encrypt($d->kode_izin_dinas)) }}"
                                                                     method="POST">
                                                                     @csrf
                                                                     @method('DELETE')
@@ -347,24 +337,24 @@
         $("#btnCreate").click(function() {
             $("#modal").modal("show");
             loading();
-            $("#modal").find(".modal-title").text("Buat Izin sakit");
-            $("#loadmodal").load("/izinsakit/create");
+            $("#modal").find(".modal-title").text("Buat Izin dinas");
+            $("#loadmodal").load("/izindinas/create");
         });
 
         $(".btnEdit").click(function() {
-            const kode_izin_sakit = $(this).attr("kode_izin_sakit");
+            const kode_izin_dinas = $(this).attr("kode_izin_dinas");
             $("#modal").modal("show");
             loading();
-            $("#modal").find(".modal-title").text("Edit Izin sakit");
-            $("#loadmodal").load(`/izinsakit/${kode_izin_sakit}/edit`);
+            $("#modal").find(".modal-title").text("Edit Izin dinas");
+            $("#loadmodal").load(`/izindinas/${kode_izin_dinas}/edit`);
         });
 
         $(".btnApprove").click(function() {
-            const kode_izin_sakit = $(this).attr("kode_izin_sakit");
+            const kode_izin_dinas = $(this).attr("kode_izin_dinas");
             $("#modal").modal("show");
             loading();
-            $("#modal").find(".modal-title").text("Approve Izin sakit");
-            $("#loadmodal").load(`/izinsakit/${kode_izin_sakit}/approve`);
+            $("#modal").find(".modal-title").text("Approve Izin dinas");
+            $("#loadmodal").load(`/izindinas/${kode_izin_dinas}/approve`);
         });
     });
 </script>

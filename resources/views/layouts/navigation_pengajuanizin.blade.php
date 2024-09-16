@@ -39,5 +39,30 @@
                 </a>
             </li>
         @endcan
+
+        @can('izincuti.index')
+            <li class="nav-item" role="presentation">
+                <a href="{{ route('izincuti.index') }}" class="nav-link {{ request()->is(['izincuti']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Izin Cuti
+                </a>
+            </li>
+        @endcan
+
+        @can('izindinas.index')
+            <li class="nav-item" role="presentation">
+                <a href="{{ route('izindinas.index') }}" class="nav-link {{ request()->is(['izindinas']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Perjalanan Dinas
+                </a>
+            </li>
+        @endcan
+
+        @can('izinkoreksi.index')
+            <li class="nav-item" role="presentation">
+                <a href="{{ route('izinkoreksi.index') }}" class="nav-link {{ request()->is(['izinkoreksi']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Izin Koreksi
+                </a>
+            </li>
+        @endcan
+
     </ul>
 @endif

@@ -328,3 +328,18 @@ function getNamahari($date)
     $dayName = date('l', strtotime($date));
     return $days[$dayName];
 }
+
+
+function getSid($file)
+{
+    $url = url('/storage/uploads/sid/' . $file);
+    return $url;
+}
+
+
+
+function getfileCuti($file)
+{
+    $url = url('/storage/uploads/cuti/' . $file);
+    return $url;
+}

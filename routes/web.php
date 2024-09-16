@@ -35,7 +35,10 @@ use App\Http\Controllers\HppController;
 use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\ItemservicekendaraanController;
 use App\Http\Controllers\IzinabsenController;
+use App\Http\Controllers\IzincutiController;
+use App\Http\Controllers\IzindinasController;
 use App\Http\Controllers\IzinkeluarController;
+use App\Http\Controllers\IzinkoreksiController;
 use App\Http\Controllers\IzinpulangController;
 use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\IzinterlambatController;
@@ -1728,6 +1731,48 @@ Route::middleware('auth')->group(function () {
         Route::get('/izinsakit/{kode_izin_sakit}/approve', 'approve')->name('izinsakit.approve')->can('izinsakit.approve');
         Route::post('/izinsakit/{kode_izin_sakit}/storeapprove', 'storeapprove')->name('izinsakit.storeapprove')->can('izinsakit.approve');
         Route::delete('/izinsakit/{kode_izin_sakit}/cancel', 'cancel')->name('izinsakit.cancel')->can('izinsakit.approve');
+    });
+
+    Route::controller(IzincutiController::class)->group(function () {
+        Route::get('/izincuti', 'index')->name('izincuti.index')->can('izincuti.index');
+        Route::get('/izincuti/create', 'create')->name('izincuti.create')->can('izincuti.create');
+        Route::post('/izincuti/store', 'store')->name('izincuti.store')->can('izincuti.store');
+        Route::get('/izincuti/{kode_izin_cuti}/show', 'show')->name('izincuti.show')->can('izincuti.show');
+        Route::get('/izincuti/{kode_izin_cuti}/edit', 'edit')->name('izincuti.edit')->can('izincuti.edit');
+        Route::put('/izincuti/{kode_izin_cuti}/update', 'update')->name('izincuti.update')->can('izincuti.update');
+        Route::delete('/izincuti/{kode_izin_cuti}/delete', 'destroy')->name('izincuti.delete')->can('izincuti.delete');
+        Route::get('/izincuti/{kode_izin_cuti}/approve', 'approve')->name('izincuti.approve')->can('izincuti.approve');
+        Route::post('/izincuti/{kode_izin_cuti}/storeapprove', 'storeapprove')->name('izincuti.storeapprove')->can('izincuti.approve');
+        Route::delete('/izincuti/{kode_izin_cuti}/cancel', 'cancel')->name('izincuti.cancel')->can('izincuti.approve');
+    });
+
+    Route::controller(IzindinasController::class)->group(function () {
+        Route::get('/izindinas', 'index')->name('izindinas.index')->can('izindinas.index');
+        Route::get('/izindinas/create', 'create')->name('izindinas.create')->can('izindinas.create');
+        Route::post('/izindinas/store', 'store')->name('izindinas.store')->can('izindinas.store');
+        Route::get('/izindinas/{kode_izin_dinas}/show', 'show')->name('izindinas.show')->can('izindinas.show');
+        Route::get('/izindinas/{kode_izin_dinas}/edit', 'edit')->name('izindinas.edit')->can('izindinas.edit');
+        Route::put('/izindinas/{kode_izin_dinas}/update', 'update')->name('izindinas.update')->can('izindinas.update');
+        Route::delete('/izindinas/{kode_izin_dinas}/delete', 'destroy')->name('izindinas.delete')->can('izindinas.delete');
+        Route::get('/izindinas/{kode_izin_dinas}/approve', 'approve')->name('izindinas.approve')->can('izindinas.approve');
+        Route::post('/izindinas/{kode_izin_dinas}/storeapprove', 'storeapprove')->name('izindinas.storeapprove')->can('izindinas.approve');
+        Route::delete('/izindinas/{kode_izin_dinas}/cancel', 'cancel')->name('izindinas.cancel')->can('izindinas.approve');
+    });
+
+    Route::controller(IzinkoreksiController::class)->group(function () {
+        Route::get('/izinkoreksi', 'index')->name('izinkoreksi.index')->can('izinkoreksi.index');
+        Route::get('/izinkoreksi/create', 'create')->name('izinkoreksi.create')->can('izinkoreksi.create');
+        Route::post('/izinkoreksi/store', 'store')->name('izinkoreksi.store')->can('izinkoreksi.store');
+        Route::get('/izinkoreksi/{kode_izin_koreksi}/show', 'show')->name('izinkoreksi.show')->can('izinkoreksi.show');
+        Route::get('/izinkoreksi/{kode_izin_koreksi}/edit', 'edit')->name('izinkoreksi.edit')->can('izinkoreksi.edit');
+        Route::put('/izinkoreksi/{kode_izin_koreksi}/update', 'update')->name('izinkoreksi.update')->can('izinkoreksi.update');
+        Route::delete('/izinkoreksi/{kode_izin_koreksi}/delete', 'destroy')->name('izinkoreksi.delete')->can('izinkoreksi.delete');
+        Route::get('/izinkoreksi/{kode_izin_koreksi}/approve', 'approve')->name('izinkoreksi.approve')->can('izinkoreksi.approve');
+        Route::post('/izinkoreksi/{kode_izin_koreksi}/storeapprove', 'storeapprove')->name('izinkoreksi.storeapprove')->can('izinkoreksi.approve');
+        Route::delete('/izinkoreksi/{kode_izin_koreksi}/cancel', 'cancel')->name('izinkoreksi.cancel')->can('izinkoreksi.approve');
+
+        Route::get('/getjadwalkerja/{kode_jadwal}', 'getjadwalkerja')->name('getjadwalkerja');
+        Route::get('/getjamkerja/{kode_jadwwal}/{kode_jam_kerja}', 'getjamkerja')->name('getjamkerja');
     });
 
     Route::controller(LaporangeneralaffairController::class)->group(function () {
