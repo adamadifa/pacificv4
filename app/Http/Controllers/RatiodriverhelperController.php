@@ -287,7 +287,7 @@ class RatiodriverhelperController extends Controller
     {
 
         $kode_ratio = $request->kode_ratio;
-        $data['detail'] = Detailratiodriverhelper::select('marketing_komisi_ratiodriverhelper_detail.*', 'nama_driver_helper')
+        $data['detail'] = Detailratiodriverhelper::select('marketing_komisi_ratiodriverhelper_detail.*', 'nama_driver_helper', 'posisi')
             ->join('driver_helper', 'marketing_komisi_ratiodriverhelper_detail.kode_driver_helper', '=', 'driver_helper.kode_driver_helper')
             ->where('kode_ratio', $kode_ratio)
             ->get();
