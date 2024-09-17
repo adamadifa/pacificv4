@@ -109,7 +109,7 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ $d->no_pengajuan }}</td>
-                                                <td>{{ DateToIndo($d->tanggal) }}</td>
+                                                <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nama_pelanggan }}</td>
                                                 <td class="text-end">{{ formatAngka($d->limit_pelanggan) }}</td>
                                                 <td class="text-center">{{ formatAngka($d->jumlah_faktur) }}</td>
