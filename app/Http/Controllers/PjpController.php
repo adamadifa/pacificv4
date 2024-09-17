@@ -67,7 +67,7 @@ class PjpController extends Controller
             $tenor_max = $tenor_max > 0 ? $tenor_max : 0;
         }
 
-        dd($request->angsuran . "-" . $tenor_max);
+        // dd($request->angsuran . "-" . $tenor_max);
         $masakerja = hitungMasakerja($datakaryawan['tanggal_masuk'], date('Y-m-d'));
         //dd($masakerja);
         $jmlkali_jmk = hitungJmk($masakerja['tahun']);

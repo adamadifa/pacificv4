@@ -408,7 +408,7 @@ function calculateMonths($date1, $date2)
     $months = $date1->diffInMonths($date2);
 
     // Mengembalikan hasil sebagai JSON
-    return $months;
+    return $months + 1;
 }
 
 function hitungJumlahHari($tanggal_awal, $tanggal_akhir)
