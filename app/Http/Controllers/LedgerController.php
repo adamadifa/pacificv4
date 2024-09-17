@@ -18,10 +18,15 @@ class LedgerController extends Controller
 {
     public function index(Request $request)
     {
-
+        $user = User::findorfail(auth()->user()->id);
         $lg = new Ledger();
         $data['ledger'] = $lg->getLedger(request: $request)->get();
-        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        if ($user->hasRole('admin pusat')) {
+            $data['bank'] = Bank::where('kode_cabang', '!=', 'PST')->orderBy('nama_bank')->get();
+        } else {
+
+            $data['bank'] = Bank::orderBy('nama_bank')->get();
+        }
 
         $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
         $tahun = !empty($request->dari) ? date('Y', strtotime($request->dari)) : '';
