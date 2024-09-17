@@ -201,7 +201,7 @@ class LedgerController extends Controller
                     $tahun = substr(date('Y', strtotime($request->tanggal)), 2, 2);
                     //Generate Kode Cost Ratio
                     $kode = "CR" . $bulan . $tahun;
-                    dd($kode);
+                    //dd($kode);
                     $costratio = Costratio::select('kode_cr')
                         ->whereRaw('LEFT(kode_cr,6) ="' . $kode . '"')
                         ->orderBy('kode_cr', 'desc')
