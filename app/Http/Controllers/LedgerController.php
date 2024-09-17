@@ -9,6 +9,7 @@ use App\Models\Costratio;
 use App\Models\Ledger;
 use App\Models\Ledgercostratio;
 use App\Models\Saldoawalledger;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
