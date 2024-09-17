@@ -198,7 +198,7 @@ class LedgerController extends Controller
                     ]);
                 } else {
                     $bulan = date('m', strtotime($request->tanggal));
-                    $tahun = substr(date('y', strtotime($request->tanggal)), 2, 2);
+                    $tahun = substr(date('Y', strtotime($request->tanggal)), 2, 2);
                     //Generate Kode Cost Ratio
                     $kode = "CR" . $bulan . $tahun;
                     dd($kode);
