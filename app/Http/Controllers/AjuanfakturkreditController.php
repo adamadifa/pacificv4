@@ -333,7 +333,7 @@ class AjuanfakturkreditController extends Controller
 
                 if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' || auth()->user()->roles->pluck('name')[0] == "operation manager") {
                     $rsm = User::role('regional sales manager')
-                        ->where('kode_regional', $ajuanfaktur->kode_rgional)
+                        ->where('kode_regional', $ajuanfaktur->kode_regional)
                         ->where('status', 1)
                         ->first();
                     if ($rsm != NULL) {
