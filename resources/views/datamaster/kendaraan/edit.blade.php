@@ -1,9 +1,7 @@
-<form action="{{ route('kendaraan.update', Crypt::encrypt($kendaraan->kode_kendaraan)) }}" id="formeditKendaraan"
-    method="POST">
+<form action="{{ route('kendaraan.update', Crypt::encrypt($kendaraan->kode_kendaraan)) }}" id="formeditKendaraan" method="POST">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="Kode Kendaraan" value="{{ $kendaraan->kode_kendaraan }}"
-        name="kode_kendaraan" disabled="true" />
+    <x-input-with-icon icon="ti ti-barcode" label="Kode Kendaraan" value="{{ $kendaraan->kode_kendaraan }}" name="kode_kendaraan" disabled="true" />
     <x-input-with-icon icon="ti ti-barcode" label="No. Polisi" name="no_polisi" value="{{ $kendaraan->no_polisi }}" />
     <x-input-with-icon icon="ti ti-barcode" label="No. STNK" name="no_stnk" value="{{ $kendaraan->no_stnk }}" />
     <x-input-with-icon icon="ti ti-barcode" label="No. Uji" name="no_uji" value="{{ $kendaraan->no_uji }}" />
@@ -11,40 +9,33 @@
     <x-input-with-icon icon="ti ti-file-description" label="Merk" name="merk" value="{{ $kendaraan->merek }}" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-file-description" label="Type Kendaraan" name="tipe_kendaraan"
-                value="{{ $kendaraan->tipe_kendaraan }}" />
+            <x-input-with-icon icon="ti ti-file-description" label="Type Kendaraan" name="tipe_kendaraan" value="{{ $kendaraan->tipe_kendaraan }}" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-file-description" label="Type" name="tipe"
-                value="{{ $kendaraan->tipe }}" />
+            <x-input-with-icon icon="ti ti-file-description" label="Type" name="tipe" value="{{ $kendaraan->tipe }}" />
         </div>
     </div>
 
 
-    <x-input-with-icon icon="ti ti-file-description" label="No. Rangka" name="no_rangka"
-        value="{{ $kendaraan->no_rangka }}" />
-    <x-input-with-icon icon="ti ti-file-description" label="No. Mesin" name="no_mesin"
-        value="{{ $kendaraan->no_mesin }}" />
+    <x-input-with-icon icon="ti ti-file-description" label="No. Rangka" name="no_rangka" value="{{ $kendaraan->no_rangka }}" />
+    <x-input-with-icon icon="ti ti-file-description" label="No. Mesin" name="no_mesin" value="{{ $kendaraan->no_mesin }}" />
     <div class="row">
         <div class="col-lg-4 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-file-description" label="Tahun" name="tahun_pembuatan"
-                value="{{ $kendaraan->tahun_pembuatan }}" />
+            <x-input-with-icon icon="ti ti-file-description" label="Tahun" name="tahun_pembuatan" value="{{ $kendaraan->tahun_pembuatan }}" />
         </div>
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-user" label="Atas Nama" name="atas_nama"
-                value="{{ $kendaraan->atas_nama }}" />
+            <x-input-with-icon icon="ti ti-user" label="Atas Nama" name="atas_nama" value="{{ $kendaraan->atas_nama }}" />
         </div>
     </div>
 
     <x-input-with-icon icon="ti ti-file-description" label="Alamat" name="alamat" value="{{ $kendaraan->alamat }}" />
-    <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuhtempo_kir" datepicker="flatpickr-date"
+    <x-input-with-icon-label icon="ti ti-calendar" label="Jatuh Tempo" name="jatuhtempo_kir" datepicker="flatpickr-date"
         value="{{ $kendaraan->jatuhtempo_kir }}" />
-    <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo Pajak 1 Tahun" name="jatuhtempo_pajak_satutahun"
-        datepicker="flatpickr-date" value="{{ $kendaraan->jatuhtempo_pajak_satutahun }}" />
-    <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo Pajak 5 Tahun" name="jatuhtempo_pajak_limatahun"
-        datepicker="flatpickr-date" value="{{ $kendaraan->jatuhtempo_pajak_limatahun }}" />
-    <x-input-with-icon icon="ti ti-file-description" label="Kapasitas" name="kapasitas"
-        value="{{ $kendaraan->kapasitas }}" />
+    <x-input-with-icon-label icon="ti ti-calendar" label="Jatuh Tempo Pajak 1 Tahun" name="jatuhtempo_pajak_satutahun" datepicker="flatpickr-date"
+        value="{{ $kendaraan->jatuhtempo_pajak_satutahun }}" />
+    <x-input-with-icon-label icon="ti ti-calendar" label="Jatuh Tempo Pajak 5 Tahun" name="jatuhtempo_pajak_limatahun" datepicker="flatpickr-date"
+        value="{{ $kendaraan->jatuhtempo_pajak_limatahun }}" />
+    <x-input-with-icon icon="ti ti-file-description" label="Kapasitas" name="kapasitas" value="{{ $kendaraan->kapasitas }}" />
     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
         selected="{{ $kendaraan->kode_cabang }}" />
     <div class="form-group mb-3">

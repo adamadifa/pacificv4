@@ -97,6 +97,7 @@
                                             {{-- <th>Jabatan</th> --}}
                                             {{-- <th>Dept</th> --}}
                                             <th>Cabang</th>
+                                            <th>Jenis Cuti</th>
                                             <th>Lama</th>
                                             <th><i class="ti ti-paperclip"></i></th>
                                             <th>Posisi</th>
@@ -131,6 +132,7 @@
                                                 {{-- <td>{{ $d->nama_jabatan }}</td> --}}
                                                 {{-- <td>{{ $d->kode_dept }}</td> --}}
                                                 <td>{{ $d->kode_cabang }}</td>
+                                                <td>{{ $d->nama_cuti }}</td>
                                                 <td>
                                                     @php
                                                         $jmlhari = hitungHari($d->dari, $d->sampai);

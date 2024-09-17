@@ -28,11 +28,9 @@
     </div>
 
     <x-input-with-icon icon="ti ti-file-description" label="Alamat" name="alamat" />
-    <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuhtempo_kir" datepicker="flatpickr-date" />
-    <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo Pajak 1 Tahun" name="jatuhtempo_pajak_satutahun"
-        datepicker="flatpickr-date" />
-    <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo Pajak 5 Tahun" name="jatuhtempo_pajak_limatahun"
-        datepicker="flatpickr-date" />
+    <x-input-with-icon-label icon="ti ti-calendar" label="Jatuh Tempo" name="jatuhtempo_kir" datepicker="flatpickr-date" />
+    <x-input-with-icon-label icon="ti ti-calendar" label="Jatuh Tempo Pajak 1 Tahun" name="jatuhtempo_pajak_satutahun" datepicker="flatpickr-date" />
+    <x-input-with-icon-label icon="ti ti-calendar" label="Jatuh Tempo Pajak 5 Tahun" name="jatuhtempo_pajak_limatahun" datepicker="flatpickr-date" />
     <x-input-with-icon icon="ti ti-file-description" label="Kapasitas" name="kapasitas" />
     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" />
     <div class="form-group mb-3">
