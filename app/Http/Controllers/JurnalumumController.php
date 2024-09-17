@@ -34,7 +34,7 @@ class JurnalumumController extends Controller
             $query->where('accounting_jurnalumum.kode_cabang', $request->kode_cabang_search);
         }
 
-        if ($user->hasRole(['manager ga', 'general affair'])) {
+        if ($user->hasRole(['manager general affair', 'general affair'])) {
             $query->where('accounting_jurnalumum.kode_dept', 'GAF');
         } else if ($user->hasRole(['asst. manager hrd'])) {
             $query->where('accounting_jurnalumum.kode_dept', 'HRD');
