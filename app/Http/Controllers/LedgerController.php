@@ -201,6 +201,7 @@ class LedgerController extends Controller
                     $tahun = substr(date('y', strtotime($request->tanggal)), 2, 2);
                     //Generate Kode Cost Ratio
                     $kode = "CR" . $bulan . $tahun;
+                    dd($kode);
                     $costratio = Costratio::select('kode_cr')
                         ->whereRaw('LEFT(kode_cr,6) ="' . $kode . '"')
                         ->orderBy('kode_cr', 'desc')
@@ -233,8 +234,8 @@ class LedgerController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
+            dd($e);
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
