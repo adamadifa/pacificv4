@@ -23,6 +23,7 @@ class Izincuti extends Model
             'hrd_izincuti.*',
             'nama_karyawan',
             'nama_jabatan',
+            'nama_cuti',
             'hrd_jabatan.kategori as kategori_jabatan',
             'disposisi.id_pengirim',
             'disposisi.id_penerima',
@@ -35,6 +36,8 @@ class Izincuti extends Model
         $query->join('hrd_jabatan', 'hrd_izincuti.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('hrd_departemen', 'hrd_izincuti.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->join('cabang', 'hrd_izincuti.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti');
+        $query->leftJoin('hrd_jeniscuti_khusus', 'hrd_izincuti.kode_cuti_khusus', '=', 'hrd_jeniscuti_khusus.kode_cuti_khusus');
         $query->leftJoin('hrd_izincuti_disposisi as disposisi', function ($join) {
             $join->on('hrd_izincuti.kode_izin_cuti', '=', 'disposisi.kode_izin_cuti')
                 ->whereRaw('disposisi.kode_disposisi IN (SELECT MAX(kode_disposisi) FROM hrd_izincuti_disposisi GROUP BY kode_izin_cuti)');

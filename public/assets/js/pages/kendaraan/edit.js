@@ -12,13 +12,13 @@
                     }
                 },
 
-                jatuhtempo_kir: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Jatuh Tempo KIR Harus Diisi'
-                        },
-                    }
-                },
+                // jatuhtempo_kir: {
+                //     validators: {
+                //         notEmpty: {
+                //             message: 'Jatuh Tempo KIR Harus Diisi'
+                //         },
+                //     }
+                // },
 
                 jatuhtempo_pajak_satutahun: {
                     validators: {

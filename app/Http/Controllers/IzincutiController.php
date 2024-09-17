@@ -8,6 +8,8 @@ use App\Models\Detailjadwalkerja;
 use App\Models\Detailjadwalshift;
 use App\Models\Disposisiizincuti;
 use App\Models\Izincuti;
+use App\Models\Jeniscuti;
+use App\Models\Jeniscutikhusus;
 use App\Models\Karyawan;
 use App\Models\Presensi;
 use App\Models\Presensiizincuti;
@@ -40,6 +42,8 @@ class IzincutiController extends Controller
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
+        $data['jenis_cuti'] = Jeniscuti::orderBy('kode_cuti')->get();
+        $data['jenis_cuti_khusus'] = Jeniscutikhusus::orderBy('kode_cuti_khusus')->get();
         return view('hrd.pengajuanizin.izincuti.create', $data);
     }
 
@@ -52,6 +56,7 @@ class IzincutiController extends Controller
             'dari' => 'required',
             'sampai' => 'required',
             'keterangan' => 'required',
+            'kode_cuti' => 'required',
         ]);
         DB::beginTransaction();
         try {
@@ -85,6 +90,8 @@ class IzincutiController extends Controller
                 'tanggal' => $request->dari,
                 'dari' => $request->dari,
                 'sampai' => $request->sampai,
+                'kode_cuti' => $request->kode_cuti,
+                'kode_cuti_khusus' => $request->kode_cuti == 'C03' ? $request->kode_cuti_khusus : null,
                 'keterangan' => $request->keterangan,
                 'status' => 0,
                 'direktur' => 0,
@@ -162,6 +169,8 @@ class IzincutiController extends Controller
         $data['izincuti'] = Izincuti::where('kode_izin_cuti', $kode_izin_cuti)->first();
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
+        $data['jenis_cuti'] = Jeniscuti::orderBy('kode_cuti')->get();
+        $data['jenis_cuti_khusus'] = Jeniscutikhusus::orderBy('kode_cuti_khusus')->get();
         return view('hrd.pengajuanizin.izincuti.edit', $data);
     }
 
@@ -173,6 +182,7 @@ class IzincutiController extends Controller
             'dari' => 'required',
             'sampai' => 'required',
             'keterangan' => 'required',
+            'kode_cuti' => 'required',
         ]);
         DB::beginTransaction();
         try {
@@ -192,6 +202,8 @@ class IzincutiController extends Controller
                 'dari' => $request->dari,
                 'sampai' => $request->sampai,
                 'keterangan' => $request->keterangan,
+                'kode_cuti' => $request->kode_cuti,
+                'kode_cuti_khusus' => $request->kode_cuti == 'C03' ? $request->kode_cuti_khusus : null,
 
             ];
 

@@ -9,6 +9,7 @@ use App\Models\Costratio;
 use App\Models\Ledger;
 use App\Models\Ledgercostratio;
 use App\Models\Saldoawalledger;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -18,10 +19,15 @@ class LedgerController extends Controller
 {
     public function index(Request $request)
     {
-
+        $user = User::findorfail(auth()->user()->id);
         $lg = new Ledger();
         $data['ledger'] = $lg->getLedger(request: $request)->get();
-        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        if ($user->hasRole('admin pusat')) {
+            $data['bank'] = Bank::where('kode_cabang', '!=', 'PST')->orderBy('nama_bank')->get();
+        } else {
+
+            $data['bank'] = Bank::orderBy('nama_bank')->get();
+        }
 
         $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
         $tahun = !empty($request->dari) ? date('Y', strtotime($request->dari)) : '';
@@ -192,9 +198,10 @@ class LedgerController extends Controller
                     ]);
                 } else {
                     $bulan = date('m', strtotime($request->tanggal));
-                    $tahun = substr(date('y', strtotime($request->tanggal)), 2, 2);
+                    $tahun = substr(date('Y', strtotime($request->tanggal)), 2, 2);
                     //Generate Kode Cost Ratio
                     $kode = "CR" . $bulan . $tahun;
+                    //dd($kode);
                     $costratio = Costratio::select('kode_cr')
                         ->whereRaw('LEFT(kode_cr,6) ="' . $kode . '"')
                         ->orderBy('kode_cr', 'desc')
@@ -227,8 +234,8 @@ class LedgerController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
+            dd($e);
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }

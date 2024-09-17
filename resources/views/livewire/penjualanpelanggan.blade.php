@@ -17,10 +17,10 @@
             @endphp
         @endif
         <a href="{{ route('sfa.showpenjualan', Crypt::encrypt($d->no_faktur)) }}">
-            <div class="card mb-2 shadow-none  border  {{ $bordercolor }} p-0">
+            <div class="card mb-2 shadow-none  border  {{ $bordercolor }} p-0 ">
                 <div class="card-body d-flex justify-content-between p-2">
                     <div>
-                        <h6 class="m-0">{{ $d->no_faktur }}</h6>
+                        <h6 class="m-0">{{ $d->no_faktur }} {!! $d->status_batal == '1' ? '<span class="badge bg-danger"> (Batal)</span>' : '' !!}</h6>
                         <h7>{{ DateToIndo($d->tanggal) }}</h7>
                         <h6 class="font-weight-bold m-0">
                             @php

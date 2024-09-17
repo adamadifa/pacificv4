@@ -12,6 +12,24 @@
             <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" value="{{ $izincuti->sampai }}" />
         </div>
     </div>
+    <div class="form-group mb-3">
+        <select name="kode_cuti" id="kode_cuti" class="form-select">
+            <option value="">Jenis Cuti</option>
+            @foreach ($jenis_cuti as $d)
+                <option {{ $izincuti->kode_cuti == $d->kode_cuti ? 'selected' : '' }} value="{{ $d->kode_cuti }}">{{ $d->nama_cuti }} </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="form-group mb-3" id="cutikhusus">
+        <select name="kode_cuti_khusus" id="kode_cuti_khusus" class="form-select">
+            <option value="">Jenis Cuti Khusus</option>
+            @foreach ($jenis_cuti_khusus as $d)
+                <option {{ $izincuti->kode_cuti_khusus == $d->kode_cuti_khusus ? 'selected' : '' }} value="{{ $d->kode_cuti_khusus }}">
+                    {{ $d->nama_cuti_khusus }} </option>
+            @endforeach
+        </select>
+    </div>
     <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" />
     <x-textarea label="Keterangan" name="keterangan" value="{{ $izincuti->keterangan }}" />
     <x-input-file name="doc_cuti" label="doc_cuti" />
@@ -77,11 +95,28 @@
             Loading..`);
         }
 
+        function loadcutikhusus() {
+            let kode_cuti = form.find("#kode_cuti").val();
+            if (kode_cuti == "C03") {
+                $("#cutikhusus").show();
+            } else {
+                $("#cutikhusus").hide();
+            }
+        }
+
+        loadcutikhusus();
+
+        $("#kode_cuti").on("change", function() {
+            loadcutikhusus();
+        });
+
         form.submit(function(e) {
             const nik = form.find("#nik").val();
             const dari = form.find("#dari").val();
             const sampai = form.find("#sampai").val();
             const keterangan = form.find("#keterangan").val();
+            const kode_cuti = form.find("#kode_cuti").val();
+            const kode_cuti_khusus = form.find("#kode_cuti_khusus").val();
             if (nik == '') {
                 Swal.fire({
                     title: "Oops!",
@@ -112,6 +147,28 @@
                     showConfirmButton: true,
                     didClose: () => {
                         form.find("#sampai").focus();
+                    }
+                });
+                return false;
+            } else if (kode_cuti == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: 'Jenis Cuti Harus Diisi !',
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        form.find("#kode_cuti").focus();
+                    }
+                });
+                return false;
+            } else if (kode_cuti == "C03" && kode_cuti_khusus == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: 'Jenis Cuti Khusus Harus Diisi !',
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        form.find("#kode_cuti_khusus").focus();
                     }
                 });
                 return false;

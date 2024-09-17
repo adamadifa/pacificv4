@@ -75,7 +75,7 @@ class Penilaiankaryawan extends Model
 
 
 
-        if (!$user->hasRole('super admin') && !$user->hasRole('asst. manager hrd') && !$user->hasRole('direktur')) {
+        if (!$user->hasRole('super admin') && !$user->hasRole('asst. manager hrd') && !$user->hasRole('direktur') && !$user->hasRole('spv presensi')) {
             if ($user->hasRole('gm operasional')) {
                 $query->whereIn('hrd_karyawan.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI

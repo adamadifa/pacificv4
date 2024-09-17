@@ -43,6 +43,7 @@ class Globalprovider extends ServiceProvider
                 'spv accounting',
                 'manager general affair',
                 'general affair',
+                'spv presensi'
             ];
 
             $roles_show_cabang_pjp = [

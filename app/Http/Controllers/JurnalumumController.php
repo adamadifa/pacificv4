@@ -7,6 +7,7 @@ use App\Models\Coa;
 use App\Models\Costratio;
 use App\Models\Jurnalumum;
 use App\Models\Jurnalumumcostratio;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ class JurnalumumController extends Controller
 {
     public function index(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
 
         if (!empty($request->dari) && !empty($request->sampai)) {
             if (lockreport($request->dari) == "error") {
@@ -32,6 +34,11 @@ class JurnalumumController extends Controller
             $query->where('accounting_jurnalumum.kode_cabang', $request->kode_cabang_search);
         }
 
+        if ($user->hasRole(['manager general affair', 'general affair'])) {
+            $query->where('accounting_jurnalumum.kode_dept', 'GAF');
+        } else if ($user->hasRole(['asst. manager hrd'])) {
+            $query->where('accounting_jurnalumum.kode_dept', 'HRD');
+        }
         $query->orderBy('accounting_jurnalumum.tanggal');
         $query->orderBy('accounting_jurnalumum.kode_ju');
         $data['jurnalumum'] = $query->get();
