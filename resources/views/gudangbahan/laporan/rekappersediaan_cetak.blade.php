@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Rekap Persediaan Gudang Bahan {{ date('Y-m-d H:i:s') }}</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}"> --}}
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="{{ asset('assets/vendor/libs/freeze/js/freeze-table.min.js') }}"></script>
     <style>
@@ -13,6 +13,182 @@
             height: auto;
             max-height: 830px;
             overflow: auto;
+        }
+
+        .datatable3 {
+            /* border: 1px solid #080909; */
+            border-collapse: collapse;
+
+            /*float:left; */
+        }
+
+        .datatable3 td {
+            border: 1px solid #000000;
+            padding: 6px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            border-width: 1px;
+        }
+
+        .datatable3 th {
+            border: 1px solid #050506;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #024a75;
+            color: white;
+            text-transform: uppercase;
+            border-width: 1px;
+        }
+
+        .datatable4 {
+            border: 0px solid #161616;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .datatable4 td {
+            border: 0px solid #000000;
+            padding: 5px;
+        }
+
+
+        .datatable5 {
+            border: 1px solid #161616;
+            border-collapse: collapse;
+            font-size: 12px;
+            width: 100%
+        }
+
+        .datatable5 td {
+            border: 1px solid #000000;
+            padding: 5px;
+            font-size: 11px;
+        }
+
+        .datatable5 th {
+            border: 1px solid #4d4d4d;
+            font-weight: bold;
+            text-align: left;
+            padding: 4px;
+            text-align: center;
+            font-size: 12px;
+            background-color: #d4d3d3cf
+        }
+
+        .datatable6 {
+            border: 1px solid #161616;
+            border-collapse: collapse;
+            font-size: 12px;
+            width: 100%
+        }
+
+        .datatable6 td {
+            border: 1px solid #000000;
+            padding: 3px;
+        }
+
+        .datatable6 th {
+            border: 1px solid #4d4d4d;
+            font-weight: bold;
+            text-align: left;
+            padding: 3px;
+            text-align: center;
+            font-size: 12px;
+            background-color: #d4d3d3cf
+        }
+
+
+        .datatable7 {
+            border: 0px solid #161616;
+            border-collapse: collapse;
+            font-size: 12px;
+            width: 100%
+        }
+
+        .datatable7 td {
+            border: 0px solid #000000;
+            padding: 3px;
+        }
+
+
+        .datatable8 {
+            border: 1px solid #080909;
+            border-collapse: collapse;
+
+            /*float:left; */
+        }
+
+        .datatable8 td {
+            border: 1px solid #000000;
+            padding: 4px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            border-width: 1px;
+        }
+
+        .datatable8 th {
+            border: 1px solid #050506;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            /* background-color: #024a75; */
+            /* color: white; */
+            text-transform: uppercase;
+            border-width: 1px;
+        }
+
+        h4 {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 2px;
+        }
+
+        .right {
+            text-align: right !important;
+        }
+
+        .left {
+            text-align: left !important;
+        }
+
+
+        .center {
+            text-align: center !important;
+        }
+
+        .green {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+
+        .blue {
+            background-color: #1e67c6 !important;
+            color: white !important;
+        }
+
+        .red {
+            background-color: #c7473a !important;
+            color: white !important;
+        }
+
+        .subtotal {
+            border: 1px solid #050506;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #024a75;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .header {
+            margin-top: 30px;
         }
     </style>
 </head>
