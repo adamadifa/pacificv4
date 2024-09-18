@@ -145,13 +145,18 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($d->total_bayar == $total_netto)
-                                                    <span class="badge bg-success">Lunas</span>
-                                                @elseif ($d->total_bayar > $total_netto)
-                                                    <span class="badge bg-info">Lunas</span>
+                                                @if ($d->status_batal == 0)
+                                                    @if ($d->total_bayar == $total_netto)
+                                                        <span class="badge bg-success">Lunas</span>
+                                                    @elseif ($d->total_bayar > $total_netto)
+                                                        <span class="badge bg-info">Lunas</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Belum Lunas</span>
+                                                    @endif
                                                 @else
-                                                    <span class="badge bg-danger">Belum Lunas</span>
+                                                    <span class="badge bg-danger">Batal</span>
                                                 @endif
+
                                             </td>
                                             <td>
                                                 <div class="d-flex">
