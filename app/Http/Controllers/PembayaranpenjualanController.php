@@ -96,10 +96,11 @@ class PembayaranpenjualanController extends Controller
                 'kode_salesman' => $request->kode_salesman,
                 'id_user' => auth()->user()->id
             ]);
-            if (isset($request->aggreementgiro)) {
+            if (isset($request->agreementgiro)) {
                 Historibayarpenjualangiro::create([
                     'no_bukti' => $no_bukti,
-                    'kode_giro' => $request->kode_giro
+                    'kode_giro' => $request->kode_giro,
+                    'giro_to_cash' => 1,
                 ]);
             }
 
@@ -202,11 +203,16 @@ class PembayaranpenjualanController extends Controller
                 'kode_salesman' => $request->kode_salesman,
                 'id_user' => auth()->user()->id
             ]);
-            if (isset($request->aggreementgiro)) {
+
+            // dd($request->agreementgiro);
+            if (isset($request->agreementgiro)) {
+
+                // dd('jalankan ini');
                 Historibayarpenjualangiro::where('no_bukti', $no_bukti)->delete();
                 Historibayarpenjualangiro::create([
                     'no_bukti' => $no_bukti,
-                    'kode_giro' => $request->kode_giro
+                    'kode_giro' => $request->kode_giro,
+                    'giro_to_cash' => 1
                 ]);
             } else {
                 Historibayarpenjualangiro::where('no_bukti', $no_bukti)->delete();
