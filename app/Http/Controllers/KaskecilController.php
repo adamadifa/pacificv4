@@ -233,7 +233,7 @@ class KaskecilController extends Controller
                 return Redirect::back()->with(['warning' => 'Laporan sudah tutup']);
             }
 
-
+            dd($kaskecil);
             if (empty($kaskecil->kode_klaim)) {
                 $kaskecil->update([
                     'kode_cabang' => $kode_cabang,
