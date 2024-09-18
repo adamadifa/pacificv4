@@ -83,7 +83,7 @@ class PjpController extends Controller
 
         $plafon_max = $plafon < $sisa_jmk ? $plafon : $sisa_jmk;
 
-        dd($angsuran_max);
+        // dd($angsuran_max);
         $jumlah_pinjaman = toNumber($request->jumlah_pinjaman);
         $jumlah_angsuran = toNumber($request->jumlah_angsuran);
 
