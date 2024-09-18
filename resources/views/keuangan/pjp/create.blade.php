@@ -354,7 +354,7 @@
                     if (plafon < sisa_jmk) {
                         plafon_max = plafon;
                     } else {
-                        plafon_max = total_jmk;
+                        plafon_max = sisa_jmk;
                     }
                     form.find("#plafon_max").text(convertToRupiah(plafon_max));
                     max_pinjaman = plafon_max;
