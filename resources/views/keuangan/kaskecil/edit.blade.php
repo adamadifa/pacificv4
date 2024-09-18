@@ -16,7 +16,7 @@
         </div>
     @endhasanyrole
     <x-input-with-icon label="No. Bukti" name="no_bukti" value="{{ $kaskecil->no_bukti }}" icon="ti ti-barcode"
-        {{ $kaskecil->kode_klaim ? 'disabled' : '' }} />
+        non_aktif="{{ !empty($kaskecil->kode_klaim) ? 'true' : 'false' }}" />
     <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $kaskecil->tanggal }}" icon="ti ti-calendar" />
     <x-input-with-icon label="Keterangan" name="keterangan" value="{{ $kaskecil->keterangan }}" icon="ti ti-file-description" />
     <x-input-with-icon label="Jumlah" name="jumlah" value="{{ formatAngka($kaskecil->jumlah) }}" icon="ti ti-moneybag" align="right" money="true"
