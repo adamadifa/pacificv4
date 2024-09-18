@@ -404,6 +404,7 @@ class KaryawanController extends Controller
                     $join->on('keuangan_pjp.no_pinjaman', '=', 'historibayar.no_pinjaman');
                 }
             )
+            ->where('SUM(jumlah_pinjaman) - SUM(totalpembayaran) != 0')
             ->where('keuangan_pjp.nik', $nik)
             ->groupBy('keuangan_pjp.nik')
             ->first();
