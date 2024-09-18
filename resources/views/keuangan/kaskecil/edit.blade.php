@@ -2,6 +2,7 @@
     @csrf
     @method('PUT')
     {{-- {{ $kaskecil->id }} --}}
+    {{ $kaskecil->kode_klaim }}
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
             <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabangedit" {{ !empty($kaskecil->kode_klaim) ? 'readonly' : '' }}>

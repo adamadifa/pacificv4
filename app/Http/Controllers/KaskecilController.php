@@ -237,7 +237,7 @@ class KaskecilController extends Controller
             if (empty($kaskecil->kode_klaim)) {
                 Kaskecil::where('id', $id)->update([
                     'kode_cabang' => $kode_cabang,
-                    'no_bukti' => $request->no_bukti,
+                    'no_bukti' => $kaskecil->no_bukti,
                     'tanggal' => $request->tanggal,
                     'keterangan' => $request->keterangan,
                     'debet_kredit' => $request->debet_kredit,
@@ -252,7 +252,7 @@ class KaskecilController extends Controller
                 ]);
             }
 
-            dd($kaskecil);
+            //dd($kaskecil);
 
 
 
