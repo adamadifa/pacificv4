@@ -126,6 +126,7 @@
             const sisabayar = $("#sisabayar").text();
             let sb = sisabayar == "" ? 0 : sisabayar;
             let sisa_bayar = parseInt(sb.replace(/\./g, '')) + parseInt(jumlahbayar);
+            alert(sisa_bayar);
             const tanggal = $(this).find("#tanggal").val();
             const jml = $(this).find("#jumlah").val();
             const jumlah = parseInt(jml.replace(/\./g, ''));
