@@ -4,7 +4,7 @@
     {{-- {{ $kaskecil->id }} --}}
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
-            <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabangedit" {{ !empty($kaskecil->kode_klaim) ? 'disabled' : '' }}>
+            <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabangedit" {{ !empty($kaskecil->kode_klaim) ? 'readonly' : '' }}>
                 <option value="">Pilih Cabang</option>
                 @foreach ($cabang as $d)
                     <option value="{{ $d->kode_cabang }}" {{ $kaskecil->kode_cabang == $d->kode_cabang ? 'selected' : '' }}>
