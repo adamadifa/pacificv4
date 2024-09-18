@@ -57,7 +57,7 @@ class IzinterlambatController extends Controller
                 ->orderBy("kode_izin_terlambat", "desc")
                 ->first();
             $last_kode_izin_terlambat = $lastizinterlambat != null ? $lastizinterlambat->kode_izin_terlambat : '';
-            $kode_izin_terlambat  = buatkode($last_kode_izin_terlambat, "IT"  . date('ym', strtotime($request->dari)), 4);
+            $kode_izin_terlambat  = buatkode($last_kode_izin_terlambat, "IT"  . date('ym', strtotime($request->tanggal)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
             Izinterlambat::create([
@@ -286,6 +286,10 @@ class IzinterlambatController extends Controller
                         Presensiizinterlambat::create([
                             'id_presensi' => $cekpresensi->id,
                             'kode_izin_terlambat' => $kode_izin_terlambat,
+                        ]);
+
+                        Presensi::where('nik', $izinterlambat->nik)->where('tanggal', $izinterlambat->tanggal)->update([
+                            'jam_in' => $izinterlambat->jam_terlambat
                         ]);
                     } else {
                         DB::rollBack();

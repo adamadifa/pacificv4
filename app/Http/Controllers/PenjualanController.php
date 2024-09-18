@@ -356,25 +356,45 @@ class PenjualanController extends Controller
 
     public function generatenofaktur(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
+
         $salesman = Salesman::join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('kode_salesman', $request->kode_salesman)->first();
         $tahun = date('y', strtotime($request->tanggal));
         $thn = date('Y', strtotime($request->tanggal));
         $start_date = "2024-03-01";
-        if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
-            $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-                ->where('tanggal', '>=', $start_date)
-                ->whereRaw('MID(no_faktur,6,1)="' . $salesman->kode_sales . '"')
-                ->where('salesman.kode_cabang', $salesman->kode_cabang)
-                ->whereRaw('YEAR(tanggal)="' . $thn . '"')
-                ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
+
+        if ($user->hasRole('salesman') && $salesman->kode_kategori_salesman == "TO") {
+            $kode_cabang = $user->kode_cabang;
+            $tgltrans = explode("-", $request->tanggal);
+            $bulantrans = $tgltrans[1];
+            $tahuntrans = $tgltrans[0];
+            $cekpenjualan = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang)
+                ->whereRaw('MONTH(tanggal)="' . $bulantrans . '"')
+                ->whereRaw('YEAR(tanggal)="' . $tahuntrans . '"')
+                ->whereRaw('MID(no_faktur,4,2)="PR"')
                 ->orderBy('no_faktur', 'desc')
                 ->first();
-            $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
-            $no_faktur = buatkode($last_no_faktur, $salesman->kode_pt . $tahun . $salesman->kode_sales, 6);
+            $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
+            $no_faktur = buatkode($last_no_faktur, $kode_cabang . "PR" . $bulantrans . substr($tahuntrans, 2, 2), 4);
             return $no_faktur;
         } else {
-            return 0;
+            if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
+                $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                    ->where('tanggal', '>=', $start_date)
+                    ->whereRaw('MID(no_faktur,6,1)="' . $salesman->kode_sales . '"')
+                    ->where('salesman.kode_cabang', $salesman->kode_cabang)
+                    ->whereRaw('YEAR(tanggal)="' . $thn . '"')
+                    ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
+                    ->orderBy('no_faktur', 'desc')
+                    ->first();
+                $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
+                $no_faktur = buatkode($last_no_faktur, $salesman->kode_pt . $tahun . $salesman->kode_sales, 6);
+                return $no_faktur;
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -454,29 +474,44 @@ class PenjualanController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
             //No. Faktur
-
-            if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
-                // $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-                //     ->where('tanggal', '>=', $start_date)
-                //     ->where('kode_sales', $salesman->kode_sales)
-                //     ->where('salesman.kode_cabang', $salesman->kode_cabang)
-                //     ->whereRaw('YEAR(tanggal)="' . $thn . '"')
-                //     ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
-                //     ->orderBy('no_faktur', 'desc')
-                //     ->first();
-
-                $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-                    ->where('tanggal', '>=', $start_date)
-                    ->whereRaw('MID(no_faktur,6,1)="' . $salesman->kode_sales . '"')
-                    ->where('salesman.kode_cabang', $salesman->kode_cabang)
-                    ->whereRaw('YEAR(tanggal)="' . $thn . '"')
-                    ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
+            if ($user->hasRole('salesman') && $salesman->kode_kategori_salesman == "TO") {
+                $kode_cabang = $user->kode_cabang;
+                $tgltrans = explode("-", $request->tanggal);
+                $bulantrans = $tgltrans[1];
+                $tahuntrans = $tgltrans[0];
+                $cekpenjualan = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                    ->where('salesman.kode_cabang', $kode_cabang)
+                    ->whereRaw('MONTH(tanggal)="' . $bulantrans . '"')
+                    ->whereRaw('YEAR(tanggal)="' . $tahuntrans . '"')
+                    ->whereRaw('MID(no_faktur,4,2)="PR"')
                     ->orderBy('no_faktur', 'desc')
                     ->first();
-                $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
-                $no_faktur = buatkode($last_no_faktur, $salesman->kode_pt . $tahun . $salesman->kode_sales, 6);
+                $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
+                $no_faktur = buatkode($last_no_faktur, $kode_cabang . "PR" . $bulantrans . substr($tahuntrans, 2, 2), 4);
             } else {
-                $no_faktur =  $request->no_faktur;
+                if ($request->tanggal >= '2024-03-01' && $salesman->kode_cabang != "PST") {
+                    // $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                    //     ->where('tanggal', '>=', $start_date)
+                    //     ->where('kode_sales', $salesman->kode_sales)
+                    //     ->where('salesman.kode_cabang', $salesman->kode_cabang)
+                    //     ->whereRaw('YEAR(tanggal)="' . $thn . '"')
+                    //     ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
+                    //     ->orderBy('no_faktur', 'desc')
+                    //     ->first();
+
+                    $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                        ->where('tanggal', '>=', $start_date)
+                        ->whereRaw('MID(no_faktur,6,1)="' . $salesman->kode_sales . '"')
+                        ->where('salesman.kode_cabang', $salesman->kode_cabang)
+                        ->whereRaw('YEAR(tanggal)="' . $thn . '"')
+                        ->whereRaw('LEFT(no_faktur,3)="' . $salesman->kode_pt . '"')
+                        ->orderBy('no_faktur', 'desc')
+                        ->first();
+                    $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
+                    $no_faktur = buatkode($last_no_faktur, $salesman->kode_pt . $tahun . $salesman->kode_sales, 6);
+                } else {
+                    $no_faktur =  $request->no_faktur;
+                }
             }
 
             $ceknofaktur = Penjualan::where('no_faktur', $no_faktur)->count();

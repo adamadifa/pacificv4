@@ -59,7 +59,7 @@ class IzinpulangController extends Controller
                 ->orderBy("kode_izin_pulang", "desc")
                 ->first();
             $last_kode_izin_pulang = $lastizinpulang != null ? $lastizinpulang->kode_izin_pulang : '';
-            $kode_izin_pulang  = buatkode($last_kode_izin_pulang, "IP"  . date('ym', strtotime($request->dari)), 4);
+            $kode_izin_pulang  = buatkode($last_kode_izin_pulang, "IP"  . date('ym', strtotime($request->tanggal)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
             Izinpulang::create([
@@ -287,6 +287,10 @@ class IzinpulangController extends Controller
                         Presensiizinpulang::create([
                             'id_presensi' => $cekpresensi->id,
                             'kode_izin_pulang' => $kode_izin_pulang,
+                        ]);
+
+                        Presensi::where('id', $cekpresensi->id)->update([
+                            'jam_out' => $izinpulang->jam_pulang
                         ]);
                     } else {
                         DB::rollBack();

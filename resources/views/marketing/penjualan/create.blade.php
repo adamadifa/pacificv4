@@ -1419,6 +1419,7 @@
                     if (respond !== '0') {
                         $("#no_faktur").val(respond);
                         // $("#no_faktur").prop('readonly', true);
+                        console.log(respond);
                     }
 
                 }

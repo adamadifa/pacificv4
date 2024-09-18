@@ -61,7 +61,7 @@ class IzinkeluarController extends Controller
                 ->orderBy("kode_izin_keluar", "desc")
                 ->first();
             $last_kode_izin_keluar = $lastizinkeluar != null ? $lastizinkeluar->kode_izin_keluar : '';
-            $kode_izin_keluar  = buatkode($last_kode_izin_keluar, "IK"  . date('ym', strtotime($request->dari)), 4);
+            $kode_izin_keluar  = buatkode($last_kode_izin_keluar, "IK"  . date('ym', strtotime($request->tanggal)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
             Izinkeluar::create([

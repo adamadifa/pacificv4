@@ -1157,6 +1157,9 @@
                         $("#no_faktur").prop('readonly', true);
                     }
 
+                    console.log(respond);
+                    alert(respond);
+
                 }
             });
         }
