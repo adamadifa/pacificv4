@@ -21,7 +21,7 @@
     <div class="form-group mb-3">
         <select name="formatlaporan" id="formatlaporan" class="form-select">
             <option value="">Format Laporan</option>
-            <option value="1">Sudah Jatuh Tempo ( > 15 Hari )</option>
+            <option value="1">Sudah Jatuh Tempo ( > 30 Hari )</option>
             <option value="2">Belum Jatuh Tempo</option>
         </select>
     </div>
