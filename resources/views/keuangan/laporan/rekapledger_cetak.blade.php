@@ -49,7 +49,7 @@
                             $totalkredit += $d->jmlkredit;
                         @endphp
                         <tr>
-                            <td>{{ $d->kode_akun }}</td>
+                            <td>'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->jmldebet) }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->jmlkredit) }}</td>
