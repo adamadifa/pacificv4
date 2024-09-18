@@ -3776,12 +3776,16 @@ class LaporanmarketingController extends Controller
 
         $start_date_bulanlalu = $tahunlalu . "-" . $bulanlalu . "-01";
         $end_date_bulanlalu = date('Y-m-t', strtotime($start_date_bulanlalu));
-
+        $hariini = date('Y-m-d');
         $dari = $request->tahun . "-" . $request->bulan . "-01";
         $sampai = date('Y-m-t', strtotime($dari));
+        // $sampai = $hari
 
-
-
+        if ($hariini < $sampai) {
+            $sampai = $hariini;
+        } else {
+            $sampai = $sampai;
+        }
 
         // $ceknextBulan = DB::table('keuangan_setoranpusat')->where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
         //     ->select('keuangan_ledger.tanggal as tgl_diterimapusat')
@@ -4131,6 +4135,7 @@ class LaporanmarketingController extends Controller
         $querysaldoawal->whereRaw("datediff('$sampai', marketing_penjualan.tanggal) > 30");
         $querysaldoawal->groupBy('kode_salesman_baru');
 
+        dd($sampai);
         //dd($querysaldoawal->get());
 
         $querypenjualan = Penjualan::query();
@@ -4180,6 +4185,7 @@ class LaporanmarketingController extends Controller
         $querypenjualan->where('salesman.kode_cabang', $kode_cabang);
         $querypenjualan->whereRaw("datediff('$sampai', marketing_penjualan.tanggal) > 30");
         $querypenjualan->groupBy('kode_salesman_baru');
+
 
         // dd($querypenjualan->get());
 
