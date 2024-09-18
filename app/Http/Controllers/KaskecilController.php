@@ -246,14 +246,13 @@ class KaskecilController extends Controller
                 ]);
             } else {
                 $kaskecil->update([
-
-
                     'tanggal' => $request->tanggal,
                     'keterangan' => $request->keterangan,
                     'kode_akun' => $request->kode_akun,
-
                 ]);
             }
+
+            dd($kaskecil);
 
 
 
