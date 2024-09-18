@@ -233,9 +233,9 @@ class KaskecilController extends Controller
                 return Redirect::back()->with(['warning' => 'Laporan sudah tutup']);
             }
 
-            dd($kaskecil);
+            //dd($kaskecil);
             if (empty($kaskecil->kode_klaim)) {
-                $kaskecil->update([
+                Kaskecil::where('id', $id)->update([
                     'kode_cabang' => $kode_cabang,
                     'no_bukti' => $request->no_bukti,
                     'tanggal' => $request->tanggal,
@@ -245,7 +245,7 @@ class KaskecilController extends Controller
                     'jumlah' => toNumber($request->jumlah),
                 ]);
             } else {
-                $kaskecil->update([
+                Kaskecil::where('id', $id)->update([
                     'tanggal' => $request->tanggal,
                     'keterangan' => $request->keterangan,
                     'kode_akun' => $request->kode_akun,
