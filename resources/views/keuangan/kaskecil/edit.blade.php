@@ -15,7 +15,7 @@
             </select>
         </div>
     @endhasanyrole
-    <x-input-with-icon label="No. Bukti" name="no_bukti" value="{{ $kaskecil->no_bukti }}" icon="ti ti-barcode" disabled=false />
+    <x-input-with-icon label="No. Bukti" name="no_bukti" value="{{ $kaskecil->no_bukti }}" icon="ti ti-barcode" />
     <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $kaskecil->tanggal }}" icon="ti ti-calendar" />
     <x-input-with-icon label="Keterangan" name="keterangan" value="{{ $kaskecil->keterangan }}" icon="ti ti-file-description" />
     <x-input-with-icon label="Jumlah" name="jumlah" value="{{ formatAngka($kaskecil->jumlah) }}" icon="ti ti-moneybag" align="right" money="true"
