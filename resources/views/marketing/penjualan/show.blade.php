@@ -345,16 +345,22 @@
                                     </tr>
                                     <tr>
                                         @php
-                                            if ($penjualan->total_bayar == $total_netto) {
-                                                $color = 'success';
-                                                $ket = 'LUNAS';
-                                            } elseif ($penjualan->total_bayar > $total_netto) {
-                                                $color = 'info';
-                                                $ket = 'LEBIH BAYAR';
+                                            if ($penjualan->status_batal == 0) {
+                                                if ($penjualan->total_bayar == $total_netto) {
+                                                    $color = 'success';
+                                                    $ket = 'LUNAS';
+                                                } elseif ($penjualan->total_bayar > $total_netto) {
+                                                    $color = 'info';
+                                                    $ket = 'LEBIH BAYAR';
+                                                } else {
+                                                    $color = 'danger';
+                                                    $ket = 'BELUM LUNAS';
+                                                }
                                             } else {
                                                 $color = 'danger';
-                                                $ket = 'BELUM LUNAS';
+                                                $ket = 'FAKTUR BATAL';
                                             }
+
                                         @endphp
                                         <td colspan="9" class="bg-{{ $color }} text-center">
                                             {{ $ket }}
@@ -440,9 +446,12 @@
                 </div>
                 <div class="row mb-2 mt-3">
                     <div class="col">
-                        @can('pembayaranpenjualan.create')
-                            <a href="#" class="btn btn-primary" id="btnCreateBayar"><i class="ti ti-plus me-1"></i>Input Pembayaran</a>
-                        @endcan
+                        @if ($penjualan->status_batal == 0)
+                            @can('pembayaranpenjualan.create')
+                                <a href="#" class="btn btn-primary" id="btnCreateBayar"><i class="ti ti-plus me-1"></i>Input Pembayaran</a>
+                            @endcan
+                        @endif
+
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -532,9 +541,12 @@
                 </div>
                 <div class="row mb-2 mt-3">
                     <div class="col">
-                        @can('pembayarangiro.create')
-                            <a href="#" class="btn btn-primary" id="btnCreategiro"><i class="ti ti-plus me-1"></i>Input Giro</a>
-                        @endcan
+                        @if ($penjualan->status_batal == 0)
+                            @can('pembayarangiro.create')
+                                <a href="#" class="btn btn-primary" id="btnCreategiro"><i class="ti ti-plus me-1"></i>Input Giro</a>
+                            @endcan
+                        @endif
+
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -618,9 +630,11 @@
                 </div>
                 <div class="row mb-2 mt-3">
                     <div class="col">
-                        @can('pembayarantransfer.create')
-                            <a href="#" class="btn btn-primary" id="btnCreatetransfer"><i class="ti ti-plus me-1"></i>Input Transfer</a>
-                        @endcan
+                        @if ($penjualan->status_batal == 0)
+                            @can('pembayarantransfer.create')
+                                <a href="#" class="btn btn-primary" id="btnCreatetransfer"><i class="ti ti-plus me-1"></i>Input Transfer</a>
+                            @endcan
+                        @endif
                     </div>
                 </div>
                 <div class="row mt-2">
