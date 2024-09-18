@@ -19,7 +19,7 @@
         <input type="{{ $type }}"
             class="form-control {{ $money ? 'money' : '' }} {{ $numberFormat ? 'number-separator' : '' }} {{ $datepicker }}" id="{{ $name }}"
             name="{{ $name }}" placeholder="{{ $label }}" {{ $readonly ? 'readonly' : '' }} {{ $disabled ? 'disabled' : '' }}
-            {{ $no_aktif == 'true' ? 'disabled' : '' }} autocomplete="off" aria-autocomplete="none" value="{{ $value }}"
+            {{ $non_aktif == 'true' ? 'disabled' : '' }} autocomplete="off" aria-autocomplete="none" value="{{ $value }}"
             style="text-align: {{ $align }}; height:{{ $height }}">
     </div>
 </div>
