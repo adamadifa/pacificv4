@@ -8,6 +8,13 @@
             'harilibur.index',
             'lembur.index',
             'izinabsen.index',
+            'izincuti.index',
+            'izinsakit.index',
+            'izinpulang.index',
+            'izinkoreksi.index',
+            'izindinas.index',
+            'izinterlambat.index',
+            'presensi.index',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -24,6 +31,11 @@
             'lembur',
             'lembur/*',
             'izinabsen',
+            'izinsakit',
+            'izincuti',
+            'izinpulang',
+            'izindinas',
+            'izinterlambat',
         ])
             ? 'open'
             : '' }}">
@@ -72,6 +84,13 @@
                 <li class="menu-item {{ request()->is(['kesepakatanbersama']) ? 'active' : '' }}">
                     <a href="{{ route('kesepakatanbersama.index') }}" class="menu-link">
                         <div>Kesepakatan Bersama</div>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission(['presensi.index']))
+                <li class="menu-item {{ request()->is(['presensi', 'presensi/*']) ? 'active' : '' }}">
+                    <a href="{{ route('presensi.index') }}" class="menu-link">
+                        <div>Monitoring Presensi</div>
                     </a>
                 </li>
             @endif

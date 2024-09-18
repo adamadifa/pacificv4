@@ -102,6 +102,7 @@ use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PiutangkaryawanController;
 use App\Http\Controllers\PjpController;
+use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatiodriverhelperController;
@@ -1773,6 +1774,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/getjadwalkerja/{kode_jadwal}', 'getjadwalkerja')->name('getjadwalkerja');
         Route::get('/getjamkerja/{kode_jadwwal}/{kode_jam_kerja}', 'getjamkerja')->name('getjamkerja');
+    });
+
+    Route::controller(PresensiController::class)->group(function () {
+        Route::get('/presensi', 'index')->name('presensi.index')->can('presensi.index');
     });
 
     Route::controller(LaporangeneralaffairController::class)->group(function () {
