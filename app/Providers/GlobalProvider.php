@@ -85,7 +85,10 @@ class Globalprovider extends ServiceProvider
                 $total_notifikasi = 0;
             }
 
-
+            if ($level_user == "gm administrasi") {
+                $start_periode = '2023-01-01';
+                $end_periode = date('Y') . '-12-31';
+            }
 
             $datamaster_request = [
                 'regional',

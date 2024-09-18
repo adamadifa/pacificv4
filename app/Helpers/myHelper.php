@@ -3,6 +3,7 @@
 use App\Models\Produk;
 use App\Models\Tutuplaporan;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
 function buatkode($nomor_terakhir, $kunci, $jumlah_karakter = 0)
@@ -625,3 +626,9 @@ function truncateText($text, $wordLimit = 4)
     }
     return $text; // Jika jumlah kata tidak lebih dari batas, kembalikan teks asli
 }
+
+// function getroleuser()
+// {
+
+//     return Auth::user()->roles->pluck('name');
+// }
