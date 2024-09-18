@@ -20,7 +20,7 @@
     <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $kaskecil->tanggal }}" icon="ti ti-calendar" />
     <x-input-with-icon label="Keterangan" name="keterangan" value="{{ $kaskecil->keterangan }}" icon="ti ti-file-description" />
     <x-input-with-icon label="Jumlah" name="jumlah" value="{{ formatAngka($kaskecil->jumlah) }}" icon="ti ti-moneybag" align="right" money="true"
-        disabled="{{ !empty($kaskecil->kode_klaim) ? 'true' : 'false' }}" />
+        non_aktif="{{ !empty($kaskecil->kode_klaim) ? 'true' : 'false' }}" />
     <div class="form-group mb-3">
         <select name="kode_akun" id="kode_akun" class="form-select select2Kodeakunedit">
             <option value="">Pilih Akun</option>
@@ -31,10 +31,11 @@
         </select>
     </div>
     <div class="form-group mb-3">
-        <select name="debet_kredit" id="debet_kredit" class="form-select" {{ !empty($kaskecil->kode_klaim) ? 'readonly' : '' }}>
+        <select name="debet_kredit_edit" id="debet_kredit" class="form-select" {{ !empty($kaskecil->kode_klaim) ? 'disabled' : '' }}>
             <option value="D" {{ $kaskecil->debet_kredit == 'D' ? 'selected' : '' }}>DEBET</option>
             <option value="K" {{ $kaskecil->debet_kredit == 'K' ? 'selected' : '' }}>KREDIT</option>
         </select>
+        <input type="hidden" name="debet_kredit" value="{{ $kaskecil->debet_kredit }}">
     </div>
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
