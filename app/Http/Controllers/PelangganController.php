@@ -491,8 +491,14 @@ class PelangganController extends Controller
 
     public function getpelangganbysalesman(Request $request)
     {
+
+        $user = User::findorfail(auth()->user()->id);
         $kode_salesman = $request->kode_salesman;
-        $kode_cabang = $request->kode_cabang;
+        if (!$user->hasRole(config('global.roles_access_all_cabang'))) {
+            $kode_cabang = $user->kode_cabang;
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
 
         $query = Pelanggan::query();
         $query->where('pelanggan.kode_cabang', $kode_cabang);
