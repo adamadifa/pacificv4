@@ -125,8 +125,9 @@
             const jumlahbayar = "{{ $historibayar->jumlah }}";
             const sisabayar = $("#sisabayar").text();
             let sb = sisabayar == "" ? 0 : sisabayar;
+            // alert(sb);
             let sisa_bayar = parseInt(sb.replace(/\./g, '')) + parseInt(jumlahbayar);
-            alert(sisa_bayar);
+            // alert(sisa_bayar);
             const tanggal = $(this).find("#tanggal").val();
             const jml = $(this).find("#jumlah").val();
             const jumlah = parseInt(jml.replace(/\./g, ''));
@@ -155,17 +156,6 @@
                 Swal.fire({
                     title: "Oops!",
                     text: "Jumlah Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        form.find("#jumlah").focus();
-                    },
-                });
-                return false;
-            } else if (parseInt(jumlah) > parseInt(sisa_bayar)) {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Jumlah Bayar Melebihi Sisa Bayar !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
@@ -212,6 +202,19 @@
             } else {
                 buttonDisable();
             }
+
+            // else if (parseInt(jumlah) > parseInt(sisa_bayar)) {
+            //     Swal.fire({
+            //         title: "Oops!",
+            //         text: "Jumlah Bayar Melebihi Sisa Bayar !",
+            //         icon: "warning",
+            //         showConfirmButton: true,
+            //         didClose: (e) => {
+            //             form.find("#jumlah").focus();
+            //         },
+            //     });
+            //     return false;
+            // }
         });
     });
 </script>
