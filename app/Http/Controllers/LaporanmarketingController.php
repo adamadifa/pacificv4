@@ -4135,7 +4135,7 @@ class LaporanmarketingController extends Controller
         $querysaldoawal->whereRaw("datediff('$sampai', marketing_penjualan.tanggal) > 30");
         $querysaldoawal->groupBy('kode_salesman_baru');
 
-        dd($sampai);
+        // dd($sampai);
         //dd($querysaldoawal->get());
 
         $querypenjualan = Penjualan::query();
