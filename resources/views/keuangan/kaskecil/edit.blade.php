@@ -29,7 +29,7 @@
         </select>
     </div>
     <div class="form-group mb-3">
-        <select name="debet_kredit" id="debet_kredit" class="form-select" {{ !empty($kaskecil->kode_klaim) ? 'disabled' : '' }}>
+        <select name="debet_kredit" id="debet_kredit" class="form-select" {{ !empty($kaskecil->kode_klaim) ? 'readonly' : '' }}>
             <option value="D" {{ $kaskecil->debet_kredit == 'D' ? 'selected' : '' }}>DEBET</option>
             <option value="K" {{ $kaskecil->debet_kredit == 'K' ? 'selected' : '' }}>KREDIT</option>
         </select>
