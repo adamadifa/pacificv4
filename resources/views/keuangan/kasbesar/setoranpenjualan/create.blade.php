@@ -275,21 +275,23 @@
                     },
                 });
                 return false;
-            } else if (lhp_total == "" || lhp_total === '0') {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Tidak Ada Transaksi Pada Tanggal Tersebut !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        form.find("#tanggal").focus();
-                    },
-                });
-                return false;
             } else {
                 buttonDisable();
                 return true;
             }
+
+            // else if (lhp_total == "" || lhp_total === '0') {
+            //     Swal.fire({
+            //         title: "Oops!",
+            //         text: "Tidak Ada Transaksi Pada Tanggal Tersebut !",
+            //         icon: "warning",
+            //         showConfirmButton: true,
+            //         didClose: (e) => {
+            //             form.find("#tanggal").focus();
+            //         },
+            //     });
+            //     return false;
+            // }
         });
     });
 </script>
