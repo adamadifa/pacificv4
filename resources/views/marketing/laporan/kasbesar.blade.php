@@ -135,6 +135,7 @@
             }
 
             getsalesmanbyCabangKasbesar();
+            getpelangganbySalesmanKasbesar();
             formKasbesar.find("#kode_cabang_kasbesar").change(function(e) {
                 getsalesmanbyCabangKasbesar();
                 showformatlaporanKasbesar();

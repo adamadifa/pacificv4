@@ -110,7 +110,7 @@
                     }
                 });
             }
-
+            getpelangganbySalesman();
             getsalesmanbyCabang();
             formAup.find("#kode_cabang_aup").change(function(e) {
                 getsalesmanbyCabang();

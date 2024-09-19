@@ -135,6 +135,7 @@
             }
 
             getsalesmanbyCabang();
+            getpelangganbySalesman();
             formPenjualan.find("#kode_cabang_penjualan").change(function(e) {
                 getsalesmanbyCabang();
                 showformatlaporan();

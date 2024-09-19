@@ -119,6 +119,7 @@
             }
 
             getsalesmanbyCabangRetur();
+            getpelangganbySalesmanRetur();
             formRetur.find("#kode_cabang_retur").change(function(e) {
                 getsalesmanbyCabangRetur();
                 getpelangganbySalesmanRetur();

@@ -117,7 +117,7 @@
                     }
                 });
             }
-
+            getpelangganbySalesmanDpp();
             getsalesmandbyCabangDpp();
             formDpp.find("#kode_cabang_dpp").change(function(e) {
                 getsalesmandbyCabangDpp();

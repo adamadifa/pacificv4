@@ -117,7 +117,7 @@
                     }
                 });
             }
-
+            getpelangganbySalesmanrekappelanggan();
             getsalesmandbyCabangrekappelanggan();
             formrekappelanggan.find("#kode_cabang_rekappelanggan").change(function(e) {
                 getsalesmandbyCabangrekappelanggan();

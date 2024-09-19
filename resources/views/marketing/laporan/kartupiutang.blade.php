@@ -124,7 +124,7 @@
                     }
                 });
             }
-
+            getpelangganbySalesman();
             getsalesmanbyCabang();
             formKartupiutang.find("#kode_cabang_kartupiutang").change(function(e) {
                 getsalesmanbyCabang();
