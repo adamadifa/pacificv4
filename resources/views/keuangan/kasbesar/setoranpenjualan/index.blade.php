@@ -17,7 +17,7 @@
                                 Input Setoran Penjualan
                             </a>
                         @endcan
-                        @can('ajuantransfer.show')
+                        @can('setoranpenjualan.show')
                             <form action="/setoranpenjualan/cetak" method="GET" id="formCetak" target="_blank">
                                 <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
                                 <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
