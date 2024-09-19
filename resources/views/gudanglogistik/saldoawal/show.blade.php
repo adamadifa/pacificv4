@@ -38,6 +38,7 @@
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
+                        <th>No.</th>
                         <th>Kode</th>
                         <th>Nama Barang</th>
                         <th>Jumlah</th>
@@ -51,6 +52,7 @@
                             $total_harga = $d->jumlah * $d->harga;
                         @endphp
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_barang }}</td>
                             <td>{{ $d->nama_barang }}</td>
                             <td class="text-end">{{ formatAngkaDesimal($d->jumlah) }}</td>
