@@ -122,11 +122,12 @@
 
         loadgiroditolak();
         form.submit(function(e) {
+            //e.preventDefault();
             const jumlahbayar = "{{ $historibayar->jumlah }}";
             const sisabayar = $("#sisabayar").text();
-            let sb = sisabayar == "" ? 0 : sisabayar;
-            // alert(sb);
-            let sisa_bayar = parseInt(sb.replace(/\./g, '')) + parseInt(jumlahbayar);
+            let sb = sisabayar == "" ? "0" : sisabayar; // Ubah 0 menjadi string
+            let sisa_bayar = (parseInt(sb.replace(/\./g, '')) || 0) + (parseInt(jumlahbayar) || 0);
+
             // alert(sisa_bayar);
             const tanggal = $(this).find("#tanggal").val();
             const jml = $(this).find("#jumlah").val();
@@ -175,6 +176,17 @@
                 });
 
                 return false;
+            } else if (parseInt(jumlah) > parseInt(sisa_bayar)) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Bayar Melebihi Sisa Bayar !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jumlah").focus();
+                    },
+                });
+                return false;
             } else if ($(".agreementvoucher").is(':checked') && jenis_voucher == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -203,18 +215,7 @@
                 buttonDisable();
             }
 
-            // else if (parseInt(jumlah) > parseInt(sisa_bayar)) {
-            //     Swal.fire({
-            //         title: "Oops!",
-            //         text: "Jumlah Bayar Melebihi Sisa Bayar !",
-            //         icon: "warning",
-            //         showConfirmButton: true,
-            //         didClose: (e) => {
-            //             form.find("#jumlah").focus();
-            //         },
-            //     });
-            //     return false;
-            // }
+
         });
     });
 </script>

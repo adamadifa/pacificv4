@@ -1090,7 +1090,8 @@
             const gt = $("#grandtotal").val();
             const grandtotal = gt != "" ? parseInt(gt.replace(/\./g, '')) : 0;
             const totalPiutang = parseInt(sisa_piutang) + parseInt(grandtotal);
-            const limit_pelanggan = $("#limit_pelanggan").val();
+            let limit_pelanggan = $("#limit_pelanggan").val() == "" ? 0 : $("#limit_pelanggan").val();
+
             const siklus_pembayaran = $("#siklus_pembayaran").val();
             const max_kredit = $("#max_kredit").val();
             const jenis_transaksi = $("#jenis_transaksi").val();

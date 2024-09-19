@@ -996,7 +996,7 @@ class PenjualanController extends Controller
                 'peny_swan' => $peny_swan,
                 'peny_stick' => $peny_stick,
                 'penyesuaian' => $total_penyesuaian,
-
+                'jenis_bayar' => $jenis_transaksi == 'K' ? 'TP' : $request->jenis_bayar,
                 'jatuh_tempo' => $jatuh_tempo,
                 'id_user' => auth()->user()->id
             ]);

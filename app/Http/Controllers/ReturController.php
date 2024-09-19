@@ -161,6 +161,7 @@ class ReturController extends Controller
                         ->orderBy('no_bukti')
                         ->first();
 
+
                     if ($cekbayar != null) {
                         Historibayarpenjualan::where('no_bukti', $cekbayar->no_bukti)
                             ->update([

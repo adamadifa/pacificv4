@@ -340,8 +340,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="8">SISA BAYAR</td>
-                                        <td class="text-end" id="sisabayar">
-                                            {{ formatAngka($total_netto - $penjualan->total_bayar) }}</td>
+                                        <td class="text-end" id="sisabayar">{{ formatAngka($total_netto - $penjualan->total_bayar) }}</td>
                                     </tr>
                                     <tr>
                                         @php
@@ -498,7 +497,7 @@
                                             <td>{{ $d->nama_salesman }}</td>
                                             <td>
                                                 <div class="d-flex">
-                                                    @if (($d->jenis_bayar == 'TP' && $penjualan->jenis_bayar != 'TN') || ($d->jenis_bayar == 'TN' && $penjualan->jenis_bayar != 'TN'))
+                                                    @if ($penjualan->jenis_bayar != 'TN')
                                                         @can('pembayaranpenjualan.edit')
                                                             <div>
                                                                 <a href="#" class="me-2 btnEditBayar"
