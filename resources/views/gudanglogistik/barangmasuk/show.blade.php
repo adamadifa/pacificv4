@@ -25,6 +25,7 @@
         <table class="table table-striped table-bordered table-hover">
             <thead class="table-dark">
                 <tr>
+                    <th>No</th>
                     <th>Kode</th>
                     <th>Nama Barang</th>
                     <th style="width: 20%">Keterangan</th>
@@ -37,11 +38,12 @@
             </thead>
             <tbody>
                 @foreach ($detail as $d)
-                @php
-                    $subtotal = $d->jumlah * $d->harga;
-                    $total = $subtotal + $d->penyesuaian;
-                @endphp
+                    @php
+                        $subtotal = $d->jumlah * $d->harga;
+                        $total = $subtotal + $d->penyesuaian;
+                    @endphp
                     <tr>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $d->kode_barang }}</td>
                         <td>{{ textCamelCase($d->nama_barang) }}</td>
                         <td>{{ $d->keterangan }}</td>
