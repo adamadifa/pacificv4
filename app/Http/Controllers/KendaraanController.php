@@ -53,7 +53,7 @@ class KendaraanController extends Controller
     {
         $request->validate([
             'no_polisi' => 'required',
-            'jatuhtempo_kir' => 'required',
+            // 'jatuhtempo_kir' => 'required',
             'jatuhtempo_pajak_satutahun' => 'required',
             'jatuhtempo_pajak_limatahun' => 'required',
             'kapasitas' => 'required',
@@ -111,7 +111,7 @@ class KendaraanController extends Controller
         $kode_kendaraan = Crypt::decrypt($kode_kendaraan);
         $request->validate([
             'no_polisi' => 'required',
-            'jatuhtempo_kir' => 'required',
+            // 'jatuhtempo_kir' => 'required',
             'jatuhtempo_pajak_satutahun' => 'required',
             'jatuhtempo_pajak_limatahun' => 'required',
             'kapasitas' => 'required',
