@@ -7,8 +7,17 @@ use App\Models\User; // Tambahkan import untuk User
 use App\Models\Cabang; // Tambahkan import untuk Cabang
 use App\Models\Karyawan; // Tambahkan import untuk Karyawan
 use App\Models\Departemen; // Tambahkan import untuk Departemen
+use App\Models\Detailjadwalkerja;
+use App\Models\Detailjadwalshift;
+use App\Models\Gantishift;
 use App\Models\Group; // Tambahkan import untuk Group
+use App\Models\Harilibur;
+use App\Models\Izindinas;
+use App\Models\Jadwalkerja;
+use App\Models\Jamkerja;
 use App\Models\Presensi;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Redirect;
 
 class PresensiController extends Controller
 {
@@ -271,5 +280,266 @@ class PresensiController extends Controller
 
 
         return view('presensi.getdatamesin', compact('filtered_array', 'filtered_array_2'));
+    }
+
+
+
+
+    public function updatefrommachine(Request $request, $pin, $status_scan)
+    {
+
+        function hari($hari)
+        {
+            $hari = date("D", strtotime($hari));
+
+            switch ($hari) {
+                case 'Sun':
+                    $hari_ini = "Minggu";
+                    break;
+
+                case 'Mon':
+                    $hari_ini = "Senin";
+                    break;
+
+                case 'Tue':
+                    $hari_ini = "Selasa";
+                    break;
+
+                case 'Wed':
+                    $hari_ini = "Rabu";
+                    break;
+
+                case 'Thu':
+                    $hari_ini = "Kamis";
+                    break;
+
+                case 'Fri':
+                    $hari_ini = "Jumat";
+                    break;
+
+                case 'Sat':
+                    $hari_ini = "Sabtu";
+                    break;
+
+                default:
+                    $hari_ini = "Tidak di ketahui";
+                    break;
+            }
+
+            return $hari_ini;
+        }
+        $pin = Crypt::decrypt($pin);
+        // echo $status_scan;
+        // die;
+        $status_scan = $status_scan % 2 == 0 ? 0 : 1;
+        //echo $status_scan;
+        //echo $pin . " " . $status_scan . " " . $scan_date;
+        $scan = $request->scan_date;
+
+        $tgl_presensi   = date("Y-m-d", strtotime($scan));
+        $karyawan       = Karyawan::where('pin', $pin)->first();
+        if ($karyawan == null) {
+            return Redirect::back()->with(messageError('PIN Tidak Ditemukan'));
+            $nik = "";
+        } else {
+            $nik = $karyawan->nik;
+        }
+
+
+
+        //Cek Perjalanan Dinas
+        $cekperjalanandinas = Izindinas::whereRaw('"' . $tgl_presensi . '" >= dari')
+            ->whereRaw('"' . $tgl_presensi . '" <= sampai')
+            ->where('nik', $nik)
+            ->first();
+        if ($cekperjalanandinas != null) {
+            $kode_cabang = $cekperjalanandinas->kode_cabang;
+        } else {
+            $kode_cabang = $karyawan->kode_cabang;
+        }
+
+
+        //Tanggal Sebelumnya
+        $lastday = date('Y-m-d', strtotime('-1 day', strtotime($tgl_presensi)));
+
+        $jam = $scan;
+
+        //Cek Jadwal SHIFT
+
+        $cekjadwalshift = Detailjadwalshift::join('hrd_jadwalshift', 'hrd_jadwalshift_detail.kode_jadwalshift', '=', 'hrd_jadwalshift.kode_jadwalshift')
+            ->whereRaw('"' . $tgl_presensi . '" >= dari')
+            ->whereRaw('"' . $tgl_presensi . '" <= sampai')
+            ->where('nik', $nik)
+            ->first();
+
+        $cekgantishift = Gantishift::where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
+
+        if ($cekgantishift != null) {
+            $kode_jadwal = $cekgantishift->kode_jadwal;
+        } else if ($cekjadwalshift != null) {
+            $kode_jadwal = $cekjadwalshift->kode_jadwal;
+        } else if ($cekperjalanandinas != null) {
+            $cekjadwaldinas = Jadwalkerja::where('nama_jadwal', 'NON SHIFT')
+                ->where('kode_cabang', $cekperjalanandinas->kode_cabang)->first();
+            $kode_jadwal = $cekjadwaldinas->kode_jadwal;
+        } else {
+            $kode_jadwal = $karyawan->kode_jadwal;
+        }
+
+
+        $ceklibur = Harilibur::where('kode_cabang', $kode_cabang)
+            ->where('tanggal_limajam', $tgl_presensi)->count();
+        if ($ceklibur > 0) {
+            $hariini = "Sabtu";
+        } else {
+            $hariini = hari($tgl_presensi);
+        }
+
+
+
+
+        $jadwal = Detailjadwalkerja::join('hrd_jadwalkerja', 'hrd_jadwalkerja_detail.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
+            ->where('hari', $hariini)->where('hrd_jadwalkerja_detail.kode_jadwal', $kode_jadwal)
+            ->first();
+
+
+        $jam_kerja = Jamkerja::where('kode_jam_kerja', $jadwal->kode_jam_kerja)->first();
+
+
+        $lintashari  = $jam_kerja->lintashari;
+
+        $cek = Presensi::where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
+
+
+        if ($status_scan == 0) {
+            if ($cek == null) {
+                $data = [
+                    'nik' => $nik,
+                    'tanggal' => $tgl_presensi,
+                    'jam_in' => $jam,
+                    'kode_jadwal' => $kode_jadwal,
+                    'kode_jam_kerja' => $jadwal->kode_jam_kerja,
+                    'status' => 'h',
+                ];
+
+                $simpan = Presensi::create($data);
+                if ($simpan) {
+                    return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
+                } else {
+                    return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
+                }
+            } else {
+                try {
+                    $data_masuk = [
+                        'jam_in' => $jam
+                    ];
+                    $update = Presensi::where('tanggal', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
+                    // echo "success|Terimkasih, Selamat Bekerja|in";
+                    return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
+                } catch (\Exception $e) {
+                    dd($e);
+                    return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
+                }
+            }
+        } else {
+            //Cek Absensi Kemarin
+            $ceklastpresensi = Presensi::join('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
+                ->where('nik', $nik)->where('tanggal', $lastday)->first();
+            //Cek Lintas Hari
+            $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
+            $tgl_pulang_shift_3 = date("H:i", strtotime(($jam)));
+
+
+            if (!empty($last_lintashari) && $tgl_pulang_shift_3 <= "08:00" || empty($last_lintashari) && $tgl_pulang_shift_3 <= "08:00") {
+                $tgl_presensi = $lastday;
+            }
+
+            $cek = Presensi::where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
+            if ($cek == null) {
+                $data = [
+                    'nik' => $nik,
+                    'tanggal' => $tgl_presensi,
+                    'jam_out' => $jam,
+                    'kode_jadwal' => $kode_jadwal,
+                    'kode_jam_kerja' => $jadwal->kode_jam_kerja,
+                    'status' => 'h',
+                ];
+
+                $simpan = Presensi::create($data);
+                if ($simpan) {
+                    // echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                    return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
+                } else {
+                    // echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+                    return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
+                }
+            } else {
+                $data_masuk = [
+                    'jam_out' => $jam
+                ];
+                $update = Presensi::where('tanggal', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
+                if ($update) {
+                    // echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                    return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
+                } else {
+                    // echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+                    return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
+                }
+            }
+        }
+    }
+
+
+    public function koreksipresensi(Request $request)
+    {
+        $data['karyawan'] = Karyawan::where('nik', $request->nik)
+            ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
+            ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
+            ->first();
+        $data['presensi'] = Presensi::where('nik', $request->nik)->where('tanggal', $request->tanggal)->first();
+        $data['jadwal'] = Jadwalkerja::where('kode_cabang', $data['karyawan']->kode_cabang)->get();
+
+
+        return view('presensi.koreksipresensi', $data);
+    }
+
+    public function updatepresensi(Request $request, $id_presensi)
+    {
+        $id_presensi = Crypt::decrypt($id_presensi);
+        $presensi = Presensi::where('id', $id_presensi)->first();
+        $tanggal = $presensi->tanggal;
+        $tanggal_pulang  = $request->kode_jam_kerja == 'JK08' ? date('Y-m-d', strtotime($tanggal . ' + 1 days')) : $tanggal;
+        $jam_in = $tanggal . ' ' . $request->jam_in;
+
+        $jam_out = $tanggal_pulang . ' ' . $request->jam_out;
+
+        try {
+            Presensi::where('id', $id_presensi)->update([
+                'kode_jadwal' => $request->kode_jadwal,
+                'kode_jam_kerja' => $request->kode_jam_kerja,
+                'jam_in' => $jam_in,
+                'jam_out' => $jam_out,
+            ]);
+
+            return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    function getjamkerja(Request $request)
+    {
+        $jamkerja = Detailjadwalkerja::select('hrd_jadwalkerja_detail.kode_jam_kerja', 'jam_masuk', 'jam_pulang', 'total_jam')
+            ->join('hrd_jamkerja', 'hrd_jadwalkerja_detail.kode_jam_kerja', 'hrd_jamkerja.kode_jam_kerja')
+            ->join('hrd_jadwalkerja', 'hrd_jadwalkerja_detail.kode_jadwal', 'hrd_jadwalkerja.kode_jadwal')
+            ->where('hrd_jadwalkerja.kode_jadwal', $request->kode_jadwal)
+            ->groupBy('kode_jam_kerja', 'jam_masuk', 'jam_pulang', 'total_jam')
+            ->get();
+
+        echo "<option value=''>Pilih Jam Kerja</option>";
+        foreach ($jamkerja as $j) {
+            echo "<option value='" . $j->kode_jam_kerja . "' " . ($j->kode_jam_kerja == $request->kode_jam_kerja ? 'selected' : '') . ">" . $j->jam_masuk . " - " . $j->jam_pulang . " ( " . $j->total_jam . " ) " .   "</option>";
+        }
     }
 }

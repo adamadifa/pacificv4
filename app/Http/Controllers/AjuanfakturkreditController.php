@@ -124,6 +124,9 @@ class AjuanfakturkreditController extends Controller
         }
 
 
+        if (!empty($request->nama_pelanggan)) {
+            $query->where('marketing_ajuan_faktur.nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
+        }
         // dd($query->get());
         $ajuanfaktur = $query->paginate(15);
         $ajuanfaktur->appends(request()->all());

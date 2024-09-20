@@ -248,37 +248,39 @@
                                                 @php
                                                     $terlambat = hitungjamterlambat($jam_in, $jam_mulai, $d->kode_izin_terlambat);
                                                 @endphp
-
-                                                @if (!empty($terlambat))
-                                                    @if (!empty($d->kode_izin_terlambat) && $d->izin_terlambat_direktur == '1')
-                                                        @php
-                                                            $potongan_terlambat = 0;
-                                                            $potongan_denda = 0;
-                                                        @endphp
-                                                        <span class="text-success">
-                                                            {{ $terlambat['keterangan_terlambat'] }}
-                                                            {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
-                                                            {{-- {{ '(' . formatAngka($potongan_denda) . ')' }} --}}
-                                                        </span>
+                                                @if (!empty($d->jam_in))
+                                                    @if (!empty($terlambat))
+                                                        @if (!empty($d->kode_izin_terlambat) && $d->izin_terlambat_direktur == '1')
+                                                            @php
+                                                                $potongan_terlambat = 0;
+                                                                $potongan_denda = 0;
+                                                            @endphp
+                                                            <span class="text-success">
+                                                                {{ $terlambat['keterangan_terlambat'] }}
+                                                                {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
+                                                                {{-- {{ '(' . formatAngka($potongan_denda) . ')' }} --}}
+                                                            </span>
+                                                        @else
+                                                            @php
+                                                                $denda = hitungdenda(
+                                                                    $terlambat['jamterlambat'],
+                                                                    $terlambat['menitterlambat'],
+                                                                    $d->kode_izin_terlambat,
+                                                                    $d->kode_dept,
+                                                                );
+                                                                $potongan_terlambat = $terlambat['desimal_terlambat'];
+                                                            @endphp
+                                                            <span class="{{ $terlambat['color_terlambat'] }}">
+                                                                {{ $terlambat['keterangan_terlambat'] }}
+                                                                {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
+                                                                {{ !empty($denda['denda']) ? '(' . formatAngka($denda['denda']) . ')' : '' }}
+                                                            </span>
+                                                        @endif
                                                     @else
-                                                        @php
-                                                            $denda = hitungdenda(
-                                                                $terlambat['jamterlambat'],
-                                                                $terlambat['menitterlambat'],
-                                                                $d->kode_izin_terlambat,
-                                                                $d->kode_dept,
-                                                            );
-                                                            $potongan_terlambat = $terlambat['desimal_terlambat'];
-                                                        @endphp
-                                                        <span class="{{ $terlambat['color_terlambat'] }}">
-                                                            {{ $terlambat['keterangan_terlambat'] }}
-                                                            {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
-                                                            {{ !empty($denda['denda']) ? '(' . formatAngka($denda['denda']) . ')' : '' }}
-                                                        </span>
+                                                        <span class="badge bg-success">Tepat Waktu</span>
                                                     @endif
-                                                @else
-                                                    <span class="badge bg-success">Tepat Waktu</span>
                                                 @endif
+
                                             </td>
                                             <td class="text-center">
                                                 @php
@@ -294,6 +296,14 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
+                                                    @if ($d->status_kehadiran == 'h')
+                                                        <a href="#" class="btnKoreksi" nik="{{ $d->nik }}"
+                                                            tanggal="{{ !empty(Request('tanggal')) ? Request('tanggal') : date('Y-m-d') }}">
+                                                            <i class="ti ti-edit text-success"></i>
+                                                        </a>
+                                                    @endif
+
+
                                                     <a href="#" class="btngetDatamesin" pin="{{ $d->pin }}"
                                                         tanggal="{{ !empty(Request('tanggal')) ? Request('tanggal') : date('Y-m-d') }}"
                                                         kode_jadwal="{{ $d->kode_jadwal }}">
@@ -360,6 +370,7 @@
             var pin = $(this).attr("pin");
             var tanggal = $(this).attr("tanggal");
             var kode_jadwal = $(this).attr("kode_jadwal");
+            loading();
             //alert(kode_jadwal);
             $("#modal").modal("show");
             $(".modal-title").text("Get Data Mesin");
@@ -371,6 +382,30 @@
                     pin: pin,
                     tanggal: tanggal,
                     kode_jadwal: kode_jadwal
+                },
+                cache: false,
+                success: function(respond) {
+                    console.log(respond);
+                    $("#loadmodal").html(respond);
+                }
+            });
+        });
+
+        $(".btnKoreksi").click(function(e) {
+            e.preventDefault();
+            const nik = $(this).attr("nik");
+            const tanggal = $(this).attr("tanggal");
+            loading();
+            //alert(kode_jadwal);
+            $("#modal").modal("show");
+            $(".modal-title").text("Koreksi Presensi");
+            $.ajax({
+                type: 'POST',
+                url: '/presensi/koreksipresensi',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    nik: nik,
+                    tanggal: tanggal
                 },
                 cache: false,
                 success: function(respond) {

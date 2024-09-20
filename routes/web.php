@@ -1779,6 +1779,10 @@ Route::middleware('auth')->group(function () {
     Route::controller(PresensiController::class)->group(function () {
         Route::get('/presensi', 'index')->name('presensi.index')->can('presensi.index');
         Route::post('/presensi/getdatamesin', 'getdatamesin')->name('presensi.getdatamesin')->can('presensi.index');
+        Route::post('/presensi/{pin}/{status_scan}/updatefrommachine', 'updatefrommachine')->name('presensi.updatefrommachine')->can('presensi.index');
+        Route::post('/presensi/koreksipresensi', 'koreksipresensi')->name('presensi.koreksipresensi')->can('presensi.index');
+        Route::get('/presensi/getjamkerja', 'getjamkerja')->name('presensi.getjamkerja')->can('presensi.index');
+        Route::post('/presensi/{id}/updatepresensi', 'updatepresensi')->name('presensi.updatepresensi')->can('presensi.index');
     });
 
     Route::controller(LaporangeneralaffairController::class)->group(function () {

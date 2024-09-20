@@ -38,6 +38,8 @@
                                         </div>
                                     </div>
                                 @endrole
+                                <x-input-with-icon label="Nama Pelanggan" value="{{ Request('kode_pelanggan') }}" name="kode_pelanggan"
+                                    icon="ti ti-user" />
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <div class="form-grou mb-3">
