@@ -294,7 +294,9 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a href="#" id="btngetDatamesin">
+                                                    <a href="#" class="btngetDatamesin" pin="{{ $d->pin }}"
+                                                        tanggal="{{ !empty(Request('tanggal')) ? Request('tanggal') : date('Y-m-d') }}"
+                                                        kode_jadwal="{{ $d->kode_jadwal }}">
                                                         <i class="ti ti-device-desktop text-primary"></i>
                                                     </a>
                                                 </div>
@@ -313,7 +315,7 @@
         </div>
     </div>
 </div>
-<x-modal-form id="modal" size="" show="loadmodal" title="" />
+<x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -353,22 +355,33 @@
         }
 
 
-        $("#btnCreate").click(function(e) {
+        $(".btngetDatamesin").click(function(e) {
             e.preventDefault();
-            loading();
+            var pin = $(this).attr("pin");
+            var tanggal = $(this).attr("tanggal");
+            var kode_jadwal = $(this).attr("kode_jadwal");
+            //alert(kode_jadwal);
             $("#modal").modal("show");
-            $(".modal-title").text("Buat Kontrak");
-            $("#loadmodal").load(`/kontrakkerja/create`);
+            $(".modal-title").text("Get Data Mesin");
+            $.ajax({
+                type: 'POST',
+                url: '/presensi/getdatamesin',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    pin: pin,
+                    tanggal: tanggal,
+                    kode_jadwal: kode_jadwal
+                },
+                cache: false,
+                success: function(respond) {
+                    console.log(respond);
+                    $("#loadmodal").html(respond);
+                }
+            });
         });
 
-        $(".btnEdit").click(function(e) {
-            e.preventDefault();
-            var no_kontrak = $(this).attr("no_kontrak");
-            loading();
-            $("#modal").modal("show");
-            $(".modal-title").text("Edit Kontrak");
-            $("#loadmodal").load(`/kontrakkerja/${no_kontrak}/edit`);
-        });
+
+
     });
 </script>
 @endpush

@@ -1778,6 +1778,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(PresensiController::class)->group(function () {
         Route::get('/presensi', 'index')->name('presensi.index')->can('presensi.index');
+        Route::post('/presensi/getdatamesin', 'getdatamesin')->name('presensi.getdatamesin')->can('presensi.index');
     });
 
     Route::controller(LaporangeneralaffairController::class)->group(function () {
