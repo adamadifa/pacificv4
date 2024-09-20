@@ -1,4 +1,4 @@
-<form action="{{ route('izinterlambat.update', Crypt::encrypt($izinterlambat->kode_izin_interlambat)) }}" method="POST" id="formIzin">
+<form action="{{ route('izinterlambat.update', Crypt::encrypt($izinterlambat->kode_izin_terlambat)) }}" method="POST" id="formIzin">
     @csrf
     @method('PUT')
     <x-input-with-icon icon="ti ti-barcode" name="kode_izin" disabled="true" value="{{ $izinterlambat->kode_izin_terlambat }}" />

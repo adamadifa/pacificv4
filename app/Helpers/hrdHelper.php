@@ -343,3 +343,216 @@ function getfileCuti($file)
     $url = url('/storage/uploads/cuti/' . $file);
     return $url;
 }
+
+
+function hitungjamkeluarkantor($jam_keluar, $j_kembali, $jam_selesai, $jam_out, $total_jam, $istirahat, $jam_awal_istirahat, $jam_akhir_istirahat)
+{
+
+    if (empty($j_kembali)) {
+        if (empty($jam_out)) {
+            $jam_kembali = $jam_selesai;
+        } else {
+            $jam_kembali = $jam_out;
+        }
+    } else {
+        $jam_kembali = $j_kembali;
+    }
+    $jk1 = strtotime($jam_keluar);
+    $jk2 = strtotime($jam_kembali);
+    $difkeluarkantor = $jk2 - $jk1;
+
+    $jamkeluarkantor = floor($difkeluarkantor / (60 * 60));
+    $menitkeluarkantor = floor(($difkeluarkantor - $jamkeluarkantor * (60 * 60)) / 60);
+
+    $jkeluarkantor = $jamkeluarkantor <= 9 ? '0' . $jamkeluarkantor : $jamkeluarkantor;
+    $mkeluarkantor = $menitkeluarkantor <= 9 ? '0' . $menitkeluarkantor : $menitkeluarkantor;
+
+    if (empty($j_kembali)) {
+        if ($total_jam == 7) {
+            $totaljamkeluar = $jkeluarkantor - 1 . ':' . $mkeluarkantor;
+            $jkeluar = $jkeluarkantor - 1;
+        } else {
+            $totaljamkeluar = $jkeluarkantor . ':' . $mkeluarkantor;
+            $jkeluar = $jkeluarkantor;
+        }
+    } else {
+        //Jika Ada istirahat
+        if ($istirahat == '1') {
+            //Jika Jam Keluar Kantor Sebelum Jam Istirahat
+            if ($jam_keluar < $jam_awal_istirahat && $jam_kembali > $jam_akhir_istirahat) {
+                $totaljamkeluar = $jkeluarkantor - 1 . ':' . $mkeluarkantor;
+                $jkeluar = $jkeluarkantor - 1;
+            } else {
+                $totaljamkeluar = $jkeluarkantor . ':' . $mkeluarkantor;
+                $jkeluar = $jkeluarkantor;
+            }
+        } else {
+            $totaljamkeluar = $jkeluarkantor . ':' . $mkeluarkantor;
+            $jkeluar = $jkeluarkantor;
+        }
+    }
+
+    $desimaljamkeluar = $jkeluar +   ROUND(($menitkeluarkantor / 60), 2);
+
+    return [
+        'totaljamkeluar' => $totaljamkeluar,
+        'jamkeluarkantor' => $jamkeluarkantor,
+        'color' => $jamkeluarkantor > 0 ? 'text-danger' : 'text-success',
+        'desimaljamkeluar' => $desimaljamkeluar
+    ];
+}
+
+
+function hitungjamterlambat($jam_in, $jam_mulai, $kode_izin_terlambat)
+{
+
+    // $jam_in = date('Y-m-d H:i', strtotime($jam_in));
+    // $jam_mulai = date('Y-m-d H:i', strtotime($jam_mulai));
+    if (!empty($jam_in)) {
+        if ($jam_in > $jam_mulai) {
+            $j1 = strtotime($jam_mulai);
+            $j2 = strtotime($jam_in);
+
+            $diffterlambat = $j2 - $j1;
+
+            $jamterlambat = floor($diffterlambat / (60 * 60));
+            $menitterlambat = floor(($diffterlambat - $jamterlambat * (60 * 60)) / 60);
+
+            $jterlambat = $jamterlambat <= 9 ? '0' . $jamterlambat : $jamterlambat;
+            $mterlambat = $menitterlambat <= 9 ? '0' . $menitterlambat : $menitterlambat;
+
+            $keterangan_terlambat =  $jterlambat . ':' . $mterlambat;
+            $desimal_terlambat = $jamterlambat +   ROUND(($menitterlambat / 60), 2);
+
+
+            if ($jamterlambat < 1 && $menitterlambat <= 5) {
+                $color_terlambat = 'text-success';
+                $desimal_terlambat = 0;
+            } elseif ($jamterlambat < 1 && $menitterlambat > 5) {
+                $color_terlambat = 'text-warning';
+                $desimal_terlambat = 0;
+            } else {
+                $color_terlambat = 'text-danger';
+                $desimal_terlambat = $desimal_terlambat;
+            }
+            if (!empty($kode_izin_terlambat)) {
+                return [
+                    'keterangan_terlambat' => $keterangan_terlambat,
+                    'jamterlambat' => $jamterlambat,
+                    'menitterlambat' => $menitterlambat,
+                    'desimal_terlambat' => 0,
+                    'color_terlambat' => 'text-success'
+                ];
+            } else {
+                return [
+                    'keterangan_terlambat' => $keterangan_terlambat,
+                    'jamterlambat' => $jamterlambat,
+                    'menitterlambat' => $menitterlambat,
+                    'desimal_terlambat' => $desimal_terlambat,
+                    'color_terlambat' => $color_terlambat
+                ];
+            }
+        } else {
+            return [];
+        }
+    } else {
+        return [];
+    }
+}
+
+
+function hitungdenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode_dept)
+{
+
+    //
+    //Jika Terlambat
+    if (!empty($jamterlambat) || !empty($menitterlambat)) {
+
+        //Jika Terlambat Kurang Dari 1 Jam
+        if ($jamterlambat < 1 || $jamterlambat == 1 && $menitterlambat == 0) {
+            //Jika Departemen Marketing
+            if ($kode_dept == "MKT") {
+                $denda = 0;
+                $keterangan = "";
+                $cek = 1;
+            } else {
+                //JIka Sudah Izin
+                if (!empty($kode_izin_terlambat)) {
+                    $denda = 0;
+                    $keterangan = "Sudah Izin";
+                    $cek = 2;
+                } else {
+                    if ($menitterlambat >= 5 and $menitterlambat < 10) {
+                        $denda = 5000;
+                        $keterangan = "";
+                        $cek = 3;
+                    } elseif ($menitterlambat >= 10 and $menitterlambat < 15) {
+                        $denda = 10000;
+                        $keterangan = "";
+                        $cek = 4;
+                    } elseif ($menitterlambat >= 15 and $menitterlambat <= 59) {
+                        $denda = 15000;
+                        $keterangan = "";
+                        $cek = 5;
+                    } else {
+                        $denda = 0;
+                        $keterangan = "";
+                        $cek = 6;
+                    }
+                }
+            }
+        } else {
+            $denda = 0;
+            $keterangan = "Potong JK";
+            $cek = 7;
+        }
+    } else {
+        $denda = 0;
+        $keterangan = "";
+        $cek = 8;
+    }
+
+    return [
+        'denda' => $denda,
+        'keterangan' => $keterangan,
+        'cek' => $cek
+    ];
+}
+
+
+function hitungpulangcepat($jam_out, $jam_selesai)
+{
+
+    if (!empty($jam_out)) {
+        if ($jam_out < $jam_selesai) {
+            $j1 = strtotime($jam_out);
+            $j2 = strtotime($jam_selesai);
+
+            $diffpulangcepat = $j2 - $j1;
+
+            $jampulangcepat = floor($diffpulangcepat / (60 * 60));
+            $menitpulangcepat = floor(($diffpulangcepat - $jampulangcepat * (60 * 60)) / 60);
+
+            $jpulangcepat = $jampulangcepat <= 9 ? '0' . $jampulangcepat : $jampulangcepat;
+            $mpulangcepat = $menitpulangcepat <= 9 ? '0' . $menitpulangcepat : $menitpulangcepat;
+
+            $keterangan_pulangcepat =  $jpulangcepat . ':' . $mpulangcepat;
+            $desimal_pulangcepat = $jampulangcepat +   ROUND(($menitpulangcepat / 60), 2);
+
+            return [
+                'keterangan_pulangcepat' => $keterangan_pulangcepat,
+                'desimal_pulangcepat' => $desimal_pulangcepat
+            ];
+        } else {
+            return [
+                'keterangan_pulangcepat' => "",
+                'desimal_pulangcepat' => 0
+            ];
+        }
+    } else {
+        return [
+            'keterangan_pulangcepat' => "",
+            'desimal_pulangcepat' => 0
+        ];
+    }
+}

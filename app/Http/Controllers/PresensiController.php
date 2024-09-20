@@ -8,6 +8,7 @@ use App\Models\Cabang; // Tambahkan import untuk Cabang
 use App\Models\Karyawan; // Tambahkan import untuk Karyawan
 use App\Models\Departemen; // Tambahkan import untuk Departemen
 use App\Models\Group; // Tambahkan import untuk Group
+use App\Models\Presensi;
 
 class PresensiController extends Controller
 {
@@ -19,7 +20,64 @@ class PresensiController extends Controller
 
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
+        $tanggal = !empty($request->tanggal) ? $request->tanggal : date('Y-m-d');
 
+        //Subquery Presensi
+        $subqueryPresensi = Presensi::select(
+            'hrd_presensi.nik',
+            'hrd_presensi.tanggal',
+            'hrd_presensi.jam_in',
+            'hrd_presensi.jam_out',
+            'hrd_presensi.status as status_kehadiran',
+            'hrd_presensi.kode_jadwal',
+            'hrd_presensi.kode_jam_kerja',
+            'hrd_jamkerja.jam_masuk as jam_mulai',
+            'hrd_jamkerja.jam_pulang as jam_selesai',
+            'hrd_jamkerja.lintashari',
+            'hrd_karyawan.kode_jabatan',
+            'hrd_karyawan.kode_dept',
+            'hrd_presensi_izinterlambat.kode_izin_terlambat',
+            'hrd_presensi_izinkeluar.kode_izin_keluar',
+            'hrd_izinkeluar.jam_keluar',
+            'hrd_izinkeluar.jam_kembali',
+            'hrd_jamkerja.total_jam',
+            'hrd_jamkerja.istirahat',
+            'hrd_jamkerja.jam_awal_istirahat',
+            'hrd_jamkerja.jam_akhir_istirahat',
+            'hrd_presensi_izinpulang.kode_izin_pulang',
+            'hrd_jadwalkerja.nama_jadwal',
+            'hrd_karyawan.kode_cabang',
+            // 'hrd_presensi.status',
+            'nama_cuti',
+            'nama_cuti_khusus',
+            'doc_sid'
+        )
+
+
+            ->join('hrd_karyawan', 'hrd_presensi.nik', '=', 'hrd_karyawan.nik')
+            ->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
+            ->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
+
+            ->leftJoin('hrd_presensi_izinterlambat', 'hrd_presensi.id', '=', 'hrd_presensi_izinterlambat.id_presensi')
+            ->leftJoin('hrd_izinterlambat', 'hrd_presensi_izinterlambat.kode_izin_terlambat', '=', 'hrd_izinterlambat.kode_izin_terlambat')
+
+            ->leftJoin('hrd_presensi_izinkeluar', 'hrd_presensi.id', '=', 'hrd_presensi_izinkeluar.id_presensi')
+            ->leftJoin('hrd_izinkeluar', 'hrd_presensi_izinkeluar.kode_izin_keluar', '=', 'hrd_izinkeluar.kode_izin_keluar')
+
+            ->leftJoin('hrd_presensi_izinpulang', 'hrd_presensi.id', '=', 'hrd_presensi_izinpulang.id_presensi')
+            ->leftJoin('hrd_izinpulang', 'hrd_presensi_izinpulang.kode_izin_pulang', '=', 'hrd_izinpulang.kode_izin_pulang')
+
+            ->leftJoin('hrd_presensi_izincuti', 'hrd_presensi.id', '=', 'hrd_presensi_izincuti.id_presensi')
+            ->leftJoin('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti')
+            ->leftJoin('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti')
+            ->leftJoin('hrd_jeniscuti_khusus', 'hrd_izincuti.kode_cuti_khusus', '=', 'hrd_jeniscuti_khusus.kode_cuti_khusus')
+
+            ->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi')
+            ->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit')
+
+            ->where('hrd_presensi.tanggal', $tanggal);
+
+        // dd($subqueryPresensi->get());
         // Tampilkan Departemen dan Group
         if (!$user->hasRole($roles_access_all_karyawan)) {
             if (auth()->user()->kode_cabang != 'PST') {
@@ -51,9 +109,41 @@ class PresensiController extends Controller
         }
 
         $query = Karyawan::query();
+        $query->select(
+            'hrd_karyawan.nik',
+            'hrd_karyawan.nama_karyawan',
+            'hrd_karyawan.kode_dept',
+            'hrd_karyawan.kode_cabang',
+            'hrd_karyawan.kode_jabatan',
+            'presensi.kode_jadwal',
+            'presensi.nama_jadwal',
+            'presensi.jam_mulai',
+            'presensi.jam_selesai',
+            'presensi.jam_in',
+            'presensi.jam_out',
+            'presensi.status_kehadiran',
+            'presensi.tanggal',
+            'presensi.kode_izin_keluar',
+            'presensi.jam_keluar',
+            'presensi.jam_kembali',
+            'presensi.istirahat',
+            'presensi.jam_awal_istirahat',
+            'presensi.jam_akhir_istirahat',
+            'presensi.lintashari',
+
+            'presensi.kode_izin_terlambat',
+
+            'presensi.doc_sid',
+
+
+            'presensi.total_jam'
+        );
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
         $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftjoinSub($subqueryPresensi, 'presensi', function ($join) {
+            $join->on('hrd_karyawan.nik', '=', 'presensi.nik');
+        });
         if (!$user->hasRole($roles_access_all_karyawan)) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);

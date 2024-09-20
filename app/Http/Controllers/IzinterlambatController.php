@@ -132,6 +132,7 @@ class IzinterlambatController extends Controller
     public function update(Request $request, $kode_izin_terlambat)
     {
         $kode_izin_terlambat = Crypt::decrypt($kode_izin_terlambat);
+        // dd($kode_izin_terlambat);
         $request->validate([
             'tanggal' => 'required',
             'jam_terlambat' => 'required',
