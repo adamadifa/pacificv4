@@ -412,6 +412,21 @@ function calculateMonths($date1, $date2)
     return $months + 1;
 }
 
+
+function calculateMonthsKontrak($date1, $date2)
+{
+
+    // Parsing tanggal
+    $date1 = Carbon::parse($date1);
+    $date2 = Carbon::parse($date2);
+
+    // Menghitung jumlah bulan
+    $months = $date1->diffInMonths($date2);
+
+    // Mengembalikan hasil sebagai JSON
+    return $months;
+}
+
 function hitungJumlahHari($tanggal_awal, $tanggal_akhir)
 {
     $start_date = Carbon::parse($tanggal_awal);

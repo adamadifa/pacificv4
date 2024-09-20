@@ -435,23 +435,31 @@ function hitungjamterlambat($jam_in, $jam_mulai, $kode_izin_terlambat)
                 $color_terlambat = 'text-danger';
                 $desimal_terlambat = $desimal_terlambat;
             }
-            if (!empty($kode_izin_terlambat)) {
-                return [
-                    'keterangan_terlambat' => $keterangan_terlambat,
-                    'jamterlambat' => $jamterlambat,
-                    'menitterlambat' => $menitterlambat,
-                    'desimal_terlambat' => 0,
-                    'color_terlambat' => 'text-success'
-                ];
-            } else {
-                return [
-                    'keterangan_terlambat' => $keterangan_terlambat,
-                    'jamterlambat' => $jamterlambat,
-                    'menitterlambat' => $menitterlambat,
-                    'desimal_terlambat' => $desimal_terlambat,
-                    'color_terlambat' => $color_terlambat
-                ];
-            }
+            // if (!empty($kode_izin_terlambat)) {
+            //     return [
+            //         'keterangan_terlambat' => $keterangan_terlambat,
+            //         'jamterlambat' => $jamterlambat,
+            //         'menitterlambat' => $menitterlambat,
+            //         'desimal_terlambat' => 0,
+            //         'color_terlambat' => 'text-success'
+            //     ];
+            // } else {
+            //     return [
+            //         'keterangan_terlambat' => $keterangan_terlambat,
+            //         'jamterlambat' => $jamterlambat,
+            //         'menitterlambat' => $menitterlambat,
+            //         'desimal_terlambat' => $desimal_terlambat,
+            //         'color_terlambat' => $color_terlambat
+            //     ];
+            // }
+
+            return [
+                'keterangan_terlambat' => $keterangan_terlambat,
+                'jamterlambat' => $jamterlambat,
+                'menitterlambat' => $menitterlambat,
+                'desimal_terlambat' => $desimal_terlambat,
+                'color_terlambat' => $color_terlambat
+            ];
         } else {
             return [];
         }

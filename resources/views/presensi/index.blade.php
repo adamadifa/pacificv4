@@ -65,6 +65,7 @@
                                         <th class="text-center">Keluar</th>
                                         <th class="text-center">Terlambat</th>
                                         <th class="text-center">Total</th>
+                                        <th class="text-center">#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -144,9 +145,18 @@
                                                 @if (!empty($jam_out) && $jam_out < $jam_selesai)
                                                     @php
                                                         $pc = hitungpulangcepat($jam_out, $jam_selesai);
-                                                        $potongan_pc = $pc['desimal_pulangcepat'];
                                                     @endphp
-                                                    <span class="text-danger">(PC : {{ $pc['desimal_pulangcepat'] }})</span>
+                                                    @if (!empty($d->kode_izin_pulang) && $d->izin_pulang_direktur == '1')
+                                                        @php
+                                                            $potongan_pc = 0;
+                                                        @endphp
+                                                        <span class="text-success">(PC : {{ $pc['desimal_pulangcepat'] }})</span>
+                                                    @else
+                                                        @php
+                                                            $potongan_pc = $pc['desimal_pulangcepat'];
+                                                        @endphp
+                                                        <span class="text-danger">(PC : {{ $pc['desimal_pulangcepat'] }})</span>
+                                                    @endif
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -154,18 +164,32 @@
                                                     @if ($d->status_kehadiran == 'h')
                                                         <span class="badge bg-success">H</span>
                                                     @elseif ($d->status_kehadiran == 'i')
-                                                        @php
-                                                            $potongan_izin = $d->total_jam;
-                                                        @endphp
-                                                        <span class="badge bg-info">I</span>
+                                                        @if ($d->izin_absen_direktur == '1')
+                                                            @php
+                                                                $potongan_izin = 0;
+                                                            @endphp
+                                                            <span class="badge bg-info">I(D)</span>
+                                                        @else
+                                                            @php
+                                                                $potongan_izin = $d->total_jam;
+                                                            @endphp
+                                                            <span class="badge bg-info">I</span>
+                                                        @endif
                                                     @elseif ($d->status_kehadiran == 's')
                                                         @if (!empty($d->doc_sid))
                                                             <span class="badge bg-info">SID</span>
                                                         @else
-                                                            @php
-                                                                $potongan_sakit = $d->total_jam;
-                                                            @endphp
-                                                            <span class="badge bg-warning">S</span>
+                                                            @if ($d->izin_sakit_direktur == '1')
+                                                                @php
+                                                                    $potongan_sakit = 0;
+                                                                @endphp
+                                                                <span class="badge bg-warning">S(D)</span>
+                                                            @else
+                                                                @php
+                                                                    $potongan_sakit = $d->total_jam;
+                                                                @endphp
+                                                                <span class="badge bg-warning">S</span>
+                                                            @endif
                                                         @endif
                                                     @elseif ($d->status_kehadiran == 'a')
                                                         <span class="badge bg-danger">A</span>
@@ -192,13 +216,32 @@
                                                             $jam_awal_istirahat,
                                                             $jam_akhir_istirahat,
                                                         );
-                                                        $potongan_jamkeluar = $keluarkantor['desimaljamkeluar'];
-
                                                     @endphp
-                                                    {{-- {{ $jam_kembali }} --}}
-                                                    <span class="{{ $keluarkantor['color'] }}">
-                                                        {{ $keluarkantor['totaljamkeluar'] }} ({{ $keluarkantor['desimaljamkeluar'] }})
-                                                    </span>
+                                                    @if ($d->izin_keluar_direktur == '1')
+                                                        <span class="text-success">
+                                                            {{ $keluarkantor['totaljamkeluar'] }} ({{ $keluarkantor['desimaljamkeluar'] }})
+                                                        </span>
+                                                        @php
+                                                            $potongan_jamkeluar = 0;
+                                                        @endphp
+                                                    @else
+                                                        @if ($d->keperluan == 'K')
+                                                            <span class="text-success">
+                                                                {{ $keluarkantor['totaljamkeluar'] }} ({{ $keluarkantor['desimaljamkeluar'] }})
+                                                            </span>
+                                                            @php
+                                                                $potongan_jamkeluar = 0;
+                                                            @endphp
+                                                        @else
+                                                            @php
+                                                                $potongan_jamkeluar = $keluarkantor['desimaljamkeluar'];
+                                                            @endphp
+                                                            {{-- {{ $jam_kembali }} --}}
+                                                            <span class="{{ $keluarkantor['color'] }}">
+                                                                {{ $keluarkantor['totaljamkeluar'] }} ({{ $keluarkantor['desimaljamkeluar'] }})
+                                                            </span>
+                                                        @endif
+                                                    @endif
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -207,20 +250,32 @@
                                                 @endphp
 
                                                 @if (!empty($terlambat))
-                                                    @php
-                                                        $denda = hitungdenda(
-                                                            $terlambat['jamterlambat'],
-                                                            $terlambat['menitterlambat'],
-                                                            $d->kode_izin_terlambat,
-                                                            $d->kode_dept,
-                                                        );
-                                                        $potongan_terlambat = $terlambat['desimal_terlambat'];
-                                                    @endphp
-                                                    <span class="{{ $terlambat['color_terlambat'] }}">
-                                                        {{ $terlambat['keterangan_terlambat'] }}
-                                                        {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
-                                                        {{ !empty($denda['denda']) ? '(' . formatAngka($denda['denda']) . ')' : '' }}
-                                                    </span>
+                                                    @if (!empty($d->kode_izin_terlambat) && $d->izin_terlambat_direktur == '1')
+                                                        @php
+                                                            $potongan_terlambat = 0;
+                                                            $potongan_denda = 0;
+                                                        @endphp
+                                                        <span class="text-success">
+                                                            {{ $terlambat['keterangan_terlambat'] }}
+                                                            {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
+                                                            {{-- {{ '(' . formatAngka($potongan_denda) . ')' }} --}}
+                                                        </span>
+                                                    @else
+                                                        @php
+                                                            $denda = hitungdenda(
+                                                                $terlambat['jamterlambat'],
+                                                                $terlambat['menitterlambat'],
+                                                                $d->kode_izin_terlambat,
+                                                                $d->kode_dept,
+                                                            );
+                                                            $potongan_terlambat = $terlambat['desimal_terlambat'];
+                                                        @endphp
+                                                        <span class="{{ $terlambat['color_terlambat'] }}">
+                                                            {{ $terlambat['keterangan_terlambat'] }}
+                                                            {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
+                                                            {{ !empty($denda['denda']) ? '(' . formatAngka($denda['denda']) . ')' : '' }}
+                                                        </span>
+                                                    @endif
                                                 @else
                                                     <span class="badge bg-success">Tepat Waktu</span>
                                                 @endif
@@ -236,6 +291,13 @@
                                                         $potongan_izin;
                                                 @endphp
                                                 {{ $total_jam }}
+                                            </td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a href="#" id="btngetDatamesin">
+                                                        <i class="ti ti-device-desktop text-primary"></i>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

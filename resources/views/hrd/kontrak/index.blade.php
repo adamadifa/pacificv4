@@ -66,7 +66,7 @@
                                 <tbody>
                                     @foreach ($kontrak as $d)
                                         @php
-                                            $lamabulan = calculateMonths($d->dari, $d->sampai);
+                                            $lamabulan = calculateMonthsKontrak($d->dari, $d->sampai);
                                             $color_kontrak = $d->status_kontrak === '0' ? 'bg-danger text-white' : '';
                                         @endphp
                                         <tr class="{{ $color_kontrak }}">

@@ -36,10 +36,20 @@ class PresensiController extends Controller
             'hrd_jamkerja.lintashari',
             'hrd_karyawan.kode_jabatan',
             'hrd_karyawan.kode_dept',
+
             'hrd_presensi_izinterlambat.kode_izin_terlambat',
+            'hrd_izinterlambat.direktur as izin_terlambat_direktur',
+
             'hrd_presensi_izinkeluar.kode_izin_keluar',
+            'hrd_izinkeluar.direktur as izin_keluar_direktur',
+            'hrd_izinkeluar.keperluan',
+
             'hrd_izinkeluar.jam_keluar',
             'hrd_izinkeluar.jam_kembali',
+
+            'hrd_presensi_izinsakit.kode_izin_sakit',
+            'hrd_izinsakit.direktur as izin_sakit_direktur',
+
             'hrd_jamkerja.total_jam',
             'hrd_jamkerja.istirahat',
             'hrd_jamkerja.jam_awal_istirahat',
@@ -50,7 +60,12 @@ class PresensiController extends Controller
             // 'hrd_presensi.status',
             'nama_cuti',
             'nama_cuti_khusus',
-            'doc_sid'
+            'doc_sid',
+
+            'hrd_izinpulang.direktur as izin_pulang_direktur',
+
+            'hrd_presensi_izinabsen.kode_izin as kode_izin_absen',
+            'hrd_izinabsen.direktur as izin_absen_direktur'
         )
 
 
@@ -74,6 +89,9 @@ class PresensiController extends Controller
 
             ->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi')
             ->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit')
+
+            ->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi')
+            ->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin')
 
             ->where('hrd_presensi.tanggal', $tanggal);
 
@@ -131,10 +149,22 @@ class PresensiController extends Controller
             'presensi.jam_akhir_istirahat',
             'presensi.lintashari',
 
-            'presensi.kode_izin_terlambat',
+            'presensi.kode_izin_keluar',
+            'presensi.izin_keluar_direktur',
+            'presensi.keperluan',
 
+            'presensi.kode_izin_terlambat',
+            'presensi.izin_terlambat_direktur',
+
+            'presensi.kode_izin_sakit',
+            'presensi.izin_sakit_direktur',
             'presensi.doc_sid',
 
+            'presensi.kode_izin_pulang',
+            'presensi.izin_pulang_direktur',
+
+            'presensi.kode_izin_absen',
+            'presensi.izin_absen_direktur',
 
             'presensi.total_jam'
         );

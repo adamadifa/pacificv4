@@ -159,7 +159,7 @@
             <ol>
                 <li>
                     @php
-                        $jmlbulan = calculateMonths($kontrak->dari, $kontrak->sampai);
+                        $jmlbulan = calculateMonthsKontrak($kontrak->dari, $kontrak->sampai);
                     @endphp
                     Perjanjian kerja ini berlaku <b>{{ $jmlbulan }} Bulan</b>, terhitung dari tanggal <b>{{ DateToIndo($kontrak->dari) }}</b>
                     sampai dengan
