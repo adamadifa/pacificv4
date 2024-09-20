@@ -514,38 +514,38 @@ function formatName($fullName)
 function pihakpertamacabang($cabang, $perusahaan)
 {
     $kepalaadmin = [
-        'PWT' => 'Dimas Suteja',
+        'PWT' => 'Galuh Setiaji W',
         'BTN' => 'Anif Ardiana',
-        'BDG' => 'M. Hirzam Purnama Dimas',
+        'BDG' => 'Rahmayanti',
         'SKB' => 'Aceng Cahya Sugianto',
         'TGL' => 'Rosihul Iman',
-        'SBY' => 'Excel Delvara Bachriandy',
+        'SBY' => 'Angga Wahyu P',
         'SMR' => 'Muh. Fahmi Fadil',
         'KLT' => 'Fikkry Yusuf',
         'BGR' => 'Rani Silviana',
         'GRT' => 'Nurman Susila',
-        'BKI' => 'Wahib Al Aziz',
-        'PWK' => 'Ricky Irawan',
-        'TSM' => 'Sri Maharani',
-        'TGR' => 'Excel'
+        'BKI' => 'Fandrias Anggoro',
+        'PWK' => 'M. Hirzam Purnama',
+        'TSM' => 'Dade Gunawan',
+        'TGR' => 'Excel Delvara'
     ];
 
 
     $kepalapenjualan = [
-        'PWT' => 'Aria Permana Wiguna',
+        'PWT' => 'Yeni Listiana S',
         'TGR' => 'Bagus Eka Winarno',
         'BDG' => 'Oki Rahmat Effendy',
-        'SKB' => 'Agus Hanafi',
+        'SKB' => 'Asep Yusuf',
         'TGL' => 'Imam Syafangat',
         'SBY' => 'Stefanus Bayu',
         'SMR' => 'Muhammad Luthfi Amri',
         'KLT' => 'Alip Aswanto',
-        'BGR' => 'Muhammad Iqbal',
+        'BGR' => 'Muhammad Nuarry Iqbal',
         'GRT' => 'Radea Feryzal, ST',
-        'BKI' => 'Yohanes Dewangkorojati',
+        'BKI' => 'Sumarido Tanjung',
         'PWK' => 'Alek Wijaya',
         'TSM' => 'Aceng Saepul Anwar',
-        'BTN' => 'Robi Andes'
+        'BTN' => 'Muhammad Rizky'
     ];
 
     if ($perusahaan == "MP") {
