@@ -1761,7 +1761,7 @@ class LaporanmarketingController extends Controller
         );
         $qdetailpenjualan->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qdetailpenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $qdetailpenjualan->join('salesman', 'pelangagn.kode_salesman', '=', 'salesman.kode_salesman');
+        $qdetailpenjualan->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $qdetailpenjualan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $qdetailpenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         if (!empty($kode_cabang)) {
