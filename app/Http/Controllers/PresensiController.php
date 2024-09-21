@@ -219,7 +219,7 @@ class PresensiController extends Controller
         }
         $query->where('status_aktif_karyawan', 1);
         $query->orderBy('nama_karyawan', 'asc');
-        $karyawan = $query->paginate(15);
+        $karyawan = $query->paginate(50);
         $karyawan->appends($request->all());
         $data['karyawan'] = $karyawan;
         $data['tanggal'] = $tanggal;
