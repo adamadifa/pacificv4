@@ -47,7 +47,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $d->no_kasbon }}</td>
-                        <td>{{ $d->nik }}</td>
+                        <td>'{{ $d->nik }}</td>
                         <td>{{ textUpperCase($d->nama_karyawan) }}</td>
                         <td>{{ textUpperCase($d->kode_dept) }}</td>
                         <td>{{ textUpperCase($d->kode_cabang) }}</td>
