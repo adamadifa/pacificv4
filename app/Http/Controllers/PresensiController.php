@@ -229,6 +229,8 @@ class PresensiController extends Controller
         // }
 
         $data['dataliburnasional'] = getdataliburnasional($tanggal, $tanggal);
+        $data['datadirumahkan'] = getdirumahkan($tanggal, $tanggal);
+        $data['dataliburpengganti'] = getliburpengganti($tanggal, $tanggal);
         // var_dump($data['dataliburnasional']);
         return view('presensi.index', $data);
     }

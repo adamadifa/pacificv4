@@ -115,12 +115,14 @@
                                                 $jam_akhir_istirahat = null;
                                             }
 
-                                            $search_harilibur_nasional = [
+                                            $search = [
                                                 'nik' => $d->nik,
                                                 'tanggal' => $tanggal,
                                             ];
 
-                                            $cekliburnasional = ceklibur($dataliburnasional, $search_harilibur_nasional); // Cek Libur Nasional
+                                            $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
+                                            $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
+                                            $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
 
                                         @endphp
                                         <tr>
@@ -142,6 +144,25 @@
                                                             }
                                                         @endphp
                                                         <span class="badge bg-success">Libur Nasional</span>
+                                                    @elseif(!empty($cekdirumahkan))
+                                                        @php
+                                                            if (getNamahari($tanggal) == 'Sabtu') {
+                                                                $total_jam_libur = 2.5;
+                                                            } else {
+                                                                $total_jam_libur = 3.5;
+                                                            }
+                                                        @endphp
+                                                        <span class="badge bg-info">Dirumahkan</span>
+                                                    @elseif(!empty($cekliburpengganti))
+                                                        @php
+                                                            if (getNamahari($tanggal) == 'Sabtu') {
+                                                                $total_jam_libur = 5;
+                                                            } else {
+                                                                $total_jam_libur = 7;
+                                                            }
+                                                        @endphp
+                                                        <span class="badge bg-info">Libur Pengganti Tgl
+                                                            {{ formatIndo($cekliburpengganti[0]['tanggal_diganti']) }}</span>
                                                     @else
                                                         @php
                                                             $total_jam_libur = 0;
