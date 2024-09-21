@@ -80,10 +80,13 @@
                                             $potongan_terlambat = 0;
                                             $potongan_sakit = 0;
                                             $potongan_izin = 0;
+                                            $total_jam_kerja = $d->total_jam;
+
                                             //Tanggal Selesai Jam Kerja Jika Lintas Hari Maka Tanggal Presensi + 1 Hari
                                             $tanggal_selesai =
                                                 $d->lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($d->tanggal))) : $d->tanggal;
 
+                                            //Jam Absen Masuk dan Pulang
                                             $jam_in = !empty($d->jam_in) ? date('Y-m-d H:i', strtotime($d->jam_in)) : '';
                                             $jam_out = !empty($d->jam_out) ? date('Y-m-d H:i', strtotime($d->jam_out)) : '';
 
@@ -91,6 +94,7 @@
                                             $j_mulai = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_mulai));
                                             $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
 
+                                            //Jadwal SPG
                                             //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
                                             $jam_mulai = $d->kode_jabatan == 'J22' ? $d->jam_in : $j_mulai;
                                             $jam_selesai = $d->kode_jabatan == 'J22' ? $d->jam_out : $j_selesai;
@@ -120,9 +124,11 @@
                                                 'tanggal' => $tanggal,
                                             ];
 
+                                            //Cek Hari Libur , Dirumahkan , Lbur  Pengganti, atau Tanggal 5 Jam
                                             $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
                                             $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
                                             $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
+                                            $cektanggallimajam = ceklibur($datatanggallimajam, $search);
 
                                         @endphp
                                         <tr>
@@ -131,35 +137,40 @@
                                             <td>{{ $d->kode_dept }}</td>
                                             <td>{{ $d->kode_cabang }}</td>
                                             <td>
+
+                                                <!--Jika Jadwal Tidak Kosong Tampilkan Nama Jadawal dan Jadwal Masuk dan Jadwal Pulang-->
                                                 @if (!empty($d->kode_jadwal))
                                                     {{ $d->nama_jadwal }}
                                                     ({{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }})
                                                 @else
+                                                    <!-- Jika Jadwal Kosong Maka Cek Apakah tanggal Tersebut Libur-->
                                                     @if (!empty($cekliburnasional))
                                                         @php
-                                                            if (getNamahari($tanggal) == 'Sabtu') {
-                                                                $total_jam_libur = 5;
-                                                            } else {
-                                                                $total_jam_libur = 7;
-                                                            }
+                                                            //Jika Libur Nasional Cek Nama Hari Jika Hari Sabtu Maka Total Jam Kerja 5 Jam Selain Itu 7 jam
+                                                            $total_jam_libur = 7;
                                                         @endphp
                                                         <span class="badge bg-success">Libur Nasional</span>
                                                     @elseif(!empty($cekdirumahkan))
                                                         @php
+                                                            //Jika Dirumahkan
                                                             if (getNamahari($tanggal) == 'Sabtu') {
+                                                                //Jika Hari Sabtu Maka Total Jam adalah 2.5 Jam
                                                                 $total_jam_libur = 2.5;
                                                             } else {
-                                                                $total_jam_libur = 3.5;
+                                                                //Jika Bukan Hari Sabtu, Maka Cek Apakah Tanggal Tersebut Adalah Tanggal Yang Di Ubah Menjadi 5 Jam Karena Besoknya Libur Nasional
+                                                                if (!empty($cektanggallimajam)) {
+                                                                    //Jika Tanggal Yang di  Ubah Menjadi 5 Jam Kerja Maka Total Jam Menjadi 2.5
+                                                                    $total_jam_libur = 2.5;
+                                                                } else {
+                                                                    $total_jam_libur = 3.5;
+                                                                }
                                                             }
                                                         @endphp
                                                         <span class="badge bg-info">Dirumahkan</span>
                                                     @elseif(!empty($cekliburpengganti))
                                                         @php
-                                                            if (getNamahari($tanggal) == 'Sabtu') {
-                                                                $total_jam_libur = 5;
-                                                            } else {
-                                                                $total_jam_libur = 7;
-                                                            }
+                                                            //Jika Hari ini Libur , menggantikan Libur hari Minggu Maka Total Jam adalah 0
+                                                            $total_jam_libur = 0;
                                                         @endphp
                                                         <span class="badge bg-info">Libur Pengganti Tgl
                                                             {{ formatIndo($cekliburpengganti[0]['tanggal_diganti']) }}</span>

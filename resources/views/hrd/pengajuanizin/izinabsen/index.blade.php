@@ -280,7 +280,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{-- {{ $barangmasuk->links() }} --}}
+                                {{ $izinabsen->links() }}
                             </div>
                         </div>
                     </div>

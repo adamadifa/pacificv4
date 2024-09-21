@@ -217,6 +217,7 @@ class PresensiController extends Controller
         if (!empty($request->nama_karyawan)) {
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
         }
+        $query->where('status_aktif_karyawan', 1);
         $query->orderBy('nama_karyawan', 'asc');
         $karyawan = $query->paginate(15);
         $karyawan->appends($request->all());
@@ -231,6 +232,7 @@ class PresensiController extends Controller
         $data['dataliburnasional'] = getdataliburnasional($tanggal, $tanggal);
         $data['datadirumahkan'] = getdirumahkan($tanggal, $tanggal);
         $data['dataliburpengganti'] = getliburpengganti($tanggal, $tanggal);
+        $data['datatanggallimajam'] = gettanggallimajam($tanggal, $tanggal);
         // var_dump($data['dataliburnasional']);
         return view('presensi.index', $data);
     }
