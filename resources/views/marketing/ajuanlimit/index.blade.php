@@ -127,7 +127,7 @@
                                                     @php
                                                         $selisih = $d->jumlah - $d->jumlah_rekomendasi;
                                                         $selisih = $selisih < 0 ? $selisih * -1 : $selisih;
-                                                        $persentase = ($selisih / $d->jumlah) * 100;
+                                                        $persentase = !empty($d->jumlah) ? ($selisih / $d->jumlah) * 100 : 0;
                                                     @endphp
                                                     @can('ajuanlimit.adjust')
                                                         @if (empty($d->jumlah_rekomendasi))
