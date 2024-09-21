@@ -41,15 +41,17 @@
                     <option value="">Jam Kerja</option>
                 </select>
             </div>
-            <div class="row">
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <x-input-with-icon icon="ti ti-clock " label="Jam Masuk" name="jam_in" value="{{ date('H:i', strtotime($presensi->jam_in)) }}" />
+            @hasanyrole(['super admin', 'asst. manager hrd', 'spv presensi'])
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <x-input-with-icon icon="ti ti-clock " label="Jam Masuk" name="jam_in" value="{{ date('H:i', strtotime($presensi->jam_in)) }}" />
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <x-input-with-icon icon="ti ti-clock " label="Jam Keluar" name="jam_out"
+                            value="{{ date('H:i', strtotime($presensi->jam_out)) }}" />
+                    </div>
                 </div>
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <x-input-with-icon icon="ti ti-clock " label="Jam Keluar" name="jam_out"
-                        value="{{ date('H:i', strtotime($presensi->jam_out)) }}" />
-                </div>
-            </div>
+            @endhasanyrole
             <div class="form-group mb-3">
                 <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Update Presensi</button>
             </div>

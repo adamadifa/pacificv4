@@ -36,6 +36,7 @@
             'izinpulang',
             'izindinas',
             'izinterlambat',
+            'presensi',
         ])
             ? 'open'
             : '' }}">
@@ -91,6 +92,13 @@
                 <li class="menu-item {{ request()->is(['presensi', 'presensi/*']) ? 'active' : '' }}">
                     <a href="{{ route('presensi.index') }}" class="menu-link">
                         <div>Monitoring Presensi</div>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission(['presensi.index']))
+                <li class="menu-item {{ request()->is(['presensikaryawan']) ? 'active' : '' }}">
+                    <a href="{{ route('presensi.presensikaryawan') }}" class="menu-link">
+                        <div>Presensi Karyawan</div>
                     </a>
                 </li>
             @endif

@@ -116,7 +116,7 @@
                             <td>{{ $d->keterangan }}</td>
                             <td class="center">{{ $d->jenis_transaksi }}</td>
                             <td class="center">{{ $d->kode_cabang }}</td>
-                            <td class="center">{{ $d->kode_akun }}</td>
+                            <td class="center">'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
                             <td class="center">{!! $cekppn !!}</td>
                             <td class="right">{{ formatAngkaDesimal($d->jumlah) }}</td>

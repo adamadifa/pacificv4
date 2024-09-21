@@ -1778,6 +1778,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(PresensiController::class)->group(function () {
         Route::get('/presensi', 'index')->name('presensi.index')->can('presensi.index');
+        Route::get('/presensikaryawan', 'presensikaryawan')->name('presensi.presensikaryawan')->can('presensi.index');
         Route::post('/presensi/getdatamesin', 'getdatamesin')->name('presensi.getdatamesin')->can('presensi.index');
         Route::post('/presensi/{pin}/{status_scan}/updatefrommachine', 'updatefrommachine')->name('presensi.updatefrommachine')->can('presensi.index');
         Route::post('/presensi/koreksipresensi', 'koreksipresensi')->name('presensi.koreksipresensi')->can('presensi.index');
