@@ -2,8 +2,11 @@
 
 // Cek Role Approve Penilaian
 
+use App\Models\Detailharilibur;
+use App\Models\Harilibur;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabatan = "")
 {
@@ -47,6 +50,8 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
     } else {
         $roles_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     }
+
+
 
     return $roles_approve;
 }
@@ -563,4 +568,66 @@ function hitungpulangcepat($jam_out, $jam_selesai)
             'desimal_pulangcepat' => 0
         ];
     }
+}
+
+
+
+function getdataliburnasional($dari, $sampai)
+{
+    $no = 1;
+    $libur = [];
+    $ceklibur = Detailharilibur::select(
+        'nik',
+        'tanggal',
+        'kode_cabang',
+        'keterangan',
+        'tanggal_limajam'
+    )
+        ->leftJoin('hrd_harilibur', 'hrd_harilibur_detail.kode_libur', '=', 'hrd_harilibur.kode_libur')
+        ->where('kategori', 1)
+        ->whereBetween('tanggal', [$dari, $sampai])->get();
+
+    foreach ($ceklibur as $d) {
+        $libur[] = [
+            'nik' => $d->nik,
+            'kode_cabang' => $d->kode_cabang,
+            'tanggal' => $d->tanggal,
+            'tanggal_limajam' => $d->tanggal_limajam,
+            'keterangan' => $d->keterangan
+        ];
+    }
+
+    return $libur;
+}
+
+
+function ceklibur($array, $search_list)
+{
+
+    // Create the result array
+    $result = array();
+
+    // Iterate over each array element
+    foreach ($array as $key => $value) {
+
+        // Iterate over each search condition
+        foreach ($search_list as $k => $v) {
+
+            // If the array element does not meet
+            // the search condition then continue
+            // to the next element
+            if (!isset($value[$k]) || $value[$k] != $v) {
+
+                // Skip two loops
+                continue 2;
+            }
+        }
+
+        // Append array element's key to the
+        //result array
+        $result[] = $value;
+    }
+
+    // Return result
+    return $result;
 }

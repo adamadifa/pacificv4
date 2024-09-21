@@ -31,6 +31,7 @@ class PresensiController extends Controller
         $cabang = $cbg->getCabang();
         $tanggal = !empty($request->tanggal) ? $request->tanggal : date('Y-m-d');
 
+        $data['cabang'] = $cabang;
         //Subquery Presensi
         $subqueryPresensi = Presensi::select(
             'hrd_presensi.nik',
@@ -135,6 +136,9 @@ class PresensiController extends Controller
             $group = Group::orderBy('kode_group')->get();
         }
 
+        $data['departemen'] = $departemen;
+        $data['group'] = $group;
+
         $query = Karyawan::query();
         $query->select(
             'hrd_karyawan.nik',
@@ -216,7 +220,17 @@ class PresensiController extends Controller
         $query->orderBy('nama_karyawan', 'asc');
         $karyawan = $query->paginate(15);
         $karyawan->appends($request->all());
-        return view('presensi.index', compact('cabang', 'departemen', 'group', 'karyawan'));
+        $data['karyawan'] = $karyawan;
+        $data['tanggal'] = $tanggal;
+
+        // if (!empty($request->tanggal)) {
+        //
+        //     dd($data['harilibur']);
+        // }
+
+        $data['dataliburnasional'] = getdataliburnasional($tanggal, $tanggal);
+        // var_dump($data['dataliburnasional']);
+        return view('presensi.index', $data);
     }
 
 
@@ -551,7 +565,7 @@ class PresensiController extends Controller
         $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
 
         $cbg = new Cabang();
-        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cbg->getCabang();
         $tanggal = !empty($request->tanggal) ? $request->tanggal : date('Y-m-d');
 
         //Subquery Presensi
@@ -658,6 +672,9 @@ class PresensiController extends Controller
             $group = Group::orderBy('kode_group')->get();
         }
 
+        $data['departemen'] = $departemen;
+        $data['group'] = $group;
+
         $query = Karyawan::query();
         $query->select(
             'hrd_karyawan.nik',
@@ -735,7 +752,7 @@ class PresensiController extends Controller
 
         $query->where('hrd_karyawan.nik', $request->nik);
         $query->orderBy('nama_karyawan', 'asc');
-        $karyawan = $query->get();
+        $data['karyawan'] = $query->get();
 
 
         $qkaryawan = Karyawan::query();
@@ -751,7 +768,8 @@ class PresensiController extends Controller
             }
         }
         $qkaryawan->orderBy('nama_karyawan');
-        $listkaryawan = $qkaryawan->get();
-        return view('presensi.presensikaryawan',  compact('cabang', 'departemen', 'group', 'karyawan', 'listkaryawan'));
+        $data['listkaryawan'] = $qkaryawan->get();
+
+        return view('presensi.presensikaryawan',  $data);
     }
 }

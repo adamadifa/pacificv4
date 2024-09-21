@@ -70,9 +70,10 @@
                                 </thead>
                                 <tbody>
                                     @php
-
+                                        $total_jam_libur = 0;
                                     @endphp
                                     @foreach ($karyawan as $d)
+
                                         @php
                                             $potongan_pc = 0;
                                             $potongan_jamkeluar = 0;
@@ -113,9 +114,17 @@
                                                 $jam_awal_istirahat = null;
                                                 $jam_akhir_istirahat = null;
                                             }
+
+                                            $search_harilibur_nasional = [
+                                                'nik' => $d->nik,
+                                                'tanggal' => $tanggal,
+                                            ];
+
+                                            $cekliburnasional = ceklibur($dataliburnasional, $search_harilibur_nasional); // Cek Libur Nasional
+
                                         @endphp
                                         <tr>
-                                            <td>{{ $d->nik }}</td>
+                                            <td>{{ $d->nik }} </td>
                                             <td>{{ formatName($d->nama_karyawan) }}</td>
                                             <td>{{ $d->kode_dept }}</td>
                                             <td>{{ $d->kode_cabang }}</td>
@@ -124,7 +133,21 @@
                                                     {{ $d->nama_jadwal }}
                                                     ({{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }})
                                                 @else
-                                                    <span class="badge bg-danger">Belum Absen</span>
+                                                    @if (!empty($cekliburnasional))
+                                                        @php
+                                                            if (getNamahari($tanggal) == 'Sabtu') {
+                                                                $total_jam_libur = 5;
+                                                            } else {
+                                                                $total_jam_libur = 7;
+                                                            }
+                                                        @endphp
+                                                        <span class="badge bg-success">Libur Nasional</span>
+                                                    @else
+                                                        @php
+                                                            $total_jam_libur = 0;
+                                                        @endphp
+                                                        <span class="badge bg-danger">Belum Absen</span>
+                                                    @endif
                                                 @endif
 
                                             </td>
@@ -285,7 +308,8 @@
                                             <td class="text-center">
                                                 @php
                                                     $total_jam =
-                                                        $d->total_jam -
+                                                        $d->total_jam +
+                                                        $total_jam_libur -
                                                         $potongan_jamkeluar -
                                                         $potongan_terlambat -
                                                         $potongan_pc -
