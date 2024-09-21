@@ -5,7 +5,7 @@
                 <table class="table">
                     <tr>
                         <th>No. Pinjaman</th>
-                        <td class="text-end">{{ $piutangkaryawan->no_pinjaman }}</td>
+                        <td class="text-end" id="no_pinjaman_val">{{ $piutangkaryawan->no_pinjaman }}</td>
                     </tr>
                     <tr>
                         <th>Tanggal</th>
@@ -116,6 +116,7 @@
             let jml = $(this).find('input[name="jumlah"]').val();
             let jumlah = jml != "" ? jml.replace(/\./g, '') : 0;
             let tagihan = sisatagihan != "" ? sisatagihan.replace(/\./g, '') : 0;
+            let no_pinjaman = $("#no_pinjaman_val").text();
             //alert(tagihan + "=" + jumlah);
             if (jenis_bayar == "") {
                 Swal.fire({
@@ -178,7 +179,7 @@
                     url: '/pembayaranpiutangkaryawan/store',
                     data: {
                         _token: "{{ csrf_token() }}",
-                        no_pinjaman: "{{ $piutangkaryawan->no_pinjaman }}",
+                        no_pinjaman: no_pinjaman,
                         jenis_bayar: jenis_bayar,
                         bulan: bulan,
                         tahun: tahun,

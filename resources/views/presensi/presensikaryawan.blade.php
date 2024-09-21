@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <form action="{{ route('presensi.index') }}">
+                        <form action="{{ route('presensi.presensikaryawan') }}">
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
                                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
@@ -24,29 +24,15 @@
                                         datepicker="flatpickr-date" />
                                 </div>
                             </div>
-                            @hasanyrole($roles_show_cabang)
-                                <div class="row">
-                                    <div class="col-lg-12 col-sm-12 col-md-12">
-                                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                            selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" />
-                                    </div>
-                                </div>
-                            @endhasanyrole
-                            <div class="row">
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan"
-                                        icon="ti ti-search" />
-                                </div>
 
-                                <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                                        selected="{{ Request('kode_dept') }}" upperCase="true" select2="select2Kodedeptsearch" />
-                                </div>
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
-                                        selected="{{ Request('kode_group') }}" upperCase="true" />
-                                </div>
-
+                            <div class="form-group mb-3">
+                                <select name="nik" id="nik" class="form-select select2Nik">
+                                    <option value="">Pilih Karyawan</option>
+                                    @foreach ($listkaryawan as $d)
+                                        <option {{ Request('nik') == $d->nik ? 'selected' : '' }} value="{{ $d->nik }}">{{ $d->nik }} -
+                                            {{ $d->nama_karyawan }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
@@ -62,6 +48,7 @@
                             <table class="table table-bordered">
                                 <thead class="table-dark">
                                     <tr>
+                                        <th>Tanggal</th>
                                         <th>NIK</th>
                                         <th>Nama Karyawan</th>
                                         <th>Dept</th>
@@ -123,6 +110,7 @@
                                             }
                                         @endphp
                                         <tr>
+                                            <td>{{ formatIndo($d->tanggal) }}</td>
                                             <td>{{ $d->nik }}</td>
                                             <td>{{ formatName($d->nama_karyawan) }}</td>
                                             <td>{{ $d->kode_dept }}</td>
@@ -351,6 +339,18 @@
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
                     placeholder: 'Semua Cabang',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
+        const select2Nik = $('.select2Nik');
+        if (select2Nik.length) {
+            select2Nik.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Pilih Karyawan',
                     allowClear: true,
                     dropdownParent: $this.parent()
                 });

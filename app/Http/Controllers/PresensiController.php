@@ -625,7 +625,7 @@ class PresensiController extends Controller
             ->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi')
             ->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin')
 
-            ->where('hrd_presensi.tanggal', $tanggal);
+            ->whereBetween('hrd_presensi.tanggal', [$request->dari, $request->sampai]);
 
         // dd($subqueryPresensi->get());
         // Tampilkan Departemen dan Group
@@ -733,11 +733,25 @@ class PresensiController extends Controller
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
 
-        if (!empty($request->nama_karyawan)) {
-            $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
-        }
+        $query->where('hrd_karyawan.nik', $request->nik);
         $query->orderBy('nama_karyawan', 'asc');
         $karyawan = $query->get();
-        return view('presensi.presensikaryawan',  compact('cabang', 'departemen', 'group', 'karyawan'));
+
+
+        $qkaryawan = Karyawan::query();
+        if (!$user->hasRole($roles_access_all_karyawan)) {
+            if ($user->hasRole('regional sales manager')) {
+                $qkaryawan->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                if (auth()->user()->kode_cabang != 'PST') {
+                    $qkaryawan->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    $qkaryawan->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                }
+            }
+        }
+        $qkaryawan->orderBy('nama_karyawan');
+        $listkaryawan = $qkaryawan->get();
+        return view('presensi.presensikaryawan',  compact('cabang', 'departemen', 'group', 'karyawan', 'listkaryawan'));
     }
 }
