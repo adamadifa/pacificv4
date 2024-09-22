@@ -235,6 +235,44 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col">
+                                    <a href="{{ route('izinabsen.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
+                                        <div class="card card-border-shadow-info h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div class="avatar me-4">
+                                                        <span class="avatar-initial rounded bg-label-info"><i
+                                                                class="ti ti-receipt ti-28px"></i></span>
+                                                    </div>
+                                                    <h4 class="mb-0">{{ $notifikasi_pengajuan_izin }}</h4>
+                                                </div>
+                                                <p class="mb-1">Pengajuan Izin</p>
+
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <a href="{{ route('lembur.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
+                                        <div class="card card-border-shadow-info h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div class="avatar me-4">
+                                                        <span class="avatar-initial rounded bg-label-info"><i
+                                                                class="ti ti-clock ti-28px"></i></span>
+                                                    </div>
+                                                    <h4 class="mb-0">{{ $notifikasi_lembur }}</h4>
+                                                </div>
+                                                <p class="mb-1">Lembur</p>
+
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
                                     <div class="card card-border-shadow-success h-100">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center mb-2">

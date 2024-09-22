@@ -4,6 +4,15 @@ namespace App\Providers;
 
 use App\Models\Disposisiajuanfaktur;
 use App\Models\Disposisiajuanlimitkredit;
+use App\Models\Disposisiizinabsen;
+use App\Models\Disposisiizincuti;
+use App\Models\Disposisiizindinas;
+use App\Models\Disposisiizinkeluar;
+use App\Models\Disposisiizinkoreksi;
+use App\Models\Disposisiizinpulang;
+use App\Models\Disposisiizinsakit;
+use App\Models\Disposisiizinterlambat;
+use App\Models\Disposisilembur;
 use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Disposisitargetkomisi;
 use Illuminate\Contracts\Auth\Guard;
@@ -70,7 +79,19 @@ class Globalprovider extends ServiceProvider
                 $notifikasi_marketing = $notifikasi_pengajuan_marketing + $notifikasi_komisi;
 
                 $notifikasi_penilaiankaryawan = Disposisipenilaiankaryawan::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
-                $notifikasi_hrd = $notifikasi_penilaiankaryawan;
+                $notifikasi_izinabsen = Disposisiizinabsen::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_izincuti = Disposisiizincuti::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_izinterlambat = Disposisiizinterlambat::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_izinsakit = Disposisiizinsakit::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_izinpulang = Disposisiizinpulang::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_izindinas = Disposisiizindinas::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_izinkoreksi = Disposisiizinkoreksi::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_izinkeluar = Disposisiizinkeluar::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_pengajuan_izin = $notifikasi_izinabsen + $notifikasi_izincuti + $notifikasi_izinterlambat + $notifikasi_izinsakit + $notifikasi_izinpulang + $notifikasi_izindinas + $notifikasi_izinkoreksi + $notifikasi_izinkeluar;
+
+                $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+
+                $notifikasi_hrd = $notifikasi_penilaiankaryawan + $notifikasi_pengajuan_izin + $notifikasi_lembur;
                 $total_notifikasi = $notifikasi_marketing + $notifikasi_hrd;
             } else {
                 $level_user = '';
@@ -81,6 +102,17 @@ class Globalprovider extends ServiceProvider
                 $notifikasi_komisi = 0;
                 $notifikasi_marketing = 0;
                 $notifikasi_penilaiankaryawan = 0;
+                $notifikasi_izinabsen = 0;
+                $notifikasi_izincuti = 0;
+                $notifikasi_izinterlambat = 0;
+                $notifikasi_izinsakit = 0;
+                $notifikasi_izinpulang = 0;
+                $notifikasi_izindinas = 0;
+                $notifikasi_izinkoreksi = 0;
+                $notifikasi_izinkeluar = 0;
+                $notifikasi_pengajuan_izin = 0;
+                $notifikasi_lembur = 0;
+
                 $notifikasi_hrd = 0;
                 $total_notifikasi = 0;
             }
@@ -466,6 +498,17 @@ class Globalprovider extends ServiceProvider
                 'notifikasi_marketing' => $notifikasi_marketing,
 
                 'notifikasi_penilaiankaryawan' => $notifikasi_penilaiankaryawan,
+                'notifikasi_pengajuan_izin' => $notifikasi_pengajuan_izin,
+
+                'notifikasi_izinabsen' => $notifikasi_izinabsen,
+                'notifikasi_izinpulang' => $notifikasi_izinpulang,
+                'notifikasi_izinterlambat' => $notifikasi_izinterlambat,
+                'notifikasi_izinkeluar' => $notifikasi_izinkeluar,
+                'notifikasi_izinabsen' => $notifikasi_izinabsen,
+                'notifikasi_izincuti' => $notifikasi_izincuti,
+                'notifikasi_izinsakit' => $notifikasi_izinsakit,
+                'notifikasi_lembur' => $notifikasi_lembur,
+
                 'notifikasi_hrd' => $notifikasi_hrd,
 
                 'total_notifikasi' => $total_notifikasi
