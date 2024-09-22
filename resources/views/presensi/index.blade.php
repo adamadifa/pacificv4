@@ -351,14 +351,17 @@
                                             </td>
                                             <td class="text-center">
                                                 @php
+
                                                     $total_jam =
-                                                        $d->total_jam +
-                                                        $total_jam_libur -
-                                                        $potongan_jamkeluar -
-                                                        $potongan_terlambat -
-                                                        $potongan_pc -
-                                                        $potongan_sakit -
-                                                        $potongan_izin;
+                                                        !empty($d->jam_in) && !empty($d->jam_out)
+                                                            ? $d->total_jam +
+                                                                $total_jam_libur -
+                                                                $potongan_jamkeluar -
+                                                                $potongan_terlambat -
+                                                                $potongan_pc -
+                                                                $potongan_sakit -
+                                                                $potongan_izin
+                                                            : 0;
                                                 @endphp
                                                 {{ $total_jam }}
                                             </td>
