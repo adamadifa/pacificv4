@@ -18,7 +18,6 @@ class givehariliburpermissionseeder extends Seeder
             'harilibur.create',
             'harilibur.edit',
             'harilibur.update',
-            'harilibur.show',
             'harilibur.store',
             'harilibur.delete',
             'harilibur.setharilibur',
