@@ -198,8 +198,10 @@ class PresensiController extends Controller
                 if (auth()->user()->kode_cabang != 'PST') {
                     $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
                 } else {
-                    if ($user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+                    if ($user->hasRole(['staff keuangan'])) {
                         $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
                     } else {
                         $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
                     }
