@@ -38,7 +38,7 @@ class DashboardController extends Controller
         // dd(session('screen_width'), session('screen_height'));
 
 
-        $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager'];
+        $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager', 'manager keuangan'];
         $user = User::findorfail(auth()->user()->id);
         if ($user->hasAnyRole($default_marketing)) {
 

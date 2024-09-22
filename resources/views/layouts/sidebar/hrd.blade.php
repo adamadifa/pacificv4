@@ -15,6 +15,7 @@
             'izindinas.index',
             'izinterlambat.index',
             'presensi.index',
+            'presensi.presensikaryawan',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -37,6 +38,7 @@
             'izindinas',
             'izinterlambat',
             'presensi',
+            'presensikaryawan',
         ])
             ? 'open'
             : '' }}">
