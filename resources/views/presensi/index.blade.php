@@ -353,7 +353,7 @@
                                                 @php
 
                                                     $total_jam =
-                                                        !empty($d->jam_in) && !empty($d->jam_out)
+                                                        !empty($d->jam_in) && !empty($d->jam_out) && $d->status_kehadiran == 'h'
                                                             ? $d->total_jam +
                                                                 $total_jam_libur -
                                                                 $potongan_jamkeluar -
