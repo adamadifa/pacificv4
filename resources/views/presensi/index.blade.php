@@ -351,17 +351,18 @@
                                             </td>
                                             <td class="text-center">
                                                 @php
-
                                                     $total_jam =
-                                                        !empty($d->jam_in) && !empty($d->jam_out) && $d->status_kehadiran == 'h'
-                                                            ? $d->total_jam +
-                                                                $total_jam_libur -
-                                                                $potongan_jamkeluar -
-                                                                $potongan_terlambat -
-                                                                $potongan_pc -
-                                                                $potongan_sakit -
-                                                                $potongan_izin
-                                                            : 0;
+                                                        $d->total_jam +
+                                                        $total_jam_libur -
+                                                        $potongan_jamkeluar -
+                                                        $potongan_terlambat -
+                                                        $potongan_pc -
+                                                        $potongan_sakit -
+                                                        $potongan_izin;
+                                                    if ($d->status_kehadiran == 'h' && !empty($d->jam_out) && !empty($d->jam_in)) {
+                                                        $total_jam = 0;
+                                                    }
+
                                                 @endphp
                                                 {{ $total_jam }}
                                             </td>
