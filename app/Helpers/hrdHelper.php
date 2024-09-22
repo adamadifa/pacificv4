@@ -684,6 +684,37 @@ function getliburpengganti($dari, $sampai)
 }
 
 
+
+function getminggumasuk($dari, $sampai)
+{
+    $no = 1;
+    $libur = [];
+    $ceklibur = Detailharilibur::select(
+        'nik',
+        'tanggal',
+        'tanggal_diganti',
+        'kode_cabang',
+        'keterangan',
+    )
+        ->leftJoin('hrd_harilibur', 'hrd_harilibur_detail.kode_libur', '=', 'hrd_harilibur.kode_libur')
+        ->where('kategori', 2)
+        ->whereBetween('tanggal_diganti', [$dari, $sampai])->get();
+
+    foreach ($ceklibur as $d) {
+        $libur[] = [
+            'nik' => $d->nik,
+            'kode_cabang' => $d->kode_cabang,
+            'tanggal' => $d->tanggal,
+            'tanggal_diganti' => $d->tanggal_diganti,
+            'keterangan' => $d->keterangan
+        ];
+    }
+
+    return $libur;
+}
+
+
+
 function ceklibur($array, $search_list)
 {
 

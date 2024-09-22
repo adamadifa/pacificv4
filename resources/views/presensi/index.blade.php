@@ -82,6 +82,22 @@
                                             $potongan_izin = 0;
                                             $total_jam_kerja = $d->total_jam;
 
+                                            $search = [
+                                                'nik' => $d->nik,
+                                                'tanggal' => $tanggal,
+                                            ];
+
+                                            $search_minggumasuk = [
+                                                'nik' => $d->nik,
+                                                'tanggal' => $tanggal,
+                                            ];
+
+                                            //Cek Hari Libur , Dirumahkan , Lbur  Pengganti, atau Tanggal 5 Jam
+                                            $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
+                                            $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
+                                            $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
+                                            $cektanggallimajam = ceklibur($datatanggallimajam, $search);
+                                            $cekminggumasuk = ceklibur($dataminggumasuk, $search_minggumasuk);
                                             //Tanggal Selesai Jam Kerja Jika Lintas Hari Maka Tanggal Presensi + 1 Hari
                                             $tanggal_selesai =
                                                 $d->lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($d->tanggal))) : $d->tanggal;
@@ -96,8 +112,15 @@
 
                                             //Jadwal SPG
                                             //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
-                                            $jam_mulai = $d->kode_jabatan == 'J22' ? $d->jam_in : $j_mulai;
-                                            $jam_selesai = $d->kode_jabatan == 'J22' ? $d->jam_out : $j_selesai;
+                                            $jam_mulai = in_array($d->kode_jabatan, ['J22', 'J23']) ? $jam_in : $j_mulai;
+                                            $jam_selesai = in_array($d->kode_jabatan, ['J22', 'J23']) ? $jam_out : $j_selesai;
+
+                                            if (getNamahari($tanggal) == 'Minggu') {
+                                                if ($d->kode_jabatan != 'J20') {
+                                                    $jam_mulai = $jam_in;
+                                                    $jam_selesai = $jam_out;
+                                                }
+                                            }
 
                                             // Jam Istirahat
                                             if ($d->istirahat == '1') {
@@ -118,17 +141,6 @@
                                                 $jam_awal_istirahat = null;
                                                 $jam_akhir_istirahat = null;
                                             }
-
-                                            $search = [
-                                                'nik' => $d->nik,
-                                                'tanggal' => $tanggal,
-                                            ];
-
-                                            //Cek Hari Libur , Dirumahkan , Lbur  Pengganti, atau Tanggal 5 Jam
-                                            $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
-                                            $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
-                                            $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
-                                            $cektanggallimajam = ceklibur($datatanggallimajam, $search);
 
                                         @endphp
                                         <tr>
