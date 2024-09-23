@@ -1,19 +1,16 @@
-<form action="{{ route('karyawan.update', Crypt::encrypt($karyawan->nik)) }}" id="formeditKaryawan" method="POST"
-    enctype="multipart/form-data">
+<form action="{{ route('karyawan.update', Crypt::encrypt($karyawan->nik)) }}" id="formeditKaryawan" method="POST" enctype="multipart/form-data">
     @method('PUT')
     @csrf
     <x-input-with-icon-label icon="ti ti-barcode" label="NIK" name="nik" value="{{ $karyawan->nik }}" />
     <x-input-with-icon-label icon="ti ti-credit-card" label="No. KTP" name="no_ktp" value="{{ $karyawan->no_ktp }}" />
-    <x-input-with-icon-label icon="ti ti-user" label="Nama Karyawan" name="nama_karyawan"
-        value="{{ $karyawan->nama_karyawan }}" />
+    <x-input-with-icon-label icon="ti ti-user" label="Nama Karyawan" name="nama_karyawan" value="{{ $karyawan->nama_karyawan }}" />
     <div class="row">
         <div class="col-6">
-            <x-input-with-icon-label icon="ti ti-map-pin" label="Tempat Lahir" name="tempat_lahir"
-                value="{{ $karyawan->tempat_lahir }}" />
+            <x-input-with-icon-label icon="ti ti-map-pin" label="Tempat Lahir" name="tempat_lahir" value="{{ $karyawan->tempat_lahir }}" />
         </div>
         <div class="col-6">
-            <x-input-with-icon-label icon="ti ti-calendar" label="Tanggal Lahir" datepicker="flatpickr-date"
-                name="tanggal_lahir" value="{{ $karyawan->tanggal_lahir }}" />
+            <x-input-with-icon-label icon="ti ti-calendar" label="Tanggal Lahir" datepicker="flatpickr-date" name="tanggal_lahir"
+                value="{{ $karyawan->tanggal_lahir }}" />
         </div>
     </div>
     <x-textarea-label label="Alamat" name="alamat" value="{{ $karyawan->alamat }}" />
@@ -65,32 +62,32 @@
             </div>
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-select-label label="Kantor Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                textShow="nama_cabang" selected="{{ $karyawan->kode_cabang }}" />
+            <x-select-label label="Kantor Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                selected="{{ $karyawan->kode_cabang }}" />
         </div>
     </div>
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-select-label label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                upperCase="true" selected="{{ $karyawan->kode_dept }}" />
+            <x-select-label label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
+                selected="{{ $karyawan->kode_dept }}" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-select-label label="Group" name="kode_group" :data="$group" key="kode_group"
-                textShow="nama_group" upperCase="true" selected="{{ $karyawan->kode_group }}" />
+            <x-select-label label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group" upperCase="true"
+                selected="{{ $karyawan->kode_group }}" />
         </div>
     </div>
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-select-label label="Jabatan" name="kode_jabatan" :data="$jabatan" key="kode_jabatan"
-                textShow="nama_jabatan" upperCase="true" selected="{{ $karyawan->kode_jabatan }}" />
+            <x-select-label label="Jabatan" name="kode_jabatan" :data="$jabatan" key="kode_jabatan" textShow="nama_jabatan" upperCase="true"
+                selected="{{ $karyawan->kode_jabatan }}" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-select-label label="Klasifikasi" name="kode_klasifikasi" :data="$klasifikasi" key="kode_klasifikasi"
-                textShow="klasifikasi" upperCase="true" selected="{{ $karyawan->kode_klasifikasi }}" />
+            <x-select-label label="Klasifikasi" name="kode_klasifikasi" :data="$klasifikasi" key="kode_klasifikasi" textShow="klasifikasi"
+                upperCase="true" selected="{{ $karyawan->kode_klasifikasi }}" />
         </div>
     </div>
-    <x-input-with-icon-label icon="ti ti-calendar" datepicker="flatpickr-date" label="Tanggal Masuk"
-        name="tanggal_masuk" value="{{ $karyawan->tanggal_masuk }}" />
+    <x-input-with-icon-label icon="ti ti-calendar" datepicker="flatpickr-date" label="Tanggal Masuk" name="tanggal_masuk"
+        value="{{ $karyawan->tanggal_masuk }}" />
     <div class="form-group mb-3">
         <label for="exampleFormControlInput1" style="font-weight: 600" class="form-label">Status Karyawan</label>
         <select name="status_karyawan" id="pendidikan_terakhir" class="form-select">
@@ -99,6 +96,16 @@
             <option value="T" {{ $karyawan->status_karyawan == 'T' ? 'selected' : '' }}>Tetap</option>
             <option value="T" {{ $karyawan->status_karyawan == 'O' ? 'selected' : '' }}>Outsourcing</option>
         </select>
+    </div>
+    <div class="form-group mb-3">
+        <select name="kode_jadwal" id="kode_jadwal" class="form-select">
+            <option value="">Jadwal</option>
+            @foreach ($jadwal as $d)
+                <option {{ $karyawan->kode_jadwal == $d->kode_jadwal ? 'selected' : '' }} value="{{ $d->kode_jadwal }}">{{ $d->nama_jadwal }}
+                </option>
+            @endforeach
+        </select>
+
     </div>
     <x-input-with-icon-label icon="ti ti-barcode" label="PIN" name="pin" value="{{ $karyawan->pin }}" />
     <div class="form-group mb-3">
@@ -112,10 +119,10 @@
     </div>
 
     <div class="row" id="nonaktif">
-        <x-input-with-icon-label icon="ti ti-calendar" datepicker="flatpickr-date" label="Tanggal Nonaktif"
-            name="tanggal_nonaktif" value="{{ $karyawan->tanggal_nonaktif }}" />
-        <x-input-with-icon-label icon="ti ti-calendar" datepicker="flatpickr-date" label="Tanggal Off Gaji"
-            name="tanggal_off_gaji" value="{{ $karyawan->tanggal_off_gaji }}" />
+        <x-input-with-icon-label icon="ti ti-calendar" datepicker="flatpickr-date" label="Tanggal Nonaktif" name="tanggal_nonaktif"
+            value="{{ $karyawan->tanggal_nonaktif }}" />
+        <x-input-with-icon-label icon="ti ti-calendar" datepicker="flatpickr-date" label="Tanggal Off Gaji" name="tanggal_off_gaji"
+            value="{{ $karyawan->tanggal_off_gaji }}" />
     </div>
 
     <div class="form-group">
