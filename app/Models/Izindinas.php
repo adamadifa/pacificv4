@@ -106,6 +106,9 @@ class Izindinas extends Model
             }
 
             $query->where('hrd_izindinas.status', '1');
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izindinas.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izindinas.kode_jabatan', ['J05', 'J06']);
@@ -211,6 +214,9 @@ class Izindinas extends Model
                     }
                 }
             }
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izindinas.kode_izin_dinas', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin_dinas');
@@ -255,6 +261,9 @@ class Izindinas extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -291,12 +300,13 @@ class Izindinas extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
         }
 
 
-        if (!empty($kode_izin_dinas)) {
-            $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
-        }
+
 
         $query->orderBy('hrd_izindinas.tanggal', 'desc');
         $query->orderBy('hrd_izindinas.created_at', 'desc');

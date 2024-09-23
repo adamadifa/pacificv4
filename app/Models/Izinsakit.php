@@ -106,6 +106,9 @@ class Izinsakit extends Model
             }
 
             $query->where('hrd_izinsakit.status', '1');
+            if (!empty($kode_izin_sakit)) {
+                $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izinsakit.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izinsakit.kode_jabatan', ['J05', 'J06']);
@@ -211,6 +214,9 @@ class Izinsakit extends Model
                     }
                 }
             }
+            if (!empty($kode_izin_sakit)) {
+                $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
+            }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izinsakit.kode_izin_sakit', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin_sakit');
@@ -255,6 +261,9 @@ class Izinsakit extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_sakit)) {
+                $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -291,12 +300,13 @@ class Izinsakit extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_sakit)) {
+                $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
+            }
         }
 
 
-        if (!empty($kode_izin_sakit)) {
-            $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
-        }
+
 
         $query->orderBy('hrd_izinsakit.tanggal', 'desc');
         $query->orderBy('hrd_izinsakit.created_at', 'desc');

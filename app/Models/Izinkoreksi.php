@@ -112,6 +112,9 @@ class Izinkoreksi extends Model
             }
 
             $query->where('hrd_izinkoreksi.status', '1');
+            if (!empty($kode_izin_koreksi)) {
+                $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izinkoreksi.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izinkoreksi.kode_jabatan', ['J05', 'J06']);
@@ -217,6 +220,9 @@ class Izinkoreksi extends Model
                     }
                 }
             }
+            if (!empty($kode_izin_koreksi)) {
+                $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
+            }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izinkoreksi.kode_izin_koreksi', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin_koreksi');
@@ -261,6 +267,9 @@ class Izinkoreksi extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_koreksi)) {
+                $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -297,12 +306,13 @@ class Izinkoreksi extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_koreksi)) {
+                $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
+            }
         }
 
 
-        if (!empty($kode_izin_koreksi)) {
-            $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
-        }
+
 
         $query->orderBy('hrd_izinkoreksi.tanggal', 'desc');
         $query->orderBy('hrd_izinkoreksi.created_at', 'desc');

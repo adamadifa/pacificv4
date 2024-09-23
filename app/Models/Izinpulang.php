@@ -107,6 +107,9 @@ class Izinpulang extends Model
             }
 
             $query->where('hrd_izinpulang.status', '1');
+            if (!empty($kode_izin_pulang)) {
+                $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izinpulang.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J05', 'J06']);
@@ -212,6 +215,9 @@ class Izinpulang extends Model
                     }
                 }
             }
+            if (!empty($kode_izin_pulang)) {
+                $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
+            }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izinpulang.kode_izin_pulang', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin_pulang');
@@ -256,6 +262,9 @@ class Izinpulang extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_pulang)) {
+                $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -292,12 +301,13 @@ class Izinpulang extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_pulang)) {
+                $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
+            }
         }
 
 
-        if (!empty($kode_izin_pulang)) {
-            $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
-        }
+
 
         $query->orderBy('hrd_izinpulang.tanggal', 'desc');
         $query->orderBy('hrd_izinpulang.created_at', 'desc');

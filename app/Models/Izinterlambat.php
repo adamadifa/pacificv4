@@ -106,6 +106,9 @@ class Izinterlambat extends Model
             }
 
             $query->where('hrd_izinterlambat.status', '1');
+            if (!empty($kode_izin_terlambat)) {
+                $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izinterlambat.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izinterlambat.kode_jabatan', ['J05', 'J06']);
@@ -211,6 +214,9 @@ class Izinterlambat extends Model
                     }
                 }
             }
+            if (!empty($kode_izin_terlambat)) {
+                $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
+            }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izinterlambat.kode_izin_terlambat', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin_terlambat');
@@ -255,6 +261,9 @@ class Izinterlambat extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_terlambat)) {
+                $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -291,12 +300,13 @@ class Izinterlambat extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_terlambat)) {
+                $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
+            }
         }
 
 
-        if (!empty($kode_izin_terlambat)) {
-            $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
-        }
+
 
         $query->orderBy('hrd_izinterlambat.tanggal', 'desc');
         $query->orderBy('hrd_izinterlambat.created_at', 'desc');
