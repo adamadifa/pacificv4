@@ -102,6 +102,7 @@
             <option value="">Jadwal</option>
             @foreach ($jadwalkerja as $d)
                 <option {{ $karyawan->kode_jadwal == $d->kode_jadwal ? 'selected' : '' }} value="{{ $d->kode_jadwal }}">{{ $d->nama_jadwal }}
+                    {{ $d->kode_cabang }}
                 </option>
             @endforeach
         </select>
