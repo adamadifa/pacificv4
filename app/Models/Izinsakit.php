@@ -51,7 +51,7 @@ class Izinsakit extends Model
                 $query->whereIn('hrd_izinsakit.kode_jabatan', ['J05', 'J06']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->whereIn('hrd_izinsakit.kode_dept', ['AKT', 'KEU']);
-                $query->whereIn('hrd_izinsakit.kode_jabatan', ['J04', 'J05', 'J06']);
+                $query->whereIn('hrd_izinsakit.kode_jabatan', ['J04', 'J05', 'J06', 'J12']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->whereIn('hrd_izinsakit.kode_dept', ['MKT']);
                 $query->whereIn('hrd_izinsakit.kode_jabatan', ['J03', 'J05', 'J06']);
@@ -61,7 +61,7 @@ class Izinsakit extends Model
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->where('hrd_izinsakit.kode_dept', 'AKT');
-                $query->whereIn('hrd_izinsakit.kode_jabatan', ['J05', 'J06']);
+                $query->whereIn('hrd_izinsakit.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->where('hrd_izinsakit.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izinsakit.kode_cabang', 'PST');
@@ -114,7 +114,7 @@ class Izinsakit extends Model
                 $query->whereIn('hrd_izinsakit.kode_jabatan', ['J05', 'J06']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinsakit.kode_dept', ['AKT', 'KEU']);
-                $query->whereIn('hrd_izinsakit.kode_jabatan', ['J04', 'J05', 'J06']);
+                $query->whereIn('hrd_izinsakit.kode_jabatan', ['J04', 'J05', 'J06', 'J12']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->orwhereIn('hrd_izinsakit.kode_dept', ['MKT']);
                 $query->whereIn('hrd_izinsakit.kode_jabatan', ['J03', 'J05', 'J06']);
@@ -124,7 +124,7 @@ class Izinsakit extends Model
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->orwhere('hrd_izinsakit.kode_dept', 'AKT');
-                $query->whereIn('hrd_izinsakit.kode_jabatan', ['J05', 'J06']);
+                $query->whereIn('hrd_izinsakit.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->orwhere('hrd_izinsakit.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izinsakit.kode_cabang', 'PST');
