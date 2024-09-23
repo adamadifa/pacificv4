@@ -18,6 +18,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('mkt.rekappenjualan')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekappenjualan"
+                            aria-controls="penjualan" aria-selected="false" tabindex="-1">
+                            Rekap Penjualan
+                        </button>
+                    </li>
+                @endcan
                 @can('mkt.kasbesar')
                     <li class="nav-item" role="kasbesar">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#kasbesar" aria-controls="kasbesar"
@@ -159,6 +167,11 @@
                 @can('mkt.penjualan')
                     <div class="tab-pane fade active show" id="penjualan" role="tabpanel">
                         @include('marketing.laporan.penjualan')
+                    </div>
+                @endcan
+                @can('mkt.rekappenjualan')
+                    <div class="tab-pane fade" id="rekappenjualan" role="tabpanel">
+                        @include('marketing.laporan.rekappenjualan')
                     </div>
                 @endcan
                 @can('mkt.kasbesar')
