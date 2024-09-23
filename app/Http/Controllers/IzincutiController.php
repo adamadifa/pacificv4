@@ -405,7 +405,7 @@ class IzincutiController extends Controller
                         ]);
                     }
                 } else {
-                    dd('test');
+                    dd($kode_izin_cuti);
                     Disposisiizincuti::create([
                         'kode_disposisi' => $kode_disposisi,
                         'kode_izin_cuti' => $kode_izin_cuti,
