@@ -7,9 +7,11 @@ use App\Models\Departemen;
 use App\Models\Detailjadwalkerja;
 use App\Models\Detailjadwalshift;
 use App\Models\Disposisiizinsakit;
+use App\Models\Izinpulang;
 use App\Models\Izinsakit;
 use App\Models\Karyawan;
 use App\Models\Presensi;
+use App\Models\Presensiizinpulang;
 use App\Models\Presensiizinsakit;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -351,6 +353,11 @@ class IzinsakitController extends Controller
                         }
 
                         //Hapus Jika Sudah Ada Data Presensi
+                        $cekizinpulang = Izinpulang::where('nik', $izinsakit->nik)->where('tanggal', $dari)->first();
+                        if ($cekizinpulang != null) {
+                            Presensiizinpulang::where('kode_izin_pulang', $cekizinpulang->kode_izin_pulang)->delete();
+                            Izinpulang::where('kode_izin_pulang', $cekizinpulang->kode_izin_pulang)->delete();
+                        }
                         Presensi::where('nik', $izinsakit->nik)->where('tanggal', $dari)->delete();
                         $presensi = Presensi::create([
                             'nik' => $izinsakit->nik,
