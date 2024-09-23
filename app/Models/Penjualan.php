@@ -361,7 +361,7 @@ class Penjualan extends Model
         );
         $query->addSelect(DB::raw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail
         INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
-        WHERE kode_pelanggan = pelanggan.kode_pelanggan AND
+        WHERE kode_pelanggan = pelanggan.kode_pelanggan AND AND status_batal != 0
         marketing_penjualan.tanggal BETWEEN '$start_date' AND '$end_date') as total_bruto"));
 
         $query->addSelect(DB::raw("(SELECT SUM(subtotal) FROM marketing_retur_detail
