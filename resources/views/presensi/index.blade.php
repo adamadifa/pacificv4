@@ -155,11 +155,7 @@
                                                         <span class="badge bg-info">Dirumahkan</span>
                                                     @elseif(!empty($cekliburpengganti))
                                                         @php
-                                                            if (getNamahari($tanggal) == 'Sabtu') {
-                                                                $total_jam_libur = 5;
-                                                            } else {
-                                                                $total_jam_libur = 7;
-                                                            }
+                                                            $total_jam_libur = 0;
                                                         @endphp
                                                         <span class="badge bg-info">Libur Pengganti Tgl
                                                             {{ formatIndo($cekliburpengganti[0]['tanggal_diganti']) }}</span>
