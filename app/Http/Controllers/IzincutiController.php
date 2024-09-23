@@ -236,9 +236,11 @@ class IzincutiController extends Controller
         $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
 
         $user = User::find(auth()->user()->id);
-        $i_cuti = new Izincuti();
-        $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
-        $datacuti = DB::table('hrd_izincuti')->where('kode_izin_cuti', $kode_izin_cuti)->first();
+        // $i_cuti = new Izincuti();
+        // $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
+        $izincuti = DB::table('hrd_izincuti')
+            ->join('hrd_karyawan', 'hrd_izincuti.nik', '=', 'hrd_karyawan.nik')
+            ->where('kode_izin_cuti', $kode_izin_cuti)->first();
 
         // dd($datacuti);
         $data['izincuti'] = $izincuti;
