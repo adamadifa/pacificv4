@@ -239,6 +239,7 @@ class IzincutiController extends Controller
         // $i_cuti = new Izincuti();
         // $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
         $izincuti = DB::table('hrd_izincuti')
+            ->select('hrd_izincuti.*', 'nama_karyawan', 'nama_jabatan', 'hrd_jabatan.kategori as kategori_jabatan')
             ->join('hrd_karyawan', 'hrd_izincuti.nik', '=', 'hrd_karyawan.nik')
             ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
             ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
