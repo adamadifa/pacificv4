@@ -247,8 +247,8 @@ class LaporanproduksiController extends Controller
         $query->join('produksi_barang_keluar', 'produksi_barang_keluar_detail.no_bukti', '=', 'produksi_barang_keluar.no_bukti');
         $query->join('produksi_barang', 'produksi_barang_keluar_detail.kode_barang_produksi', '=', 'produksi_barang.kode_barang_produksi');
         $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
-        if (!empty($request->kode_barang)) {
-            $query->where('produksi_barang_keluar_detail.kode_barang_produksi', $request->kode_barang_produksi);
+        if (!empty($request->kode_barang_produksi_keluar)) {
+            $query->where('produksi_barang_keluar_detail.kode_barang_produksi', $request->kode_barang_produksi_keluar);
         }
         if (!empty($request->kode_jenis_pengeluaran)) {
             $query->where('produksi_barang_keluar.kode_jenis_pengeluaran', $request->kode_jenis_pengeluaran);
