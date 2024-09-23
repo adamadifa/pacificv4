@@ -180,7 +180,9 @@ class Izinsakit extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-
+            if (!empty($kode_izin_sakit)) {
+                $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
+            }
             //Jika User Memiliki Permission create izin sakit
             if ($user->can('izinsakit.create') && auth()->user()->kode_cabang != 'PST') {
                 $query->orWhere('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
@@ -213,9 +215,9 @@ class Izinsakit extends Model
                         $query->where('roles.name', $request->posisi_ajuan);
                     }
                 }
-            }
-            if (!empty($kode_izin_sakit)) {
-                $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
+                if (!empty($kode_izin_sakit)) {
+                    $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
+                }
             }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izinsakit.kode_izin_sakit', function ($query) use ($user) {

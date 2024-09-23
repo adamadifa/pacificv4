@@ -180,9 +180,12 @@ class Izinabsen extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-
+            if (!empty($kode_izin)) {
+                $query->where('hrd_izinabsen.kode_izin', $kode_izin);
+            }
             //Jika User Memiliki Permission create izin absen
             if ($user->can('izinabsen.create') && auth()->user()->kode_cabang != 'PST') {
+
                 $query->orWhere('hrd_izinabsen.kode_cabang', auth()->user()->kode_cabang);
                 if (!empty($request)) {
                     if (!empty($request->dari) && !empty($request->sampai)) {
@@ -213,9 +216,9 @@ class Izinabsen extends Model
                         $query->where('roles.name', $request->posisi_ajuan);
                     }
                 }
-            }
-            if (!empty($kode_izin)) {
-                $query->where('hrd_izinabsen.kode_izin', $kode_izin);
+                if (!empty($kode_izin)) {
+                    $query->where('hrd_izinabsen.kode_izin', $kode_izin);
+                }
             }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izinabsen.kode_izin', function ($query) use ($user) {

@@ -180,7 +180,9 @@ class Izinterlambat extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-
+            if (!empty($kode_izin_terlambat)) {
+                $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
+            }
             //Jika User Memiliki Permission create izin terlambat
             if ($user->can('izinterlambat.create') && auth()->user()->kode_cabang != 'PST') {
                 $query->orWhere('hrd_izinterlambat.kode_cabang', auth()->user()->kode_cabang);
@@ -213,9 +215,9 @@ class Izinterlambat extends Model
                         $query->where('roles.name', $request->posisi_ajuan);
                     }
                 }
-            }
-            if (!empty($kode_izin_terlambat)) {
-                $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
+                if (!empty($kode_izin_terlambat)) {
+                    $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
+                }
             }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izinterlambat.kode_izin_terlambat', function ($query) use ($user) {

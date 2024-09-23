@@ -180,7 +180,9 @@ class Izindinas extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
             //Jika User Memiliki Permission create izin dinas
             if ($user->can('izindinas.create') && auth()->user()->kode_cabang != 'PST') {
                 $query->orWhere('hrd_izindinas.kode_cabang', auth()->user()->kode_cabang);
@@ -213,9 +215,9 @@ class Izindinas extends Model
                         $query->where('roles.name', $request->posisi_ajuan);
                     }
                 }
-            }
-            if (!empty($kode_izin_dinas)) {
-                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+                if (!empty($kode_izin_dinas)) {
+                    $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+                }
             }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izindinas.kode_izin_dinas', function ($query) use ($user) {
