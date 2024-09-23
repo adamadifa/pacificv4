@@ -238,7 +238,7 @@ class IzincutiController extends Controller
         $user = User::find(auth()->user()->id);
         $i_cuti = new Izincuti();
         $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
-        dd($kode_izin_cuti . " " . $izincuti);
+        dd($kode_izin_cuti . " " . DB::table('hrd_izincuti')->where('kode_izin_cuti', $kode_izin_cuti)->first());
         $data['izincuti'] = $izincuti;
 
         $role = $user->getRoleNames()->first();
