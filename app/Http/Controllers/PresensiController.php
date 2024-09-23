@@ -226,6 +226,10 @@ class PresensiController extends Controller
         if (!empty($request->nama_karyawan)) {
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
         }
+
+        if (auth()->user()->id == '86') {
+            $query->whereIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
+        }
         $query->where('status_aktif_karyawan', 1);
         $query->orderBy('nama_karyawan', 'asc');
         $karyawan = $query->paginate(50);
