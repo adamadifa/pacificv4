@@ -791,6 +791,9 @@ class PresensiController extends Controller
                     }
                 }
             }
+            if (auth()->user()->id == '86') {
+                $query->whereIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
+            }
         }
         $qkaryawan->orderBy('nama_karyawan');
         $data['listkaryawan'] = $qkaryawan->get();
