@@ -229,7 +229,8 @@ class KaryawanController extends Controller
             'kode_klasifikasi' => 'required',
             'tanggal_masuk' => 'required',
             'status_karyawan' => 'required',
-            'status_aktif_karyawan' => 'required'
+            'status_aktif_karyawan' => 'required',
+            'kode_jadwal' => 'required'
         ]);
 
         try {
@@ -255,6 +256,7 @@ class KaryawanController extends Controller
                 'status_aktif_karyawan' => $request->status_aktif_karyawan,
                 'tanggal_nonaktif' => $request->status_aktif_karyawan === "0" ? $request->tanggal_nonaktif : NULL,
                 'tanggal_off_gaji' => $request->status_aktif_karyawan === "0" ? $request->tanggal_off_gaji : NULL,
+                'kode_jadwal' => $request->kode_jadwal
             ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
