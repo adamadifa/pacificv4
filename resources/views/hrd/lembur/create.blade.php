@@ -25,7 +25,11 @@
             <option value="2">Lembur Hari Libur</option>
         </select>
     </div>
-    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true" select2="select2KodeDept" />
+    @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
+        <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
+            select2="select2KodeDept" />
+    @endif
+
     <div class="form-group mb-3">
         <select name="istirahat" id="istirahat" class="form-select">
             <option value="">Istirahat / Tidak Istirahat</option>
