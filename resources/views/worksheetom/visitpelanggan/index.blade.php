@@ -108,7 +108,7 @@
                                             <td>{{ formatIndo($d->tanggal) }}</td>
                                             <td>{{ $d->nama_pelanggan }}</td>
                                             <td>{{ $d->nama_salesman }}</td>
-                                            <td>{{ $d->nama_cabang }}</td>
+                                            <td>{{ $d->kode_cabang }}</td>
                                             <td>{{ formatIndo($d->tanggal_faktur) }}</td>
                                             <td class="text-end">{{ formatRupiah($d->total_netto) }}</td>
                                             <td>{{ $d->jenis_transaksi == 'K' ? 'Kredit' : 'Tunai' }}</td>

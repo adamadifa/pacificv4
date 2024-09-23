@@ -36,6 +36,7 @@ class VisitpelangganController extends Controller
             'worksheetom_visitpelanggan.*',
             'nama_pelanggan',
             'nama_salesman',
+            'salesman.kode_cabang',
             'marketing_penjualan.tanggal as tanggal_faktur',
             DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn as total_netto'),
         );
