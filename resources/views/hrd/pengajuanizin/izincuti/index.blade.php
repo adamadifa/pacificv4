@@ -365,7 +365,7 @@
         $(".btnApprove").click(function() {
             let kode_izin_cuti = $(this).attr("kode_izin_cuti");
             let kode = $(this).attr("kode");
-            alert(kode);
+
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Approve Izin cuti");
