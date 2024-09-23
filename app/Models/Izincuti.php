@@ -214,6 +214,9 @@ class Izincuti extends Model
                     }
                 }
             }
+            if (!empty($kode_izin_cuti)) {
+                $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
+            }
         } else if ($user->hasRole('direktur')) {
             $query->WhereIn('hrd_izincuti.kode_izin_cuti', function ($query) use ($user) {
                 $query->select('disposisi.kode_izin_cuti');
@@ -294,12 +297,14 @@ class Izincuti extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+
+            if (!empty($kode_izin_cuti)) {
+                $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
+            }
         }
 
 
-        if (!empty($kode_izin_cuti)) {
-            $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
-        }
+
 
         $query->orderBy('hrd_izincuti.tanggal', 'desc');
         $query->orderBy('hrd_izincuti.created_at', 'desc');
