@@ -100,7 +100,7 @@
     <div class="form-group mb-3">
         <select name="kode_jadwal" id="kode_jadwal" class="form-select">
             <option value="">Jadwal</option>
-            @foreach ($jadwal as $d)
+            @foreach ($jadwalkerja as $d)
                 <option {{ $karyawan->kode_jadwal == $d->kode_jadwal ? 'selected' : '' }} value="{{ $d->kode_jadwal }}">{{ $d->nama_jadwal }}
                 </option>
             @endforeach
