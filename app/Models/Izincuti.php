@@ -298,7 +298,7 @@ class Izincuti extends Model
 
 
         if (!empty($kode_izin_cuti)) {
-            $query->where('hrd_izincuti.kode_izin_cutid', $kode_izin_cuti);
+            $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
         }
 
         $query->orderBy('hrd_izincuti.tanggal', 'desc');
