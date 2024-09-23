@@ -240,7 +240,7 @@ class IzincutiController extends Controller
         $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
         $datacuti = DB::table('hrd_izincuti')->where('kode_izin_cuti', $kode_izin_cuti)->first();
 
-        dd($datacuti);
+        // dd($datacuti);
         $data['izincuti'] = $izincuti;
 
         $role = $user->getRoleNames()->first();
