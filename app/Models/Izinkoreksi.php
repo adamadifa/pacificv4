@@ -186,11 +186,12 @@ class Izinkoreksi extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-            if (!empty($kode_izin_koreksi)) {
-                $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
-            }
+
             //Jika User Memiliki Permission create izin koreksi
             if ($user->can('izinkoreksi.create') && auth()->user()->kode_cabang != 'PST') {
+                if (!empty($kode_izin_koreksi)) {
+                    $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
+                }
                 $query->orWhere('hrd_izinkoreksi.kode_cabang', auth()->user()->kode_cabang);
                 if (!empty($request)) {
                     if (!empty($request->dari) && !empty($request->sampai)) {
