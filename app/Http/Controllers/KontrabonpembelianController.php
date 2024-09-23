@@ -339,7 +339,7 @@ class KontrabonpembelianController extends Controller
                 $kaskecil = Kaskecil::create([
                     'no_bukti' => $request->no_bkk,
                     'tanggal' => $request->tanggal,
-                    'keterangan' => $request->keterangan . " " . implode(",", $list_no_bukti),
+                    'keterangan' => $request->keterangan . " " . implode(", ", $list_no_bukti),
                     'jumlah' => $totalbayar,
                     'debet_kredit' => 'D',
                     'kode_cabang' => $request->kode_cabang,
@@ -356,7 +356,7 @@ class KontrabonpembelianController extends Controller
                     'tanggal' => $request->tanggal,
                     'pelanggan' => $kontrabon->nama_supplier,
                     'kode_bank' => $request->kode_bank,
-                    'keterangan' => $request->keterangan . " " . implode(",", $list_no_bukti),
+                    'keterangan' => $request->keterangan . " " . implode(", ", $list_no_bukti),
                     'kode_akun' => $request->kode_akun,
                     'jumlah'  => $totalbayar,
                     'debet_kredit' => 'D',
