@@ -406,7 +406,7 @@ class IzincutiController extends Controller
                     }
                 } else {
                     Disposisiizincuti::create([
-                        'kode_disposisid' => $kode_disposisi,
+                        'kode_disposisi' => $kode_disposisi,
                         'kode_izin_cuti' => $kode_izin_cuti,
                         'id_pengirim' => auth()->user()->id,
                         'id_penerima' => $userrole->id,
