@@ -229,6 +229,8 @@ class PresensiController extends Controller
 
         if (auth()->user()->id == '86') {
             $query->whereIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
+        } else if (auth()->user()->id == '87') {
+            $query->whereNotIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
         }
         $query->where('status_aktif_karyawan', 1);
         $query->orderBy('nama_karyawan', 'asc');
@@ -795,6 +797,8 @@ class PresensiController extends Controller
 
         if (auth()->user()->id == '86') {
             $qkaryawan->whereIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
+        } else if (auth()->user()->id == '87') {
+            $qkaryawan->whereNotIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
         }
         $qkaryawan->orderBy('nama_karyawan');
         $data['listkaryawan'] = $qkaryawan->get();
