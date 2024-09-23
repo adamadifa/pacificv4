@@ -234,10 +234,11 @@ class IzincutiController extends Controller
     public function approve($kode_izin_cuti)
     {
         $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
-        dd($kode_izin_cuti);
+
         $user = User::find(auth()->user()->id);
         $i_cuti = new Izincuti();
         $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
+        dd($izincuti);
         $data['izincuti'] = $izincuti;
 
         $role = $user->getRoleNames()->first();
