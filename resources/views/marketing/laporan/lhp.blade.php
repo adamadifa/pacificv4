@@ -11,8 +11,13 @@
         </div>
     @endrole
     <div class="form-group mb-3">
-        <select name="kode_salesman" id="kode_salesman_lhp" class="select2Kodesalemanlhp form-select">
-        </select>
+        @hasanyrole('salesman')
+            <input type="hidden" name="kode_salesman" value="{{ auth()->user()->kode_salesman }}">
+        @else
+            <select name="kode_salesman" id="kode_salesman_lhp" class="select2Kodesalemanlhp form-select">
+            </select>
+        @endhasanyrole
+
     </div>
 
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />

@@ -11,8 +11,14 @@
         </div>
     @endrole
     <div class="form-group mb-3">
-        <select name="kode_salesman" id="kode_salesman_tunaitransfer" class="select2Kodesalemanntunaitransfer form-select">
-        </select>
+        @hasanyrole('salesman')
+            <input type="hidden" name="kode_salesman" value="{{ auth()->user()->kode_salesman }}">
+        @else
+            <select name="kode_salesman" id="kode_salesman_tunaitransfer" class="select2Kodesalemanntunaitransfer form-select">
+            </select>
+        @endhasanyrole
+
+
     </div>
 
 

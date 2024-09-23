@@ -246,6 +246,9 @@ class SalesmanController extends Controller
         } else {
             $query->where('kode_cabang', $request->kode_cabang);
         }
+        if ($user->hasRole('salesman')) {
+            $query->where('kode_salesman', $user->kode_salesman);
+        }
         $query->where('status_aktif_salesman', 1);
         $salesman = $query->get();
 

@@ -90,7 +90,11 @@ class Pjp extends Model
             }
         } else {
             if (!$user->hasRole($roles_access_all_pjp)) {
-                $query->where('hrd_jabatan.kategori', 'NM');
+                if (!$user->hasRole('regional operation manager')) {
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                } else {
+                    $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02', 'J04']);
+                }
             } else {
                 if (!$user->hasRole(['super admin', 'manager keuangan', 'gm administrasi', 'staff keuangan'])) {
                     $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);

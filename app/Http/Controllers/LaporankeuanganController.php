@@ -1806,6 +1806,9 @@ class LaporankeuanganController extends Controller
 
 
             $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+            if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+                $query->whereBetween('keuangan_kaskecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+            }
             $query->orderBy('tanggal');
             $query->orderBy('debet_kredit', 'desc');
             $query->orderBy('no_bukti');

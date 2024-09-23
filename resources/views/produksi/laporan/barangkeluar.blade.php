@@ -4,9 +4,8 @@
     <div class="row">
         <div class="col">
             <div class="form-group mb-3">
-                <x-select label="Semua Barang" name="kode_barang_produksi_keluar" :data="$barangproduksi"
-                    key="kode_barang_produksi" textShow="nama_barang" select2="select2Kodebarangkeluar" showKey="true"
-                    upperCase="true" />
+                <x-select label="Semua Barang" name="kode_barang_produksi_keluar" :data="$barangproduksi" key="kode_barang_produksi" textShow="nama_barang"
+                    select2="select2Kodebarangkeluar" showKey="true" upperCase="true" />
             </div>
 
         </div>

@@ -180,7 +180,8 @@
                                                         @if (
                                                             ($d->status === '0' && $d->id_penerima === $d->id_user) ||
                                                                 ($d->status === '0' && $d->id_pengirim === $d->id_user && $d->posisi_ajuan === $next_role && $level_user != 'direktur') ||
-                                                                ($level_user == 'asst. manager hrd' && $d->status === '0'))
+                                                                ($level_user == 'asst. manager hrd' && $d->status === '0') ||
+                                                                ($level_user == 'spv presensi' && $d->status === '0'))
                                                             <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}"
                                                                 class="me-1">
                                                                 <i class="ti ti-edit text-success"></i>
