@@ -16,7 +16,7 @@
             'kontrabonpembelian.index',
             'pjp.index',
             'kasbon.index',
-            // 'kontrabonangkutan.index',
+            'kontrabonangkutan.index',
             'keu.kaskecil',
             'keu.ledger',
             'keu.saldokasbesar',
