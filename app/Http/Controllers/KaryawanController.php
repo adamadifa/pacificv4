@@ -7,6 +7,7 @@ use App\Models\Departemen;
 use App\Models\Gaji;
 use App\Models\Group;
 use App\Models\Jabatan;
+use App\Models\Jadwalkerja;
 use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
 use App\Models\Kasbon;
@@ -192,6 +193,7 @@ class KaryawanController extends Controller
         $group = Group::orderBy('kode_group')->get();
         $jabatan = Jabatan::orderBy('kode_jabatan')->get();
         $klasifikasi = Klasifikasikaryawan::orderBy('kode_klasifikasi')->get();
+        $jadwalkerja = Jadwalkerja::orderBy('kode_jadwal')->get();
         return view('datamaster.karyawan.edit', compact(
             'status_perkawinan',
             'cabang',
@@ -199,7 +201,8 @@ class KaryawanController extends Controller
             'group',
             'jabatan',
             'klasifikasi',
-            'karyawan'
+            'karyawan',
+            'jadwalkerja'
         ));
     }
 
@@ -226,7 +229,8 @@ class KaryawanController extends Controller
             'kode_klasifikasi' => 'required',
             'tanggal_masuk' => 'required',
             'status_karyawan' => 'required',
-            'status_aktif_karyawan' => 'required'
+            'status_aktif_karyawan' => 'required',
+            'kode_jadwal' => 'required'
         ]);
 
         try {
@@ -252,6 +256,7 @@ class KaryawanController extends Controller
                 'status_aktif_karyawan' => $request->status_aktif_karyawan,
                 'tanggal_nonaktif' => $request->status_aktif_karyawan === "0" ? $request->tanggal_nonaktif : NULL,
                 'tanggal_off_gaji' => $request->status_aktif_karyawan === "0" ? $request->tanggal_off_gaji : NULL,
+                'kode_jadwal' => $request->kode_jadwal
             ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {

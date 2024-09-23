@@ -106,6 +106,9 @@ class Izinabsen extends Model
             }
 
             $query->where('hrd_izinabsen.status', '1');
+            if (!empty($kode_izin)) {
+                $query->where('hrd_izinabsen.kode_izin', $kode_izin);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izinabsen.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izinabsen.kode_jabatan', ['J05', 'J06']);
@@ -177,9 +180,12 @@ class Izinabsen extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-
+            if (!empty($kode_izin)) {
+                $query->where('hrd_izinabsen.kode_izin', $kode_izin);
+            }
             //Jika User Memiliki Permission create izin absen
             if ($user->can('izinabsen.create') && auth()->user()->kode_cabang != 'PST') {
+
                 $query->orWhere('hrd_izinabsen.kode_cabang', auth()->user()->kode_cabang);
                 if (!empty($request)) {
                     if (!empty($request->dari) && !empty($request->sampai)) {
@@ -209,6 +215,9 @@ class Izinabsen extends Model
                     if (!empty($request->posisi_ajuan)) {
                         $query->where('roles.name', $request->posisi_ajuan);
                     }
+                }
+                if (!empty($kode_izin)) {
+                    $query->where('hrd_izinabsen.kode_izin', $kode_izin);
                 }
             }
         } else if ($user->hasRole('direktur')) {
@@ -255,6 +264,9 @@ class Izinabsen extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin)) {
+                $query->where('hrd_izinabsen.kode_izin', $kode_izin);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -291,12 +303,13 @@ class Izinabsen extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin)) {
+                $query->where('hrd_izinabsen.kode_izin', $kode_izin);
+            }
         }
 
 
-        if (!empty($kode_izin)) {
-            $query->where('hrd_izinabsen.kode_izin', $kode_izin);
-        }
+
 
         $query->orderBy('hrd_izinabsen.tanggal', 'desc');
         $query->orderBy('hrd_izinabsen.created_at', 'desc');

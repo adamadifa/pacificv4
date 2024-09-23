@@ -134,7 +134,13 @@ class IzinkoreksiController extends Controller
                 $index_role = 0;
             }
 
-            $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            if (in_array($roles_approve[$index_role], ['operation manager', 'sales marketing manager'])) {
+                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)
+                    ->where('kode_cabang', $karyawan->kode_cabang)
+                    ->first();
+            } else {
+                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            }
 
             if ($cek_user_approve == null) {
                 for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
@@ -375,6 +381,55 @@ class IzinkoreksiController extends Controller
             DB::rollBack();
             dd($e);
             return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cancel($kode_izin_koreksi)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $role = $user->getRoleNames()->first();
+        $kode_izin_koreksi = Crypt::decrypt($kode_izin_koreksi);
+        $i_koreksi = new Izinkoreksi();
+        $izinkoreksi = $i_koreksi->getIzinkoreksi(kode_izin_koreksi: $kode_izin_koreksi)->first();
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izinkoreksi->kode_dept, $izinkoreksi->kode_cabang, $izinkoreksi->kategori_jabatan, $izinkoreksi->kode_jabatan);
+        $end_role = end($roles_approve);
+        DB::beginTransaction();
+        try {
+
+            Disposisiizinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)
+                ->where('id_pengirim', auth()->user()->id)
+                ->where('id_penerima', '!=', auth()->user()->id)
+                ->delete();
+
+            Disposisiizinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)
+                ->where('id_penerima', auth()->user()->id)
+                ->update([
+                    'status' => 0
+                ]);
+            if ($role == 'direktur') {
+                Izinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)
+                    ->update([
+                        'direktur' => 0
+                    ]);
+            } else {
+                if ($role == $end_role) {
+                    Izinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)
+                        ->update([
+                            'status' => 0
+                        ]);
+                }
+            }
+
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        } catch (\Exception $e) {
+            //dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+            //throw $th;
         }
     }
 }

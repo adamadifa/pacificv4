@@ -109,7 +109,11 @@ class Kasbon extends Model
         // }
 
         $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
-
+        if (auth()->user()->id == '86') {
+            $query->whereIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
+        } else if (auth()->user()->id == '87') {
+            $query->whereNotIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
+        }
         // if (!$user->hasRole($roles_access_all_pjp)) {
         //     $query->where('hrd_jabatan.kategori', 'NM');
         // }

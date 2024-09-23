@@ -121,28 +121,6 @@
                     },
                 })
                 return false;
-            } else if (jam_in == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Jam Masuk Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        formKoreksipresensi.find('#jam_in').focus();
-                    },
-                })
-                return false;
-            } else if (jam_out == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Jam Keluar Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        formKoreksipresensi.find('#jam_out').focus();
-                    }
-                });
-                return false;
             } else {
                 buttonDisable();
             }

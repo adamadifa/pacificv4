@@ -50,6 +50,7 @@ class LemburController extends Controller
             'keterangan' => 'required',
             'kategori' => 'required',
         ]);
+        $validationRules = [];
         if (in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
             $validationRules['kode_dept'] = 'required';
         }

@@ -220,7 +220,8 @@
                                                             @if ($level_user != 'direktur')
                                                                 @if ($level_user == $d->posisi_ajuan && $d->status === '0')
                                                                     <a href="#" class="btnApprove me-1"
-                                                                        kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}">
+                                                                        kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}"
+                                                                        kode="{{ $d->kode_izin_cuti }}">
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @elseif ($d->posisi_ajuan == $next_role && $d->status === '0')
@@ -293,7 +294,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{-- {{ $barangmasuk->links() }} --}}
+                                {{ $izincuti->links() }}
                             </div>
                         </div>
                     </div>
@@ -354,7 +355,7 @@
         });
 
         $(".btnEdit").click(function() {
-            const kode_izin_cuti = $(this).attr("kode_izin_cuti");
+            let kode_izin_cuti = $(this).attr("kode_izin_cuti");
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Edit Izin cuti");
@@ -362,7 +363,9 @@
         });
 
         $(".btnApprove").click(function() {
-            const kode_izin_cuti = $(this).attr("kode_izin_cuti");
+            let kode_izin_cuti = $(this).attr("kode_izin_cuti");
+            let kode = $(this).attr("kode");
+
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Approve Izin cuti");

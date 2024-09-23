@@ -38,7 +38,7 @@ class DashboardController extends Controller
         // dd(session('screen_width'), session('screen_height'));
 
 
-        $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager'];
+        $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager', 'manager keuangan'];
         $user = User::findorfail(auth()->user()->id);
         if ($user->hasAnyRole($default_marketing)) {
 
@@ -49,7 +49,7 @@ class DashboardController extends Controller
             return $this->salesman();
         } else if ($user->hasRole('admin penjualan')) {
             return $this->operationmanager();
-        } else if ($user->hasRole('gm operasional') || $user->hasRole('spv produksi') || $user->hasRole('manager produksi') || $user->hasRole('admin gudang pusat') || $user->hasRole('manager gudang') || $user->hasRole('spv gudang pusat')) {
+        } else if ($user->hasRole('gm operasional') || $user->hasRole('spv produksi') || $user->hasRole('manager produksi') || $user->hasRole('admin gudang pusat') || $user->hasRole('manager gudang') || $user->hasRole('spv gudang pusat') || $user->hasRole('spv pdqc')) {
             return $this->operasional();
         } else {
             return $this->dashboarddefault();

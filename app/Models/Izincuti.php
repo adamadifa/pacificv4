@@ -109,6 +109,9 @@ class Izincuti extends Model
             }
 
             $query->where('hrd_izincuti.status', '1');
+            if (!empty($kode_izin_cuti)) {
+                $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izincuti.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izincuti.kode_jabatan', ['J05', 'J06']);
@@ -180,9 +183,12 @@ class Izincuti extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-
+            if (!empty($kode_izin_cuti)) {
+                $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
+            }
             //Jika User Memiliki Permission create izin cuti
             if ($user->can('izincuti.create') && auth()->user()->kode_cabang != 'PST') {
+
                 $query->orWhere('hrd_izincuti.kode_cabang', auth()->user()->kode_cabang);
                 if (!empty($request)) {
                     if (!empty($request->dari) && !empty($request->sampai)) {
@@ -212,6 +218,9 @@ class Izincuti extends Model
                     if (!empty($request->posisi_ajuan)) {
                         $query->where('roles.name', $request->posisi_ajuan);
                     }
+                }
+                if (!empty($kode_izin_cuti)) {
+                    $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
                 }
             }
         } else if ($user->hasRole('direktur')) {
@@ -258,6 +267,9 @@ class Izincuti extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_cuti)) {
+                $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -294,12 +306,13 @@ class Izincuti extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_cuti)) {
+                $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
+            }
         }
 
 
-        if (!empty($kode_izin_cuti)) {
-            $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
-        }
+
 
         $query->orderBy('hrd_izincuti.tanggal', 'desc');
         $query->orderBy('hrd_izincuti.created_at', 'desc');

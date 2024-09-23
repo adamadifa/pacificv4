@@ -94,7 +94,14 @@ class IzinabsenController extends Controller
             }
             // Jika Tidak Ada di dalam array
 
-            $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            if (in_array($roles_approve[$index_role], ['operation manager', 'sales marketing manager'])) {
+                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)
+                    ->where('kode_cabang', $karyawan->kode_cabang)
+                    ->first();
+            } else {
+                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            }
+
 
 
 
@@ -248,7 +255,8 @@ class IzinabsenController extends Controller
                 ->first();
         }
 
-        //dd($userrole);
+
+        // dd($userrole);
 
         DB::beginTransaction();
         try {

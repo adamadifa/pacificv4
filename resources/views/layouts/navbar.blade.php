@@ -99,7 +99,34 @@
                                     <small class="text-muted mb-0">Marketing</small>
                                 </div>
                             </div>
+                            <div class="row row-bordered overflow-visible g-0">
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-receipt fs-4"></i>
+                                        @if (!empty($notifikasi_pengajuan_izin))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pengajuan_izin }}</span>
+                                        @endif
+                                    </span>
 
+                                    <a href="{{ route('izinabsen.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}"
+                                        class="stretched-link">Pengajuan Izin</a>
+                                    <small class="text-muted mb-0">Karyawan</small>
+                                </div>
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-target-arrow fs-4"></i>
+                                        @if (!empty($notifikasi_lembur))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_lembur }}
+                                            </span>
+                                        @endif
+                                    </span>
+                                    <a href="{{ route('lembur.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}"
+                                        class="stretched-link">Lembur</a>
+                                    <small class="text-muted mb-0">Karyawan</small>
+                                </div>
+                            </div>
 
                         </div>
                     </div>

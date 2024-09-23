@@ -106,6 +106,9 @@ class Izindinas extends Model
             }
 
             $query->where('hrd_izindinas.status', '1');
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izindinas.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izindinas.kode_jabatan', ['J05', 'J06']);
@@ -177,7 +180,9 @@ class Izindinas extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
             //Jika User Memiliki Permission create izin dinas
             if ($user->can('izindinas.create') && auth()->user()->kode_cabang != 'PST') {
                 $query->orWhere('hrd_izindinas.kode_cabang', auth()->user()->kode_cabang);
@@ -209,6 +214,9 @@ class Izindinas extends Model
                     if (!empty($request->posisi_ajuan)) {
                         $query->where('roles.name', $request->posisi_ajuan);
                     }
+                }
+                if (!empty($kode_izin_dinas)) {
+                    $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
                 }
             }
         } else if ($user->hasRole('direktur')) {
@@ -255,6 +263,9 @@ class Izindinas extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -291,12 +302,13 @@ class Izindinas extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_dinas)) {
+                $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
+            }
         }
 
 
-        if (!empty($kode_izin_dinas)) {
-            $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
-        }
+
 
         $query->orderBy('hrd_izindinas.tanggal', 'desc');
         $query->orderBy('hrd_izindinas.created_at', 'desc');

@@ -114,7 +114,14 @@ class IzincutiController extends Controller
                 $index_role = 0;
             }
 
-            $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            if (in_array($roles_approve[$index_role], ['operation manager', 'sales marketing manager'])) {
+                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)
+                    ->where('kode_cabang', $karyawan->kode_cabang)
+                    ->first();
+            } else {
+                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            }
+
 
             if ($cek_user_approve == null) {
                 for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
@@ -227,9 +234,19 @@ class IzincutiController extends Controller
     public function approve($kode_izin_cuti)
     {
         $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
+
         $user = User::find(auth()->user()->id);
         $i_cuti = new Izincuti();
         $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
+        // $izincuti = DB::table('hrd_izincuti')
+        //     ->select('hrd_izincuti.*', 'nama_karyawan', 'nama_jabatan', 'hrd_jabatan.kategori as kategori_jabatan')
+        //     ->join('hrd_karyawan', 'hrd_izincuti.nik', '=', 'hrd_karyawan.nik')
+        //     ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
+        //     ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
+        //     ->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
+        //     ->where('kode_izin_cuti', $kode_izin_cuti)->first();
+
+        // dd($datacuti);
         $data['izincuti'] = $izincuti;
 
         $role = $user->getRoleNames()->first();
@@ -398,7 +415,6 @@ class IzincutiController extends Controller
                         ]);
                     }
                 } else {
-
                     Disposisiizincuti::create([
                         'kode_disposisi' => $kode_disposisi,
                         'kode_izin_cuti' => $kode_izin_cuti,

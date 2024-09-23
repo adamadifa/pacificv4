@@ -107,6 +107,9 @@ class Izinkeluar extends Model
             }
 
             $query->where('hrd_izinkeluar.status', '1');
+            if (!empty($kode_izin_keluar)) {
+                $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
+            }
             if ($user->hasRole('gm operasional')) {
                 $query->orwhereIn('hrd_izinkeluar.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izinkeluar.kode_jabatan', ['J05', 'J06']);
@@ -178,7 +181,9 @@ class Izinkeluar extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
-
+            if (!empty($kode_izin_keluar)) {
+                $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
+            }
             //Jika User Memiliki Permission create izin keluar
             if ($user->can('izinkeluar.create') && auth()->user()->kode_cabang != 'PST') {
                 $query->orWhere('hrd_izinkeluar.kode_cabang', auth()->user()->kode_cabang);
@@ -210,6 +215,9 @@ class Izinkeluar extends Model
                     if (!empty($request->posisi_ajuan)) {
                         $query->where('roles.name', $request->posisi_ajuan);
                     }
+                }
+                if (!empty($kode_izin_keluar)) {
+                    $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
                 }
             }
         } else if ($user->hasRole('direktur')) {
@@ -256,6 +264,9 @@ class Izinkeluar extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_keluar)) {
+                $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
+            }
         } else {
             if (!empty($request)) {
                 if (!empty($request->dari) && !empty($request->sampai)) {
@@ -292,12 +303,13 @@ class Izinkeluar extends Model
                     $query->where('roles.name', $request->posisi_ajuan);
                 }
             }
+            if (!empty($kode_izin_keluar)) {
+                $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
+            }
         }
 
 
-        if (!empty($kode_izin_keluar)) {
-            $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
-        }
+
 
         $query->orderBy('hrd_izinkeluar.tanggal', 'desc');
         $query->orderBy('hrd_izinkeluar.created_at', 'desc');

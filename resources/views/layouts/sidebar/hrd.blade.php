@@ -15,6 +15,7 @@
             'izindinas.index',
             'izinterlambat.index',
             'presensi.index',
+            'presensi.presensikaryawan',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -37,6 +38,7 @@
             'izindinas',
             'izinterlambat',
             'presensi',
+            'presensikaryawan',
         ])
             ? 'open'
             : '' }}">
@@ -123,6 +125,9 @@
                 <li class="menu-item {{ request()->is(['lembur', 'lembur/*']) ? 'active' : '' }}">
                     <a href="{{ route('lembur.index') }}" class="menu-link">
                         <div>Lembur</div>
+                        @if (!empty($notifikasi_lembur))
+                            <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_lembur }}</div>
+                        @endif
                     </a>
                 </li>
             @endif
@@ -131,6 +136,9 @@
                 <li class="menu-item {{ request()->is(['izinabsen', 'izinabsen/*']) ? 'active' : '' }}">
                     <a href="{{ route('izinabsen.index') }}" class="menu-link">
                         <div>Pengajuan Izin</div>
+                        @if (!empty($notifikasi_pengajuan_izin))
+                            <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_pengajuan_izin }}</div>
+                        @endif
                     </a>
                 </li>
             @endif
