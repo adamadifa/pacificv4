@@ -408,6 +408,7 @@ class Penjualan extends Model
             ->join('marketing_penjualan', 'marketing_saldoawal_piutang_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
             ->where('kode_saldo_awal', $kode_saldo_awal)
+            ->where('marketing_penjualan.status_batal', '!=', '0')
             ->groupBy('marketing_penjualan.kode_pelanggan')
             ->first();
 
