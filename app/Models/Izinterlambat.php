@@ -110,7 +110,7 @@ class Izinterlambat extends Model
                 $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
             }
             if ($user->hasRole('gm operasional')) {
-                $query->orWhere('hrd_izinkoreksi.kode_dept', 'PDQ');
+                $query->orWhere('hrd_izinterlambat.kode_dept', 'PDQ');
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinterlambat.kode_dept', ['AKT', 'KEU']);
                 $query->whereIn('hrd_izinterlambat.kode_jabatan', ['J04', 'J05', 'J06', 'J24', 'J25', 'J26']);

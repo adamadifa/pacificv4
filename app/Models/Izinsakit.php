@@ -110,7 +110,7 @@ class Izinsakit extends Model
                 $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
             }
             if ($user->hasRole('gm operasional')) {
-                $query->orWhere('hrd_izinkoreksi.kode_dept', 'PDQ');
+                $query->orWhere('hrd_izinsakit.kode_dept', 'PDQ');
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinsakit.kode_dept', ['AKT', 'KEU']);
                 $query->whereIn('hrd_izinsakit.kode_jabatan', ['J04', 'J05', 'J06', 'J24', 'J25', 'J26']);

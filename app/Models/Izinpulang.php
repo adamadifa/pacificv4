@@ -111,7 +111,7 @@ class Izinpulang extends Model
                 $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
             }
             if ($user->hasRole('gm operasional')) {
-                $query->orWhere('hrd_izinkoreksi.kode_dept', 'PDQ');
+                $query->orWhere('hrd_izinpulang.kode_dept', 'PDQ');
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinpulang.kode_dept', ['AKT', 'KEU']);
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J04', 'J05', 'J06', 'J24', 'J25', 'J26']);
