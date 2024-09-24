@@ -151,10 +151,14 @@
                 @endforeach
                 <tr>
                     <th colspan="3">GRAND TOTAL</th>
+                    @php
+                        $totalreturqty = 0;
+                    @endphp
                     @foreach ($produk as $p)
                         <th class="center">
                             @php
                                 $grandtotal_qty = ${"grandtotal_qty_$p->kode_produk"} / $p->isi_pcs_dus;
+                                $totalreturqty += $grandtotal_qty;
                                 $grnadtotal_subtotal = ${"grandtotal_subtotal_$p->kode_produk"};
                             @endphp
                             {{ formatAngkaDesimal($grandtotal_qty) }}
@@ -170,18 +174,36 @@
         <br>
         <br>
         <br>
-        <table class="datatable3">
+        <table class="datatable3" style="width: 130%">
             <tr>
-                <th>Penyesuaian Retur</th>
+                <th colspan="2">Penyesuaian Retur</th>
+                @foreach ($produk as $p)
+                    <th>{{ $p->nama_produk }}</th>
+                @endforeach
             </tr>
             <tr>
                 <td>Total Qty</td>
+                <td class="right">{{ formatAngkaDesimal($totalreturqty) }}</td>
+                @php
+                    $average = !empty($totalreturqty) ? $grand_sub_total_retur_gb / $totalreturqty : 0;
+                @endphp
+                @foreach ($produk as $p)
+                    @php
+                        $qty = ${"grandtotal_qty_$p->kode_produk"} / $p->isi_pcs_dus;
+                        $averageharga = $qty * $average;
+                    @endphp
+                    <td class="right" rowspan="3">{{ formatAngka($averageharga) }}</td>
+                @endforeach
             </tr>
             <tr>
                 <td>Penyesuaian Harga</td>
+                <td class="right">{{ formatAngka($grand_sub_total_retur_gb) }}</td>
             </tr>
             <tr>
                 <td>Average</td>
+                <td class="right">
+                    {{ formatAngka($average) }}
+                </td>
             </tr>
         </table>
     </div>
