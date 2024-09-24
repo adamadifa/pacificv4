@@ -52,7 +52,7 @@ class Izinpulang extends Model
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J05', 'J06']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->whereIn('hrd_izinpulang.kode_dept', ['AKT', 'KEU']);
-                $query->whereIn('hrd_izinpulang.kode_jabatan', ['J04', 'J05', 'J06', 'J12']);
+                $query->whereIn('hrd_izinpulang.kode_jabatan', ['J04', 'J05', 'J06', 'J24', 'J25', 'J26']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->whereIn('hrd_izinpulang.kode_dept', ['MKT']);
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J03', 'J05', 'J06']);
@@ -115,7 +115,7 @@ class Izinpulang extends Model
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J05', 'J06']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinpulang.kode_dept', ['AKT', 'KEU']);
-                $query->whereIn('hrd_izinpulang.kode_jabatan', ['J04', 'J05', 'J06', 'J12']);
+                $query->whereIn('hrd_izinpulang.kode_jabatan', ['J04', 'J05', 'J06', 'J24', 'J25', 'J26']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->orwhereIn('hrd_izinpulang.kode_dept', ['MKT']);
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J03', 'J05', 'J06']);
