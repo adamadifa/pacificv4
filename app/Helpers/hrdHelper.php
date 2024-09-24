@@ -237,7 +237,11 @@ function cekRoleapprovepresensi($kode_dept, $kode_cabang, $kategori_jabatan, $ko
     if ($kode_dept == 'AKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') {  //Akunting Cabang Non Manajemen
         $roles_approve =  ['operation manager', 'asst. manager hrd'];
     } else if (in_array($kode_dept, ['AKT', 'KEU']) && $kode_cabang == 'PST' && $kategori_jabatan == 'NM') { //Akunting dan  Keuangan Pusat Non Manajemen
-        $roles_approve =  ['manager keuangan', 'asst. manager hrd'];
+        if (in_array($kode_jabatan, ['J25', 'J26', 'J27'])) {
+            $roles_approve = ['gm administrasi', 'asst. manager hrd'];
+        } else {
+            $roles_approve =  ['manager keuangan', 'asst. manager hrd'];
+        }
     } else if (in_array($kode_dept, ['AKT', 'KEU']) && $kode_cabang == 'PST' && in_array($kode_jabatan, ['J04', 'J05', 'J06'])) { //Akunting dan  Keuangan Pusat  Manajemen
         $roles_approve =  ['gm administrasi', 'asst. manager hrd'];
     } else if ($kode_jabatan == 'J08') { //Operation Manager

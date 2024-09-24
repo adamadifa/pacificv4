@@ -14,8 +14,6 @@
             'pembayarankasbon.index',
             'piutangkaryawan.index',
             'kontrabonpembelian.index',
-            'pjp.index',
-            'kasbon.index',
             'kontrabonangkutan.index',
             'keu.kaskecil',
             'keu.ledger',
