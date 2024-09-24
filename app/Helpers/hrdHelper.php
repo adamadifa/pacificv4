@@ -24,7 +24,7 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
         $roles_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     } else if ($kode_jabatan == 'J08') {
         //Operation Manager
-        $roles_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
+        $roles_approve =  ['regional operation manager', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == 'MKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') {
         //Marketing Cabang Non Manajemen
         $roles_approve =  ['sales marketing manager', 'regional sales manager', 'gm marketing', 'asst. manager hrd', 'direktur'];
@@ -48,7 +48,7 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
     } else if ($kode_dept == 'PRD' && $kategori_jabatan == "NM") {
         $roles_approve =  ['manager produksi', 'gm operasional', 'asst. manager hrd', 'direktur'];
     } else {
-        $roles_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
+        $roles_approve =  ['regional operation manager', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     }
 
 
