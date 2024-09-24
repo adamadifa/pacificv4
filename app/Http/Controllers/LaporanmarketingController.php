@@ -4590,20 +4590,37 @@ class LaporanmarketingController extends Controller
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
 
-        $produk = Detailretur::select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus')
-            ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
-            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
-            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
-            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai])
-            ->orderBy('produk_harga.kode_produk')
-            ->groupby('produk_harga.kode_produk')
-            ->get();
+        $qproduk = Detailretur::query();
+        $qproduk = Detailretur::query();
+        $qproduk->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus');
+        $qproduk->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qproduk->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $qproduk->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $qproduk->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qproduk->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qproduk->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_cabang)) {
+            $qproduk->where('salesman.kode_cabang', $request->kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $qproduk->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+        $qproduk->orderBy('produk_harga.kode_produk');
+        $qproduk->groupby('produk_harga.kode_produk');
+        $produk = $qproduk->get();
 
-
+        $selecColumproduct = [];
+        foreach ($produk as $p) {
+            $selecColumproduct[] = DB::raw("SUM(IF(produk_harga.kode_produk = '$p->kode_produk',jumlah,0)) as qty_" . $p->kode_produk);
+            $selecColumproduct[] = DB::raw("SUM(IF(produk_harga.kode_produk = '$p->kode_produk',subtotal,0)) as subtotal_" . $p->kode_produk);
+        }
         $query = Detailretur::query();
-        $query->select('marketing_penjualan.kode_salesman', 'nama_salesman', 'salesman.kode_cabang');
+        $query->select(
+            'marketing_penjualan.kode_salesman',
+            'nama_salesman',
+            'salesman.kode_cabang',
+            ...$selecColumproduct
+        );
         $query->join('marketing_penjualan', 'marketing_retur_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);

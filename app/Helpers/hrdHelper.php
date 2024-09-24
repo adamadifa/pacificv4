@@ -245,7 +245,7 @@ function cekRoleapprovepresensi($kode_dept, $kode_cabang, $kategori_jabatan, $ko
     } else if (in_array($kode_dept, ['AKT', 'KEU']) && $kode_cabang == 'PST' && in_array($kode_jabatan, ['J04', 'J05', 'J06'])) { //Akunting dan  Keuangan Pusat  Manajemen
         $roles_approve =  ['gm administrasi', 'asst. manager hrd'];
     } else if ($kode_jabatan == 'J08') { //Operation Manager
-        $roles_approve =  ['rom', 'asst. manager hrd'];
+        $roles_approve =  ['regional operation manager', 'asst. manager hrd'];
     } else if ($kode_dept == 'MKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') { //Marketing Cabang Non Manajemen
         $roles_approve =  ['sales marketing manager',  'asst. manager hrd'];
     } else if ($kode_jabatan == 'J03') { //Sales Marketing Manager
