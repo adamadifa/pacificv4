@@ -294,15 +294,14 @@
                                                 <div class="d-flex">
                                                     @if ($d->status_kehadiran == 'h')
                                                         <a href="#" class="btnKoreksi" nik="{{ $d->nik }}"
-                                                            tanggal="{{ !empty(Request('tanggal')) ? Request('tanggal') : date('Y-m-d') }}">
+                                                            tanggal="{{ $d->tanggal }}">
                                                             <i class="ti ti-edit text-success"></i>
                                                         </a>
                                                     @endif
 
 
                                                     <a href="#" class="btngetDatamesin" pin="{{ $d->pin }}"
-                                                        tanggal="{{ !empty(Request('tanggal')) ? Request('tanggal') : date('Y-m-d') }}"
-                                                        kode_jadwal="{{ $d->kode_jadwal }}">
+                                                        tanggal="{{ $d->tanggal }}" kode_jadwal="{{ $d->kode_jadwal }}">
                                                         <i class="ti ti-device-desktop text-primary"></i>
                                                     </a>
                                                 </div>
