@@ -167,7 +167,23 @@
                 </tr>
             </tbody>
         </table>
-
+        <br>
+        <br>
+        <br>
+        <table class="datatable3">
+            <tr>
+                <th>Penyesuaian Retur</th>
+            </tr>
+            <tr>
+                <td>Total Qty</td>
+            </tr>
+            <tr>
+                <td>Penyesuaian Harga</td>
+            </tr>
+            <tr>
+                <td>Average</td>
+            </tr>
+        </table>
     </div>
 </body>
 
