@@ -53,4 +53,14 @@
      #tabelharga_filter {
          margin-bottom: 10px;
      }
+
+     .modal-backdrop {
+         width: 100vw;
+         /* Tutup seluruh lebar layar */
+         height: 100vh;
+         /* Tutup seluruh tinggi layar */
+         position: fixed;
+         top: 0;
+         left: 0;
+     }
  </style>
