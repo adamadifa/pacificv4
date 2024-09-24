@@ -44,11 +44,12 @@
             @hasanyrole(['super admin', 'asst. manager hrd', 'spv presensi'])
                 <div class="row">
                     <div class="col-lg-6 col-md-12 col-sm-12">
-                        <x-input-with-icon icon="ti ti-clock " label="Jam Masuk" name="jam_in" value="{{ date('H:i', strtotime($presensi->jam_in)) }}" />
+                        <x-input-with-icon icon="ti ti-clock " label="Jam Masuk" name="jam_in"
+                            value="{{ !empty($presensi->jam_in) ? date('H:i', strtotime($presensi->jam_in)) : '' }}" />
                     </div>
                     <div class="col-lg-6 col-md-12 col-sm-12">
                         <x-input-with-icon icon="ti ti-clock " label="Jam Keluar" name="jam_out"
-                            value="{{ date('H:i', strtotime($presensi->jam_out)) }}" />
+                            value="{{ !empty($presensi->jam_out) ? date('H:i', strtotime($presensi->jam_out)) : '' }}" />
                     </div>
                 </div>
             @endhasanyrole
