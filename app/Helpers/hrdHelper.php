@@ -62,7 +62,7 @@ function listApprovepenilaian($kode_dept, $level = "")
 {
     $list_approve = [];
     if ($kode_dept == "AKT") {
-        $list_approve =  ['operation manager', 'manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
+        $list_approve =  ['operation manager', 'regional operation manager', 'manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == "MKT") {
         $list_approve =  ['sales marketing manager', 'regional sales manager', 'gm marketing', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == "GAF") {
@@ -81,6 +81,8 @@ function listApprovepenilaian($kode_dept, $level = "")
 
     if ($level == "manager keuangan") {
         $list_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
+    } else if ($level == "regional operation manager") {
+        $list_approve =  ['regional operation manager', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     } else if ($level == "manager gudang") {
         $list_approve =  ['manager gudang', 'gm operasional', 'asst. manager hrd', 'direktur'];
     } else if ($level == "manager maintenance") {
@@ -104,6 +106,7 @@ function listApprovepenilaian($kode_dept, $level = "")
             'operation manager',
             'sales marketing manager',
             'regional sales manager',
+            'regional operation manager',
             'manager keuangan',
             'manager gudang',
             'manager maintenance',
