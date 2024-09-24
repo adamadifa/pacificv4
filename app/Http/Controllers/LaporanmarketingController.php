@@ -174,6 +174,14 @@ class LaporanmarketingController extends Controller
         if (!empty($request->jenis_transaksi)) {
             $qpenjualan->where('marketing_penjualan.jenis_transaksi', $request->jenis_transaksi);
         }
+
+        if (!empty($request->status_penjualan)) {
+            if ($request->status_penjualan == '1') {
+                $qpenjualan->where('status_batal', 1);
+            } else if ($request->status_penjualan == '2') {
+                $qpenjualan->where('status_batal', 0);
+            }
+        }
         $qpenjualan->orderBy('marketing_penjualan.tanggal');
         $qpenjualan->orderBy('marketing_penjualan.no_faktur');
 
@@ -203,12 +211,6 @@ class LaporanmarketingController extends Controller
 
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
-
-
-
-
-
-
 
 
         // dd($subqueryRetur->get());
@@ -247,7 +249,7 @@ class LaporanmarketingController extends Controller
                     SUM(ppn) as total_ppn
                     FROM marketing_penjualan
                     INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai'
+                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai' AND status_batal = 0
                     GROUP BY salesman.kode_cabang
                 ) penjualan"),
             function ($join) {

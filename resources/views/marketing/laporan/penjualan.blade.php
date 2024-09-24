@@ -40,6 +40,14 @@
             <option value="5">Perhitungan Komisi</option>
         </select>
     </div>
+
+    <div class="form-group mb-3">
+        <select name="status_penjualan" id="status_penjualan" class="form-select">
+            <option value="">Status Penjualan</option>
+            <option value="1">Batal</option>
+            <option value="2" selected>Tanpa Status Batal</option>
+        </select>
+    </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
