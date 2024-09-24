@@ -111,8 +111,7 @@ class Izinkeluar extends Model
                 $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
             }
             if ($user->hasRole('gm operasional')) {
-                $query->orwhereIn('hrd_izinkeluar.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
-                $query->whereIn('hrd_izinkeluar.kode_jabatan', ['J05', 'J06']);
+                $query->orWhere('hrd_izinkoreksi.kode_dept', 'PDQ');
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinkeluar.kode_dept', ['AKT', 'KEU']);
                 $query->whereIn('hrd_izinkeluar.kode_jabatan', ['J04', 'J05', 'J06', 'J24', 'J25', 'J26']);

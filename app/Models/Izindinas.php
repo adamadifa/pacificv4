@@ -110,8 +110,7 @@ class Izindinas extends Model
                 $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
             }
             if ($user->hasRole('gm operasional')) {
-                $query->orwhereIn('hrd_izindinas.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
-                $query->whereIn('hrd_izindinas.kode_jabatan', ['J05', 'J06']);
+                $query->orWhere('hrd_izinkoreksi.kode_dept', 'PDQ');
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izindinas.kode_dept', ['AKT', 'KEU']);
                 $query->whereIn('hrd_izindinas.kode_jabatan', ['J04', 'J05', 'J06', 'J24', 'J25', 'J26']);

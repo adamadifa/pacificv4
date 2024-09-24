@@ -110,7 +110,7 @@ class Izinabsen extends Model
                 $query->where('hrd_izinabsen.kode_izin', $kode_izin);
             }
             if ($user->hasRole('gm operasional')) {
-                $query->orwhereIn('hrd_izinabsen.kode_dept', ['PDQ']);
+                $query->orWhere('hrd_izinkoreksi.kode_dept', 'PDQ');
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinabsen.kode_dept', ['AKT', 'KEU']);
                 $query->whereIn('hrd_izinabsen.kode_jabatan', ['J04', 'J05', 'J06']);
