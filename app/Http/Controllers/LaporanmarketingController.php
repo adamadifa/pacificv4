@@ -4590,7 +4590,7 @@ class LaporanmarketingController extends Controller
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
 
-        $qproduk = Detailretur::query();
+
         $qproduk = Detailretur::query();
         $qproduk->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus');
         $qproduk->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
@@ -4619,9 +4619,14 @@ class LaporanmarketingController extends Controller
             'marketing_penjualan.kode_salesman',
             'nama_salesman',
             'salesman.kode_cabang',
+            DB::raw('SUM(subtotal) as total_retur'),
+            DB::raw('SUM(IF(jenis_retur = "GB", subtotal, 0)) as total_retur_gb'),
+            DB::raw('SUM(IF(jenis_retur = "PF", subtotal, 0)) as total_retur_pf'),
             ...$selecColumproduct
         );
-        $query->join('marketing_penjualan', 'marketing_retur_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $query->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $query->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $query->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_cabang)) {
@@ -4630,8 +4635,11 @@ class LaporanmarketingController extends Controller
         if (!empty($request->kode_salesman)) {
             $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
+        $query->orderBy('salesman.kode_cabang', 'asc');
+        $query->orderBy('salesman.nama_salesman', 'asc');
+        $query->groupBy('marketing_penjualan.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
         $data['rekappenjualan'] = $query->get();
         $data['produk'] = $produk;
-        return view('marketing.laporan.rekappenjualan_cetak', $data);
+        return view('marketing.laporan.rekappenjualan_retur_cetak', $data);
     }
 }
