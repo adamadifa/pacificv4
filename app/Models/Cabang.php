@@ -23,7 +23,7 @@ class Cabang extends Model
         $kode_regional = auth()->user()->kode_regional;
         $kode_cabang = auth()->user()->kode_cabang;
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        if ($user->hasRole($roles_access_all_cabang)) {
+        if ($user->hasRole($roles_access_all_cabang) || $user->hasRole('admin pusat')) {
             $cabang = Cabang::orderBy('kode_cabang')->get();
         } else {
             if ($kode_regional != "R00") {

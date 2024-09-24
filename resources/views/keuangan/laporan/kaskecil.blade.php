@@ -1,9 +1,9 @@
 <form action="{{ route('laporankeuangan.cetakkaskecil') }}" id="formKaskecil" target="_blank" method="POST">
     @csrf
-    {{-- @php
-        $role_admin_pusat;
-    @endphp --}}
-    @hasanyrole($roles_show_cabang)
+    @php
+        $role_admin_pusat = ['admin pusat'];
+    @endphp
+    @hasanyrole(array_merge($roles_show_cabang, $role_admin_pusat))
         <div class="form-group mb-3">
             <select name="kode_cabang" id="kode_cabang_kaskecil" class="form-select select2Kodecabangkaskecil">
                 <option value="">Pilih Cabang</option>
@@ -115,6 +115,71 @@
 
             formKaskecil.find("#formatlaporan").change(function() {
                 showcoakaskecil();
+            });
+
+            formKaskecil.submit(function(e) {
+                const kode_cabang = formKaskecil.find("#kode_cabang_kaskecil").val();
+                const formatlaporan = formKaskecil.find("#formatlaporan").val();
+                const dari = formKaskecil.find('#dari').val();
+                const sampai = formKaskecil.find('#sampai').val();
+                const start = new Date(dari);
+                const end = new Date(sampai);
+                if (kode_cabang == "") {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: 'Cabang Harus Diisi !',
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            formKaskecil.find("#kode_cabang_kaskecil").focus();
+                        },
+                    })
+                    return false;
+                } else if (formatlaporan == "") {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: 'Format Laporan Harus Diisi !',
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            formKaskecil.find("#formatlaporan").focus();
+                        },
+                    })
+                    return false;
+                } else if (dari == "") {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: 'Dari Tanggal Harus Diisi !',
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            formKaskecil.find("#dari").focus();
+                        },
+                    });
+                    return false;
+                } else if (sampai == "") {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: 'Sampai Tanggal Harus Diisi !',
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            formKaskecil.find("#sampai").focus();
+                        },
+                    });
+                    return false;
+                } else if (start.getTime() > end.getTime()) {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: 'Periode Tidak Valid !, Periode Sampai Harus Lebih Akhir dari Periode Dari',
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            formKaskecil.find("#sampai").focus();
+                        },
+                    });
+                    return false;
+                }
             });
         });
     </script>
