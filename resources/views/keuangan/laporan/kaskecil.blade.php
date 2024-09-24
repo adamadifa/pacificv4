@@ -1,5 +1,8 @@
 <form action="{{ route('laporankeuangan.cetakkaskecil') }}" id="formKaskecil" target="_blank" method="POST">
     @csrf
+    {{-- @php
+        $role_admin_pusat;
+    @endphp --}}
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
             <select name="kode_cabang" id="kode_cabang_kaskecil" class="form-select select2Kodecabangkaskecil">
