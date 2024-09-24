@@ -47,7 +47,7 @@ class Izinabsen extends Model
         $query->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
         if (!in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi', 'direktur'])) {
             if ($user->hasRole('gm operasional')) {
-                $query->whereIn('hrd_izinabsen.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
+                $query->whereIn('hrd_izinabsen.kode_dept', ['PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
                 $query->whereIn('hrd_izinabsen.kode_jabatan', ['J05', 'J06']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->whereIn('hrd_izinabsen.kode_dept', ['AKT', 'KEU']);
@@ -110,8 +110,7 @@ class Izinabsen extends Model
                 $query->where('hrd_izinabsen.kode_izin', $kode_izin);
             }
             if ($user->hasRole('gm operasional')) {
-                $query->orwhereIn('hrd_izinabsen.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
-                $query->whereIn('hrd_izinabsen.kode_jabatan', ['J05', 'J06']);
+                $query->orwhereIn('hrd_izinabsen.kode_dept', ['PDQ']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinabsen.kode_dept', ['AKT', 'KEU']);
                 $query->whereIn('hrd_izinabsen.kode_jabatan', ['J04', 'J05', 'J06']);
