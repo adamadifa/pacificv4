@@ -56,7 +56,29 @@
             });
         }
 
+        function getpresensi() {
+            const nik = form.find("#nik").val();
+            const tanggal = form.find("#tanggal").val();
+            $.ajax({
+                url: "{{ route('izinkoreksi.getpresensi') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    nik: nik,
+                    tanggal: tanggal
+                },
+                success: function(respond) {
+                    $("#jam_masuk").val(respond.jam_in);
+                    $("#jam_pulang").val(respond.jam_out);
+                }
+            });
+        }
 
+        $("#nik,#tanggal").change(function(e) {
+            getpresensi();
+        });
+
+        // getpresensi();
         const select2Kodejadwal = $('.select2Kodejadwal');
         if (select2Kodejadwal.length) {
             select2Kodejadwal.each(function() {
