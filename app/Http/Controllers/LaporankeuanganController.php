@@ -1776,7 +1776,7 @@ class LaporankeuanganController extends Controller
         $qsaldoawal->selectRaw("SUM(IF( `debet_kredit` = 'K', jumlah, 0)) -SUM(IF( `debet_kredit` = 'D', jumlah, 0)) as saldo_awal");
         $qsaldoawal->whereBetween('tanggal', [$awal_kas_kecil, $sehariSebelumDari]);
         // $qsaldoawal->where('kode_cabang', $request->kode_cabang);
-        dd($user->hasRole('admin pusat'));
+        //dd($user->hasRole('admin pusat'));
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager') || $user->hasRole('admin pusat')) {
                 $qsaldoawal->where('kode_cabang', $request->kode_cabang);
@@ -1795,7 +1795,7 @@ class LaporankeuanganController extends Controller
             $query->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
             $query->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id');
             if (!$user->hasRole($roles_access_all_cabang)) {
-                if ($user->hasRole('regional sales manager')) {
+                if ($user->hasRole('regional sales manager') || $user->hasRole('admin pusat')) {
                     $query->where('kode_cabang', $request->kode_cabang);
                 } else {
                     $query->where('kode_cabang', auth()->user()->kode_cabang);
@@ -1841,7 +1841,7 @@ class LaporankeuanganController extends Controller
             $query->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
             $query->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id');
             if (!$user->hasRole($roles_access_all_cabang)) {
-                if ($user->hasRole('regional sales manager')) {
+                if ($user->hasRole('regional sales manager') || $user->hasRole('admin pusat')) {
                     $query->where('kode_cabang', $request->kode_cabang);
                 } else {
                     $query->where('kode_cabang', auth()->user()->kode_cabang);
