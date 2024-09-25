@@ -4886,8 +4886,8 @@ class LaporanmarketingController extends Controller
         $querysaldoawalpiutang = Detailsaldoawalpiutangsalesman::query();
         $querysaldoawalpiutang->select(
             'salesman.kode_salesman',
-            'salesman.kode_cabang',
             'salesman.nama_salesman',
+            'salesman.kode_cabang',
             DB::raw('SUM(0) as potongan'),
             DB::raw('SUM(0) as potongan_istimewa'),
             DB::raw('SUM(0) as ppn'),
@@ -4924,15 +4924,15 @@ class LaporanmarketingController extends Controller
         if (!empty($request->kode_salesman)) {
             $querysaldoawalpiutang->where('marketing_sa_piutangsales_detail.kode_salesman', $request->kode_salesman);
         }
-        $querysaldoawalpiutang->groupBy('marketing_sa_piutangsales_detail.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
+        $querysaldoawalpiutang->groupBy('salesman.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
 
         // dd($querysaldoawalpiutang->get());
 
         $querybayarpiutang = Historibayarpenjualan::query();
         $querybayarpiutang->select(
             'salesman.kode_salesman',
-            'salesman.kode_cabang',
             'salesman.nama_salesman',
+            'salesman.kode_cabang',
             DB::raw('SUM(0) as potongan'),
             DB::raw('SUM(0) as potongan_istimewa'),
             DB::raw('SUM(0) as ppn'),
@@ -5001,8 +5001,8 @@ class LaporanmarketingController extends Controller
         $querypiutangpindahan = Movefaktur::query();
         $querypiutangpindahan->select(
             'salesman.kode_salesman',
-            'salesman.kode_cabang',
             'salesman.nama_salesman',
+            'salesman.kode_cabang',
             DB::raw('SUM(0) as potongan'),
             DB::raw('SUM(0) as potongan_istimewa'),
             DB::raw('SUM(0) as ppn'),
@@ -5086,8 +5086,8 @@ class LaporanmarketingController extends Controller
         $querypiutanglama = Movefaktur::query();
         $querypiutanglama->select(
             'salesman.kode_salesman',
-            'salesman.kode_cabang',
             'salesman.nama_salesman',
+            'salesman.kode_cabang',
             DB::raw('SUM(0) as potongan'),
             DB::raw('SUM(0) as potongan_istimewa'),
             DB::raw('SUM(0) as ppn'),
@@ -5163,10 +5163,15 @@ class LaporanmarketingController extends Controller
         if (!empty($request->kode_salesman)) {
             $querypiutanglama->where('salesman.kode_salesman', $request->kode_salesman);
         }
+        $querypiutanglama->groupBy('salesman.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
 
 
-
-        $query_rekappenjualan = $querydetail->unionAll($querypenjualan)->unionAll($queryretur)->unionAll($queryhistoribayar)->get();
+        $query_rekappenjualan = $querydetail->unionAll($querypenjualan)->unionAll($queryretur)->unionAll($queryhistoribayar)
+            ->unionAll($querysaldoawalpiutang)
+            ->unionAll($querybayarpiutang)
+            ->unionAll($querypiutangpindahan)
+            ->unionAll($querypiutanglama)
+            ->get();
 
         $rekappenjualan = $query_rekappenjualan->groupBy('kode_salesman', 'kode_cabang', 'nama_salesman')
             ->map(function ($item) use ($produk) {
@@ -5190,6 +5195,14 @@ class LaporanmarketingController extends Controller
                     'wapu' => $item->sum('wapu'),
                     'pph22' => $item->sum('pph22'),
                     'lain' => $item->sum('lainnya'),
+                    'totalbayarpiutang' => $item->sum('totalbayarpiutang'),
+                    'saldoawalpiutang' => $item->sum('saldoawalpiutang'),
+                    'piutangpindahanbulanlalu' => $item->sum('piutangpindahanbulanlalu'),
+                    'piutangpindahan' => $item->sum('piutangpindahan'),
+                    'piutangberjalan' => $item->sum('piutangberjalan'),
+                    'piutanglama' => $item->sum('piutanglama'),
+                    'piutanglamanow' => $item->sum('piutanglamanow'),
+                    'piutanglamaberjalan' => $item->sum('piutanglamaberjalan'),
                 ];
                 foreach ($produk as $p) {
                     $result['bruto_' . $p->kode_produk] = $item->sum('bruto_' . $p->kode_produk);

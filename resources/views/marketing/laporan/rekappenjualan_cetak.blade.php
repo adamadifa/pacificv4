@@ -47,7 +47,7 @@
         @endif
     </div>
     <div class="content">
-        <table class="datatable3" style="width: 150%">
+        <table class="datatable3" style="width: 200%">
             <thead>
                 <tr>
                     <th rowspan="2">No.</th>
@@ -63,7 +63,9 @@
                     <th rowspan="2" style="background-color: rgb(230, 143, 14)">Retur</th>
                     <th rowspan="2" style="background-color: rgba(3, 123, 21, 0.993)">Netto</th>
                     <th rowspan="2" style="background-color: rgba(3, 123, 21, 0.993)">Penerimaan Uang</th>
-                    <th style="background-color: rgba(123, 3, 41, 0.993)" colspan="10">Voucher</th>
+                    <th style="background-color: rgba(123, 3, 41, 0.993)" colspan="9">Voucher</th>
+                    <th rowspan="2">Saldo Awal</th>
+                    <th rowspan="2">Saldo Akhir</th>
                 </tr>
                 <tr>
                     @foreach ($produk as $p)
@@ -127,6 +129,11 @@
                     $subtotal_lain = 0;
                     $grandtotal_lain = 0;
 
+                    $subtotal_saldoawal = 0;
+                    $grandtotal_saldoawal = 0;
+                    $subtotal_saldoakhir = 0;
+                    $grandtotal_saldoakhir = 0;
+
                 @endphp
                 @foreach ($rekappenjualan as $key => $d)
                     @php
@@ -182,6 +189,26 @@
                         $subtotal_lain += $d['lain'];
                         $grandtotal_lain += $d['lain'];
 
+                        $saldo_awal_piutang = $d['saldoawalpiutang'];
+                        $saldo_akhir_piutang =
+                            $d['saldoawalpiutang'] -
+                            $d['piutanglamanow'] +
+                            $d['piutangpindahan'] -
+                            $d['piutanglamaberjalan'] +
+                            $d['bruto'] -
+                            $d['potongan'] -
+                            $d['retur'] -
+                            $d['potongan_istimewa'] -
+                            $d['penyesuaian'] +
+                            $d['ppn'] -
+                            $d['totalbayarpiutang'];
+
+                        $subtotal_saldoawal += $saldo_awal_piutang;
+                        $grandtotal_saldoawal += $saldo_awal_piutang;
+
+                        $subtotal_saldoakhir += $saldo_akhir_piutang;
+                        $grandtotal_saldoakhir += $saldo_akhir_piutang;
+
                     @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
@@ -215,6 +242,8 @@
                         <td class="right">{{ formatAngka($d['wapu']) }}</td>
                         <td class="right">{{ formatAngka($d['pph22']) }}</td>
                         <td class="right">{{ formatAngka($d['lain']) }}</td>
+                        <td class="right">{{ formatAngka($saldo_awal_piutang) }}</td>
+                        <td class="right">{{ formatAngka($saldo_akhir_piutang) }}</td>
                     </tr>
                     @if ($cbg != $d['kode_cabang'])
                         <tr>
@@ -245,6 +274,8 @@
                                     'wapu' => $subtotal_wapu,
                                     'pph22' => $subtotal_pph22,
                                     'lain' => $subtotal_lain,
+                                    'subtotal_saldoawal' => $subtotal_saldoawal,
+                                    'subtotal_saldoakhir' => $subtotal_saldoakhir,
                                 ];
                                 $subtotal_bruto = 0;
                                 $subtotal_potongan = 0;
@@ -264,6 +295,8 @@
                                 $subtotal_wapu = 0;
                                 $subtotal_pph22 = 0;
                                 $subtotal_lain = 0;
+                                $subtotal_saldoawal = 0;
+                                $subtotal_saldoakhir = 0;
                             @endphp
                             @foreach ($subtotals as $key => $subtotal)
                                 <th class="right">{{ formatAngka($subtotal) }}</th>
@@ -299,6 +332,8 @@
                     <th class="right">{{ formatAngka($grandtotal_wapu) }}</th>
                     <th class="right">{{ formatAngka($grandtotal_pph22) }}</th>
                     <th class="right">{{ formatAngka($grandtotal_lain) }}</th>
+                    <th class="right">{{ formatAngka($grandtotal_saldoawal) }}</th>
+                    <th class="right">{{ formatAngka($grandtotal_saldoakhir) }}</th>
                 </tr>
             </tfoot>
         </table>

@@ -495,6 +495,7 @@
                 type: 'GET',
                 cache: false,
                 success: function(response) {
+                    console.log(response);
                     $("#sisa_piutang_text").text(convertToRupiah(response.data));
                     $("#sisa_piutang").val(response.data);
                     buttonEnable();
