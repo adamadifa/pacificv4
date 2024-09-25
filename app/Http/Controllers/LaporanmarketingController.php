@@ -4831,7 +4831,7 @@ class LaporanmarketingController extends Controller
             $queryretur->where('salesman.kode_cabang', $request->kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
-            $queryretur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+            $queryretur->where('salesman.kode_salesman', $request->kode_salesman);
         }
         $queryretur->groupBy('salesman.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
 
