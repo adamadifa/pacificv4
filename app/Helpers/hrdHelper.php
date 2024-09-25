@@ -252,7 +252,7 @@ function cekRoleapprovepresensi($kode_dept, $kode_cabang, $kategori_jabatan, $ko
     } else if ($kode_dept == 'MKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') { //Marketing Cabang Non Manajemen
         $roles_approve =  ['sales marketing manager',  'asst. manager hrd'];
     } else if ($kode_jabatan == 'J03') { //Sales Marketing Manager
-        $roles_approve =  ['gm marketing', 'asst. manager hrd', 'direktur'];
+        $roles_approve =  ['gm marketing', 'asst. manager hrd'];
     } else if ($kode_jabatan == 'J07') { //Sales Marketing Manager
         $roles_approve =  ['regional sales manager', 'asst. manager hrd', 'direktur'];
     } else if (in_array($kode_dept, ['GAF', 'PMB', 'GDG', 'MTC', 'PRD', 'PDQ']) && in_array($kode_jabatan, ['J05', 'J06'])) { //GAF, PMB, GDG, MTC, PRD, PDQ MANAGER / ASST. MANAGER HRD
