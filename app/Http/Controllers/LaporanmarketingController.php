@@ -5267,6 +5267,11 @@ class LaporanmarketingController extends Controller
             $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
             $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
             $data['routing'] = $routing;
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Routing Salesman $request->dari-$request->sampai.xls");
+            }
             return view('marketing.laporan.routingsalesman_cetak', $data);
         } else {
             $query = Penjualan::query();
@@ -5297,6 +5302,12 @@ class LaporanmarketingController extends Controller
             $data['sampai'] = $request->sampai;
             $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
             $data['routing'] = $routing;
+
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Rekap Routing Salesman $request->dari-$request->sampai.xls");
+            }
             return view('marketing.laporan.rekaproutingsalesman_cetak', $data);
         }
     }
