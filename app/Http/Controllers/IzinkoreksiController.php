@@ -334,7 +334,7 @@ class IzinkoreksiController extends Controller
                         ->update([
                             'status' => 1
                         ]);
-
+                    Presensiizinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)->delete();
                     Presensi::where('nik', $izinkoreksi->nik)->where('tanggal', $izinkoreksi->tanggal)->delete();
                     //dd($cekpresensi);
                     $presensi = Presensi::create([
