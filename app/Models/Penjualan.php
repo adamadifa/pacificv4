@@ -368,7 +368,7 @@ class Penjualan extends Model
         INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
         INNER JOIN marketing_penjualan ON marketing_retur.no_faktur = marketing_penjualan.no_faktur
         WHERE kode_pelanggan = pelanggan.kode_pelanggan AND jenis_retur='PF' AND
-        marketing_penjualan.tanggal BETWEEN '$start_date' AND '$end_date') as total_retur"));
+        marketing_retur.tanggal BETWEEN '$start_date' AND '$end_date') as total_retur"));
 
         $query->addSelect(DB::raw("(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar
         INNER JOIN marketing_penjualan ON marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur
