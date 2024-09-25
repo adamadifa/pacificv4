@@ -5219,4 +5219,85 @@ class LaporanmarketingController extends Controller
         $data['produk'] = $produk;
         return view('marketing.laporan.rekappenjualan_cetak', $data);
     }
+
+
+    public function cetakroutingsalesman(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+
+        if ($request->formatlaporan == '1') {
+            $query = Penjualan::query();
+            $query->select(
+                'marketing_penjualan.no_faktur',
+                'tanggal',
+                'marketing_penjualan.kode_pelanggan',
+                'nama_pelanggan',
+                'nama_wilayah',
+                'routing'
+            );
+            $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+            $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+            $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+            $query->where('status_batal', 0);
+            if (!empty($kode_cabang)) {
+                $query->where('salesman.kode_cabang', $kode_cabang);
+            }
+
+            if (!empty($request->kode_salesman)) {
+                $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+            }
+
+            $routing = $query->get();
+
+            $data['dari'] = $request->dari;
+            $data['sampai'] = $request->sampai;
+            $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+            $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+            $data['routing'] = $routing;
+            return view('marketing.laporan.routingsalesman_cetak', $data);
+        } else {
+            $query = Penjualan::query();
+            $query->select(
+                'marketing_penjualan.kode_salesman',
+                'nama_salesman',
+                DB::raw('COUNT(no_faktur) as jmlkunjungan'),
+                DB::raw("COUNT(
+                CASE WHEN
+                DAYNAME(tanggal)='Monday' AND routing like '%Senin%' OR
+                DAYNAME(tanggal)='Tuesday' AND routing like '%Selasa%' OR
+                DAYNAME(tanggal)='Wednesday' AND routing like '%Rabu%' OR
+                DAYNAME(tanggal)='Thursday' AND routing like '%Kamis%' OR
+                DAYNAME(tanggal)='Friday' AND routing like '%Jumat%' OR
+                DAYNAME(tanggal)='Saturday' AND routing like '%Sabtu%' OR
+                DAYNAME(tanggal)='Sunday' AND routing like '%Minggu%'  THEN no_faktur END ) as jmlsesuaijadwal"),
+            );
+            $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+            $query->where('status_batal', 0);
+            if (!empty($kode_cabang)) {
+                $query->where('salesman.kode_cabang', $kode_cabang);
+            }
+            $query->groupBy('marketing_penjualan.kode_salesman');
+            $routing = $query->get();
+
+            $data['dari'] = $request->dari;
+            $data['sampai'] = $request->sampai;
+            $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+            $data['routing'] = $routing;
+            return view('marketing.laporan.rekaproutingsalesman_cetak', $data);
+        }
+    }
 }
