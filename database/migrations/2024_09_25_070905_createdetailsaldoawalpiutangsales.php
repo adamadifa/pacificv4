@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('marketing_sa_piutangsales_detail', function (Blueprint $table) {
-            $table->char('kode_saldo_awal', 8);
-            $table->char('no_faktur', 13);
-            $table->integer('jumlah');
+            $table->char('kode_saldo_awal', 11);
+            $table->char('kode_salesman', 7);
+            $table->bigInteger('jumlah');
             $table->foreign('kode_saldo_awal')->references('kode_saldo_awal')->on('marketing_sa_piutangsales')->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->foreign('kode_salesman')->references('kode_salesman')->on('salesman')->restrictOnDelete()->cascadeOnUpdate();
