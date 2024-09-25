@@ -204,8 +204,8 @@
                                                     <div class="d-flex">
                                                         @can('izinkeluar.edit')
                                                             @if (
-                                                                ($d->status === '0' && $d->id_pengirim === $level_user) ||
-                                                                    ($d->status === '0' && $d->id_pengirim === $level_user && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
+                                                                ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
+                                                                    ($d->status === '0' && $d->id_pengirim === auth()->user()->id && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
                                                                     (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
                                                                 <a href="#" class="btnEdit me-1"
                                                                     kode_izin_keluar = "{{ Crypt::encrypt($d->kode_izin_keluar) }}">
@@ -268,8 +268,8 @@
                                                         @endcan
                                                         @can('izinkeluar.delete')
                                                             @if (
-                                                                ($d->status === '0' && $d->id_pengirim === $level_user) ||
-                                                                    ($d->status === '0' && $d->id_pengirim === $level_user && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
+                                                                ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
+                                                                    ($d->status === '0' && $d->id_pengirim === auth()->user()->id && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
                                                                     (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
                                                                 <form class="delete-form me-1"
                                                                     action="{{ route('izinkeluar.delete', Crypt::encrypt($d->kode_izin_keluar)) }}"
