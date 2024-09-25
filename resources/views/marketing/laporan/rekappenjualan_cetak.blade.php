@@ -189,7 +189,7 @@
                         $subtotal_lain += $d['lain'];
                         $grandtotal_lain += $d['lain'];
 
-                        $saldo_awal_piutang = $d['saldoawalpiutang'];
+                        $saldo_awal_piutang = $d['saldoawalpiutang'] - $d['piutanglama'] + $d['piutangpindahanbulanlalu'];
                         $saldo_akhir_piutang =
                             $d['saldoawalpiutang'] -
                             $d['piutanglamanow'] +
