@@ -241,8 +241,14 @@ class PenjualanController extends Controller
     public function updatefakturbatal($no_faktur, Request $request)
     {
         $no_faktur = Crypt::decrypt($no_faktur);
+        $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
         DB::beginTransaction();
         try {
+            $cektutuplaporan = cektutupLaporan($penjualan->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
             Penjualan::where('no_faktur', $no_faktur)->update([
                 'status_batal' => 1,
                 'keterangan' => $request->keterangan,
