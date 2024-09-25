@@ -182,6 +182,7 @@ class IzinkoreksiController extends Controller
     {
         $kode_izin_koreksi = Crypt::decrypt($kode_izin_koreksi);
         $data['izinkoreksi'] = Izinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)->first();
+        //dd($data['izinkoreksi']);
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
         return view('hrd.pengajuanizin.izinkoreksi.edit', $data);

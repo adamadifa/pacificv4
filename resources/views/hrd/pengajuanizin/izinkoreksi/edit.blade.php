@@ -26,10 +26,11 @@
     </div>
     <div class="row">
         <div class="col">
-            <x-input-with-icon icon="ti ti-clock" label="Jam Masuk" name="jam_masuk" value="{{ $izinkoreksi->jam_masuk }}" />
+            <x-input-with-icon icon="ti ti-clock" label="Jam Masuk" name="jam_masuk" value="{{ date('H:i', strtotime($izinkoreksi->jam_masuk)) }}" />
         </div>
         <div class="col">
-            <x-input-with-icon icon="ti ti-clock" label="Jam Pulang" name="jam_pulang" value="{{ $izinkoreksi->jam_pulang }}" />
+            <x-input-with-icon icon="ti ti-clock" label="Jam Pulang" name="jam_pulang"
+                value="{{ date('H:i', strtotime($izinkoreksi->jam_pulang)) }}" />
         </div>
     </div>
 
@@ -74,7 +75,7 @@
             });
         }
 
-        $("#nik,#tanggal").change(function(e) {
+        form.find("#nik,#tanggal").change(function(e) {
             getpresensi();
         });
 
