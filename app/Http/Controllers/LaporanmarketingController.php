@@ -4699,6 +4699,14 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(0) as wapu'),
             DB::raw('SUM(0) as pph22'),
             DB::raw('SUM(0) as lainnya'),
+            DB::raw('SUM(0) as totalbayarpiutang'),
+            DB::raw('SUM(0) as saldoawalpiutang'),
+            DB::raw('SUM(0) AS piutangpindahanbulanlalu'),
+            DB::raw('SUM(0) AS piutangpindahan'),
+            DB::raw('SUM(0) AS piutangberjalan'),
+            DB::raw('SUM(0) AS piutanglama'),
+            DB::raw('SUM(0) AS piutanglamanow'),
+            DB::raw('SUM(0) AS piutanglamaberjalan'),
             ...$selecColumproduct
         );
         $querydetail->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
@@ -4736,6 +4744,14 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(0) as wapu'),
             DB::raw('SUM(0) as pph22'),
             DB::raw('SUM(0) as lainnya'),
+            DB::raw('SUM(0) as totalbayarpiutang'),
+            DB::raw('SUM(0) as saldoawalpiutang'),
+            DB::raw('SUM(0) AS piutangpindahanbulanlalu'),
+            DB::raw('SUM(0) AS piutangpindahan'),
+            DB::raw('SUM(0) AS piutangberjalan'),
+            DB::raw('SUM(0) AS piutanglama'),
+            DB::raw('SUM(0) AS piutanglamanow'),
+            DB::raw('SUM(0) AS piutanglamaberjalan'),
             ...$selectColumproductNull
         );
         $querypenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
@@ -4773,6 +4789,14 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(0) as wapu'),
             DB::raw('SUM(0) as pph22'),
             DB::raw('SUM(0) as lainnya'),
+            DB::raw('SUM(0) as totalbayarpiutang'),
+            DB::raw('SUM(0) as saldoawalpiutang'),
+            DB::raw('SUM(0) AS piutangpindahanbulanlalu'),
+            DB::raw('SUM(0) AS piutangpindahan'),
+            DB::raw('SUM(0) AS piutangberjalan'),
+            DB::raw('SUM(0) AS piutanglama'),
+            DB::raw('SUM(0) AS piutanglamanow'),
+            DB::raw('SUM(0) AS piutanglamaberjalan'),
             ...$selectColumproductNull
         );
         $queryretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
@@ -4834,6 +4858,14 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(IF(jenis_voucher =\'8\', jumlah, 0)) as wapu'),
             DB::raw('SUM(IF(jenis_voucher =\'9\', jumlah, 0)) as pph22'),
             DB::raw('SUM(IF(jenis_voucher =\'5\', jumlah, 0)) as lainnya'),
+            DB::raw('SUM(0) as totalbayarpiutang'),
+            DB::raw('SUM(0) as saldoawalpiutang'),
+            DB::raw('SUM(0) AS piutangpindahanbulanlalu'),
+            DB::raw('SUM(0) AS piutangpindahan'),
+            DB::raw('SUM(0) AS piutangberjalan'),
+            DB::raw('SUM(0) AS piutanglama'),
+            DB::raw('SUM(0) AS piutanglamanow'),
+            DB::raw('SUM(0) AS piutanglamaberjalan'),
             ...$selectColumproductNull
         );
         $queryhistoribayar->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
@@ -4874,6 +4906,12 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(0) as lainnya'),
             DB::raw('SUM(0) as totalbayarpiutang'),
             DB::raw('SUM(jumlah) as saldoawalpiutang'),
+            DB::raw('SUM(0) AS piutangpindahanbulanlalu'),
+            DB::raw('SUM(0) AS piutangpindahan'),
+            DB::raw('SUM(0) AS piutangberjalan'),
+            DB::raw('SUM(0) AS piutanglama'),
+            DB::raw('SUM(0) AS piutanglamanow'),
+            DB::raw('SUM(0) AS piutanglamaberjalan'),
             ...$selectColumproductNull
         );
         $querysaldoawalpiutang->join('salesman', 'marketing_sa_piutangsales_detail.kode_salesman', '=', 'salesman.kode_salesman');
@@ -4912,6 +4950,14 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(0) as pph22'),
             DB::raw('SUM(0) as lainnya'),
             DB::raw('SUM(jumlah) as totalbayarpiutang'),
+            DB::raw('SUM(0) as saldoawalpiutang'),
+            DB::raw('SUM(0) AS piutangpindahanbulanlalu'),
+            DB::raw('SUM(0) AS piutangpindahan'),
+            DB::raw('SUM(0) AS piutangberjalan'),
+
+            DB::raw('SUM(0) AS piutanglama'),
+            DB::raw('SUM(0) AS piutanglamanow'),
+            DB::raw('SUM(0) AS piutanglamaberjalan'),
             ...$selectColumproductNull
         );
         // $querybayarpiutang->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
@@ -4974,10 +5020,14 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(0) as pph22'),
             DB::raw('SUM(0) as lainnya'),
             DB::raw('SUM(0) as totalbayarpiutang'),
-
+            DB::raw('SUM(0) as saldoawalpiutang'),
             DB::raw('SUM(IF(penjualan.tanggal < \'' . $request->dari . '\',( IFNULL(totalpenjualan,0) -  IFNULL( totalreturbulanlalu, 0 ) - IFNULL( totalbayar, 0 )), 0 )) AS piutangpindahanbulanlalu'),
             DB::raw('SUM(IF(penjualan.tanggal < \'' . $request->dari . '\',( IFNULL(totalpenjualan,0) -  IFNULL( totalreturbulanlalu, 0 ) - IFNULL( totalbayar, 0 )), 0 )) AS piutangpindahan'),
             DB::raw('SUM(IF(penjualan.tanggal >= \'' . $request->dari . '\' AND penjualan.tanggal <= \'' . $request->sampai . '\',( IFNULL(totalpenjualan,0) - IFNULL( totalreturberjalan, 0 ) - IFNULL( totalbayar, 0 )), 0 )) AS piutangberjalan'),
+
+            DB::raw('SUM(0) AS piutanglama'),
+            DB::raw('SUM(0) AS piutanglamanow'),
+            DB::raw('SUM(0) AS piutanglamaberjalan'),
             ...$selectColumproductNull
         );
         $querypiutangpindahan->leftJoin(
@@ -5055,6 +5105,7 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(0) as pph22'),
             DB::raw('SUM(0) as lainnya'),
             DB::raw('SUM(0) as totalbayarpiutang'),
+            DB::raw('SUM(0) as saldoawalpiutang'),
             DB::raw('SUM(0) AS piutangpindahanbulanlalu'),
             DB::raw('SUM(0) AS piutangpindahan'),
             DB::raw('SUM(0) AS piutangberjalan'),

@@ -38,6 +38,7 @@ class IzinkoreksiController extends Controller
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
+
         return view('hrd.pengajuanizin.izinkoreksi.create', $data);
     }
 
@@ -431,5 +432,16 @@ class IzinkoreksiController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
             //throw $th;
         }
+    }
+
+
+    public function getpresensi(Request $request)
+    {
+        $presensi = Presensi::where('nik', $request->nik)->where('tanggal', $request->tanggal)->first();
+        $data = [
+            'jam_in' => !empty($presensi->jam_in) ? date('H:i', strtotime($presensi->jam_in)) : '',
+            'jam_out' => !empty($presensi->jam_out)  ? date('H:i', strtotime($presensi->jam_out)) : '',
+        ];
+        return response()->json($data);
     }
 }

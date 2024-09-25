@@ -1774,6 +1774,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/getjadwalkerja/{kode_jadwal}', 'getjadwalkerja')->name('getjadwalkerja');
         Route::get('/getjamkerja/{kode_jadwwal}/{kode_jam_kerja}', 'getjamkerja')->name('getjamkerja');
+        Route::post('/izinkoreksi/getpresensi', 'getpresensi')->name('izinkoreksi.getpresensi');
     });
 
     Route::controller(PresensiController::class)->group(function () {
