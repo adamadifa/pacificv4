@@ -311,7 +311,7 @@ class Izinabsen extends Model
 
 
 
-
+        $query->orderBy('hrd_izinabsen.status');
         $query->orderBy('hrd_izinabsen.tanggal', 'desc');
         $query->orderBy('hrd_izinabsen.created_at', 'desc');
         return $query;
