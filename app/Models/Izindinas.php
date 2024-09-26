@@ -113,7 +113,8 @@ class Izindinas extends Model
                 $query->orWhere('hrd_izindinas.kode_dept', 'PDQ');
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izindinas.kode_dept', ['AKT', 'KEU']);
-                $query->whereIn('hrd_izindinas.kode_jabatan', ['J04', 'J05', 'J06', 'J24', 'J25', 'J26']);
+                $query->where('hrd_karyawan.kode_cabang', 'PST');
+                // $query->whereIn('hrd_izinabsen.kode_jabatan', ['J04', 'J05', 'J06']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->orwhereIn('hrd_izindinas.kode_dept', ['MKT']);
                 $query->whereIn('hrd_izindinas.kode_jabatan', ['J03', 'J05', 'J06']);
