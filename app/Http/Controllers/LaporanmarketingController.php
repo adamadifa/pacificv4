@@ -399,6 +399,15 @@ class LaporanmarketingController extends Controller
         if (!empty($request->jenis_transaksi)) {
             $qpenjualan->where('marketing_penjualan.jenis_transaksi', $request->jenis_transaksi);
         }
+
+        if (!empty($request->status_penjualan)) {
+            if ($request->status_penjualan == '1') {
+                $qpenjualan->where('status_batal', 1);
+            } else if ($request->status_penjualan == '2') {
+                $qpenjualan->where('status_batal', 0);
+            }
+        }
+
         $qpenjualan->orderBy('marketing_penjualan.tanggal');
         $qpenjualan->orderBy('marketing_penjualan.no_faktur');
         $qpenjualan->groupBy(
