@@ -15,7 +15,7 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
 
     if ($kode_dept == 'AKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') {
         //Akunting Cabang Non Manajemen
-        $roles_approve =  ['operation manager', 'manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
+        $roles_approve =  ['operation manager', 'regional operation manager', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == 'AKT' && $kode_cabang == 'PST' && $kategori_jabatan == 'NM') {
         //Akunting Pusat Non Manajemen
         $roles_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
