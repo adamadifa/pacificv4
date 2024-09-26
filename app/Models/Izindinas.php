@@ -310,6 +310,7 @@ class Izindinas extends Model
 
 
 
+        $query->orderBy('hrd_izindinas.status');
         $query->orderBy('hrd_izindinas.tanggal', 'desc');
         $query->orderBy('hrd_izindinas.created_at', 'desc');
         return $query;

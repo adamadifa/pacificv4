@@ -311,7 +311,7 @@ class Izinkeluar extends Model
 
 
 
-
+        $query->orderBy('hrd_izinkeluar.status');
         $query->orderBy('hrd_izinkeluar.tanggal', 'desc');
         $query->orderBy('hrd_izinkeluar.created_at', 'desc');
         return $query;

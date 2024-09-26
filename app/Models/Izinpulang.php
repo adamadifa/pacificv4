@@ -311,7 +311,7 @@ class Izinpulang extends Model
 
 
 
-
+        $query->orderBy('hrd_izinpulang.status');
         $query->orderBy('hrd_izinpulang.tanggal', 'desc');
         $query->orderBy('hrd_izinpulang.created_at', 'desc');
         return $query;

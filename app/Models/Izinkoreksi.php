@@ -316,7 +316,7 @@ class Izinkoreksi extends Model
 
 
 
-
+        $query->orderBy('hrd_izinkoreksi.status');
         $query->orderBy('hrd_izinkoreksi.tanggal', 'desc');
         $query->orderBy('hrd_izinkoreksi.created_at', 'desc');
         return $query;

@@ -310,7 +310,7 @@ class Izinsakit extends Model
 
 
 
-
+        $query->orderBy('hrd_izinsakit.status');
         $query->orderBy('hrd_izinsakit.tanggal', 'desc');
         $query->orderBy('hrd_izinsakit.created_at', 'desc');
         return $query;

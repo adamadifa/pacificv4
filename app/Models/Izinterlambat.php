@@ -311,6 +311,7 @@ class Izinterlambat extends Model
 
 
 
+        $query->orderBy('hrd_izinterlambat.status');
         $query->orderBy('hrd_izinterlambat.tanggal', 'desc');
         $query->orderBy('hrd_izinterlambat.created_at', 'desc');
         return $query;
