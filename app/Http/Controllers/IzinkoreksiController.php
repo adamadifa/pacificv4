@@ -445,4 +445,16 @@ class IzinkoreksiController extends Controller
         ];
         return response()->json($data);
     }
+
+
+    public function destroy($kode_izin_koreksi)
+    {
+        $kode_izin_koreksi = Crypt::decrypt($kode_izin_koreksi);
+        try {
+            Izinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
