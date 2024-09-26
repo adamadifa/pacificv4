@@ -189,19 +189,8 @@
                         $subtotal_lain += $d['lain'];
                         $grandtotal_lain += $d['lain'];
 
-                        $saldo_awal_piutang = $d['saldoawalpiutang'] - $d['piutanglama'] + $d['piutangpindahanbulanlalu'];
-                        $saldo_akhir_piutang =
-                            $d['saldoawalpiutang'] -
-                            $d['piutanglamanow'] +
-                            $d['piutangpindahan'] -
-                            $d['piutanglamaberjalan'] +
-                            $d['bruto'] -
-                            $d['potongan'] -
-                            $d['retur'] -
-                            $d['potongan_istimewa'] -
-                            $d['penyesuaian'] +
-                            $d['ppn'] -
-                            $d['totalbayarpiutang'];
+                        $saldo_awal_piutang = $d['saldoawalpiutang'] + $d['saldopiutangpindahan'] - $d['saldopiutangpindahkesaleslain'];
+                        $saldo_akhir_piutang = $saldo_awal_piutang + $netto - $d['totalbayarpiutang'];
 
                         $subtotal_saldoawal += $saldo_awal_piutang;
                         $grandtotal_saldoawal += $saldo_awal_piutang;
