@@ -58,7 +58,21 @@
          @include('layouts.sidebar.hrd')
          @include('layouts.sidebar.worksheetom')
 
-
+         @if (auth()->user()->hasAnyPermission(['kirimlhp.index']))
+             <li class="menu-item {{ request()->is(['kirimlhp']) ? 'open' : '' }} ">
+                 <a href="javascript:void(0);" class="menu-link menu-toggle">
+                     <i class="menu-icon tf-icons ti ti-settings"></i>
+                     <div>Utilities</div>
+                 </a>
+                 <ul class="menu-sub">
+                     <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlhp/*']) ? 'active' : '' }}">
+                         <a href="{{ route('kirimlhp.index') }}" class="menu-link">
+                             <div>Kirim LHP</div>
+                         </a>
+                     </li>
+                 </ul>
+             </li>
+         @endif
          @if (auth()->user()->hasRole('super admin'))
              <li
                  class="menu-item {{ request()->is(['roles', 'roles/*', 'permissiongroups', 'permissiongroups/*', 'permissions', 'permissions/*', 'users', 'users/*']) ? 'open' : '' }} ">

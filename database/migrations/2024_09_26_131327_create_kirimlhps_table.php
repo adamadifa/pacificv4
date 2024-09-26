@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kirimlhps', function (Blueprint $table) {
-            $table->id();
+        Schema::create('kirim_lhp', function (Blueprint $table) {
+            $table->char('kode_kirim_lhp', 9)->primary();
+            $table->char('kode_cabang', 3);
+            $table->smallInteger('bulan');
+            $table->char('tahun', 4);
+            $table->date('tanggal');
+            $table->time('jam');
+            $table->char('status');
+            $table->string('foto');
             $table->timestamps();
         });
     }
@@ -22,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kirimlhps');
+        Schema::dropIfExists('kirim_lhp');
     }
 };

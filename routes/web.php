@@ -53,6 +53,7 @@ use App\Http\Controllers\KaskecilController;
 use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KesepakatanbersamaController;
+use App\Http\Controllers\KirimlhpController;
 use App\Http\Controllers\KirimpusatController;
 use App\Http\Controllers\KlaimkaskecilController;
 use App\Http\Controllers\KontrabonangkutanController;
@@ -1884,6 +1885,12 @@ Route::middleware('auth')->group(function () {
     Route::controller(PelunasanreturController::class)->group(function () {
         Route::get('/pelunasanretur/{no_retur}/create', 'create')->name('monitoringretur.index')->can('worksheetom.monitoringretur');
         Route::post('/pelunasanretur/{no_retur}/store', 'store')->name('pelunasanretur.store')->can('worksheetom.monitoringretur');
+    });
+
+    Route::controller(KirimlhpController::class)->group(function () {
+        Route::get('/kirimlhp', 'index')->name('kirimlhp.index')->can('kirimlhp.index');
+        Route::get('/kirimlhp/create', 'create')->name('kirimlhp.create')->can('kirimlhp.create');
+        Route::post('/kirimlhp/store', 'store')->name('kirimlhp.store')->can('kirimlhp.store');
     });
 
 
