@@ -314,7 +314,7 @@ class Izincuti extends Model
 
 
 
-
+        $query->orderBy('hrd_izincuti.status');
         $query->orderBy('hrd_izincuti.tanggal', 'desc');
         $query->orderBy('hrd_izincuti.created_at', 'desc');
         return $query;
