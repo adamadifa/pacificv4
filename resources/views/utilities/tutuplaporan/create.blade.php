@@ -1,16 +1,4 @@
-<form action="{{ route('kirimlhp.store') }}" method="POST" id="formKirimlhp" enctype="multipart/form-data">
-    <input type="hidden" id="cektutuplaporan">
-    @csrf
-    @hasanyrole($roles_show_cabang)
-        <div class="form-group mb-4">
-            <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-                <option value="">Pilih Cabang</option>
-                @foreach ($cabang as $d)
-                    <option value="{{ $d->kode_cabang }}">{{ textuppercase($d->nama_cabang) }}</option>
-                @endforeach
-            </select>
-        </div>
-    @endhasanyrole
+<form action="{{ route('tutuplaporan.store') }}" id="formTutupLaporan" method="POST">
     <div class="row">
         <div class="col">
             <div class="form-group mb-3">
@@ -35,29 +23,32 @@
             </div>
         </div>
     </div>
-    <x-input-with-icon label="Tanggal Kirim LHP" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-    <x-input-with-icon label="Jam Kirim (00:00)" name="jam_kirim" icon="ti ti-clock" />
-    <x-input-file name="foto" label="Foto" />
+    <div class="row">
+        <div class="form-group mb-3">
+            <select name="jenis_laporan" id="jenis_laporan" class="form-select">
+                <option value="">Pilih Laporan</option>
+                <option value="penjualan">Penjualan</option>
+                <option value="pembelian">Pembelian</option>
+                <option value="kaskecil">Kas Kecil</option>
+                <option value="ledger">Ledger</option>
+                <option value="gudangcabang">Gudang Cabang</option>
+                <option value="gudangpusat">Gudang Pusat</option>
+                <option value="gudangbahan">Gudang Bahan</option>
+                <option value="gudanglogistik">Gudang Logistik</option>
+                <option value="costratio">Cost Ratio</option>
+            </select>
+        </div>
+    </div>
+    <x-input-with-icon label="Tanggal Tutup Laporan" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
     <div class="form-group mb-3">
-        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Kirim LHP</button>
+        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Tutup Laporan</button>
     </div>
 </form>
 <script>
     $(document).ready(function() {
-        const formKirimlhp = $("#formKirimlhp");
-        const select2Kodecabang = $('.select2Kodecabang');
-        $("#jam_kirim").mask("99:99");
+        const formTutuplaporan = $("#formTutuplaporan");
         $(".flatpickr-date").flatpickr();
-        if (select2Kodecabang.length) {
-            select2Kodecabang.each(function() {
-                var $this = $(this);
-                $this.wrap('<div class="position-relative"></div>').select2({
-                    placeholder: 'Pilih Cabang',
-                    allowClear: true,
-                    dropdownParent: $this.parent()
-                });
-            });
-        }
+
 
         function buttonDisable() {
             $("#btnSimpan").prop('disabled', true);
@@ -68,24 +59,12 @@
             Loading..`);
         }
 
-        formKirimlhp.submit(function(e) {
-            const kode_cabang = formKirimlhp.find("#kode_cabang").val();
+        formTutuplaporan.submit(function(e) {
             const bulan = formKirimlhp.find("#bulan").val();
             const tahun = formKirimlhp.find("#tahun").val();
             const tanggal = formKirimlhp.find("#tanggal").val();
-            const jam_kirim = formKirimlhp.find("#jam_kirim").val();
-            if (kode_cabang == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Cabang Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: () => {
-                        formKirimlhp.find("#kode_cabang").focus();
-                    },
-                });
-                return false;
-            } else if (bulan == "") {
+            const jenis_laporan = formKirimlhp.find("#jenis_laporan").val();
+            if (bulan == "") {
                 Swal.fire({
                     title: "Oops!",
                     text: "Bulan Harus Diisi !",
@@ -118,10 +97,10 @@
                     },
                 });
                 return false;
-            } else if (jam_kirim == "") {
+            } else if (jenis_laporan == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Jam Kirim Harus Diisi !",
+                    text: "Jenis Laporan Harus Diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {

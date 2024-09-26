@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kirim_lhp', function (Blueprint $table) {
-            $table->char('kode_kirim_lhp', 9)->primary();
+        Schema::create('kirim_lpc', function (Blueprint $table) {
+            $table->char('kode_kirim_lpc', 9)->primary();
             $table->char('kode_cabang', 3);
             $table->smallInteger('bulan');
             $table->char('tahun', 4);
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kirim_lhp');
+        Schema::dropIfExists('kirim_lpc');
     }
 };

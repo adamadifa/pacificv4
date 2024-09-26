@@ -1,20 +1,20 @@
 @extends('layouts.app')
-@section('titlepage', 'kirimlhp')
+@section('titlepage', 'kirimlpc')
 
 @section('content')
 @section('navigasi')
-    <span>Kirim LHP</span>
+    <span>Kirim LPC</span>
 @endsection
 <div class="row">
     <div class="col-lg-8 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Kirim LHP</a>
+                <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Kirim LPC</a>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <form action="{{ route('kirimlhp.index') }}">
+                        <form action="{{ route('kirimlpc.index') }}">
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group mb-3">
@@ -42,8 +42,6 @@
                                     <button class="btn btn-primary"><i class="ti ti-search"></i></button>
                                 </div>
                             </div>
-
-
                         </form>
                     </div>
                 </div>
@@ -64,7 +62,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($kirim_lhp as $d)
+                                    @foreach ($kirim_lpc as $d)
                                         <tr>
                                             <td>{{ $loop->iteration }} </td>
                                             <td>{{ textUpperCase($d->nama_cabang) }}</td>
@@ -74,7 +72,7 @@
                                             <td>
                                                 @if (!empty($d->foto))
                                                     @php
-                                                        $path = Storage::url('lhp/' . $d->foto);
+                                                        $path = Storage::url('lpc/' . $d->foto);
                                                     @endphp
                                                     <a href="{{ url($path) }}" target="_blank">
                                                         <i class="ti ti-paperclip"></i>
@@ -91,10 +89,10 @@
                                             <td>
                                                 <div class="d-flex">
                                                     @if ($d->status == 0)
-                                                        @can('kirimlhp.delete')
+                                                        @can('kirimlpc.delete')
                                                             <div>
                                                                 <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('kirimlhp.delete', Crypt::encrypt($d->kode_kirim_lhp)) }}">
+                                                                    action="{{ route('kirimlpc.delete', Crypt::encrypt($d->kode_kirim_lpc)) }}">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     <a href="#" class="delete-confirm ml-1">
@@ -103,16 +101,16 @@
                                                                 </form>
                                                             </div>
                                                         @endcan
-                                                        @can('kirimlhp.approve')
+                                                        @can('kirimlpc.approve')
                                                             <div>
-                                                                <a href="#" kode_kirim_lhp="{{ Crypt::encrypt($d->kode_kirim_lhp) }}"
+                                                                <a href="#" kode_kirim_lpc="{{ Crypt::encrypt($d->kode_kirim_lpc) }}"
                                                                     class="btnApprove"> <i class="ti ti-external-link text-success"></i></a>
                                                             </div>
                                                         @endcan
                                                     @else
                                                         <div>
                                                             <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('kirimlhp.cancelapprove', Crypt::encrypt($d->kode_kirim_lhp)) }}">
+                                                                action="{{ route('kirimlpc.cancelapprove', Crypt::encrypt($d->kode_kirim_lpc)) }}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <a href="#" class="cancel-confirm ml-1">
@@ -135,34 +133,31 @@
     </div>
 </div>
 
-<x-modal-form id="mdlCreate" size="" show="loadCreate" title="Kirim LHP" />
+<x-modal-form id="mdlCreate" size="" show="loadCreate" title="Kirim LPC" />
 <x-modal-form id="mdleditRole" size="" show="loadeditRole" title="Edit Role" />
 
 @endsection
 
-
-
 @push('myscript')
-{{-- <script src="{{ asset('assets/js/pages/kirimlhp/create.js') }}"></script> --}}
 <script>
     $(function() {
         $("#btnCreate").click(function(e) {
             $('#mdlCreate').modal("show");
-            $("#loadCreate").load('/kirimlhp/create');
+            $("#loadCreate").load('/kirimlpc/create');
         });
 
         $(".btnApprove").click(function(e) {
-            const kode_kirim_lhp = $(this).attr('kode_kirim_lhp');
+            const kode_kirim_lpc = $(this).attr('kode_kirim_lpc');
             e.preventDefault();
             $('#mdlCreate').modal("show");
-            $("#loadCreate").load(`/kirimlhp/${kode_kirim_lhp}/approve`);
+            $("#loadCreate").load(`/kirimlpc/${kode_kirim_lpc}/approve`);
         });
 
         $(".editRole").click(function(e) {
             var id = $(this).attr("id");
             e.preventDefault();
             $('#mdleditRole').modal("show");
-            $("#loadeditRole").load('/kirimlhp/' + id + '/edit');
+            $("#loadeditRole").load('/kirimlpc/' + id + '/edit');
         });
     });
 </script>

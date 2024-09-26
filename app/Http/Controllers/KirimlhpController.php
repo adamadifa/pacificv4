@@ -6,7 +6,9 @@ use App\Models\Cabang;
 use App\Models\Kirimlhp;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class KirimlhpController extends Controller
 {
@@ -26,6 +28,8 @@ class KirimlhpController extends Controller
         $query->join('cabang', 'kirim_lhp.kode_cabang', '=', 'cabang.kode_cabang');
         $query->orderBy('kirim_lhp.created_at');
         $data['kirim_lhp'] = $query->get();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
         return view('utilities.kirimlhp.index', $data);
     }
 
@@ -76,7 +80,7 @@ class KirimlhpController extends Controller
 
             if ($request->hasfile('foto')) {
                 $foto_name =  $kode_kirim_lhp . "." . $request->file('foto')->getClientOriginalExtension();
-                $destination_foto_path = "/public/pelanggan";
+                $destination_foto_path = "/public/lhp";
                 $foto = $foto_name;
             }
             $simpan = Kirimlhp::create([
@@ -99,6 +103,58 @@ class KirimlhpController extends Controller
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
 
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function destroy($kode_kirim_lhp)
+    {
+        $kode_kirim_lhp = Crypt::decrypt($kode_kirim_lhp);
+        //dd($kode_kirim_lhp);
+        try {
+            $kirim_lhp = Kirimlhp::where('kode_kirim_lhp', $kode_kirim_lhp)->first();
+            $delete = Kirimlhp::where('kode_kirim_lhp', $kode_kirim_lhp)->delete();
+            if ($delete) {
+                $destination_foto_path = "/public/lhp";
+                Storage::delete($destination_foto_path . "/" . $kirim_lhp->foto);
+            }
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            // dd($e);
+            return Redirect::back()->with(messageError('Data Gagal Disimpan'));
+        }
+    }
+
+    public function approve($kode_kirim_lhp)
+    {
+        $kode_kirim_lhp = Crypt::decrypt($kode_kirim_lhp);
+        $data['kirim_lhp'] = Kirimlhp::join('cabang', 'kirim_lhp.kode_cabang', '=', 'cabang.kode_cabang')->where('kode_kirim_lhp', $kode_kirim_lhp)->first();
+        return view('utilities.kirimlhp.approve', $data);
+    }
+
+    public function storeapprove(Request $request, $kode_kirim_lhp)
+    {
+        $kode_kirim_lhp = Crypt::decrypt($kode_kirim_lhp);
+        try {
+            Kirimlhp::where('kode_kirim_lhp', $kode_kirim_lhp)->update([
+                'status' => 1,
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function cancelapprove($kode_kirim_lhp)
+    {
+        $kode_kirim_lhp = Crypt::decrypt($kode_kirim_lhp);
+        try {
+            Kirimlhp::where('kode_kirim_lhp', $kode_kirim_lhp)->update([
+                'status' => 0,
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }

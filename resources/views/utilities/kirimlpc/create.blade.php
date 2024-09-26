@@ -1,4 +1,4 @@
-<form action="{{ route('kirimlhp.store') }}" method="POST" id="formKirimlhp" enctype="multipart/form-data">
+<form action="{{ route('kirimlpc.store') }}" method="POST" id="formKirimlpc" enctype="multipart/form-data">
     <input type="hidden" id="cektutuplaporan">
     @csrf
     @hasanyrole($roles_show_cabang)
@@ -35,16 +35,16 @@
             </div>
         </div>
     </div>
-    <x-input-with-icon label="Tanggal Kirim LHP" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal Kirim lpc" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
     <x-input-with-icon label="Jam Kirim (00:00)" name="jam_kirim" icon="ti ti-clock" />
     <x-input-file name="foto" label="Foto" />
     <div class="form-group mb-3">
-        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Kirim LHP</button>
+        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Kirim lpc</button>
     </div>
 </form>
 <script>
     $(document).ready(function() {
-        const formKirimlhp = $("#formKirimlhp");
+        const formKirimlpc = $("#formKirimlpc");
         const select2Kodecabang = $('.select2Kodecabang');
         $("#jam_kirim").mask("99:99");
         $(".flatpickr-date").flatpickr();
@@ -68,12 +68,12 @@
             Loading..`);
         }
 
-        formKirimlhp.submit(function(e) {
-            const kode_cabang = formKirimlhp.find("#kode_cabang").val();
-            const bulan = formKirimlhp.find("#bulan").val();
-            const tahun = formKirimlhp.find("#tahun").val();
-            const tanggal = formKirimlhp.find("#tanggal").val();
-            const jam_kirim = formKirimlhp.find("#jam_kirim").val();
+        formKirimlpc.submit(function(e) {
+            const kode_cabang = formKirimlpc.find("#kode_cabang").val();
+            const bulan = formKirimlpc.find("#bulan").val();
+            const tahun = formKirimlpc.find("#tahun").val();
+            const tanggal = formKirimlpc.find("#tanggal").val();
+            const jam_kirim = formKirimlpc.find("#jam_kirim").val();
             if (kode_cabang == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -81,7 +81,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        formKirimlhp.find("#kode_cabang").focus();
+                        formKirimlpc.find("#kode_cabang").focus();
                     },
                 });
                 return false;
@@ -92,7 +92,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        formKirimlhp.find("#bulan").focus();
+                        formKirimlpc.find("#bulan").focus();
                     },
                 });
                 return false;
@@ -103,7 +103,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        formKirimlhp.find("#tahun").focus();
+                        formKirimlpc.find("#tahun").focus();
                     },
                 });
                 return false;
@@ -114,7 +114,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        formKirimlhp.find("#tanggal").focus();
+                        formKirimlpc.find("#tanggal").focus();
                     },
                 });
                 return false;
@@ -125,7 +125,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        formKirimlhp.find("#jam_kirim").focus();
+                        formKirimlpc.find("#jam_kirim").focus();
                     },
                 });
                 return false;

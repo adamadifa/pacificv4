@@ -54,6 +54,7 @@ use App\Http\Controllers\KategoriprodukController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KesepakatanbersamaController;
 use App\Http\Controllers\KirimlhpController;
+use App\Http\Controllers\KirimlpcController;
 use App\Http\Controllers\KirimpusatController;
 use App\Http\Controllers\KlaimkaskecilController;
 use App\Http\Controllers\KontrabonangkutanController;
@@ -1891,7 +1892,23 @@ Route::middleware('auth')->group(function () {
         Route::get('/kirimlhp', 'index')->name('kirimlhp.index')->can('kirimlhp.index');
         Route::get('/kirimlhp/create', 'create')->name('kirimlhp.create')->can('kirimlhp.create');
         Route::post('/kirimlhp/store', 'store')->name('kirimlhp.store')->can('kirimlhp.store');
+        Route::delete('/kirimlhp/{kode_kirim_lhp}/delete', 'destroy')->name('kirimlhp.delete')->can('kirimlhp.delete');
+        Route::get('/kirimlhp/{kode_kirim_lhp}/approve', 'approve')->name('kirimlhp.approve')->can('kirimlhp.approve');
+        Route::post('/kirimlhp/{kode_kirim_lhp}/storeapprove', 'storeapprove')->name('kirimlhp.storeapprove')->can('kirimlhp.approve');
+        Route::delete('/kirimlhp/{kode_kirim_lhp}/cancelapprove', 'cancelapprove')->name('kirimlhp.cancelapprove')->can('kirimlhp.approve');
     });
+
+
+    Route::controller(KirimlpcController::class)->group(function () {
+        Route::get('/kirimlpc', 'index')->name('kirimlpc.index')->can('kirimlpc.index');
+        Route::get('/kirimlpc/create', 'create')->name('kirimlpc.create')->can('kirimlpc.create');
+        Route::post('/kirimlpc/store', 'store')->name('kirimlpc.store')->can('kirimlpc.store');
+        Route::delete('/kirimlpc/{kode_kirim_lpc}/delete', 'destroy')->name('kirimlpc.delete')->can('kirimlpc.delete');
+        Route::get('/kirimlpc/{kode_kirim_lpc}/approve', 'approve')->name('kirimlpc.approve')->can('kirimlpc.approve');
+        Route::post('/kirimlpc/{kode_kirim_lpc}/storeapprove', 'storeapprove')->name('kirimlpc.storeapprove')->can('kirimlpc.approve');
+        Route::delete('/kirimlpc/{kode_kirim_lpc}/cancelapprove', 'cancelapprove')->name('kirimlpc.cancelapprove')->can('kirimlpc.approve');
+    });
+
 
 
     //SFA
@@ -1935,6 +1952,10 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(TutuplaporanController::class)->group(function () {
         //Ajax Request
+        Route::get('/tutuplaporan', 'index')->name('tutuplaporan.index')->can('tutuplaporan.index');
+        Route::get('/tutuplaporan/create', 'create')->name('tutuplaporan.create')->can('tutuplaporan.create');
+        Route::post('/tutuplaporan/store', 'store')->name('tutuplaporan.store')->can('tutuplaporan.store');
+        Route::get('/tutuplaporan/{kode_tutup_laporan}/lockunlock', 'lockunlock')->name('tutuplaporan.lockunlock')->can('tutuplaporan.create');
         Route::post('/tutuplaporan/cektutuplaporan', 'cektutuplaporan');
     });
 

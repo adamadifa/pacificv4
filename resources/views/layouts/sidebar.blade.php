@@ -58,8 +58,8 @@
          @include('layouts.sidebar.hrd')
          @include('layouts.sidebar.worksheetom')
 
-         @if (auth()->user()->hasAnyPermission(['kirimlhp.index']))
-             <li class="menu-item {{ request()->is(['kirimlhp']) ? 'open' : '' }} ">
+         @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index']))
+             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-settings"></i>
                      <div>Utilities</div>
@@ -68,6 +68,16 @@
                      <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlhp/*']) ? 'active' : '' }}">
                          <a href="{{ route('kirimlhp.index') }}" class="menu-link">
                              <div>Kirim LHP</div>
+                         </a>
+                     </li>
+                     <li class="menu-item {{ request()->is(['kirimlpc', 'kirimlpc/*']) ? 'active' : '' }}">
+                         <a href="{{ route('kirimlpc.index') }}" class="menu-link">
+                             <div>Kirim LPC</div>
+                         </a>
+                     </li>
+                     <li class="menu-item {{ request()->is(['tutuplaporan', 'tutuplaporan/*']) ? 'active' : '' }}">
+                         <a href="{{ route('tutuplaporan.index') }}" class="menu-link">
+                             <div>Tutup Laporan</div>
                          </a>
                      </li>
                  </ul>
