@@ -385,4 +385,34 @@ class IzinkeluarController extends Controller
             //throw $th;
         }
     }
+
+    public function updatejamkembali($kode_izin_keluar)
+    {
+        $kode_izin_keluar = Crypt::decrypt($kode_izin_keluar);
+        $i_keluar = new Izinkeluar();
+        $izinkeluar = $i_keluar->getIzinkeluar(kode_izin_keluar: $kode_izin_keluar)->first();
+        $data['izinkeluar'] = $izinkeluar;
+        return view('hrd.pengajuanizin.izinkeluar.updatejamkembali', $data);
+    }
+
+    public function storeupdatejamkembali(Request $request, $kode_izin_keluar)
+    {
+
+        $kode_izin_keluar = Crypt::decrypt($kode_izin_keluar);
+        $request->validate([
+            'jam_kembali' => 'required',
+        ]);
+        DB::beginTransaction();
+        try {
+            Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
+                ->update([
+                    'jam_kembali' => $request->jam_kembali
+                ]);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

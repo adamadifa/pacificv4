@@ -1693,7 +1693,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/izinkeluar/{kode_izin_keluar}/update', 'update')->name('izinkeluar.update')->can('izinkeluar.update');
         Route::delete('/izinkeluar/{kode_izin_keluar}/delete', 'destroy')->name('izinkeluar.delete')->can('izinkeluar.delete');
         Route::get('/izinkeluar/{kode_izin_keluar}/approve', 'approve')->name('izinkeluar.approve')->can('izinkeluar.approve');
+        Route::get('/izinkeluar/{kode_izin_keluar}/updatejamkembali', 'updatejamkembali')->name('izinkeluar.updatejamkembali')->can('izinkeluar.update');
         Route::post('/izinkeluar/{kode_izin_keluar}/storeapprove', 'storeapprove')->name('izinkeluar.storeapprove')->can('izinkeluar.approve');
+        Route::post('/izinkeluar/{kode_izin_keluar}/storeupdatejamkembali', 'storeupdatejamkembali')->name('izinkeluar.storeupdatejamkembali')->can('izinkeluar.approve');
         Route::delete('/izinkeluar/{kode_izin_keluar}/cancel', 'cancel')->name('izinkeluar.cancel')->can('izinkeluar.approve');
     });
 

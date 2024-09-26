@@ -137,9 +137,15 @@
                                                 </td>
                                                 <td class="text-center">
                                                     @if (!empty($d->jam_kembali))
-                                                        {{ date('H:i', strtotime($d->jam_kembali)) }}
+                                                        <a href="#" class="btnUpdatejamkembali"
+                                                            kode_izin_keluar="{{ Crypt::encrypt($d->kode_izin_keluar) }}">
+                                                            {{ date('H:i', strtotime($d->jam_kembali)) }}
+                                                        </a>
                                                     @else
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                        <a href="#" class="btnUpdatejamkembali"
+                                                            kode_izin_keluar="{{ Crypt::encrypt($d->kode_izin_keluar) }}">
+                                                            <span class="badge bg-danger">Input Jam Kembali</span>
+                                                        </a>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -349,6 +355,15 @@
             $("#modal").find(".modal-title").text("Buat Izin Keluar");
             $("#loadmodal").load("/izinkeluar/create");
         });
+
+        $(".btnUpdatejamkembali").click(function(e) {
+            e.preventDefault();
+            const kode_izin_keluar = $(this).attr("kode_izin_keluar");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Update Jam Kembali");
+            $("#loadmodal").load(`/izinkeluar/${kode_izin_keluar}/updatejamkembali`);
+        })
 
         $(".btnEdit").click(function() {
             const kode_izin_keluar = $(this).attr("kode_izin_keluar");
