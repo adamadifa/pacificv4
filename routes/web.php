@@ -1866,6 +1866,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetakkomisisalesman', 'cetakkomisisalesman')->name('laporanmarketing.cetakkomisisalesman')->can('mkt.komisisalesman');
         Route::post('/laporanmarketing/cetakkomisidriverhelper', 'cetakkomisidriverhelper')->name('laporanmarketing.cetakkomisidriverhelper')->can('mkt.komisidriverhelper');
         Route::post('/laporanmarketing/cetakroutingsalesman', 'cetakroutingsalesman')->name('laporanmarketing.cetakroutingsalesman')->can('mkt.routingsalesman');
+        Route::post('/laporanmarketing/cetakinsentifom', 'cetakinsentifom')->name('laporanmarketing.cetakinsentifom')->can('worksheetom.insentifom');
     });
 
     Route::controller(VisitpelangganController::class)->group(function () {
@@ -1964,7 +1965,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');
     Route::get('/worksheetom/komisisalesman', [LaporanmarketingController::class, 'index'])->name('worksheetom.komisisalesman')->can('worksheetom.komisisalesman');
-    Route::get('/worksheetom/insentifom', 'WorksheetomController@insentifom')->name('worksheetom.insentifom')->can('worksheetom.insentifom');
+    Route::get('/worksheetom/insentifom', [LaporanmarketingController::class, 'insentifom'])->name('worksheetom.insentifom')->can('worksheetom.insentifom');
     Route::get('/worksheetom/komisidriverhelper', [LaporanmarketingController::class, 'index'])->name('worksheetom.komisidriverhelper')->can('worksheetom.komisidriverhelper');
     Route::get('/worksheetom/costratio', [CostratioController::class, 'index'])->name('worksheetom.costratio')->can('worksheetom.costratio');
     Route::get('/worksheetom/visitpelanggan', [VisitpelangganController::class, 'index'])->name('worksheetom.visitpelanggan')->can('worksheetom.visitpelanggan');

@@ -5232,4 +5232,265 @@ class LaporanmarketingController extends Controller
             return view('marketing.laporan.rekaproutingsalesman_cetak', $data);
         }
     }
+
+
+    public function insentifom()
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        return view('marketing.laporan.insentifom', $data);
+    }
+
+
+    public function cetakinsentifom(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $bulanlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'bulan');
+        $tahunlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'tahun');
+
+        if ($bulanlalu == 1) {
+            $blnlast1 = 12;
+            $thnlast1 = $request->tahun - 1;
+        } else {
+            $blnlast1 = $bulanlalu - 1;
+            $thnlast1 = $request->tahun;
+        }
+
+        if ($request->bulan == 12) {
+            $bln = 1;
+            $thn = $request->tahun + 1;
+        } else {
+            $bln = $request->bulan + 1;
+            $thn = $request->tahun;
+        }
+
+        $start_date_bulanlalu = $tahunlalu . "-" . $bulanlalu . "-01";
+        $end_date_bulanlalu = date('Y-m-t', strtotime($start_date_bulanlalu));
+        $hariini = date('Y-m-d');
+        $dari = $request->tahun . "-" . $request->bulan . "-01";
+        $sampai = date('Y-m-t', strtotime($dari));
+        // $sampai = $hari
+
+        if ($hariini < $sampai) {
+            $sampai = $hariini;
+        } else {
+            $sampai = $sampai;
+        }
+
+
+
+        $lastmonth = date('Y-m-d', strtotime(date($dari) . '- 1 month'));
+        $enddate_until_lastmonth = date('Y-m-t', strtotime($lastmonth));
+        // if (date("d", strtotime($enddate)) == 31) {
+        //     $enddate = date("Y-m", strtotime($enddate)) . "-30";
+        // }
+
+
+        //dd($lastdateofmonth);
+        // $last3month = date('Y-m-d', strtotime('-3 month', strtotime($sampai)));
+        $bulansampai = date('m', strtotime($sampai));
+        $tahunsampai = date('Y', strtotime($sampai));
+        $startmonth = $bulansampai - 3;
+        $startyear = $tahunsampai;
+        if ($startmonth <= 0) {
+            $startmonth = $startmonth + 12;
+            $startyear = $startyear - 1;
+        } else {
+            $startmonth = $startmonth;
+            $startyear = $startyear;
+        }
+
+        $startmonth = $startmonth < 10 ? "0" . $startmonth : $startmonth;
+        // $date = explode("-", $last3month);
+        // dd($last3month);
+        $startdate_from_3months = $startyear . "-" . $startmonth . "-01";
+
+        // $ceknextBulan = DB::table('keuangan_setoranpusat')->where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+        //     ->select('keuangan_ledger.tanggal as tgl_diterimapusat')
+        //     ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+        //     ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+        //     ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $bln)
+        //     ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $thn)
+        //     ->where('kode_cabang', $kode_cabang)
+        //     ->orderBy('tgl_diterimapusat', 'desc')
+        //     ->first();
+
+        // if ($ceknextBulan ==  null) {
+        //     $end = date("Y-m-t", strtotime($dari));
+        // } else {
+        //     $end = $ceknextBulan->tgl_diterimapusat;
+        // }
+
+        //REALISASI CASHIN
+
+
+        $setoran_dari = $request->tahun . "-" . $request->bulan . "-01";
+        $setoran_sampai = date('Y-m-t', strtotime($setoran_dari));
+        $tgl_awal_setoran = $setoran_dari;
+        $tgl_akhir_setoran = $setoran_sampai;
+
+
+        $nextbulan = getbulandantahunberikutnya($request->bulan, $request->tahun, "bulan");
+        $nexttahun = getbulandantahunberikutnya($request->bulan, $request->tahun, "tahun");
+
+        $lastbulan = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
+        $dari_lastbulan = $lasttahun . "-" . $lastbulan . "-01";
+        $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
+
+        $lastduabulan = getbulandantahunlalu($lastbulan, $lasttahun, "bulan");
+        $lastduabulantahun = getbulandantahunlalu($lastbulan, $lasttahun, "tahun");
+        $dari_lastduabulan = $lastduabulantahun . "-" . $lastduabulan . "-01";
+        $sampai_lastduabulan = date('Y-m-t', strtotime($dari_lastduabulan));
+
+
+        //Jika Ada Setoran Omset Bulan Ini yang disetorkan di Bulan Berikutnya
+        $ceksetordibulanberikutnya = Setoranpusat::where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tanggal')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $nextbulan)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $nexttahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('keuangan_ledger.tanggal', 'desc')
+            ->first();
+
+        if ($ceksetordibulanberikutnya) {
+            $setoran_sampai = $ceksetordibulanberikutnya->tanggal;
+        }
+
+
+        //Jika Ada Setoran Omset Bulan Ini yang disetorkan di Bulan Lalu
+        $ceksetordibulanlalu = Setoranpusat::where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tanggal')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $lastbulan)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $lasttahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('keuangan_ledger.tanggal', 'desc')
+            ->first();
+
+        if ($ceksetordibulanlalu) {
+            $setoran_dari = $ceksetordibulanlalu->tanggal;
+        }
+
+
+
+        $query = Cabang::query();
+        $query->select(
+            'cabang.kode_cabang',
+            'nama_cabang',
+            'jml_pelanggan',
+            'jml_pelangan_bertransaksi',
+            'jml_kapasitas',
+            'jml_pengambilan',
+            'penjualanbulanlalu',
+            'penjualanbulanberjalan'
+        );
+        $query->leftJoin(
+            DB::raw("(
+                SELECT salesman.kode_cabang, COUNT(DISTINCT IF(tanggal BETWEEN '$startdate_from_3months' AND '$enddate_until_lastmonth', kode_pelanggan, NULL)) AS jml_pelanggan,
+                COUNT(DISTINCT IF(tanggal BETWEEN '$dari' AND '$sampai', kode_pelanggan, NULL)) AS jml_pelangan_bertransaksi
+                FROM marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                WHERE tanggal BETWEEN '$startdate_from_3months' AND '$sampai'  AND status_batal = 0
+                GROUP BY salesman.kode_cabang
+            ) pelangganaktif"),
+            function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'pelangganaktif.kode_cabang');
+            }
+        );
+
+        $query->leftjoin(
+            DB::raw("(
+                SELECT salesman.kode_cabang,SUM(kapasitas) as jml_kapasitas , SUM(jml_ambil)  as jml_pengambilan
+                FROM gudang_cabang_dpb
+                INNER JOIN salesman ON gudang_cabang_dpb.kode_salesman = salesman.kode_salesman
+                INNER JOIN kendaraan ON gudang_cabang_dpb.kode_kendaraan = kendaraan.kode_kendaraan
+                LEFT JOIN (
+                    SElECT gudang_cabang_dpb_detail.no_dpb,
+                        SUM(jml_ambil / produk.isi_pcs_dus) as jml_ambil
+                        FROM gudang_cabang_dpb_detail
+                        INNER JOIN produk ON gudang_cabang_dpb_detail.kode_produk = produk.kode_produk
+                        GROUP BY gudang_cabang_dpb_detail.no_dpb
+                ) pengambilan ON (gudang_cabang_dpb.no_dpb = pengambilan.no_dpb)
+
+                WHERE tanggal_ambil BETWEEN '$dari' AND '$sampai' AND gudang_cabang_dpb.kode_kendaraan !='KD0092'
+                GROUP BY salesman.kode_cabang
+            ) kendaraan"),
+            function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'kendaraan.kode_cabang');
+            }
+        );
+
+        $query->leftjoin(
+            DB::raw("(
+                SELECT salesman.kode_cabang,
+                SUM(IF(tanggal BETWEEN '$dari_lastbulan' AND '$sampai_lastbulan' , (SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa  - penyesuaian + ppn,0)) as penjualanbulanlalu,
+                 SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' , (SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa  - penyesuaian + ppn,0)) as penjualanbulanberjalan
+                FROM marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                WHERE tanggal BETWEEN '$dari_lastbulan' AND '$sampai'
+                GROUP BY salesman.kode_cabang
+            ) penjualan"),
+            function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'penjualan.kode_cabang');
+            }
+        );
+
+        $query->leftJoin(
+            DB::raw("(
+                SELECT
+                salesman.kode_cabang,
+                COUNT(no_faktur) as jmlkunjungan,
+                COUNT(
+                CASE WHEN
+                DAYNAME(tanggal)='Monday' AND routing like '%Senin%' OR
+                DAYNAME(tanggal)='Tuesday' AND routing like '%Selasa%' OR
+                DAYNAME(tanggal)='Wednesday' AND routing like '%Rabu%' OR
+                DAYNAME(tanggal)='Thursday' AND routing like '%Kamis%' OR
+                DAYNAME(tanggal)='Friday' AND routing like '%Jumat%' OR
+                DAYNAME(tanggal)='Saturday' AND routing like '%Sabtu%' OR
+                DAYNAME(tanggal)='Sunday' AND routing like '%Minggu%'  THEN  marketing_penjualan.no_faktur END ) as jmlsesuaijadwal
+                FROM
+                `marketing_penjualan`
+                INNER JOIN `salesman` ON `marketing_penjualan`.`kode_salesman` = `salesman`.`kode_salesman`
+                WHERE `tanggal` BETWEEN '$dari' AND '$sampai' AND `status_batal` = '0' AND salesman.kode_cabang = '$kode_cabang'
+                GROUP BY
+                    salesman.kode_cabang
+            ) kunjungan"),
+            function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'kunjungan.kode_cabang');
+            }
+        );
+        if (!empty($kode_cabang)) {
+            $query->where('cabang.kode_cabang', $kode_cabang);
+        }
+
+        $data['insentif'] = $query->get();
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Insentif Omset $request->dari-$request->sampai.xls");
+        }
+        return view('marketing.laporan.insentifom_cetak', $data);
+    }
 }

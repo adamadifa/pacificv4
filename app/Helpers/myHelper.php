@@ -642,6 +642,32 @@ function truncateText($text, $wordLimit = 4)
     return $text; // Jika jumlah kata tidak lebih dari batas, kembalikan teks asli
 }
 
+
+function getreward($realisasi)
+{
+    if ($realisasi >= 60 && $realisasi <= 65) {
+        $reward = 25000;
+    } elseif ($realisasi > 65 && $realisasi <= 70) {
+        $reward = 50000;
+    } elseif ($realisasi > 70 && $realisasi <= 75) {
+        $reward = 75000;
+    } elseif ($realisasi > 75 && $realisasi <= 80) {
+        $reward = 100000;
+    } elseif ($realisasi > 80 && $realisasi <= 85) {
+        $reward = 125000;
+    } elseif ($realisasi > 85 && $realisasi <= 90) {
+        $reward = 150000;
+    } elseif ($realisasi > 90 && $realisasi <= 95) {
+        $reward = 175000;
+    } elseif ($realisasi > 95) {
+        $reward = 200000;
+    } else {
+        $reward = 0;
+    }
+
+    return $reward;
+}
+
 // function getroleuser()
 // {
 
