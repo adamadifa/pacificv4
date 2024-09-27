@@ -4719,8 +4719,8 @@ class LaporanmarketingController extends Controller
         $querydetail->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $querydetail->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         $querydetail->where('status_batal', 0);
-        if (!empty($request->kode_cabang)) {
-            $querydetail->where('salesman.kode_cabang', $request->kode_cabang);
+        if (!empty($kode_cabang)) {
+            $querydetail->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
             $querydetail->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
@@ -4760,8 +4760,8 @@ class LaporanmarketingController extends Controller
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         $querypenjualan->where('status_batal', 0);
         $querypenjualan->where('nama_pelanggan', '!=', 'BATAL');
-        if (!empty($request->kode_cabang)) {
-            $querypenjualan->where('salesman.kode_cabang', $request->kode_cabang);
+        if (!empty($kode_cabang)) {
+            $querypenjualan->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
             $querypenjualan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
@@ -4824,8 +4824,8 @@ class LaporanmarketingController extends Controller
         $queryretur->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
         $queryretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
         $queryretur->where('jenis_retur', 'PF');
-        if (!empty($request->kode_cabang)) {
-            $queryretur->where('salesman.kode_cabang', $request->kode_cabang);
+        if (!empty($kode_cabang)) {
+            $queryretur->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
             $queryretur->where('salesman.kode_salesman', $request->kode_salesman);
@@ -4863,8 +4863,8 @@ class LaporanmarketingController extends Controller
         );
         $queryhistoribayar->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
         $queryhistoribayar->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-        if (!empty($request->kode_cabang)) {
-            $queryhistoribayar->where('salesman.kode_cabang', $request->kode_cabang);
+        if (!empty($kode_cabang)) {
+            $queryhistoribayar->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
             $queryhistoribayar->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman);
@@ -4907,8 +4907,8 @@ class LaporanmarketingController extends Controller
         $querysaldoawalpiutang->join('marketing_sa_piutangsales', 'marketing_sa_piutangsales_detail.kode_saldo_awal', '=', 'marketing_sa_piutangsales.kode_saldo_awal');
         $querysaldoawalpiutang->where('bulan', $bulan);
         $querysaldoawalpiutang->where('tahun', $tahun);
-        if (!empty($request->kode_cabang)) {
-            $querysaldoawalpiutang->where('salesman.kode_cabang', $request->kode_cabang);
+        if (!empty($kode_cabang)) {
+            $querysaldoawalpiutang->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
             $querysaldoawalpiutang->where('marketing_sa_piutangsales_detail.kode_salesman', $request->kode_salesman);
@@ -4972,8 +4972,8 @@ class LaporanmarketingController extends Controller
         $querybayarpiutang->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
 
         $querybayarpiutang->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-        if (!empty($request->kode_cabang)) {
-            $querybayarpiutang->where('salesman.kode_cabang', $request->kode_cabang);
+        if (!empty($kode_cabang)) {
+            $querybayarpiutang->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
             $querybayarpiutang->where('salesman.kode_salesman', $request->kode_salesman);
@@ -5028,8 +5028,8 @@ class LaporanmarketingController extends Controller
         $querypiutangpindahan->join('salesman', 'marketing_penjualan_movefaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
 
         $querypiutangpindahan->where('marketing_penjualan_movefaktur.tanggal', $request->dari);
-        if (!empty($request->kode_cabang)) {
-            $querypiutangpindahan->where('salesman.kode_cabang', $request->kode_cabang);
+        if (!empty($kode_cabang)) {
+            $querypiutangpindahan->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
             $querypiutangpindahan->where('salesman.kode_salesman', $request->kode_salesman);
@@ -5082,8 +5082,8 @@ class LaporanmarketingController extends Controller
         $querypiutangpindahankesaleslain->join('salesman', 'marketing_penjualan_movefaktur.kode_salesman_lama', '=', 'salesman.kode_salesman');
 
         $querypiutangpindahankesaleslain->where('marketing_penjualan_movefaktur.tanggal', $request->dari);
-        if (!empty($request->kode_cabang)) {
-            $querypiutangpindahankesaleslain->where('salesman.kode_cabang', $request->kode_cabang);
+        if (!empty($kode_cabang)) {
+            $querypiutangpindahankesaleslain->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
             $querypiutangpindahankesaleslain->where('salesman.kode_salesman', $request->kode_salesman);
