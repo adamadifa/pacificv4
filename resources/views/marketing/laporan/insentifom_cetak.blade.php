@@ -190,7 +190,7 @@
                                         $reward_routing = 0;
                                     }
                                 @endphp
-                                {{ rupiah($reward_routing) }}
+                                {{ formatAngka($reward_routing) }}
                             </td>
                         </tr>
                     @endforeach
