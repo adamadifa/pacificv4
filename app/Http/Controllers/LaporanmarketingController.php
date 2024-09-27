@@ -5400,7 +5400,9 @@ class LaporanmarketingController extends Controller
             'jml_kapasitas',
             'jml_pengambilan',
             'penjualanbulanlalu',
-            'penjualanbulanberjalan'
+            'penjualanbulanberjalan',
+            'jmlkunjungan',
+            'jmlsesuaijadwal'
         );
         $query->leftJoin(
             DB::raw("(
