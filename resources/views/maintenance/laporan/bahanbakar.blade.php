@@ -1,4 +1,4 @@
-<form action="{{ route('laporanmtc.cetakbahanbakar') }}" method="POST" id="formLapBahanBakar">
+<form action="{{ route('laporanmtc.cetakbahanbakar') }}" method="POST" id="formLapBahanBakar" target="_blank">
     @csrf
     <div class="row">
         <div class="col">
