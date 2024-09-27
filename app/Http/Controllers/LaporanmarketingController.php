@@ -5470,7 +5470,7 @@ class LaporanmarketingController extends Controller
                 FROM
                 `marketing_penjualan`
                 INNER JOIN `salesman` ON `marketing_penjualan`.`kode_salesman` = `salesman`.`kode_salesman`
-                WHERE `tanggal` BETWEEN '$dari' AND '$sampai' AND `status_batal` = '0' AND salesman.kode_cabang = '$kode_cabang'
+                WHERE `tanggal` BETWEEN '$dari' AND '$sampai' AND `status_batal` = '0'
                 GROUP BY
                     salesman.kode_cabang
             ) kunjungan"),
