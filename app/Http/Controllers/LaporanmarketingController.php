@@ -4113,7 +4113,7 @@ class LaporanmarketingController extends Controller
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$start_date_bulanlalu, $sampai])
             ->where('status_batal', 0)
-            ->groupBy('marketing_penjualan.kode_pelanggan', 'marketing_penjualan.kode_salesman');
+            ->groupBy('marketing_penjualan.kode_pelanggan', 'pindahfaktur.kode_salesman_baru');
 
 
         $subqueryPenjvsavg = DB::table(DB::raw("({$subqueryPenjvsavgdata->toSql()}) as sub"))
