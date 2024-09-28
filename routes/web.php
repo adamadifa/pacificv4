@@ -63,6 +63,7 @@ use App\Http\Controllers\KontrabonpembelianController;
 use App\Http\Controllers\KontrakkaryawanController;
 use App\Http\Controllers\KontrakkerjaController;
 use App\Http\Controllers\LainnyagudangjadiController;
+use App\Http\Controllers\LaporanaccountingController;
 use App\Http\Controllers\LaporangeneralaffairController;
 use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangcabangController;
@@ -1867,6 +1868,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetakkomisidriverhelper', 'cetakkomisidriverhelper')->name('laporanmarketing.cetakkomisidriverhelper')->can('mkt.komisidriverhelper');
         Route::post('/laporanmarketing/cetakroutingsalesman', 'cetakroutingsalesman')->name('laporanmarketing.cetakroutingsalesman')->can('mkt.routingsalesman');
         Route::post('/laporanmarketing/cetakinsentifom', 'cetakinsentifom')->name('laporanmarketing.cetakinsentifom')->can('worksheetom.insentifom');
+    });
+
+    Route::controller(LaporanaccountingController::class)->group(function () {
+        Route::get('/laporanaccounting', 'index')->name('laporanaccounting.index');
+        Route::post('/laporanaccounting/cetakrekapbj', 'cetakrekapbj')->name('laporanaccounting.cetakrekapbj')->can('akt.rekapbj');
+        Route::post('/laporanaccounting/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporanaccounting.cetakrekappersediaan')->can('akt.rekappersediaan');
+        Route::post('/laporanaccounting/cetakcostratio', 'cetakcostratio')->name('laporanaccounting.cetakcostratio')->can('akt.costratio');
+        Route::post('/laporanaccounting/cetakjurnalumum', 'cetakjurnalumum')->name('laporanaccounting.cetakjurnalumum')->can('akt.jurnalumum');
     });
 
     Route::controller(VisitpelangganController::class)->group(function () {

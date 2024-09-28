@@ -1,5 +1,15 @@
-@if (auth()->user()->hasAnyPermission(['coa.index', 'costratio.index', 'jurnalumum.index', 'hpp.index', 'hargawalahpp.index']))
-    <li class="menu-item {{ request()->is(['coa', 'costratio', 'jurnalumum', 'hpp', 'hargaawalhpp']) ? 'open' : '' }}">
+@if (auth()->user()->hasAnyPermission([
+            'coa.index',
+            'costratio.index',
+            'jurnalumum.index',
+            'hpp.index',
+            'hargawalahpp.index',
+            'akt.rekapbj',
+            'akt.rekappersediaan',
+            'akt.costratio',
+            'akt.jurnalumum',
+        ]))
+    <li class="menu-item {{ request()->is(['coa', 'costratio', 'jurnalumum', 'hpp', 'hargaawalhpp', 'laporanaccounting']) ? 'open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-scale"></i>
             <div>Accounting</div>
@@ -31,6 +41,14 @@
                 <li class="menu-item {{ request()->is(['hpp', 'hargaawalhpp', 'hargaawalhpp/*']) ? 'active' : '' }}">
                     <a href="{{ route('hpp.index') }}" class="menu-link">
                         <div>HPP</div>
+                    </a>
+                </li>
+            @endif
+
+            @if (auth()->user()->hasAnyPermission(['akt.rekapbj', 'akt.rekappersediaan', 'akt.costratio', 'akt.jurnalumum']))
+                <li class="menu-item {{ request()->is(['laporanaccounting', 'laporanaccounting/*']) ? 'active' : '' }}">
+                    <a href="{{ route('laporanaccounting.index') }}" class="menu-link">
+                        <div>Laporan</div>
                     </a>
                 </li>
             @endif
