@@ -30,8 +30,10 @@
 
     </div>
 
-
-    <div class="row">
+    <div class="row" id="tanggalaup">
+        <x-input-with-icon icon="ti ti-calendar" label="Lihat Per Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    </div>
+    <div class="row" id="tanggalpenjualan">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
         </div>
@@ -56,6 +58,22 @@
     <script>
         $(document).ready(function() {
             const formRekappenjualan = $("#formRekappenjualan");
+
+            function showtanggalaup() {
+                const jenis_laporan = formRekappenjualan.find('#jenis_laporan').val();
+                if (jenis_laporan == "5") {
+                    $("#tanggalaup").show();
+                    $("#tanggalpenjualan").hide();
+                } else {
+                    $("#tanggalaup").hide();
+                    $("#tanggalpenjualan").show();
+                }
+            }
+
+            showtanggalaup();
+            formRekappenjualan.find('#jenis_laporan').on('change', function() {
+                showtanggalaup();
+            });
             const select2Kodecabangrekappenjualan = $(".select2Kodecabangrekappenjualan");
             if (select2Kodecabangrekappenjualan.length) {
                 select2Kodecabangrekappenjualan.each(function() {
@@ -118,6 +136,7 @@
                 const kode_cabang = formRekappenjualan.find('#kode_cabang_rekappenjualan').val();
                 const dari = formRekappenjualan.find('#dari').val();
                 const sampai = formRekappenjualan.find('#sampai').val();
+                const tanggal = formRekappenjualan.find('#tanggal').val();
                 const start = new Date(dari);
                 const end = new Date(sampai);
                 const jenis_laporan = formRekappenjualan.find('#jenis_laporan').val();
@@ -135,7 +154,7 @@
                     });
                     return false;
 
-                } else if (dari == "") {
+                } else if (dari == "" && jenis_laporan != "5") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Dari Tanggal Harus Diisi !",
@@ -146,7 +165,7 @@
                         },
                     });
                     return false;
-                } else if (sampai == "") {
+                } else if (sampai == "" && jenis_laporan != "5") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Sampai Tanggal Harus Diisi !",
@@ -157,7 +176,7 @@
                         },
                     });
                     return false;
-                } else if (start.getTime() > end.getTime()) {
+                } else if (start.getTime() > end.getTime() && jenis_laporan != "5") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Periode Tidak Valid !, Periode Sampai Harus Lebih Akhir dari Periode Dari",
@@ -165,6 +184,17 @@
                         showConfirmButton: true,
                         didClose: (e) => {
                             $(this).find("#sampai").focus();
+                        },
+                    });
+                    return false;
+                } else if (jenis_laporan == 5 && tanggal == "") {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: "Tanggal Harus Diisi !",
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            $(this).find("#tanggal").focus();
                         },
                     });
                     return false;
