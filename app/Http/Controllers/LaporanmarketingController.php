@@ -6,6 +6,7 @@ use App\Models\Cabang;
 use App\Models\Detailbelumsetor;
 use App\Models\Detaildpb;
 use App\Models\Detailgiro;
+use App\Models\Detailmutasigudangcabang;
 use App\Models\Detailpenjualan;
 use App\Models\Detailratiodriverhelper;
 use App\Models\Detailretur;
@@ -21,6 +22,7 @@ use App\Models\Kategorikomisi;
 use App\Models\Kendaraan;
 use App\Models\Movefaktur;
 use App\Models\Penjualan;
+use App\Models\Produk;
 use App\Models\Ratiokomisidriverhelper;
 use App\Models\Retur;
 use App\Models\Saldoawalpiutangpelanggan;
@@ -5615,7 +5617,44 @@ class LaporanmarketingController extends Controller
         $querypenjualan->groupBy('kode_cabang_baru');
 
 
-        // dd($querypenjualan->get());
+        $produk = Produk::orderby('kode_produk')->get();
+        $selectColumretur = [];
+        $selectColumnmutasi = [];
+        $fieldRetur = [];
+        $fieldMutasi = [];
+        foreach ($produk as $p) {
+            $selectColumretur[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',subtotal,0)) as `total_retur_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RT',jumlah/isi_pcs_dus,0)) as `retur_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RM',jumlah/isi_pcs_dus,0)) as `reject_mobil_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RG',jumlah/isi_pcs_dus,0)) as `reject_gudang_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RP',jumlah/isi_pcs_dus,0)) as `reject_pasar_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RK',jumlah/isi_pcs_dus,0)) as `repack_" . $p->kode_produk . "`");
+            $fieldRetur[] = "total_retur_" . $p->kode_produk;
+            $fieldMutasi[] = "retur_" . $p->kode_produk;
+            $fieldMutasi[] = "reject_mobil_" . $p->kode_produk;
+            $fieldMutasi[] = "reject_gudang_" . $p->kode_produk;
+            $fieldMutasi[] = "reject_pasar_" . $p->kode_produk;
+            $fieldMutasi[] = "repack_" . $p->kode_produk;
+        }
+        //Retur
+        $queryretur = Detailretur::query();
+        $queryretur->select('salesman.kode_cabang', ...$selectColumretur);
+        $queryretur->join('produk_harga', 'marketing_retur_detail.kode_harga', 'produk_harga.kode_harga');
+        $queryretur->join('marketing_retur', 'marketing_retur_detail.no_retur', 'marketing_retur.no_retur');
+        $queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', 'marketing_penjualan.no_faktur');
+        $queryretur->join('salesman', 'marketing_penjualan.kode_salesman', 'salesman.kode_salesman');
+        $queryretur->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
+        $queryretur->groupBy('salesman.kode_cabang');
+
+
+        $querymutasi = Detailmutasigudangcabang::query();
+        $querymutasi->select('gudang_cabang_mutasi.kode_cabang', ...$selectColumnmutasi);
+        $querymutasi->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk');
+        $querymutasi->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', 'gudang_cabang_mutasi.no_mutasi');
+        $querymutasi->whereBetween('gudang_cabang_mutasi.tanggal', [$dari, $sampai]);
+        $querymutasi->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
+        $querymutasi->groupBy('gudang_cabang_mutasi.kode_cabang');
+
 
         $query = Cabang::query();
         $query->select(
@@ -5632,7 +5671,10 @@ class LaporanmarketingController extends Controller
             'lama_lpc',
             'jam_lpc',
             DB::raw('IFNULL(total_lhp, 0) + IFNULL(totalbelumsetor_bulanlalu, 0) + IFNULL(totalgiro_bulanlalu, 0) - IFNULL(totalgiro_bulanini, 0) - IFNULL(totalbelumsetor_bulanini, 0) as realisasi_cashin'),
-            DB::raw('IFNULL(saldo_awal_piutang,0) + IFNULL(bruto,0) - IFNULL(penyesuaian,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) + IFNULL(ppn,0) - IFNULL(retur,0) - IFNULL(jmlbayar,0) as saldo_akhir_piutang')
+            DB::raw('IFNULL(saldo_awal_piutang,0) + IFNULL(bruto,0) - IFNULL(penyesuaian,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) + IFNULL(ppn,0) - IFNULL(retur,0) - IFNULL(jmlbayar,0) as saldo_akhir_piutang'),
+            'jml_biaya',
+            ...$fieldRetur,
+            ...$fieldMutasi
         );
         $query->leftJoin(
             DB::raw("(
@@ -5750,11 +5792,32 @@ class LaporanmarketingController extends Controller
             $join->on('cabang.kode_cabang', '=', 'penjualanpiutang.kode_cabang');
         });
 
+        $query->leftjoinSub($queryretur, 'retur', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'retur.kode_cabang');
+        });
 
+        $query->leftjoinSub($querymutasi, 'mutasi', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'mutasi.kode_cabang');
+        });
+
+
+
+        $query->leftJoin(
+            DB::raw("(
+                SELECT accounting_costratio.kode_cabang,SUM(jumlah) as jml_biaya
+                FROM accounting_costratio
+                WHERE tanggal BETWEEN '$dari' AND '$sampai'
+                GROUP BY accounting_costratio.kode_cabang
+            ) costratio"),
+            function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'costratio.kode_cabang');
+            }
+        );
         if (!empty($kode_cabang)) {
             $query->where('cabang.kode_cabang', $kode_cabang);
         }
 
+        $data['produk'] = $produk;
         $data['insentif'] = $query->get();
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;

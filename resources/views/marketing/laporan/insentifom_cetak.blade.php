@@ -236,6 +236,108 @@
                                 @endphp
                                 {{ formatAngka($reward_ljt) }}
                             </td>
+                            <td class="right">{{ formatAngka($d->jml_biaya) }}</td>
+                            <td align="center">
+                                @php
+                                    if ($d->kode_cabang == 'TSM') {
+                                        $cost_ratio =
+                                            ROUND(!empty($d->penjualanbulanberjalan) ? ($d->jml_biaya / $d->penjualanbulanberjalan) * 100 : 0) + 4;
+                                    } else {
+                                        $cost_ratio = ROUND(
+                                            !empty($d->penjualanbulanberjalan) ? ($d->jml_biaya / $d->penjualanbulanberjalan) * 100 : 0,
+                                        );
+                                    }
+                                @endphp
+                                {{ $cost_ratio }} %
+                            </td>
+                            <td align="right">
+                                @php
+                                    if ($cost_ratio <= 6) {
+                                        $reward_costratio = 200000;
+                                    } elseif ($cost_ratio > 6 && $cost_ratio <= 7) {
+                                        $reward_costratio = 175000;
+                                    } elseif ($cost_ratio > 7 && $cost_ratio <= 8) {
+                                        $reward_costratio = 150000;
+                                    } elseif ($cost_ratio > 8 && $cost_ratio <= 9) {
+                                        $reward_costratio = 125000;
+                                    } elseif ($cost_ratio > 9 && $cost_ratio <= 10) {
+                                        $reward_costratio = 100000;
+                                    } elseif ($cost_ratio > 10 && $cost_ratio <= 11) {
+                                        $reward_costratio = 75000;
+                                    } elseif ($cost_ratio > 11 && $cost_ratio <= 12) {
+                                        $reward_costratio = 50000;
+                                    } else {
+                                        $reward_costratio = 25000;
+                                    }
+                                @endphp
+                                {{ formatAngka($reward_costratio) }}
+                            </td>
+                            <td align="right">
+                                @php
+                                    $totalharga = 0;
+                                @endphp
+                                @foreach ($produk as $p)
+                                    @php
+                                        $jmlreject =
+                                            $d->{"reject_pasar_$p->kode_produk"} +
+                                            $d->{"reject_mobil_$p->kode_produk"} +
+                                            $d->{"reject_gudang_$p->kode_produk"} -
+                                            $d->{"repack_$p->kode_produk"};
+                                        $harga =
+                                            $d->{"retur_$p->kode_produk"} > 0
+                                                ? $d->{"total_retur_$p->kode_produk"} / $d->{"retur_$p->kode_produk"}
+                                                : 0;
+                                        $total = ROUND($jmlreject, 2) * $harga;
+                                        $totalharga += $total;
+                                    @endphp
+                                @endforeach
+                                {{ formatAngka($totalharga) }}
+                            </td>
+                            <td align="center">
+                                @php
+                                    $ratio_bs = ROUND(!empty($d->realisasi_cashin) ? (ROUND($totalharga) / $d->realisasi_cashin) * 100 : 0, 2);
+                                @endphp
+                                {{ $ratio_bs }}%
+                            </td>
+                            <td align="right">
+                                @if ($ratio_bs <= 0.4)
+                                    @php
+                                        $reward_bs = 125000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.4 && $ratio_bs <= 0.6)
+                                    @php
+                                        $reward_bs = 100000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.6 && $ratio_bs <= 0.8)
+                                    @php
+                                        $reward_bs = 75000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.8 && $ratio_bs <= 1)
+                                    @php
+                                        $reward_bs = 50000;
+                                    @endphp
+                                @else
+                                    @php
+                                        $reward_bs = 25000;
+                                    @endphp
+                                @endif
+                                {{ formatAngka($reward_bs) }}
+                            </td>
+                            <td align="right">
+                                @php
+                                    $totalreward =
+                                        $reward_oa +
+                                        $reward_kendaraan +
+                                        $reward_penjualan +
+                                        $reward_routing +
+                                        $reward_lpc +
+                                        $reward_cashin +
+                                        $reward_ljt +
+                                        $reward_costratio +
+                                        $reward_bs;
+                                @endphp
+                                {{ formatAngka($totalreward) }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
