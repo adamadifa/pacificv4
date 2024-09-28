@@ -213,6 +213,29 @@
                                 @endphp
                                 {{ formatAngka($reward_cashin) }}
                             </td>
+                            <td class="right">{{ formatAngka($d->saldo_akhir_piutang) }}</td>
+                            <td align="center">
+                                @php
+                                    $ratio_ljt = ROUND(!empty($d->realisasi_cashin) ? ($d->saldo_akhir_piutang / $d->realisasi_cashin) * 100 : 0, 2);
+                                @endphp
+                                {{ $ratio_ljt }}%
+                            </td>
+                            <td align="right">
+                                @php
+                                    if ($ratio_ljt <= 0.5) {
+                                        $reward_ljt = 200000;
+                                    } elseif ($ratio_ljt > 0.5 && $ratio_ljt <= 1) {
+                                        $reward_ljt = 150000;
+                                    } elseif ($ratio_ljt > 1 && $ratio_ljt <= 1.5) {
+                                        $reward_ljt = 100000;
+                                    } elseif ($ratio_ljt > 1.5 && $ratio_ljt <= 2) {
+                                        $reward_ljt = 50000;
+                                    } else {
+                                        $reward_ljt = 0;
+                                    }
+                                @endphp
+                                {{ formatAngka($reward_ljt) }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
