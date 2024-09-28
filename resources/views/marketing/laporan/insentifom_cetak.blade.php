@@ -192,6 +192,27 @@
                                 @endphp
                                 {{ formatAngka($reward_routing) }}
                             </td>
+                            <td class="center">{{ $d->lama_lpc }}</td>
+                            <td class="center">{{ $d->jam_lpc }}</td>
+                            <td align="right">
+                                @if (!empty($d->lama_lpc) && $d->lama_lpc <= 1 && $d->jam_lpc <= '13:00')
+                                    @php
+                                        $reward_lpc = 350000;
+                                    @endphp
+                                @else
+                                    @php
+                                        $reward_lpc = 0;
+                                    @endphp
+                                @endif
+                                {{ formatAngka($reward_lpc) }}
+                            </td>
+                            <td class="right">{{ formatAngka($d->realisasi_cashin) }}</td>
+                            <td style="text-align: right">
+                                @php
+                                    $reward_cashin = (0.01 / 100) * $d->realisasi_cashin;
+                                @endphp
+                                {{ formatAngka($reward_cashin) }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

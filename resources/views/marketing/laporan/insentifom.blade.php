@@ -3,7 +3,7 @@
 
 @section('content')
 @section('navigasi')
-    <span>Cost Ratio</span>
+    <span>Insentif OM</span>
 @endsection
 <div class="row">
     <div class="col-lg-5 col-sm-12 col-xs-12">
