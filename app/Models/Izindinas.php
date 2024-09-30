@@ -61,7 +61,7 @@ class Izindinas extends Model
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->where('hrd_izindinas.kode_dept', 'AKT');
-                $query->whereIn('hrd_izincuti.kode_jabatan', ['J08']);
+                $query->whereIn('hrd_izindinas.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->where('hrd_izindinas.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izindinas.kode_cabang', 'PST');
@@ -124,7 +124,7 @@ class Izindinas extends Model
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->orwhere('hrd_izindinas.kode_dept', 'AKT');
-                $query->whereIn('hrd_izincuti.kode_jabatan', ['J08']);
+                $query->whereIn('hrd_izindinas.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->orwhere('hrd_izindinas.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izindinas.kode_cabang', 'PST');
