@@ -68,7 +68,7 @@
                     @endforeach
                     @php
                         $grandtotal_harga_gudang = 0;
-
+                        $grandtotal_harga_saldoakhir = 0;
                     @endphp
                     @foreach ($rekapbj as $d)
                         @php
@@ -100,6 +100,7 @@
                             <td>{{ textupperCase($d->nama_produk) }}</td>
                             @php
                                 $total_qty_allcabang = 0;
+                                $total_harga_allcabang = 0;
                             @endphp
                             @foreach ($cabang as $c)
                                 @php
@@ -140,6 +141,9 @@
 
                                     $harga_akhir_cabang = !empty($total_qty_cabang) ? ROUND($total_harga_cabang / $total_qty_cabang, 9) : 0;
                                     $total_harga = ROUND($saldoakhir_cabang_desimal, 2) * ROUND($harga_akhir_cabang);
+
+                                    $total_harga_allcabang += $total_harga;
+
                                     ${"grandtotal_harga_$c->kode_cabang"} += $total_harga;
                                 @endphp
                                 <td class="right">{{ formatAngkaDesimal($saldoakhir_cabang_desimal) }}</td>
@@ -150,21 +154,39 @@
                             <td class="right"> {{ formatAngka($harga_kirim_cabang) }}</td>
                             <td class="right"> {{ formatAngka($total_harga_gudang) }}</td>
                             <td class="right">{{ formatAngkaDesimal($total_qty_allcabang + $saldoakhir_gudangpusat) }}</td>
+                            <td class="right">
+                                @php
+                                    $saldo_akhir_harga = !empty($total_qty_allcabang + $saldoakhir_gudangpusat)
+                                        ? ($total_harga_allcabang + $total_harga_gudang) / ($total_qty_allcabang + $saldoakhir_gudangpusat)
+                                        : 0;
+                                @endphp
+                                {{ formatAngka($saldo_akhir_harga) }}
+                            </td>
+                            <td class="right">
+                                @php
+                                    $total_harga_saldoakhir = ($total_qty_allcabang + $saldoakhir_gudangpusat) * $saldo_akhir_harga;
+                                    $grandtotal_harga_saldoakhir += $total_harga_saldoakhir;
+                                @endphp
+                                {{ formatAngka($total_harga_saldoakhir) }}
+                            </td>
                         </tr>
                     @endforeach
 
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="2">TOTAL</th>
+                        <th colspan="2" style="font-size: 18px !important">TOTAL</th>
                         @foreach ($cabang as $c)
                             <th></th>
                             <th></th>
-                            <th class="right">{{ formatAngka(${"grandtotal_harga_$c->kode_cabang"}) }}</th>
+                            <th class="right" style="font-size: 18px !important">{{ formatAngka(${"grandtotal_harga_$c->kode_cabang"}) }}</th>
                         @endforeach
                         <th></th>
                         <th></th>
-                        <th class="right">{{ formatAngka($grandtotal_harga_gudang) }}</th>
+                        <th class="right" style="font-size: 18px !important">{{ formatAngka($grandtotal_harga_gudang) }}</th>
+                        <th></th>
+                        <th></th>
+                        <th class="right" style="font-size: 18px !important">{{ formatAngka($grandtotal_harga_saldoakhir) }}</th>
                     </tr>
                 </tfoot>
             </table>

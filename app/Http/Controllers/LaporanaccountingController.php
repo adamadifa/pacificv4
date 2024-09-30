@@ -208,6 +208,11 @@ class LaporanaccountingController extends Controller
         $rekap = $rekap->sortBy(['kode_cabang', 'kode_produk'])->values()->toArray();
 
         $data['rekappersediaan'] = $rekap;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap Persediaan $request->dari-$request->sampai.xls");
+        }
         return view('accounting.laporan.rekappersediaan_cetak', $data);
     }
 
@@ -402,6 +407,11 @@ class LaporanaccountingController extends Controller
 
         $data['rekapbj'] = $rekapbj;
         $data['cabang'] = $cabang;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap BJ $request->dari-$request->sampai.xls");
+        }
         return view('accounting.laporan.rekapbj_cetak', $data);
     }
 }
