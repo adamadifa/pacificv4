@@ -510,6 +510,7 @@ class Globalprovider extends ServiceProvider
                 'notifikasi_lembur' => $notifikasi_lembur,
                 'notifikasi_izinkoreksi' => $notifikasi_izinkoreksi,
                 'notifikasi_hrd' => $notifikasi_hrd,
+                'notifikasi_izindinas' => $notifikasi_izindinas,
 
                 'total_notifikasi' => $total_notifikasi
 
