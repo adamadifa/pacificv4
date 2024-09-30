@@ -1,7 +1,22 @@
 @foreach ($historibayar as $d)
     <tr>
         <td>{{ $d->no_bukti }}</td>
-        <td>{{ formatIndo($d->tanggal) }}</td>
+        @php
+            $tgl = explode('-', $d->tanggal);
+            $bulan = $tgl[1];
+            $tahun = $tgl[0];
+
+            if ($bulan == 1) {
+                $bln = 12;
+                $thn = $tahun - 1;
+            } else {
+                $bln = $bulan - 1;
+                $thn = $tahun;
+            }
+            $tanggal = $thn . '-' . $bln . '-01';
+        @endphp
+        <td>{{ date('d-m-Y', strtotime($tanggal)) }}</td>
+        <td>{{ formatIndo($tanggal) }}</td>
         <td class="text-end fw-bold">{{ formatAngka($d->jumlah) }}</td>
         <td>
             @if ($d->jenis_bayar == '1')
