@@ -969,7 +969,7 @@ class LaporanmarketingController extends Controller
 
         $qvoucher = Historibayarpenjualan::query();
         $qvoucher->select(
-            'marketing_penjualan_historibayar.tanggald as tglbayar',
+            'marketing_penjualan_historibayar.tanggal as tglbayar',
             'marketing_penjualan_historibayar.no_faktur',
             'marketing_penjualan.kode_pelanggan',
             'pelanggan.nama_pelanggan',
