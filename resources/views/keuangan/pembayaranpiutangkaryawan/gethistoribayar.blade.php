@@ -16,7 +16,7 @@
             $tanggal = $thn . '-' . $bln . '-01';
         @endphp
         <td>{{ date('d-m-Y', strtotime($tanggal)) }}</td>
-        <td>{{ formatIndo($tanggal) }}</td>
+        {{-- <td>{{ formatIndo($tanggal) }}</td> --}}
         <td class="text-end fw-bold">{{ formatAngka($d->jumlah) }}</td>
         <td>
             @if ($d->jenis_bayar == '1')
