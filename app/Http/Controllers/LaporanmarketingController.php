@@ -1018,7 +1018,7 @@ class LaporanmarketingController extends Controller
                 $qvoucher->where('kode_cabang_baru', $kode_cabang);
             }
         } else {
-            $qvoucher->where('kode_cabang_baru', $user->kode_cabang);
+            $qvoucher->where('kode_cabang_baru', $request->kode_cabang);
         }
 
         if (!empty($request->kode_salesman)) {
