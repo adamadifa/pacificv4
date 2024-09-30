@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('laporanaccounting.cetakrekappersediaan') }}" id="frmRekappersediaan" target="_blank">
+<form method="POST" action="{{ route('laporanaccounting.cetakrekapbj') }}" id="frmRekapbj" target="_blank">
     @csrf
     <div class="row">
         <div class="col">
@@ -40,10 +40,9 @@
 @push('myscript')
     <script>
         $(function() {
-            $("#frmRekappersediaan").submit(function(e) {
-                // e.preventDefault();
-                const bulan = $("#frmRekappersediaan").find('#bulan').val();
-                const tahun = $("#frmRekappersediaan").find('#tahun').val();
+            $("#frmRekapbj").submit(function() {
+                const bulan = $("#frmRekapbj").find('#bulan').val();
+                const tahun = $("#frmRekapbj").find('#tahun').val();
                 if (bulan == "") {
                     Swal.fire({
                         title: "Oops!",
@@ -51,7 +50,7 @@
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            $("#frmRekappersediaan").find('#bulan').focus();
+                            $("#frmRekapbj").find('#bulan').focus();
                         },
                     });
                     return false;
@@ -62,11 +61,12 @@
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            $("#frmRekappersediaan").find('#tahun').focus();
+                            $("#frmRekapbj").find('#tahun').focus();
                         },
                     });
                     return false;
                 }
+
             });
         });
     </script>

@@ -63,7 +63,7 @@ class KendaraanController extends Controller
 
         try {
 
-            $lastkendaraan = Kendaraan::where('no_polisi', '!=', 'ZL')->orderBy('kode_kendaraan', 'desc')->first();
+            $lastkendaraan = Kendaraan::orderBy('kode_kendaraan', 'desc')->first();
             $last_kode_kendraan = $lastkendaraan != NULL ? $lastkendaraan->kode_kendaraan : '';
             $kode_kendaraan =  buatkode($last_kode_kendraan, "KD", 4);
 
