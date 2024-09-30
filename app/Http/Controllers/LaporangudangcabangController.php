@@ -624,7 +624,11 @@ class LaporangudangcabangController extends Controller
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
 
-
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=MUTASI DPB.xls");
+        }
         return view('gudangcabang.laporan.mutasidpb_cetak', $data);
     }
 
