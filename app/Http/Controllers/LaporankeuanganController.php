@@ -1743,7 +1743,7 @@ class LaporankeuanganController extends Controller
             }
         } else {
             if (!$user->hasRole($roles_access_all_pjp)) {
-                $query->where('hrd_jabatan.kategori', 'NM');
+                $query->where('keuangan_piutangkaryawan.status', '0');
             }
         }
 

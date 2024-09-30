@@ -75,7 +75,7 @@ class Piutangkaryawan extends Model
         // }
 
         if (!$user->hasRole($roles_access_all_pjp)) {
-            $query->where('keuangan_piutangkaryawan.statusd', '0');
+            $query->where('keuangan_piutangkaryawan.status', '0');
         }
 
         if (!empty($no_pinjaman)) {
