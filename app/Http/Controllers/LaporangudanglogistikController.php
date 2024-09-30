@@ -7,6 +7,7 @@ use App\Models\Cabang;
 use App\Models\Detailbarangkeluargudanglogistik;
 use App\Models\Detailbarangmasukgudanglogistik;
 use App\Models\Kategoribarangpembelian;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -164,6 +165,8 @@ class LaporangudanglogistikController extends Controller
 
     public function cetakpersediaanopname(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
+
         $bulan = $request->bulan;
         $tahun = $request->tahun;
         $dari = $tahun . "-" . $bulan . "-01";
@@ -184,7 +187,11 @@ class LaporangudanglogistikController extends Controller
             header("Content-Disposition: attachment; filename=Laporan Opname Gudang Logistik $dari-$sampai-$time.xls");
         }
 
-        return view('gudanglogistik.laporan.opname_cetak', $data);
+        if ($user->can('pembelian.harga')) {
+            return view('gudanglogistik.laporan.opname_cetak', $data);
+        } else {
+            return view('gudanglogistik.laporan.opname_tanpaharga_cetak', $data);
+        }
     }
 
 
