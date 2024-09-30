@@ -86,7 +86,7 @@ class Piutangkaryawan extends Model
         //     $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
         // }
 
-        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        // $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
 
         // if (!$user->hasRole($roles_access_all_pjp)) {
         //     $query->where('hrd_jabatan.kategori', 'NM');
