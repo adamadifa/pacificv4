@@ -24,10 +24,10 @@
                     <th rowspan="2">KODE</th>
                     <th rowspan="2">NAMA BARANG</th>
                     <th rowspan="2">SATUAN</th>
-                    <th>SALDO AWAL</th>
-                    <th>MASUK</th>
-                    <th>KELUAR</th>
-                    <th>SALDO AKHIR</th>
+                    <th rowspan="2">SALDO AWAL</th>
+                    <th rowspan="2">MASUK</th>
+                    <th rowspan="2">KELUAR</th>
+                    <th rowspan="2">SALDO AKHIR</th>
                     <th rowspan="2">OPNAME</th>
                     <th rowspan="2">SELISIH</th>
                 </tr>
