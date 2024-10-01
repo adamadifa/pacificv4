@@ -9,10 +9,11 @@
     <input type="hidden" name="giro_to_cash" id="giro_to_cash">
     <input type="hidden" name="giro_to_transfer" id="giro_to_transfer">
 
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal LHP" name="tanggal" datepicker="flatpickr-date" value="{{ $setoranpenjualan->tanggal }}" disabled="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal LHP" name="tanggal" datepicker="flatpickr-date" value="{{ $setoranpenjualan->tanggal }}"
+        disabled="true" />
     @hasanyrole($roles_show_cabang)
-        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true" select2="select2Kodecabang" selected="{{ $setoranpenjualan->kode_cabang }}"
-            disabled="true" />
+        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
+            select2="select2Kodecabang" selected="{{ $setoranpenjualan->kode_cabang }}" disabled="true" />
     @endhasanyrole
     <div class="form-group mb-3">
         <select name="kode_salesman" id="kode_salesman" class="select2Kodesalesman form-select" disabled>
@@ -42,9 +43,12 @@
             <i class="ti ti-file-description me-2"></i> SETORAN
         </div>
     </div>
-    <x-input-with-icon label="Setoran Kertas" name="setoran_kertas" money="true" align="right" icon="ti ti-moneybag" value="{{ formatAngka($setoranpenjualan->setoran_kertas) }}" />
-    <x-input-with-icon label="Setoran Logam" name="setoran_logam" money="true" align="right" icon="ti ti-moneybag" value="{{ formatAngka($setoranpenjualan->setoran_logam) }}" />
-    <x-input-with-icon label="Setoran Lainnya" name="setoran_lainnya" money="true" align="right" icon="ti ti-moneybag" value="{{ formatAngka($setoranpenjualan->setoran_lainnya) }}" />
+    <x-input-with-icon label="Setoran Kertas" name="setoran_kertas" money="true" align="right" icon="ti ti-moneybag"
+        value="{{ formatAngka($setoranpenjualan->setoran_kertas) }}" />
+    <x-input-with-icon label="Setoran Logam" name="setoran_logam" money="true" align="right" icon="ti ti-moneybag"
+        value="{{ formatAngka($setoranpenjualan->setoran_logam) }}" />
+    <x-input-with-icon label="Setoran Lainnya" name="setoran_lainnya" money="true" align="right" icon="ti ti-moneybag"
+        value="{{ formatAngka($setoranpenjualan->setoran_lainnya) }}" />
     <table class="table mb-3">
         <tr>
             <th>Setoran Giro</th>
@@ -230,7 +234,8 @@
             let total_lhp = lhp != "" ? parseInt(lhp.replace(/\./g, '')) : 0;
 
 
-            total_setoran = parseInt(setoran_kertas) + parseInt(setoran_logam) + parseInt(setoran_lainnya) + parseInt(setoran_transfer) + parseInt(setoran_giro);
+            total_setoran = parseInt(setoran_kertas) + parseInt(setoran_logam) + parseInt(setoran_lainnya) + parseInt(setoran_transfer) +
+                parseInt(setoran_giro);
             selisih = parseInt(total_setoran) - parseInt(total_lhp);
             $("#setoran_total_text").text(convertToRupiah(total_setoran));
             $("#selisih_text").text(convertToRupiah(selisih));
@@ -280,21 +285,23 @@
                     },
                 });
                 return false;
-            } else if (lhp_total == "" || lhp_total === '0') {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Tidak Ada Transaksi Pada Tanggal Tersebut !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        form.find("#tanggal").focus();
-                    },
-                });
-                return false;
             } else {
                 buttonDisable();
                 return true;
             }
+
+            // else if (lhp_total == "" || lhp_total === '0') {
+            //     Swal.fire({
+            //         title: "Oops!",
+            //         text: "Tidak Ada Transaksi Pada Tanggal Tersebut !",
+            //         icon: "warning",
+            //         showConfirmButton: true,
+            //         didClose: (e) => {
+            //             form.find("#tanggal").focus();
+            //         },
+            //     });
+            //     return false;
+            // }
         });
     });
 </script>
