@@ -1627,6 +1627,7 @@ class LaporanmarketingController extends Controller
         $queryPotongan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $queryPotongan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $queryPotongan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        $queryPotongan->where('status_batal', 0);
         if (!empty($kode_cabang)) {
             $queryPotongan->where('salesman.kode_cabang', $kode_cabang);
         } else {
