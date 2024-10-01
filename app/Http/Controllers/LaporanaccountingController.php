@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Costratio;
+use App\Models\Detailbarangkeluargudanglogistik;
 use App\Models\Detailhargaawalhpp;
 use App\Models\Detailhpp;
 use App\Models\Detailmutasigudangcabang;
@@ -13,6 +15,7 @@ use App\Models\Detailsaldoawalgudangjadi;
 use App\Models\Detailsaldoawalmutasiproduksi;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -413,5 +416,128 @@ class LaporanaccountingController extends Controller
             header("Content-Disposition: attachment; filename=Rekap BJ $request->dari-$request->sampai.xls");
         }
         return view('accounting.laporan.rekapbj_cetak', $data);
+    }
+
+
+    public function cetakcostratio(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $dari = $request->tahun . '-' . $request->bulan . '-01';
+        $sampai = date('Y-m-t', strtotime($dari));
+        if (!empty($kode_cabang)) {
+            $cabang = Cabang::where('kode_cabang', $kode_cabang)->get();
+        } else {
+            $cabang =  Cabang::orderBy('kode_cabang')->get();
+        }
+
+        $selectColumncabang = [];
+        $selectColumnLogistik = [];
+        foreach ($cabang as $c) {
+            $selectColumncabang[] = DB::raw("SUM(IF(accounting_costratio.kode_cabang = '$c->kode_cabang',jumlah,0)) as jmlbiaya_" . $c->kode_cabang);
+            $selectColumnlogistik[] = DB::raw("SUM(IF(gudang_logistik_barang_keluar_detail.kode_cabang='$c->kode_cabang', jumlah *
+            CASE
+                WHEN sa.hargasaldoawal IS NULL THEN gm.hargapemasukan
+                WHEN gm.hargapemasukan IS NULL THEN sa.hargasaldoawal
+                ELSE (sa.totalsa + gm.totalpemasukan) / (sa.qtysaldoawal + gm.qtypemasukan)
+            END, 0)) as logistik_" . $c->kode_cabang);
+        }
+        $query = Costratio::query();
+        $query->select(
+            'accounting_costratio.kode_akun',
+            'nama_akun',
+            'coa.kode_kategori',
+            'nama_kategori',
+            ...$selectColumncabang
+        );
+        $query->leftJoin('coa', 'accounting_costratio.kode_akun', '=', 'coa.kode_akun');
+        $query->leftJoin('coa_kategori', 'coa.kode_kategori', '=', 'coa_kategori.kode_kategori');
+        $query->whereBetween('tanggal', [$dari, $sampai]);
+        if (!empty($kode_cabang)) {
+            $query->where('kode_cabang', $kode_cabang);
+        }
+
+        if ($request->formatlaporan == 2) {
+            $query->orderBy('coa.kode_kategori', 'asc');
+        }
+
+        $query->groupBy('accounting_costratio.kode_akun', 'nama_akun', 'coa.kode_kategori', 'nama_kategori');
+        $query->orderBy('coa.kode_akun');
+        $costratio = $query->get();
+
+        $qlogistik = Detailbarangkeluargudanglogistik::query();
+        $qlogistik->select(
+            DB::raw(" SUM(IF(gudang_logistik_barang_keluar_detail.kode_cabang IS NOT NULL,jumlah *
+            CASE
+            WHEN sa.hargasaldoawal IS NULL THEN gm.hargapemasukan
+            WHEN gm.hargapemasukan IS NULL THEN sa.hargasaldoawal
+            ELSE
+            (sa.totalsa + gm.totalpemasukan) / (sa.qtysaldoawal + gm.qtypemasukan)
+            END ,0)) as total_logistik"),
+            ...$selectColumnlogistik
+
+        );
+        $qlogistik->join('gudang_logistik_barang_keluar', 'gudang_logistik_barang_keluar_detail.no_bukti', '=', 'gudang_logistik_barang_keluar.no_bukti');
+        $qlogistik->join('pembelian_barang', 'gudang_logistik_barang_keluar_detail.kode_barang', '=', 'pembelian_barang.kode_barang');
+        $qlogistik->leftJoin(
+            DB::raw("(
+                SELECT gudang_logistik_saldoawal_detail.kode_barang,SUM(harga) AS hargasaldoawal,
+                SUM( jumlah ) AS qtysaldoawal,
+                SUM(harga*jumlah) AS totalsa FROM gudang_logistik_saldoawal_detail
+                INNER JOIN gudang_logistik_saldoawal ON gudang_logistik_saldoawal_detail.kode_saldo_awal=gudang_logistik_saldoawal.kode_saldo_awal
+                WHERE bulan = '$request->bulan' AND tahun = '$request->tahun'
+                GROUP BY kode_barang
+            ) sa"),
+            function ($join) {
+                $join->on('gudang_logistik_barang_keluar_detail.kode_barang', '=', 'sa.kode_barang');
+            }
+        );
+
+        $qlogistik->leftJoin(
+            DB::raw("(
+                SELECT gudang_logistik_barang_masuk_detail.kode_barang,
+                SUM(penyesuaian) AS penyesuaian,
+                SUM( jumlah ) AS qtypemasukan,
+                SUM( harga ) AS hargapemasukan,
+                SUM(harga * jumlah) AS totalpemasukan FROM
+                gudang_logistik_barang_masuk_detail
+                INNER JOIN gudang_logistik_barang_masuk ON gudang_logistik_barang_masuk_detail.no_bukti = gudang_logistik_barang_masuk.no_bukti
+                WHERE tanggal BETWEEN '$dari' AND '$sampai'
+                GROUP BY kode_barang
+            ) gm"),
+            function ($join) {
+                $join->on('gudang_logistik_barang_keluar_detail.kode_barang', '=', 'gm.kode_barang');
+            }
+        );
+
+        $qlogistik->where('pembelian_barang.kode_kategori', 'K001');
+        $qlogistik->whereBetween('tanggal', [$dari, $sampai]);
+        $logistik = $qlogistik->first();
+
+        $data['logistik'] = $logistik;
+        $data['costratio'] = $costratio;
+        $data['cabang'] = $cabang;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=COSTRATIO $request->dari-$request->sampai.xls");
+        }
+
+        $data['cabang'] = $cabang;
+        $data['dari'] = $dari;
+        $data['sampai'] = $sampai;
+        $data['costratio'] = $costratio;
+        return view('accounting.laporan.costratio_cetak', $data);
     }
 }

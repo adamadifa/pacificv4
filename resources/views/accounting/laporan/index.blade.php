@@ -26,6 +26,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('akt.costratio')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#costratio" aria-controls="costratio"
+                            aria-selected="false" tabindex="-1">
+                            Cost Ratio
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
@@ -39,7 +47,11 @@
                         @include('accounting.laporan.rekapbj')
                     </div>
                 @endcan
-
+                @can('akt.costratio')
+                    <div class="tab-pane fad" id="costratio" role="tabpanel">
+                        @include('accounting.laporan.costratio')
+                    </div>
+                @endcan
             </div>
         </div>
     </div>
