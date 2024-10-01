@@ -75,7 +75,7 @@ class CostratioController extends Controller
         DB::beginTransaction();
         try {
             $lastcostratio = Costratio::select('kode_cr')
-                ->whereRaw('LEFT(kode_cr,6) ="' . date('my', strtotime($request->tanggal)) . '"')
+                ->whereRaw('LEFT(kode_crd,6) ="' . date('my', strtotime($request->tanggal)) . '"')
                 ->orderBy('kode_cr', 'desc')
                 ->first();
             $last_kode_cr = $lastcostratio != null ? $lastcostratio->kode_cr : '';
