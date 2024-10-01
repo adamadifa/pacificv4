@@ -34,6 +34,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('akt.jurnalumum')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#jurnalumum"
+                            aria-controls="jurnalumum" aria-selected="false" tabindex="-1">
+                            Jurnal Umum
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
@@ -50,6 +58,11 @@
                 @can('akt.costratio')
                     <div class="tab-pane fad" id="costratio" role="tabpanel">
                         @include('accounting.laporan.costratio')
+                    </div>
+                @endcan
+                @can('akt.jurnalumum')
+                    <div class="tab-pane fad" id="jurnalumum" role="tabpanel">
+                        @include('accounting.laporan.jurnalumum')
                     </div>
                 @endcan
             </div>

@@ -14,6 +14,7 @@ use App\Models\Detailmutasiproduksi;
 use App\Models\Detailsaldoawalgudangcabang;
 use App\Models\Detailsaldoawalgudangjadi;
 use App\Models\Detailsaldoawalmutasiproduksi;
+use App\Models\Jurnalumum;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
 use App\Models\User;
@@ -627,5 +628,27 @@ class LaporanaccountingController extends Controller
         $data['sampai'] = $sampai;
         $data['costratio'] = $costratio;
         return view('accounting.laporan.costratio_cetak', $data);
+    }
+
+    public function cetakjurnalumum(Request $request)
+    {
+        $user = User::findorfail(auth()->user()->id);
+
+        $query =  Jurnalumum::query();
+        $query->join('coa', 'accounting_jurnalumum.kode_akun', '=', 'coa.kode_akun');
+        $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+
+        if ($user->hasRole('general affair') || $user->hasRole('manager general affair')) {
+            $query->where('kode_dept', 'GAF');
+        }
+
+        $query->orderBy('tanggal');
+        $query->orderBy('kode_ju');
+        $jurnalumum = $query->get();
+
+        $data['jurnalumum'] = $jurnalumum;
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        return view('accounting.laporan.jurnalumum_cetak', $data);
     }
 }
