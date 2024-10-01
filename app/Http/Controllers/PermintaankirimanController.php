@@ -34,7 +34,7 @@ class PermintaankirimanController extends Controller
         $query->select('marketing_permintaan_kiriman.*', 'nama_salesman', 'no_mutasi', 'no_dok', 'gudang_jadi_mutasi.tanggal as tanggal_surat_jalan', 'status_surat_jalan');
         $query->leftJoin('salesman', 'marketing_permintaan_kiriman.kode_salesman', '=', 'salesman.kode_salesman');
         $query->leftJoin('gudang_jadi_mutasi', 'marketing_permintaan_kiriman.no_permintaan', '=', 'gudang_jadi_mutasi.no_permintaan');
-        $query->orderBy('tanggal', 'desc');
+        $query->orderBy('marketing_permintaan_kiriman.tanggal', 'desc');
         $query->orderBy('status', 'asc');
         $query->orderBy('marketing_permintaan_kiriman.no_permintaan', 'desc');
         if (!empty($request->dari) && !empty($request->sampai)) {
