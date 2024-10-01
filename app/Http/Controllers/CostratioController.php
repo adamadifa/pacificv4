@@ -81,6 +81,8 @@ class CostratioController extends Controller
             $last_kode_cr = $lastcostratio != null ? $lastcostratio->kode_cr : '';
 
             $kode_cr = buatkode($last_kode_cr, "CR" . date('my', strtotime($request->tanggal)), 4);
+
+            dd($kode_cr);
             Costratio::create([
                 'kode_cr' => $kode_cr,
                 'tanggal' => $request->tanggal,
