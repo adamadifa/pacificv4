@@ -3756,6 +3756,12 @@ class LaporanmarketingController extends Controller
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;
         $data['produk'] = $produk;
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Harga Net.xls");
+        }
         return view('marketing.laporan.harganet_cetak', $data);
     }
 
