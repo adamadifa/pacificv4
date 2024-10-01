@@ -103,7 +103,7 @@ class JurnalumumController extends Controller
 
                 if ($debet_kredit[$i] == 'D' && in_array(substr($kode_akun[$i], 0, 3), ['6-1', '6-2']) && $kode_peruntukan[$i] == 'PC') {
                     $lastcostratio = Costratio::select('kode_cr')
-                        ->whereRaw('LEFT(kode_cr,6) ="CR' . date('my', strtotime($request->tanggal)) . '"')
+                        ->whereRaw('LEFT(kode_crd,6) ="CR' . date('my', strtotime($request->tanggal)) . '"')
                         ->orderBy('kode_cr', 'desc')
                         ->first();
                     $last_kode_cr = $lastcostratio != null ? $lastcostratio->kode_cr : '';
