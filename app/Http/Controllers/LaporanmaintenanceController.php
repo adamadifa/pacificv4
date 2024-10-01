@@ -107,6 +107,11 @@ class LaporanmaintenanceController extends Controller
 
         $data['dari'] = $dari;
         $data['sampai'] = $sampai;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap Bahan Bakar.xls");
+        }
 
 
         return view('maintenance.laporan.rekapbahanbakar_cetak', $data);
