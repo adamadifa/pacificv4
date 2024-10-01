@@ -49,7 +49,7 @@ class TutuplaporanController extends Controller
         try {
             $tutuplap = Tutuplaporan::where('bulan', $request->bulan)->where('tahun', $request->tahun)->orderBy('kode_tutup_laporan', 'desc')->first();
             $lastkode = $tutuplap != null ? $tutuplap->kode_tutuplaporan : '';
-            $kode_tutup_laporan = buatkode($lastkode, $request->tahun . $request->tahun, 2);
+            $kode_tutup_laporan = buatkode($lastkode, $request->tahun . $request->bulan, 2);
 
             Tutuplaporan::create([
                 'kode_tutup_laporan' => $kode_tutup_laporan,
