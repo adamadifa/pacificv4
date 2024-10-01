@@ -126,13 +126,16 @@
                                         ? ($penjualan->potongan_swan / $detail->qtySwan) * $detail->{"qtydus_$p->kode_produk"}
                                         : 0;
                                 }
+
                                 $penyesuaian = ($detail->{"qty_$p->kode_produk"} / $p->isi_pcs_dus) * $ratio_penyesuaian;
                                 $bruto_tunai =
                                     $detail->{"bruto_tunai_$p->kode_produk"} +
                                     ($detail->{"bruto_tunai_$p->kode_produk"} / $detail->bruto_total_tunai) * $penjualan->ppn_total_tunai;
+
                                 $bruto_kredit =
                                     $detail->{"bruto_kredit_$p->kode_produk"} +
                                     ($detail->{"bruto_kredit_$p->kode_produk"} / $detail->bruto_total_kredit) * $penjualan->ppn_total_kredit;
+
                                 $bruto = $bruto_tunai + $bruto_kredit;
 
                                 $qty = $detail->{"qty_$p->kode_produk"} / $p->isi_pcs_dus;
@@ -207,6 +210,7 @@
                                         ? ($penjualan->potongan_swan / $detail->qtySwan) * $detail->{"qtydus_$p->kode_produk"}
                                         : 0;
                                 }
+
                                 $penyesuaian = ($detail->{"qty_$p->kode_produk"} / $p->isi_pcs_dus) * $ratio_penyesuaian;
                                 $bruto_tunai =
                                     $detail->{"bruto_tunai_$p->kode_produk"} +
@@ -223,7 +227,37 @@
                             <th class="right">{{ formatAngka($harganetwithreturexclude) }}</th>
                         @endforeach
                     </tr>
+                    <tr>
+                        <th class="left">HARGA NET INCLUDE DISKON</th>
+                        @foreach ($produk as $p)
+                            @php
 
+                                if ($p->kode_kategori_produk == 'P01') {
+                                    $diskon = !empty($detail->qtyAida)
+                                        ? ($penjualan->potongan_aida / $detail->qtyAida) * $detail->{"qtydus_$p->kode_produk"}
+                                        : 0;
+                                } else {
+                                    $diskon = !empty($detail->qtySwan)
+                                        ? ($penjualan->potongan_swan / $detail->qtySwan) * $detail->{"qtydus_$p->kode_produk"}
+                                        : 0;
+                                }
+
+                                $penyesuaian = ($detail->{"qty_$p->kode_produk"} / $p->isi_pcs_dus) * $ratio_penyesuaian;
+                                $bruto_tunai =
+                                    $detail->{"bruto_tunai_$p->kode_produk"} +
+                                    ($detail->{"bruto_tunai_$p->kode_produk"} / $detail->bruto_total_tunai) * $penjualan->ppn_total_tunai;
+                                $bruto_kredit =
+                                    $detail->{"bruto_kredit_$p->kode_produk"} +
+                                    ($detail->{"bruto_kredit_$p->kode_produk"} / $detail->bruto_total_kredit) * $penjualan->ppn_total_kredit;
+                                $bruto = $bruto_tunai + $bruto_kredit;
+
+                                $qty = $detail->{"qty_$p->kode_produk"} / $p->isi_pcs_dus;
+                                $returnet = $retur->{"retur_total_$p->kode_produk"} - $retur->{"retur_gb_$p->kode_produk"};
+                                $harganetwithreturinclude = ($bruto - $penyesuaian - $returnet) / $qty - $diskon;
+                            @endphp
+                            <th class="right">{{ formatAngka($harganetwithreturinclude) }}</th>
+                        @endforeach
+                    </tr>
                 </tbody>
             </table>
         </div>
