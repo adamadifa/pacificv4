@@ -254,7 +254,7 @@
                                 $qty = $detail->{"qty_$p->kode_produk"} / $p->isi_pcs_dus;
                                 $returnet = $retur->{"retur_total_$p->kode_produk"} - $retur->{"retur_gb_$p->kode_produk"};
                                 $harganetwithreturexclude = ($bruto - $penyesuaian - $returnet) / $qty;
-                                $harganetwithreturinclude = $harganetwithreturexclude - $diskon;
+                                $harganetwithreturinclude = $harganetwithreturexclude - $diskon / $qty;
                             @endphp
                             <th class="right">{{ formatAngka($harganetwithreturinclude) }}</th>
                         @endforeach
