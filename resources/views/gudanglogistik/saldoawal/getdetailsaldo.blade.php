@@ -2,6 +2,7 @@
     @php
         $saldo_akhir = $d->saldo_awal_jumlah + $d->bm_jumlah - $d->bk_jumlah;
         $jumlah_saldoawal_pemasukan = $d->qtysaldoawal + $d->qtypemasukan;
+
         if (empty($jumlah_saldoawal_pemasukan)) {
             $jumlah_saldoawal_pemasukan = 1;
         }
@@ -11,7 +12,7 @@
         } elseif (empty($d->bm_harga) and $d->bm_harga == 0) {
             $saldo_akhir_harga = $d->saldo_awal_harga;
         } else {
-            $saldo_akhir_harga = 0;
+            $saldo_akhir_harga = $d->saldo_awal_totalharga;
         }
     @endphp
     @if (!empty($saldo_akhir))
