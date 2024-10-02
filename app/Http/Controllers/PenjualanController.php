@@ -1120,7 +1120,7 @@ class PenjualanController extends Controller
         $kode_pelanggan  = $request->kode_pelanggan;
         $listfaktur = Penjualan::where('kode_pelanggan', $kode_pelanggan)
             ->where('status_batal', 0)
-            ->orderBy('created_at', 'desc')->limit(5)->get();
+            ->orderBy('created_at', 'desc')->limit(10)->get();
         echo "<option value=''>Pilih Faktur</option>";
         foreach ($listfaktur as $d) {
             echo "<option value='$d->no_faktur'>$d->no_faktur</option>";
