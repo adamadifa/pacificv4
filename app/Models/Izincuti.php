@@ -132,7 +132,7 @@ class Izincuti extends Model
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->orwhere('hrd_izincuti.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izincuti.kode_cabang', 'PST');
-                $query->whereIn('hrd_izincuti.kode_jabatan', ['J12', 'J13', 'J14']);
+                $query->whereIn('hrd_izincuti.kode_jabatand', ['J12', 'J13', 'J14']);
             } else {
                 if (auth()->user()->kode_cabang == 'PST') {
                     $query->orwhere('hrd_izincuti.kode_dept', auth()->user()->kode_dept);
