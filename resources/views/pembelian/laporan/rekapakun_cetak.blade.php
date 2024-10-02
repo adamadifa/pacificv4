@@ -76,7 +76,7 @@
                             <td class="right">{{ formatAngkaDesimal($hutangkredit) }}</td>
                         </tr>
                     @endforeach
-                    @php
+                    {{-- @php
                         $totaljurnaldebet = 0;
                         $totaljurnalkredit = 0;
                     @endphp
@@ -91,7 +91,7 @@
                             <td class="right">{{ formatAngkaDesimal($d->jurnaldebet) }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->jurnalkredit) }}</td>
                         </tr>
-                    @endforeach
+                    @endforeach --}}
                 </tbody>
                 <tfoot>
                     <tr>
