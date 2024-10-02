@@ -44,6 +44,7 @@
                     <th>Kode Salesman</th>
                     <th>Kode Cabang</th>
                     <th>Status</th>
+                    <th>Klasifikasi</th>
                 </tr>
             </thead>
             <tbody>
@@ -77,6 +78,7 @@
                         <td>{{ $d->nama_salesman }}</td>
                         <td>{{ $d->nama_cabang }}</td>
                         <td>{{ $d->status_aktif_pelanggan == 1 ? 'Aktif' : 'Tidak Aktif' }}</td>
+                        <td>{{ $d->klasifikasi }}</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -534,6 +534,7 @@ class PelangganController extends Controller
         $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftJoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
         if (!empty($kode_cabang)) {
             $query->where('salesman.kode_cabang', $kode_cabang);
         }
