@@ -71,6 +71,7 @@
                 @foreach ($rekapbahanbakar as $d)
                     @php
                         $jumlah_saldoawal = $qty_saldo_awal * $harga_saldo_awal;
+                        $cek = $qty_saldo_awal . '*' . $harga_saldo_awal;
                         $jumlah_pembelian = $d['qty_pembelian'] * $d['harga_pembelian'] - $d['penyesuaian'];
                         $jumlah_lainnya = $d['qty_lainnya'] * $d['harga_lainnya'];
                         $harga_keluar =
@@ -86,7 +87,7 @@
                         <td>{{ formatIndo($d['tanggal']) }}</td>
                         <td class="right">{{ formatAngkaDesimal($qty_saldo_awal) }}</td>
                         <td class="right">{{ formatAngkaDesimal($harga_saldo_awal) }}</td>
-                        <td class="right">{{ formatAngkaDesimal($jumlah_saldoawal) }}</td>
+                        <td class="right">{{ formatAngkaDesimal($jumlah_saldoawal) }} {{ $cek }}</td>
                         <td class="right">{{ formatAngkaDesimal($d['qty_pembelian']) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d['harga_pembelian']) }}</td>
                         <td class="right">
