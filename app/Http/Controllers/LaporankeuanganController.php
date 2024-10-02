@@ -1525,6 +1525,11 @@ class LaporankeuanganController extends Controller
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_kartupjp)->first();
         $data['departemen'] = Departemen::where('kode_dept', $request->kode_dept_kartupjp)->first();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Kartu PJP.xls");
+        }
         return view('keuangan.laporan.kartupjp_cetak', $data);
     }
 
@@ -1640,6 +1645,11 @@ class LaporankeuanganController extends Controller
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_kartukasbon)->first();
         $data['departemen'] = Departemen::where('kode_dept', $request->kode_dept_kartukasbon)->first();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Kartu Kasbon.xls");
+        }
         return view('keuangan.laporan.kartukasbon_cetak', $data);
     }
 
@@ -1757,6 +1767,11 @@ class LaporankeuanganController extends Controller
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_kartupiutangkaryawan)->first();
         $data['departemen'] = Departemen::where('kode_dept', $request->kode_dept_kartupiutangkaryawan)->first();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Kartu Piutang karyawan.xls");
+        }
         return view('keuangan.laporan.kartupiutangkaryawan_cetak', $data);
     }
 
