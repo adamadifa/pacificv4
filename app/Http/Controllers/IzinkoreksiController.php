@@ -96,7 +96,7 @@ class IzinkoreksiController extends Controller
                 ->orderBy("kode_izin_koreksi", "desc")
                 ->first();
             $last_kode_izin_koreksi = $lastizinkoreksi != null ? $lastizinkoreksi->kode_izin_koreksi : '';
-            $kode_izin_koreksi  = buatkode($last_kode_izin_koreksi, "IK"  . date('ym', strtotime($request->dari)), 4);
+            $kode_izin_koreksi  = buatkode($last_kode_izin_koreksi, "IK"  . date('ym', strtotime($request->tanggal)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
 

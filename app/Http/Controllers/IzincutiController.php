@@ -62,12 +62,12 @@ class IzincutiController extends Controller
         try {
 
             $lastizincuti = Izincuti::select('kode_izin_cuti')
-                ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
-                ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->tanggal)) . '"')
+                ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->dari)) . '"')
+                ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->dari)) . '"')
                 ->orderBy("kode_izin_cuti", "desc")
                 ->first();
             $last_kode_izin_cuti = $lastizincuti != null ? $lastizincuti->kode_izin_cuti : '';
-            $kode_izin_cuti  = buatkode($last_kode_izin_cuti, "IC"  . date('ym', strtotime($request->tanggal)), 4);
+            $kode_izin_cuti  = buatkode($last_kode_izin_cuti, "IC"  . date('ym', strtotime($request->dari)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
 
