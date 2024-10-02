@@ -1,7 +1,7 @@
 @foreach ($barang as $d)
     @php
         $saldo_akhir = $d->saldo_awal_jumlah + $d->bm_jumlah - $d->bk_jumlah;
-        $jumlah_saldoawal_pemasukan = $d->qtysaldoawal + $d->qtypemasukan;
+        $jumlah_saldoawal_pemasukan = $d->saldo_awal_jumlah + $d->bm_jumlah;
 
         if (empty($jumlah_saldoawal_pemasukan)) {
             $jumlah_saldoawal_pemasukan = 1;
