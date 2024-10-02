@@ -12,7 +12,7 @@
         } elseif (empty($d->bm_harga) and $d->bm_harga == 0) {
             $saldo_akhir_harga = $d->saldo_awal_harga;
         } else {
-            $saldo_akhir_harga = $jumlah_saldoawal_pemasukan;
+            $saldo_akhir_harga = $d->qtysaldoawal;
         }
     @endphp
     @if (!empty($saldo_akhir))
