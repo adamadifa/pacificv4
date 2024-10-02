@@ -634,7 +634,7 @@ class LaporanpembelianController extends Controller
         $pmb = $query->get();
 
         $hutang = Detailpembelian::select(
-            'pembelian.kode_akun',
+            'pembelian.kode_akund',
             'nama_akun',
             DB::raw('IFNULL(jurnaldebet,0) as jurnaldebet'),
             DB::raw('IFNULL(jurnalkredit,0) as jurnalkredit'),
