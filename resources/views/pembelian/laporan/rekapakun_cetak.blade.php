@@ -93,13 +93,13 @@
                         </tr>
                     @endforeach --}}
                 </tbody>
-                <tfoot>
+                {{-- <tfoot>
                     <tr>
                         <th colspan="2">TOTAL</th>
                         <th class="right">{{ formatAngkaDesimal($totaldebet + $totalhd + $totaljurnaldebet) }}</th>
                         <th class="right">{{ formatAngkaDesimal($totalkredit + $totalhk + $totaljurnalkredit) }}</th>
                     </tr>
-                </tfoot>
+                </tfoot> --}}
             </table>
         </div>
     </div>
