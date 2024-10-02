@@ -71,6 +71,8 @@
                 @foreach ($rekapbahanbakar as $d)
                     @php
                         $jumlah_saldoawal = $qty_saldo_awal * $harga_saldo_awal;
+                        $jumlah_pembelian = $d['qty_pembelian'] * $d['harga_pembelian'] - $d['penyesuaian'];
+                        $jumlah_lainnya = $d['qty_lainnya'] * $d['harga_lainnya'];
                         $harga_keluar =
                             ($jumlah_saldoawal + $jumlah_pembelian + $jumlah_lainnya) / ($qty_saldo_awal + $d['qty_pembelian'] + $d['qty_lainnya']);
 
@@ -89,7 +91,6 @@
                         <td class="right">{{ formatAngkaDesimal($d['harga_pembelian']) }}</td>
                         <td class="right">
                             @php
-                                $jumlah_pembelian = $d['qty_pembelian'] * $d['harga_pembelian'] - $d['penyesuaian'];
                                 $total_harga_pembelian += $jumlah_pembelian;
                             @endphp
                             {{ formatAngkaDesimal($jumlah_pembelian) }}
@@ -98,7 +99,6 @@
                         <td class="right">{{ formatAngkaDesimal($d['harga_lainnya']) }}</td>
                         <td class="right">
                             @php
-                                $jumlah_lainnya = $d['qty_lainnya'] * $d['harga_lainnya'];
                                 $total_harga_lainnya += $jumlah_lainnya;
                             @endphp
                             {{ formatAngkaDesimal($jumlah_lainnya) }}
