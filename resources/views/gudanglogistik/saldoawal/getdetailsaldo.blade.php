@@ -7,7 +7,7 @@
         }
 
         if (empty($d->saldo_awal_harga) and $d->saldo_awal_harga == 0) {
-            $saldo_akhir_harga = !empty($d->bm_jumlah) ? 'OK' : 'NO';
+            $saldo_akhir_harga = !empty($d->bm_jumlah) ? 1 : 99;
         } elseif (empty($d->bm_harga) and $d->bm_harga == 0) {
             $saldo_akhir_harga = $d->saldo_awal_harga;
         } else {
