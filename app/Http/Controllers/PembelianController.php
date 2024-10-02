@@ -196,7 +196,7 @@ class PembelianController extends Controller
                 'jatuh_tempo' => $request->jenis_transaksi == "K" ? $request->jatuh_tempo : $request->tanggal,
                 'ppn' => $request->ppn,
                 'kategori_transaksi' => $request->kategori_transaksi,
-                'kode_akun' => $request->kode_asal_pengajuan == 'GDB' ? '2-1300' : '2-1200',
+                'kode_akun' => $request->kode_asal_pengajuan == 'GDB' ? '2-1200' : '2-1300',
                 'id_user' => auth()->user()->id
             ]);
 
