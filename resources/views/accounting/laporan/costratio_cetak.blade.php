@@ -200,6 +200,18 @@
                             <th class="center">{{ formatAngka($costratio_penjualan) }} %</th>
                         @endforeach
                     </tr>
+                    <tr>
+                        <th colspan="3" style="background-color:rgb(187, 109, 8); color:white">PIUTANG > 1 BULAN</th>
+                        @foreach ($cabang as $c)
+                            @php
+                                $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
+                            @endphp
+
+                            <th class="right" style="background-color:rgb(187, 109, 8); color:white">{{ formatAngka($piutang) }} </th>
+                        @endforeach
+                    </tr>
+
+
                 </tfoot>
             </table>
         </div>
