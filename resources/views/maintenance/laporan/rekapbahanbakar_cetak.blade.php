@@ -87,7 +87,7 @@
                         <td>{{ formatIndo($d['tanggal']) }}</td>
                         <td class="right">{{ formatAngkaDesimal($qty_saldo_awal) }}</td>
                         <td class="right">{{ formatAngkaDesimal($harga_saldo_awal) }}</td>
-                        <td class="right">{{ formatAngkaDesimal($jumlah_saldoawal) }} {{ $cek }}</td>
+                        <td class="right">{{ formatAngkaDesimal($jumlah_saldoawal) }} </td>
                         <td class="right">{{ formatAngkaDesimal($d['qty_pembelian']) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d['harga_pembelian']) }}</td>
                         <td class="right">
