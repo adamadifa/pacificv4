@@ -65,7 +65,7 @@ class Izinkeluar extends Model
                 $query->where('hrd_izinkeluar.kode_dept', 'AKT');
                 $query->whereIn('hrd_izinkeluar.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
-                $query->where('hrd_izinkeluar.kode_dept', ['AKT', 'KEU']);
+                $query->whereIn('hrd_izinkeluar.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izinkeluar.kode_cabang', 'PST');
                 $query->whereIn('hrd_izinkeluar.kode_jabatan', ['J08', 'J12', 'J13', 'J14']);
             } else {
@@ -128,7 +128,7 @@ class Izinkeluar extends Model
                 $query->orwhere('hrd_izinkeluar.kode_dept', 'AKT');
                 $query->whereIn('hrd_izinkeluar.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
-                $query->orwhere('hrd_izinkeluar.kode_dept', ['AKT', 'KEU']);
+                $query->orwhereIn('hrd_izinkeluar.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izinkeluar.kode_cabang', 'PST');
                 $query->whereIn('hrd_izinkeluar.kode_jabatan', ['J08', 'J12', 'J13', 'J14']);
             } else {

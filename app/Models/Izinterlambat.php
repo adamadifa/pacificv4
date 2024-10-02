@@ -64,7 +64,7 @@ class Izinterlambat extends Model
                 $query->where('hrd_izinterlambat.kode_dept', 'AKT');
                 $query->whereIn('hrd_izinterlambat.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
-                $query->where('hrd_izinterlambat.kode_dept', ['AKT', 'KEU']);
+                $query->whereIn('hrd_izinterlambat.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izinterlambat.kode_cabang', 'PST');
                 $query->whereIn('hrd_izinterlambat.kode_jabatan', ['J08', 'J12', 'J13', 'J14']);
             } else {
@@ -127,7 +127,7 @@ class Izinterlambat extends Model
                 $query->orwhere('hrd_izinterlambat.kode_dept', 'AKT');
                 $query->whereIn('hrd_izinterlambat.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
-                $query->orwhere('hrd_izinterlambat.kode_dept', ['AKT', 'KEU']);
+                $query->orwhereIn('hrd_izinterlambat.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izinterlambat.kode_cabang', 'PST');
                 $query->whereIn('hrd_izinterlambat.kode_jabatan', ['J08', 'J12', 'J13', 'J14']);
             } else {
