@@ -206,12 +206,146 @@
                             @php
                                 $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
                             @endphp
-
                             <th class="right" style="background-color:rgb(187, 109, 8); color:white">{{ formatAngka($piutang) }} </th>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <th colspan="3" style="background-color:rgb(187, 109, 8); color:white">COST RATIO SWAN</th>
+                        @foreach ($cabang as $c)
+                            @php
+                                $netto_swan =
+                                    $penjualanbruto->{"bruto_swan_$c->kode_cabang"} -
+                                    $penjualanpotongan->{"potongan_swan_$c->kode_cabang"} -
+                                    $retur->{"retur_swan_$c->kode_cabang"};
+
+                                $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
+
+                                $costratio_piutang_swan = !empty($netto_swan) ? ($piutang / $netto_swan) * 100 : 0;
+                            @endphp
+                            <th class="center" style="background-color:rgb(187, 109, 8); color:white"> {{ formatAngka($costratio_piutang_swan) }} %
+                            </th>
+                        @endforeach
+                    </tr>
+
+                    <tr>
+                        <th colspan="3" style="background-color:rgb(187, 109, 8); color:white">COST RATIO AIDA</th>
+                        @foreach ($cabang as $c)
+                            @php
+                                $netto_aida =
+                                    $penjualanbruto->{"bruto_aida_$c->kode_cabang"} -
+                                    $penjualanpotongan->{"potongan_aida_$c->kode_cabang"} -
+                                    $retur->{"retur_aida_$c->kode_cabang"};
+
+                                $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
+
+                                $costratio_piutang_aida = !empty($netto_swan) ? ($piutang / $netto_aida) * 100 : 0;
+                            @endphp
+                            <th class="center" style="background-color:rgb(187, 109, 8); color:white"> {{ formatAngka($costratio_piutang_aida) }} %
+                            </th>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <th colspan="3" style="background-color:rgb(187, 109, 8); color:white">COST RATIO SWAN + AIDA</th>
+                        @foreach ($cabang as $c)
+                            @php
+
+                                $netto_swan =
+                                    $penjualanbruto->{"bruto_swan_$c->kode_cabang"} -
+                                    $penjualanpotongan->{"potongan_swan_$c->kode_cabang"} -
+                                    $retur->{"retur_swan_$c->kode_cabang"};
+                                $netto_aida =
+                                    $penjualanbruto->{"bruto_aida_$c->kode_cabang"} -
+                                    $penjualanpotongan->{"potongan_aida_$c->kode_cabang"} -
+                                    $retur->{"retur_aida_$c->kode_cabang"};
+                                $netto_swan_aida = $netto_swan + $netto_aida;
+                                $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
+
+                                $costratio_swan_aida = !empty($netto_swan_aida) ? ($piutang / $netto_swan_aida) * 100 : 0;
+                            @endphp
+                            <th class="center" style="background-color:rgb(187, 109, 8); color:white"> {{ formatAngka($costratio_swan_aida) }} %
+                            </th>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <th colspan="3" style="background-color:rgb(187, 8, 106); color:white">BIAYA + PIUTANG</th>
+                        @foreach ($cabang as $c)
+                            @php
+                                $total_biaya =
+                                    ${"total_biaya_$c->kode_cabang"} + $logistik->{"logistik_$c->kode_cabang"} + $bahan->{"bahan_$c->kode_cabang"};
+                                $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
+                                $biaya_piutang = $total_biaya + $piutang;
+
+                            @endphp
+                            <th class="center" style="background-color:rgb(187, 8, 106); color:white"> {{ formatAngka($biaya_piutang) }}
+                            </th>
+                        @endforeach
+                    </tr>
+
+                    <tr>
+                        <th colspan="3" style="background-color:rgb(187, 8, 106); color:white">COST RATIO SWAN</th>
+                        @foreach ($cabang as $c)
+                            @php
+                                $total_biaya =
+                                    ${"total_biaya_$c->kode_cabang"} + $logistik->{"logistik_$c->kode_cabang"} + $bahan->{"bahan_$c->kode_cabang"};
+                                $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
+                                $biaya_piutang = $total_biaya + $piutang;
+                                $netto_swan =
+                                    $penjualanbruto->{"bruto_swan_$c->kode_cabang"} -
+                                    $penjualanpotongan->{"potongan_swan_$c->kode_cabang"} -
+                                    $retur->{"retur_swan_$c->kode_cabang"};
+                                $cr_biaya_piutang_swan = !empty($netto_swan) ? ($biaya_piutang / $netto_swan) * 100 : 0;
+                            @endphp
+                            <th class="center" style="background-color:rgb(187, 8, 106); color:white"> {{ formatAngka($cr_biaya_piutang_swan) }} %
+                            </th>
                         @endforeach
                     </tr>
 
 
+                    <tr>
+                        <th colspan="3" style="background-color:rgb(187, 8, 106); color:white">COST RATIO AIDA</th>
+                        @foreach ($cabang as $c)
+                            @php
+                                $total_biaya =
+                                    ${"total_biaya_$c->kode_cabang"} + $logistik->{"logistik_$c->kode_cabang"} + $bahan->{"bahan_$c->kode_cabang"};
+                                $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
+                                $biaya_piutang = $total_biaya + $piutang;
+                                $netto_aida =
+                                    $penjualanbruto->{"bruto_aida_$c->kode_cabang"} -
+                                    $penjualanpotongan->{"potongan_aida_$c->kode_cabang"} -
+                                    $retur->{"retur_aida_$c->kode_cabang"};
+                                $cr_biaya_piutang_aida = !empty($netto_swan) ? ($biaya_piutang / $netto_aida) * 100 : 0;
+                            @endphp
+                            <th class="center" style="background-color:rgb(187, 8, 106); color:white"> {{ formatAngka($cr_biaya_piutang_aida) }} %
+                            </th>
+                        @endforeach
+                    </tr>
+
+
+                    <tr>
+                        <th colspan="3" style="background-color:rgb(187, 8, 106); color:white">COST RATIO SWAN + AIDA</th>
+                        @foreach ($cabang as $c)
+                            @php
+                                $total_biaya =
+                                    ${"total_biaya_$c->kode_cabang"} + $logistik->{"logistik_$c->kode_cabang"} + $bahan->{"bahan_$c->kode_cabang"};
+                                $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
+                                $biaya_piutang = $total_biaya + $piutang;
+                                $netto_swan =
+                                    $penjualanbruto->{"bruto_swan_$c->kode_cabang"} -
+                                    $penjualanpotongan->{"potongan_swan_$c->kode_cabang"} -
+                                    $retur->{"retur_swan_$c->kode_cabang"};
+                                $netto_aida =
+                                    $penjualanbruto->{"bruto_aida_$c->kode_cabang"} -
+                                    $penjualanpotongan->{"potongan_aida_$c->kode_cabang"} -
+                                    $retur->{"retur_aida_$c->kode_cabang"};
+                                $netto_swan_aida = $netto_swan + $netto_aida;
+
+                                $cr_biaya_piutang_swan_aida = !empty($netto_swan) ? ($biaya_piutang / $netto_swan_aida) * 100 : 0;
+                            @endphp
+                            <th class="center" style="background-color:rgb(187, 8, 106); color:white"> {{ formatAngka($cr_biaya_piutang_swan_aida) }}
+                                %
+                            </th>
+                        @endforeach
+                    </tr>
                 </tfoot>
             </table>
         </div>
