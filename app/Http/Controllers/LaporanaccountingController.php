@@ -857,8 +857,17 @@ class LaporanaccountingController extends Controller
         $data['dari'] = $dari;
         $data['sampai'] = $sampai;
         $data['costratio'] = $costratio;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Cost Ratio.xls");
+        }
+        if ($request->formatlaporan == 2) {
+            return view('accounting.laporan.costratio2_cetak', $data);
+        } else {
 
-        return view('accounting.laporan.costratio_cetak', $data);
+            return view('accounting.laporan.costratio_cetak', $data);
+        }
     }
 
     public function cetakjurnalumum(Request $request)
@@ -880,6 +889,11 @@ class LaporanaccountingController extends Controller
         $data['jurnalumum'] = $jurnalumum;
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Jurnal Umum.xls");
+        }
         return view('accounting.laporan.jurnalumum_cetak', $data);
     }
 }

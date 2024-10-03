@@ -6142,4 +6142,14 @@ class LaporanmarketingController extends Controller
         }
         return view('marketing.laporan.insentifom_cetak', $data);
     }
+
+
+    public function ratiobs()
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        return view('marketing.laporan.ratiobs', $data);
+    }
 }

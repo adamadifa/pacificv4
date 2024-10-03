@@ -1868,6 +1868,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetakkomisidriverhelper', 'cetakkomisidriverhelper')->name('laporanmarketing.cetakkomisidriverhelper')->can('mkt.komisidriverhelper');
         Route::post('/laporanmarketing/cetakroutingsalesman', 'cetakroutingsalesman')->name('laporanmarketing.cetakroutingsalesman')->can('mkt.routingsalesman');
         Route::post('/laporanmarketing/cetakinsentifom', 'cetakinsentifom')->name('laporanmarketing.cetakinsentifom')->can('worksheetom.insentifom');
+        Route::post('/laporanmarketing/cetakratiobs', 'cetakratiobs')->name('laporanmarketing.cetakratiobs')->can('worksheetom.ratiobs');
     });
 
     Route::controller(LaporanaccountingController::class)->group(function () {
@@ -1984,7 +1985,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/worksheetom/produkexpired', 'WorksheetomController@produkexpired')->name('worksheetom.produkexpired')->can('worksheetom.produkexpired');
     Route::get('/worksheetom/evaluasisharing', 'WorksheetomController@evaluasisharing')->name('worksheetom.evaluasisharing')->can('worksheetom.evaluasisharing');
     Route::get('/worksheetom/bbm', 'WorksheetomController@bbm')->name('worksheetom.bbm')->can('worksheetom.bbm');
-    Route::get('/worksheetom/ratiobs', 'WorksheetomController@ratiobs')->name('worksheetom.ratiobs')->can('worksheetom.ratiobs');
+    Route::get('/worksheetom/ratiobs', [LaporanmarketingController::class, 'ratiobs'])->name('worksheetom.ratiobs')->can('worksheetom.ratiobs');
 });
 
 
