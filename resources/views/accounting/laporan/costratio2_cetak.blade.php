@@ -57,7 +57,7 @@
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }} {{ $d->kode_kategori }}</td>
-                            <td>{{ $d->kode_akun }}</td>
+                            <td>'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
                             @foreach ($cabang as $c)
                                 @php
@@ -89,7 +89,7 @@
                             <tr>
                                 <th colspan="3">TOTAL {{ $d->nama_kategori }}</th>
                                 @foreach ($cabang as $c)
-                                    @if ($d->kategori == 'C02')
+                                    @if ($d->kode_kategori == 'C02')
                                         @php
                                             $total_biaya_kategori =
                                                 ${"total_biaya_kategori_$c->kode_cabang"} +
@@ -104,6 +104,11 @@
                                     <th align="right">{{ formatAngka($total_biaya_kategori) }}</th>
                                 @endforeach
                             </tr>
+                            @foreach ($cabang as $c)
+                                @php
+                                    ${"total_biaya_kategori_$c->kode_cabang"} = 0;
+                                @endphp
+                            @endforeach
                         @endif
                     @endforeach
 
