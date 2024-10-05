@@ -1,11 +1,11 @@
 <div class="d-flex justify-content-between">
     <span>Dashboard</span>
-    <div class="clock">
+    {{-- <div class="clock">
         <span id="jam-digital" class="text-primary"></span>
         <span id="tanggal-digital" class="text-primary"></span>
-    </div>
+    </div> --}}
 </div>
-<script>
+{{-- <script>
     function updateJam() {
         var now = new Date();
         var jam = now.getHours();
@@ -18,4 +18,4 @@
         document.getElementById('tanggal-digital').innerText = tanggalDigital;
     }
     setInterval(updateJam, 1000);
-</script>
+</script> --}}
