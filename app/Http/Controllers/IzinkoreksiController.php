@@ -87,14 +87,18 @@ class IzinkoreksiController extends Controller
             'kode_jadwal' => 'required',
             'keterangan' => 'required',
         ]);
+        //dd($request->tanggal);
         DB::beginTransaction();
         try {
 
-            $lastizinkoreksi = Izinkoreksi::select('kode_izin_koreksi')
+            $lastizinkoreksi = Izinkoreksi::select('kode_izin_koreksis')
                 ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
                 ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->tanggal)) . '"')
+                ->whereRaw('LEFT(kode_izin_koreksi, 4)!="IK70"')
                 ->orderBy("kode_izin_koreksi", "desc")
                 ->first();
+
+
             $last_kode_izin_koreksi = $lastizinkoreksi != null ? $lastizinkoreksi->kode_izin_koreksi : '';
             $kode_izin_koreksi  = buatkode($last_kode_izin_koreksi, "IK"  . date('ym', strtotime($request->tanggal)), 4);
             $k = new Karyawan();
