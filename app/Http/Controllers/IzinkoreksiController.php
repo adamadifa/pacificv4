@@ -91,7 +91,7 @@ class IzinkoreksiController extends Controller
         DB::beginTransaction();
         try {
 
-            $lastizinkoreksi = Izinkoreksi::select('kode_izin_koreksis')
+            $lastizinkoreksi = Izinkoreksi::select('kode_izin_koreksi')
                 ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
                 ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->tanggal)) . '"')
                 ->whereRaw('LEFT(kode_izin_koreksi, 4)!="IK70"')
