@@ -154,7 +154,7 @@ class LaporangudanglogistikController extends Controller
             header("Content-Disposition: attachment; filename=Laporan Persediaan Gudang Logistik $dari-$sampai-$time.xls");
         }
         //dd($request->jenis_laporan);
-
+        $data['group'] = config('pembelian.group');
         $user = User::findorfail(auth()->user()->id);
 
         if ($user->can('pembelian.harga')) {
@@ -217,7 +217,7 @@ class LaporangudanglogistikController extends Controller
             'nama_barang',
             'nama_kategori',
             'satuan',
-
+            'pembelian_barang.kode_group',
             'saldo_awal_qty',
             'saldo_awal_harga',
             'saldo_awal_totalharga',

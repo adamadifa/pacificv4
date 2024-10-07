@@ -24,6 +24,7 @@
                     <th>KODE</th>
                     <th>NAMA BARANG</th>
                     <th>SATUAN</th>
+                    <th>GROUP</th>
                     <th>SALDO AWAL</th>
                     <th>MASUK</th>
                     <th>KELUAR</th>
@@ -57,6 +58,7 @@
                         <td>{{ $d->kode_barang }}</td>
                         <td>{{ textUpperCase($d->nama_barang) }}</td>
                         <td>{{ textUpperCase($d->satuan) }}</td>
+                        <td>{{ textUpperCase($group[$d->kode_group]) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d->saldo_awal_qty) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d->bm_jumlah) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d->bk_jumlah) }}</td>
