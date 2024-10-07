@@ -106,45 +106,45 @@ class DashboardController extends Controller
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
 
-        // return view('dashboard.operationmanager', $data);
-        // die;
+        return view('dashboard.operationmanager', $data);
+        die;
 
 
         //Jika Mobile
 
         //Penjualan Bulan Ini
-        $dari = date('Y-m') . "-01";
-        $sampai = date('Y-m-t', strtotime($dari));
+        // $dari = date('Y-m') . "-01";
+        // $sampai = date('Y-m-t', strtotime($dari));
 
-        $data['penjualan'] = Penjualan::select()
-            ->select(
-                DB::raw("SUM((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn) as total")
-            )
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->where('salesman.kode_cabang', auth()->user()->kode_cabang)
-            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
-            ->where('marketing_penjualan.status_batal', 0)
-            ->first();
+        // $data['penjualan'] = Penjualan::select()
+        //     ->select(
+        //         DB::raw("SUM((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn) as total")
+        //     )
+        //     ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+        //     ->where('salesman.kode_cabang', auth()->user()->kode_cabang)
+        //     ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+        //     ->where('marketing_penjualan.status_batal', 0)
+        //     ->first();
 
-        // dd($data['penjualan']);
+        // // dd($data['penjualan']);
 
-        $data['pembayaran'] = Historibayarpenjualan::select(
-            DB::raw("SUM(jumlah) as total")
-        )
-            ->join('marketing_penjualan', 'marketing_penjualan.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur')
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->whereBetween('marketing_penjualan_historibayar.tanggal', [$dari, $sampai])
-            ->where('salesman.kode_cabang', auth()->user()->kode_cabang)
-            ->where('status_batal', 0)
-            ->first();
+        // $data['pembayaran'] = Historibayarpenjualan::select(
+        //     DB::raw("SUM(jumlah) as total")
+        // )
+        //     ->join('marketing_penjualan', 'marketing_penjualan.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur')
+        //     ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+        //     ->whereBetween('marketing_penjualan_historibayar.tanggal', [$dari, $sampai])
+        //     ->where('salesman.kode_cabang', auth()->user()->kode_cabang)
+        //     ->where('status_batal', 0)
+        //     ->first();
 
-        $data['jmltransaksi'] = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
-            ->where('salesman.kode_cabang', auth()->user()->kode_cabang)
-            ->where('status_batal', 0)
-            ->count();
-        $data['list_bulan'] = config('global.list_bulan');
-        $data['start_year'] = config('global.start_year');
+        // $data['jmltransaksi'] = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+        //     ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+        //     ->where('salesman.kode_cabang', auth()->user()->kode_cabang)
+        //     ->where('status_batal', 0)
+        //     ->count();
+        // $data['list_bulan'] = config('global.list_bulan');
+        // $data['start_year'] = config('global.start_year');
         return view('dashboard.mobile.operationmanager', $data);
     }
 
