@@ -21,6 +21,7 @@
         <table class="datatable3">
             <thead>
                 <tr>
+                    <th>No.</th>
                     <th>NO. DOK</th>
                     <th>TANGGAL</th>
                     <th>NO. POLISI</th>
@@ -49,6 +50,7 @@
                         $total_all_tarif += $d->total_tarif;
                     @endphp
                     <tr>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $d->no_dok }}</td>
                         <td>{{ DateToIndo($d->tanggal) }}</td>
                         <td>{{ $d->no_polisi }}</td>
