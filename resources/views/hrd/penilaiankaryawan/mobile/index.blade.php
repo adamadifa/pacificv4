@@ -114,18 +114,17 @@
                                             </p>
                                         </div>
                                         <div>
-                                            @if ($d->posisi_ajuan == $level_user)
+                                            @if ($d->status == 0)
                                                 @php
                                                     $color = 'bg-warning';
                                                 @endphp
                                             @else
                                                 @php
-                                                    $color = 'bg-pimary';
+                                                    $color = 'bg-success';
                                                 @endphp
                                             @endif
-                                            <span class="badge {{ $color }} p-2">
-                                                {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
-                                            </span>
+                                            <span
+                                                class="badge {{ $color }}">{{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}</span>
                                         </div>
                                     </div>
 
