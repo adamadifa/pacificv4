@@ -2938,7 +2938,9 @@ class LaporanmarketingController extends Controller
             $querysaldoawal->where('kode_salesman_baru', $request->kode_salesman);
         }
 
-
+        if (!empty($request->kode_pelanggan)) {
+            $querysaldoawal->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
 
         $querysaldoawal->groupBy(
             'marketing_penjualan.kode_pelanggan',
@@ -3040,6 +3042,10 @@ class LaporanmarketingController extends Controller
             $querypenjualan->where('kode_salesman_baru', $request->kode_salesman);
         }
 
+
+        if (!empty($request->kode_pelanggan)) {
+            $querypenjualan->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
 
         $querypenjualan->groupBy(
             'marketing_penjualan.kode_pelanggan',
