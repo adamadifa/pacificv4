@@ -154,11 +154,17 @@ class LaporangudanglogistikController extends Controller
             header("Content-Disposition: attachment; filename=Laporan Persediaan Gudang Logistik $dari-$sampai-$time.xls");
         }
         //dd($request->jenis_laporan);
-        if ($request->jenis_laporan == '1') {
-            return view('gudanglogistik.laporan.persediaan_cetak', $data);
-        } else if ($request->jenis_laporan == '2') {
+
+        $user = User::findorfail(auth()->user()->id);
+
+        if ($user->can('pembelian.harga')) {
             return view('gudanglogistik.laporan.persediaan_harga_cetak', $data);
+        } else {
+            return view('gudanglogistik.laporan.persediaan_cetak', $data);
         }
+        // if ($request->jenis_laporan == '1') {
+        // } else if ($request->jenis_laporan == '2') {
+        // }
     }
 
 
