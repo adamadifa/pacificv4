@@ -58,6 +58,7 @@
                         <th rowspan="2">KLASIFIKASI</th>
                         <th colspan="{{ count($produk) }}">PRODUK</th>
                         <th rowspan="2">SKU</th>
+                        <th rowspan="2">OMSET</th>
                     </tr>
                     <tr>
                         @foreach ($produk as $d)
@@ -71,7 +72,13 @@
                             ${"total_qty_$d->kode_produk"} = 0;
                         @endphp
                     @endforeach
+                    @php
+                        $total_bruto = 0;
+                    @endphp
                     @foreach ($rekappelanggan as $d)
+                        @php
+                            $total_bruto += $d->total_bruto;
+                        @endphp
                         <tr>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
@@ -86,6 +93,7 @@
                                 <td class="right">{{ formatAngkaDesimal($qty) }}</td>
                             @endforeach
                             <td class="center">{{ $d->total_sku }}</td>
+                            <td class="right">{{ formatAngka($d->total_bruto) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -98,6 +106,7 @@
                             @endphp
                             <th class="right">{{ formatAngkaDesimal($total_qty) }}</th>
                         @endforeach
+                        <th class="right">{{ formatAngka($total_bruto) }}</th>
                     </tr>
                 </tfoot>
             </table>

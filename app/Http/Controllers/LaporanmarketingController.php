@@ -1910,6 +1910,7 @@ class LaporanmarketingController extends Controller
             'klasifikasi',
             'salesman.nama_salesman',
             DB::raw('COUNT(DISTINCT(kode_sku)) as total_sku'),
+            DB::raw('SUM(subtotal) as total_bruto'),
             ...$selectColumnkodeproduk
         );
         $query->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
