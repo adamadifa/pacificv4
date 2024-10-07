@@ -2605,6 +2605,10 @@ class LaporanmarketingController extends Controller
             $querysaldoawal->where('kode_salesman_baru', $request->kode_salesman);
         }
 
+        if (!empty($request->kode_pelanggan)) {
+            $querysaldoawal->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+
         if ($request->formatlaporan == '1') {
             $querysaldoawal->whereRaw("datediff('$request->sampai', marketing_penjualan.tanggal) > 30");
         } else if ($request->formatlaporan == '2') {
@@ -2690,6 +2694,9 @@ class LaporanmarketingController extends Controller
             $querysaldoawalbulanini->where('kode_salesman_baru', $request->kode_salesman);
         }
 
+        if (!empty($request->kode_pelanggan)) {
+            $querysaldoawalbulanini->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
         if ($request->formatlaporan == '1') {
             $querysaldoawalbulanini->whereRaw("datediff('$request->sampai', marketing_penjualan.tanggal) > 30");
         } else if ($request->formatlaporan == '2') {
@@ -2775,6 +2782,10 @@ class LaporanmarketingController extends Controller
         }
         if (!empty($request->kode_salesman)) {
             $querypenjualan->where('kode_salesman_baru', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $querypenjualan->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
         }
 
         if ($request->formatlaporan == '1') {
