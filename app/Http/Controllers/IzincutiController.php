@@ -312,6 +312,7 @@ class IzincutiController extends Controller
         if ($role != $end_role && in_array($role, $roles_approve)) {
             $cek_index = array_search($role, $roles_approve);
             $nextrole = $roles_approve[$cek_index + 1];
+
             $userrole = User::role($nextrole)
                 ->where('status', 1)
                 ->first();
