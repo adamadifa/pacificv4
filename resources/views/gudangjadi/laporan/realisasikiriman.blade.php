@@ -1,7 +1,6 @@
-<form action="{{ route('laporangudangjadi.cetakrealisasikiriman') }}" method="POST" id="frmRealisasikiriman"
-    target="_blank">
+<form action="{{ route('laporangudangjadi.cetakrealisasikiriman') }}" method="POST" id="frmRealisasikiriman" target="_blank">
     @csrf
-    <div class="row">
+    {{-- <div class="row">
         <div class="col">
             <div class="form-group mb-3">
                 <select name="bulan" id="bulan" class="form-select">
@@ -24,6 +23,14 @@
                     @endfor
                 </select>
             </div>
+        </div>
+    </div> --}}
+    <div class="row">
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
         </div>
     </div>
     <div class="row">

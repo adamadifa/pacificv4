@@ -328,10 +328,13 @@ class LaporangudangjadiController extends Controller
 
     public function cetakrealisasikiriman(Request $request)
     {
-        $bulan = $request->bulan;
-        $tahun = $request->tahun;
-        $dari = $tahun . "-" . $bulan . "-01";
-        $sampai = date("Y-m-t", strtotime($dari));
+        // $bulan = $request->bulan;
+        // $tahun = $request->tahun;
+        // $dari = $tahun . "-" . $bulan . "-01";
+        // $sampai = date("Y-m-t", strtotime($dari));
+
+        $dari = $request->dari;
+        $sampai = $request->sampai;
         if (lockreport($dari) == "error") {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
