@@ -84,7 +84,9 @@ return  [
         'spv accounting',
         'manager general affair',
         'general affair',
-        'spv presensi'
+        'spv presensi',
+        'manager gudang',
+        'spv gudang pusat',
     ],
     'roles_show_cabang' => [
         'super admin',
@@ -103,7 +105,9 @@ return  [
         'spv accounting',
         'manager general affair',
         'general affair',
-        'spv presensi'
+        'spv presensi',
+        'manager gudang',
+        'spv gudang pusat',
     ],
 
     'roles_access_all_karyawan' => [
