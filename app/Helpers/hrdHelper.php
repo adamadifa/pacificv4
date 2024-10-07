@@ -274,6 +274,8 @@ function cekRoleapprovepresensi($kode_dept, $kode_cabang, $kategori_jabatan, $ko
         $roles_approve =  ['manager pembelian',  'asst. manager hrd'];
     } else if ($kode_dept == 'PRD' && $kategori_jabatan == "NM") { //Produksi Non Manajemen
         $roles_approve =  ['manager produksi', 'asst. manager hrd'];
+    } else if ($kode_dept == 'ADT' && $kategori_jabatan == "NM") { //Produksi Non Manajemen
+        $roles_approve =  ['manager audit', 'asst. manager hrd'];
     } else {
         $roles_approve =  ['asst. manager hrd'];
     }
