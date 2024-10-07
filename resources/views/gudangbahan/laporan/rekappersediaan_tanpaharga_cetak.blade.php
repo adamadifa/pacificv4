@@ -206,10 +206,10 @@
             <table class="datatable3 table" style="width: 200%">
                 <thead>
                     <tr>
-                        <th rowspan="4" style="width: 1%">NO</th>
-                        <th rowspan="4" style="width:1%">KODE</th>
-                        <th rowspan="4" style="width:10%">NAMA BARANG</th>
-                        <th rowspan="4" style="width: 1%">SATUAN</th>
+                        <th rowspan="3" style="width: 1%">NO</th>
+                        <th rowspan="3" style="width:1%">KODE</th>
+                        <th rowspan="3" style="width:10%">NAMA BARANG</th>
+                        <th rowspan="3" style="width: 1%">SATUAN</th>
                     </tr>
                     <tr>
                         <th rowspan="2">SALDO AWAL</th>
