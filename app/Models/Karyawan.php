@@ -97,7 +97,7 @@ class Karyawan extends Model
     function getKaryawan($nik)
     {
         $query = Karyawan::where('nik', $nik)
-            ->select('hrd_karyawan.*', 'nama_jabatan', 'hrd_jabatan.kategori', 'nama_dept', 'nama_cabang')
+            ->select('hrd_karyawan.*', 'nama_jabatan', 'hrd_jabatan.kategori', 'nama_dept', 'nama_cabang', 'kode_regional')
             ->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
             ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
             ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')

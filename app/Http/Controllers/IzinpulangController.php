@@ -90,14 +90,29 @@ class IzinpulangController extends Controller
                     ->where('kode_cabang', $karyawan->kode_cabang)
                     ->first();
             } else {
-                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+                if ($roles_approve[$index_role] == 'regional sales manager') {
+                    $cek_user_approve = User::role($roles_approve[$index_role])
+                        ->where('kode_regional', $karyawan->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                } else {
+                    $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+                }
             }
 
             if ($cek_user_approve == null) {
                 for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
-                    $cek_user_approve = User::role($roles_approve[$i])
-                        ->where('status', 1)
-                        ->first();
+                    // $cek_user_approve = User::role($roles_approve[$i])
+                    //     ->where('status', 1)
+                    //     ->first();
+                    if ($roles_approve[$i] == 'regional sales manager') {
+                        $cek_user_approve = User::role($roles_approve[$index_role])
+                            ->where('kode_regional', $karyawan->kode_regional)
+                            ->where('status', 1)
+                            ->first();
+                    } else {
+                        $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+                    }
                     if ($cek_user_approve != null) {
                         break;
                     }
