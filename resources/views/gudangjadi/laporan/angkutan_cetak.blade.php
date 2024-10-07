@@ -66,7 +66,7 @@
                 @endforeach
             </tbody>
             <tfoot>
-                <th colspan="6">TOTAL</th>
+                <th colspan="7">TOTAL</th>
                 <th class="right">{{ formatAngka($total_tarif) }}</th>
                 <th class="right">{{ formatAngka($total_tepung) }}</th>
                 <th class="right">{{ formatAngka($total_bs) }}</th>
