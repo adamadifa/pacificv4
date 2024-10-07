@@ -7,6 +7,7 @@ use App\Models\Detailbarangkeluargudangbahan;
 use App\Models\Detailbarangmasukgudangbahan;
 use App\Models\Detailsaldoawalgudangbahan;
 use App\Models\Kategoribarangpembelian;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -460,7 +461,13 @@ class LaporangudangbahanController extends Controller
             ->get();
 
         $data['jenis_barang'] = config('gudangbahan.jenis_barang');
-        return view('gudangbahan.laporan.rekappersediaan_cetak', $data);
+
+        $user = User::findorfail(auth()->user()->id);
+        if ($user->can('pembelian.harga')) {
+            return view('gudangbahan.laporan.rekappersediaan_cetak', $data);
+        } else {
+            return view('gudangbahan.laporan.rekappersediaan_tanpaharga_cetak', $data);
+        }
     }
 
     public function cetakkartugudang(Request $request)
