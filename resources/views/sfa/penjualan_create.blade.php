@@ -27,6 +27,7 @@
                                 value="{{ date('Y-m-d') }}" />
                             <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user" readonly="true" />
                             <input type="hidden" id="kode_pelanggan" name="kode_pelanggan" value="{{ $kode_pelanggan }}">
+                            <input type="hidden" id="kode_wilayah" name="kode_wilayah">
                             <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user" readonly="true" />
                             <input type="hidden" name="kode_salesman" id="kode_salesman">
                             <div class="form-group mb-3">
@@ -346,7 +347,7 @@
 @push('myscript')
 <script type="text/javascript">
     $(document).ready(function() {
-
+        let kode_wilayah = 0;
         let jmlfakturbelumlunas = 0;
         let jmlmaxfaktur = 0;
 
@@ -524,7 +525,8 @@
                         //Data Salesman
                         $('#kode_salesman').val(response.data.kode_salesman);
                         $('#nama_salesman').val(response.data.nama_salesman);
-
+                        $("#kode_wilayah").val(response.data.kode_wilayah);
+                        console.log(kode_wilayah);
                         //Get Piutang
                         getPiutang(kode_pelanggan);
                         //Get FaktuR Kredit

@@ -29,6 +29,9 @@ class PenilaiankaryawanController extends Controller
         // dd(auth()->user()->kode_dept);
         $data['listApprovepenilaian'] = listApprovepenilaian(auth()->user()->kode_dept, $user->getRoleNames()->first());
         return view('hrd.penilaiankaryawan.index', $data);
+
+        //Mobile
+        // return view('hrd.penilaiankaryawan.mobile.index', $data);
     }
 
 

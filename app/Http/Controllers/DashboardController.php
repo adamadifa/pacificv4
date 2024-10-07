@@ -106,8 +106,8 @@ class DashboardController extends Controller
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
 
-        return view('dashboard.operationmanager', $data);
-        die;
+        // return view('dashboard.operationmanager', $data);
+        // die;
 
 
         //Jika Mobile

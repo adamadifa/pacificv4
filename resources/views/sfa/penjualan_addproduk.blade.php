@@ -73,7 +73,7 @@
             let isi_pcs_dus = selectedOption.data('isi_pcs_dus');
             let isi_pcs_pack = selectedOption.data('isi_pcs_pack');
             let kode_kategori_diskon = selectedOption.data('kode_kategori_diskon');
-
+            let kode_wilayah = $("#kode_wilayah").val();
             let harga_dus;
             let harga_pack;
             let harga_pcs;
@@ -81,6 +81,7 @@
             harga_dus = selectedOption.data('harga_dus');
             harga_pack = selectedOption.data('harga_pack');
             harga_pcs = selectedOption.data('harga_pcs');
+
 
 
             form.find("#isi_pcs_dus").val(isi_pcs_dus);
@@ -91,14 +92,31 @@
             form.find("#harga_pack").val(harga_pack);
             form.find("#harga_pcs").val(harga_pcs);
 
-            if (isi_pcs_pack == "" || isi_pcs_pack === '0') {
-                form.find("#jml_pack").prop('disabled', true);
+            // if (isi_pcs_pack == "" || isi_pcs_pack === '0') {
+            //     form.find("#jml_pack").prop('disabled', true);
+            // } else {
+            //     form.find("#jml_pack").prop('disabled', false);
+            // }
+            // form.find("#harga_dus").prop('disabled', true);
+            // form.find("#harga_pack").prop('disabled', true);
+            // form.find("#harga_pcs").prop('disabled', true);
+
+            // alert(kode_wilayah);
+
+            if (kode_wilayah == 'WSKB000005') {
+                form.find("#harga_dus").prop('disabled', false);
+
+                if (isi_pcs_pack == "" || isi_pcs_pack === 0) {
+                    form.find("#harga_pack").prop('disabled', true);
+                } else {
+                    form.find("#harga_pack").prop('disabled', false);
+                }
+                form.find("#harga_pcs").prop('disabled', false);
             } else {
-                form.find("#jml_pack").prop('disabled', false);
+                form.find("#harga_dus").prop('disabled', true);
+                form.find("#harga_pack").prop('disabled', true);
+                form.find("#harga_pcs").prop('disabled', true);
             }
-            form.find("#harga_dus").prop('disabled', true);
-            form.find("#harga_pack").prop('disabled', true);
-            form.find("#harga_pcs").prop('disabled', true);
         }
 
         form.find("#kode_harga").change(function() {
@@ -124,6 +142,7 @@
 
 
             if (nama_pelanggan.includes('KPBN') || nama_pelanggan.includes('RSB')) {
+
                 form.find("#harga_dus").prop('disabled', false);
 
                 if (isi_pcs_pack == "" || isi_pcs_pack === 0) {

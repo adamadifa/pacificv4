@@ -18,7 +18,7 @@
         <!-- /Search -->
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
-            @if (Cookie::get('kodepelanggan') != null)
+            @if (Cookie::get('kodepelanggan') != null && $level_user == 'salesman')
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                     <a class="btn btn-sm btn-primary mt-1" href="/sfa/pelanggan/{{ Cookie::get('kodepelanggan') }}/show">
                         <i class="ti ti-sm ti-user"></i> Pelanggan

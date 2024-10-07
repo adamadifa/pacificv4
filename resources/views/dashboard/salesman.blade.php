@@ -12,7 +12,7 @@
 @endsection
 <div class="row">
     <div class="col-xl-12">
-        @include('dashboard.welcome')
+        {{-- @include('dashboard.welcome') --}}
 
         <div class="row">
             <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
