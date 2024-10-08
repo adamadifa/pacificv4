@@ -69,6 +69,7 @@ use App\Http\Controllers\LaporangudangbahanController;
 use App\Http\Controllers\LaporangudangcabangController;
 use App\Http\Controllers\LaporangudangjadiController;
 use App\Http\Controllers\LaporangudanglogistikController;
+use App\Http\Controllers\LaporanhrdController;
 use App\Http\Controllers\LaporankeuanganController;
 use App\Http\Controllers\LaporankeuangnaController;
 use App\Http\Controllers\LaporanmaintenanceController;
@@ -1879,6 +1880,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanaccounting/cetakjurnalumum', 'cetakjurnalumum')->name('laporanaccounting.cetakjurnalumum')->can('akt.jurnalumum');
     });
 
+    Route::controller(LaporanhrdController::class)->group(function () {
+        Route::get('/laporanhrd', 'index')->name('laporanhrd.index');
+        Route::post('/laporanhrd/cetakpresensi', 'cetakpresensi')->name('laporanhrd.cetakpresensi')->can('hrd.presensi');
+        Route::post('/laporanhrd/cetakpsm', 'cetakpsm')->name('laporanhrd.cetakpsm')->can('hrd.psm');
+        Route::post('/laporanhrd/cetakgaji', 'cetakgaji')->name('laporanhrd.cetakgaji')->can('hrd.gaji');
+        Route::post('/laporanhrd/cetakslipegaji', 'cetakslipegaji')->name('laporanhrd.cetakslipegaji')->can('hrd.slipgaji');
+    });
+
     Route::controller(VisitpelangganController::class)->group(function () {
         Route::get('/visitpelanggan', 'index')->name('visitpelanggan.index')->can('visitpelanggan.index');
         Route::get('/visitpelanggan/{no_faktur}/create', 'create')->name('visitpelanggan.create')->can('visitpelanggan.create');
@@ -1971,6 +1980,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/tutuplaporan/{kode_tutup_laporan}/lockunlock', 'lockunlock')->name('tutuplaporan.lockunlock')->can('tutuplaporan.create');
         Route::post('/tutuplaporan/cektutuplaporan', 'cektutuplaporan');
     });
+
+
+
 
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');
