@@ -203,7 +203,12 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
+
                                                         @can('izinsakit.edit')
+                                                            <a href="#" class="btnShow me-1"
+                                                                kode_izin_sakit="{{ Crypt::encrypt($d->kode_izin_sakit) }}">
+                                                                <i class="ti ti-file-description text-info"></i>
+                                                            </a>
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
                                                                     ($d->status === '0' && $d->id_pengirim === auth()->user()->id && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
@@ -359,12 +364,22 @@
             $("#loadmodal").load(`/izinsakit/${kode_izin_sakit}/edit`);
         });
 
-        $(".btnApprove").click(function() {
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
             const kode_izin_sakit = $(this).attr("kode_izin_sakit");
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Approve Izin sakit");
             $("#loadmodal").load(`/izinsakit/${kode_izin_sakit}/approve`);
+        });
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            const kode_izin_sakit = $(this).attr("kode_izin_sakit");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Detail Izin sakit");
+            $("#loadmodal").load(`/izinsakit/${kode_izin_sakit}/show`);
         });
     });
 </script>

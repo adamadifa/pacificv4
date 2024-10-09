@@ -32,7 +32,7 @@
     <x-input-inline-label icon="ti ti-moneybag" label="Gaji Pokok" name="gaji_pokok" value="{{ $gaji != null ? formatRupiah($gaji->gaji_pokok) : 0 }}"
         align="right" money="true" />
     <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Jabatan" name="t_jabatan"
-        value="{{ $gaji != null ? formatRupiah($gaji->gaji_pokok) : 0 }}" align="right" money="true" />
+        value="{{ $gaji != null ? formatRupiah($gaji->t_jabatan) : 0 }}" align="right" money="true" />
     <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Masa Kerja" name="t_masakerja"
         value="{{ $gaji != null ? formatRupiah($gaji->t_masakerja) : 0 }}" align="right" money="true" />
     <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Tangg. Jawab" name="t_tanggungjawab"

@@ -187,6 +187,10 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
+                                                        <a href="#" class="btnShow me-1"
+                                                            kode_izin_pulang="{{ Crypt::encrypt($d->kode_izin_pulang) }}">
+                                                            <i class="ti ti-file-description text-info"></i>
+                                                        </a>
                                                         @can('izinpulang.edit')
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
@@ -343,12 +347,21 @@
             $("#loadmodal").load(`/izinpulang/${kode_izin_pulang}/edit`);
         });
 
-        $(".btnApprove").click(function() {
+        $(".btnApprove").click(function(e) {
             const kode_izin_pulang = $(this).attr("kode_izin_pulang");
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Approve Izin Pulang");
             $("#loadmodal").load(`/izinpulang/${kode_izin_pulang}/approve`);
+        });
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            const kode_izin_pulang = $(this).attr("kode_izin_pulang");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Detail Izin Pulang");
+            $("#loadmodal").load(`/izinpulang/${kode_izin_pulang}/show`);
         });
     });
 </script>

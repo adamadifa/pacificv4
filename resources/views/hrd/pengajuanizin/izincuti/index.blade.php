@@ -205,6 +205,11 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
+                                                        <a href="#" class="btnShow me-1"
+                                                            kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}"
+                                                            kode="{{ $d->kode_izin_cuti }}">
+                                                            <i class="ti ti-file-description text-info"></i>
+                                                        </a>
                                                         @can('izincuti.edit')
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim == auth()->user()->id) ||
@@ -362,7 +367,8 @@
             $("#loadmodal").load(`/izincuti/${kode_izin_cuti}/edit`);
         });
 
-        $(".btnApprove").click(function() {
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
             let kode_izin_cuti = $(this).attr("kode_izin_cuti");
             let kode = $(this).attr("kode");
 
@@ -370,6 +376,15 @@
             loading();
             $("#modal").find(".modal-title").text("Approve Izin cuti");
             $("#loadmodal").load(`/izincuti/${kode_izin_cuti}/approve`);
+        });
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            const kode_izin_cuti = $(this).attr("kode_izin_cuti");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Detail Izin cuti");
+            $("#loadmodal").load(`/izincuti/${kode_izin_cuti}/show`);
         });
     });
 </script>
