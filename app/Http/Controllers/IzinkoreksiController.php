@@ -287,6 +287,63 @@ class IzinkoreksiController extends Controller
     }
 
 
+    public function show($kode_izin_koreksi)
+    {
+        $kode_izin_koreksi = Crypt::decrypt($kode_izin_koreksi);
+        $user = User::find(auth()->user()->id);
+        $i_koreksi = new Izinkoreksi();
+        $izinkoreksi = $i_koreksi->getIzinkoreksi(kode_izin_koreksi: $kode_izin_koreksi)->first();
+        $data['izinkoreksi'] = $izinkoreksi;
+
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izinkoreksi->kode_dept, $izinkoreksi->kode_cabang, $izinkoreksi->kategori_jabatan, $izinkoreksi->kode_jabatan);
+        $end_role = end($roles_approve);
+        if ($role != $end_role && in_array($role, $roles_approve)) {
+            $cek_index = array_search($role, $roles_approve) + 1;
+        } else {
+            $cek_index = count($roles_approve) - 1;
+        }
+
+        $nextrole = $roles_approve[$cek_index];
+        if ($nextrole == "regional sales manager") {
+            $userrole = User::role($nextrole)
+                ->where('kode_regional', $izinkoreksi->kode_regional)
+                ->where('status', 1)
+                ->first();
+        } else {
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
+        }
+
+        $index_start = $cek_index + 1;
+        if ($userrole == null) {
+            for ($i = $index_start; $i < count($roles_approve); $i++) {
+                if ($roles_approve[$i] == 'regional sales manager') {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('kode_regional', $izinkoreksi->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                } else {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('status', 1)
+                        ->first();
+                }
+
+                if ($userrole != null) {
+                    $nextrole = $roles_approve[$i];
+                    break;
+                }
+            }
+        }
+
+        $data['nextrole'] = $nextrole;
+        $data['userrole'] = $userrole;
+        $data['end_role'] = $end_role;
+        return view('hrd.pengajuanizin.izinkoreksi.show', $data);
+    }
+
+
     public function storeapprove($kode_izin_koreksi, Request $request)
     {
         // dd(isset($_POST['direktur']));

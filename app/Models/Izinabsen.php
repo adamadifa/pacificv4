@@ -106,7 +106,7 @@ class Izinabsen extends Model
                 }
             }
 
-            $query->where('hrd_izinabsen.status', '1');
+            // $query->where('hrd_izinabsen.status', '1');
             if (!empty($kode_izin)) {
                 $query->where('hrd_izinabsen.kode_izin', $kode_izin);
             }
