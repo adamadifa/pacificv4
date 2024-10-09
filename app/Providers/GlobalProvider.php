@@ -55,7 +55,8 @@ class Globalprovider extends ServiceProvider
                 'spv presensi',
                 'manager gudang',
                 'spv gudang pusat',
-                'admin gudang pusat'
+                'admin gudang pusat',
+                'gm operasional'
             ];
 
             $roles_show_cabang_pjp = [
