@@ -145,15 +145,17 @@ class LemburController extends Controller
         $user = User::findorFail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
         $request->validate([
-            'tanggal' => 'required|date',
-            'dari' => 'required|date',
-            'sampai' => 'required|date',
+            'tanggal' => 'required',
+            'dari' => 'required',
+            'sampai' => 'required',
             'jam_mulai' => 'required',
             'jam_selesai' => 'required',
             'istirahat' => 'required',
             'keterangan' => 'required',
             'kategori' => 'required',
         ]);
+
+        $validationRules = [];
         if (in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
             $validationRules['kode_dept'] = 'required';
         }
