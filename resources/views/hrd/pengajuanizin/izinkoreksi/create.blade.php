@@ -116,7 +116,8 @@
         form.submit(function(e) {
             const nik = form.find("#nik").val();
             const tanggal = form.find("#tanggal").val();
-            const jam_koreksi = form.find("#jam_koreksi").val();
+            const jam_masuk = form.find("#jam_masuk").val();
+            const jam_pulang = form.find("#jam_pulang").val();
             const keterangan = form.find("#keterangan").val();
             if (nik == '') {
                 Swal.fire({
@@ -140,10 +141,21 @@
                     }
                 });
                 return false;
-            } else if (jam_koreksi == "") {
+            } else if (jam_masuk == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: 'Jam koreksi Harus Diisi !',
+                    text: 'Jam Mausk Harus Diisi !',
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        form.find("#jam_koreksi").focus();
+                    }
+                });
+                return false;
+            } else if (jam_pulang == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: 'Jam Pulang Harus Diisi !',
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
