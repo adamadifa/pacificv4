@@ -543,9 +543,9 @@ class PresensiController extends Controller
         $presensi = Presensi::where('id', $id_presensi)->first();
         $tanggal = $presensi->tanggal;
         $tanggal_pulang  = $request->kode_jam_kerja == 'JK08' ? date('Y-m-d', strtotime($tanggal . ' + 1 days')) : $tanggal;
-        $jam_in = $tanggal . ' ' . $request->jam_in;
+        $jam_in = !empty($request->jam_in) ? $tanggal . ' ' . $request->jam_in : null;
 
-        $jam_out = $tanggal_pulang . ' ' . $request->jam_out;
+        $jam_out = !empty($request->jam_out) ? $tanggal_pulang . ' ' . $request->jam_out : null;
 
         try {
             Presensi::where('id', $id_presensi)->update([
