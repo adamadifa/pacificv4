@@ -106,7 +106,7 @@ class Izinterlambat extends Model
                 }
             }
 
-            $query->where('hrd_izinterlambat.status', '1');
+            // $query->where('hrd_izinterlambat.status', '1');
             if (!empty($kode_izin_terlambat)) {
                 $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
             }

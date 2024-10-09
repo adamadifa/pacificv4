@@ -105,7 +105,7 @@ class Izindinas extends Model
                 }
             }
 
-            $query->where('hrd_izindinas.status', '1');
+            // $query->where('hrd_izindinas.status', '1');
             if (!empty($kode_izin_dinas)) {
                 $query->where('hrd_izindinas.kode_izin_dinas', $kode_izin_dinas);
             }
