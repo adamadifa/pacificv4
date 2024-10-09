@@ -292,8 +292,12 @@ class JadwalshiftController extends Controller
     public function getgantishift($kode_jadwalshift)
     {
         $kode_jadwalshift = Crypt::decrypt($kode_jadwalshift);
+        $user = User::findorfail(auth()->user()->id);
+        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
         $data['gantishift'] = Gantishift::where('kode_jadwalshift', $kode_jadwalshift)
             ->join('hrd_karyawan', 'hrd_gantishift.nik', '=', 'hrd_karyawan.nik')
+            ->whereIn('hrd_karyawan.kode_dept', $dept_access)
+
             ->join('hrd_jadwalkerja', 'hrd_gantishift.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
             ->get();
 
