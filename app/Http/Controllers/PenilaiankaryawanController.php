@@ -161,7 +161,7 @@ class PenilaiankaryawanController extends Controller
             }
             // Jika Tidak Ada di dalam array
 
-            if ($karyawan->kategori !== 'MJ' && $karyawan->kode_cabang != 'PUSAT') {
+            if ($karyawan->kategori != 'MJ' && $karyawan->kode_cabang != 'PUSAT') {
                 if ($roles_approve[$index_role] == 'regional sales manager') {
                     $cek_user_approve = User::role($roles_approve[$index_role])
                         ->where('kode_regional', $karyawan->kode_regional)
@@ -181,6 +181,7 @@ class PenilaiankaryawanController extends Controller
                 echo 2;
             }
 
+            // die;
 
 
             if ($cek_user_approve == null) {
