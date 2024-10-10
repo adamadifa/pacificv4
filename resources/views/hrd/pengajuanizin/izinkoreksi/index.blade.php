@@ -97,8 +97,8 @@
                                             {{-- <th>Jabatan</th> --}}
                                             {{-- <th>Dept</th> --}}
                                             <th>Cabang</th>
-                                            <th>Jam Masuk</th>
-                                            <th>Jam Pulang</th>
+                                            <th>Masuk</th>
+                                            <th>Pulang</th>
                                             <th>Jadwal</th>
                                             <th>Posisi</th>
                                             <th>Status</th>
@@ -139,7 +139,8 @@
                                                     {{ date('H:i', strtotime($d->jam_pulang)) }}
                                                 </td>
                                                 <td>
-                                                    {{ $d->nama_jadwal }} ({{ $d->jam_mulai }} - {{ $d->jam_selesai }})
+                                                    {{ $d->nama_jadwal }} - {{ date('H:i', strtotime($d->jam_mulai)) }} -
+                                                    {{ date('H:i', strtotime($d->jam_selesai)) }}
                                                 </td>
                                                 <td>
                                                     @if ($level_user == 'direktur')
@@ -194,6 +195,10 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
+                                                        <a href="#" class="btnShow me-1"
+                                                            kode_izin_koreksi="{{ Crypt::encrypt($d->kode_izin_koreksi) }}">
+                                                            <i class="ti ti-file-description text-info"></i>
+                                                        </a>
                                                         @can('izinkoreksi.edit')
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
@@ -350,12 +355,22 @@
             $("#loadmodal").load(`/izinkoreksi/${kode_izin_koreksi}/edit`);
         });
 
-        $(".btnApprove").click(function() {
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
             const kode_izin_koreksi = $(this).attr("kode_izin_koreksi");
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Approve Izin koreksi");
             $("#loadmodal").load(`/izinkoreksi/${kode_izin_koreksi}/approve`);
+        });
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            const kode_izin_koreksi = $(this).attr("kode_izin_koreksi");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Detail Izin koreksi");
+            $("#loadmodal").load(`/izinkoreksi/${kode_izin_koreksi}/show`);
         });
     });
 </script>

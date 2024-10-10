@@ -187,6 +187,10 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
+                                                        <a href="#" class="btnShow me-1"
+                                                            kode_izin_terlambat="{{ Crypt::encrypt($d->kode_izin_terlambat) }}">
+                                                            <i class="ti ti-file-description text-info"></i>
+                                                        </a>
                                                         @can('izinterlambat.edit')
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
@@ -343,12 +347,22 @@
             $("#loadmodal").load(`/izinterlambat/${kode_izin_terlambat}/edit`);
         });
 
-        $(".btnApprove").click(function() {
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
             const kode_izin_terlambat = $(this).attr("kode_izin_terlambat");
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Approve Izin terlambat");
             $("#loadmodal").load(`/izinterlambat/${kode_izin_terlambat}/approve`);
+        });
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            const kode_izin_terlambat = $(this).attr("kode_izin_terlambat");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Detail Izin terlambat");
+            $("#loadmodal").load(`/izinterlambat/${kode_izin_terlambat}/show`);
         });
     });
 </script>

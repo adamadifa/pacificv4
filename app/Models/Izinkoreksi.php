@@ -112,7 +112,7 @@ class Izinkoreksi extends Model
                 }
             }
 
-            $query->where('hrd_izinkoreksi.status', '1');
+
             if (!empty($kode_izin_koreksi)) {
                 $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
             }

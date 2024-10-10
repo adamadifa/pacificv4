@@ -251,6 +251,63 @@ class IzinkeluarController extends Controller
     }
 
 
+    public function show($kode_izin_keluar)
+    {
+        $kode_izin_keluar = Crypt::decrypt($kode_izin_keluar);
+        $user = User::find(auth()->user()->id);
+        $i_keluar = new Izinkeluar();
+        $izinkeluar = $i_keluar->getIzinkeluar(kode_izin_keluar: $kode_izin_keluar)->first();
+        $data['izinkeluar'] = $izinkeluar;
+
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izinkeluar->kode_dept, $izinkeluar->kode_cabang, $izinkeluar->kategori_jabatan, $izinkeluar->kode_jabatan);
+        $end_role = end($roles_approve);
+        if ($role != $end_role && in_array($role, $roles_approve)) {
+            $cek_index = array_search($role, $roles_approve) + 1;
+        } else {
+            $cek_index = count($roles_approve) - 1;
+        }
+
+        $nextrole = $roles_approve[$cek_index];
+        if ($nextrole == "regional sales manager") {
+            $userrole = User::role($nextrole)
+                ->where('kode_regional', $izinkeluar->kode_regional)
+                ->where('status', 1)
+                ->first();
+        } else {
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
+        }
+
+        $index_start = $cek_index + 1;
+        if ($userrole == null) {
+            for ($i = $index_start; $i < count($roles_approve); $i++) {
+                if ($roles_approve[$i] == 'regional sales manager') {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('kode_regional', $izinkeluar->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                } else {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('status', 1)
+                        ->first();
+                }
+
+                if ($userrole != null) {
+                    $nextrole = $roles_approve[$i];
+                    break;
+                }
+            }
+        }
+
+        $data['nextrole'] = $nextrole;
+        $data['userrole'] = $userrole;
+        $data['end_role'] = $end_role;
+        return view('hrd.pengajuanizin.izinkeluar.show', $data);
+    }
+
+
 
     public function storeapprove($kode_izin_keluar, Request $request)
     {

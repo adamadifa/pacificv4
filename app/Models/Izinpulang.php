@@ -107,7 +107,7 @@ class Izinpulang extends Model
                 }
             }
 
-            $query->where('hrd_izinpulang.status', '1');
+            // $query->where('hrd_izinpulang.status', '1');
             if (!empty($kode_izin_pulang)) {
                 $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
             }

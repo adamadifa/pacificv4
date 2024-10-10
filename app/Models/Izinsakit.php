@@ -106,7 +106,7 @@ class Izinsakit extends Model
                 }
             }
 
-            $query->where('hrd_izinsakit.status', '1');
+            // $query->where('hrd_izinsakit.status', '1');
             if (!empty($kode_izin_sakit)) {
                 $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
             }

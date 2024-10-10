@@ -109,7 +109,7 @@ class Izincuti extends Model
                 }
             }
 
-            $query->where('hrd_izincuti.status', '1');
+            // $query->where('hrd_izincuti.status', '1');
             if (!empty($kode_izin_cuti)) {
                 $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
             }

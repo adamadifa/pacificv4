@@ -279,6 +279,63 @@ class IzinsakitController extends Controller
     }
 
 
+    public function show($kode_izin_sakit)
+    {
+        $kode_izin_sakit = Crypt::decrypt($kode_izin_sakit);
+        $user = User::find(auth()->user()->id);
+        $i_sakit = new Izinsakit();
+        $izinsakit = $i_sakit->getIzinsakit(kode_izin_sakit: $kode_izin_sakit)->first();
+        $data['izinsakit'] = $izinsakit;
+
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izinsakit->kode_dept, $izinsakit->kode_cabang, $izinsakit->kategori_jabatan, $izinsakit->kode_jabatan);
+        $end_role = end($roles_approve);
+        if ($role != $end_role && in_array($role, $roles_approve)) {
+            $cek_index = array_search($role, $roles_approve) + 1;
+        } else {
+            $cek_index = count($roles_approve) - 1;
+        }
+
+        $nextrole = $roles_approve[$cek_index];
+        if ($nextrole == "regional sales manager") {
+            $userrole = User::role($nextrole)
+                ->where('kode_regional', $izinsakit->kode_regional)
+                ->where('status', 1)
+                ->first();
+        } else {
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
+        }
+
+        $index_start = $cek_index + 1;
+        if ($userrole == null) {
+            for ($i = $index_start; $i < count($roles_approve); $i++) {
+                if ($roles_approve[$i] == 'regional sales manager') {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('kode_regional', $izinsakit->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                } else {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('status', 1)
+                        ->first();
+                }
+
+                if ($userrole != null) {
+                    $nextrole = $roles_approve[$i];
+                    break;
+                }
+            }
+        }
+
+        $data['nextrole'] = $nextrole;
+        $data['userrole'] = $userrole;
+        $data['end_role'] = $end_role;
+        return view('hrd.pengajuanizin.izinsakit.show', $data);
+    }
+
+
     public function storeapprove($kode_izin_sakit, Request $request)
     {
         // dd(isset($_POST['direktur']));

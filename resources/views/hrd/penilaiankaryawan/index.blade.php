@@ -183,7 +183,8 @@
                                                                 ($level_user == 'asst. manager hrd' && $d->status === '0') ||
                                                                 ($level_user == 'spv presensi' && $d->status === '0') ||
                                                                 ($level_user == 'direktur' && $d->status === '0') ||
-                                                                ($level_user == 'gm marketing' && $d->status === '0'))
+                                                                ($level_user == 'gm marketing' && $d->status === '0') ||
+                                                                ($level_user == $d->posisi_ajuan && $d->status == '0'))
                                                             <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}"
                                                                 class="me-1">
                                                                 <i class="ti ti-edit text-success"></i>

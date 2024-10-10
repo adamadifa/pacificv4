@@ -312,6 +312,73 @@ class IzincutiController extends Controller
         return view('hrd.pengajuanizin.izincuti.approve', $data);
     }
 
+
+    public function show($kode_izin_cuti)
+    {
+        $kode_izin_cuti = Crypt::decrypt($kode_izin_cuti);
+
+        $user = User::find(auth()->user()->id);
+        $i_cuti = new Izincuti();
+        $izincuti = $i_cuti->getIzincuti(kode_izin_cuti: $kode_izin_cuti)->first();
+        // $izincuti = DB::table('hrd_izincuti')
+        //     ->select('hrd_izincuti.*', 'nama_karyawan', 'nama_jabatan', 'hrd_jabatan.kategori as kategori_jabatan')
+        //     ->join('hrd_karyawan', 'hrd_izincuti.nik', '=', 'hrd_karyawan.nik')
+        //     ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
+        //     ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
+        //     ->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
+        //     ->where('kode_izin_cuti', $kode_izin_cuti)->first();
+
+        // dd($datacuti);
+        $data['izincuti'] = $izincuti;
+
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izincuti->kode_dept, $izincuti->kode_cabang, $izincuti->kategori_jabatan, $izincuti->kode_jabatan);
+        $end_role = end($roles_approve);
+        if ($role != $end_role && in_array($role, $roles_approve)) {
+            $cek_index = array_search($role, $roles_approve) + 1;
+        } else {
+            $cek_index = count($roles_approve) - 1;
+        }
+
+        $nextrole = $roles_approve[$cek_index];
+        if ($nextrole == "regional sales manager") {
+            $userrole = User::role($nextrole)
+                ->where('kode_regional', $izincuti->kode_regional)
+                ->where('status', 1)
+                ->first();
+        } else {
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
+        }
+
+        $index_start = $cek_index + 1;
+        if ($userrole == null) {
+            for ($i = $index_start; $i < count($roles_approve); $i++) {
+                if ($roles_approve[$i] == 'regional sales manager') {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('kode_regional', $izincuti->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                } else {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('status', 1)
+                        ->first();
+                }
+
+                if ($userrole != null) {
+                    $nextrole = $roles_approve[$i];
+                    break;
+                }
+            }
+        }
+
+        $data['nextrole'] = $nextrole;
+        $data['userrole'] = $userrole;
+        $data['end_role'] = $end_role;
+        return view('hrd.pengajuanizin.izincuti.approve', $data);
+    }
+
     public function storeapprove($kode_izin_cuti, Request $request)
     {
         // dd(isset($_POST['direktur']));

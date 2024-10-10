@@ -128,7 +128,7 @@
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nik }}</td>
                                                 <td>{{ formatName($d->nama_karyawan) }}</td>
-                                                <td>{{ $d->nama_jabatan }}</td>
+                                                <td>{{ singkatString($d->nama_jabatan) }}</td>
                                                 <td>{{ $d->kode_dept }}</td>
                                                 <td>{{ $d->kode_cabang }}</td>
                                                 <td>
@@ -193,6 +193,9 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
+                                                        <a href="#" class="btnShow me-1" kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
+                                                            <i class="ti ti-file-description text-info"></i>
+                                                        </a>
                                                         @can('izinabsen.edit')
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
@@ -348,12 +351,22 @@
             $("#loadmodal").load(`/izinabsen/${kode_izin}/edit`);
         });
 
-        $(".btnApprove").click(function() {
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
             const kode_izin = $(this).attr("kode_izin");
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Approve Izin Absen");
             $("#loadmodal").load(`/izinabsen/${kode_izin}/approve`);
+        });
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            const kode_izin = $(this).attr("kode_izin");
+            $("#modal").modal("show");
+            loading();
+            $("#modal").find(".modal-title").text("Approve Izin Absen");
+            $("#loadmodal").load(`/izinabsen/${kode_izin}/show`);
         });
     });
 </script>

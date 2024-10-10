@@ -57,7 +57,7 @@
                     </button>
                 </div>
             @else
-                @if ($izincuti->kategori_jabatan == 'MJ')
+                @if ($izinkeluar->kategori_jabatan == 'MJ')
                     <div class="col-4">
                         <button class="btn btn-success w-100" id="btnSimpan">
                             <i class="ti ti-thumb-up me-1"></i> Setuju
@@ -91,14 +91,8 @@
 <script>
     $(document).ready(function() {
         function buttonDisable() {
-            $('#btnSimpan').prop('readonly', true);
-            $('#btnTeruskan').prop('readonly', true);
+            $('#btnSimpan').prop('disabled', true);
             $('#btnSimpan').html(`
-            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            Loading..`);
-            $('#btnTeruskan').html(`
             <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>

@@ -107,7 +107,7 @@ class Izinkeluar extends Model
                 }
             }
 
-            $query->where('hrd_izinkeluar.status', '1');
+            // $query->where('hrd_izinkeluar.status', '1');
             if (!empty($kode_izin_keluar)) {
                 $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
             }

@@ -254,6 +254,63 @@ class IzinabsenController extends Controller
         return view('hrd.pengajuanizin.izinabsen.approve', $data);
     }
 
+
+    public function show($kode_izin)
+    {
+        $kode_izin = Crypt::decrypt($kode_izin);
+        $user = User::find(auth()->user()->id);
+        $i_absen = new Izinabsen();
+        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+        $data['izinabsen'] = $izinabsen;
+
+        $role = $user->getRoleNames()->first();
+        $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
+        $end_role = end($roles_approve);
+        if ($role != $end_role && in_array($role, $roles_approve)) {
+            $cek_index = array_search($role, $roles_approve) + 1;
+        } else {
+            $cek_index = count($roles_approve) - 1;
+        }
+
+        $nextrole = $roles_approve[$cek_index];
+        if ($nextrole == "regional sales manager") {
+            $userrole = User::role($nextrole)
+                ->where('kode_regional', $izinabsen->kode_regional)
+                ->where('status', 1)
+                ->first();
+        } else {
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
+        }
+
+        $index_start = $cek_index + 1;
+        if ($userrole == null) {
+            for ($i = $index_start; $i < count($roles_approve); $i++) {
+                if ($roles_approve[$i] == 'regional sales manager') {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('kode_regional', $izinabsen->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                } else {
+                    $userrole = User::role($roles_approve[$i])
+                        ->where('status', 1)
+                        ->first();
+                }
+
+                if ($userrole != null) {
+                    $nextrole = $roles_approve[$i];
+                    break;
+                }
+            }
+        }
+
+        $data['nextrole'] = $nextrole;
+        $data['userrole'] = $userrole;
+        $data['end_role'] = $end_role;
+        return view('hrd.pengajuanizin.izinabsen.show', $data);
+    }
+
     public function storeapprove($kode_izin, Request $request)
     {
         $kode_izin = Crypt::decrypt($kode_izin);

@@ -543,17 +543,26 @@ class PresensiController extends Controller
         $presensi = Presensi::where('id', $id_presensi)->first();
         $tanggal = $presensi->tanggal;
         $tanggal_pulang  = $request->kode_jam_kerja == 'JK08' ? date('Y-m-d', strtotime($tanggal . ' + 1 days')) : $tanggal;
-        $jam_in = $tanggal . ' ' . $request->jam_in;
+        $jam_in = !empty($request->jam_in) ? $tanggal . ' ' . $request->jam_in : null;
 
-        $jam_out = $tanggal_pulang . ' ' . $request->jam_out;
+        $jam_out = !empty($request->jam_out) ? $tanggal_pulang . ' ' . $request->jam_out : null;
+
+        $user = User::findOrFail(auth()->user()->id);
 
         try {
-            Presensi::where('id', $id_presensi)->update([
-                'kode_jadwal' => $request->kode_jadwal,
-                'kode_jam_kerja' => $request->kode_jam_kerja,
-                'jam_in' => $jam_in,
-                'jam_out' => $jam_out,
-            ]);
+            if ($user->hasRole(['asst. manager hrd', 'super admin'])) {
+                Presensi::where('id', $id_presensi)->update([
+                    'kode_jadwal' => $request->kode_jadwal,
+                    'kode_jam_kerja' => $request->kode_jam_kerja,
+                    'jam_in' => $jam_in,
+                    'jam_out' => $jam_out,
+                ]);
+            } else {
+                Presensi::where('id', $id_presensi)->update([
+                    'kode_jadwal' => $request->kode_jadwal,
+                    'kode_jam_kerja' => $request->kode_jam_kerja,
+                ]);
+            }
 
             return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
         } catch (\Exception $e) {
