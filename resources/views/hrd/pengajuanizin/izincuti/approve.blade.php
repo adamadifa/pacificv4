@@ -47,4 +47,61 @@
             </table>
         </div>
     </div>
+    <div class="row mt-3">
+        @if ($level_user != 'direktur')
+            @if ($level_user != $end_role)
+                <div class="col">
+                    <button class="btn btn-primary w-100" id="btnSimpan">
+                        <i class="ti ti-thumb-up me-1"></i> Setuju,
+                        Teruskan ke {{ textCamelCase($nextrole) }} ({{ $userrole->name }})
+                    </button>
+                </div>
+            @else
+                @if ($izinkeluar->kategori_jabatan == 'MJ')
+                    <div class="col-4">
+                        <button class="btn btn-success w-100" id="btnSimpan">
+                            <i class="ti ti-thumb-up me-1"></i> Setuju
+                        </button>
+                    </div>
+                    <div class="col-8">
+                        <button class="btn btn-primary w-100" id="btnTeruskan" name="direktur" value="1">
+                            <i class="ti ti-thumb-up me-1"></i> Setuju dan
+                            Teruskan ke Direktur
+                        </button>
+                    </div>
+                @else
+                    <div class="col">
+                        <button class="btn btn-success w-100" id="btnSimpan">
+                            <i class="ti ti-thumb-up me-1"></i> Setuju
+                        </button>
+                    </div>
+                @endif
+
+            @endif
+        @else
+            <div class="col">
+                <button class="btn btn-success w-100" id="btnSimpan">
+                    <i class="ti ti-thumb-up me-1"></i> Setuju
+                </button>
+            </div>
+        @endif
+
+    </div>
 </form>
+<script>
+    $(document).ready(function() {
+        function buttonDisable() {
+            $('#btnSimpan').prop('disabled', true);
+            $('#btnSimpan').html(`
+            <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Loading..`);
+        }
+
+        const formApproveizin = $('#formApproveizin');
+        formApproveizin.submit(function(e) {
+            buttonDisable();
+        });
+    })
+</script>
