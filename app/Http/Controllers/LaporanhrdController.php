@@ -112,31 +112,80 @@ class LaporanhrdController extends Controller
 
         $presensi = Presensi::query()
             ->select(
-                'tanggal',
+                'hrd_presensi.tanggal',
                 'hrd_presensi.nik',
                 'nama_karyawan',
+                'hrd_karyawan.kode_jabatan',
+                'hrd_karyawan.kode_dept',
                 'jam_in',
                 'jam_out',
-                'status'
+                'hrd_presensi.status',
+                'hrd_presensi.kode_jadwal',
+                'nama_jadwal',
+                'hrd_presensi.kode_jam_kerja',
+                'jam_masuk as jam_mulai',
+                'jam_pulang as jam_selesai',
+                'lintashari',
+                'total_jam',
+                'istirahat',
+                'jam_awal_istirahat',
+                'jam_akhir_istirahat',
+                //Izin Keluar
+                'hrd_presensi_izinkeluar.kode_izin_keluar',
+                'hrd_izinkeluar.jam_keluar',
+                'hrd_izinkeluar.jam_kembali',
+                'hrd_izinkeluar.direktur as izin_keluar_direktur',
+
+                //Izin Terlambat
+                'hrd_presensi_izinterlambat.kode_izin_terlambat',
+
             )
             ->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik')
-            ->whereBetween('tanggal', [$start_date, $end_date])
+            ->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
+            ->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
+
+            ->leftJoin('hrd_presensi_izinterlambat', 'hrd_presensi.id', '=', 'hrd_presensi_izinterlambat.id_presensi')
+            ->leftJoin('hrd_izinterlambat', 'hrd_presensi_izinterlambat.kode_izin_terlambat', '=', 'hrd_izinterlambat.kode_izin_terlambat')
+
+            ->leftJoin('hrd_presensi_izinkeluar', 'hrd_presensi.id', '=', 'hrd_presensi_izinkeluar.id_presensi')
+            ->leftJoin('hrd_izinkeluar', 'hrd_presensi_izinkeluar.kode_izin_keluar', '=', 'hrd_izinkeluar.kode_izin_keluar')
+            ->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date])
             ->orderBy('nik', 'asc')
             ->orderBy('tanggal', 'asc')
             ->get();
 
 
 
-        $data['presensi'] = $presensi->groupBy('nik', 'nama_karyawan')->map(function ($rows) {
+        $data['presensi'] = $presensi->groupBy('nik', 'nama_karyawan', 'kode_jabatan', 'kode_dept')->map(function ($rows) {
             $data = [
                 'nik' => $rows->first()->nik,
                 'nama_karyawan' => $rows->first()->nama_karyawan,
+                'kode_jabatan' => $rows->first()->kode_jabatan,
+                'kode_dept' => $rows->first()->kode_dept,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
                     'status' => $row->status,
                     'jam_in' => $row->jam_in,
                     'jam_out' => $row->jam_out,
+                    'kode_jadwal' => $row->kode_jadwal,
+                    'nama_jadwal' => $row->nama_jadwal,
+                    'kode_jam_kerja' => $row->kode_jam_kerja,
+                    'jam_mulai' => $row->jam_mulai,
+                    'jam_selesai' => $row->jam_selesai,
+                    'lintashari' => $row->lintashari,
+                    'istirahat' => $row->istirahat,
+                    'jam_awal_istirahat' => $row->jam_awal_istirahat,
+                    'jam_akhir_istirahat' => $row->jam_akhir_istirahat,
+                    'total_jam' => $row->total_jam,
+                    'kode_izin_keluar' => $row->kode_izin_keluar,
+                    'jam_keluar' => $row->jam_keluar,
+                    'jam_kembali' => $row->jam_kembali,
+                    'izin_keluar_direktur' => $row->izin_keluar_direktur,
+
+                    'kode_izin_terlambat' => $row->kode_izin_terlambat,
+
+
                 ];
             }
             return $data;
