@@ -197,7 +197,7 @@
                                                         @endif
                                                     @endcan
                                                     @can('lembur.delete')
-                                                        @if ($l->status === '0' || $level_user == ['asst. manager hrd'])
+                                                        @if ($l->status === '0' || $level_user == 'asst. manager hrd')
                                                             <form method="POST" name="deleteform" class="deleteform"
                                                                 action="{{ route('lembur.delete', Crypt::encrypt($l->kode_lembur)) }}">
                                                                 @csrf
