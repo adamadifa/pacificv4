@@ -1,4 +1,4 @@
-<form action="{{ route('laporanmarketing.cetakpenjualan') }}" method="POST" target="_blank" id="formPenjualan">
+<form action="{{ route('laporanhrd.cetakpresensi') }}" method="POST" target="_blank" id="formPresensi">
     @csrf
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
@@ -74,11 +74,10 @@
 </form>
 @push('myscript')
     <script>
-        $(document).ready(function() {
-            const formPenjualan = $("#formPenjualan");
-            const select2Kodecabangpenjualan = $(".select2Kodecabangpenjualan");
-            if (select2Kodecabangpenjualan.length) {
-                select2Kodecabangpenjualan.each(function() {
+        $(function() {
+            const select2Kodecabangpresensi = $(".select2Kodecabangpresensi");
+            if (select2Kodecabangpresensi.length) {
+                select2Kodecabangpresensi.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Semua Cabang',
@@ -88,153 +87,86 @@
                 });
             }
 
-            const select2Kodesalesman = $(".select2Kodesalesman");
-            if (select2Kodesalesman.length) {
-                select2Kodesalesman.each(function() {
-                    var $this = $(this);
-                    $this.wrap('<div class="position-relative"></div>').select2({
-                        placeholder: 'Semua Salesman',
-                        allowClear: true,
-                        dropdownParent: $this.parent()
-                    });
-                });
-            }
-
-            const select2Kodepelanggan = $(".select2Kodepelanggan");
-            if (select2Kodepelanggan.length) {
-                select2Kodepelanggan.each(function() {
-                    var $this = $(this);
-                    $this.wrap('<div class="position-relative"></div>').select2({
-                        placeholder: 'Semua Pelanggan',
-                        allowClear: true,
-                        dropdownParent: $this.parent()
-                    });
-                });
-            }
-
-            function getsalesmanbyCabang() {
-                var kode_cabang = formPenjualan.find("#kode_cabang_penjualan").val();
-                //alert(selected);
+            function getDepartemen() {
+                const kode_cabang = $("#kode_cabang_presensi").val();
                 $.ajax({
                     type: 'POST',
-                    url: '/salesman/getsalesmanbycabang',
+                    url: '{{ route('laporanhrd.getdepartemen') }}',
                     data: {
-                        _token: "{{ csrf_token() }}",
+                        _token: '{{ csrf_token() }}',
                         kode_cabang: kode_cabang
                     },
                     cache: false,
-                    success: function(respond) {
-                        console.log(respond);
-                        formPenjualan.find("#kode_salesman_penjualan").html(respond);
+                    success: function(res) {
+                        $("#kode_dept_presensi").html(res);
                     }
                 });
             }
 
-            function getpelangganbySalesman() {
-                var kode_salesman = formPenjualan.find("#kode_salesman_penjualan").val();
-                var kode_cabang = formPenjualan.find("#kode_cabang_penjualan").val();
-                //alert(selected);
+            function getGroup() {
+                const kode_cabang = $("#kode_cabang_presensi").val();
                 $.ajax({
                     type: 'POST',
-                    url: '/pelanggan/getpelangganbysalesman',
+                    url: '{{ route('laporanhrd.getgroup') }}',
                     data: {
-                        _token: "{{ csrf_token() }}",
-                        kode_salesman: kode_salesman,
+                        _token: '{{ csrf_token() }}',
                         kode_cabang: kode_cabang
                     },
                     cache: false,
-                    success: function(respond) {
-                        console.log(respond);
-                        formPenjualan.find("#kode_pelanggan_penjualan").html(respond);
+                    success: function(res) {
+                        $("#kode_group_presensi").html(res);
                     }
                 });
             }
 
-            getsalesmanbyCabang();
-            getpelangganbySalesman();
-            formPenjualan.find("#kode_cabang_penjualan").change(function(e) {
-                getsalesmanbyCabang();
-                showformatlaporan();
-                getpelangganbySalesman();
+            getDepartemen();
+
+            $("#kode_cabang_presensi").change(function(e) {
+                e.preventDefault();
+                getDepartemen();
+                getGroup();
             });
 
-            formPenjualan.find("#kode_salesman_penjualan").change(function(e) {
-                getpelangganbySalesman();
-            });
+            $("#formPresensi").submit(function(e) {
+                const periode_laporan = $("#periode_laporan").val();
+                const bulan = $("#bulan").val();
+                const tahun = $("#tahun").val();
 
-            function showformatlaporan() {
-                const kode_cabang = $("#kode_cabang_penjualan").val();
-                if (kode_cabang == "") {
-                    formPenjualan.find("#formatlaporanoption").hide();
-                    formPenjualan.find("#kode_salesman_penjualan").prop("disabled", true);
-                    formPenjualan.find("#kode_pelanggan_penjualan").prop("disabled", true);
-                    formPenjualan.find("#jenis_transaksi").prop("disabled", true);
-                    $('.select2Kodesalesman').val('').trigger("change");
-                    $('.select2Kodepelanggan').val('').trigger("change");
-                } else {
-                    formPenjualan.find("#formatlaporanoption").show();
-                    formPenjualan.find("#kode_salesman_penjualan").prop("disabled", false);
-                    formPenjualan.find("#kode_pelanggan_penjualan").prop("disabled", false);
-                    formPenjualan.find("#jenis_transaksi").prop("disabled", false);
-                }
-            }
-
-            showformatlaporan();
-
-            formPenjualan.submit(function(e) {
-                const formatlaporan = formPenjualan.find("#formatlaporan").val();
-                const kode_cabang = formPenjualan.find('#kode_cabang_penjualan').val();
-                const dari = formPenjualan.find('#dari').val();
-                const sampai = formPenjualan.find('#sampai').val();
-                const start = new Date(dari);
-                const end = new Date(sampai);
-
-                if (kode_cabang != "" && formatlaporan == "") {
+                if (periode_laporan == "") {
                     Swal.fire({
-                        title: "Oops!",
-                        text: "Jenis Laporan Harus Diisi !",
-                        icon: "warning",
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Periode Laporan harus diisi!',
                         showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#formatlaporan").focus();
+                        didClose: () => {
+                            $("#periode_laporan").focus();
                         }
                     });
                     return false;
-                } else if (dari == "") {
+                } else if (bulan == "") {
                     Swal.fire({
-                        title: "Oops!",
-                        text: "Dari Tanggal Harus Diisi !",
-                        icon: "warning",
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Bulan harus diisi!',
                         showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#dari").focus();
-                        },
+                        didClose: () => {
+                            $("#bulan").focus();
+                        }
                     });
                     return false;
-                } else if (sampai == "") {
+                } else if (tahun == "") {
                     Swal.fire({
-                        title: "Oops!",
-                        text: "Sampai Tanggal Harus Diisi !",
-                        icon: "warning",
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Tahun harus diisi!',
                         showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#sampai").focus();
-                        },
-                    });
-                    return false;
-                } else if (start.getTime() > end.getTime()) {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: "Periode Tidak Valid !, Periode Sampai Harus Lebih Akhir dari Periode Dari",
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#sampai").focus();
-                        },
+                        didClose: () => {
+                            $("#tahun").focus();
+                        }
                     });
                     return false;
                 }
-            })
+            });
         });
     </script>
 @endpush

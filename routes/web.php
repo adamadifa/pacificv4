@@ -1886,6 +1886,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanhrd/cetakpsm', 'cetakpsm')->name('laporanhrd.cetakpsm')->can('hrd.psm');
         Route::post('/laporanhrd/cetakgaji', 'cetakgaji')->name('laporanhrd.cetakgaji')->can('hrd.gaji');
         Route::post('/laporanhrd/cetakslipegaji', 'cetakslipegaji')->name('laporanhrd.cetakslipegaji')->can('hrd.slipgaji');
+
+
+        Route::post('/laporanhrd/getdepartemen', 'getdepartemen')->name('laporanhrd.getdepartemen')->can('hrd.presensi');
+        Route::post('/laporanhrd/getgroup', 'getgroup')->name('laporanhrd.getgroup')->can('hrd.presensi');
     });
 
     Route::controller(VisitpelangganController::class)->group(function () {
