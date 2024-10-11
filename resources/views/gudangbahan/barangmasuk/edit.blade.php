@@ -59,16 +59,19 @@
                             </td>
                             <td>{{ textUpperCase($d->nama_barang) }}</td>
                             <td class="text-end">
-                                <input type="hidden" name="qty_unit[]" value="{{ formatAngkaDesimal($d->qty_unit) }}">
-                                {{ formatAngkaDesimal($d->qty_unit) }}
+                                <input type="hidden" name="qty_unit[]" value="{{ formatAngkaDesimal($d->qty_unit) }}"
+                                    class="noborder-form text-end qty_unit">
+                                {{-- {{ formatAngkaDesimal($d->qty_unit) }} --}}
                             </td>
                             <td class="text-end">
-                                <input type="hidden" name="qty_berat[]" value="{{ formatAngkaDesimal($d->qty_berat) }}">
-                                {{ formatAngkaDesimal($d->qty_berat) }}
+                                <input type="hidden" name="qty_berat[]" value="{{ formatAngkaDesimal($d->qty_berat) }}"
+                                    class="noborder-form text-end qty_berat">
+                                {{-- {{ formatAngkaDesimal($d->qty_berat) }} --}}
                             </td>
                             <td class="text-end">
-                                <input type="hidden" name="qty_lebih[]" value="{{ formatAngkaDesimal($d->qty_lebih) }}">
-                                {{ formatAngkaDesimal($d->qty_lebih) }}
+                                <input type="hidden" name="qty_lebih[]" value="{{ formatAngkaDesimal($d->qty_lebih) }}"
+                                    class="noborder-form text-end qty_lebih">
+                                {{-- {{ formatAngkaDesimal($d->qty_lebih) }} --}}
                             </td>
                             <td>
                                 <input type="hidden" name="ket[]" value="{{ $d->keterangan }}">
