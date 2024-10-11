@@ -138,7 +138,12 @@ class LaporanhrdController extends Controller
 
                 //Izin Terlambat
                 'hrd_presensi_izinterlambat.kode_izin_terlambat',
+                'hrd_izinterlambat.direktur as izin_terlambat_direktur',
 
+                //Izin Sakit
+                'hrd_presensi_izinsakit.kode_izin_sakit',
+                'hrd_izinsakit.doc_sid',
+                'hrd_izinsakit.direktur as izin_sakit_direktur',
             )
             ->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik')
             ->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
@@ -149,6 +154,10 @@ class LaporanhrdController extends Controller
 
             ->leftJoin('hrd_presensi_izinkeluar', 'hrd_presensi.id', '=', 'hrd_presensi_izinkeluar.id_presensi')
             ->leftJoin('hrd_izinkeluar', 'hrd_presensi_izinkeluar.kode_izin_keluar', '=', 'hrd_izinkeluar.kode_izin_keluar')
+
+            ->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi')
+            ->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit')
+
             ->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date])
             ->orderBy('nik', 'asc')
             ->orderBy('tanggal', 'asc')
@@ -184,7 +193,11 @@ class LaporanhrdController extends Controller
                     'izin_keluar_direktur' => $row->izin_keluar_direktur,
 
                     'kode_izin_terlambat' => $row->kode_izin_terlambat,
+                    'izin_terlambat_direktur' => $row->izin_terlambat_direktur,
 
+                    'kode_izin_sakit' => $row->kode_izin_sakit,
+                    'doc_sid' => $row->doc_sid,
+                    'izin_sakit_direktur' => $row->izin_sakit_direktur,
 
                 ];
             }

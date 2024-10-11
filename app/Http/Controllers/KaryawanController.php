@@ -363,6 +363,67 @@ class KaryawanController extends Controller
     }
 
 
+    public function getkaryawanpiutangkaryawanjson(Request $request)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $role_access_all_pjp = config('global.roles_access_all_pjp');
+        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
+        if ($request->ajax()) {
+            $query = Karyawan::query();
+            $query->select(
+                'hrd_karyawan.nik',
+                DB::raw("UPPER(nama_karyawan) as nama_karyawan"),
+                'hrd_jabatan.nama_jabatan',
+                'hrd_departemen.nama_dept',
+                DB::raw('UPPER(cabang.nama_cabang) as nama_cabang'),
+                DB::raw("CASE
+                    WHEN status_karyawan = 'T' THEN 'TETAP'
+                    WHEN status_karyawan = 'K' THEN 'KONTRAK'
+                    WHEN status_karyawan = 'O' THEN 'OUTSOURCING'
+                    ELSE 'Undifined'
+                END AS statuskaryawan")
+            );
+            $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+            $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+            $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+            // if (!$user->hasRole($roles_access_all_cabang)) {
+            //     if ($user->hasRole('regional sales manager')) {
+            //         $query->where('cabang.kode_regional', $user->kode_regional);
+            //         $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
+            //     } else {
+            //         $query->where('hrd_jabatan.kategori', 'NM');
+            //         $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+            //     }
+            // } else {
+            //     if (!$user->hasRole($role_access_all_pjp)) {
+            //         if (!$user->hasRole('regional operation manager')) {
+            //             $query->where('hrd_jabatan.kategori', 'NM');
+            //         } else {
+            //             $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
+            //         }
+            //     } else {
+            //         if (!$user->hasRole(['super admin', 'manager keuangan', 'gm administrasi'])) {
+            //             $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
+            //         }
+            //     }
+            // }
+            $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+            $query->where('status_aktif_karyawan', 1);
+            $karyawan = $query;
+            return DataTables::of($karyawan)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="#" nik="' . Crypt::encrypt($row->nik) . '" class="pilihkaryawan"><i class="ti ti-external-link"></i></a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    }
+
+
     public function getkaryawan($nik)
     {
 

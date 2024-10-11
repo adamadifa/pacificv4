@@ -224,7 +224,7 @@
             order: [
                 [1, 'asc']
             ],
-            ajax: "{{ route('karyawan.getkaryawanjson') }}",
+            ajax: "{{ route('karyawan.getkaryawanpiutangkaryawanjson') }}",
             bAutoWidth: false,
             columns: [{
                     data: 'nik',

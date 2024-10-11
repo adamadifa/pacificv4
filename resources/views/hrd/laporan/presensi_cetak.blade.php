@@ -68,9 +68,10 @@
                                     @php
                                         $total_jam_jadwal = $d[$tanggal_presensi]['total_jam'];
                                     @endphp
-                                    <td style="padding: 10px">
-                                        <!-- Jika Status Hadir -->
-                                        @if ($d[$tanggal_presensi]['status'] == 'h')
+                                    @if ($d[$tanggal_presensi]['status'] == 'h')
+                                        <td style="padding: 10px">
+                                            <!-- Jika Status Hadir -->
+
                                             @php
                                                 $istirahat = $d[$tanggal_presensi]['istirahat'];
                                                 $lintashari = $d[$tanggal_presensi]['lintashari'];
@@ -186,13 +187,30 @@
                                             <p style="margin:0">
                                                 <span style="color: {{ $izin_keluar['color'] }}"> {{ $izin_keluar['keterangan'] }}</span>
                                             </p>
-                                        @elseif($d[$tanggal_presensi]['status'] == 's')
-                                            <p style="margin:0">
-                                                <span style="color: red">SAKIT</span>
-                                            </p>
-                                        @endif
 
-                                    </td>
+
+                                        </td>
+                                    @elseif($d[$tanggal_presensi]['status'] == 's')
+                                        @if (!empty($d[$tanggal_presensi]['doc_sid']) || !empty($d[$tanggal_presensi]['izin_sakit_direktur']))
+                                            @php
+                                                $total_jam = $total_jam_jadwal;
+                                                $potongan_sakit = 0;
+                                            @endphp
+                                        @else
+                                            @php
+                                                $total_jam = 0;
+                                                $potongan_sakit = $total_jam_jadwal;
+                                            @endphp
+                                        @endif
+                                        <td style="padding: 10px; background-color: #f4858e">
+                                        <td style="padding: 10px; background-color: #f4858e">
+                                            <p style="margin:0">
+                                                <span style="color: white">SAKIT</span>
+                                                <br>
+                                                <span style="font-weight: bold">Total Jam : {{ $d[$tanggal_presensi]['total_jam'] }}</span>
+                                            </p>
+                                        </td>
+                                    @endif
                                 @else
                                     <td></td>
                                 @endif
