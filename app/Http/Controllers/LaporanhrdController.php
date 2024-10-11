@@ -124,7 +124,7 @@ class LaporanhrdController extends Controller
                 'nama_jadwal',
                 'hrd_presensi.kode_jam_kerja',
                 'jam_masuk as jam_mulai',
-                'jam_pulang as jam_selesai',
+                'hrd_jamkerja.jam_pulang as jam_selesai',
                 'lintashari',
                 'total_jam',
                 'istirahat',
@@ -144,6 +144,19 @@ class LaporanhrdController extends Controller
                 'hrd_presensi_izinsakit.kode_izin_sakit',
                 'hrd_izinsakit.doc_sid',
                 'hrd_izinsakit.direktur as izin_sakit_direktur',
+
+                //Izin Pulang
+                'hrd_presensi_izinpulang.kode_izin_pulang',
+                'hrd_izinpulang.direktur as izin_pulang_direktur',
+
+                //Izin Cuti
+                'hrd_presensi_izincuti.kode_izin_cuti',
+                'hrd_izincuti.direktur as izin_cuti_direktur',
+                'hrd_jeniscuti.nama_cuti',
+
+                //Izin Absen
+                'hrd_presensi_izinabsen.kode_izin',
+                'hrd_izinabsen.direktur as izin_absen_direktur',
             )
             ->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik')
             ->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
@@ -157,6 +170,17 @@ class LaporanhrdController extends Controller
 
             ->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi')
             ->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit')
+
+            ->leftJoin('hrd_presensi_izinpulang', 'hrd_presensi.id', '=', 'hrd_presensi_izinpulang.id_presensi')
+            ->leftJoin('hrd_izinpulang', 'hrd_presensi_izinpulang.kode_izin_pulang', '=', 'hrd_izinpulang.kode_izin_pulang')
+
+
+            ->leftJoin('hrd_presensi_izincuti', 'hrd_presensi.id', '=', 'hrd_presensi_izincuti.id_presensi')
+            ->leftJoin('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti')
+            ->leftJoin('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti')
+
+            ->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi')
+            ->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin')
 
             ->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date])
             ->orderBy('nik', 'asc')
@@ -199,6 +223,15 @@ class LaporanhrdController extends Controller
                     'doc_sid' => $row->doc_sid,
                     'izin_sakit_direktur' => $row->izin_sakit_direktur,
 
+                    'kode_izin_pulang' => $row->kode_izin_pulang,
+                    'izin_pulang_direktur' => $row->izin_pulang_direktur,
+
+                    'kode_izin_cuti' => $row->kode_izin_cuti,
+                    'izin_cuti_direktur' => $row->izin_cuti_direktur,
+                    'nama_cuti' => $row->nama_cuti,
+
+                    'kode_izin' => $row->kode_izin_absen,
+                    'izin_absen_direktur' => $row->izin_absen_direktur,
                 ];
             }
             return $data;
