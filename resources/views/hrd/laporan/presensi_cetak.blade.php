@@ -281,7 +281,43 @@
                                         <td></td>
                                     @endif
                                 @else
-                                    <td></td>
+                                    @php
+                                        $search = [
+                                            'nik' => $d['nik'],
+                                            'tanggal' => $tanggal_presensi,
+                                        ];
+                                        $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
+                                    @endphp
+                                    @if (getNamahari($tanggal_presensi) == 'Minggu')
+                                        @php
+                                            $color = 'rgba(243, 158, 0, 0.833)';
+                                            $keterangan = '';
+                                            $total_jam = 0;
+                                        @endphp
+                                    @elseif(!empty($cekdirumahkan))
+                                        @php
+                                            $color = 'rgb(69, 2, 140)';
+                                            $keterangan = 'Dirumahkan';
+                                            if (getNamahari($tanggal_presensi) == 'Sabtu') {
+                                                $total_jam = 2.5;
+                                            } else {
+                                                $total_jam = 7;
+                                            }
+                                        @endphp
+                                    @else
+                                        @php
+                                            $color = '';
+                                            $keterangan = '';
+                                            $total_jam = 0;
+                                        @endphp
+                                    @endif
+                                    <td style="background-color: {{ $color }}; color:white">
+                                        {{ $keterangan }}
+                                        <br>
+                                        @if (!empty($total_jam))
+                                            <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
+                                        @endif
+                                    </td>
                                 @endif
                                 @php
                                     $tanggal_presensi = date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)));

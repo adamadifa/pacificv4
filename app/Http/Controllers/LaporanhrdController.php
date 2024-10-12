@@ -239,6 +239,12 @@ class LaporanhrdController extends Controller
 
         $data['start_date'] = $start_date;
         $data['end_date'] = $end_date;
+
+        $data['dataliburnasional'] = getdataliburnasional($start_date, $end_date);
+        $data['datadirumahkan'] = getdirumahkan($start_date, $end_date);
+        $data['dataliburpengganti'] = getliburpengganti($start_date, $end_date);
+        $data['dataminggumasuk'] = getminggumasuk($start_date, $end_date);
+        $data['datatanggallimajam'] = gettanggallimajam($start_date, $end_date);
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
         return view('hrd.laporan.presensi_cetak', $data);
     }
