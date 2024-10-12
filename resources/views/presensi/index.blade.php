@@ -211,7 +211,7 @@
 
                                                 @if (!empty($jam_out) && $jam_out < $jam_selesai)
                                                     @php
-                                                        $pc = hitungpulangcepat($jam_out, $jam_selesai);
+                                                        $pc = hitungpulangcepat($jam_out, $jam_selesai, $jam_awal_istirahat, $jam_akhir_istirahat);
                                                     @endphp
                                                     @if (!empty($d->kode_izin_pulang) && $d->izin_pulang_direktur == '1')
                                                         @php

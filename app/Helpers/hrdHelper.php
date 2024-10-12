@@ -545,9 +545,12 @@ function hitungdenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode
 }
 
 
-function hitungpulangcepat($jam_out, $jam_selesai)
+function hitungpulangcepat($jam_out, $jam_selesai, $jam_awal_istirahat, $jam_akhir_istirahat)
 {
 
+    if ($jam_out > $jam_awal_istirahat && $jam_out < $jam_akhir_istirahat) {
+        $jam_out = $jam_akhir_istirahat;
+    }
     if (!empty($jam_out)) {
         if ($jam_out < $jam_selesai) {
             $j1 = strtotime($jam_out);
@@ -562,7 +565,12 @@ function hitungpulangcepat($jam_out, $jam_selesai)
             $mpulangcepat = $menitpulangcepat <= 9 ? '0' . $menitpulangcepat : $menitpulangcepat;
 
             $keterangan_pulangcepat =  $jpulangcepat . ':' . $mpulangcepat;
-            $desimal_pulangcepat = $jampulangcepat +   ROUND(($menitpulangcepat / 60), 2);
+            if ($jam_out < $jam_awal_istirahat) {
+                $pengurang_jam = 1;
+            } else {
+                $pengurang_jam = 0;
+            }
+            $desimal_pulangcepat = ($jampulangcepat - $pengurang_jam) +   ROUND(($menitpulangcepat / 60), 2);
 
             return [
                 'keterangan_pulangcepat' => $keterangan_pulangcepat,
