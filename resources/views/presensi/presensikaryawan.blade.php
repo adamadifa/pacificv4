@@ -54,8 +54,8 @@
                                         <th>Dept</th>
                                         <th>Cbg</th>
                                         <th>Jadwal</th>
-                                        <th class="text-center">Jam Masuk</th>
-                                        <th class="text-center">Jam Pulang</th>
+                                        <th class="text-center">Masuk</th>
+                                        <th class="text-center">Pulang</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Keluar</th>
                                         <th class="text-center">Terlambat</th>
