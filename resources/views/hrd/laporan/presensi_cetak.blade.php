@@ -44,6 +44,9 @@
                         <th rowspan="3">Total Jam(1 Bulan)</th>
                         <th rowspan="3">Telat</th>
                         <th rowspan="3">Dirumahkan</th>
+                        <th rowspan="3">Keluar</th>
+                        <th rowspan="3">PC</th>
+                        <th rowspan="3">TH</th>
                     </tr>
                     <tr>
                         @php
@@ -82,6 +85,9 @@
                                 $tanggal_presensi = $start_date;
                                 $total_potongan_jam_terlambat = 0;
                                 $total_potongan_jam_dirumahkan = 0;
+                                $total_potongan_jam_izinkeluar = 0;
+                                $total_potongan_jam_pulangcepat = 0;
+                                $total_potongan_jam_tidakhadir = 0;
                             @endphp
                             @while (strtotime($tanggal_presensi) <= strtotime($end_date))
                                 @php
@@ -193,10 +199,13 @@
                                                 //Potongan Jam
                                                 $potongan_jam_sakit = 0;
                                                 $potongan_jam_dirumahkan = 0;
+                                                $potongan_jam_tidakhadir = 0;
                                                 $potongan_jam_pulangcepat =
                                                     $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
                                                 $potongan_jam_izinkeluar =
-                                                    $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' ? 0 : $izin_keluar['desimal'];
+                                                    $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['desimal'] <= 1
+                                                        ? 0
+                                                        : $izin_keluar['desimal'];
                                                 $potongan_jam_terlambat =
                                                     $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['desimal'];
 
@@ -206,7 +215,8 @@
                                                     $potongan_jam_pulangcepat +
                                                     $potongan_jam_izinkeluar +
                                                     $potongan_jam_terlambat +
-                                                    $potongan_jam_dirumahkan;
+                                                    $potongan_jam_dirumahkan +
+                                                    $potongan_jam_tidakhadir;
 
                                                 //Total Jam Kerja
                                                 $total_jam = $total_jam_jadwal - $total_potongan_jam;
@@ -245,6 +255,9 @@
                                         @php
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_izinkeluar = 0;
+                                            $potongan_jam_pulangcepat = 0;
+                                            $potongan_jam_tidakhadir = 0;
                                         @endphp
                                         @if (!empty($d[$tanggal_presensi]['doc_sid']) || $d[$tanggal_presensi]['izin_sakit_direktur'] == '1')
                                             @php
@@ -276,6 +289,9 @@
                                             $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = !empty($cekdirumahkan) ? $total_jam : 0;
+                                            $potongan_jam_izinkeluar = 0;
+                                            $potongan_jam_pulangcepat = 0;
+                                            $potongan_jam_tidakhadir = 0;
                                         @endphp
                                         <td style="padding: 10px; background-color: #1794e1d3">
                                             <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
@@ -292,7 +308,9 @@
                                         @php
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = 0;
-
+                                            $potongan_jam_izinkeluar = 0;
+                                            $potongan_jam_pulangcepat = 0;
+                                            $potongan_jam_tidakhadir = 0;
                                             if ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
                                                 $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                                 $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam : 0;
@@ -319,7 +337,9 @@
                                 @else
                                     @php
                                         $potongan_jam_terlambat = 0;
-
+                                        $potongan_jam_izinkeluar = 0;
+                                        $potongan_jam_pulangcepat = 0;
+                                        $potongan_jam_tidakhadir = 0;
                                     @endphp
                                     @if (getNamahari($tanggal_presensi) == 'Minggu')
                                         @php
@@ -368,6 +388,19 @@
                                             $keterangan = '';
                                             $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            if (!empty($cekdirumahkan)) {
+                                                if (getNamahari($tanggal_presensi) == 'Sabtu') {
+                                                    $potongan_jam_tidakhadir = 2.5;
+                                                } else {
+                                                    $potongan_jam_tidakhadir = 3.5;
+                                                }
+                                            } else {
+                                                if (getNamahari($tanggal_presensi) == 'Sabtu') {
+                                                    $potongan_jam_tidakhadir = 5;
+                                                } else {
+                                                    $potongan_jam_tidakhadir = 7;
+                                                }
+                                            }
                                         @endphp
                                     @endif
                                     <td style="background-color: {{ $color }}; color:white;">
@@ -381,6 +414,9 @@
                                 @php
                                     $total_potongan_jam_terlambat += $potongan_jam_terlambat;
                                     $total_potongan_jam_dirumahkan += $potongan_jam_dirumahkan;
+                                    $total_potongan_jam_izinkeluar += $potongan_jam_izinkeluar;
+                                    $total_potongan_jam_pulangcepat += $potongan_jam_pulangcepat;
+                                    $total_potongan_jam_tidakhadir += $potongan_jam_tidakhadir;
                                     $tanggal_presensi = date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)));
                                 @endphp
                             @endwhile
@@ -390,6 +426,15 @@
                             </td>
                             <td style="font-weight: bold; color:#f40505; text-align:center">
                                 {{ formatAngkaDesimal($total_potongan_jam_dirumahkan) }}
+                            </td>
+                            <td style="font-weight: bold; color:#f40505; text-align:center">
+                                {{ formatAngkaDesimal($total_potongan_jam_izinkeluar) }}
+                            </td>
+                            <td style="font-weight: bold; color:#f40505; text-align:center">
+                                {{ formatAngkaDesimal($total_potongan_jam_pulangcepat) }}
+                            </td>
+                            <td style="font-weight: bold; color:#f40505; text-align:center">
+                                {{ formatAngkaDesimal($total_potongan_jam_tidakhadir) }}
                             </td>
                         </tr>
                     @endforeach
