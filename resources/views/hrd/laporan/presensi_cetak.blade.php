@@ -34,13 +34,16 @@
     </div>
     <div class="content">
         <div class="freeze-table">
-            <table class="datatable3" style="width: 230%">
+            <table class="datatable3" style="width: 250%">
                 <thead>
                     <tr>
                         <th rowspan="3">No</th>
                         <th rowspan="3">Nik</th>
                         <th rowspan="3">Nama Karyawan</th>
                         <th colspan="{{ $jmlhari }}">Tanggal</th>
+                        <th rowspan="3">Total Jam(1 Bulan)</th>
+                        <th rowspan="3">Telat</th>
+                        <th rowspan="3">Dirumahkan</th>
                     </tr>
                     <tr>
                         @php
@@ -66,15 +69,31 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $total_jam_satubulan = 173;
+
+                    @endphp
                     @foreach ($presensi as $d)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $d['nik'] }}</td>
-                            <td>{{ $d['nama_karyawan'] }}</td>
+                            <td style="width:1%">{{ $loop->iteration }}</td>
+                            <td style="width:5%">{{ $d['nik'] }}</td>
+                            <td style="width:5%">{{ $d['nama_karyawan'] }}</td>
                             @php
                                 $tanggal_presensi = $start_date;
+                                $total_potongan_jam_terlambat = 0;
+                                $total_potongan_jam_dirumahkan = 0;
                             @endphp
                             @while (strtotime($tanggal_presensi) <= strtotime($end_date))
+                                @php
+                                    $search = [
+                                        'nik' => $d['nik'],
+                                        'tanggal' => $tanggal_presensi,
+                                    ];
+                                    $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
+                                    $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
+                                    $cektanggallimajam = ceklibur($datatanggallimajam, $search); // Cek Tanggal Lima Jam
+                                    $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
+                                @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
                                         $lintashari = $d[$tanggal_presensi]['lintashari'];
@@ -91,7 +110,7 @@
                                         $jam_selesai = in_array($d['kode_jabatan'], ['J22', 'J23']) ? $jam_out : $j_selesai;
                                     @endphp
                                     @if ($d[$tanggal_presensi]['status'] == 'h')
-                                        <td style="padding: 10px">
+                                        <td style="padding: 10px;">
                                             <!-- Jika Status Hadir -->
                                             @php
                                                 $istirahat = $d[$tanggal_presensi]['istirahat'];
@@ -152,7 +171,12 @@
                                                 );
 
                                                 //Cek Pulang Cepat
-                                                $pulangcepat = presensiHitungPulangCepat($jam_out, $jam_selesai);
+                                                $pulangcepat = presensiHitungPulangCepat(
+                                                    $jam_out,
+                                                    $jam_selesai,
+                                                    $jam_awal_istirahat,
+                                                    $jam_akhir_istirahat,
+                                                );
 
                                                 //Cek Izin Keluar
                                                 $izin_keluar = presensiHitungJamKeluarKantor(
@@ -168,6 +192,7 @@
 
                                                 //Potongan Jam
                                                 $potongan_jam_sakit = 0;
+                                                $potongan_jam_dirumahkan = 0;
                                                 $potongan_jam_pulangcepat =
                                                     $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
                                                 $potongan_jam_izinkeluar =
@@ -180,7 +205,8 @@
                                                     $potongan_jam_sakit +
                                                     $potongan_jam_pulangcepat +
                                                     $potongan_jam_izinkeluar +
-                                                    $potongan_jam_terlambat;
+                                                    $potongan_jam_terlambat +
+                                                    $potongan_jam_dirumahkan;
 
                                                 //Total Jam Kerja
                                                 $total_jam = $total_jam_jadwal - $total_potongan_jam;
@@ -216,16 +242,20 @@
                                             </p>
                                         </td>
                                     @elseif($d[$tanggal_presensi]['status'] == 's')
-                                        @if (!empty($d[$tanggal_presensi]['doc_sid']) || !empty($d[$tanggal_presensi]['izin_sakit_direktur']))
+                                        @php
+                                            $potongan_jam_terlambat = 0;
+                                            $potongan_jam_dirumahkan = 0;
+                                        @endphp
+                                        @if (!empty($d[$tanggal_presensi]['doc_sid']) || $d[$tanggal_presensi]['izin_sakit_direktur'] == '1')
                                             @php
-                                                $total_jam = $total_jam_jadwal;
-                                                $potongan_sakit = 0;
+                                                $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : 0;
                                                 $keterangan = 'SID';
                                             @endphp
                                         @else
                                             @php
                                                 $total_jam = 0;
-                                                $potongan_sakit = $total_jam_jadwal;
+                                                $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : 0;
                                                 $keterangan = '';
                                             @endphp
                                         @endif
@@ -243,7 +273,9 @@
                                         </td>
                                     @elseif($d[$tanggal_presensi]['status'] == 'c')
                                         @php
-                                            $total_jam = $total_jam_jadwal;
+                                            $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                            $potongan_jam_terlambat = 0;
+                                            $potongan_jam_dirumahkan = !empty($cekdirumahkan) ? $total_jam : 0;
                                         @endphp
                                         <td style="padding: 10px; background-color: #1794e1d3">
                                             <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
@@ -258,13 +290,17 @@
                                         </td>
                                     @elseif($d[$tanggal_presensi]['status'] == 'i')
                                         @php
+                                            $potongan_jam_terlambat = 0;
+                                            $potongan_jam_dirumahkan = 0;
+
                                             if ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
-                                                $total_jam = $total_jam_jadwal;
-                                                $potongan_jam_izin = 0;
+                                                $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam : 0;
                                             } else {
                                                 $total_jam = 0;
-                                                $potongan_jam_izin = $total_jam_jadwal;
+                                                $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : 0;
                                             }
+
                                         @endphp
                                         <td style="padding: 10px; background-color: #d74405dc">
                                             <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
@@ -282,17 +318,15 @@
                                     @endif
                                 @else
                                     @php
-                                        $search = [
-                                            'nik' => $d['nik'],
-                                            'tanggal' => $tanggal_presensi,
-                                        ];
-                                        $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
+                                        $potongan_jam_terlambat = 0;
+
                                     @endphp
                                     @if (getNamahari($tanggal_presensi) == 'Minggu')
                                         @php
                                             $color = 'rgba(243, 158, 0, 0.833)';
                                             $keterangan = '';
                                             $total_jam = 0;
+                                            $potongan_jam_dirumahkan = 0;
                                         @endphp
                                     @elseif(!empty($cekdirumahkan))
                                         @php
@@ -301,18 +335,43 @@
                                             if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                 $total_jam = 2.5;
                                             } else {
+                                                if (!empty($cektanggallimajam)) {
+                                                    $total_jam = 2.5;
+                                                } else {
+                                                    $total_jam = 3.5;
+                                                }
+                                            }
+                                            $potongan_jam_dirumahkan = $total_jam;
+                                        @endphp
+                                    @elseif(!empty($cekliburnasional))
+                                        @php
+                                            $color = 'green';
+                                            $keterangan = 'Libur Nasional <br>(' . $cekliburnasional[0]['keterangan'] . ')';
+                                            if (getNamahari($tanggal_presensi) == 'Sabtu') {
+                                                $total_jam = 5;
+                                            } else {
                                                 $total_jam = 7;
                                             }
+                                            $potongan_jam_dirumahkan = 0;
+                                        @endphp
+                                    @elseif(!empty($cekliburpengganti))
+                                        @php
+                                            $color = 'rgba(243, 158, 0, 0.833)';
+                                            $keterangan =
+                                                'Libur Pengganti Hari Minggu <br>(' . formatIndo($cekliburpengganti[0]['tanggal_diganti']) . ')';
+                                            $total_jam = 0;
+                                            $potongan_jam_dirumahkan = 0;
                                         @endphp
                                     @else
                                         @php
-                                            $color = '';
+                                            $color = 'red';
                                             $keterangan = '';
                                             $total_jam = 0;
+                                            $potongan_jam_dirumahkan = 0;
                                         @endphp
                                     @endif
-                                    <td style="background-color: {{ $color }}; color:white">
-                                        {{ $keterangan }}
+                                    <td style="background-color: {{ $color }}; color:white;">
+                                        {!! $keterangan !!}
                                         <br>
                                         @if (!empty($total_jam))
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
@@ -320,9 +379,18 @@
                                     </td>
                                 @endif
                                 @php
+                                    $total_potongan_jam_terlambat += $potongan_jam_terlambat;
+                                    $total_potongan_jam_dirumahkan += $potongan_jam_dirumahkan;
                                     $tanggal_presensi = date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)));
                                 @endphp
                             @endwhile
+                            <td style="font-weight: bold; color:#024a0d; text-align:center">{{ $total_jam_satubulan }}</td>
+                            <td style="font-weight: bold; color:#f40505; text-align:center">
+                                {{ formatAngkaDesimal($total_potongan_jam_terlambat) }}
+                            </td>
+                            <td style="font-weight: bold; color:#f40505; text-align:center">
+                                {{ formatAngkaDesimal($total_potongan_jam_dirumahkan) }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
