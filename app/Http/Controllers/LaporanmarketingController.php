@@ -6170,4 +6170,84 @@ class LaporanmarketingController extends Controller
         $data['cabang'] = $cbg->getCabang();
         return view('marketing.laporan.ratiobs', $data);
     }
+
+
+    public function cetakratiobs(Request $request)
+    {
+
+        $dari = $request->tahun . '-' . $request->bulan . '-01';
+        $sampai = date('Y-m-t', strtotime($dari));
+        $qproduk = Detailretur::query();
+        $qproduk->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus');
+        $qproduk->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qproduk->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $qproduk->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $qproduk->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qproduk->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qproduk->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
+        $qproduk->orderBy('produk_harga.kode_produk');
+        $qproduk->groupby('produk_harga.kode_produk');
+        $produk = $qproduk->get();
+
+
+        $selectReject = [];
+        $fieldReject = [];
+        $selectTotalretur = [];
+        $fieldTotalretur = [];
+        foreach ($produk as $p) {
+            $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RT',jumlah/isi_pcs_dus,0)) as `retur_" . $p->kode_produk . "`");
+            $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RM',jumlah/isi_pcs_dus,0)) as `reject_mobil_" . $p->kode_produk . "`");
+            $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RG',jumlah/isi_pcs_dus,0)) as `reject_gudang_" . $p->kode_produk . "`");
+            $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RP',jumlah/isi_pcs_dus,0)) as `reject_pasar_" . $p->kode_produk . "`");
+            $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RK',jumlah/isi_pcs_dus,0)) as `repack_" . $p->kode_produk . "`");
+            $fieldReject[] = "retur_" . $p->kode_produk;
+            $fieldReject[] = "reject_mobil_" . $p->kode_produk;
+            $fieldReject[] = "reject_gudang_" . $p->kode_produk;
+            $fieldReject[] = "reject_pasar_" . $p->kode_produk;
+            $fieldReject[] = "repack_" . $p->kode_produk;
+            $selectTotalretur[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',subtotal,0)) as `total_retur_" . $p->kode_produk . "`");
+            $fieldTotalretur[] = "total_retur_" . $p->kode_produk;
+        }
+
+        $qreject = Detailmutasigudangcabang::query();
+        $qreject->select('gudang_cabang_mutasi.kode_cabang', ...$selectReject);
+        $qreject->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi');
+        $qreject->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk');
+        $qreject->whereBetween('gudang_cabang_mutasi.tanggal', [$dari, $sampai]);
+        $qreject->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
+        $qreject->groupBy('gudang_cabang_mutasi.kode_cabang');
+
+
+        $qretur = Detailretur::query();
+        $qretur->select('salesman.kode_cabang', ...$selectTotalretur);
+        $qretur->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $qretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qretur->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
+        $qretur->groupBy('salesman.kode_cabang');
+
+        $query = Cabang::query();
+        $query->select('cabang.kode_cabang', 'nama_cabang', ...$fieldReject, ...$fieldTotalretur);
+        $query->leftjoinSub($qreject, 'reject', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'reject.kode_cabang');
+        });
+        $query->leftjoinSub($qretur, 'retur', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'retur.kode_cabang');
+        });
+        $query->orderBy('cabang.kode_cabang');
+        $ratiobs = $query->get();
+
+
+        $data['ratiobs'] = $ratiobs;
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['produk'] = $produk;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Ratiobs.xls");
+        }
+        return view('marketing.laporan.ratiobs_cetak', $data);
+    }
 }
