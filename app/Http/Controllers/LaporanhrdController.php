@@ -151,6 +151,7 @@ class LaporanhrdController extends Controller
 
             //Izin Cuti
             'hrd_presensi_izincuti.kode_izin_cuti',
+            'hrd_izincuti.kode_cuti',
             'hrd_izincuti.direktur as izin_cuti_direktur',
             'hrd_jeniscuti.nama_cuti',
 
