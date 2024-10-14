@@ -131,6 +131,7 @@
                                         <td style="padding: 10px;">
                                             <!-- Jika Status Hadir -->
                                             @php
+
                                                 $istirahat = $d[$tanggal_presensi]['istirahat'];
 
                                                 //Jam Absen Masuk dan Pulang
@@ -246,7 +247,8 @@
                                                     $total_premi_shift3 += 1;
                                                 }
                                             @endphp
-                                            <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
+                                            <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}
+                                                {{ $d['kode_jabatan'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
                                             </p>
