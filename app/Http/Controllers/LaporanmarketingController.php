@@ -6175,6 +6175,19 @@ class LaporanmarketingController extends Controller
     public function cetakratiobs(Request $request)
     {
 
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
         $dari = $request->tahun . '-' . $request->bulan . '-01';
         $sampai = date('Y-m-t', strtotime($dari));
         $qproduk = Detailretur::query();
@@ -6236,6 +6249,9 @@ class LaporanmarketingController extends Controller
             $join->on('cabang.kode_cabang', '=', 'retur.kode_cabang');
         });
         $query->orderBy('cabang.kode_cabang');
+        if (!empty($kode_cabang)) {
+            $query->where('cabang.kode_cabang', $kode_cabang);
+        }
         $ratiobs = $query->get();
 
 
