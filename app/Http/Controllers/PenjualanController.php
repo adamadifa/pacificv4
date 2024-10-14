@@ -980,6 +980,8 @@ class PenjualanController extends Controller
             $datapenjualan = Penjualan::where('no_faktur', $no_faktur)->first();
             //dd($datapenjualan);
             //Hapus Detail Penjualan Sebelmnya
+
+            $jb = isset($request->jenis_bayar) ? $request->jenis_bayar : $jenis_bayar;
             Detailpenjualan::where('no_faktur', $no_faktur)->delete();
 
             Penjualan::where('no_faktur', $no_faktur)->update([
@@ -1002,7 +1004,7 @@ class PenjualanController extends Controller
                 'peny_swan' => $peny_swan,
                 'peny_stick' => $peny_stick,
                 'penyesuaian' => $total_penyesuaian,
-                'jenis_bayar' => $jenis_transaksi == 'K' ? 'TP' : $request->jenis_bayar,
+                'jenis_bayar' => $jenis_transaksi == 'K' ? 'TP' : $jb,
                 'jatuh_tempo' => $jatuh_tempo,
                 'id_user' => auth()->user()->id
             ]);
