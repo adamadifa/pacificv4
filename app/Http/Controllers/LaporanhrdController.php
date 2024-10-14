@@ -261,8 +261,18 @@ class LaporanhrdController extends Controller
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
 
         if ($request->format_laporan == 1) {
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Laporan Presensi.xls");
+            }
             return view('hrd.laporan.presensi_cetak', $data);
         } else {
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=PSM.xls");
+            }
             return view('hrd.laporan.psm_cetak', $data);
         }
     }
