@@ -197,7 +197,9 @@
                                             </td>
                                             <td class="text-center">
                                                 @if (!empty($d->kode_jadwal) && $d->status_kehadiran == 'h' && !empty($d->jam_in))
-                                                    {{ date('H:i', strtotime($d->jam_in)) }}
+                                                    <a href="#" class="btnShowpresensi_in" id="{{ $d->id }}">
+                                                        {{ date('H:i', strtotime($d->jam_in)) }}
+                                                    </a>
                                                 @else
                                                     <i class="ti ti-hourglass-empty text-danger"></i>
                                                 @endif
@@ -485,6 +487,16 @@
                     $("#loadmodal").html(respond);
                 }
             });
+        });
+
+        $(".btnShowpresensi_in").click(function(e) {
+            e.preventDefault();
+            const id = $(this).attr("id");
+            loading();
+            //alert(kode_jadwal);
+            $("#modal").modal("show");
+            $(".modal-title").text("Data Presensi Masuk");
+            $("#loadmodal").load(`/presensi/${id}/show`);
         });
     });
 </script>
