@@ -28,6 +28,13 @@
         </select>
     </div>
     <div class="form-group mb-3">
+        <select name="format_laporan" id="format_laporan" class="form-select">
+            <option value="">Format Laporan</option>
+            <option value="1">Standar</option>
+            <option value="2">P/S/M</option>
+        </select>
+    </div>
+    <div class="form-group mb-3">
         <select name="kategori_laporan" id="kategori_laporan" class="form-select">
             <option value="">Kategori Laporan</option>
             <option value="MJ">Manajemen</option>

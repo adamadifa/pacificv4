@@ -34,7 +34,7 @@
     </div>
     <div class="content">
         <div class="freeze-table">
-            <table class="datatable3" style="width: 280%">
+            <table class="datatable3" style="width: 200%">
                 <thead>
                     <tr>
                         <th rowspan="3">No</th>
@@ -237,16 +237,20 @@
 
                                                 //Denda
                                                 $jumlah_denda = $denda['denda'];
-
+                                                $kode_shift = 'P';
                                                 if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003') {
                                                     $total_premi_shift2 += 1;
+                                                    $kode_shift = 'S';
                                                 }
 
                                                 if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004') {
                                                     $total_premi_shift3 += 1;
+                                                    $kode_shift = 'M';
                                                 }
+
                                             @endphp
-                                            <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
+                                            {{ $kode_shift }} {{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
+                                            {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
                                             </p>
@@ -274,7 +278,7 @@
                                             <!-- Total Jam Kerja -->
                                             <p style="margin:0">
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
-                                            </p>
+                                            </p> --}}
                                         </td>
                                     @elseif($d[$tanggal_presensi]['status'] == 's')
                                         @php
@@ -297,12 +301,12 @@
                                             @php
                                                 $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                                 $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : $total_jam;
-                                                $keterangan = '';
+                                                $keterangan = 'SKT';
                                             @endphp
                                         @endif
 
                                         <td style="padding: 10px; background-color: #f4858e">
-                                            <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
+                                            {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
                                             </p>
@@ -310,8 +314,8 @@
                                                 <span style="color: white">SAKIT {{ !empty($keterangan) ? '(' . $keterangan . ')' : '' }}</span>
                                                 <br>
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
-                                            </p>
-
+                                            </p> --}}
+                                            {{ $keterangan }}
                                         </td>
                                         @php
                                             $total_potongan_jam =
@@ -345,7 +349,7 @@
                                             $jumlah_denda = 0;
                                         @endphp
                                         <td style="padding: 10px; background-color: #1794e1d3">
-                                            <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
+                                            {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
                                             </p>
@@ -353,7 +357,12 @@
                                                 <span style="color: white">CUTI ({{ $d[$tanggal_presensi]['nama_cuti'] }})</span>
                                                 <br>
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
-                                            </p>
+                                            </p> --}}
+                                            @if ($d[$tanggal_presensi]['kode_cuti'] == 'C01')
+                                                C
+                                            @else
+                                                IK
+                                            @endif
                                         </td>
                                     @elseif($d[$tanggal_presensi]['status'] == 'i')
                                         @php
@@ -383,7 +392,7 @@
                                         @endphp
 
                                         <td style="padding: 10px; background-color: #d74405dc">
-                                            <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
+                                            {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
                                             </p>
@@ -391,7 +400,8 @@
                                                 <span style="color: white">IZIN</span>
                                                 <br>
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
-                                            </p>
+                                            </p> --}}
+                                            I
                                         </td>
                                     @else
                                         <td></td>
@@ -416,7 +426,7 @@
                                     @elseif(!empty($cekdirumahkan))
                                         @php
                                             $color = 'rgb(69, 2, 140)';
-                                            $keterangan = 'Dirumahkan';
+
                                             if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                 $total_jam = 2.5;
                                             } else {
@@ -427,11 +437,13 @@
                                                 }
                                             }
                                             $potongan_jam_dirumahkan = $total_jam;
+                                            $keterangan = 'P' . $total_jam;
                                         @endphp
                                     @elseif(!empty($cekliburnasional))
                                         @php
                                             $color = 'green';
-                                            $keterangan = 'Libur Nasional <br>(' . $cekliburnasional[0]['keterangan'] . ')';
+                                            // $keterangan = 'Libur Nasional <br>(' . $cekliburnasional[0]['keterangan'] . ')';
+                                            $keterangan = 'P';
                                             if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                 $total_jam = 5;
                                             } else {
@@ -442,15 +454,16 @@
                                     @elseif(!empty($cekliburpengganti))
                                         @php
                                             $color = 'rgba(243, 158, 0, 0.833)';
-                                            $keterangan =
-                                                'Libur Pengganti Hari Minggu <br>(' . formatIndo($cekliburpengganti[0]['tanggal_diganti']) . ')';
+                                            // $keterangan =
+                                            //     'Libur Pengganti Hari Minggu <br>(' . formatIndo($cekliburpengganti[0]['tanggal_diganti']) . ')';
+                                            $keterangan = '';
                                             $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
                                         @endphp
                                     @else
                                         @php
                                             $color = 'red';
-                                            $keterangan = '';
+                                            $keterangan = 'A';
                                             // $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
                                             if (!empty($cekdirumahkan)) {
@@ -484,10 +497,10 @@
                                     @endphp
                                     <td style="background-color: {{ $color }}; color:white;">
                                         {!! $keterangan !!}
-                                        <br>
+                                        {{-- <br>
                                         @if (!empty($total_jam))
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
-                                        @endif
+                                        @endif --}}
                                     </td>
                                 @endif
                                 @php

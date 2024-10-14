@@ -110,82 +110,93 @@ class LaporanhrdController extends Controller
         $end_date = $sampai;
 
 
-        $presensi = Presensi::query()
-            ->select(
-                'hrd_presensi.tanggal',
-                'hrd_presensi.nik',
-                'nama_karyawan',
-                'hrd_karyawan.kode_jabatan',
-                'hrd_karyawan.kode_dept',
-                'jam_in',
-                'jam_out',
-                'hrd_presensi.status',
-                'hrd_presensi.kode_jadwal',
-                'nama_jadwal',
-                'hrd_presensi.kode_jam_kerja',
-                'jam_masuk as jam_mulai',
-                'hrd_jamkerja.jam_pulang as jam_selesai',
-                'lintashari',
-                'total_jam',
-                'istirahat',
-                'jam_awal_istirahat',
-                'jam_akhir_istirahat',
-                //Izin Keluar
-                'hrd_presensi_izinkeluar.kode_izin_keluar',
-                'hrd_izinkeluar.jam_keluar',
-                'hrd_izinkeluar.jam_kembali',
-                'hrd_izinkeluar.direktur as izin_keluar_direktur',
+        $query = Presensi::query();
+        $query->select(
+            'hrd_presensi.tanggal',
+            'hrd_presensi.nik',
+            'nama_karyawan',
+            'hrd_karyawan.kode_jabatan',
+            'hrd_karyawan.kode_dept',
+            'jam_in',
+            'jam_out',
+            'hrd_presensi.status',
+            'hrd_presensi.kode_jadwal',
+            'nama_jadwal',
+            'hrd_presensi.kode_jam_kerja',
+            'jam_masuk as jam_mulai',
+            'hrd_jamkerja.jam_pulang as jam_selesai',
+            'lintashari',
+            'total_jam',
+            'istirahat',
+            'jam_awal_istirahat',
+            'jam_akhir_istirahat',
+            //Izin Keluar
+            'hrd_presensi_izinkeluar.kode_izin_keluar',
+            'hrd_izinkeluar.jam_keluar',
+            'hrd_izinkeluar.jam_kembali',
+            'hrd_izinkeluar.direktur as izin_keluar_direktur',
 
-                //Izin Terlambat
-                'hrd_presensi_izinterlambat.kode_izin_terlambat',
-                'hrd_izinterlambat.direktur as izin_terlambat_direktur',
+            //Izin Terlambat
+            'hrd_presensi_izinterlambat.kode_izin_terlambat',
+            'hrd_izinterlambat.direktur as izin_terlambat_direktur',
 
-                //Izin Sakit
-                'hrd_presensi_izinsakit.kode_izin_sakit',
-                'hrd_izinsakit.doc_sid',
-                'hrd_izinsakit.direktur as izin_sakit_direktur',
+            //Izin Sakit
+            'hrd_presensi_izinsakit.kode_izin_sakit',
+            'hrd_izinsakit.doc_sid',
+            'hrd_izinsakit.direktur as izin_sakit_direktur',
 
-                //Izin Pulang
-                'hrd_presensi_izinpulang.kode_izin_pulang',
-                'hrd_izinpulang.direktur as izin_pulang_direktur',
+            //Izin Pulang
+            'hrd_presensi_izinpulang.kode_izin_pulang',
+            'hrd_izinpulang.direktur as izin_pulang_direktur',
 
-                //Izin Cuti
-                'hrd_presensi_izincuti.kode_izin_cuti',
-                'hrd_izincuti.direktur as izin_cuti_direktur',
-                'hrd_jeniscuti.nama_cuti',
+            //Izin Cuti
+            'hrd_presensi_izincuti.kode_izin_cuti',
+            'hrd_izincuti.direktur as izin_cuti_direktur',
+            'hrd_jeniscuti.nama_cuti',
 
-                //Izin Absen
-                'hrd_presensi_izinabsen.kode_izin',
-                'hrd_izinabsen.direktur as izin_absen_direktur',
-            )
-            ->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik')
-            ->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
-            ->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
+            //Izin Absen
+            'hrd_presensi_izinabsen.kode_izin',
+            'hrd_izinabsen.direktur as izin_absen_direktur',
+        );
+        $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
+        $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
-            ->leftJoin('hrd_presensi_izinterlambat', 'hrd_presensi.id', '=', 'hrd_presensi_izinterlambat.id_presensi')
-            ->leftJoin('hrd_izinterlambat', 'hrd_presensi_izinterlambat.kode_izin_terlambat', '=', 'hrd_izinterlambat.kode_izin_terlambat')
+        $query->leftJoin('hrd_presensi_izinterlambat', 'hrd_presensi.id', '=', 'hrd_presensi_izinterlambat.id_presensi');
+        $query->leftJoin('hrd_izinterlambat', 'hrd_presensi_izinterlambat.kode_izin_terlambat', '=', 'hrd_izinterlambat.kode_izin_terlambat');
 
-            ->leftJoin('hrd_presensi_izinkeluar', 'hrd_presensi.id', '=', 'hrd_presensi_izinkeluar.id_presensi')
-            ->leftJoin('hrd_izinkeluar', 'hrd_presensi_izinkeluar.kode_izin_keluar', '=', 'hrd_izinkeluar.kode_izin_keluar')
+        $query->leftJoin('hrd_presensi_izinkeluar', 'hrd_presensi.id', '=', 'hrd_presensi_izinkeluar.id_presensi');
+        $query->leftJoin('hrd_izinkeluar', 'hrd_presensi_izinkeluar.kode_izin_keluar', '=', 'hrd_izinkeluar.kode_izin_keluar');
 
-            ->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi')
-            ->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit')
+        $query->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi');
+        $query->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit');
 
-            ->leftJoin('hrd_presensi_izinpulang', 'hrd_presensi.id', '=', 'hrd_presensi_izinpulang.id_presensi')
-            ->leftJoin('hrd_izinpulang', 'hrd_presensi_izinpulang.kode_izin_pulang', '=', 'hrd_izinpulang.kode_izin_pulang')
+        $query->leftJoin('hrd_presensi_izinpulang', 'hrd_presensi.id', '=', 'hrd_presensi_izinpulang.id_presensi');
+        $query->leftJoin('hrd_izinpulang', 'hrd_presensi_izinpulang.kode_izin_pulang', '=', 'hrd_izinpulang.kode_izin_pulang');
 
 
-            ->leftJoin('hrd_presensi_izincuti', 'hrd_presensi.id', '=', 'hrd_presensi_izincuti.id_presensi')
-            ->leftJoin('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti')
-            ->leftJoin('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti')
+        $query->leftJoin('hrd_presensi_izincuti', 'hrd_presensi.id', '=', 'hrd_presensi_izincuti.id_presensi');
+        $query->leftJoin('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti');
+        $query->leftJoin('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti');
 
-            ->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi')
-            ->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin')
+        $query->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi');
+        $query->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin');
 
-            ->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date])
-            ->orderBy('nik', 'asc')
-            ->orderBy('tanggal', 'asc')
-            ->get();
+        $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+
+        if (!empty($kode_cabang)) {
+            $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_dept)) {
+            $query->where('hrd_karyawan.kode_dept', $request->kode_dept);
+        }
+        if (!empty($request->kode_group)) {
+            $query->where('hrd_karyawan.kode_group', $request->kode_group);
+        }
+
+        $query->orderBy('nik', 'asc');
+        $query->orderBy('tanggal', 'asc');
+        $presensi = $query->get();
 
 
 
@@ -227,6 +238,7 @@ class LaporanhrdController extends Controller
                     'izin_pulang_direktur' => $row->izin_pulang_direktur,
 
                     'kode_izin_cuti' => $row->kode_izin_cuti,
+                    'kode_cuti' => $row->kode_cuti,
                     'izin_cuti_direktur' => $row->izin_cuti_direktur,
                     'nama_cuti' => $row->nama_cuti,
 
@@ -246,6 +258,11 @@ class LaporanhrdController extends Controller
         $data['dataminggumasuk'] = getminggumasuk($start_date, $end_date);
         $data['datatanggallimajam'] = gettanggallimajam($start_date, $end_date);
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
-        return view('hrd.laporan.presensi_cetak', $data);
+
+        if ($request->format_laporan == 1) {
+            return view('hrd.laporan.presensi_cetak', $data);
+        } else {
+            return view('hrd.laporan.psm_cetak', $data);
+        }
     }
 }

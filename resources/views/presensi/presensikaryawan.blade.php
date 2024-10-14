@@ -292,8 +292,8 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
-                                                    @if ($d->status_kehadiran == 'h')
-                                                        <a href="#" class="btnKoreksi" nik="{{ $d->nik }}"
+                                                    @if (in_array($d->status_kehadiran, ['h', 'i', 's', 'c']))
+                                                        <a href="#" class="btnKoreksi me-2" nik="{{ $d->nik }}"
                                                             tanggal="{{ $d->tanggal }}">
                                                             <i class="ti ti-edit text-success"></i>
                                                         </a>
