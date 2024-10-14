@@ -115,6 +115,7 @@ class LaporanhrdController extends Controller
             'hrd_presensi.tanggal',
             'hrd_presensi.nik',
             'nama_karyawan',
+            'hrd_karyawan.kode_cabang',
             'hrd_karyawan.kode_jabatan',
             'hrd_karyawan.kode_dept',
             'jam_in',
@@ -207,6 +208,7 @@ class LaporanhrdController extends Controller
                 'nama_karyawan' => $rows->first()->nama_karyawan,
                 'kode_jabatan' => $rows->first()->kode_jabatan,
                 'kode_dept' => $rows->first()->kode_dept,
+                'kode_cabang' => $rows->first()->kode_cabang,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [

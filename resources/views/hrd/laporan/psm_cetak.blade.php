@@ -40,6 +40,7 @@
                         <th rowspan="3">No</th>
                         <th rowspan="3">Nik</th>
                         <th rowspan="3">Nama Karyawan</th>
+                        <th rowspan="3">Cabang</th>
                         <th colspan="{{ $jmlhari }}">Tanggal</th>
                         <th rowspan="3">Σ Jam (1 Bulan)</th>
                         <th rowspan="3">Telat</th>
@@ -85,8 +86,9 @@
                     @foreach ($presensi as $d)
                         <tr>
                             <td style="width:1%">{{ $loop->iteration }}</td>
-                            <td style="width:5%">{{ $d['nik'] }}</td>
+                            <td style="width:2%">{{ $d['nik'] }}</td>
                             <td style="width:5%">{{ $d['nama_karyawan'] }}</td>
+                            <td>{{ $d['kode_cabang'] }}</td>
                             @php
                                 $tanggal_presensi = $start_date;
                                 $total_potongan_jam_terlambat = 0;
