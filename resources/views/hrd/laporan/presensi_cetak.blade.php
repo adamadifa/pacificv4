@@ -234,7 +234,10 @@
                                                     $potongan_jam_izin;
 
                                                 //Total Jam Kerja
-                                                $total_jam = $total_jam_jadwal - $total_potongan_jam;
+                                                $total_jam =
+                                                    !empty($d[$tanggal_presensi]['jam_in']) && !empty($d[$tanggal_presensi]['jam_out'])
+                                                        ? $total_jam_jadwal - $total_potongan_jam
+                                                        : 0;
 
                                                 //Denda
                                                 $jumlah_denda = $denda['denda'];
