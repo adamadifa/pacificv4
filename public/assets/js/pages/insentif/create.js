@@ -86,7 +86,7 @@
                 },
 
 
-                im_penemptan: {
+                im_penempatan: {
                     validators: {
                         notEmpty: {
                             message: 'Insentif Penempatan  Harus  Diisi'

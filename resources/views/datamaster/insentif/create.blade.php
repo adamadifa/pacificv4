@@ -1,8 +1,7 @@
 <form action="{{ route('insentif.store') }}" aria-autocomplete="false" id="formcreateInsentif" method="POST">
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Berlaku" name="tanggal_berlaku" datepicker="flatpickr-date" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan"
-        select2="select2Karyawan" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Karyawan" />
     <div class="divider text-start">
         <div class="divider-text">
             <i class="ti ti-moneybag me-1"></i> Insentif Umum
@@ -17,8 +16,7 @@
             <i class="ti ti-moneybag me-1"></i> Insentif Manager
         </div>
     </div>
-    <x-input-inline-label icon="ti ti-moneybag" label="Ruang Lingkup" name="im_ruanglingkup" money="true"
-        align="right" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Ruang Lingkup" name="im_ruanglingkup" money="true" align="right" />
     <x-input-inline-label icon="ti ti-moneybag" label="Penempatan" name="im_penempatan" money="true" align="right" />
     <x-input-inline-label icon="ti ti-moneybag" label="Kinerja" name="im_kinerja" money="true" align="right" />
     <div class="form-group">
