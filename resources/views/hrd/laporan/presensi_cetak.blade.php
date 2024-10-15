@@ -255,9 +255,9 @@
                                             <!-- Jam Masuk dan Pulang -->
                                             <p style="margin:0">
                                                 <span
-                                                    style="color: {{ $color_in }}">{{ !empty($jam_in) ? date('H:i', strtotime($jam_in)) : $jam_in }}</span>
+                                                    style="color: {{ $color_in }}">{{ !empty($d[$tanggal_presensi]['jam_in']) ? date('H:i', strtotime($jam_in)) : $jam_in }}</span>
                                                 - <span
-                                                    style="color: {{ $color_out }}">{{ !empty($jam_out) ? date('H:i', strtotime($jam_out)) : $jam_out }}</span>
+                                                    style="color: {{ $color_out }}">{{ !empty($d[$tanggal_presensi]['jam_out']) ? date('H:i', strtotime($jam_out)) : $jam_out }}</span>
                                             </p>
                                             <!-- Terlambat -->
                                             <p style="margin:0">
