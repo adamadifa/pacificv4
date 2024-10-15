@@ -212,7 +212,10 @@
                                                 //Potongan Jam
                                                 $potongan_jam_sakit = 0;
                                                 $potongan_jam_dirumahkan = 0;
-                                                $potongan_jam_tidakhadir = 0;
+                                                $potongan_jam_tidakhadir =
+                                                    empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out'])
+                                                        ? $total_jam_jadwal
+                                                        : 0;
                                                 $potongan_jam_izin = 0;
                                                 $potongan_jam_pulangcepat =
                                                     $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
