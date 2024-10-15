@@ -3,7 +3,13 @@
         height: 300px;
         width: 100%;
     }
+
+    #map_out {
+        height: 300px;
+        width: 100%;
+    }
 </style>
+
 @if ($status == 'in')
     <div class="row">
         <div class="col-4 text-center">
@@ -127,7 +133,7 @@
     var longitude_kantor = "{{ $longitude }}";
     console.log(latitude_kantor + "," + longitude_kantor);
     var rd = "{{ $presensi->radius_cabang }}";
-    var map = L.map('map_out', {
+    var map_out = L.map('map_out', {
         center: [latitude, longitude],
         zoom: 15
     });
@@ -135,16 +141,16 @@
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-    var marker = L.marker([latitude, longitude]).addTo(map);
+    }).addTo(map_out);
+    var marker = L.marker([latitude, longitude]).addTo(map_out);
     var circle = L.circle([latitude_kantor, longitude_kantor], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
         radius: rd
-    }).addTo(map);
+    }).addTo(map_out);
 
     setInterval(function() {
-        map.invalidateSize();
+        map_out.invalidateSize();
     }, 100);
 </script>
