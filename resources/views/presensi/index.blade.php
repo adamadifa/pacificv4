@@ -197,7 +197,7 @@
                                             </td>
                                             <td class="text-center">
                                                 @if (!empty($d->kode_jadwal) && $d->status_kehadiran == 'h' && !empty($d->jam_in))
-                                                    <a href="#" class="btnShowpresensi_in" id="{{ $d->id }}">
+                                                    <a href="#" class="btnShowpresensi_in" id="{{ $d->id }}" status="in">
                                                         {{ date('H:i', strtotime($d->jam_in)) }}
                                                     </a>
                                                 @else
@@ -206,7 +206,9 @@
                                             </td>
                                             <td class="text-center">
                                                 @if (!empty($d->kode_jadwal) && $d->status_kehadiran == 'h' && !empty($d->jam_out))
-                                                    {{ date('H:i', strtotime($d->jam_out)) }}
+                                                    <a href="#" class="btnShowpresensi_out" id="{{ $d->id }}" status="out">
+                                                        {{ date('H:i', strtotime($d->jam_out)) }}
+                                                    </a>
                                                 @else
                                                     <i class="ti ti-hourglass-empty text-danger"></i>
                                                 @endif
@@ -489,14 +491,15 @@
             });
         });
 
-        $(".btnShowpresensi_in").click(function(e) {
+        $(".btnShowpresensi_in, .btnShowpresensi_out").click(function(e) {
             e.preventDefault();
             const id = $(this).attr("id");
+            const status = $(this).attr("status");
             loading();
             //alert(kode_jadwal);
             $("#modal").modal("show");
             $(".modal-title").text("Data Presensi Masuk");
-            $("#loadmodal").load(`/presensi/${id}/show`);
+            $("#loadmodal").load(`/presensi/${id}/${status}/show`);
         });
     });
 </script>

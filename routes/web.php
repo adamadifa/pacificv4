@@ -1792,7 +1792,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/presensi/koreksipresensi', 'koreksipresensi')->name('presensi.koreksipresensi')->can('presensi.index');
         Route::get('/presensi/getjamkerja', 'getjamkerja')->name('presensi.getjamkerja')->can('presensi.index');
         Route::post('/presensi/{id}/updatepresensi', 'updatepresensi')->name('presensi.updatepresensi')->can('presensi.index');
-        Route::get('/presensi/{id}/show', 'show')->name('presensi.show')->can('presensi.index');
+        Route::get('/presensi/{id}/{status}/show', 'show')->name('presensi.show')->can('presensi.index');
     });
 
     Route::controller(LaporangeneralaffairController::class)->group(function () {
