@@ -254,8 +254,10 @@
                                             </p>
                                             <!-- Jam Masuk dan Pulang -->
                                             <p style="margin:0">
-                                                <span style="color: {{ $color_in }}">{{ date('H:i', strtotime($jam_in)) }}</span>
-                                                - <span style="color: {{ $color_out }}">{{ date('H:i', strtotime($jam_out)) }}</span>
+                                                <span
+                                                    style="color: {{ $color_in }}">{{ !empty($jam_in) ? date('H:i', strtotime($jam_in)) : $jam_in }}</span>
+                                                - <span
+                                                    style="color: {{ $color_out }}">{{ !empty($jam_out) ? date('H:i', strtotime($jam_out)) : $jam_out }}</span>
                                             </p>
                                             <!-- Terlambat -->
                                             <p style="margin:0">
