@@ -821,8 +821,14 @@ class PresensiController extends Controller
     {
         $presensi = Presensi::where('id', $id)
             ->join('hrd_karyawan', 'hrd_presensi.nik', '=', 'hrd_karyawan.nik')
+            ->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
             ->first();
+        $lokasi = explode(',', $presensi->lokasi_cabang);
+        $data['latitude'] = $lokasi[0];
+        $data['longitude'] = $lokasi[1];
         $data['presensi'] = $presensi;
+
+
         return view('presensi.show', $data);
     }
 }

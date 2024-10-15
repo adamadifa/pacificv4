@@ -1,3 +1,9 @@
+<style>
+    #map {
+        height: 300px;
+        width: 100%;
+    }
+</style>
 <div class="row">
     <div class="col-4 text-center">
         @if (!empty($presensi->foto_in))
@@ -28,3 +34,39 @@
 
     </div>
 </div>
+<div class="row">
+    <div class="col">
+        <div id="map"></div>
+    </div>
+</div>
+<script>
+    var lokasi = "{{ $presensi->lokasi_in }}";
+    var lok = lokasi.split(",");
+    var latitude = lok[0];
+    var longitude = lok[1];
+
+    var latitude_kantor = "{{ $latitude }}";
+    var longitude_kantor = "{{ $longitude }}";
+    console.log(latitude_kantor + "," + longitude_kantor);
+    var rd = "{{ $presensi->radius_cabang }}";
+    var map = L.map('map', {
+        center: [latitude, longitude],
+        zoom: 15
+    });
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    var marker = L.marker([latitude, longitude]).addTo(map);
+    var circle = L.circle([latitude_kantor, longitude_kantor], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: rd
+    }).addTo(map);
+
+    setInterval(function() {
+        map.invalidateSize();
+    }, 100);
+</script>
