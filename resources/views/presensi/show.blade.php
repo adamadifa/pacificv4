@@ -1,6 +1,7 @@
 <div class="row">
     <div class="col-4 text-center">
         @if (!empty($presensi->foto_in))
+            <img src="https://portal.pedasalami.com/storage/uploads/absensi/{{ $presensi->foto_in }}" class="card-img rounded thumbnail" alt="">
         @else
             <i class="ti ti-fingerprint text-success" style="font-size: 10rem;"></i>
         @endif
