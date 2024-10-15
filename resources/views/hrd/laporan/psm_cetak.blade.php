@@ -258,7 +258,7 @@
                                                 }
 
                                             @endphp
-                                            {{ $kode_shift }} {{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
+                                            {{ $kode_shift }}{{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
                                             {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
