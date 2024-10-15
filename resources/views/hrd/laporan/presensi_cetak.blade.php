@@ -212,7 +212,10 @@
                                                 //Potongan Jam
                                                 $potongan_jam_sakit = 0;
                                                 $potongan_jam_dirumahkan = 0;
-                                                $potongan_jam_tidakhadir = 0;
+                                                $potongan_jam_tidakhadir =
+                                                    empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out'])
+                                                        ? $total_jam_jadwal
+                                                        : 0;
                                                 $potongan_jam_izin = 0;
                                                 $potongan_jam_pulangcepat =
                                                     $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
@@ -234,7 +237,10 @@
                                                     $potongan_jam_izin;
 
                                                 //Total Jam Kerja
-                                                $total_jam = $total_jam_jadwal - $total_potongan_jam;
+                                                $total_jam =
+                                                    !empty($d[$tanggal_presensi]['jam_in']) && !empty($d[$tanggal_presensi]['jam_out'])
+                                                        ? $total_jam_jadwal - $total_potongan_jam
+                                                        : 0;
 
                                                 //Denda
                                                 $jumlah_denda = $denda['denda'];
@@ -254,8 +260,10 @@
                                             </p>
                                             <!-- Jam Masuk dan Pulang -->
                                             <p style="margin:0">
-                                                <span style="color: {{ $color_in }}">{{ date('H:i', strtotime($jam_in)) }}</span>
-                                                - <span style="color: {{ $color_out }}">{{ date('H:i', strtotime($jam_out)) }}</span>
+                                                <span
+                                                    style="color: {{ $color_in }}">{{ !empty($d[$tanggal_presensi]['jam_in']) ? date('H:i', strtotime($jam_in)) : $jam_in }}</span>
+                                                - <span
+                                                    style="color: {{ $color_out }}">{{ !empty($d[$tanggal_presensi]['jam_out']) ? date('H:i', strtotime($jam_out)) : $jam_out }}</span>
                                             </p>
                                             <!-- Terlambat -->
                                             <p style="margin:0">

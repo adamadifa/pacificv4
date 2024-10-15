@@ -214,7 +214,10 @@
                                                 //Potongan Jam
                                                 $potongan_jam_sakit = 0;
                                                 $potongan_jam_dirumahkan = 0;
-                                                $potongan_jam_tidakhadir = 0;
+                                                $potongan_jam_tidakhadir =
+                                                    empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out'])
+                                                        ? $total_jam_jadwal
+                                                        : 0;
                                                 $potongan_jam_izin = 0;
                                                 $potongan_jam_pulangcepat =
                                                     $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
@@ -236,7 +239,10 @@
                                                     $potongan_jam_izin;
 
                                                 //Total Jam Kerja
-                                                $total_jam = $total_jam_jadwal - $total_potongan_jam;
+                                                $total_jam =
+                                                    !empty($d[$tanggal_presensi]['jam_in']) && !empty($d[$tanggal_presensi]['jam_out'])
+                                                        ? $total_jam_jadwal - $total_potongan_jam
+                                                        : 0;
 
                                                 //Denda
                                                 $jumlah_denda = $denda['denda'];
@@ -252,7 +258,7 @@
                                                 }
 
                                             @endphp
-                                            {{ $kode_shift }} {{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
+                                            {{ $kode_shift }}{{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
                                             {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
