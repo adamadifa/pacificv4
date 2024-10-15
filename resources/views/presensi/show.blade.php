@@ -34,11 +34,14 @@
 
     </div>
 </div>
-<div class="row mt-3">
-    <div class="col">
-        <div id="map"></div>
+@if (!empty($presensi->lokasi_in))
+    <div class="row mt-3">
+        <div class="col">
+            <div id="map"></div>
+        </div>
     </div>
-</div>
+@endif
+
 <script>
     var lokasi = "{{ $presensi->lokasi_in }}";
     var lok = lokasi.split(",");
