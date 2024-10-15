@@ -34,6 +34,7 @@ class PresensiController extends Controller
         $data['cabang'] = $cabang;
         //Subquery Presensi
         $subqueryPresensi = Presensi::select(
+            'hrd_presensi.id',
             'hrd_presensi.nik',
             'hrd_presensi.tanggal',
             'hrd_presensi.jam_in',
@@ -141,6 +142,7 @@ class PresensiController extends Controller
 
         $query = Karyawan::query();
         $query->select(
+            'presensi.id',
             'hrd_karyawan.nik',
             'hrd_karyawan.nama_karyawan',
             'hrd_karyawan.pin',
@@ -813,5 +815,14 @@ class PresensiController extends Controller
         $data['listkaryawan'] = $qkaryawan->get();
 
         return view('presensi.presensikaryawan',  $data);
+    }
+
+    public function show($id)
+    {
+        $presensi = Presensi::where('id', $id)
+            ->join('hrd_karyawan', 'hrd_presensi.nik', '=', 'hrd_karyawan.nik')
+            ->first();
+        $data['presensi'] = $presensi;
+        return view('presensi.show', $data);
     }
 }
