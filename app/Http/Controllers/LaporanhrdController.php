@@ -184,6 +184,11 @@ class LaporanhrdController extends Controller
             'hrd_karyawan.kode_cabang',
             'hrd_karyawan.kode_jabatan',
             'hrd_karyawan.kode_dept',
+            'hrd_karyawan.no_rekening',
+            'hrd_karyawan.no_ktp',
+            'hrd_karyawan.kode_status_kawin',
+            'hrd_group.nama_group',
+            'hrd_karyawan.tanggal_masuk',
             'jam_in',
             'jam_out',
             'hrd_presensi.status',
@@ -227,6 +232,7 @@ class LaporanhrdController extends Controller
             'hrd_izinabsen.direktur as izin_absen_direktur',
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
         $query->leftJoin('hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
@@ -321,93 +327,7 @@ class LaporanhrdController extends Controller
         $presensi = $query->get();
 
 
-        // $qpresensi = Karyawan::query();
-        // $qpresensi->select(
-        //     'hrd_karyawan.nik',
-        //     'hrd_karyawan.nama_karyawan',
-        //     'hrd_karyawan.kode_jabatan',
-        //     'hrd_karyawan.kode_dept',
-        //     'hrd_karyawan.kode_cabang',
-        //     'presensi.tanggal',
-        //     'presensi.jam_in',
-        //     'presensi.jam_out',
-        //     'presensi.status',
-        //     'presensi.kode_jadwal',
-        //     'presensi.nama_jadwal',
-        //     'presensi.kode_jam_kerja',
-        //     'presensi.jam_mulai',
-        //     'presensi.jam_selesai',
-        //     'presensi.lintashari',
-        //     'presensi.total_jam',
-        //     'presensi.istirahat',
-        //     'presensi.jam_awal_istirahat',
-        //     'presensi.jam_akhir_istirahat',
-        //     //Izin Keluar
-        //     'presensi.kode_izin_keluar',
-        //     'presensi.jam_keluar',
-        //     'presensi.jam_kembali',
-        //     'presensi.izin_keluar_direktur',
 
-        //     //Izin Terlambat
-        //     'presensi.kode_izin_terlambat',
-        //     'presensi.izin_terlambat_direktur',
-
-        //     //Izin Sakit
-        //     'presensi.kode_izin_sakit',
-        //     'presensi.doc_sid',
-        //     'presensi.izin_sakit_direktur',
-
-        //     //Izin Pulang
-        //     'presensi.kode_izin_pulang',
-        //     'presensi.izin_pulang_direktur',
-
-        //     //Izin Cuti
-        //     'presensi.kode_izin_cuti',
-        //     'presensi.kode_cuti',
-        //     'presensi.izin_cuti_direktur',
-        //     'presensi.nama_cuti',
-
-        //     //Izin Absen
-        //     'presensi.kode_izin',
-        //     'presensi.izin_absen_direktur',
-        // );
-
-        // $qpresensi->leftJoinSub($query, 'presensi', function ($join) {
-        //     $join->on('hrd_karyawan.nik', '=', 'presensi.nik');
-        // });
-
-
-        // if (!empty($kode_cabang)) {
-        //     $qpresensi->where('hrd_karyawan.kode_cabang', $kode_cabang);
-        // }
-        // if (!empty($request->kode_dept)) {
-        //     $qpresensi->where('hrd_karyawan.kode_dept', $request->kode_dept);
-        // }
-        // if (!empty($request->kode_group)) {
-        //     $qpresensi->where('hrd_karyawan.kode_group', $request->kode_group);
-        // }
-        // // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
-        // $qpresensi->where('status_aktif_karyawan', 1);
-        // $qpresensi->where('tanggal_masuk', '<=', $end_date);
-        // $qpresensi->orWhere('status_aktif_karyawan', 0);
-        // $qpresensi->where('tanggal_off_gaji', '>=', $start_date);
-        // $qpresensi->where('tanggal_masuk', '<=', $end_date);
-        // if (!empty($kode_cabang)) {
-        //     $qpresensi->where('hrd_karyawan.kode_cabang', $kode_cabang);
-        // }
-        // if (!empty($request->kode_dept)) {
-        //     $qpresensi->where('hrd_karyawan.kode_dept', $request->kode_dept);
-        // }
-        // if (!empty($request->kode_group)) {
-        //     $qpresensi->where('hrd_karyawan.kode_group', $request->kode_group);
-        // }
-
-        // // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
-        // $qpresensi->orderBy('nik', 'asc');
-
-        // $presensi = $qpresensi->get();
-
-        // dd($presensi);
         $data['presensi'] = $presensi->groupBy('nik')->map(function ($rows) {
             $data = [
                 'nik' => $rows->first()->nik,
@@ -415,6 +335,11 @@ class LaporanhrdController extends Controller
                 'kode_jabatan' => $rows->first()->kode_jabatan,
                 'kode_dept' => $rows->first()->kode_dept,
                 'kode_cabang' => $rows->first()->kode_cabang,
+                'no_rekening' => $rows->first()->no_rekening,
+                'no_ktp' => $rows->first()->no_ktp,
+                'kode_status_kawin' => $rows->first()->kode_status_kawin,
+                'nama_group' => $rows->first()->nama_group,
+                'tanggal_masuk' => $rows->first()->tanggal_masuk,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
@@ -471,20 +396,29 @@ class LaporanhrdController extends Controller
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
 
 
-        if ($request->format_laporan == 1) {
+        if (request()->is('laporanhrd/cetakgaji')) {
             if (isset($_POST['exportButton'])) {
                 header("Content-type: application/vnd-ms-excel");
                 // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-                header("Content-Disposition: attachment; filename=Laporan Presensi.xls");
+                header("Content-Disposition: attachment; filename=Laporan Gaji.xls");
             }
-            return view('hrd.laporan.presensi_cetak', $data);
+            return view('hrd.laporan.gaji_cetak', $data);
         } else {
-            if (isset($_POST['exportButton'])) {
-                header("Content-type: application/vnd-ms-excel");
-                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-                header("Content-Disposition: attachment; filename=PSM.xls");
+            if ($request->format_laporan == 1) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                    header("Content-Disposition: attachment; filename=Laporan Presensi.xls");
+                }
+                return view('hrd.laporan.presensi_cetak', $data);
+            } else {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                    header("Content-Disposition: attachment; filename=PSM.xls");
+                }
+                return view('hrd.laporan.psm_cetak', $data);
             }
-            return view('hrd.laporan.psm_cetak', $data);
         }
     }
 }

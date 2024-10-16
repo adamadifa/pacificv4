@@ -20,13 +20,8 @@
             <option value="">Semua Group</option>
         </select>
     </div>
-    <div class="form-group mb-3">
-        <select name="periode_laporan" id="periode_laporan" class="form-select">
-            <option value="">Periode Laporan</option>
-            <option value="1">Periode Gaji</option>
-            <option value="2">Bulan Berjalan</option>
-        </select>
-    </div>
+
+
     <div class="form-group mb-3">
         <select name="format_laporan" id="format_laporan" class="form-select">
             <option value="">Format Laporan</option>
@@ -136,22 +131,11 @@
             });
 
             $("#formGaji").submit(function(e) {
-                const periode_laporan = $("#periode_laporan").val();
-                const bulan = $("#bulan").val();
-                const tahun = $("#tahun").val();
 
-                if (periode_laporan == "") {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: 'Periode Laporan harus diisi!',
-                        showConfirmButton: true,
-                        didClose: () => {
-                            $("#periode_laporan").focus();
-                        }
-                    });
-                    return false;
-                } else if (bulan == "") {
+                const bulan = $(this).find("#bulan").val();
+                const tahun = $(this).find("#tahun").val();
+
+                if (bulan == "") {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Oops...',

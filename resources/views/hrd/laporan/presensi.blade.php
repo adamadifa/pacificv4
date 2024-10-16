@@ -137,8 +137,8 @@
 
             $("#formPresensi").submit(function(e) {
                 const periode_laporan = $("#periode_laporan").val();
-                const bulan = $("#bulan").val();
-                const tahun = $("#tahun").val();
+                const bulan = $(this).find("#bulan").val();
+                const tahun = $(this).find("#tahun").val();
 
                 if (periode_laporan == "") {
                     Swal.fire({

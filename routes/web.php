@@ -1885,8 +1885,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(LaporanhrdController::class)->group(function () {
         Route::get('/laporanhrd', 'index')->name('laporanhrd.index');
         Route::post('/laporanhrd/cetakpresensi', 'cetakpresensi')->name('laporanhrd.cetakpresensi')->can('hrd.presensi');
-        Route::post('/laporanhrd/cetakpsm', 'cetakpsm')->name('laporanhrd.cetakpsm')->can('hrd.psm');
-        Route::post('/laporanhrd/cetakgaji', 'cetakgaji')->name('laporanhrd.cetakgaji')->can('hrd.gaji');
+        Route::post('/laporanhrd/cetakgaji', 'cetakpresensi')->name('laporanhrd.cetakgaji')->can('hrd.gaji');
         Route::post('/laporanhrd/cetakslipegaji', 'cetakslipegaji')->name('laporanhrd.cetakslipegaji')->can('hrd.slipgaji');
 
 
