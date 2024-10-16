@@ -121,6 +121,11 @@
                                     $cektanggallimajam = ceklibur($datatanggallimajam, $search); // Cek Tanggal Lima Jam
                                     $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
                                     $cekminggumasuk = ceklibur($dataminggumasuk, $search);
+                                    $ceklembur = ceklembur($datalembur, $search);
+                                    $ceklemburharilibur = ceklembur($datalemburharilibur, $search);
+                                    if (!empty($ceklembur)) {
+                                        $keterangan_lembur = 'Lembur';
+                                    }
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -305,6 +310,11 @@
                                             <p style="margin:0">
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
                                             </p>
+                                            @if (!empty($keterangan_lembur))
+                                                <p style="margin:0">
+                                                    <span>{{ $keterangan_lembur }}</span>
+                                                </p>
+                                            @endif
                                         </td>
                                     @elseif($d[$tanggal_presensi]['status'] == 's')
                                         @php

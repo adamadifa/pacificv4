@@ -3,6 +3,7 @@
 // Cek Role Approve Penilaian
 
 use App\Models\Detailharilibur;
+use App\Models\Detaillembur;
 use App\Models\Harilibur;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -733,7 +734,42 @@ function getminggumasuk($dari, $sampai)
     return $libur;
 }
 
+function getlembur($dari, $sampai, $kategori)
+{
+    $no = 1;
+    $lembur = [];
+    $ceklembur = Detaillembur::select(
+        'nik',
+        'tanggal',
+        'tanggal_dari',
+        'tanggal_sampai',
+        'kode_cabang',
+        'kode_dept',
+        'keterangan',
+        'kategori',
+        'istirahat',
+    )
+        ->join('hrd_lembur', 'hrd_lembur_detail.kode_lembur', '=', 'hrd_lembur.kode_lembur')
+        ->whereBetween('tanggal', [$dari, $sampai])
+        ->where('kategori', $kategori)
+        ->get();
 
+
+    foreach ($ceklembur as $d) {
+        $lembur[] = [
+            'nik' => $d->nik,
+            'id_kantor' => $d->id_kantor,
+            'tanggal' => $d->tanggal,
+            'tanggal_dari' => $d->tanggal_dari,
+            'tanggal_sampai' => $d->tanggal_sampai,
+            'keterangan' => $d->keterangan,
+            'kategori' => $d->kategori,
+            'istirahat' => $d->istirahat
+        ];
+    }
+
+    return $lembur;
+}
 
 function ceklibur($array, $search_list)
 {

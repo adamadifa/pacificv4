@@ -466,6 +466,8 @@ class LaporanhrdController extends Controller
         $data['dataliburpengganti'] = getliburpengganti($start_date, $end_date);
         $data['dataminggumasuk'] = getminggumasuk($start_date, $end_date);
         $data['datatanggallimajam'] = gettanggallimajam($start_date, $end_date);
+        $data['datalembur'] = getlembur($start_date, $end_date, 1);
+        $data['datalemburharilibur'] = getlembur($start_date, $end_date, 2);
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
 
 
