@@ -54,6 +54,9 @@
                         <th rowspan="3">Denda</th>
                         <th rowspan="3">Premi <br> Shift 2</th>
                         <th rowspan="3">Premi <br> Shift 3</th>
+                        <th rowspan="3">OT1</th>
+                        <th rowspan="3">OT2</th>
+                        <th rowspan="3">OTL</th>
                     </tr>
                     <tr>
                         @php
@@ -102,6 +105,9 @@
                                 $total_premi_shift2 = 0;
                                 $total_premi_shift3 = 0;
                                 $total_denda = 0;
+                                $total_overtime_1 = 0;
+                                $total_overtime_2 = 0;
+                                $total_overtime_libur = 0;
                             @endphp
                             @while (strtotime($tanggal_presensi) <= strtotime($end_date))
                                 @php
@@ -114,6 +120,15 @@
                                     $cektanggallimajam = ceklibur($datatanggallimajam, $search); // Cek Tanggal Lima Jam
                                     $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
                                     $cekminggumasuk = ceklibur($dataminggumasuk, $search); // Cek Minggu Masuk
+                                    $ceklembur = ceklembur($datalembur, $search);
+                                    $ceklemburharilibur = ceklembur($datalemburharilibur, $search);
+
+                                    $lembur = presensiHitunglembur($ceklembur);
+                                    $lembur_libur = presensiHitunglembur($ceklemburharilibur);
+                                    $total_overtime_1 += $lembur['overtime_1'];
+                                    $total_overtime_2 += $lembur['overtime_2'];
+                                    $total_overtime_libur += $lembur_libur['overtime_libur'];
+
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -274,6 +289,18 @@
 
                                             @endphp
                                             {{ $kode_shift }}{{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
+                                            @if (!empty($ceklembur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                    <br>
+                                                    <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                </p>
+                                            @endif
                                             {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
@@ -340,6 +367,18 @@
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
                                             </p> --}}
                                             {{ $keterangan }}
+                                            @if (!empty($ceklembur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                    <br>
+                                                    <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                </p>
+                                            @endif
                                         </td>
                                         @php
                                             $total_potongan_jam =
@@ -387,6 +426,18 @@
                                             @else
                                                 IK
                                             @endif
+                                            @if (!empty($ceklembur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                    <br>
+                                                    <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                </p>
+                                            @endif
                                         </td>
                                     @elseif($d[$tanggal_presensi]['status'] == 'i')
                                         @php
@@ -416,6 +467,18 @@
                                         @endphp
 
                                         <td style="padding: 10px; background-color: #d74405dc">
+                                            @if (!empty($ceklembur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                    <br>
+                                                    <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                </p>
+                                            @endif
                                             {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
@@ -521,6 +584,18 @@
                                     @endphp
                                     <td style="background-color: {{ $color }}; color:white;">
                                         {!! $keterangan !!}
+                                        @if (!empty($ceklembur))
+                                            <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                <br>
+                                                <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                            </p>
+                                        @endif
+                                        @if (!empty($ceklemburharilibur))
+                                            <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                            </p>
+                                        @endif
                                         {{-- <br>
                                         @if (!empty($total_jam))
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
@@ -576,6 +651,16 @@
                             </td>
                             <td style="font-weight: bold; color:#026720; text-align:center">
                                 {{ !empty($total_premi_shift3) ? $total_premi_shift3 : '' }}
+                            </td>
+
+                            <td style="font-weight: bold; color:#026720; text-align:center">
+                                {{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}
+                            </td>
+                            <td style="font-weight: bold; color:#026720; text-align:center">
+                                {{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}
+                            </td>
+                            <td style="font-weight: bold; color:#026720; text-align:center">
+                                {{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}
                             </td>
                         </tr>
                     @endforeach
