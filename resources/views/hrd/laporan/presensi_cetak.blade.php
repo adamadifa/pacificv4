@@ -125,6 +125,7 @@
                                     $ceklemburharilibur = ceklembur($datalemburharilibur, $search);
 
                                     $lembur = presensiHitunglembur($ceklembur);
+                                    $lembur_libur = presensiHitunglembur($ceklemburharilibur);
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -315,6 +316,11 @@
                                                     <span>OT1 : {{ $lembur['overtime_1'] }}</span>
                                                     <br>
                                                     <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
                                                 </p>
                                             @endif
                                         </td>

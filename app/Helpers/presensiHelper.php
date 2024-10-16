@@ -296,19 +296,30 @@ function presensiHitunglembur($datalembur)
             $premilembur_shift_2 = 5000;
             $jmlharilembur_shift_2 = 1;
         }
-        $overtime_1 = $jmljam_lembur > 1 ? 1 : $jmljam_lembur;
-        $overtime_1 = round($overtime_1, 2, PHP_ROUND_HALF_DOWN);
-        $overtime_2 = $jmljam_lembur > 1 ? $jmljam_lembur - 1 : 0;
-        $overtime_2 = round($overtime_2, 2, PHP_ROUND_HALF_DOWN);
+
+        if ($kategori_lembur == 1) {
+            $overtime_1 = $jmljam_lembur > 1 ? 1 : $jmljam_lembur;
+            $overtime_1 = round($overtime_1, 2, PHP_ROUND_HALF_DOWN);
+            $overtime_2 = $jmljam_lembur > 1 ? $jmljam_lembur - 1 : 0;
+            $overtime_2 = round($overtime_2, 2, PHP_ROUND_HALF_DOWN);
+            $overtime_libur = 0;
+        } else {
+            $overtime_1 = 0;
+            $overtime_2 = 0;
+            $overtime_libur = round($jmljam_lembur, 2, PHP_ROUND_HALF_DOWN);
+        }
+
 
         return [
             'overtime_1' => $overtime_1,
             'overtime_2' => $overtime_2,
+            'overtime_libur' => $overtime_libur,
         ];
     } else {
         return [
             'overtime_1' => 0,
             'overtime_2' => 0,
+            'overtime_libur' => 0,
         ];
     }
 }
