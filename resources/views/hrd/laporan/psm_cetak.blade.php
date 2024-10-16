@@ -113,6 +113,7 @@
                                     $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
                                     $cektanggallimajam = ceklibur($datatanggallimajam, $search); // Cek Tanggal Lima Jam
                                     $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
+                                    $cekminggumasuk = ceklibur($dataminggumasuk, $search); // Cek Minggu Masuk
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -138,128 +139,136 @@
                                         $jam_selesai = in_array($d['kode_jabatan'], ['J22', 'J23']) ? $jam_out : $j_selesai;
                                     @endphp
                                     @if ($d[$tanggal_presensi]['status'] == 'h')
-                                        <td style="padding: 10px;">
-                                            <!-- Jika Status Hadir -->
+                                        @if (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
                                             @php
-                                                $istirahat = $d[$tanggal_presensi]['istirahat'];
-
-                                                $color_in = !empty($d[$tanggal_presensi]['jam_in']) ? '' : 'red';
-                                                $color_out = !empty($d[$tanggal_presensi]['jam_out']) ? '' : 'red';
-
-                                                // Jam Keluar
-                                                $jam_keluar = !empty($d[$tanggal_presensi]['jam_keluar'])
-                                                    ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_keluar']))
-                                                    : '';
-                                                $jam_kembali = !empty($d[$tanggal_presensi]['jam_kembali'])
-                                                    ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_kembali']))
-                                                    : '';
-
-                                                //Istirahat
-                                                if ($istirahat == '1') {
-                                                    if ($lintashari == '0') {
-                                                        $jam_awal_istirahat = date(
-                                                            'Y-m-d H:i',
-                                                            strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_awal_istirahat']),
-                                                        );
-                                                        $jam_akhir_istirahat = date(
-                                                            'Y-m-d H:i',
-                                                            strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_akhir_istirahat']),
-                                                        );
-                                                    } else {
-                                                        $jam_awal_istirahat = date(
-                                                            'Y-m-d H:i',
-                                                            strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_awal_istirahat']),
-                                                        );
-                                                        $jam_akhir_istirahat = date(
-                                                            'Y-m-d H:i',
-                                                            strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_akhir_istirahat']),
-                                                        );
-                                                    }
-                                                } else {
-                                                    $jam_awal_istirahat = null;
-                                                    $jam_akhir_istirahat = null;
-                                                }
-
-                                                //Cek Terlambat
-                                                $terlambat = presensiHitungJamTerlambat($jam_in, $jam_mulai);
-
-                                                //Hitung Denda
-                                                $denda = presensiHitungDenda(
-                                                    $terlambat['jamterlambat'],
-                                                    $terlambat['menitterlambat'],
-                                                    $d[$tanggal_presensi]['kode_izin_terlambat'],
-                                                    $d['kode_dept'],
-                                                );
-
-                                                //Cek Pulang Cepat
-                                                $pulangcepat = presensiHitungPulangCepat(
-                                                    $jam_out,
-                                                    $jam_selesai,
-                                                    $jam_awal_istirahat,
-                                                    $jam_akhir_istirahat,
-                                                );
-
-                                                //Cek Izin Keluar
-                                                $izin_keluar = presensiHitungJamKeluarKantor(
-                                                    $jam_keluar,
-                                                    $jam_kembali,
-                                                    $jam_selesai,
-                                                    $jam_out,
-                                                    $total_jam_jadwal,
-                                                    $istirahat,
-                                                    $jam_awal_istirahat,
-                                                    $jam_akhir_istirahat,
-                                                );
-
-                                                //Potongan Jam
-                                                $potongan_jam_sakit = 0;
-                                                $potongan_jam_dirumahkan = 0;
-                                                $potongan_jam_tidakhadir =
-                                                    empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out'])
-                                                        ? $total_jam_jadwal
-                                                        : 0;
-                                                $potongan_jam_izin = 0;
-                                                $potongan_jam_pulangcepat =
-                                                    $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
-                                                $potongan_jam_izinkeluar =
-                                                    $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['desimal'] <= 1
-                                                        ? 0
-                                                        : $izin_keluar['desimal'];
-                                                $potongan_jam_terlambat =
-                                                    $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['desimal'];
-
-                                                //Total Potongan
-                                                $total_potongan_jam =
-                                                    $potongan_jam_sakit +
-                                                    $potongan_jam_pulangcepat +
-                                                    $potongan_jam_izinkeluar +
-                                                    $potongan_jam_terlambat +
-                                                    $potongan_jam_dirumahkan +
-                                                    $potongan_jam_tidakhadir +
-                                                    $potongan_jam_izin;
-
-                                                //Total Jam Kerja
-                                                $total_jam =
-                                                    !empty($d[$tanggal_presensi]['jam_in']) && !empty($d[$tanggal_presensi]['jam_out'])
-                                                        ? $total_jam_jadwal - $total_potongan_jam
-                                                        : 0;
-
-                                                //Denda
-                                                $jumlah_denda = $denda['denda'];
-                                                $kode_shift = 'P';
-                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003') {
-                                                    $total_premi_shift2 += 1;
-                                                    $kode_shift = 'S';
-                                                }
-
-                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004') {
-                                                    $total_premi_shift3 += 1;
-                                                    $kode_shift = 'M';
-                                                }
-
+                                                $color = 'rgba(243, 158, 0, 0.833)';
+                                                $keterangan = '';
+                                                $total_jam = 0;
                                             @endphp
-                                            {{ $kode_shift }}{{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
-                                            {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
+                                            <td style="padding: 10px; background-color: {{ $color }}"></td>
+                                        @else
+                                            <td style="padding: 10px;">
+                                                <!-- Jika Status Hadir -->
+                                                @php
+                                                    $istirahat = $d[$tanggal_presensi]['istirahat'];
+
+                                                    $color_in = !empty($d[$tanggal_presensi]['jam_in']) ? '' : 'red';
+                                                    $color_out = !empty($d[$tanggal_presensi]['jam_out']) ? '' : 'red';
+
+                                                    // Jam Keluar
+                                                    $jam_keluar = !empty($d[$tanggal_presensi]['jam_keluar'])
+                                                        ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_keluar']))
+                                                        : '';
+                                                    $jam_kembali = !empty($d[$tanggal_presensi]['jam_kembali'])
+                                                        ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_kembali']))
+                                                        : '';
+
+                                                    //Istirahat
+                                                    if ($istirahat == '1') {
+                                                        if ($lintashari == '0') {
+                                                            $jam_awal_istirahat = date(
+                                                                'Y-m-d H:i',
+                                                                strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_awal_istirahat']),
+                                                            );
+                                                            $jam_akhir_istirahat = date(
+                                                                'Y-m-d H:i',
+                                                                strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_akhir_istirahat']),
+                                                            );
+                                                        } else {
+                                                            $jam_awal_istirahat = date(
+                                                                'Y-m-d H:i',
+                                                                strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_awal_istirahat']),
+                                                            );
+                                                            $jam_akhir_istirahat = date(
+                                                                'Y-m-d H:i',
+                                                                strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_akhir_istirahat']),
+                                                            );
+                                                        }
+                                                    } else {
+                                                        $jam_awal_istirahat = null;
+                                                        $jam_akhir_istirahat = null;
+                                                    }
+
+                                                    //Cek Terlambat
+                                                    $terlambat = presensiHitungJamTerlambat($jam_in, $jam_mulai);
+
+                                                    //Hitung Denda
+                                                    $denda = presensiHitungDenda(
+                                                        $terlambat['jamterlambat'],
+                                                        $terlambat['menitterlambat'],
+                                                        $d[$tanggal_presensi]['kode_izin_terlambat'],
+                                                        $d['kode_dept'],
+                                                    );
+
+                                                    //Cek Pulang Cepat
+                                                    $pulangcepat = presensiHitungPulangCepat(
+                                                        $jam_out,
+                                                        $jam_selesai,
+                                                        $jam_awal_istirahat,
+                                                        $jam_akhir_istirahat,
+                                                    );
+
+                                                    //Cek Izin Keluar
+                                                    $izin_keluar = presensiHitungJamKeluarKantor(
+                                                        $jam_keluar,
+                                                        $jam_kembali,
+                                                        $jam_selesai,
+                                                        $jam_out,
+                                                        $total_jam_jadwal,
+                                                        $istirahat,
+                                                        $jam_awal_istirahat,
+                                                        $jam_akhir_istirahat,
+                                                    );
+
+                                                    //Potongan Jam
+                                                    $potongan_jam_sakit = 0;
+                                                    $potongan_jam_dirumahkan = 0;
+                                                    $potongan_jam_tidakhadir =
+                                                        empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out'])
+                                                            ? $total_jam_jadwal
+                                                            : 0;
+                                                    $potongan_jam_izin = 0;
+                                                    $potongan_jam_pulangcepat =
+                                                        $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
+                                                    $potongan_jam_izinkeluar =
+                                                        $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['desimal'] <= 1
+                                                            ? 0
+                                                            : $izin_keluar['desimal'];
+                                                    $potongan_jam_terlambat =
+                                                        $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['desimal'];
+
+                                                    //Total Potongan
+                                                    $total_potongan_jam =
+                                                        $potongan_jam_sakit +
+                                                        $potongan_jam_pulangcepat +
+                                                        $potongan_jam_izinkeluar +
+                                                        $potongan_jam_terlambat +
+                                                        $potongan_jam_dirumahkan +
+                                                        $potongan_jam_tidakhadir +
+                                                        $potongan_jam_izin;
+
+                                                    //Total Jam Kerja
+                                                    $total_jam =
+                                                        !empty($d[$tanggal_presensi]['jam_in']) && !empty($d[$tanggal_presensi]['jam_out'])
+                                                            ? $total_jam_jadwal - $total_potongan_jam
+                                                            : 0;
+
+                                                    //Denda
+                                                    $jumlah_denda = $denda['denda'];
+                                                    $kode_shift = 'P';
+                                                    if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003') {
+                                                        $total_premi_shift2 += 1;
+                                                        $kode_shift = 'S';
+                                                    }
+
+                                                    if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004') {
+                                                        $total_premi_shift3 += 1;
+                                                        $kode_shift = 'M';
+                                                    }
+
+                                                @endphp
+                                                {{ $kode_shift }}{{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
+                                                {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
                                             <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
                                             </p>
@@ -288,7 +297,8 @@
                                             <p style="margin:0">
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
                                             </p> --}}
-                                        </td>
+                                            </td>
+                                        @endif
                                     @elseif($d[$tanggal_presensi]['status'] == 's')
                                         @php
                                             $potongan_jam_terlambat = 0;

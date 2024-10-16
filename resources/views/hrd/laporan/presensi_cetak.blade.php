@@ -146,7 +146,7 @@
                                     @endphp
                                     @if ($d[$tanggal_presensi]['status'] == 'h')
                                         <!-- Jika Hari Minggu -->
-                                        @if (getNamahari($tanggal_presensi) == 'Minggu')
+                                        @if (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
                                             @php
                                                 $color = 'rgba(243, 158, 0, 0.833)';
                                                 $keterangan = '';
