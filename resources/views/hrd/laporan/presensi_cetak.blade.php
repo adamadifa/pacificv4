@@ -359,7 +359,18 @@
                                                 <br>
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
                                             </p>
-
+                                            @if (!empty($ceklembur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                    <br>
+                                                    <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                </p>
+                                            @endif
                                         </td>
                                         @php
                                             $total_potongan_jam =
@@ -402,6 +413,18 @@
                                                 <br>
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
                                             </p>
+                                            @if (!empty($ceklembur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                    <br>
+                                                    <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                </p>
+                                            @endif
                                         </td>
                                     @elseif($d[$tanggal_presensi]['status'] == 'i')
                                         @php
@@ -440,9 +463,30 @@
                                                 <br>
                                                 <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
                                             </p>
+                                            @if (!empty($ceklembur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                    <br>
+                                                    <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
                                         </td>
                                     @else
-                                        <td></td>
+                                        <td>
+                                            @if (!empty($ceklembur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                    <br>
+                                                    <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                                </p>
+                                            @endif
+                                            @if (!empty($ceklemburharilibur))
+                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                </p>
+                                            @endif
+                                        </td>
                                     @endif
                                 @else
                                     @php
@@ -535,6 +579,18 @@
                                         <br>
                                         @if (!empty($total_jam))
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
+                                        @endif
+                                        @if (!empty($ceklembur))
+                                            <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                <span>OT1 : {{ $lembur['overtime_1'] }}</span>
+                                                <br>
+                                                <span>OT2 : {{ $lembur['overtime_2'] }}</span>
+                                            </p>
+                                        @endif
+                                        @if (!empty($ceklemburharilibur))
+                                            <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                            </p>
                                         @endif
                                     </td>
                                 @endif
