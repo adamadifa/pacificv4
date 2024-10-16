@@ -95,7 +95,7 @@
                                             </span>
                                         @endif
                                     </span>
-                                    <a href="{{ route('targetkomisi.index') }}" class="stretched-link">Target</a>
+                                    <a href="/targetkomisi?posisi_ajuan={{ $level_user }}&status=0" class="stretched-link">Target</a>
                                     <small class="text-muted mb-0">Marketing</small>
                                 </div>
                             </div>
