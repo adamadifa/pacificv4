@@ -1,8 +1,8 @@
-<form action="{{ route('laporanhrd.cetakpresensi') }}" method="POST" target="_blank" id="formPresensi">
+<form action="{{ route('laporanhrd.cetakgaji') }}" method="POST" target="_blank" id="formGaji">
     @csrf
     @hasanyrole($roles_access_all_karyawan)
         <div class="form-group mb-3">
-            <select name="kode_cabang" id="kode_cabang_presensi" class="form-select select2Kodecabangpresensi">
+            <select name="kode_cabang" id="kode_cabang_gaji" class="form-select select2KodecabangGaji">
                 <option value="">Semua Cabang</option>
                 @foreach ($cabang as $d)
                     <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
@@ -11,12 +11,12 @@
         </div>
     @endrole
     <div class="form-group mb-3">
-        <select name="kode_dept" id="kode_dept_presensi" class="form-select select2Kodedeptpresensi">
+        <select name="kode_dept" id="kode_dept_gaji" class="form-select select2KodedeptGaji">
             <option value="">Semua Departemen</option>
         </select>
     </div>
     <div class="form-group mb-3">
-        <select name="kode_group" id="kode_group_presensi" class="form-select select2Kodegrouppresensi">
+        <select name="kode_group" id="kode_group_gaji" class="form-select select2KodegroupGaji">
             <option value="">Semua Group</option>
         </select>
     </div>
@@ -82,9 +82,9 @@
 @push('myscript')
     <script>
         $(function() {
-            const select2Kodecabangpresensi = $(".select2Kodecabangpresensi");
-            if (select2Kodecabangpresensi.length) {
-                select2Kodecabangpresensi.each(function() {
+            const select2KodecabangGaji = $(".select2KodecabangGaji");
+            if (select2KodecabangGaji.length) {
+                select2KodecabangGaji.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Semua Cabang',
@@ -95,7 +95,7 @@
             }
 
             function getDepartemen() {
-                const kode_cabang = $("#kode_cabang_presensi").val();
+                const kode_cabang = $("#kode_cabang_gaji").val();
                 $.ajax({
                     type: 'POST',
                     url: '{{ route('laporanhrd.getdepartemen') }}',
@@ -105,13 +105,13 @@
                     },
                     cache: false,
                     success: function(res) {
-                        $("#kode_dept_presensi").html(res);
+                        $("#kode_dept_gaji").html(res);
                     }
                 });
             }
 
             function getGroup() {
-                const kode_cabang = $("#kode_cabang_presensi").val();
+                const kode_cabang = $("#kode_cabang_gaji").val();
                 $.ajax({
                     type: 'POST',
                     url: '{{ route('laporanhrd.getgroup') }}',
@@ -121,7 +121,7 @@
                     },
                     cache: false,
                     success: function(res) {
-                        $("#kode_group_presensi").html(res);
+                        $("#kode_group_gaji").html(res);
                     }
                 });
             }
@@ -129,13 +129,13 @@
             getDepartemen();
             getGroup();
 
-            $("#kode_cabang_presensi").change(function(e) {
+            $("#kode_cabang_gaji").change(function(e) {
                 e.preventDefault();
                 getDepartemen();
                 getGroup();
             });
 
-            $("#formPresensi").submit(function(e) {
+            $("#formGaji").submit(function(e) {
                 const periode_laporan = $("#periode_laporan").val();
                 const bulan = $("#bulan").val();
                 const tahun = $("#tahun").val();
