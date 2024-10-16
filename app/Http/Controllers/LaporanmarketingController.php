@@ -4151,7 +4151,7 @@ class LaporanmarketingController extends Controller
                     $join->on('marketing_penjualan.kode_pelanggan', '=', 'salesbulanini.kode_pelanggan');
                 }
             )
-            ->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman')
+            ->join('salesman', 'salesbulanini.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$start_date_bulanlalu, $sampai])
             ->where('status_batal', 0)
@@ -4166,7 +4166,7 @@ class LaporanmarketingController extends Controller
             ->get();
 
 
-        dd($subqueryPenjvsavg);
+
 
         // $saldoawal = Saldoawalpiutangpelanggan::where('bulan', $bulan)->where('tahun', $tahun)->first();
         $saldoawal = Saldoawalpiutangpelanggan::where('bulan', $request->bulan)
