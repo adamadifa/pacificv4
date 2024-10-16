@@ -18,12 +18,25 @@
                         </button>
                     </li>
                 @endcan
+                @can('hrd.gaji')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#gaji" aria-controls="gaji"
+                            aria-selected="false" tabindex="-1">
+                            Gaji
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
                 @can('hrd.presensi')
                     <div class="tab-pane fade active show" id="presensi" role="tabpanel">
                         @include('hrd.laporan.presensi')
+                    </div>
+                @endcan
+                @can('hrd.gaji')
+                    <div class="tab-pane fade active show" id="gaji" role="tabpanel">
+                        @include('hrd.laporan.gaji')
                     </div>
                 @endcan
             </div>
