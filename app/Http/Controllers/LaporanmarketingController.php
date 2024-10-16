@@ -4105,41 +4105,59 @@ class LaporanmarketingController extends Controller
 
         //Penjualan vs AVG
         $subqueryPenjvsavgdata = DB::table('marketing_penjualan')->select(
-            'marketing_penjualan.kode_pelanggan',
-            'pindahfaktur.kode_salesman_baru as kode_salesman',
+            'marketing_penjualan.kode_pelanggand',
+            'salesbulanini.kode_salesman',
             DB::raw("SUM(IF(marketing_penjualan.tanggal BETWEEN '$start_date_bulanlalu' AND '$end_date_bulanlalu',(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur GROUP BY no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn,0)) as penjualanbulanlalu"),
             DB::raw("SUM(IF(marketing_penjualan.tanggal BETWEEN '$dari' AND '$sampai',(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur GROUP BY no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn,0)) as penjualanbulanini"),
         )
+            // ->leftJoin(
+            //     DB::raw("(
+            //          SELECT
+            //             marketing_penjualan.no_faktur,
+            //             IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+            //             IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+            //         FROM
+            //             marketing_penjualan
+            //         INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+            //         LEFT JOIN (
+            //         SELECT
+            //             no_faktur,
+            //             marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+            //             salesman.kode_cabang AS cabangbaru
+            //         FROM
+            //             marketing_penjualan_movefaktur
+            //             INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+            //         WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
+            //         ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            //     ) pindahfaktur"),
+            //     function ($join) {
+            //         $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            //     }
+            // )
             ->leftJoin(
                 DB::raw("(
-                     SELECT
-                        marketing_penjualan.no_faktur,
-                        IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
-                        IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
-                    FROM
-                        marketing_penjualan
-                    INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                    LEFT JOIN (
-                    SELECT
-                        no_faktur,
-                        marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
-                        salesman.kode_cabang AS cabangbaru
-                    FROM
-                        marketing_penjualan_movefaktur
-                        INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                    WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
-                    ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                ) pindahfaktur"),
+                SELECT
+                    marketing_penjualan.kode_pelanggan,
+                    marketing_penjualan.kode_salesman
+                FROM
+                    marketing_penjualan
+                WHERE
+                    marketing_penjualan.tanggal BETWEEN '$dari' AND '$sampai'
+                GROUP BY
+                    marketing_penjualan.kode_pelanggan,
+                    marketing_penjualan.kode_salesman
+            ) salesbulanini"),
                 function ($join) {
-                    $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+                    $join->on('marketing_penjualan.kode_pelanggan', '=', 'salesbulanini.kode_pelanggan');
                 }
             )
             ->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$start_date_bulanlalu, $sampai])
             ->where('status_batal', 0)
-            ->groupBy('marketing_penjualan.kode_pelanggan', 'pindahfaktur.kode_salesman_baru');
+            ->groupBy('marketing_penjualan.kode_pelanggan', 'salesbulanini.kode_salesman')->get();
 
+        die;
 
         $subqueryPenjvsavg = DB::table(DB::raw("({$subqueryPenjvsavgdata->toSql()}) as sub"))
             ->mergeBindings($subqueryPenjvsavgdata) // Bind subquery bindings
