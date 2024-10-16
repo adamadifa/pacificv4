@@ -125,6 +125,8 @@
                                     $ceklemburharilibur = ceklembur($datalemburharilibur, $search);
                                     if (!empty($ceklembur)) {
                                         $keterangan_lembur = 'Lembur';
+                                    } else {
+                                        $keterangan_lembur = '';
                                     }
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
