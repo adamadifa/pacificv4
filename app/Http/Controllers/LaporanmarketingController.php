@@ -4146,7 +4146,8 @@ class LaporanmarketingController extends Controller
             ->select('kode_salesman', DB::raw('COUNT(kode_pelanggan) as realisasi_penjvsavg'))
             ->whereRaw('penjualanbulanini >= penjualanbulanlalu')
             ->where('penjualanbulanlalu', '>', 0)
-            ->groupBy('kode_pelanggan');
+            ->groupBy('kode_pelanggan')
+            ->get();
 
 
         dd($subqueryPenjvsavg);
