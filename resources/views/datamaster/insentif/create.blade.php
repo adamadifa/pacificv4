@@ -19,6 +19,7 @@
     <x-input-inline-label icon="ti ti-moneybag" label="Ruang Lingkup" name="im_ruanglingkup" money="true" align="right" />
     <x-input-inline-label icon="ti ti-moneybag" label="Penempatan" name="im_penempatan" money="true" align="right" />
     <x-input-inline-label icon="ti ti-moneybag" label="Kinerja" name="im_kinerja" money="true" align="right" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Kendaraan" name="im_kendaraan" money="true" align="right" />
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

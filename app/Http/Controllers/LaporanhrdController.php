@@ -109,11 +109,12 @@ class LaporanhrdController extends Controller
         $start_date = $dari;
         $end_date = $sampai;
 
+        $daribulangaji = $dari;
 
-        $query = Presensi::query();
+        $query = Karyawan::query();
         $query->select(
             'hrd_presensi.tanggal',
-            'hrd_presensi.nik',
+            'hrd_karyawan.nik',
             'nama_karyawan',
             'hrd_karyawan.kode_cabang',
             'hrd_karyawan.kode_jabatan',
@@ -160,7 +161,8 @@ class LaporanhrdController extends Controller
             'hrd_presensi_izinabsen.kode_izin',
             'hrd_izinabsen.direktur as izin_absen_direktur',
         );
-        $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        $query->leftJoin('hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -184,7 +186,24 @@ class LaporanhrdController extends Controller
         $query->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi');
         $query->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin');
 
+        if (!empty($kode_cabang)) {
+            $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_dept)) {
+            $query->where('hrd_karyawan.kode_dept', $request->kode_dept);
+        }
+        if (!empty($request->kode_group)) {
+            $query->where('hrd_karyawan.kode_group', $request->kode_group);
+        }
+
         $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+        // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
+        $query->where('status_aktif_karyawan', 1);
+        $query->where('tanggal_masuk', '<=', $end_date);
+        $query->orWhere('status_aktif_karyawan', 0);
+        $query->where('tanggal_off_gaji', '>=', $start_date);
+        $query->where('tanggal_masuk', '<=', $end_date);
+
 
         if (!empty($kode_cabang)) {
             $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
@@ -196,13 +215,100 @@ class LaporanhrdController extends Controller
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
 
+        $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
         $query->orderBy('nik', 'asc');
         $query->orderBy('tanggal', 'asc');
         $presensi = $query->get();
 
 
+        // $qpresensi = Karyawan::query();
+        // $qpresensi->select(
+        //     'hrd_karyawan.nik',
+        //     'hrd_karyawan.nama_karyawan',
+        //     'hrd_karyawan.kode_jabatan',
+        //     'hrd_karyawan.kode_dept',
+        //     'hrd_karyawan.kode_cabang',
+        //     'presensi.tanggal',
+        //     'presensi.jam_in',
+        //     'presensi.jam_out',
+        //     'presensi.status',
+        //     'presensi.kode_jadwal',
+        //     'presensi.nama_jadwal',
+        //     'presensi.kode_jam_kerja',
+        //     'presensi.jam_mulai',
+        //     'presensi.jam_selesai',
+        //     'presensi.lintashari',
+        //     'presensi.total_jam',
+        //     'presensi.istirahat',
+        //     'presensi.jam_awal_istirahat',
+        //     'presensi.jam_akhir_istirahat',
+        //     //Izin Keluar
+        //     'presensi.kode_izin_keluar',
+        //     'presensi.jam_keluar',
+        //     'presensi.jam_kembali',
+        //     'presensi.izin_keluar_direktur',
 
-        $data['presensi'] = $presensi->groupBy('nik', 'nama_karyawan', 'kode_jabatan', 'kode_dept')->map(function ($rows) {
+        //     //Izin Terlambat
+        //     'presensi.kode_izin_terlambat',
+        //     'presensi.izin_terlambat_direktur',
+
+        //     //Izin Sakit
+        //     'presensi.kode_izin_sakit',
+        //     'presensi.doc_sid',
+        //     'presensi.izin_sakit_direktur',
+
+        //     //Izin Pulang
+        //     'presensi.kode_izin_pulang',
+        //     'presensi.izin_pulang_direktur',
+
+        //     //Izin Cuti
+        //     'presensi.kode_izin_cuti',
+        //     'presensi.kode_cuti',
+        //     'presensi.izin_cuti_direktur',
+        //     'presensi.nama_cuti',
+
+        //     //Izin Absen
+        //     'presensi.kode_izin',
+        //     'presensi.izin_absen_direktur',
+        // );
+
+        // $qpresensi->leftJoinSub($query, 'presensi', function ($join) {
+        //     $join->on('hrd_karyawan.nik', '=', 'presensi.nik');
+        // });
+
+
+        // if (!empty($kode_cabang)) {
+        //     $qpresensi->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        // }
+        // if (!empty($request->kode_dept)) {
+        //     $qpresensi->where('hrd_karyawan.kode_dept', $request->kode_dept);
+        // }
+        // if (!empty($request->kode_group)) {
+        //     $qpresensi->where('hrd_karyawan.kode_group', $request->kode_group);
+        // }
+        // // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
+        // $qpresensi->where('status_aktif_karyawan', 1);
+        // $qpresensi->where('tanggal_masuk', '<=', $end_date);
+        // $qpresensi->orWhere('status_aktif_karyawan', 0);
+        // $qpresensi->where('tanggal_off_gaji', '>=', $start_date);
+        // $qpresensi->where('tanggal_masuk', '<=', $end_date);
+        // if (!empty($kode_cabang)) {
+        //     $qpresensi->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        // }
+        // if (!empty($request->kode_dept)) {
+        //     $qpresensi->where('hrd_karyawan.kode_dept', $request->kode_dept);
+        // }
+        // if (!empty($request->kode_group)) {
+        //     $qpresensi->where('hrd_karyawan.kode_group', $request->kode_group);
+        // }
+
+        // // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
+        // $qpresensi->orderBy('nik', 'asc');
+
+        // $presensi = $qpresensi->get();
+
+        // dd($presensi);
+        $data['presensi'] = $presensi->groupBy('nik')->map(function ($rows) {
             $data = [
                 'nik' => $rows->first()->nik,
                 'nama_karyawan' => $rows->first()->nama_karyawan,

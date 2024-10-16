@@ -21,24 +21,23 @@
                         <form action="{{ route('insentif.index') }}">
                             <div class="row">
                                 <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}"
-                                        name="nama_karyawan" icon="ti ti-search" />
+                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan"
+                                        icon="ti ti-search" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                                        textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
+                                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                        selected="{{ Request('kode_cabang') }}" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept"
-                                        textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true" />
+                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
+                                        selected="{{ Request('kode_dept') }}" upperCase="true" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group"
-                                        textShow="nama_group" selected="{{ Request('kode_group') }}" upperCase="true" />
+                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
+                                        selected="{{ Request('kode_group') }}" upperCase="true" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i
-                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
+                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
                                 </div>
                             </div>
 
@@ -56,7 +55,7 @@
                                         <th rowspan="2">NIK</th>
                                         <th rowspan="2" style="width: 15%">Nama Karyawan</th>
                                         <th colspan="4" class="text-center">Insentif Umum</th>
-                                        <th colspan="3" class="text-center">Insentif Manager</th>
+                                        <th colspan="4" class="text-center">Insentif Manager</th>
                                         <th rowspan="2">Berlaku</th>
                                         <th rowspan="2">#</th>
                                     </tr>
@@ -69,6 +68,7 @@
                                         <th>Ruang Lingkup</th>
                                         <th>Penempatan</th>
                                         <th>Kinerja</th>
+                                        <th>Kendaraan</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -77,7 +77,7 @@
 
                                             <td>{{ $d->kode_insentif }}</td>
                                             <td>{{ $d->nik }}</td>
-                                            <td>{{ $d->nama_karyawan }}</td>
+                                            <td>{{ formatName($d->nama_karyawan) }}</td>
                                             <td class="text-end">
                                                 {{ !empty($d->iu_masakerja) ? formatRupiah($d->iu_masakerja) : '' }}
                                             </td>
@@ -99,6 +99,9 @@
                                             </td>
                                             <td class="text-end">
                                                 {{ !empty($d->im_kinerja) ? formatRupiah($d->im_kinerja) : '' }}
+                                            </td>
+                                            <td class="text-end">
+                                                {{ !empty($d->im_kendaraan) ? formatRupiah($d->im_kendaraan) : '' }}
                                             </td>
                                             <td>
                                                 {{ date('d-m-Y', strtotime($d->tanggal_berlaku)) }}

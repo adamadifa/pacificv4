@@ -112,6 +112,19 @@
                     }
                 },
 
+                im_kendaraan: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Insentif Kendaraan  Harus  Diisi'
+                        },
+                        numeric: {
+                            decimalSeparator: ',',
+                            thousandsSeparator: '.',
+                            message: 'Insentif Kendaraan  Harus Berupa Angka'
+                        }
+                    }
+                },
+
 
             },
             plugins: {
