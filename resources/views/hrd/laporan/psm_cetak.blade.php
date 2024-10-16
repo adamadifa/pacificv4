@@ -256,13 +256,19 @@
                                                 //Denda
                                                 $jumlah_denda = $denda['denda'];
                                                 $kode_shift = 'P';
+
+                                                //PREMI
                                                 if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003') {
-                                                    $total_premi_shift2 += 1;
+                                                    if ($total_jam >= 5) {
+                                                        $total_premi_shift2 += 1;
+                                                    }
                                                     $kode_shift = 'S';
                                                 }
 
                                                 if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004') {
-                                                    $total_premi_shift3 += 1;
+                                                    if ($total_jam >= 5) {
+                                                        $total_premi_shift3 += 1;
+                                                    }
                                                     $kode_shift = 'M';
                                                 }
 

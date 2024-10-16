@@ -269,11 +269,12 @@
                                                 //Denda
                                                 $jumlah_denda = $denda['denda'];
 
-                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003') {
+                                                //Premi
+                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003' && $total_jam >= 5) {
                                                     $total_premi_shift2 += 1;
                                                 }
 
-                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004') {
+                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004' && $total_jam >= 5) {
                                                     $total_premi_shift3 += 1;
                                                 }
                                             @endphp

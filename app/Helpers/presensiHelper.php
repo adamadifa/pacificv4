@@ -262,5 +262,53 @@ function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlamba
     ];
 }
 
+function hitungjamlembur($jam1, $jam2)
+{
+    $j1 = strtotime($jam1);
+    $j2 = strtotime($jam2);
 
-function presensiHitunglembur($datalembur) {}
+    $diffterlambat = $j2 - $j1;
+
+    $jamterlambat = floor($diffterlambat / (60 * 60));
+    $menitterlambat = floor(($diffterlambat - ($jamterlambat * (60 * 60))) / 60);
+
+    $desimalterlambat = $jamterlambat + ROUND(($menitterlambat / 60), 2);
+
+    return $desimalterlambat;
+}
+function presensiHitunglembur($datalembur)
+{
+    if (!empty($datalembur)) {
+        $tgl_lembur_dari = $datalembur[0]['tanggal_dari'];
+        $tgl_lembur_sampai = $datalembur[0]['tanggal_sampai'];
+        $jamlembur_dari = date('H:i', strtotime($tgl_lembur_dari));
+        $jmljam_lbr = hitungjamlembur($tgl_lembur_dari, $tgl_lembur_sampai);
+        $istirahatlbr = $datalembur[0]['istirahat'] == 1 ? 1 : 0;
+        $jmljam_lembur = $jmljam_lbr > 7 ? 7 : $jmljam_lbr - $istirahatlbr;
+        $kategori_lembur = $datalembur[0]['kategori'];
+
+        if ($jamlembur_dari >= '22:00' && $jmljam_lbr >= 5) {
+            $premilembur = 6000;
+            $premilembur_shift_3 = 6000;
+            $jmlharilembur_shift_3 = 1;
+        } else if ($jamlembur_dari >= '15:00' && $jmljam_lbr >= 5) {
+            $premilembur = 5000;
+            $premilembur_shift_2 = 5000;
+            $jmlharilembur_shift_2 = 1;
+        }
+        $overtime_1 = $jmljam_lembur > 1 ? 1 : $jmljam_lembur;
+        $overtime_1 = round($overtime_1, 2, PHP_ROUND_HALF_DOWN);
+        $overtime_2 = $jmljam_lembur > 1 ? $jmljam_lembur - 1 : 0;
+        $overtime_2 = round($overtime_2, 2, PHP_ROUND_HALF_DOWN);
+
+        return [
+            'overtime_1' => $overtime_1,
+            'overtime_2' => $overtime_2,
+        ];
+    } else {
+        return [
+            'overtime_1' => 0,
+            'overtime_2' => 0,
+        ];
+    }
+}
