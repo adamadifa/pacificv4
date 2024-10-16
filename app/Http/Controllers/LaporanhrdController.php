@@ -18,6 +18,7 @@ class LaporanhrdController extends Controller
         $data['start_year'] = config('global.start_year');
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
+        $data['roles_access_all_karyawan'] = config('global.roles_access_all_karyawan');
         return view('hrd.laporan.index', $data);
     }
 
@@ -26,7 +27,8 @@ class LaporanhrdController extends Controller
     {
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
-
+        $dept_access = json_decode($user->dept_access, true) ?? [];
+        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $kode_cabang = $request->kode_cabang;
@@ -37,10 +39,37 @@ class LaporanhrdController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
-        $kode_cabang = $request->kode_cabang;
-        $departemen = Karyawan::where('kode_cabang', $kode_cabang)
-            ->join('hrd_departemen', 'hrd_departemen.kode_dept', '=', 'hrd_karyawan.kode_dept')
-            ->select('hrd_karyawan.kode_dept', 'nama_dept')->distinct()->get();
+        // $kode_cabang = $request->kode_cabang;
+        $query = Karyawan::query();
+        $query->join('hrd_departemen', 'hrd_departemen.kode_dept', '=', 'hrd_karyawan.kode_dept');
+        $query->select('hrd_karyawan.kode_dept', 'nama_dept');
+        $query->distinct();
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                if (auth()->user()->kode_cabang != 'PST') {
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    if ($user->hasRole(['staff keuangan'])) {
+                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                    } else {
+                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
+                }
+            }
+        }
+        if (!empty($kode_cabang)) {
+            $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        }
+        $departemen = $query->get();
+
+
+        // $departemen = Karyawan::where('kode_cabang', $kode_cabang)
+        //     ->join('hrd_departemen', 'hrd_departemen.kode_dept', '=', 'hrd_karyawan.kode_dept')
+        //     ->select('hrd_karyawan.kode_dept', 'nama_dept')->distinct()->get();
 
         $html = '<option value="">Semua Departemen</option>';
         foreach ($departemen as $d) {
@@ -54,6 +83,17 @@ class LaporanhrdController extends Controller
     {
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
+        $dept_access = json_decode($user->dept_access, true) ?? [];
+        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
@@ -65,10 +105,34 @@ class LaporanhrdController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
-        $kode_cabang = $request->kode_cabang;
-        $group = Karyawan::where('kode_cabang', $kode_cabang)
-            ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
-            ->select('hrd_karyawan.kode_group', 'nama_group')->distinct()->get();
+        // $kode_cabang = $request->kode_cabang;
+
+        $query = Karyawan::query();
+        $query->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $query->select('hrd_karyawan.kode_group', 'nama_group');
+        $query->distinct();
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                if (auth()->user()->kode_cabang != 'PST') {
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    if ($user->hasRole(['staff keuangan'])) {
+                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                    } else {
+                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
+                }
+            }
+        }
+        if (!empty($kode_cabang)) {
+            $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        }
+        $group = $query->get();
+
 
         $html = '<option value="">Semua Group</option>';
         foreach ($group as $d) {
@@ -81,8 +145,9 @@ class LaporanhrdController extends Controller
     public function cetakpresensi(Request $request)
     {
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
         $user = User::findorfail(auth()->user()->id);
-
+        $dept_access = json_decode($user->dept_access, true) ?? [];
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $kode_cabang = $request->kode_cabang;
@@ -109,11 +174,12 @@ class LaporanhrdController extends Controller
         $start_date = $dari;
         $end_date = $sampai;
 
+        $daribulangaji = $dari;
 
-        $query = Presensi::query();
+        $query = Karyawan::query();
         $query->select(
             'hrd_presensi.tanggal',
-            'hrd_presensi.nik',
+            'hrd_karyawan.nik',
             'nama_karyawan',
             'hrd_karyawan.kode_cabang',
             'hrd_karyawan.kode_jabatan',
@@ -160,7 +226,8 @@ class LaporanhrdController extends Controller
             'hrd_presensi_izinabsen.kode_izin',
             'hrd_izinabsen.direktur as izin_absen_direktur',
         );
-        $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        $query->leftJoin('hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -184,7 +251,42 @@ class LaporanhrdController extends Controller
         $query->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi');
         $query->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin');
 
+        if (!empty($kode_cabang)) {
+            $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_dept)) {
+            $query->where('hrd_karyawan.kode_dept', $request->kode_dept);
+        }
+        if (!empty($request->kode_group)) {
+            $query->where('hrd_karyawan.kode_group', $request->kode_group);
+        }
+
         $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                if (auth()->user()->kode_cabang != 'PST') {
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    if ($user->hasRole(['staff keuangan'])) {
+                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                    } else {
+                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
+                }
+            }
+        }
+        // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
+        $query->where('status_aktif_karyawan', 1);
+        $query->where('tanggal_masuk', '<=', $end_date);
+        $query->orWhere('status_aktif_karyawan', 0);
+        $query->where('tanggal_off_gaji', '>=', $start_date);
+        $query->where('tanggal_masuk', '<=', $end_date);
+
 
         if (!empty($kode_cabang)) {
             $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
@@ -196,13 +298,117 @@ class LaporanhrdController extends Controller
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
 
+        $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                if (auth()->user()->kode_cabang != 'PST') {
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    if ($user->hasRole(['staff keuangan'])) {
+                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                    } else {
+                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
+                }
+            }
+        }
         $query->orderBy('nik', 'asc');
         $query->orderBy('tanggal', 'asc');
         $presensi = $query->get();
 
 
+        // $qpresensi = Karyawan::query();
+        // $qpresensi->select(
+        //     'hrd_karyawan.nik',
+        //     'hrd_karyawan.nama_karyawan',
+        //     'hrd_karyawan.kode_jabatan',
+        //     'hrd_karyawan.kode_dept',
+        //     'hrd_karyawan.kode_cabang',
+        //     'presensi.tanggal',
+        //     'presensi.jam_in',
+        //     'presensi.jam_out',
+        //     'presensi.status',
+        //     'presensi.kode_jadwal',
+        //     'presensi.nama_jadwal',
+        //     'presensi.kode_jam_kerja',
+        //     'presensi.jam_mulai',
+        //     'presensi.jam_selesai',
+        //     'presensi.lintashari',
+        //     'presensi.total_jam',
+        //     'presensi.istirahat',
+        //     'presensi.jam_awal_istirahat',
+        //     'presensi.jam_akhir_istirahat',
+        //     //Izin Keluar
+        //     'presensi.kode_izin_keluar',
+        //     'presensi.jam_keluar',
+        //     'presensi.jam_kembali',
+        //     'presensi.izin_keluar_direktur',
 
-        $data['presensi'] = $presensi->groupBy('nik', 'nama_karyawan', 'kode_jabatan', 'kode_dept')->map(function ($rows) {
+        //     //Izin Terlambat
+        //     'presensi.kode_izin_terlambat',
+        //     'presensi.izin_terlambat_direktur',
+
+        //     //Izin Sakit
+        //     'presensi.kode_izin_sakit',
+        //     'presensi.doc_sid',
+        //     'presensi.izin_sakit_direktur',
+
+        //     //Izin Pulang
+        //     'presensi.kode_izin_pulang',
+        //     'presensi.izin_pulang_direktur',
+
+        //     //Izin Cuti
+        //     'presensi.kode_izin_cuti',
+        //     'presensi.kode_cuti',
+        //     'presensi.izin_cuti_direktur',
+        //     'presensi.nama_cuti',
+
+        //     //Izin Absen
+        //     'presensi.kode_izin',
+        //     'presensi.izin_absen_direktur',
+        // );
+
+        // $qpresensi->leftJoinSub($query, 'presensi', function ($join) {
+        //     $join->on('hrd_karyawan.nik', '=', 'presensi.nik');
+        // });
+
+
+        // if (!empty($kode_cabang)) {
+        //     $qpresensi->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        // }
+        // if (!empty($request->kode_dept)) {
+        //     $qpresensi->where('hrd_karyawan.kode_dept', $request->kode_dept);
+        // }
+        // if (!empty($request->kode_group)) {
+        //     $qpresensi->where('hrd_karyawan.kode_group', $request->kode_group);
+        // }
+        // // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
+        // $qpresensi->where('status_aktif_karyawan', 1);
+        // $qpresensi->where('tanggal_masuk', '<=', $end_date);
+        // $qpresensi->orWhere('status_aktif_karyawan', 0);
+        // $qpresensi->where('tanggal_off_gaji', '>=', $start_date);
+        // $qpresensi->where('tanggal_masuk', '<=', $end_date);
+        // if (!empty($kode_cabang)) {
+        //     $qpresensi->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        // }
+        // if (!empty($request->kode_dept)) {
+        //     $qpresensi->where('hrd_karyawan.kode_dept', $request->kode_dept);
+        // }
+        // if (!empty($request->kode_group)) {
+        //     $qpresensi->where('hrd_karyawan.kode_group', $request->kode_group);
+        // }
+
+        // // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
+        // $qpresensi->orderBy('nik', 'asc');
+
+        // $presensi = $qpresensi->get();
+
+        // dd($presensi);
+        $data['presensi'] = $presensi->groupBy('nik')->map(function ($rows) {
             $data = [
                 'nik' => $rows->first()->nik,
                 'nama_karyawan' => $rows->first()->nama_karyawan,
@@ -261,6 +467,7 @@ class LaporanhrdController extends Controller
         $data['dataminggumasuk'] = getminggumasuk($start_date, $end_date);
         $data['datatanggallimajam'] = gettanggallimajam($start_date, $end_date);
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
+
 
         if ($request->format_laporan == 1) {
             if (isset($_POST['exportButton'])) {

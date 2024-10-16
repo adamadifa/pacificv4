@@ -36,7 +36,7 @@
                 </tr>
                 <tr>
                     <th>Jam Masuk</th>
-                    <td>{{ date('H:i', strtotime($presensi->jam_in)) }}</td>
+                    <td>{{ date('d-m-Y H:i', strtotime($presensi->jam_in)) }}</td>
                 </tr>
             </table>
 
@@ -74,8 +74,8 @@
                     <td>{{ DateToIndo($presensi->tanggal) }}</td>
                 </tr>
                 <tr>
-                    <th>Jam Masuk</th>
-                    <td>{{ date('H:i', strtotime($presensi->jam_in)) }}</td>
+                    <th>Jam Pulang</th>
+                    <td>{{ date('d-m-Y H:i', strtotime($presensi->jam_out)) }}</td>
                 </tr>
             </table>
 

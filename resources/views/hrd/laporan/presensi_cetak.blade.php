@@ -6,7 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Presensi {{ date('Y-m-d H:i:s') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
-
+    <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+    <script src="{{ asset('assets/vendor/js/freeze-table.js') }}"></script>
+    {{-- <style>
+        .freeze-table {
+            height: auto;
+            max-height: 830px;
+            overflow: auto;
+        }
+    </style> --}}
     <style>
         .text-red {
             background-color: red;
@@ -554,7 +562,7 @@
                                 @endphp
                                 {{ formatAngkaDesimal($total_jam_kerja) }}
                             </td>
-                            <td style="font-weight: bold; color:#026720; text-align:center">
+                            <td style="font-weight: bold; color:#f40505; text-align:center">
                                 {{ formatAngka($total_denda) }}
                             </td>
                             <td style="font-weight: bold; color:#026720; text-align:center">
@@ -572,3 +580,10 @@
 </body>
 
 </html>
+{{-- <script>
+    $(".freeze-table").freezeTable({
+        'scrollable': true,
+        'columnNum': 3,
+        'shadow': true,
+    });
+</script> --}}
