@@ -20,7 +20,7 @@
                 @endcan
                 @can('hrd.gaji')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#gaji" aria-controls="gaji"
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#gaji" aria-controls="gaji"
                             aria-selected="false" tabindex="-1">
                             Gaji
                         </button>
