@@ -35,7 +35,7 @@
                     </div>
                 @endcan
                 @can('hrd.gaji')
-                    <div class="tab-pane fade active show" id="gaji" role="tabpanel">
+                    <div class="tab-pane fade" id="gaji" role="tabpanel">
                         @include('hrd.laporan.gaji')
                     </div>
                 @endcan
