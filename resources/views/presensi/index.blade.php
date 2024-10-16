@@ -16,7 +16,7 @@
                         <form action="{{ route('presensi.index') }}">
                             <x-input-with-icon label="Tanggal" value="{{ Request('tanggal') }}" name="tanggal" icon="ti ti-calendar"
                                 datepicker="flatpickr-date" />
-                            @hasanyrole($roles_show_cabang)
+                            @hasanyrole($roles_access_all_karyawan)
                                 <div class="row">
                                     <div class="col-lg-12 col-sm-12 col-md-12">
                                         <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"

@@ -1,6 +1,6 @@
 <form action="{{ route('laporanhrd.cetakpresensi') }}" method="POST" target="_blank" id="formPresensi">
     @csrf
-    @hasanyrole($roles_show_cabang)
+    @hasanyrole($roles_access_all_karyawan)
         <div class="form-group mb-3">
             <select name="kode_cabang" id="kode_cabang_presensi" class="form-select select2Kodecabangpresensi">
                 <option value="">Semua Cabang</option>
@@ -127,6 +127,7 @@
             }
 
             getDepartemen();
+            getGroup();
 
             $("#kode_cabang_presensi").change(function(e) {
                 e.preventDefault();

@@ -240,7 +240,7 @@ class PresensiController extends Controller
         $karyawan->appends($request->all());
         $data['karyawan'] = $karyawan;
         $data['tanggal'] = $tanggal;
-
+        $data['roles_access_all_karyawan'] = $roles_access_all_karyawan;
         // if (!empty($request->tanggal)) {
         //
         //     dd($data['harilibur']);
