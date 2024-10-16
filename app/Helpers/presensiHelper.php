@@ -261,3 +261,6 @@ function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlamba
         'cek' => $cek
     ];
 }
+
+
+function presensiHitunglembur($datalembur) {}

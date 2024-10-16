@@ -123,11 +123,8 @@
                                     $cekminggumasuk = ceklibur($dataminggumasuk, $search);
                                     $ceklembur = ceklembur($datalembur, $search);
                                     $ceklemburharilibur = ceklembur($datalemburharilibur, $search);
-                                    if (!empty($ceklembur)) {
-                                        $keterangan_lembur = 'Lembur';
-                                    } else {
-                                        $keterangan_lembur = '';
-                                    }
+
+                                    $lembur = presensiHitunglembur($ceklembur);
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
