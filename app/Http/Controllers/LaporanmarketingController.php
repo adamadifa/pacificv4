@@ -4105,7 +4105,7 @@ class LaporanmarketingController extends Controller
 
         //Penjualan vs AVG
         $subqueryPenjvsavgdata = DB::table('marketing_penjualan')->select(
-            'marketing_penjualan.kode_pelanggan',
+            'marketing_penjualan.kode_pelanggand',
             'pindahfaktur.kode_salesman_baru as kode_salesman',
             DB::raw("SUM(IF(marketing_penjualan.tanggal BETWEEN '$start_date_bulanlalu' AND '$end_date_bulanlalu',(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur GROUP BY no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn,0)) as penjualanbulanlalu"),
             DB::raw("SUM(IF(marketing_penjualan.tanggal BETWEEN '$dari' AND '$sampai',(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur GROUP BY no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn,0)) as penjualanbulanini"),
@@ -4140,7 +4140,7 @@ class LaporanmarketingController extends Controller
             ->where('status_batal', 0)
             ->groupBy('marketing_penjualan.kode_pelanggan', 'pindahfaktur.kode_salesman_baru');
 
-
+        die;
         $subqueryPenjvsavg = DB::table(DB::raw("({$subqueryPenjvsavgdata->toSql()}) as sub"))
             ->mergeBindings($subqueryPenjvsavgdata) // Bind subquery bindings
             ->select('kode_salesman', DB::raw('COUNT(kode_pelanggan) as realisasi_penjvsavg'))
