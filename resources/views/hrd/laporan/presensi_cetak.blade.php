@@ -96,7 +96,7 @@
                     @foreach ($presensi as $d)
                         <tr>
                             <td style="width:1%">{{ $loop->iteration }}</td>
-                            <td style="width:5%">{{ $d['nik'] }}</td>
+                            <td style="width:2%">{{ $d['nik'] }}</td>
                             <td style="width:5%">{{ $d['nama_karyawan'] }}</td>
                             @php
                                 $tanggal_presensi = $start_date;
