@@ -61,6 +61,9 @@
                         <th rowspan="3">Denda</th>
                         <th rowspan="3">Premi <br> Shift 2</th>
                         <th rowspan="3">Premi <br> Shift 3</th>
+                        <th rowspan="3">OT 1</th>
+                        <th rowspan="3">OT 2</th>
+                        <th rowspan="3">OT Libur</th>
                     </tr>
                     <tr>
                         @php
@@ -108,6 +111,9 @@
                                 $total_premi_shift2 = 0;
                                 $total_premi_shift3 = 0;
                                 $total_denda = 0;
+                                $total_overtime_1 = 0;
+                                $total_overtime_2 = 0;
+                                $total_overtime_libur = 0;
                             @endphp
                             @while (strtotime($tanggal_presensi) <= strtotime($end_date))
                                 @php
@@ -126,6 +132,9 @@
 
                                     $lembur = presensiHitunglembur($ceklembur);
                                     $lembur_libur = presensiHitunglembur($ceklemburharilibur);
+                                    $total_overtime_1 += $lembur['overtime_1'];
+                                    $total_overtime_2 += $lembur['overtime_2'];
+                                    $total_overtime_libur += $lembur_libur['overtime_libur'];
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -647,6 +656,15 @@
                             </td>
                             <td style="font-weight: bold; color:#026720; text-align:center">
                                 {{ !empty($total_premi_shift3) ? $total_premi_shift3 : '' }}
+                            </td>
+                            <td style="font-weight: bold; color:#026720; text-align:center">
+                                {{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}
+                            </td>
+                            <td style="font-weight: bold; color:#026720; text-align:center">
+                                {{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}
+                            </td>
+                            <td style="font-weight: bold; color:#026720; text-align:center">
+                                {{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}
                             </td>
                         </tr>
                     @endforeach
