@@ -7,8 +7,8 @@
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal BPBJ" name="tanggal_mutasi" datepicker="flatpickr-date" />
 
     <hr>
-    <x-select label="Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk"
-        upperCase="true" select2="select2Kodeproduk" />
+    <x-select label="Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk" upperCase="true"
+        select2="select2Kodeproduk" />
     <div class="row">
         <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="form-group mb-3">
@@ -43,8 +43,7 @@
         <tbody id="loaddetailbpbjtemp"></tbody>
     </table>
     <div class="form-check mt-3 mb-3">
-        <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value=""
-            id="defaultCheck3">
+        <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value="" id="defaultCheck3">
         <label class="form-check" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
     </div>
     <div class="form-group" id="saveButton">
@@ -221,16 +220,17 @@
                     },
                     cache: false,
                     success: function(respond) {
-                        if (respond === '0') {
-                            Swal.fire("Saved!", "", "success");
-                            $("#jumlah").val(0);
-                            $("#shift").val("");
-                            loaddetailtemp();
-                        } else if (respond === '1') {
-                            Swal.fire("Oops!", "Data Sudah Ada", "warning");
-                        } else {
-                            Swal.fire("Error", respond, "error");
-                        }
+                        console.log(respond);
+                        // if (respond === '0') {
+                        //     Swal.fire("Saved!", "", "success");
+                        //     $("#jumlah").val(0);
+                        //     $("#shift").val("");
+                        //     loaddetailtemp();
+                        // } else if (respond === '1') {
+                        //     Swal.fire("Oops!", "Data Sudah Ada", "warning");
+                        // } else {
+                        //     Swal.fire("Error", respond, "error");
+                        // }
                         $("#tambahproduk").prop('disabled', false);
                     }
                 });
