@@ -108,7 +108,7 @@
                             <td style="width:3%;">{{ $d['nama_jabatan'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['kode_cabang'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['kode_perusahaan'] }}</td>
-                            <td style="width:2%; text-align: center">{{ $d['klasifikasi'] }}</td>></td>
+                            <td style="width:3%;">{{ $d['klasifikasi'] }}</td>
                             <td></td>
                             <td></td>
                             <td></td>
