@@ -185,10 +185,7 @@ class LaporanhrdController extends Controller
             $join->on('hrd_gaji.nik', '=', 'lastgaji.nik')
                 ->on('hrd_gaji.tanggal_berlaku', '=', 'lastgaji.max_tanggal');
         })
-            ->select('hrd_gaji.*')
-            ->get();
-
-        dd($gajiTerakhir);
+            ->select('hrd_gaji.*');
 
 
         $qpresensi = Presensi::query();
@@ -254,12 +251,23 @@ class LaporanhrdController extends Controller
             //Izin Absen
             'hrd_presensi_izinabsen.kode_izin',
             'hrd_izinabsen.direktur as izin_absen_direktur',
+
+
+            //Gaji
+            'hrd_gaji.gaji_pokok',
+            'hrd_gaji.t_jabatan',
+            'hrd_gaji.t_masakerja',
+            'hrd_gaji.t_tanggungjawab',
+            'hrd_gaji.t_makan',
+            'hrd_gaji.t_istri',
+            'hrd_gaji.t_skill'
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
         $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->leftJoin('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
         $query->leftjoinSub($qpresensi, 'hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        $query->leftjoinSub($gajiTerakhir, 'hrd_gaji', 'hrd_karyawan.nik', '=', 'hrd_gaji.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -372,6 +380,13 @@ class LaporanhrdController extends Controller
                 'tanggal_masuk' => $rows->first()->tanggal_masuk,
                 'jenis_kelamin' => $rows->first()->jenis_kelamin,
                 'status_karyawan' => $rows->first()->status_karyawan,
+                'gaji_pokok' => $rows->first()->gaji_pokok,
+                't_jabatan' => $rows->first()->t_jabatan,
+                't_masakerja' => $rows->first()->t_masakerja,
+                't_tanggungjawab' => $rows->first()->t_tanggungjawab,
+                't_makan' => $rows->first()->t_makan,
+                't_istri' => $rows->first()->t_istri,
+                't_skill' => $rows->first()->t_skill,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
