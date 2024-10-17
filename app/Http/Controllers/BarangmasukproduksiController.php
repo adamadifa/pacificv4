@@ -235,7 +235,7 @@ class BarangmasukproduksiController extends Controller
         $cek = Detailbarangmasukproduksitemp::where('kode_barang_produksi', $request->kode_barang_produksi)
             ->where('id_user', auth()->user()->id)->count();
         if ($cek > 0) {
-            return "error|Data Sudah Ada";
+            return response()->json(['status' => 'error', 'message' => 'Data Sudah Ada'], 400);
         } else {
             try {
                 Detailbarangmasukproduksitemp::create([
@@ -245,9 +245,9 @@ class BarangmasukproduksiController extends Controller
                     'id_user' => auth()->user()->id,
                 ]);
 
-                return "success|Data Berhasil Disimpan";
+                return response()->json(['status' => 'success', 'message' => 'Data Berhasil Disimpan'], 200);
             } catch (\Exception $e) {
-                return "error|" . $e;
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
             }
         }
     }
@@ -286,9 +286,9 @@ class BarangmasukproduksiController extends Controller
     {
         try {
             Detailbarangmasukproduksitemp::where('id', $request->id)->delete();
-            return 0;
+            return response()->json(['status' => 'success', 'message' => 'Data Berhasil Dihapus'], 200);
         } catch (\Exception $e) {
-            return $e;
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
     }
 
