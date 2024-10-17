@@ -68,6 +68,7 @@
                         <th rowspan="2">OT 1</th>
                         <th rowspan="2">OT 2</th>
                         <th rowspan="2">OT Libur</th>
+                        <th rowspan="2">Gaji Pokok</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -111,6 +112,7 @@
                             <td style="width:3%;">{{ $d['klasifikasi'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['jenis_kelamin'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['status_karyawan'] }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['gaji_pokok']) }}</td>
                             @php
                                 $tanggal_presensi = $start_date;
                                 $total_potongan_jam_terlambat = 0;
