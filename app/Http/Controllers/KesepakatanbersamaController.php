@@ -232,12 +232,12 @@ class KesepakatanbersamaController extends Controller
 
             $lastgaji = Gaji::select('kode_gaji')
                 ->whereRaw('YEAR(tanggal_berlaku)="' . date('Y', strtotime($request->dari)) . '"')
-                ->whereRaw('LEFT(kode_gaji,3)="G' . date('y', strtotime($request->dari)) . '"')
+                ->whereRaw('LEFT(kode_gaji,3)="S' . date('y', strtotime($request->dari)) . '"')
                 ->orderBy("kode_gaji", "desc")
                 ->first();
 
             $last_kode_gaji = $lastgaji != null ? $lastgaji->kode_gaji : '';
-            $kode_gaji  = buatkode($last_kode_gaji, "G" . date('y', strtotime($request->dari)), 4);
+            $kode_gaji  = buatkode($last_kode_gaji, "S" . date('y', strtotime($request->dari)), 4);
 
 
             //Cek Kontrak Terakhir Karyawan
