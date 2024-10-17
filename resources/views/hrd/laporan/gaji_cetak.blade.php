@@ -548,7 +548,7 @@
                             @endwhile
                             @php
                                 $total_jam_kerja = $total_jam_satubulan - $grand_total_potongan_jam;
-                                $upah_perjam = $d['gaji_pokok'] / $total_jam_satubulan;
+                                $upah_perjam = $upah / $total_jam_satubulan;
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
