@@ -186,6 +186,7 @@ class LaporanhrdController extends Controller
             'nama_karyawan',
             'hrd_karyawan.kode_cabang',
             'hrd_karyawan.kode_jabatan',
+            'hrd_jabatan.nama_jabatan',
             'hrd_karyawan.kode_dept',
             'hrd_karyawan.no_rekening',
             'hrd_karyawan.no_ktp',
@@ -236,6 +237,7 @@ class LaporanhrdController extends Controller
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->leftjoinSub($qpresensi, 'hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
@@ -336,6 +338,7 @@ class LaporanhrdController extends Controller
                 'nik' => $rows->first()->nik,
                 'nama_karyawan' => $rows->first()->nama_karyawan,
                 'kode_jabatan' => $rows->first()->kode_jabatan,
+                'nama_jabatan' => $rows->first()->nama_jabatan,
                 'kode_dept' => $rows->first()->kode_dept,
                 'kode_cabang' => $rows->first()->kode_cabang,
                 'no_rekening' => $rows->first()->no_rekening,
