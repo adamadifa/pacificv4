@@ -176,6 +176,9 @@ class LaporanhrdController extends Controller
 
         $daribulangaji = $dari;
 
+        $qpresensi = Presensi::query();
+        $qpresensi->whereBetween('tanggal', [$start_date, $end_date]);
+
         $query = Karyawan::query();
         $query->select(
             'hrd_presensi.tanggal',
@@ -233,7 +236,7 @@ class LaporanhrdController extends Controller
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
-        $query->leftJoin('hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        $query->leftjoinSub($qpresensi, 'hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -267,7 +270,7 @@ class LaporanhrdController extends Controller
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
 
-        $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+        // $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
 
         if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
             if ($user->hasRole('regional sales manager')) {
@@ -304,7 +307,7 @@ class LaporanhrdController extends Controller
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
 
-        $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+        // $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
         if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
