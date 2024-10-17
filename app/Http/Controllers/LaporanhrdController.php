@@ -183,17 +183,26 @@ class LaporanhrdController extends Controller
 
 
         $gajiTerakhir = DB::table('hrd_gaji')
-            ->select('nik', 'gaji_pokok', 'tanggal_berlaku')
+            ->select(
+                'nik',
+                'gaji_pokok',
+                't_jabatan',
+                't_masakerja',
+                't_tanggungjawab',
+                't_makan',
+                't_istri',
+                't_skill',
+                'tanggal_berlaku'
+            )
             ->whereIn('kode_gaji', function ($query) use ($berlakugaji) {
                 $query->select(DB::raw('MAX(kode_gaji   )'))
                     ->from('hrd_gaji')
                     ->where('tanggal_berlaku', '<=', $berlakugaji)
                     ->groupBy('nik');
-            })
-            ->get();
+            });
 
 
-        dd($gajiTerakhir);
+
 
         $qpresensi = Presensi::query();
         $qpresensi->whereBetween('tanggal', [$start_date, $end_date]);
