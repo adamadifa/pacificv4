@@ -236,7 +236,7 @@ class KesepakatanbersamaController extends Controller
             $last_kode_gaji = $lastgaji != null ? $lastgaji->kode_gaji : '';
             $kode_gaji  = buatkode($last_kode_gaji, "GJ" . date('y', strtotime($request->dari)), 3);
 
-            dd($kode_gaji);
+            dd($last_kode_gaji . "-" . $kode_gaji);
             //Cek Kontrak Terakhir Karyawan
             $lastkontrakkaryawan = Kontrakkaryawan::where('nik', $penialaiankaryawan->nik)
                 ->orderBy('tanggal', 'desc')
