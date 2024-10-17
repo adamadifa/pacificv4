@@ -202,9 +202,9 @@ class BpbjController extends Controller
     {
         try {
             Detailmutasiproduksitemp::where('id', $request->id)->delete();
-            return 0;
+            return response()->json(['status' => 'success', 'message' => 'Data Berhasil Dihapus'], 200);
         } catch (\Exception $e) {
-            return $e;
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
     }
 

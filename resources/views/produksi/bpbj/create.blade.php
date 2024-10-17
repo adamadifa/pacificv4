@@ -326,20 +326,15 @@
                         },
                         cache: false,
                         success: function(respond) {
-                            if (respond === '0') {
-                                Swal.fire({
-                                    title: "Berhasil",
-                                    text: "Data Berhasil Dihapus",
-                                    icon: "success"
-                                });
-                                loaddetailtemp();
-                            } else {
-                                Swal.fire({
-                                    title: "Error",
-                                    text: respond,
-                                    icon: "error"
-                                });
-                            }
+                            Swal.fire({
+                                title: "Berhasil",
+                                text: "Data Berhasil Dihapus",
+                                icon: "success"
+                            });
+                            loaddetailtemp();
+                        },
+                        error: function(xhr) {
+                            Swal.fire("Error", xhr.responseJSON.message, "error");
                         }
                     });
                 }
