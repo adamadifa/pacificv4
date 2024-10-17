@@ -97,16 +97,16 @@
                             <td style="width:1%">{{ $d['kode_status_kawin'] }}</td>
                             <td style="width:2%">{{ $d['nama_group'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['tanggal_masuk'] }}</td>
-                            <td style="width:2%">
+                            <td style="width:3%">
                                 @php
                                     $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
                                 @endphp
                                 {{ $masakerja['tahun'] }} Tahun {{ $masakerja['bulan'] < 10 ? '0' . $masakerja['bulan'] : $masakerja['bulan'] }}
                                 Bulan
                             </td>
-                            <td>{{ $d['kode_dept'] }}</td>
-                            <td>{{ $d['nama_jabatan'] }}</td>
-                            <td>{{ $d['kode_cabang'] }}</td>
+                            <td style="width:2%">{{ $d['kode_dept'] }}</td>
+                            <td style="width:3%">{{ $d['nama_jabatan'] }}</td>
+                            <td style="width:2%">{{ $d['kode_cabang'] }}</td>
                             <td></td>
                             <td></td>
                             <td></td>
