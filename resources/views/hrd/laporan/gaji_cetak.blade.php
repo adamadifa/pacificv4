@@ -57,6 +57,7 @@
                         <th colspan="6">Tunjangan</th>
                         <th colspan="4">Insentif Umum</th>
                         <th colspan="4">Insentif Manager</th>
+                        <th rowspan="2">Σ Upah</th>
                         <th rowspan="2">Σ Jam (1 Bulan)</th>
                         <th rowspan="2">Telat</th>
                         <th rowspan="2">Dirumahkan</th>
@@ -113,6 +114,16 @@
 
                     @endphp
                     @foreach ($presensi as $d)
+                        @php
+                            $upah =
+                                $d['gaji_pokok'] +
+                                $d['t_jabatan'] +
+                                $d['t_masakerja'] +
+                                $d['t_tanggungjawab'] +
+                                $d['t_makan'] +
+                                $d['t_istri'] +
+                                $d['t_skill'];
+                        @endphp
                         <tr>
                             <td style="width:1%">{{ $loop->iteration }}</td>
                             <td style="width:2%">{{ $d['nik'] }}</td>
@@ -155,6 +166,7 @@
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_penempatan']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_kinerja']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($upah) }}</td>
 
                             @php
                                 $tanggal_presensi = $start_date;
