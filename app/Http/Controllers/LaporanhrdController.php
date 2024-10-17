@@ -196,6 +196,8 @@ class LaporanhrdController extends Controller
             'hrd_karyawan.kode_status_kawin',
             'hrd_group.nama_group',
             'hrd_karyawan.tanggal_masuk',
+            'hrd_karyawan.jenis_kelamin',
+            'hrd_karyawan.status_karyawan',
             'jam_in',
             'jam_out',
             'hrd_presensi.status',
@@ -353,6 +355,8 @@ class LaporanhrdController extends Controller
                 'kode_status_kawin' => $rows->first()->kode_status_kawin,
                 'nama_group' => $rows->first()->nama_group,
                 'tanggal_masuk' => $rows->first()->tanggal_masuk,
+                'jenis_kelamin' => $rows->first()->jenis_kelamin,
+                'status_karyawan' => $rows->first()->status_karyawan,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [

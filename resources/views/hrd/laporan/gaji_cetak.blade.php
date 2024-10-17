@@ -78,7 +78,7 @@
                         <th>KANTOR</th>
                         <th>PERUSAHAAN</th>
                         <th>KLASIFIKASI</th>
-                        <th>JENIS <br>KELAMIN</th>
+                        <th>JK</th>
                         <th>STATUS</th>
                     </tr>
                 </thead>
@@ -109,9 +109,8 @@
                             <td style="width:2%; text-align: center">{{ $d['kode_cabang'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['kode_perusahaan'] }}</td>
                             <td style="width:3%;">{{ $d['klasifikasi'] }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td style="width:2%; text-align: center">{{ $d['jenis_kelamin'] }}</td>
+                            <td style="width:2%; text-align: center">{{ $d['status_karyawan'] }}</td>
                             @php
                                 $tanggal_presensi = $start_date;
                                 $total_potongan_jam_terlambat = 0;
