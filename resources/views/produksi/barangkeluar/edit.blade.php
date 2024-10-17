@@ -5,8 +5,8 @@
 @section('navigasi')
     <span>Edit Barang Keluar Produksi</span>
 @endsection
-<form action="{{ route('barangkeluarproduksi.update', Crypt::encrypt($barangkeluarproduksi->no_bukti)) }}"
-    id="formceditBarangkeluarproduksi" method="POST">
+<form action="{{ route('barangkeluarproduksi.update', Crypt::encrypt($barangkeluarproduksi->no_bukti)) }}" id="formceditBarangkeluarproduksi"
+    method="POST">
     @csrf
     <input type="hidden" id="cektutuplaporan">
     <input type="hidden" id="cekdetailtemp">
@@ -14,28 +14,24 @@
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="card-body">
-                    <x-input-with-icon icon="ti ti-barcode" value="{{ $barangkeluarproduksi->no_bukti }}" label="Auto"
-                        name="no_bukti" disabled="true" />
+                    <x-input-with-icon icon="ti ti-barcode" value="{{ $barangkeluarproduksi->no_bukti }}" label="Auto" name="no_bukti"
+                        disabled="true" />
                     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date"
                         value="{{ $barangkeluarproduksi->tanggal }}" />
                     <div class="form-group mb-3">
                         <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
                             <option value="">Jenis Pengeluaran</option>
-                            <option value="RO"
-                                {{ $barangkeluarproduksi->kode_jenis_pengeluaran == 'RO' ? 'selected' : '' }}>Retur Out
+                            <option value="RO" {{ $barangkeluarproduksi->kode_jenis_pengeluaran == 'RO' ? 'selected' : '' }}>Retur Out
                             </option>
-                            <option value="PK"
-                                {{ $barangkeluarproduksi->kode_jenis_pengeluaran == 'PK' ? 'selected' : '' }}>Pemakaian
+                            <option value="PK" {{ $barangkeluarproduksi->kode_jenis_pengeluaran == 'PK' ? 'selected' : '' }}>Pemakaian
                             </option>
-                            <option value="LN"
-                                {{ $barangkeluarproduksi->kode_jenis_pengeluaran == 'LN' ? 'selected' : '' }}>Lainnya
+                            <option value="LN" {{ $barangkeluarproduksi->kode_jenis_pengeluaran == 'LN' ? 'selected' : '' }}>Lainnya
                             </option>
                         </select>
                     </div>
                     <div id="supplier">
-                        <x-select label="Pilih Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier"
-                            textShow="nama_supplier" select2="select2Kodesupplier"
-                            selected="{{ $barangkeluarproduksi->kode_supplier }}" />
+                        <x-select label="Pilih Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
+                            select2="select2Kodesupplier" selected="{{ $barangkeluarproduksi->kode_supplier }}" />
                     </div>
                 </div>
             </div>
@@ -45,20 +41,17 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-4 col-md-12 col-sm-12">
-                            <x-select label="Pilih Barang" name="kode_barang_produksi" :data="$barangproduksi"
-                                key="kode_barang_produksi" textShow="nama_barang" select2="select2Kodebarangproduksi"
-                                showKey="true" />
+                            <x-select label="Pilih Barang" name="kode_barang_produksi" :data="$barangproduksi" key="kode_barang_produksi"
+                                textShow="nama_barang" select2="select2Kodebarangproduksi" showKey="true" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12">
-                            <x-input-with-icon icon="ti ti-file" numberFormat="true" label="Jumlah" name="jumlah"
-                                align="right" />
+                            <x-input-with-icon icon="ti ti-file" numberFormat="true" label="Jumlah" name="jumlah" align="right" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12">
-                            <x-input-with-icon icon="ti ti-scale" numberFormat="true" label="Berat" name="jumlah_berat"
-                                align="right" />
+                            <x-input-with-icon icon="ti ti-scale" numberFormat="true" label="Berat" name="jumlah_berat" align="right" />
                         </div>
                         <div class="col-lg-1 col-md-12 col-sm-12">
                             <div class="form-group">
@@ -89,8 +82,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-check mt-3 mb-3">
-                                <input class="form-check-input agreement" name="aggrement" value="aggrement"
-                                    type="checkbox" value="" id="defaultCheck3">
+                                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value=""
+                                    id="defaultCheck3">
                                 <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
                             </div>
                             <div class="form-group" id="saveButton">
@@ -257,36 +250,25 @@
                     },
                     cache: false,
                     success: function(respond) {
-                        const res = respond.split("|");
-                        if (res[0] == 'success') {
-                            Swal.fire({
-                                title: "Berhasil!",
-                                text: res[1],
-                                icon: "success",
-                                showConfirmButton: true,
-                                didClose: (e) => {
-                                    $("#kode_barang_produksi").focus();
-                                    $('#kode_barang_produksi').val(null)
-                                        .trigger('change');
-                                    $("#nama_barang").val("");
-                                    $("#keterangan").val("");
-                                    $("#jumlah").val("");
-                                    $("#jumlah_berat").val("");
-                                    loaddetailtemp();
-                                },
-                            });
-
-                        } else {
-                            Swal.fire({
-                                title: "Oops!",
-                                text: res[1],
-                                icon: "warning",
-                                showConfirmButton: true,
-                                didClose: (e) => {
-                                    $("#kode_barang_produksi").focus();
-                                },
-                            });
-                        }
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: respond.message,
+                            icon: "success",
+                            showConfirmButton: true,
+                            didClose: (e) => {
+                                $("#kode_barang_produksi").focus();
+                                $('#kode_barang_produksi').val(null)
+                                    .trigger('change');
+                                $("#nama_barang").val("");
+                                $("#keterangan").val("");
+                                $("#jumlah").val("");
+                                $("#jumlah_berat").val("");
+                                loaddetailtemp();
+                            },
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", xhr.responseJSON.message, "error");
                     }
                 });
             }
@@ -318,20 +300,15 @@
                         },
                         cache: false,
                         success: function(respond) {
-                            if (respond === '0') {
-                                Swal.fire({
-                                    title: "Berhasil",
-                                    text: "Data Berhasil Dihapus",
-                                    icon: "success"
-                                });
-                                loaddetailtemp();
-                            } else {
-                                Swal.fire({
-                                    title: "Error",
-                                    text: respond,
-                                    icon: "error"
-                                });
-                            }
+                            Swal.fire({
+                                title: "Berhasil",
+                                text: "Data Berhasil Dihapus",
+                                icon: "success"
+                            });
+                            loaddetailtemp();
+                        },
+                        error: function(xhr) {
+                            Swal.fire("Error", xhr.responseJSON.message, "error");
                         }
                     });
                 }
@@ -376,22 +353,16 @@
                     },
                     cache: false,
                     success: function(respond) {
-                        res = respond.split("|");
-                        if (res[0] == "success") {
-                            Swal.fire({
-                                title: "Berhasil",
-                                text: res[1],
-                                icon: "success"
-                            });
-                        } else {
-                            Swal.fire({
-                                title: "Oops",
-                                text: res[1],
-                                icon: "warning"
-                            });
-                        }
+                        Swal.fire({
+                            title: "Berhasil",
+                            text: respond.message,
+                            icon: "success"
+                        });
                         $('#mdledit').modal("hide");
                         loaddetailtemp();
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", xhr.responseJSON.message, "error");
                     }
                 });
             }
