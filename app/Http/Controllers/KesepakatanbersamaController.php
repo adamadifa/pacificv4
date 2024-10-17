@@ -232,7 +232,7 @@ class KesepakatanbersamaController extends Controller
 
             $lastgaji = Gaji::select('kode_gaji')
                 ->whereRaw('YEAR(tanggal_berlaku)="' . date('Y', strtotime($request->dari)) . '"')
-                ->whereRaw('LEFT(kode_gaji,1)="G"')
+                ->whereRaw('LEFT(kode_gaji,3)="G' . date('y', strtotime($request->dari)) . '"')
                 ->orderBy("kode_gaji", "desc")
                 ->first();
 
