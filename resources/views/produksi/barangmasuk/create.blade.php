@@ -227,7 +227,7 @@
                     success: function(respond) {
                         Swal.fire({
                             title: "Berhasil!",
-                            text: res[1],
+                            text: respond.message,
                             icon: "success",
                             showConfirmButton: true,
                             didClose: (e) => {
