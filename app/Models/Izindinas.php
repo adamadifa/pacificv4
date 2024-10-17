@@ -65,7 +65,7 @@ class Izindinas extends Model
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->whereIn('hrd_izindinas.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izindinas.kode_cabang', 'PST');
-                $query->whereIn('hrd_izindinas.kode_jabatan', ['J08', 'J12', 'J13', 'J14']);
+                $query->whereIn('hrd_izindinas.kode_jabatan', ['J28', 'J12', 'J13', 'J14']);
             } else {
                 if (auth()->user()->kode_cabang == 'PST') {
                     $query->where('hrd_izindinas.kode_dept', auth()->user()->kode_dept);
@@ -128,7 +128,7 @@ class Izindinas extends Model
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->orwhereIn('hrd_izindinas.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izindinas.kode_cabang', 'PST');
-                $query->whereIn('hrd_izindinas.kode_jabatan', ['J08', 'J12', 'J13', 'J14']);
+                $query->whereIn('hrd_izindinas.kode_jabatan', ['J28', 'J12', 'J13', 'J14']);
             } else {
                 if (auth()->user()->kode_cabang == 'PST') {
                     $query->orwhere('hrd_izindinas.kode_dept', auth()->user()->kode_dept);
