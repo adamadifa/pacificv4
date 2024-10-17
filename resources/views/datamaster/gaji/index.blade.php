@@ -98,31 +98,31 @@
                                                 {{ date('d-m-Y', strtotime($d->tanggal_berlaku)) }}
                                             </td>
                                             <td>
-                                                {{-- @if ($d->kode_gaji == $d->kode_lastgaji)
-
-                                                @endif --}}
-                                                <div class="d-flex">
-                                                    @can('gaji.edit')
-                                                        <div>
-                                                            <a href="#" class="me-2 editGaji" kode_gaji="{{ Crypt::encrypt($d->kode_gaji) }}">
-                                                                <i class="ti ti-edit text-success"></i>
-                                                            </a>
-                                                        </div>
-                                                    @endcan
-
-                                                    @can('gaji.delete')
-                                                        <div>
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('gaji.delete', Crypt::encrypt($d->kode_gaji)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
+                                                @if ($d->kode_gaji == $d->kode_lastgaji)
+                                                    <div class="d-flex">
+                                                        @can('gaji.edit')
+                                                            <div>
+                                                                <a href="#" class="me-2 editGaji" kode_gaji="{{ Crypt::encrypt($d->kode_gaji) }}">
+                                                                    <i class="ti ti-edit text-success"></i>
                                                                 </a>
-                                                            </form>
-                                                        </div>
-                                                    @endcan
-                                                </div>
+                                                            </div>
+                                                        @endcan
+
+                                                        @can('gaji.delete')
+                                                            <div>
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('gaji.delete', Crypt::encrypt($d->kode_gaji)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm ml-1">
+                                                                        <i class="ti ti-trash text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            </div>
+                                                        @endcan
+                                                    </div>
+                                                @endif
+
                                             </td>
                                         </tr>
                                     @endforeach
