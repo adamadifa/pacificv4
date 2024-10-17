@@ -95,12 +95,12 @@ class GajiController extends Controller
             $tgl = explode("-", $request->tanggal_berlaku);
             $tahun = substr($tgl[0], 2, 2);
             $lastgaji = Gaji::select('kode_gaji')
-                ->whereRaw('LEFT(kode_gaji,3)="G' . date('y', strtotime($request->dari)) . '"')
+                ->whereRaw('LEFT(kode_gaji,3)="G' . date('y', strtotime($request->tanggal_berlaku)) . '"')
                 ->orderBy("kode_gaji", "desc")
                 ->first();
 
             $last_kode_gaji = $lastgaji != null ? $lastgaji->kode_gaji : '';
-            $kode_gaji  = buatkode($last_kode_gaji, "G" . date('y', strtotime($request->dari)), 4);
+            $kode_gaji  = buatkode($last_kode_gaji, "G" . date('y', strtotime($request->tanggal_berlaku)), 4);
 
             Gaji::create([
                 'kode_gaji' => $kode_gaji,
