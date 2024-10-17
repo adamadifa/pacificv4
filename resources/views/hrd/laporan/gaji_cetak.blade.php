@@ -146,15 +146,15 @@
 
                             <!-- INSENTIF UMUM -->
                             <td style="width:3%; text-align: right">{{ formatAngka($d['iu_masakerja']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['iu_lembur']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['iu_lembur']) }}</td>
                             <td style="width:3%; text-align: right">{{ formatAngka($d['iu_penempatan']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['iu_kpi']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['iu_kpi']) }}</td>
 
                             <!-- INSENTIF MANAGER -->
                             <td style="width:3%; text-align: right">{{ formatAngka($d['im_ruanglingkup']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['im_penempatan']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['im_kinerja']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['im_penempatan']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['im_kinerja']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td>
 
                             @php
                                 $tanggal_presensi = $start_date;
