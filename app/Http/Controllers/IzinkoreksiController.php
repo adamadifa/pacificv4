@@ -369,7 +369,7 @@ class IzinkoreksiController extends Controller
         $izinkoreksi = $i_koreksi->getIzinkoreksi(kode_izin_koreksi: $kode_izin_koreksi)->first();
         $role = $user->getRoleNames()->first();
         $roles_approve = cekRoleapprovepresensi($izinkoreksi->kode_dept, $izinkoreksi->kode_cabang, $izinkoreksi->kategori_jabatan, $izinkoreksi->kode_jabatan);
-        dd($roles_approve);
+        //dd($roles_approve);
         $end_role = end($roles_approve);
 
         if ($role != $end_role && in_array($role, $roles_approve)) {
