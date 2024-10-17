@@ -62,7 +62,7 @@ class Izinabsen extends Model
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->where('hrd_izinabsen.kode_dept', 'AKT');
-                $query->whereIn('hrd_izinabsen.kode_jabatan', ['J05', 'J06']);
+                $query->whereIn('hrd_izinabsen.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->whereIn('hrd_izinabsen.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izinabsen.kode_cabang', 'PST');
@@ -125,7 +125,7 @@ class Izinabsen extends Model
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->orwhere('hrd_izinabsen.kode_dept', 'AKT');
-                $query->whereIn('hrd_izinabsen.kode_jabatan', ['J05', 'J06']);
+                $query->whereIn('hrd_izinabsen.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->orwhereIn('hrd_izinabsen.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_izinabsen.kode_cabang', 'PST');
