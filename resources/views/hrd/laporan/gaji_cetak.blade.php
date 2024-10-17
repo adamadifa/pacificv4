@@ -147,7 +147,7 @@
                             <!-- INSENTIF UMUM -->
                             <td style="width:3%; text-align: right">{{ formatAngka($d['iu_masakerja']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['iu_lembur']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['iu_penempatan']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['iu_penempatan']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['iu_kpi']) }}</td>
 
                             <!-- INSENTIF MANAGER -->
