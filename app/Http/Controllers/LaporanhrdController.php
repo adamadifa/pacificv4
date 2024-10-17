@@ -176,6 +176,9 @@ class LaporanhrdController extends Controller
 
         $daribulangaji = $dari;
 
+        $qpresensi = Presensi::query();
+        $qpresensi->whereBetween('tanggal', [$start_date, $end_date]);
+
         $query = Karyawan::query();
         $query->select(
             'hrd_presensi.tanggal',
@@ -183,12 +186,18 @@ class LaporanhrdController extends Controller
             'nama_karyawan',
             'hrd_karyawan.kode_cabang',
             'hrd_karyawan.kode_jabatan',
+            'hrd_jabatan.nama_jabatan',
             'hrd_karyawan.kode_dept',
+            'hrd_karyawan.kode_perusahaan',
+            'hrd_karyawan.kode_klasifikasi',
+            'hrd_klasifikasi.klasifikasi',
             'hrd_karyawan.no_rekening',
             'hrd_karyawan.no_ktp',
             'hrd_karyawan.kode_status_kawin',
             'hrd_group.nama_group',
             'hrd_karyawan.tanggal_masuk',
+            'hrd_karyawan.jenis_kelamin',
+            'hrd_karyawan.status_karyawan',
             'jam_in',
             'jam_out',
             'hrd_presensi.status',
@@ -233,7 +242,9 @@ class LaporanhrdController extends Controller
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
-        $query->leftJoin('hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
+        $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->leftJoin('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
+        $query->leftjoinSub($qpresensi, 'hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -267,7 +278,7 @@ class LaporanhrdController extends Controller
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
 
-        $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+        // $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
 
         if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
             if ($user->hasRole('regional sales manager')) {
@@ -304,7 +315,7 @@ class LaporanhrdController extends Controller
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
 
-        $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+        // $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
         if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
@@ -333,13 +344,19 @@ class LaporanhrdController extends Controller
                 'nik' => $rows->first()->nik,
                 'nama_karyawan' => $rows->first()->nama_karyawan,
                 'kode_jabatan' => $rows->first()->kode_jabatan,
+                'nama_jabatan' => $rows->first()->nama_jabatan,
                 'kode_dept' => $rows->first()->kode_dept,
                 'kode_cabang' => $rows->first()->kode_cabang,
+                'kode_perusahaan' => $rows->first()->kode_perusahaan,
+                'kode_klasifikasi' => $rows->first()->kode_klasifikasi,
+                'klasifikasi' => $rows->first()->klasifikasi,
                 'no_rekening' => $rows->first()->no_rekening,
                 'no_ktp' => $rows->first()->no_ktp,
                 'kode_status_kawin' => $rows->first()->kode_status_kawin,
                 'nama_group' => $rows->first()->nama_group,
                 'tanggal_masuk' => $rows->first()->tanggal_masuk,
+                'jenis_kelamin' => $rows->first()->jenis_kelamin,
+                'status_karyawan' => $rows->first()->status_karyawan,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [

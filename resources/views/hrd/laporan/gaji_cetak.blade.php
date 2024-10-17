@@ -73,12 +73,12 @@
                         <!-- DATA KARYAWAN -->
                         <th>TGL MASUK</th>
                         <th>MASA KERJA</th>
-                        <th>DEPARTEMEN</th>
+                        <th>DEPT</th>
                         <th>JABATAN</th>
-                        <th>KANTOR <br>CABANG</th>
+                        <th>KANTOR</th>
                         <th>PERUSAHAAN</th>
                         <th>KLASIFIKASI</th>
-                        <th>JENIS <br>KELAMIN</th>
+                        <th>JK</th>
                         <th>STATUS</th>
                     </tr>
                 </thead>
@@ -97,16 +97,20 @@
                             <td style="width:1%">{{ $d['kode_status_kawin'] }}</td>
                             <td style="width:2%">{{ $d['nama_group'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['tanggal_masuk'] }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td style="width:3%; text-align: center">
+                                @php
+                                    $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
+                                @endphp
+                                {{ $masakerja['tahun'] }} Tahun {{ $masakerja['bulan'] < 10 ? '0' . $masakerja['bulan'] : $masakerja['bulan'] }}
+                                Bulan
+                            </td>
+                            <td style="width:2%; text-align: center">{{ $d['kode_dept'] }}</td>
+                            <td style="width:3%;">{{ $d['nama_jabatan'] }}</td>
+                            <td style="width:2%; text-align: center">{{ $d['kode_cabang'] }}</td>
+                            <td style="width:2%; text-align: center">{{ $d['kode_perusahaan'] }}</td>
+                            <td style="width:3%;">{{ $d['klasifikasi'] }}</td>
+                            <td style="width:2%; text-align: center">{{ $d['jenis_kelamin'] }}</td>
+                            <td style="width:2%; text-align: center">{{ $d['status_karyawan'] }}</td>
                             @php
                                 $tanggal_presensi = $start_date;
                                 $total_potongan_jam_terlambat = 0;
