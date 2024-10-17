@@ -183,7 +183,7 @@ class LaporanhrdController extends Controller
 
 
         $gajiTerakhir = DB::table('hrd_gaji')
-            ->select('nik', 'gaji_pokok')
+            ->select('nik', 'gaji_pokok', 'tanggal_berlaku')
             ->groupBy('nik')
             ->havingRaw('tanggal_berlaku = MAX(tanggal_berlaku)')
             ->get();
