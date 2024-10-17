@@ -198,7 +198,9 @@ class KesepakatanbersamaController extends Controller
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $pk = new Penilaiankaryawan();
-        $data['penilaiankaryawan'] = $pk->getPenilaianKaryawan($kode_penialaian)->first();
+        $penialaiankaryawan = $pk->getPenilaianKaryawan($kode_penialaian)->first();
+        $data['penilaiankaryawan'] = $penialaiankaryawan;
+        $data['gaji'] = Gaji::where('nik', $penialaiankaryawan->nik)->orderBy('tanggal_berlaku', 'desc')->first();
         return view('hrd.kesepakatanbersama.createkontrak', $data);
     }
 
