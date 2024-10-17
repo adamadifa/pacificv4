@@ -57,6 +57,7 @@ class GajiController extends Controller
         if (!$user->hasRole($roles_access_all_pjp)) {
             $query->where('hrd_jabatan.kategori', 'NM');
         }
+        $query->orderBy('tanggal_berlaku', 'desc');
         $query->orderBy('kode_gaji', 'desc');
         $gaji = $query->paginate('15');
         return view('datamaster.gaji.index', compact(
