@@ -5,8 +5,8 @@
 @section('navigasi')
     <span>Edit Barang Masuk Produksi</span>
 @endsection
-<form action="{{ route('barangmasukproduksi.update', Crypt::encrypt($barangmasukproduksi->no_bukti)) }}"
-    id="formceditBarangmasukproduksi" method="POST">
+<form action="{{ route('barangmasukproduksi.update', Crypt::encrypt($barangmasukproduksi->no_bukti)) }}" id="formceditBarangmasukproduksi"
+    method="POST">
     @csrf
     <input type="hidden" id="cektutuplaporan">
     <input type="hidden" id="cekdetailtemp">
@@ -14,21 +14,18 @@
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="card-body">
-                    <x-input-with-icon icon="ti ti-barcode" value="{{ $barangmasukproduksi->no_bukti }}" label="Auto"
-                        name="no_bukti" disabled="true" />
+                    <x-input-with-icon icon="ti ti-barcode" value="{{ $barangmasukproduksi->no_bukti }}" label="Auto" name="no_bukti"
+                        disabled="true" />
                     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date"
                         value="{{ $barangmasukproduksi->tanggal }}" />
                     <div class="form-group mb-3">
                         <select name="kode_asal_barang" id="kode_asal_barang" class="form-select" disabled>
                             <option value="">Asal Barang</option>
-                            <option {{ $barangmasukproduksi->kode_asal_barang == 'GD' ? 'selected' : '' }}
-                                value="GD">
+                            <option {{ $barangmasukproduksi->kode_asal_barang == 'GD' ? 'selected' : '' }} value="GD">
                                 Gudang</option>
-                            <option value="SS"
-                                {{ $barangmasukproduksi->kode_asal_barang == 'SS' ? 'selected' : '' }}>Seasoning
+                            <option value="SS" {{ $barangmasukproduksi->kode_asal_barang == 'SS' ? 'selected' : '' }}>Seasoning
                             </option>
-                            <option value="TR"
-                                {{ $barangmasukproduksi->kode_asal_barang == 'TR' ? 'selected' : '' }}>Trial</option>
+                            <option value="TR" {{ $barangmasukproduksi->kode_asal_barang == 'TR' ? 'selected' : '' }}>Trial</option>
                         </select>
                     </div>
                 </div>
@@ -40,8 +37,7 @@
                     <div class="row">
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             <div class="form-gorup mb-3">
-                                <select name="kode_barang_produksi" id="kode_barang_produksi"
-                                    class="form-select select2Kodebarangproduksi">
+                                <select name="kode_barang_produksi" id="kode_barang_produksi" class="form-select select2Kodebarangproduksi">
                                 </select>
                             </div>
                         </div>
@@ -49,8 +45,7 @@
                             <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12">
-                            <x-input-with-icon icon="ti ti-file" numberFormat="true" label="Jumlah" name="jumlah"
-                                align="right" />
+                            <x-input-with-icon icon="ti ti-file" numberFormat="true" label="Jumlah" name="jumlah" align="right" />
                         </div>
                         <div class="col-lg-1 col-md-12 col-sm-12">
                             <div class="form-group">
@@ -80,8 +75,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-check mt-3 mb-3">
-                                <input class="form-check-input agreement" name="aggrement" value="aggrement"
-                                    type="checkbox" value="" id="defaultCheck3">
+                                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value=""
+                                    id="defaultCheck3">
                                 <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
                             </div>
                             <div class="form-group" id="saveButton">
@@ -236,34 +231,23 @@
                     },
                     cache: false,
                     success: function(respond) {
-                        const res = respond.split("|");
-                        if (res[0] == 'success') {
-                            Swal.fire({
-                                title: "Berhasil!",
-                                text: res[1],
-                                icon: "success",
-                                showConfirmButton: true,
-                                didClose: (e) => {
-                                    $("#kode_barang_produksi").focus();
-                                    initselect2Kodebarangproduksi();
-                                    $("#nama_barang").val("");
-                                    $("#keterangan").val("");
-                                    $("#jumlah").val("");
-                                    loaddetailtemp();
-                                },
-                            });
-
-                        } else {
-                            Swal.fire({
-                                title: "Oops!",
-                                text: res[1],
-                                icon: "warning",
-                                showConfirmButton: true,
-                                didClose: (e) => {
-                                    $("#kode_barang_produksi").focus();
-                                },
-                            });
-                        }
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: respond.message,
+                            icon: "success",
+                            showConfirmButton: true,
+                            didClose: (e) => {
+                                $("#kode_barang_produksi").focus();
+                                initselect2Kodebarangproduksi();
+                                $("#nama_barang").val("");
+                                $("#keterangan").val("");
+                                $("#jumlah").val("");
+                                loaddetailtemp();
+                            },
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", xhr.responseJSON.message, "error");
                     }
                 });
             }
@@ -295,20 +279,15 @@
                         },
                         cache: false,
                         success: function(respond) {
-                            if (respond === '0') {
-                                Swal.fire({
-                                    title: "Berhasil",
-                                    text: "Data Berhasil Dihapus",
-                                    icon: "success"
-                                });
-                                loaddetailtemp();
-                            } else {
-                                Swal.fire({
-                                    title: "Error",
-                                    text: respond,
-                                    icon: "error"
-                                });
-                            }
+                            Swal.fire({
+                                title: "Berhasil",
+                                text: "Data Berhasil Dihapus",
+                                icon: "success"
+                            });
+                            loaddetailtemp();
+                        },
+                        error: function(xhr) {
+                            Swal.fire("Error", xhr.responseJSON.message, "error");
                         }
                     });
                 }
@@ -351,22 +330,16 @@
                     },
                     cache: false,
                     success: function(respond) {
-                        res = respond.split("|");
-                        if (res[0] == "success") {
-                            Swal.fire({
-                                title: "Berhasil",
-                                text: res[1],
-                                icon: "success"
-                            });
-                        } else {
-                            Swal.fire({
-                                title: "Oops",
-                                text: res[1],
-                                icon: "warning"
-                            });
-                        }
+                        Swal.fire({
+                            title: "Berhasil",
+                            text: respond.message,
+                            icon: "success"
+                        });
                         $('#mdledit').modal("hide");
                         loaddetailtemp();
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", xhr.responseJSON.message, "error");
                     }
                 });
             }
