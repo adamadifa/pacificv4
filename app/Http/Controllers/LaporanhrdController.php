@@ -202,6 +202,27 @@ class LaporanhrdController extends Controller
             });
 
 
+        $insentif = DB::table('hrd_insentif')
+            ->select(
+                'nik',
+                'iu_masakerja',
+                'iu_lembur',
+                'iu_penempatan',
+                'iu_kpi',
+                'im_ruanglingkup',
+                'im_penempatan',
+                'im_kinerja',
+                'im_kendaraan',
+                'tanggal_berlaku'
+            )
+            ->whereIn('kode_insentif', function ($query) use ($berlakugaji) {
+                $query->select(DB::raw('MAX(kode_insentif   )'))
+                    ->from('hrd_insentif')
+                    ->where('tanggal_berlaku', '<=', $berlakugaji)
+                    ->groupBy('nik');
+            });
+
+
 
 
         $qpresensi = Presensi::query();
@@ -276,7 +297,17 @@ class LaporanhrdController extends Controller
             'hrd_gaji.t_tanggungjawab',
             'hrd_gaji.t_makan',
             'hrd_gaji.t_istri',
-            'hrd_gaji.t_skill'
+            'hrd_gaji.t_skill',
+
+            //Insentif
+            'hrd_insentif.iu_masakerja',
+            'hrd_insentif.iu_lembur',
+            'hrd_insentif.iu_penempatan',
+            'hrd_insentif.iu_kpi',
+            'hrd_insentif.im_ruanglingkup',
+            'hrd_insentif.im_penempatan',
+            'hrd_insentif.im_kinerja',
+            'hrd_insentif.im_kendaraan',
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
@@ -284,6 +315,7 @@ class LaporanhrdController extends Controller
         $query->leftJoin('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
         $query->leftjoinSub($qpresensi, 'hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftjoinSub($gajiTerakhir, 'hrd_gaji', 'hrd_karyawan.nik', '=', 'hrd_gaji.nik');
+        $query->leftjoinSub($insentif, 'hrd_insentif', 'hrd_karyawan.nik', '=', 'hrd_insentif.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -403,6 +435,14 @@ class LaporanhrdController extends Controller
                 't_makan' => $rows->first()->t_makan,
                 't_istri' => $rows->first()->t_istri,
                 't_skill' => $rows->first()->t_skill,
+                'iu_masakerja' => $rows->first()->iu_masakerja,
+                'iu_lembur' => $rows->first()->iu_lembur,
+                'iu_penempatan' => $rows->first()->iu_penempatan,
+                'iu_kpi' => $rows->first()->iu_kpi,
+                'im_ruanglingkup' => $rows->first()->im_ruanglingkup,
+                'im_penempatan' => $rows->first()->im_penempatan,
+                'im_kinerja' => $rows->first()->im_kinerja,
+                'im_kendaraan' => $rows->first()->im_kendaraan,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
