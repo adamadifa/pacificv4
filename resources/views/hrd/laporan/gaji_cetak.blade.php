@@ -101,6 +101,7 @@
                                 @php
                                     $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
                                 @endphp
+                                {{ $masakerja['tahun'] }} Tahun {{ $masakerja['bulan'] }} Bulan {{ $masakerja['hari'] }} Hari
                             </td>
                             <td></td>
                             <td></td>
