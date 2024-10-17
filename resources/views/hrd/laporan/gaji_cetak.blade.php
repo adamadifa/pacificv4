@@ -122,13 +122,13 @@
                             <td style="width:3%;">{{ $d['klasifikasi'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['jenis_kelamin'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['status_karyawan'] }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['gaji_pokok']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['t_jabatan']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['t_masakerja']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['t_tanggungjawab']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['t_makan']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['t_istri']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['t_skill']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['gaji_pokok']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_jabatan']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_masakerja']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_tanggungjawab']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_makan']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_istri']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_skill']) }}</td>
                             @php
                                 $tanggal_presensi = $start_date;
                                 $total_potongan_jam_terlambat = 0;
