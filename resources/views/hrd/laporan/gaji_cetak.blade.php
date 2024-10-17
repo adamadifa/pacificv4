@@ -53,6 +53,7 @@
                         <th rowspan="2">SK</th>
                         <th rowspan="2">Group</th>
                         <th colspan="9">DATA KARYAWAN</th>
+                        <th rowspan="2">Gaji Pokok</th>
                         <th rowspan="2">Σ Jam (1 Bulan)</th>
                         <th rowspan="2">Telat</th>
                         <th rowspan="2">Dirumahkan</th>
@@ -68,7 +69,7 @@
                         <th rowspan="2">OT 1</th>
                         <th rowspan="2">OT 2</th>
                         <th rowspan="2">OT Libur</th>
-                        <th rowspan="2">Gaji Pokok</th>
+
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
