@@ -57,7 +57,8 @@
                         <th colspan="6">Tunjangan</th>
                         <th colspan="4">Insentif Umum</th>
                         <th colspan="4">Insentif Manager</th>
-                        <th rowspan="2">Σ Upah</th>
+                        <th rowspan="2">Upah</th>
+                        <th rowspan="2">Insentif</th>
                         <th rowspan="2">Σ Jam (1 Bulan)</th>
                         <th rowspan="2">Telat</th>
                         <th rowspan="2">Dirumahkan</th>
@@ -123,6 +124,9 @@
                                 $d['t_makan'] +
                                 $d['t_istri'] +
                                 $d['t_skill'];
+                            $insentif = $d['iu_masakerja'] + $d['iu_lembur'] + $d['iu_penempatan'] + $d['iu_kpi'];
+                            $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
+                            $jumlah_insentif = $insentif + $insentif_manager;
                         @endphp
                         <tr>
                             <td style="width:1%">{{ $loop->iteration }}</td>
@@ -167,6 +171,7 @@
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_kinerja']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($upah) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($jumlah_insentif) }}</td>
 
                             @php
                                 $tanggal_presensi = $start_date;
