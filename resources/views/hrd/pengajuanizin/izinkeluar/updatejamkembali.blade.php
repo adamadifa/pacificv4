@@ -83,6 +83,7 @@
 
         $(".flatpickr-date").flatpickr({
             enableTime: true,
+            minuteIncrement: 1,
             time_24hr: true,
             altInput: true,
             altFormat: "Y-m-d H:i",

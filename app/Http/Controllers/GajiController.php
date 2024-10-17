@@ -26,7 +26,7 @@ class GajiController extends Controller
         $group = Group::orderBy('kode_group')->get();
 
         $query = Gaji::query();
-        $query->select('hrd_gaji.*', 'hrd_karyawan.*', 'lastgaji.kode_gaji as kode_lastgaji');
+        $query->select('hrd_gaji.*', 'hrd_karyawan.*');
         if (!empty($request->kode_cabang)) {
             $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang);
         }
@@ -43,20 +43,22 @@ class GajiController extends Controller
         }
         $query->join('hrd_karyawan', 'hrd_gaji.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
-        $query->leftJoin(
-            DB::raw("(
-                SELECT
-                max(kode_gaji) as kode_gaji
-                FROM hrd_gaji
-                GROUP BY nik
-            ) lastgaji"),
-            function ($join) {
-                $join->on('hrd_gaji.kode_gaji', '=', 'lastgaji.kode_gaji');
-            }
-        );
+        // $query->leftJoin(
+        //     DB::raw("(
+        //         SELECT
+        //         kode_gaji,
+        //         MAX(tanggal_berlaku) as tanggal_berlaku
+        //         FROM hrd_gaji
+        //         GROUP BY nik
+        //     ) lastgaji"),
+        //     function ($join) {
+        //         $join->on('hrd_gaji.kode_gaji', '=', 'lastgaji.kode_gaji');
+        //     }
+        // );
         if (!$user->hasRole($roles_access_all_pjp)) {
             $query->where('hrd_jabatan.kategori', 'NM');
         }
+        $query->orderBy('tanggal_berlaku', 'desc');
         $query->orderBy('kode_gaji', 'desc');
         $gaji = $query->paginate('15');
         return view('datamaster.gaji.index', compact(
@@ -94,12 +96,13 @@ class GajiController extends Controller
         try {
             $tgl = explode("-", $request->tanggal_berlaku);
             $tahun = substr($tgl[0], 2, 2);
-            $gaji = Gaji::whereRaw('YEAR(tanggal_berlaku)="' . $tgl[0] . '"')
+            $lastgaji = Gaji::select('kode_gaji')
+                ->whereRaw('LEFT(kode_gaji,3)="G' . date('y', strtotime($request->tanggal_berlaku)) . '"')
                 ->orderBy("kode_gaji", "desc")
                 ->first();
 
-            $last_kodegaji = $gaji != null ? $gaji->kode_gaji : '';
-            $kode_gaji  = buatkode($last_kodegaji, "GJ" . $tahun, 3);
+            $last_kode_gaji = $lastgaji != null ? $lastgaji->kode_gaji : '';
+            $kode_gaji  = buatkode($last_kode_gaji, "G" . date('y', strtotime($request->tanggal_berlaku)), 4);
 
             Gaji::create([
                 'kode_gaji' => $kode_gaji,

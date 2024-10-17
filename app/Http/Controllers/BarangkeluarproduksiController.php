@@ -262,9 +262,9 @@ class BarangkeluarproduksiController extends Controller
     {
         try {
             Detailbarangkeluarproduksitemp::where('id', $request->id)->delete();
-            return 0;
+            return response()->json(['status' => 'success', 'message' => 'Data Berhasil Dihapus'], 200);
         } catch (\Exception $e) {
-            return $e;
+            return response()->json(['status' => 'error', 'message' => 'Data Gagal Dihapus ' . $e->getMessage()], 400);
         }
     }
 
@@ -274,7 +274,7 @@ class BarangkeluarproduksiController extends Controller
         $cek = Detailbarangkeluarproduksitemp::where('kode_barang_produksi', $request->kode_barang_produksi)
             ->where('id_user', auth()->user()->id)->count();
         if ($cek > 0) {
-            return "error|Data Sudah Ada";
+            return response()->json(['status' => 'error', 'message' => 'Data Sudah Ada'], 400);
         } else {
             try {
                 Detailbarangkeluarproduksitemp::create([
@@ -285,9 +285,9 @@ class BarangkeluarproduksiController extends Controller
                     'id_user' => auth()->user()->id,
                 ]);
 
-                return "success|Data Berhasil Disimpan";
+                return response()->json(['status' => 'success', 'message' => 'Data Berhasil Disimpan'], 200);
             } catch (\Exception $e) {
-                return "error|" . $e;
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
             }
         }
     }
@@ -322,7 +322,7 @@ class BarangkeluarproduksiController extends Controller
             ->where('no_bukti', $request->no_bukti)
             ->count();
         if ($cek > 0) {
-            return "error|Data Sudah Ada";
+            return response()->json(['status' => 'error', 'message' => 'Data Sudah Ada'], 400);
         } else {
             try {
                 Detailbarangkeluarproduksiedit::create([
@@ -336,7 +336,7 @@ class BarangkeluarproduksiController extends Controller
 
                 return "success|Data Berhasil Disimpan";
             } catch (\Exception $e) {
-                return "error|" . $e;
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
             }
         }
     }
@@ -361,18 +361,18 @@ class BarangkeluarproduksiController extends Controller
                 'jumlah' => toNumber($request->jumlah),
                 'jumlah_berat' => empty($request->jumlah_berat) ? 0 : toNumber($request->jumlah_berat),
             ]);
-            return "success|Data Berhasil Disimpan";
+            return response()->json(['status' => 'success', 'message' => 'Data Berhasil Disimpan'], 200);
         } catch (\Exception $e) {
-            return "success|Data Gagal Disimpan " . $e->getMessage();
+            return response()->json(['status' => 'error', 'message' => 'Data Gagal Disimpan ' . $e->getMessage()], 400);
         }
     }
     public function deleteedit(Request $request)
     {
         try {
             Detailbarangkeluarproduksiedit::where('id', $request->id)->delete();
-            return 0;
+            return response()->json(['status' => 'success', 'message' => 'Data Berhasil Dihapus'], 200);
         } catch (\Exception $e) {
-            return $e;
+            return response()->json(['status' => 'error', 'message' => 'Data Gagal Dihapus ' . $e->getMessage()], 400);
         }
     }
 }

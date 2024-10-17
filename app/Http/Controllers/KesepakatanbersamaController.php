@@ -198,7 +198,9 @@ class KesepakatanbersamaController extends Controller
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $pk = new Penilaiankaryawan();
-        $data['penilaiankaryawan'] = $pk->getPenilaianKaryawan($kode_penialaian)->first();
+        $penialaiankaryawan = $pk->getPenilaianKaryawan($kode_penialaian)->first();
+        $data['penilaiankaryawan'] = $penialaiankaryawan;
+        $data['gaji'] = Gaji::where('nik', $penialaiankaryawan->nik)->orderBy('tanggal_berlaku', 'desc')->first();
         return view('hrd.kesepakatanbersama.createkontrak', $data);
     }
 
@@ -230,11 +232,13 @@ class KesepakatanbersamaController extends Controller
 
             $lastgaji = Gaji::select('kode_gaji')
                 ->whereRaw('YEAR(tanggal_berlaku)="' . date('Y', strtotime($request->dari)) . '"')
+                ->whereRaw('LEFT(kode_gaji,3)="G' . date('y', strtotime($request->dari)) . '"')
                 ->orderBy("kode_gaji", "desc")
                 ->first();
 
             $last_kode_gaji = $lastgaji != null ? $lastgaji->kode_gaji : '';
-            $kode_gaji  = buatkode($last_kode_gaji, "GJ" . date('y', strtotime($request->dari)), 3);
+            $kode_gaji  = buatkode($last_kode_gaji, "G" . date('y', strtotime($request->dari)), 4);
+
 
             //Cek Kontrak Terakhir Karyawan
             $lastkontrakkaryawan = Kontrakkaryawan::where('nik', $penialaiankaryawan->nik)

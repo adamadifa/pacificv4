@@ -43,13 +43,13 @@
     <div class="divider">
         <div class="divider-text">Data Gaji</div>
     </div>
-    <x-input-inline-label icon="ti ti-moneybag" label="Gaji Pokok" name="gaji_pokok" money="true" align="right" :value="formatRupiah($penilaiankaryawan->gaji_pokok)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Jabatan" name="t_jabatan" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_jabatan)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Masa Kerja" name="t_masakerja" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_masakerja)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Tangg. Jawab" name="t_tanggungjawab" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_tanggungjawab)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Makan" name="t_makan" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_makan)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Istri" name="t_istri" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_istri)" />
-    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Skill" name="t_skill" money="true" align="right" :value="formatRupiah($penilaiankaryawan->t_skill)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Gaji Pokok" name="gaji_pokok" money="true" align="right" :value="formatRupiah($gaji->gaji_pokok)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Jabatan" name="t_jabatan" money="true" align="right" :value="formatRupiah($gaji->t_jabatan)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Masa Kerja" name="t_masakerja" money="true" align="right" :value="formatRupiah($gaji->t_masakerja)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Tangg. Jawab" name="t_tanggungjawab" money="true" align="right" :value="formatRupiah($gaji->t_tanggungjawab)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Makan" name="t_makan" money="true" align="right" :value="formatRupiah($gaji->t_makan)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Istri" name="t_istri" money="true" align="right" :value="formatRupiah($gaji->t_istri)" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Skill" name="t_skill" money="true" align="right" :value="formatRupiah($gaji->t_skill)" />
     <div class="row">
         <div class="form-group mb-3">
             <button class="btn btn-primary w-100" id="btnSimpan" type="submit">

@@ -67,11 +67,12 @@ class KontrakkaryawanController extends Controller
 
             $lastgaji = Gaji::select('kode_gaji')
                 ->whereRaw('YEAR(tanggal_berlaku)="' . date('Y', strtotime($request->dari)) . '"')
+                ->whereRaw('LEFT(kode_gaji,3)="G' . date('y', strtotime($request->dari)) . '"')
                 ->orderBy("kode_gaji", "desc")
                 ->first();
 
             $last_kode_gaji = $lastgaji != null ? $lastgaji->kode_gaji : '';
-            $kode_gaji  = buatkode($last_kode_gaji, "GJ" . date('y', strtotime($request->dari)), 3);
+            $kode_gaji  = buatkode($last_kode_gaji, "G" . date('y', strtotime($request->dari)), 4);
 
             //Cek Kontrak Terakhir Karyawan
             $lastkontrakkaryawan = Kontrakkaryawan::where('nik', $nik)
