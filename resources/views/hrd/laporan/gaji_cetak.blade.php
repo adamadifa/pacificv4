@@ -61,20 +61,10 @@
                         <th rowspan="2">Insentif</th>
                         <th rowspan="2">Σ Jam</th>
                         <th rowspan="2">Upah / Jam</th>
-                        {{-- <th rowspan="2">Telat</th>
-                        <th rowspan="2">Dirumahkan</th>
-                        <th rowspan="2">Keluar</th>
-                        <th rowspan="2">PC</th>
-                        <th rowspan="2">TH</th>
-                        <th rowspan="2">Izin</th>
-                        <th rowspan="2">Sakit</th>
-                        <th rowspan="2">Σ Jam Kerja</th>
-                        <th rowspan="2">Denda</th>
-                        <th rowspan="2">Premi <br> Shift 2</th>
-                        <th rowspan="2">Premi <br> Shift 3</th>
-                        <th rowspan="2">OT 1</th>
-                        <th rowspan="2">OT 2</th>
-                        <th rowspan="2">OT Libur</th> --}}
+                        <th colspan="2">Overtime 1</th>
+                        <th colspan="2">Overtime 2</th>
+                        <th colspan="2">Overtime Libur</th>
+                        <th rowspan="2">Total OT</th>
 
                     </tr>
                     <tr>
@@ -108,6 +98,17 @@
                         <th>PENEMPATAN</th>
                         <th>KINERJA</th>
                         <th>KENDARAAN</th>
+
+                        <!-- OVERTIME -->
+                        <th>JAM</th>
+                        <th>JUMLAH</th>
+
+                        <th>JAM</th>
+                        <th>JUMLAH</th>
+
+                        <th>JAM</th>
+                        <th>JUMLAH</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -559,7 +560,13 @@
                             <td style="font-weight: bold;  text-align:right">
                                 {{ formatAngkaDesimal($upah_perjam) }}
                             </td>
-
+                            <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}</td>
+                            <td></td>
+                            <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}</td>
+                            <td></td>
+                            <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     @endforeach
                 </tbody>
