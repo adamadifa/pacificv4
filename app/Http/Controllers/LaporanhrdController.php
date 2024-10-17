@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Departemen;
+use App\Models\Gaji;
 use App\Models\Karyawan;
 use App\Models\Presensi;
 use App\Models\User;
@@ -107,6 +108,7 @@ class LaporanhrdController extends Controller
 
         // $kode_cabang = $request->kode_cabang;
 
+
         $query = Karyawan::query();
         $query->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
         $query->select('hrd_karyawan.kode_group', 'nama_group');
@@ -175,6 +177,19 @@ class LaporanhrdController extends Controller
         $end_date = $sampai;
 
         $daribulangaji = $dari;
+        $berlakugaji = $sampai;
+
+
+
+        $gajiTerakhir = Gaji::join(DB::raw('(SELECT nik, MAX(tanggal_berlaku) as max_tanggal FROM hrd_gaji WHERE tanggal_berlaku <= "' . $berlakugaji . '" GROUP BY nik) as lastgaji'), function ($join) {
+            $join->on('hrd_gaji.nik', '=', 'lastgaji.nik')
+                ->on('hrd_gaji.tanggal_berlaku', '=', 'lastgaji.max_tanggal');
+        })
+            ->select('hrd_gaji.*')
+            ->get();
+
+        dd($gajiTerakhir);
+
 
         $qpresensi = Presensi::query();
         $qpresensi->whereBetween('tanggal', [$start_date, $end_date]);
