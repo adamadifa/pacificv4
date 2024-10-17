@@ -59,8 +59,9 @@
                         <th colspan="4">Insentif Manager</th>
                         <th rowspan="2">Upah</th>
                         <th rowspan="2">Insentif</th>
-                        <th rowspan="2">Σ Jam (1 Bulan)</th>
-                        <th rowspan="2">Telat</th>
+                        <th rowspan="2">Σ Jam</th>
+                        <th rowspan="2">Upah / Jam</th>
+                        {{-- <th rowspan="2">Telat</th>
                         <th rowspan="2">Dirumahkan</th>
                         <th rowspan="2">Keluar</th>
                         <th rowspan="2">PC</th>
@@ -73,7 +74,7 @@
                         <th rowspan="2">Premi <br> Shift 3</th>
                         <th rowspan="2">OT 1</th>
                         <th rowspan="2">OT 2</th>
-                        <th rowspan="2">OT Libur</th>
+                        <th rowspan="2">OT Libur</th> --}}
 
                     </tr>
                     <tr>
@@ -545,52 +546,20 @@
                                     $tanggal_presensi = date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)));
                                 @endphp
                             @endwhile
-                            <td style="font-weight: bold; color:#024a0d; text-align:center">{{ $total_jam_satubulan }}</td>
-                            <td style="font-weight: bold; color:#f40505; text-align:center">
-                                {{ formatAngkaDesimal($total_potongan_jam_terlambat) }}
-                            </td>
-                            <td style="font-weight: bold; color:#f40505; text-align:center">
-                                {{ formatAngkaDesimal($total_potongan_jam_dirumahkan) }}
-                            </td>
-                            <td style="font-weight: bold; color:#f40505; text-align:center">
-                                {{ formatAngkaDesimal($total_potongan_jam_izinkeluar) }}
-                            </td>
-                            <td style="font-weight: bold; color:#f40505; text-align:center">
-                                {{ formatAngkaDesimal($total_potongan_jam_pulangcepat) }}
-                            </td>
-                            <td style="font-weight: bold; color:#f40505; text-align:center">
-                                {{ formatAngkaDesimal($total_potongan_jam_tidakhadir) }}
-                            </td>
-                            <td style="font-weight: bold; color:#f40505; text-align:center">
-                                {{ formatAngkaDesimal($total_potongan_jam_izin) }}
-                            </td>
-                            <td style="font-weight: bold; color:#f40505; text-align:center">
-                                {{ formatAngkaDesimal($total_potongan_jam_sakit) }}
-                            </td>
-                            <td style="font-weight: bold; color:#026720; text-align:center">
+                            @php
+                                $total_jam_kerja = $total_jam_satubulan - $grand_total_potongan_jam;
+                                $upah_perjam = $d['gaji_pokok'] / $total_jam_satubulan;
+                            @endphp
+                            <td style="font-weight: bold; text-align:center">
                                 @php
                                     $total_jam_kerja = $total_jam_satubulan - $grand_total_potongan_jam;
                                 @endphp
                                 {{ formatAngkaDesimal($total_jam_kerja) }}
                             </td>
-                            <td style="font-weight: bold; color:#f40505; text-align:center">
-                                {{ formatAngka($total_denda) }}
+                            <td style="font-weight: bold;  text-align:right">
+                                {{ formatAngkaDesimal($upah_perjam) }}
                             </td>
-                            <td style="font-weight: bold; color:#026720; text-align:center">
-                                {{ !empty($total_premi_shift2) ? $total_premi_shift2 : '' }}
-                            </td>
-                            <td style="font-weight: bold; color:#026720; text-align:center">
-                                {{ !empty($total_premi_shift3) ? $total_premi_shift3 : '' }}
-                            </td>
-                            <td style="font-weight: bold; color:#026720; text-align:center">
-                                {{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}
-                            </td>
-                            <td style="font-weight: bold; color:#026720; text-align:center">
-                                {{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}
-                            </td>
-                            <td style="font-weight: bold; color:#026720; text-align:center">
-                                {{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}
-                            </td>
+
                         </tr>
                     @endforeach
                 </tbody>
