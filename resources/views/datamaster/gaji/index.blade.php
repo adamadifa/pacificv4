@@ -21,24 +21,23 @@
                         <form action="{{ route('gaji.index') }}">
                             <div class="row">
                                 <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}"
-                                        name="nama_karyawan" icon="ti ti-search" />
+                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan"
+                                        icon="ti ti-search" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                                        textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
+                                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                        selected="{{ Request('kode_cabang') }}" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept"
-                                        textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true" />
+                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
+                                        selected="{{ Request('kode_dept') }}" upperCase="true" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group"
-                                        textShow="nama_group" selected="{{ Request('kode_group') }}" upperCase="true" />
+                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
+                                        selected="{{ Request('kode_group') }}" upperCase="true" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i
-                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
+                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
                                 </div>
                             </div>
 
@@ -99,31 +98,31 @@
                                                 {{ date('d-m-Y', strtotime($d->tanggal_berlaku)) }}
                                             </td>
                                             <td>
-                                                @if ($d->kode_gaji == $d->kode_lastgaji)
-                                                    <div class="d-flex">
-                                                        @can('gaji.edit')
-                                                            <div>
-                                                                <a href="#" class="me-2 editGaji"
-                                                                    kode_gaji="{{ Crypt::encrypt($d->kode_gaji) }}">
-                                                                    <i class="ti ti-edit text-success"></i>
-                                                                </a>
-                                                            </div>
-                                                        @endcan
+                                                {{-- @if ($d->kode_gaji == $d->kode_lastgaji)
 
-                                                        @can('gaji.delete')
-                                                            <div>
-                                                                <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('gaji.delete', Crypt::encrypt($d->kode_gaji)) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            </div>
-                                                        @endcan
-                                                    </div>
-                                                @endif
+                                                @endif --}}
+                                                <div class="d-flex">
+                                                    @can('gaji.edit')
+                                                        <div>
+                                                            <a href="#" class="me-2 editGaji" kode_gaji="{{ Crypt::encrypt($d->kode_gaji) }}">
+                                                                <i class="ti ti-edit text-success"></i>
+                                                            </a>
+                                                        </div>
+                                                    @endcan
+
+                                                    @can('gaji.delete')
+                                                        <div>
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('gaji.delete', Crypt::encrypt($d->kode_gaji)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        </div>
+                                                    @endcan
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

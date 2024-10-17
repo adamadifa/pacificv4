@@ -26,7 +26,7 @@ class GajiController extends Controller
         $group = Group::orderBy('kode_group')->get();
 
         $query = Gaji::query();
-        $query->select('hrd_gaji.*', 'hrd_karyawan.*', 'lastgaji.kode_gaji as kode_lastgaji');
+        $query->select('hrd_gaji.*', 'hrd_karyawan.*');
         if (!empty($request->kode_cabang)) {
             $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang);
         }
@@ -43,17 +43,18 @@ class GajiController extends Controller
         }
         $query->join('hrd_karyawan', 'hrd_gaji.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
-        $query->leftJoin(
-            DB::raw("(
-                SELECT
-                max(kode_gaji) as kode_gaji
-                FROM hrd_gaji
-                GROUP BY nik
-            ) lastgaji"),
-            function ($join) {
-                $join->on('hrd_gaji.kode_gaji', '=', 'lastgaji.kode_gaji');
-            }
-        );
+        // $query->leftJoin(
+        //     DB::raw("(
+        //         SELECT
+        //         kode_gaji,
+        //         MAX(tanggal_berlaku) as tanggal_berlaku
+        //         FROM hrd_gaji
+        //         GROUP BY nik
+        //     ) lastgaji"),
+        //     function ($join) {
+        //         $join->on('hrd_gaji.kode_gaji', '=', 'lastgaji.kode_gaji');
+        //     }
+        // );
         if (!$user->hasRole($roles_access_all_pjp)) {
             $query->where('hrd_jabatan.kategori', 'NM');
         }
