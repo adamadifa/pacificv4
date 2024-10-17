@@ -137,7 +137,7 @@ class BpbjController extends Controller
                 ->where('id_user', auth()->user()->id)->count();
 
             if ($cekbpbj > 0) {
-                return 1;
+                return response()->json(['status' => 'error', 'message' => 'Data Sudah Ada'], 400);
             }
             Detailmutasiproduksitemp::create([
                 'kode_produk' => $request->kode_produk,
@@ -148,9 +148,9 @@ class BpbjController extends Controller
                 'id_user' => auth()->user()->id
             ]);
 
-            return 0;
+            return response()->json(['status' => 'success', 'message' => 'Data Berhasil Disimpan'], 200);
         } catch (\Exception $e) {
-            return $e;
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
     }
 

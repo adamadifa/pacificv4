@@ -220,18 +220,15 @@
                     },
                     cache: false,
                     success: function(respond) {
-                        console.log(respond);
-                        // if (respond === '0') {
-                        //     Swal.fire("Saved!", "", "success");
-                        //     $("#jumlah").val(0);
-                        //     $("#shift").val("");
-                        //     loaddetailtemp();
-                        // } else if (respond === '1') {
-                        //     Swal.fire("Oops!", "Data Sudah Ada", "warning");
-                        // } else {
-                        //     Swal.fire("Error", respond, "error");
-                        // }
+                        console.log('tes');
+                        Swal.fire("Saved!", "", "success");
+                        $("#jumlah").val(0);
+                        $("#shift").val("");
+                        loaddetailtemp();
                         $("#tambahproduk").prop('disabled', false);
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", xhr.responseJSON.message, "error");
                     }
                 });
             }
