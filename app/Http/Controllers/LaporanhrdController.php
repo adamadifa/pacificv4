@@ -184,7 +184,7 @@ class LaporanhrdController extends Controller
 
         $gajiTerakhir = DB::table('hrd_gaji')
             ->select('nik', 'gaji_pokok', 'tanggal_berlaku')
-            ->whereIn('tanggal_berlaku', function ($query) use ($berlakugaji) {
+            ->whereIn('kode_gaji', function ($query) use ($berlakugaji) {
                 $query->select(DB::raw('MAX(kode_gaji   )'))
                     ->from('hrd_gaji')
                     ->where('tanggal_berlaku', '<=', $berlakugaji)
