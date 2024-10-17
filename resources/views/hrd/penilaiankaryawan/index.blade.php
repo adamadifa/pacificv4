@@ -198,6 +198,7 @@
                                                         </a>
                                                     @endcan
                                                     @can('kontrakkerja.create')
+                                                        {{ $d->no_kontrak_baru }}
                                                         @if ($d->status == '1' && empty($d->no_kontrak_baru) && $d->status_pemutihan === '0')
                                                             <a href="#" class="btnCreatekontrak me-1"
                                                                 kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}">
