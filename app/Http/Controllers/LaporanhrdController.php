@@ -181,11 +181,15 @@ class LaporanhrdController extends Controller
 
 
 
-        $gajiTerakhir = Gaji::join(DB::raw('(SELECT nik, MAX(tanggal_berlaku) as max_tanggal FROM hrd_gaji WHERE tanggal_berlaku <= "' . $berlakugaji . '" GROUP BY nik) as lastgaji'), function ($join) {
-            $join->on('hrd_gaji.nik', '=', 'lastgaji.nik')
-                ->on('hrd_gaji.tanggal_berlaku', '=', 'lastgaji.max_tanggal');
-        })
-            ->select('hrd_gaji.*');
+
+        $gajiTerakhir = DB::table('hrd_gaji')
+            ->select('nik', 'gaji_pokok', 't_jabatan', 't_masakerja', 't_tanggungjawab', 't_makan', 't_istri', 't_skill', 'tanggal_berlaku')
+            ->whereIn('tanggal_berlaku', function ($query) {
+                $query->select(DB::raw('MAX(tanggal_berlaku)'))
+                    ->from('hrd_gaji')
+                    ->groupBy('nik');
+            });
+
 
 
         $qpresensi = Presensi::query();
