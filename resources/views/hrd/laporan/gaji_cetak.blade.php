@@ -609,7 +609,7 @@
                                 $upah_premi_shift2 = 5000 * $premis_shift2;
                                 $upah_premi_shift3 = 6000 * $premis_shift3;
 
-                                $bruto = $upah + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
+                                $bruto = $upah_perjam * $total_jam_kerja + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
