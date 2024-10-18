@@ -187,7 +187,7 @@
                                                 $textcolor = '';
                                             @endphp
                                         @endif
-                                        <td style="padding: 10px; background-color: {{ $color }}; color: {{ $textcolor }}">
+                                        <td style="padding: 10px; background-color: {{ $color }}; color: {{ $textcolor }} !important">
                                             <!-- Jika Status Hadir -->
                                             @php
 
