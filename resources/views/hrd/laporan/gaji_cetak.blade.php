@@ -573,12 +573,21 @@
                             <td style="font-weight: bold;  text-align:right">
                                 {{ formatAngkaDesimal($upah_perjam) }}
                             </td>
-                            <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}</td>
-                            <td style="font-weight: bold; text-align:right">{{ !empty($upah_overtime_1) ? formatAngka($upah_overtime_1) : '' }}</td>
-                            <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}</td>
-                            <td style="font-weight: bold; text-align:right">{{ !empty($upah_overtime_2) ? formatAngka($upah_overtime_2) : '' }}</td>
-                            <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}</td>
-                            <td style="font-weight: bold; text-align:right">
+                            <td style="font-weight: bold; text-align:center;width:2%">
+                                {{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}
+                            </td>
+                            <td style="font-weight: bold; text-align:right;width:2%">
+                                {{ !empty($upah_overtime_1) ? formatAngka($upah_overtime_1) : '' }}
+                            </td>
+                            <td style="font-weight: bold; text-align:center;width:2%">
+                                {{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}
+                            </td>
+                            <td style="font-weight: bold; text-align:right;width:2%">
+                                {{ !empty($upah_overtime_2) ? formatAngka($upah_overtime_2) : '' }}
+                            </td>
+                            <td style="font-weight: bold; text-align:center;width:2%">
+                                {{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}</td>
+                            <td style="font-weight: bold; text-align:right;width:2%">
                                 {{ !empty($upah_overtime_libur) ? formatAngka($upah_overtime_libur) : '' }}
                             </td>
                             <td></td>
