@@ -321,7 +321,8 @@
                                             </p>
                                             <!-- Terlambat -->
                                             <p style="margin:0">
-                                                <span style="color: {{ $terlambat['color'] }}"> {{ $terlambat['keterangan'] }}
+                                                <span style="color: {{ !empty($textcolor) ? $textcolor : $terlambat['color'] }}">
+                                                    {{ $terlambat['keterangan'] }}
                                                     <br>
                                                     {{ !empty($denda['denda']) ? '(' . formatAngka($denda['denda']) . ')' : '' }}
                                                 </span>
