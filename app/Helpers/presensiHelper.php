@@ -317,12 +317,16 @@ function presensiHitunglembur($datalembur)
             'overtime_1' => $overtime_1,
             'overtime_2' => $overtime_2,
             'overtime_libur' => $overtime_libur,
+            'jmlharilembur_shift_2' => $jmlharilembur_shift_2,
+            'jmlharilembur_shift_3' => $jmlharilembur_shift_3,
         ];
     } else {
         return [
             'overtime_1' => 0,
             'overtime_2' => 0,
             'overtime_libur' => 0,
+            'jmlharilembur_shift_2' => 0,
+            'jmlharilembur_shift_3' => 0,
         ];
     }
 }
