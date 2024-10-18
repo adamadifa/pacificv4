@@ -316,6 +316,11 @@
                                                 }
 
                                             @endphp
+                                            @if (!empty($ceklemburharilibur))
+                                                @php
+                                                    $kode_shift = $lembur_libur['kode_shift'];
+                                                @endphp
+                                            @endif
                                             {{ $kode_shift }}{{ $total_jam < $total_jam_jadwal ? $total_jam : '' }}
                                             @if (!empty($ceklembur))
                                                 <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
