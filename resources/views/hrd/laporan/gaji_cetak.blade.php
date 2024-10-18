@@ -201,6 +201,8 @@
                                 $total_overtime_libur = 0;
                                 $total_overtime_libur_reguler = 0;
                                 $total_overtime_libur_nasional = 0;
+                                $total_premi_shift2_lembur = 0;
+                                $total_premi_shift3_lembur = 0;
                             @endphp
                             @while (strtotime($tanggal_presensi) <= strtotime($end_date))
                                 @php
@@ -233,6 +235,8 @@
                                     }
 
                                     $total_overtime_libur += $overtime_libur;
+                                    $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
+                                    $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -379,11 +383,21 @@
                                             $jumlah_denda = $denda['denda'];
 
                                             //Premi
-                                            if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003' && $total_jam >= 5) {
+                                            if (
+                                                $d[$tanggal_presensi]['kode_jadwal'] == 'JD003' &&
+                                                $total_jam >= 5 &&
+                                                empty($cekliburnasional) &&
+                                                getNamahari($tanggal_presensi) != 'Minggu'
+                                            ) {
                                                 $total_premi_shift2 += 1;
                                             }
 
-                                            if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004' && $total_jam >= 5) {
+                                            if (
+                                                $d[$tanggal_presensi]['kode_jadwal'] == 'JD004' &&
+                                                $total_jam >= 5 &&
+                                                empty($cekliburnasional) &&
+                                                getNamahari($tanggal_presensi) != 'Minggu'
+                                            ) {
                                                 $total_premi_shift3 += 1;
                                             }
                                         @endphp
@@ -587,6 +601,9 @@
                                     $upah_overtime_libur = floor($upah_perjam * 2 * $total_overtime_libur);
                                 }
                                 $total_upah_overtime = $upah_overtime_1 + $upah_overtime_2 + $upah_overtime_libur;
+
+                                $premis_shift2 = $total_premi_shift2 + $total_premi_shift2_lembur;
+                                $premis_shift3 = $total_premi_shift3 + $total_premi_shift3_lembur;
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -617,9 +634,9 @@
                             <td style="font-weight: bold; text-align:right;width:2%">
                                 {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
                             </td>
+                            <td>{{ $premis_shift2 }}</td>
                             <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ $premis_shift3 }}</td>
                             <td></td>
                         </tr>
                     @endforeach
