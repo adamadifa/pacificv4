@@ -88,7 +88,8 @@ return  [
         'manager gudang',
         'spv gudang pusat',
         'admin gudang pusat',
-        'gm operasional'
+        'gm operasional',
+        'admin pusat'
     ],
     'roles_show_cabang' => [
         'super admin',
@@ -111,7 +112,8 @@ return  [
         'manager gudang',
         'spv gudang pusat',
         'admin gudang pusat',
-        'gm operasional'
+        'gm operasional',
+        'admin pusat'
     ],
 
     'roles_access_all_karyawan' => [
