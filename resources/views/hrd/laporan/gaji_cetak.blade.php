@@ -550,6 +550,19 @@
                             @php
                                 $total_jam_kerja = $total_jam_satubulan - $grand_total_potongan_jam;
                                 $upah_perjam = $upah / $total_jam_satubulan;
+
+                                //Upah Overtime
+                                //Jika Security
+                                if ($d['kode_jabatan'] == 'J20') {
+                                    $upah_overtime_1 = 1.5 * 6597 * $total_overtime_1;
+                                    $upah_overtime_2 = 1.5 * 6597 * $total_overtime_2;
+                                    $upah_overtime_libur = 13194 * $total_overtime_libur;
+                                    // $upah_overtime_libur_nasional = 13143 * $total_overtime_libur_nasional;
+                                } else {
+                                    $upah_overtime_1 = $upah_perjam * 1.5 * $total_overtime_1;
+                                    $upah_overtime_2 = $upah_perjam * 1.5 * $total_overtime_2;
+                                    $upah_overtime_libur = floor($upah_perjam * 2 * $total_overtime_libur);
+                                }
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -561,11 +574,13 @@
                                 {{ formatAngkaDesimal($upah_perjam) }}
                             </td>
                             <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}</td>
-                            <td></td>
+                            <td style="font-weight: bold; text-align:right">{{ !empty($upah_overtime_1) ? formatAngka($upah_overtime_1) : '' }}</td>
                             <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}</td>
-                            <td></td>
+                            <td style="font-weight: bold; text-align:right">{{ !empty($upah_overtime_2) ? formatAngka($upah_overtime_2) : '' }}</td>
                             <td style="font-weight: bold; text-align:center">{{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}</td>
-                            <td></td>
+                            <td style="font-weight: bold; text-align:right">
+                                {{ !empty($upah_overtime_libur) ? formatAngka($upah_overtime_libur) : '' }}
+                            </td>
                             <td></td>
                         </tr>
                     @endforeach
