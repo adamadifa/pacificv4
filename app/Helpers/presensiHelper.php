@@ -293,17 +293,23 @@ function presensiHitunglembur($datalembur)
         if ($jamlembur_dari >= '22:00' && $jmljam_lbr >= 5) {
             // $premilembur = 6000;
             // $premilembur_shift_3 = 6000;
+            $nama_jadwal = "SHIFT 3";
+            $kode_shift = "M";
             $jmlharilembur_shift_3 = 1;
             $jmlharilembur_shift_2 = 0;
         } else if ($jamlembur_dari >= '15:00' && $jmljam_lbr >= 5) {
             // $premilembur = 5000;
             // $premilembur_shift_2 = 5000;
+            $nama_jadwal = "SHIFT 2";
+            $kode_shift = "S";
             $jmlharilembur_shift_2 = 1;
             $jmlharilembur_shift_3 = 0;
         } else {
             // $premilembur = 0;
             // $premilembur_shift_2 = 0;
             // $premilembur_shift_3 = 0;
+            $nama_jadwal = "";
+            $kode_shift = "";
             $jmlharilembur_shift_2 = 0;
             $jmlharilembur_shift_3 = 0;
         }
@@ -327,6 +333,8 @@ function presensiHitunglembur($datalembur)
             'overtime_libur' => $overtime_libur,
             'jmlharilembur_shift_2' => $jmlharilembur_shift_2,
             'jmlharilembur_shift_3' => $jmlharilembur_shift_3,
+            'nama_jadwal' => $nama_jadwal,
+            'kode_shift' => $kode_shift,
         ];
     } else {
         return [
@@ -335,6 +343,8 @@ function presensiHitunglembur($datalembur)
             'overtime_libur' => 0,
             'jmlharilembur_shift_2' => 0,
             'jmlharilembur_shift_3' => 0,
+            'nama_jadwal' => '',
+            'kode_shift' => '',
         ];
     }
 }

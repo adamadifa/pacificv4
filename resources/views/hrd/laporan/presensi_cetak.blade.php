@@ -316,12 +316,22 @@
                                                     $total_premi_shift2 += 1;
                                                 }
 
-                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004' && $total_jam >= 5 && empty($cekliburnasional) && getNamahari($tanggal_presensi) != 'Minggu') {
+                                                if (
+                                                    $d[$tanggal_presensi]['kode_jadwal'] == 'JD004' &&
+                                                    $total_jam >= 5 &&
+                                                    empty($cekliburnasional) &&
+                                                    getNamahari($tanggal_presensi) != 'Minggu'
+                                                ) {
                                                     $total_premi_shift3 += 1;
                                                 }
                                             @endphp
-                                            <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}
-                                            </h4>
+                                            @if (!empty($ceklemburharilibur))
+                                                <h4 style="font-weight: bold; margin-bottom:8px">{{ $lembur_libur['nama_jadwal'] }}
+                                                </h4>
+                                            @else
+                                                <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}
+                                                </h4>
+                                            @endif
                                             <p style="color:{{ !empty($textcolor) ? $textcolor : 'rgb(38, 86, 197)' }}; margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
                                             </p>
