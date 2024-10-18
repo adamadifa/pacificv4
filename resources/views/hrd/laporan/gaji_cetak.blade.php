@@ -67,6 +67,7 @@
                         <th rowspan="2">Total OT</th>
                         <th colspan="2">Premi Shift 2</th>
                         <th colspan="2">Premi Shift 3</th>
+                        <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -607,6 +608,8 @@
 
                                 $upah_premi_shift2 = 5000 * $premis_shift2;
                                 $upah_premi_shift3 = 6000 * $premis_shift3;
+
+                                $bruto = $upah + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -641,6 +644,7 @@
                             <td style="text-align: right">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
                             <td style="text-align: center">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
                             <td style="text-align: right">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
+                            <td style="text-align: right">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
