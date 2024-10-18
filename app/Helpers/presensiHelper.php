@@ -298,6 +298,12 @@ function presensiHitunglembur($datalembur)
             $premilembur = 5000;
             $premilembur_shift_2 = 5000;
             $jmlharilembur_shift_2 = 1;
+        } else {
+            $premilembur = 0;
+            $premilembur_shift_2 = 0;
+            $premilembur_shift_3 = 0;
+            $jmlharilembur_shift_2 = 0;
+            $jmlharilembur_shift_3 = 0;
         }
 
         if ($kategori_lembur == 1) {
