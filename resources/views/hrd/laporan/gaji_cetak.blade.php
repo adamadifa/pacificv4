@@ -191,6 +191,8 @@
                                 $total_overtime_1 = 0;
                                 $total_overtime_2 = 0;
                                 $total_overtime_libur = 0;
+                                $total_overtime_libur_reguler = 0;
+                                $total_overtime_libur_nasional = 0;
                             @endphp
                             @while (strtotime($tanggal_presensi) <= strtotime($end_date))
                                 @php
@@ -212,6 +214,14 @@
                                     $total_overtime_1 += $lembur['overtime_1'];
                                     $total_overtime_2 += $lembur['overtime_2'];
                                     $total_overtime_libur += $lembur_libur['overtime_libur'];
+
+                                    if (!empty($cekliburnasional)) {
+                                        $total_overtime_libur_nasional += $lembur_libur['overtime_libur'];
+                                        $total_overtime_libur_reguler += 0;
+                                    } else {
+                                        $total_overtime_libur_nasional += 0;
+                                        $total_overtime_libur_reguler += $lembur_libur['overtime_libur'];
+                                    }
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -557,8 +567,9 @@
                                 if ($d['kode_jabatan'] == 'J20') {
                                     $upah_overtime_1 = 1.5 * 6597 * $total_overtime_1;
                                     $upah_overtime_2 = 1.5 * 6597 * $total_overtime_2;
-                                    $upah_overtime_libur = 13194 * $total_overtime_libur;
-                                    // $upah_overtime_libur_nasional = 13143 * $total_overtime_libur_nasional;
+                                    $upah_overtime_libur_reguler = 13194 * $total_overtime_libur_reguler;
+                                    $upah_overtime_libur_nasional = 13143 * $total_overtime_libur_nasional;
+                                    $upah_overtime_libur = $upah_overtime_libur_reguler + $upah_overtime_libur_nasional;
                                 } else {
                                     $upah_overtime_1 = $upah_perjam * 1.5 * $total_overtime_1;
                                     $upah_overtime_2 = $upah_perjam * 1.5 * $total_overtime_2;
