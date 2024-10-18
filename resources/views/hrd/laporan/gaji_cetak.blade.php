@@ -570,7 +570,7 @@
                                 @endphp
                                 {{ formatAngkaDesimal($total_jam_kerja) }}
                             </td>
-                            <td style="font-weight: bold;  text-align:right">
+                            <td style="font-weight: bold;  text-align:right; width:2%">
                                 {{ formatAngkaDesimal($upah_perjam) }}
                             </td>
                             <td style="font-weight: bold; text-align:center;width:2%">
