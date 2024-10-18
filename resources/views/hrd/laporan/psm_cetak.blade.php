@@ -136,6 +136,8 @@
                                     }
                                     $total_overtime_libur += $overtime_libur;
 
+                                    $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
+                                    $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -169,7 +171,23 @@
                                                 : $j_selesai;
                                     @endphp
                                     @if ($d[$tanggal_presensi]['status'] == 'h')
-                                        <td style="padding: 10px;">
+                                        @if (!empty($cekliburnasional))
+                                            @php
+                                                $color = 'green';
+                                                $textcolor = 'white';
+                                            @endphp
+                                        @elseif(getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
+                                            @php
+                                                $color = 'rgba(243, 158, 0, 0.833)';
+                                                $textcolor = 'white';
+                                            @endphp
+                                        @else
+                                            @php
+                                                $color = '';
+                                                $textcolor = '';
+                                            @endphp
+                                        @endif
+                                        <td style="padding: 10px; background-color: {{ $color }}; color: {{ $textcolor }} !important">
                                             <!-- Jika Status Hadir -->
                                             @php
                                                 $istirahat = $d[$tanggal_presensi]['istirahat'];
