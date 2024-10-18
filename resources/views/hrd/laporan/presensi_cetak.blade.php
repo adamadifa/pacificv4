@@ -143,9 +143,6 @@
                                         $overtime_libur = $lembur_libur['overtime_libur'];
                                     }
                                     $total_overtime_libur += $overtime_libur;
-
-                                    $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
-                                    $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -179,8 +176,16 @@
                                     @endphp
                                     @if ($d[$tanggal_presensi]['status'] == 'h')
                                         <!-- Jika Hari Minggu -->
-
-                                        <td style="padding: 10px;">
+                                        @if (!empty($cekliburnasional))
+                                            @php
+                                                $color = 'green';
+                                            @endphp
+                                        @else
+                                            @php
+                                                $color = '';
+                                            @endphp
+                                        @endif
+                                        <td style="padding: 10px; background-color: {{ $color }}">
                                             <!-- Jika Status Hadir -->
                                             @php
 

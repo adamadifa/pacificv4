@@ -125,6 +125,7 @@
 
                                     $lembur = presensiHitunglembur($ceklembur);
                                     $lembur_libur = presensiHitunglembur($ceklemburharilibur);
+
                                     $total_overtime_1 += $lembur['overtime_1'];
                                     $total_overtime_2 += $lembur['overtime_2'];
 
