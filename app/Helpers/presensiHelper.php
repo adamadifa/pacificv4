@@ -294,10 +294,12 @@ function presensiHitunglembur($datalembur)
             $premilembur = 6000;
             $premilembur_shift_3 = 6000;
             $jmlharilembur_shift_3 = 1;
+            $jmlharilembur_shift_2 = 0;
         } else if ($jamlembur_dari >= '15:00' && $jmljam_lbr >= 5) {
             $premilembur = 5000;
             $premilembur_shift_2 = 5000;
             $jmlharilembur_shift_2 = 1;
+            $jmlharilembur_shift_3 = 0;
         } else {
             $premilembur = 0;
             $premilembur_shift_2 = 0;
