@@ -241,6 +241,7 @@
                                                     $istirahat,
                                                     $jam_awal_istirahat,
                                                     $jam_akhir_istirahat,
+                                                    $d[$tanggal_presensi]['keperluan'],
                                                 );
 
                                                 //Potongan Jam

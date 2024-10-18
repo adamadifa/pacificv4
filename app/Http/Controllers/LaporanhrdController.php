@@ -264,6 +264,7 @@ class LaporanhrdController extends Controller
             'hrd_presensi_izinkeluar.kode_izin_keluar',
             'hrd_izinkeluar.jam_keluar',
             'hrd_izinkeluar.jam_kembali',
+            'hrd_izinkeluar.keperluan',
             'hrd_izinkeluar.direktur as izin_keluar_direktur',
 
             //Izin Terlambat
@@ -462,6 +463,7 @@ class LaporanhrdController extends Controller
                     'kode_izin_keluar' => $row->kode_izin_keluar,
                     'jam_keluar' => $row->jam_keluar,
                     'jam_kembali' => $row->jam_kembali,
+                    'keperluan' => $row->keperluan,
                     'izin_keluar_direktur' => $row->izin_keluar_direktur,
 
                     'kode_izin_terlambat' => $row->kode_izin_terlambat,

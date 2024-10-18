@@ -114,7 +114,7 @@ function presensiHitungPulangCepat($jam_out, $jam_selesai, $jam_awal_istirahat, 
 }
 
 
-function presensiHitungJamKeluarKantor($jam_keluar, $j_kembali, $jam_selesai, $jam_out, $total_jam, $istirahat, $jam_awal_istirahat, $jam_akhir_istirahat)
+function presensiHitungJamKeluarKantor($jam_keluar, $j_kembali, $jam_selesai, $jam_out, $total_jam, $istirahat, $jam_awal_istirahat, $jam_akhir_istirahat, $keperluan)
 {
     if (!empty($jam_keluar)) {
         if (empty($j_kembali)) {
@@ -163,6 +163,9 @@ function presensiHitungJamKeluarKantor($jam_keluar, $j_kembali, $jam_selesai, $j
 
         $desimaljamkeluar = $jkeluar +   ROUND(($menitkeluarkantor / 60), 2);
 
+        if ($keperluan == 'K') {
+            $desimaljamkeluar = 0;
+        }
 
         return [
             'status' => true,
