@@ -309,7 +309,7 @@
                                             @endphp
                                             <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}
                                             </h4>
-                                            <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
+                                            <p style="color:{{ !empty($textcolor) ? $textcolor : 'rgb(38, 86, 197)' }}; margin:0; font-weight:bold">
                                                 {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
                                             </p>
                                             <!-- Jam Masuk dan Pulang -->
@@ -338,7 +338,8 @@
 
                                             <!-- Total Jam Kerja -->
                                             <p style="margin:0">
-                                                <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
+                                                <span style="font-weight: bold ;color: {{ !empty($textcolor) ? $textcolor : '#024a0d' }}">Total Jam
+                                                    :{{ $total_jam }}</span>
                                             </p>
                                             @if (!empty($ceklembur))
                                                 <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
