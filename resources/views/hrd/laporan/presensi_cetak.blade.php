@@ -179,13 +179,15 @@
                                         @if (!empty($cekliburnasional))
                                             @php
                                                 $color = 'green';
+                                                $textcolor = 'white';
                                             @endphp
                                         @else
                                             @php
                                                 $color = '';
+                                                $textcolor = '';
                                             @endphp
                                         @endif
-                                        <td style="padding: 10px; background-color: {{ $color }}">
+                                        <td style="padding: 10px; background-color: {{ $color }}; color: {{ $textcolor }}">
                                             <!-- Jika Status Hadir -->
                                             @php
 
