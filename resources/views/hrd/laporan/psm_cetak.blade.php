@@ -302,14 +302,14 @@
 
                                                 //PREMI
                                                 if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003') {
-                                                    if ($total_jam >= 5) {
+                                                    if ($total_jam >= 5 && empty($cekliburnasional) && getNamahari($tanggal_presensi) != 'Minggu') {
                                                         $total_premi_shift2 += 1;
                                                     }
                                                     $kode_shift = 'S';
                                                 }
 
                                                 if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004') {
-                                                    if ($total_jam >= 5) {
+                                                    if ($total_jam >= 5 && empty($cekliburnasional) && getNamahari($tanggal_presensi) != 'Minggu') {
                                                         $total_premi_shift3 += 1;
                                                     }
                                                     $kode_shift = 'M';
