@@ -108,6 +108,8 @@
                                 $total_overtime_1 = 0;
                                 $total_overtime_2 = 0;
                                 $total_overtime_libur = 0;
+                                $total_premi_shift2_lembur = 0;
+                                $total_premi_shift3_lembur = 0;
                             @endphp
                             @while (strtotime($tanggal_presensi) <= strtotime($end_date))
                                 @php
