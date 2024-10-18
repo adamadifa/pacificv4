@@ -184,6 +184,11 @@
                                                 $color = 'green';
                                                 $textcolor = 'white';
                                             @endphp
+                                        @elseif(getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
+                                            @php
+                                                $color = 'rgba(243, 158, 0, 0.833)';
+                                                $textcolor = 'white';
+                                            @endphp
                                         @else
                                             @php
                                                 $color = '';
@@ -302,11 +307,16 @@
                                                 $jumlah_denda = $denda['denda'];
 
                                                 //Premi
-                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003' && $total_jam >= 5 && empty($cekliburnasional)) {
+                                                if (
+                                                    $d[$tanggal_presensi]['kode_jadwal'] == 'JD003' &&
+                                                    $total_jam >= 5 &&
+                                                    empty($cekliburnasional) &&
+                                                    getNamahari($tanggal_presensi) != 'Minggu'
+                                                ) {
                                                     $total_premi_shift2 += 1;
                                                 }
 
-                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004' && $total_jam >= 5 && empty($cekliburnasional)) {
+                                                if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004' && $total_jam >= 5 && empty($cekliburnasional) && getNamahari($tanggal_presensi) != 'Minggu') {
                                                     $total_premi_shift3 += 1;
                                                 }
                                             @endphp
