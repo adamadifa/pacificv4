@@ -633,8 +633,8 @@
                                 @endphp
                             @endwhile
                             @php
-                                $grandtotal_premi_shift2 = $total_premi_shift2;
-                                $grandtotal_premi_shift3 = $total_premi_shift3;
+                                $grandtotal_premi_shift2 = $total_premi_shift2 + $total_premi_shift2_lembur;
+                                $grandtotal_premi_shift3 = $total_premi_shift3 + $total_premi_shift3_lembur;
                             @endphp
                             <td style="font-weight: bold; color:#024a0d; text-align:center">{{ $total_jam_satubulan }}</td>
                             <td style="font-weight: bold; color:#f40505; text-align:center">
