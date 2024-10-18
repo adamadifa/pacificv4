@@ -637,10 +637,10 @@
                             <td style="font-weight: bold; text-align:right;width:2%">
                                 {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
                             </td>
-                            <td style="text-align: center">{{ $premis_shift2 }}</td>
-                            <td style="text-align: right">{{ formatAngka($upah_premi_shift2) }}</td>
-                            <td style="text-align: center">{{ $premis_shift3 }}</td>
-                            <td style="text-align: right">{{ formatAngka($upah_premi_shift3) }}</td>
+                            <td style="text-align: center">{{ !empty($premis_shift2) ? $premis_shift2 : '' }}</td>
+                            <td style="text-align: right">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
+                            <td style="text-align: center">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
+                            <td style="text-align: right">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
