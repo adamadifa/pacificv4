@@ -342,14 +342,16 @@
                                                     :{{ $total_jam }}</span>
                                             </p>
                                             @if (!empty($ceklembur))
-                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                <p
+                                                    style="margin:0; color:{{ !empty($textcolor) ? $textcolor : 'rgb(0, 42, 255)' }}; font-weight:bold">
                                                     <span>OT1 : {{ $lembur['overtime_1'] }}</span>
                                                     <br>
                                                     <span>OT2 : {{ $lembur['overtime_2'] }}</span>
                                                 </p>
                                             @endif
                                             @if (!empty($ceklemburharilibur))
-                                                <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
+                                                <p
+                                                    style="margin:0; color:{{ !empty($textcolor) ? $textcolor : 'rgb(0, 42, 255)' }}; font-weight:bold">
                                                     <span>OTL : {{ $overtime_libur }}</span>
                                                 </p>
                                             @endif
