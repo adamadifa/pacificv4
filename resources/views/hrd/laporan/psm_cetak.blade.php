@@ -643,6 +643,10 @@
                                     $tanggal_presensi = date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)));
                                 @endphp
                             @endwhile
+                            @php
+                                $grandtotal_premi_shift2 = $total_premi_shift2 + $total_premi_shift2_lembur;
+                                $grandtotal_premi_shift3 = $total_premi_shift3 + $total_premi_shift3_lembur;
+                            @endphp
                             <td style="font-weight: bold; color:#024a0d; text-align:center">{{ $total_jam_satubulan }}</td>
                             <td style="font-weight: bold; color:#f40505; text-align:center">
                                 {{ formatAngkaDesimal($total_potongan_jam_terlambat) }}
@@ -675,10 +679,10 @@
                                 {{ formatAngka($total_denda) }}
                             </td>
                             <td style="font-weight: bold; color:#026720; text-align:center">
-                                {{ !empty($total_premi_shift2) ? $total_premi_shift2 : '' }}
+                                {{ !empty($grandtotal_premi_shift2) ? $grandtotal_premi_shift2 : '' }}
                             </td>
                             <td style="font-weight: bold; color:#026720; text-align:center">
-                                {{ !empty($total_premi_shift3) ? $total_premi_shift3 : '' }}
+                                {{ !empty($grandtotal_premi_shift3) ? $grandtotal_premi_shift3 : '' }}
                             </td>
 
                             <td style="font-weight: bold; color:#026720; text-align:center">
