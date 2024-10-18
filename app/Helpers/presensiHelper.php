@@ -308,8 +308,8 @@ function presensiHitunglembur($datalembur)
             // $premilembur = 0;
             // $premilembur_shift_2 = 0;
             // $premilembur_shift_3 = 0;
-            $nama_jadwal = "";
-            $kode_shift = "";
+            $nama_jadwal = "SHIFT 1";
+            $kode_shift = "P";
             $jmlharilembur_shift_2 = 0;
             $jmlharilembur_shift_3 = 0;
         }
