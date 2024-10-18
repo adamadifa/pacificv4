@@ -134,7 +134,13 @@
                                     $lembur_libur = presensiHitunglembur($ceklemburharilibur);
                                     $total_overtime_1 += $lembur['overtime_1'];
                                     $total_overtime_2 += $lembur['overtime_2'];
-                                    $total_overtime_libur += $lembur_libur['overtime_libur'];
+
+                                    if (!empty($cekliburnasional)) {
+                                        $overtime_libur = $lembur_libur['overtime_libur'] * 2;
+                                    } else {
+                                        $overtime_libur = $lembur_libur['overtime_libur'];
+                                    }
+                                    $total_overtime_libur += $overtime_libur;
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -330,7 +336,7 @@
                                             @endif
                                             @if (!empty($ceklemburharilibur))
                                                 <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
-                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                    <span>OTL : {{ $overtime_libur }}</span>
                                                 </p>
                                             @endif
                                         </td>
@@ -378,7 +384,7 @@
                                             @endif
                                             @if (!empty($ceklemburharilibur))
                                                 <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
-                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                    <span>OTL : {{ $overtime_libur }}</span>
                                                 </p>
                                             @endif
                                         </td>
@@ -432,7 +438,7 @@
                                             @endif
                                             @if (!empty($ceklemburharilibur))
                                                 <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
-                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                    <span>OTL : {{ $overtime_libur }}</span>
                                                 </p>
                                             @endif
                                         </td>
@@ -482,7 +488,7 @@
                                             @endif
                                             @if (!empty($ceklemburharilibur))
                                                 <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
-                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                    <span>OTL : {{ $overtime_libur }}</span>
                                                 </p>
                                             @endif
                                         </td>
@@ -497,7 +503,7 @@
                                             @endif
                                             @if (!empty($ceklemburharilibur))
                                                 <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
-                                                    <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                    <span>OTL : {{ $overtime_libur }}</span>
                                                 </p>
                                             @endif
                                         </td>
@@ -603,7 +609,7 @@
                                         @endif
                                         @if (!empty($ceklemburharilibur))
                                             <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
-                                                <span>OTL : {{ $lembur_libur['overtime_libur'] }}</span>
+                                                <span>OTL : {{ $overtime_libur }}</span>
                                             </p>
                                         @endif
                                     </td>

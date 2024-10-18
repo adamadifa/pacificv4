@@ -216,7 +216,7 @@
                                     $total_overtime_libur += $lembur_libur['overtime_libur'];
 
                                     if (!empty($cekliburnasional)) {
-                                        $total_overtime_libur_nasional += $lembur_libur['overtime_libur'];
+                                        $total_overtime_libur_nasional += $lembur_libur['overtime_libur'] * 2;
                                         $total_overtime_libur_reguler += 0;
                                     } else {
                                         $total_overtime_libur_nasional += 0;
