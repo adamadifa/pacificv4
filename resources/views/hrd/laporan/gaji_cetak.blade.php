@@ -604,6 +604,9 @@
 
                                 $premis_shift2 = $total_premi_shift2 + $total_premi_shift2_lembur;
                                 $premis_shift3 = $total_premi_shift3 + $total_premi_shift3_lembur;
+
+                                $upah_premi_shift2 = 5000 * $premis_shift2;
+                                $upah_premi_shift3 = 6000 * $premis_shift3;
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -635,9 +638,9 @@
                                 {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
                             </td>
                             <td style="text-align: center">{{ $premis_shift2 }}</td>
-                            <td></td>
+                            <td style="text-align: right">{{ $upah_premi_shift2 }}</td>
                             <td style="text-align: center">{{ $premis_shift3 }}</td>
-                            <td></td>
+                            <td style="text-align: right">{{ $upah_premi_shift3 }}</td>
                         </tr>
                     @endforeach
                 </tbody>
