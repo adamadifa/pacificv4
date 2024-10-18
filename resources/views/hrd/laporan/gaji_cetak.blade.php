@@ -65,7 +65,8 @@
                         <th colspan="2">Overtime 2</th>
                         <th colspan="2">Overtime Libur</th>
                         <th rowspan="2">Total OT</th>
-
+                        <th colspan="2">Premi Shift 2</th>
+                        <th colspan="2">Premi Shift 3</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -107,6 +108,13 @@
                         <th>JUMLAH</th>
 
                         <th>JAM</th>
+                        <th>JUMLAH</th>
+
+                        <!-- PREMI SHIFT -->
+                        <th>HARI</th>
+                        <th>JUMLAH</th>
+
+                        <th>HARI</th>
                         <th>JUMLAH</th>
 
                     </tr>
@@ -578,6 +586,7 @@
                                     $upah_overtime_2 = $upah_perjam * 1.5 * $total_overtime_2;
                                     $upah_overtime_libur = floor($upah_perjam * 2 * $total_overtime_libur);
                                 }
+                                $total_upah_overtime = $upah_overtime_1 + $upah_overtime_2 + $upah_overtime_libur;
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -605,6 +614,12 @@
                             <td style="font-weight: bold; text-align:right;width:2%">
                                 {{ !empty($upah_overtime_libur) ? formatAngka($upah_overtime_libur) : '' }}
                             </td>
+                            <td style="font-weight: bold; text-align:right;width:2%">
+                                {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                         </tr>
                     @endforeach
