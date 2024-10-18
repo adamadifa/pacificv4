@@ -49,7 +49,7 @@ class GajiController extends Controller
                 kode_gaji,
                 MAX(tanggal_berlaku) as tanggal_berlaku
                 FROM hrd_gaji
-                GROUP BY nik
+                GROUP BY kode_gaji
             ) lastgaji"),
             function ($join) {
                 $join->on('hrd_gaji.kode_gaji', '=', 'lastgaji.kode_gaji');
