@@ -81,6 +81,7 @@
                                 <table class="table table-striped table-hover table-bordered">
                                     <thead class="table-dark">
                                         <tr>
+                                            <th>No</th>
                                             <th>Kode</th>
                                             <th>Tanggal</th>
                                             <th>Bulan</th>
@@ -93,6 +94,7 @@
                                     <tbody>
                                         @foreach ($saldo_awal as $d)
                                             <tr>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $d->kode_saldo_awal }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $nama_bulan[$d->bulan] }}</td>
