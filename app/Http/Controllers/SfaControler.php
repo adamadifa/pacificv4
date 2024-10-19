@@ -567,6 +567,11 @@ class SfaControler extends Controller
     {
         $no_faktur = Crypt::decrypt($no_faktur);
 
+        //Update Jumlah Print
+
+        Penjualan::where('no_faktur', $no_faktur)->update([
+            'print' => DB::raw('print + 1')
+        ]);
         //Data Faktur
         $pnj = new Penjualan();
         $penjualan = $pnj->getFaktur($no_faktur);
