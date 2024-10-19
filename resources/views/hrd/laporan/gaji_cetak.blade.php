@@ -69,6 +69,7 @@
                         <th colspan="2">Premi Shift 3</th>
                         <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
+                        <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -118,6 +119,11 @@
 
                         <th>HARI</th>
                         <th>JUMLAH</th>
+
+                        <!-- BPJS -->
+                        <th>KESEHATAN</th>
+                        <th>PERUSAHAAN</th>
+                        <th>TENAGA KERJA</th>
 
                     </tr>
                 </thead>
@@ -611,6 +617,8 @@
                                 $upah_premi_shift3 = 6000 * $premis_shift3;
 
                                 $bruto = $upah_perjam * $total_jam_kerja + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
+
+                                $iuran_bpjs_kesehatan = $d['iuran_bpjs_kesehatan'];
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -646,7 +654,10 @@
                             <td style="text-align: center">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
                             <td style="text-align: right">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
                             <td style="text-align: right; font-weight:bold;">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
-                            <td style="text-align:center">{{ formatAngkaDesimal($grand_total_potongan_jam) }}</td>
+                            <td style="text-align:center">
+                                {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
+                            </td>
+                            <td style="text-align:center">{{ !empty($iuran_bpjs_kesehatan) ? formatAngkaDesimal($iuran_bpjs_kesehatan) : '' }}</td>
                         </tr>
                     @endforeach
                 </tbody>

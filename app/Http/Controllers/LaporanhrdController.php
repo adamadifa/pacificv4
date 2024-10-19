@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bpjskesehatan;
 use App\Models\Cabang;
 use App\Models\Departemen;
 use App\Models\Gaji;
@@ -222,7 +223,13 @@ class LaporanhrdController extends Controller
                     ->groupBy('nik');
             });
 
-
+        $bpjskesehatan = Bpjskesehatan::select('nik', 'iuran')
+            ->whereIn('kode_bpjs_kesehatan', function ($query) use ($berlakugaji) {
+                $query->select(DB::raw('MAX(kode_bpjs_kesehatan   )'))
+                    ->from('hrd_bpjs_kesehatan')
+                    ->where('tanggal_berlaku', '<=', $berlakugaji)
+                    ->groupBy('nik');
+            });
 
 
         $qpresensi = Presensi::query();
@@ -309,6 +316,8 @@ class LaporanhrdController extends Controller
             'hrd_insentif.im_penempatan',
             'hrd_insentif.im_kinerja',
             'hrd_insentif.im_kendaraan',
+
+            'hrd_bpjs_kesehatan.iuran as iuran_bpjs_kesehatan'
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
@@ -317,6 +326,7 @@ class LaporanhrdController extends Controller
         $query->leftjoinSub($qpresensi, 'hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftjoinSub($gajiTerakhir, 'hrd_gaji', 'hrd_karyawan.nik', '=', 'hrd_gaji.nik');
         $query->leftjoinSub($insentif, 'hrd_insentif', 'hrd_karyawan.nik', '=', 'hrd_insentif.nik');
+        $query->leftjoinSub($bpjskesehatan, 'hrd_bpjs_kesehatan', 'hrd_karyawan.nik', '=', 'hrd_bpjs_kesehatan.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -444,6 +454,7 @@ class LaporanhrdController extends Controller
                 'im_penempatan' => $rows->first()->im_penempatan,
                 'im_kinerja' => $rows->first()->im_kinerja,
                 'im_kendaraan' => $rows->first()->im_kendaraan,
+                'iuran_bpjs_kesehatan' => $rows->first()->iuran_bpjs_kesehatan,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
