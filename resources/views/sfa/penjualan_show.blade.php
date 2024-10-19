@@ -461,9 +461,9 @@
 @endsection
 @push('myscript')
 <script>
-    function ajax_print(url, btn) {
+    let jmlprint = "{{ $penjualan->print }}";
 
-        let jmlprint = "{{ $penjualan->print }}";
+    function ajax_print(url, btn) {
         if (jmlprint == 2) {
             swal.fire({
                 icon: 'warning',
