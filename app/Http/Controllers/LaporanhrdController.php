@@ -239,7 +239,7 @@ class LaporanhrdController extends Controller
 
         $kasbon = Historibayarkasbon::select(
             'nik',
-            DB::raw('SUM(jumlah) as cicilan_kasbon')
+            DB::raw('SUM(keuangan_kasbon_historibayar.jumlah) as cicilan_kasbon')
         )
             ->join('keuangan_kasbon', 'keuangan_kasbon.no_kasbon', '=', 'keuangan_kasbon_historibayar.no_kasbon')
             ->where('kode_potongan', $kode_potongan)
