@@ -234,7 +234,7 @@ class LaporanhrdController extends Controller
         )
             ->join('keuangan_pjpd', 'keuangan_pjp.no_pinjaman', '=', 'keuangan_pjp_historibayar.no_pinjaman')
             ->where('kode_potongan', $kode_potongan)
-            ->groupBy('nik');
+            ->groupBy('nik')->get();
 
 
 
