@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Departemen;
 use App\Models\Gaji;
+use App\Models\Historibayarpjp;
 use App\Models\Karyawan;
 use App\Models\Presensi;
 use App\Models\User;
@@ -163,6 +164,8 @@ class LaporanhrdController extends Controller
         $lastbulan = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
         $lasttahun = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
 
+        $kode_potongan = "GJ" . $request->bulan . $request->tahun;
+
         $lastbulan = $lastbulan < 10 ? '0' . $lastbulan : $lastbulan;
         $bulan = $request->bulan < 10 ? '0' . $request->bulan : $request->bulan;
         if ($request->periode_laporan == 2) {
@@ -221,6 +224,15 @@ class LaporanhrdController extends Controller
                     ->where('tanggal_berlaku', '<=', $berlakugaji)
                     ->groupBy('nik');
             });
+
+        $pjp = Historibayarpjp::select(
+            'nik',
+            DB::raw('SUM(jumlah) as cicilan_pjp')
+        )
+            ->join('keuangan_pjp', 'keuangan_pjp.no_pinjaman', '=', 'keuangan_pjp_historibayar.no_pinjaman')
+            ->where('kode_potongan', $kode_potongan)
+            ->groupBy('nik');
+
 
 
 
