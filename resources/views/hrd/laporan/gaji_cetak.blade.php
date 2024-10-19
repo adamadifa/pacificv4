@@ -70,6 +70,7 @@
                         <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
                         <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -662,6 +663,7 @@
                             <td></td>
                             <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_tenagakerja) ? formatAngka($iuran_bpjs_tenagakerja) : '' }}
                             </td>
+                            <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
