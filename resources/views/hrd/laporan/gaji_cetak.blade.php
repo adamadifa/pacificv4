@@ -646,7 +646,7 @@
                             <td style="text-align: center">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
                             <td style="text-align: right">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
                             <td style="text-align: right; font-weight:bold;">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
-                            <td style="text-align:center">{{ formatAngkaDesimal($total_potongan_jam) }}</td>
+                            <td style="text-align:center">{{ formatAngkaDesimal($grand_total_potongan_jam) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
