@@ -158,7 +158,7 @@
                             <td style="width:2%">{{ $d['no_ktp'] }}</td>
                             <td style="width:1%">{{ $d['kode_status_kawin'] }}</td>
                             <td style="width:2%">{{ $d['nama_group'] }}</td>
-                            <td style="width:2%; text-align: center">{{ $d['tanggal_masuk'] }}</td>
+                            <td style="width:3%; text-align: center">{{ $d['tanggal_masuk'] }}</td>
                             <td style="width:3%; text-align: center">
                                 @php
                                     $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
