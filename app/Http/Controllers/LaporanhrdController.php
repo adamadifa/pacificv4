@@ -485,6 +485,7 @@ class LaporanhrdController extends Controller
                 'im_kendaraan' => $rows->first()->im_kendaraan,
                 'iuran_bpjs_kesehatan' => $rows->first()->iuran_bpjs_kesehatan,
                 'iuran_bpjs_tenagakerja' => $rows->first()->iuran_bpjs_tenagakerja,
+                'cicilan_pjp' => $rows->first()->cicilan_pjp,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
