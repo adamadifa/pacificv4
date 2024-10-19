@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bpjskesehatan;
+use App\Models\Bpjstenagakerja;
 use App\Models\Cabang;
 use App\Models\Departemen;
 use App\Models\Gaji;
@@ -231,6 +232,14 @@ class LaporanhrdController extends Controller
                     ->groupBy('nik');
             });
 
+        $bpjstenagakerja = Bpjstenagakerja::select('nik', 'iuran')
+            ->whereIn('kode_bpjs_tenagakerja', function ($query) use ($berlakugaji) {
+                $query->select(DB::raw('MAX(kode_bpjs_tenagakerja   )'))
+                    ->from('hrd_bpjs_tenagakerja')
+                    ->where('tanggal_berlaku', '<=', $berlakugaji)
+                    ->groupBy('nik');
+            });
+
 
         $qpresensi = Presensi::query();
         $qpresensi->whereBetween('tanggal', [$start_date, $end_date]);
@@ -317,7 +326,8 @@ class LaporanhrdController extends Controller
             'hrd_insentif.im_kinerja',
             'hrd_insentif.im_kendaraan',
 
-            'hrd_bpjs_kesehatan.iuran as iuran_bpjs_kesehatan'
+            'hrd_bpjs_kesehatan.iuran as iuran_bpjs_kesehatan',
+            'hrd_bpjs_tenagakerja.iuran as iuran_bpjs_tenagakerja'
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
@@ -327,6 +337,7 @@ class LaporanhrdController extends Controller
         $query->leftjoinSub($gajiTerakhir, 'hrd_gaji', 'hrd_karyawan.nik', '=', 'hrd_gaji.nik');
         $query->leftjoinSub($insentif, 'hrd_insentif', 'hrd_karyawan.nik', '=', 'hrd_insentif.nik');
         $query->leftjoinSub($bpjskesehatan, 'hrd_bpjs_kesehatan', 'hrd_karyawan.nik', '=', 'hrd_bpjs_kesehatan.nik');
+        $query->leftjoinSub($bpjstenagakerja, 'hrd_bpjs_tenagakerja', 'hrd_karyawan.nik', '=', 'hrd_bpjs_tenagakerja.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -455,6 +466,7 @@ class LaporanhrdController extends Controller
                 'im_kinerja' => $rows->first()->im_kinerja,
                 'im_kendaraan' => $rows->first()->im_kendaraan,
                 'iuran_bpjs_kesehatan' => $rows->first()->iuran_bpjs_kesehatan,
+                'iuran_bpjs_tenagakerja' => $rows->first()->iuran_bpjs_tenagakerja,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [

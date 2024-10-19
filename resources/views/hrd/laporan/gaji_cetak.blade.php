@@ -619,6 +619,7 @@
                                 $bruto = $upah_perjam * $total_jam_kerja + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
 
                                 $iuran_bpjs_kesehatan = $d['iuran_bpjs_kesehatan'];
+                                $iuran_bpjs_tenagakerja = $d['iuran_bpjs_tenagakerja'];
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -659,7 +660,8 @@
                             </td>
                             <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
                             <td></td>
-                            <td></td>
+                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_tenagakerja) ? formatAngka($iuran_bpjs_tenagakerja) : '' }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
