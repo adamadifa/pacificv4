@@ -42,7 +42,7 @@
     </div>
     <div class="content">
         <div class="freeze-table">
-            <table class="datatable3" style="width: 280%">
+            <table class="datatable3" style="width: 300%">
                 <thead>
                     <tr>
                         <th rowspan="2">No</th>
@@ -69,6 +69,8 @@
                         <th colspan="2">Premi Shift 3</th>
                         <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
+                        <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -118,6 +120,11 @@
 
                         <th>HARI</th>
                         <th>JUMLAH</th>
+
+                        <!-- BPJS -->
+                        <th style="background-color: #df1b38; color:white;">KES</th>
+                        <th style="background-color: #df1b38; color:white;">PERUSAHAAN</th>
+                        <th style="background-color: #df1b38; color:white;">TK</th>
 
                     </tr>
                 </thead>
@@ -611,6 +618,9 @@
                                 $upah_premi_shift3 = 6000 * $premis_shift3;
 
                                 $bruto = $upah_perjam * $total_jam_kerja + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
+
+                                $iuran_bpjs_kesehatan = $d['iuran_bpjs_kesehatan'];
+                                $iuran_bpjs_tenagakerja = $d['iuran_bpjs_tenagakerja'];
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -641,12 +651,19 @@
                             <td style="font-weight: bold; text-align:right;width:2%">
                                 {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
                             </td>
-                            <td style="text-align: center">{{ !empty($premis_shift2) ? $premis_shift2 : '' }}</td>
-                            <td style="text-align: right">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
-                            <td style="text-align: center">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
-                            <td style="text-align: right">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
-                            <td style="text-align: right; font-weight:bold;">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
-                            <td style="text-align:center">{{ formatAngkaDesimal($grand_total_potongan_jam) }}</td>
+                            <td style="text-align: center; width:2%">{{ !empty($premis_shift2) ? $premis_shift2 : '' }}</td>
+                            <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
+                            <td style="text-align: center; width:2%">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
+                            <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
+                            <td style="text-align: right; font-weight:bold; width:2%">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
+                            <td style="text-align:center; width:2%">
+                                {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
+                            </td>
+                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
+                            <td></td>
+                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_tenagakerja) ? formatAngka($iuran_bpjs_tenagakerja) : '' }}
+                            </td>
+                            <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
                         </tr>
                     @endforeach
                 </tbody>

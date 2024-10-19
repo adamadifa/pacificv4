@@ -465,15 +465,15 @@
 
     function ajax_print(url, btn) {
         // alert(jmlprint);
-        if (jmlprint == 2) {
-            swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: 'Faktur Sudah Di Cetak 2 Kali, Hubungi OM !'
-            });
-            return false;
-        }
-        jmlprint++;
+        // if (jmlprint == 2) {
+        //     swal.fire({
+        //         icon: 'warning',
+        //         title: 'Oops...',
+        //         text: 'Faktur Sudah Di Cetak 2 Kali, Hubungi OM !'
+        //     });
+        //     return false;
+        // }
+        //jmlprint++;
         b = $(btn);
         b.attr('data-old', b.text());
         b.text('wait');
