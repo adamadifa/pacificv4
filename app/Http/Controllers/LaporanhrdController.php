@@ -232,9 +232,9 @@ class LaporanhrdController extends Controller
             'nik',
             DB::raw('SUM(jumlah) as cicilan_pjp')
         )
-            ->join('keuangan_pjpd', 'keuangan_pjp.no_pinjaman', '=', 'keuangan_pjp_historibayar.no_pinjaman')
+            ->join('keuangan_pjp', 'keuangan_pjp.no_pinjaman', '=', 'keuangan_pjp_historibayar.no_pinjaman')
             ->where('kode_potongan', $kode_potongan)
-            ->groupBy('nik')->get();
+            ->groupBy('nik');
 
 
 

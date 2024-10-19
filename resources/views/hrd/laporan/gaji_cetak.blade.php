@@ -624,6 +624,7 @@
 
                                 $iuran_bpjs_kesehatan = $d['iuran_bpjs_kesehatan'];
                                 $iuran_bpjs_tenagakerja = $d['iuran_bpjs_tenagakerja'];
+                                $cicilan_pjp = $d['cicilan_pjp'];
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
