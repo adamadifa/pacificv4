@@ -121,9 +121,9 @@
                         <th>JUMLAH</th>
 
                         <!-- BPJS -->
-                        <th style="background-color: #df1b38; color:white;">KESEHATAN</th>
+                        <th style="background-color: #df1b38; color:white;">KES</th>
                         <th style="background-color: #df1b38; color:white;">PERUSAHAAN</th>
-                        <th style="background-color: #df1b38; color:white;">TENAGA KERJA</th>
+                        <th style="background-color: #df1b38; color:white;">TK</th>
 
                     </tr>
                 </thead>
@@ -649,15 +649,15 @@
                             <td style="font-weight: bold; text-align:right;width:2%">
                                 {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
                             </td>
-                            <td style="text-align: center">{{ !empty($premis_shift2) ? $premis_shift2 : '' }}</td>
-                            <td style="text-align: right">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
-                            <td style="text-align: center">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
-                            <td style="text-align: right">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
-                            <td style="text-align: right; font-weight:bold;">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
-                            <td style="text-align:center">
+                            <td style="text-align: center; width:2%">{{ !empty($premis_shift2) ? $premis_shift2 : '' }}</td>
+                            <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
+                            <td style="text-align: center; width:2%">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
+                            <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
+                            <td style="text-align: right; font-weight:bold; width:2%">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
+                            <td style="text-align:center; width:2%">
                                 {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
                             </td>
-                            <td style="text-align:right">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
+                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
                             <td></td>
                             <td></td>
                         </tr>
