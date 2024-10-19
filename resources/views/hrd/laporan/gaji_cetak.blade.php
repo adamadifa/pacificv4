@@ -68,6 +68,7 @@
                         <th colspan="2">Premi Shift 2</th>
                         <th colspan="2">Premi Shift 3</th>
                         <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -644,7 +645,8 @@
                             <td style="text-align: right">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
                             <td style="text-align: center">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
                             <td style="text-align: right">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
-                            <td style="text-align: right">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
+                            <td style="text-align: right; font-weight:bold;">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
+                            <td style="text-align:center">{{ formatAngkaDesimal($total_potongan_jam) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
