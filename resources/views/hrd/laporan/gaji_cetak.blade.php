@@ -42,7 +42,7 @@
     </div>
     <div class="content">
         <div class="freeze-table">
-            <table class="datatable3" style="width: 280%">
+            <table class="datatable3" style="width: 300%">
                 <thead>
                     <tr>
                         <th rowspan="2">No</th>
@@ -657,7 +657,7 @@
                             <td style="text-align:center">
                                 {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
                             </td>
-                            <td style="text-align:center">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
+                            <td style="text-align:right">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
                             <td></td>
                             <td></td>
                         </tr>
