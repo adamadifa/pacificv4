@@ -71,6 +71,9 @@
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
                         <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">PJP</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Kasbon</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pinj. Perusahaan</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -659,11 +662,15 @@
                             <td style="text-align:center; width:2%">
                                 {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
                             </td>
-                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
+                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}
+                            </td>
                             <td></td>
                             <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_tenagakerja) ? formatAngka($iuran_bpjs_tenagakerja) : '' }}
                             </td>
                             <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
+                            <td style="text-align:right; width:2%">{{ !empty($cicilan_pjp) ? formatAngka($cicilan_pjp) : '' }}</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     @endforeach
                 </tbody>

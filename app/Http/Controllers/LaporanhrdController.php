@@ -342,7 +342,9 @@ class LaporanhrdController extends Controller
             'hrd_insentif.im_kendaraan',
 
             'hrd_bpjs_kesehatan.iuran as iuran_bpjs_kesehatan',
-            'hrd_bpjs_tenagakerja.iuran as iuran_bpjs_tenagakerja'
+            'hrd_bpjs_tenagakerja.iuran as iuran_bpjs_tenagakerja',
+
+            'pjp.cicilan_pjp'
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
@@ -353,6 +355,7 @@ class LaporanhrdController extends Controller
         $query->leftjoinSub($insentif, 'hrd_insentif', 'hrd_karyawan.nik', '=', 'hrd_insentif.nik');
         $query->leftjoinSub($bpjskesehatan, 'hrd_bpjs_kesehatan', 'hrd_karyawan.nik', '=', 'hrd_bpjs_kesehatan.nik');
         $query->leftjoinSub($bpjstenagakerja, 'hrd_bpjs_tenagakerja', 'hrd_karyawan.nik', '=', 'hrd_bpjs_tenagakerja.nik');
+        $query->leftjoinSub($pjp, 'pjp', 'hrd_karyawan.nik', '=', 'pjp.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
