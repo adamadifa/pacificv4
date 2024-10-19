@@ -464,6 +464,7 @@
     let jmlprint = "{{ $penjualan->print }}";
 
     function ajax_print(url, btn) {
+        alert(jmlprint);
         if (jmlprint == 2) {
             swal.fire({
                 icon: 'warning',
