@@ -780,6 +780,7 @@ class SfaControler extends Controller
             $printer->text("kedua belah pihak,\n");
             $printer->text("Terimakasih\n");
             $printer->text("www.pedasalami.com\n");
+            $printer->text("Print Ke: " . $faktur->print . "\n");
             $printer->feed();
 
             if (!empty($faktur->signature)) {
@@ -910,6 +911,7 @@ class SfaControler extends Controller
             $printer->text("kedua belah pihak,\n");
             $printer->text("Terimakasih\n");
             $printer->text("www.pedasalami.com\n");
+            $printer->text("Print Ke: " . $faktur->print . "\n");
             $printer->feed();
 
             if (!empty($faktur->signature)) {
