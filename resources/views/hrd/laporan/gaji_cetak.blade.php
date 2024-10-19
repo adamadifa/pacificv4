@@ -121,9 +121,9 @@
                         <th>JUMLAH</th>
 
                         <!-- BPJS -->
-                        <th>KESEHATAN</th>
-                        <th>PERUSAHAAN</th>
-                        <th>TENAGA KERJA</th>
+                        <th style="background-color: #df1b38; color:white;">KESEHATAN</th>
+                        <th style="background-color: #df1b38; color:white;">PERUSAHAAN</th>
+                        <th style="background-color: #df1b38; color:white;">TENAGA KERJA</th>
 
                     </tr>
                 </thead>
@@ -657,7 +657,9 @@
                             <td style="text-align:center">
                                 {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
                             </td>
-                            <td style="text-align:center">{{ !empty($iuran_bpjs_kesehatan) ? formatAngkaDesimal($iuran_bpjs_kesehatan) : '' }}</td>
+                            <td style="text-align:center">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     @endforeach
                 </tbody>
