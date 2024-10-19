@@ -625,6 +625,7 @@
                                 $iuran_bpjs_kesehatan = $d['iuran_bpjs_kesehatan'];
                                 $iuran_bpjs_tenagakerja = $d['iuran_bpjs_tenagakerja'];
                                 $cicilan_pjp = $d['cicilan_pjp'];
+                                $cicilan_kasbon = $d['cicilan_kasbon'];
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -670,7 +671,7 @@
                             </td>
                             <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
                             <td style="text-align:right; width:2%">{{ !empty($cicilan_pjp) ? formatAngka($cicilan_pjp) : '' }}</td>
-                            <td></td>
+                            <td style="text-align:right; width:2%">{{ !empty($cicilan_kasbon) ? formatAngka($cicilan_kasbon) : '' }}</td>
                             <td></td>
                         </tr>
                     @endforeach

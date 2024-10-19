@@ -7,6 +7,7 @@ use App\Models\Bpjstenagakerja;
 use App\Models\Cabang;
 use App\Models\Departemen;
 use App\Models\Gaji;
+use App\Models\Historibayarkasbon;
 use App\Models\Historibayarpjp;
 use App\Models\Karyawan;
 use App\Models\Presensi;
@@ -236,6 +237,14 @@ class LaporanhrdController extends Controller
             ->where('kode_potongan', $kode_potongan)
             ->groupBy('nik');
 
+        $kasbon = Historibayarkasbon::select(
+            'nik',
+            DB::raw('SUM(jumlah) as cicilan_kasbon')
+        )
+            ->join('keuangan_kasbon', 'keuangan_kasbon.no_kasbon', '=', 'keuangan_kasbon_historibayar.no_kasbon')
+            ->where('kode_potongan', $kode_potongan)
+            ->groupBy('nik');
+
 
 
         $bpjskesehatan = Bpjskesehatan::select('nik', 'iuran')
@@ -344,7 +353,8 @@ class LaporanhrdController extends Controller
             'hrd_bpjs_kesehatan.iuran as iuran_bpjs_kesehatan',
             'hrd_bpjs_tenagakerja.iuran as iuran_bpjs_tenagakerja',
 
-            'pjp.cicilan_pjp'
+            'pjp.cicilan_pjp',
+            'kasbon.cicilan_kasbon'
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
@@ -356,6 +366,7 @@ class LaporanhrdController extends Controller
         $query->leftjoinSub($bpjskesehatan, 'hrd_bpjs_kesehatan', 'hrd_karyawan.nik', '=', 'hrd_bpjs_kesehatan.nik');
         $query->leftjoinSub($bpjstenagakerja, 'hrd_bpjs_tenagakerja', 'hrd_karyawan.nik', '=', 'hrd_bpjs_tenagakerja.nik');
         $query->leftjoinSub($pjp, 'pjp', 'hrd_karyawan.nik', '=', 'pjp.nik');
+        $query->leftjoinSub($kasbon, 'kasbon', 'hrd_karyawan.nik', '=', 'kasbon.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -486,6 +497,7 @@ class LaporanhrdController extends Controller
                 'iuran_bpjs_kesehatan' => $rows->first()->iuran_bpjs_kesehatan,
                 'iuran_bpjs_tenagakerja' => $rows->first()->iuran_bpjs_tenagakerja,
                 'cicilan_pjp' => $rows->first()->cicilan_pjp,
+                'cicilan_kasbon' => $rows->first()->cicilan_kasbon,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
