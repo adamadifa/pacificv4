@@ -25,7 +25,7 @@
     <div class="form-group mb-3">
         <select name="format_laporan" id="format_laporan" class="form-select">
             <option value="">Format Laporan</option>
-            <option value="1">Detail</option>
+            <option value="1" selected>Detail</option>
             <option value="2">Rekap</option>
         </select>
     </div>
@@ -42,7 +42,7 @@
                 <select name="bulan" id="bulan" class="form-select">
                     <option value="">Bulan</option>
                     @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                        <option {{ date('m') == $d['kode_bulan'] ? 'selected' : '' }} value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
                     @endforeach
                 </select>
             </div>
