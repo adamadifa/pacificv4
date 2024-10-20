@@ -29,13 +29,15 @@
             <option value="2">Rekap</option>
         </select>
     </div>
-    <div class="form-group mb-3">
-        <select name="kategori_laporan" id="kategori_laporan" class="form-select">
-            <option value="">Kategori Laporan</option>
-            <option value="MJ">Manajemen</option>
-            <option value="NM">Non Manajemen</option>
-        </select>
-    </div>
+    @hasanyrole($roles_access_all_pjp)
+        <div class="form-group mb-3">
+            <select name="kategori_laporan" id="kategori_laporan" class="form-select">
+                <option value="">Kategori Laporan</option>
+                <option value="MJ">Manajemen</option>
+                <option value="NM">Non Manajemen</option>
+            </select>
+        </div>
+    @endrole
     <div class="row">
         <div class="col">
             <div class="form-group mb-3">

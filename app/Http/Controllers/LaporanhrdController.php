@@ -26,6 +26,7 @@ class LaporanhrdController extends Controller
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
         $data['roles_access_all_karyawan'] = config('global.roles_access_all_karyawan');
+        $data['roles_access_all_pjp'] = config('global.roles_access_all_pjp');
         return view('hrd.laporan.index', $data);
     }
 
@@ -154,6 +155,7 @@ class LaporanhrdController extends Controller
     {
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
+        $roles_access_all_pjp = config('global.roles_access_all_pjp');
         $user = User::findorfail(auth()->user()->id);
         $dept_access = json_decode($user->dept_access, true) ?? [];
         if (!$user->hasRole($roles_access_all_cabang)) {
@@ -440,6 +442,14 @@ class LaporanhrdController extends Controller
                 }
             }
         }
+
+        if (!$user->hasRole($roles_access_all_pjp)) {
+            $query->where('hrd_jabatan.kategori', 'NM');
+        } else {
+            if (!empty($request->kategori_laporan)) {
+                $query->where('hrd_jabatan.kategori', $request->kategori_laporan);
+            }
+        }
         // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
         $query->where('status_aktif_karyawan', 1);
         $query->where('tanggal_masuk', '<=', $end_date);
@@ -474,6 +484,14 @@ class LaporanhrdController extends Controller
                         $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
                     }
                 }
+            }
+        }
+
+        if (!$user->hasRole($roles_access_all_pjp)) {
+            $query->where('hrd_jabatan.kategori', 'NM');
+        } else {
+            if (!empty($request->kategori_laporan)) {
+                $query->where('hrd_jabatan.kategori', $request->kategori_laporan);
             }
         }
         $query->orderBy('nik', 'asc');
@@ -578,7 +596,7 @@ class LaporanhrdController extends Controller
         $data['datalembur'] = getlembur($start_date, $end_date, 1);
         $data['datalemburharilibur'] = getlembur($start_date, $end_date, 2);
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
-
+        $data['roles_access_all_pjp'] = $roles_access_all_pjp;
 
         if (request()->is('laporanhrd/cetakgaji')) {
             if (isset($_POST['exportButton'])) {
