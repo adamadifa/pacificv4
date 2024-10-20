@@ -73,8 +73,11 @@
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">PJP</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Kasbon</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pinj. Perusahaan</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pinjaman</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">SPIP</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">PENGURANG</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">TOTAL<br>POTONGAN</th>
+                        <th rowspan="2" style="background-color: #007b21; color:white;">PENAMBAH</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
