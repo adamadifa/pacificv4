@@ -626,6 +626,7 @@
                                 $iuran_bpjs_tenagakerja = $d['iuran_bpjs_tenagakerja'];
                                 $cicilan_pjp = $d['cicilan_pjp'];
                                 $cicilan_kasbon = $d['cicilan_kasbon'];
+                                $cicilan_piutang = $d['cicilan_piutang'];
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
