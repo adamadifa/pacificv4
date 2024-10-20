@@ -23,14 +23,14 @@
     <div class="form-group mb-3">
         <select name="periode_laporan" id="periode_laporan" class="form-select">
             <option value="">Periode Laporan</option>
-            <option value="1">Periode Gaji</option>
+            <option value="1" selected>Periode Gaji</option>
             <option value="2">Bulan Berjalan</option>
         </select>
     </div>
     <div class="form-group mb-3">
         <select name="format_laporan" id="format_laporan" class="form-select">
             <option value="">Format Laporan</option>
-            <option value="1">Standar</option>
+            <option value="1" selected>Standar</option>
             <option value="2">P/S/M</option>
         </select>
     </div>
@@ -47,7 +47,7 @@
                 <select name="bulan" id="bulan" class="form-select">
                     <option value="">Bulan</option>
                     @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                        <option {{ date('m') == $d['kode_bulan'] ? 'selected' : '' }} value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
                     @endforeach
                 </select>
             </div>
@@ -60,7 +60,7 @@
                 <select name="tahun" id="tahun" class="form-select">
                     <option value="">Tahun</option>
                     @for ($t = $start_year; $t <= date('Y'); $t++)
-                        <option value="{{ $t }}">{{ $t }}</option>
+                        <option {{ date('Y') == $t ? 'selected' : '' }} value="{{ $t }}">{{ $t }}</option>
                     @endfor
                 </select>
             </div>

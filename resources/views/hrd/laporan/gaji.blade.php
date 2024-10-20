@@ -57,7 +57,7 @@
                 <select name="tahun" id="tahun" class="form-select">
                     <option value="">Tahun</option>
                     @for ($t = $start_year; $t <= date('Y'); $t++)
-                        <option value="{{ $t }}">{{ $t }}</option>
+                        <option value="{{ $t }}" {{ date('Y') == $t ? 'selected' : '' }}>{{ $t }}</option>
                     @endfor
                 </select>
             </div>
