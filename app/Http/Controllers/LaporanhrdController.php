@@ -6,6 +6,7 @@ use App\Models\Bpjskesehatan;
 use App\Models\Bpjstenagakerja;
 use App\Models\Cabang;
 use App\Models\Departemen;
+use App\Models\Detailpenyesuaianupah;
 use App\Models\Gaji;
 use App\Models\Historibayarkasbon;
 use App\Models\Historibayarpiutangkaryawan;
@@ -271,7 +272,14 @@ class LaporanhrdController extends Controller
                     ->groupBy('nik');
             });
 
-
+        $penyesuaianupah = Detailpenyesuaianupah::select(
+            'nik',
+            DB::raw('SUM(penambah) as jml_penambah'),
+            DB::raw('SUM(pengurang) as jml_pengurang')
+        )
+            ->join('hrd_penyesuaian_upah', 'hrd_penyesuaian_upah_detail.kode_gaji', '=', 'hrd_penyesuaian_upah.kode_gaji')
+            ->where('hrd_penyesuaian_upah.kode_gaji', $kode_potongan)
+            ->groupBy('nik');
         $qpresensi = Presensi::query();
         $qpresensi->whereBetween('tanggal', [$start_date, $end_date]);
 
@@ -363,7 +371,9 @@ class LaporanhrdController extends Controller
 
             'pjp.cicilan_pjp',
             'kasbon.cicilan_kasbon',
-            'piutangkaryawan.cicilan_piutang'
+            'piutangkaryawan.cicilan_piutang',
+            'penyesuaianupah.jml_penambah',
+            'penyesuaianupah.jml_pengurang'
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
@@ -377,6 +387,7 @@ class LaporanhrdController extends Controller
         $query->leftjoinSub($pjp, 'pjp', 'hrd_karyawan.nik', '=', 'pjp.nik');
         $query->leftjoinSub($kasbon, 'kasbon', 'hrd_karyawan.nik', '=', 'kasbon.nik');
         $query->leftjoinSub($piutangkaryawan, 'piutangkaryawan', 'hrd_karyawan.nik', '=', 'piutangkaryawan.nik');
+        $query->leftjoinSub($penyesuaianupah, 'penyesuaianupah', 'hrd_karyawan.nik', '=', 'penyesuaianupah.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -510,6 +521,8 @@ class LaporanhrdController extends Controller
                 'cicilan_kasbon' => $rows->first()->cicilan_kasbon,
                 'cicilan_piutang' => $rows->first()->cicilan_piutang,
                 'spip' => $rows->first()->spip,
+                'jml_penambah' => $rows->first()->jml_penambah,
+                'jml_pengurang' => $rows->first()->jml_pengurang,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
