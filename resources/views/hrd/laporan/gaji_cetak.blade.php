@@ -230,7 +230,7 @@
                                 Bulan
                             </td>
                             <td style="width:2%; text-align: center">{{ $d['kode_dept'] }}</td>
-                            <td style="width:3%;">{{ singkatString(textUpperCase($d['nama_jabatan'])) }}</td>
+                            <td style="width:3%;">{{ textUpperCase(singkatString($d['nama_jabatan'])) }}</td>
                             <td style="width:2%; text-align: center">{{ $d['kode_cabang'] }}</td>
                             <td style="width:2%; text-align: center">{{ $d['kode_perusahaan'] }}</td>
                             <td style="width:3%;">{{ $d['klasifikasi'] }}</td>
