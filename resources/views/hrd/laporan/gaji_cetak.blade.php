@@ -672,7 +672,8 @@
                             <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
                             <td style="text-align:right; width:2%">{{ !empty($cicilan_pjp) ? formatAngka($cicilan_pjp) : '' }}</td>
                             <td style="text-align:right; width:2%">{{ !empty($cicilan_kasbon) ? formatAngka($cicilan_kasbon) : '' }}</td>
-                            <td></td>
+                            <td style="text-align:right; width:2%">{{ !empty($cicilan_piutang) ? formatAngka($cicilan_piutang) : '' }}</td>
+
                         </tr>
                     @endforeach
                 </tbody>
