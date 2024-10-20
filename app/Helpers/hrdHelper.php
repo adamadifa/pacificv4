@@ -489,7 +489,7 @@ function hitungjamterlambat($jam_in, $jam_mulai, $kode_izin_terlambat)
 }
 
 
-function hitungdenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode_dept)
+function hitungdenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode_dept, $kode_jabatan)
 {
 
     //
@@ -499,16 +499,62 @@ function hitungdenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode
         //Jika Terlambat Kurang Dari 1 Jam
         if ($jamterlambat < 1 || $jamterlambat == 1 && $menitterlambat == 0) {
             //Jika Departemen Marketing
-            if ($kode_dept == "MKT") {
+            // if ($kode_dept == "MKT") {
+            //     $denda = 0;
+            //     $keterangan = "";
+            //     $cek = 1;
+            // } else {
+            //     //JIka Sudah Izin
+            //     if (!empty($kode_izin_terlambat)) {
+            //         $denda = 0;
+            //         $keterangan = "Sudah Izin";
+            //         $cek = 2;
+            //     } else {
+            //         if ($menitterlambat >= 5 and $menitterlambat < 10) {
+            //             $denda = 5000;
+            //             $keterangan = "";
+            //             $cek = 3;
+            //         } elseif ($menitterlambat >= 10 and $menitterlambat < 15) {
+            //             $denda = 10000;
+            //             $keterangan = "";
+            //             $cek = 4;
+            //         } elseif ($menitterlambat >= 15 and $menitterlambat <= 59) {
+            //             $denda = 15000;
+            //             $keterangan = "";
+            //             $cek = 5;
+            //         } else {
+            //             $denda = 0;
+            //             $keterangan = "";
+            //             $cek = 6;
+            //         }
+            //     }
+            // }
+
+
+            //JIka Sudah Izin
+            if (!empty($kode_izin_terlambat)) {
                 $denda = 0;
-                $keterangan = "";
-                $cek = 1;
+                $keterangan = "Sudah Izin";
+                $cek = 2;
             } else {
-                //JIka Sudah Izin
-                if (!empty($kode_izin_terlambat)) {
-                    $denda = 0;
-                    $keterangan = "Sudah Izin";
-                    $cek = 2;
+                if ($kode_jabatan == 'J19') {
+                    if ($menitterlambat >= 10 and $menitterlambat < 15) {
+                        $denda = 5000;
+                        $keterangan = "";
+                        $cek = 3;
+                    } elseif ($menitterlambat >= 15 and $menitterlambat < 20) {
+                        $denda = 10000;
+                        $keterangan = "";
+                        $cek = 4;
+                    } elseif ($menitterlambat >= 20 and $menitterlambat <= 59) {
+                        $denda = 15000;
+                        $keterangan = "";
+                        $cek = 5;
+                    } else {
+                        $denda = 0;
+                        $keterangan = "";
+                        $cek = 6;
+                    }
                 } else {
                     if ($menitterlambat >= 5 and $menitterlambat < 10) {
                         $denda = 5000;

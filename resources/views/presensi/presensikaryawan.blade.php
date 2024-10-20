@@ -263,6 +263,7 @@
                                                                     $terlambat['menitterlambat'],
                                                                     $d->kode_izin_terlambat,
                                                                     $d->kode_dept,
+                                                                    $d->kode_jabatan,
                                                                 );
                                                                 $potongan_terlambat = $terlambat['desimal_terlambat'];
                                                             @endphp
