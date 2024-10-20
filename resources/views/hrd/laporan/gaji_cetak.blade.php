@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="{{ asset('assets/vendor/js/freeze-table.js') }}"></script>
-    {{-- <style>
+    <style>
         .freeze-table {
             height: auto;
             max-height: 830px;
             overflow: auto;
         }
-    </style> --}}
+    </style>
     <style>
         .text-red {
             background-color: red;
@@ -71,6 +71,9 @@
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
                         <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">PJP</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Kasbon</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pinj. Perusahaan</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -155,7 +158,7 @@
                             <td style="width:2%">{{ $d['no_ktp'] }}</td>
                             <td style="width:1%">{{ $d['kode_status_kawin'] }}</td>
                             <td style="width:2%">{{ $d['nama_group'] }}</td>
-                            <td style="width:2%; text-align: center">{{ $d['tanggal_masuk'] }}</td>
+                            <td style="width:3%; text-align: center">{{ $d['tanggal_masuk'] }}</td>
                             <td style="width:3%; text-align: center">
                                 @php
                                     $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
@@ -621,6 +624,8 @@
 
                                 $iuran_bpjs_kesehatan = $d['iuran_bpjs_kesehatan'];
                                 $iuran_bpjs_tenagakerja = $d['iuran_bpjs_tenagakerja'];
+                                $cicilan_pjp = $d['cicilan_pjp'];
+                                $cicilan_kasbon = $d['cicilan_kasbon'];
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -659,11 +664,15 @@
                             <td style="text-align:center; width:2%">
                                 {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
                             </td>
-                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}</td>
+                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}
+                            </td>
                             <td></td>
                             <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_tenagakerja) ? formatAngka($iuran_bpjs_tenagakerja) : '' }}
                             </td>
                             <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
+                            <td style="text-align:right; width:2%">{{ !empty($cicilan_pjp) ? formatAngka($cicilan_pjp) : '' }}</td>
+                            <td style="text-align:right; width:2%">{{ !empty($cicilan_kasbon) ? formatAngka($cicilan_kasbon) : '' }}</td>
+                            <td></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -673,10 +682,10 @@
 </body>
 
 </html>
-{{-- <script>
+<script>
     $(".freeze-table").freezeTable({
         'scrollable': true,
-        'columnNum': 3,
+        'columnNum': 7,
         'shadow': true,
     });
-</script> --}}
+</script>

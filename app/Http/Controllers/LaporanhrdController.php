@@ -7,6 +7,8 @@ use App\Models\Bpjstenagakerja;
 use App\Models\Cabang;
 use App\Models\Departemen;
 use App\Models\Gaji;
+use App\Models\Historibayarkasbon;
+use App\Models\Historibayarpjp;
 use App\Models\Karyawan;
 use App\Models\Presensi;
 use App\Models\User;
@@ -165,6 +167,8 @@ class LaporanhrdController extends Controller
         $lastbulan = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
         $lasttahun = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
 
+        $kode_potongan = "GJ" . $request->bulan . $request->tahun;
+
         $lastbulan = $lastbulan < 10 ? '0' . $lastbulan : $lastbulan;
         $bulan = $request->bulan < 10 ? '0' . $request->bulan : $request->bulan;
         if ($request->periode_laporan == 2) {
@@ -224,6 +228,25 @@ class LaporanhrdController extends Controller
                     ->groupBy('nik');
             });
 
+
+        $pjp = Historibayarpjp::select(
+            'nik',
+            DB::raw('SUM(jumlah) as cicilan_pjp')
+        )
+            ->join('keuangan_pjp', 'keuangan_pjp.no_pinjaman', '=', 'keuangan_pjp_historibayar.no_pinjaman')
+            ->where('kode_potongan', $kode_potongan)
+            ->groupBy('nik');
+
+        $kasbon = Historibayarkasbon::select(
+            'nik',
+            DB::raw('SUM(keuangan_kasbon_historibayar.jumlah) as cicilan_kasbon')
+        )
+            ->join('keuangan_kasbon', 'keuangan_kasbon.no_kasbon', '=', 'keuangan_kasbon_historibayar.no_kasbon')
+            ->where('kode_potongan', $kode_potongan)
+            ->groupBy('nik');
+
+
+
         $bpjskesehatan = Bpjskesehatan::select('nik', 'iuran')
             ->whereIn('kode_bpjs_kesehatan', function ($query) use ($berlakugaji) {
                 $query->select(DB::raw('MAX(kode_bpjs_kesehatan   )'))
@@ -231,6 +254,7 @@ class LaporanhrdController extends Controller
                     ->where('tanggal_berlaku', '<=', $berlakugaji)
                     ->groupBy('nik');
             });
+
 
         $bpjstenagakerja = Bpjstenagakerja::select('nik', 'iuran')
             ->whereIn('kode_bpjs_tenagakerja', function ($query) use ($berlakugaji) {
@@ -327,7 +351,10 @@ class LaporanhrdController extends Controller
             'hrd_insentif.im_kendaraan',
 
             'hrd_bpjs_kesehatan.iuran as iuran_bpjs_kesehatan',
-            'hrd_bpjs_tenagakerja.iuran as iuran_bpjs_tenagakerja'
+            'hrd_bpjs_tenagakerja.iuran as iuran_bpjs_tenagakerja',
+
+            'pjp.cicilan_pjp',
+            'kasbon.cicilan_kasbon'
         );
         // $query->join('hrd_karyawan', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
@@ -338,6 +365,8 @@ class LaporanhrdController extends Controller
         $query->leftjoinSub($insentif, 'hrd_insentif', 'hrd_karyawan.nik', '=', 'hrd_insentif.nik');
         $query->leftjoinSub($bpjskesehatan, 'hrd_bpjs_kesehatan', 'hrd_karyawan.nik', '=', 'hrd_bpjs_kesehatan.nik');
         $query->leftjoinSub($bpjstenagakerja, 'hrd_bpjs_tenagakerja', 'hrd_karyawan.nik', '=', 'hrd_bpjs_tenagakerja.nik');
+        $query->leftjoinSub($pjp, 'pjp', 'hrd_karyawan.nik', '=', 'pjp.nik');
+        $query->leftjoinSub($kasbon, 'kasbon', 'hrd_karyawan.nik', '=', 'kasbon.nik');
         $query->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
 
@@ -467,6 +496,8 @@ class LaporanhrdController extends Controller
                 'im_kendaraan' => $rows->first()->im_kendaraan,
                 'iuran_bpjs_kesehatan' => $rows->first()->iuran_bpjs_kesehatan,
                 'iuran_bpjs_tenagakerja' => $rows->first()->iuran_bpjs_tenagakerja,
+                'cicilan_pjp' => $rows->first()->cicilan_pjp,
+                'cicilan_kasbon' => $rows->first()->cicilan_kasbon,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
