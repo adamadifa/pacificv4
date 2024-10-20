@@ -74,6 +74,7 @@
                         <th rowspan="2" style="background-color: #df1b38; color:white;">PJP</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Kasbon</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Pinj. Perusahaan</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">SPIP</th>
                     </tr>
                     <tr>
                         <!-- DATA KARYAWAN -->
@@ -627,6 +628,16 @@
                                 $cicilan_pjp = $d['cicilan_pjp'];
                                 $cicilan_kasbon = $d['cicilan_kasbon'];
                                 $cicilan_piutang = $d['cicilan_piutang'];
+                                $totalbulanmasakerja = $masakerja['tahun'] * 12 + $masakerja['bulan'];
+                                if (
+                                    ($d['kode_cabang'] == 'PST' && $totalbulanmasakerja >= 3) ||
+                                    ($d['kode_cabang'] == 'TSM' && $totalbulanmasakerja >= 3) ||
+                                    $d['spip'] == 1
+                                ) {
+                                    $spip = 5000;
+                                } else {
+                                    $spip = 0;
+                                }
                             @endphp
                             <td style="font-weight: bold; text-align:center; width:2%">
                                 @php
@@ -674,7 +685,7 @@
                             <td style="text-align:right; width:2%">{{ !empty($cicilan_pjp) ? formatAngka($cicilan_pjp) : '' }}</td>
                             <td style="text-align:right; width:2%">{{ !empty($cicilan_kasbon) ? formatAngka($cicilan_kasbon) : '' }}</td>
                             <td style="text-align:right; width:2%">{{ !empty($cicilan_piutang) ? formatAngka($cicilan_piutang) : '' }}</td>
-
+                            <td style="text-align:right; width:2%">{{ !empty($spip) ? formatAngka($spip) : '' }}</td>
                         </tr>
                     @endforeach
                 </tbody>

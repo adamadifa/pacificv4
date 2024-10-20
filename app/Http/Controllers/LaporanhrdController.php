@@ -286,6 +286,7 @@ class LaporanhrdController extends Controller
             'hrd_karyawan.kode_dept',
             'hrd_karyawan.kode_perusahaan',
             'hrd_karyawan.kode_klasifikasi',
+            'hrd_karyawan.spip',
             'hrd_klasifikasi.klasifikasi',
             'hrd_karyawan.no_rekening',
             'hrd_karyawan.no_ktp',
@@ -508,6 +509,7 @@ class LaporanhrdController extends Controller
                 'cicilan_pjp' => $rows->first()->cicilan_pjp,
                 'cicilan_kasbon' => $rows->first()->cicilan_kasbon,
                 'cicilan_piutang' => $rows->first()->cicilan_piutang,
+                'spip' => $rows->first()->spip,
             ];
             foreach ($rows as $row) {
                 $data[$row->tanggal] = [
