@@ -183,7 +183,7 @@ function presensiHitungJamKeluarKantor($jam_keluar, $j_kembali, $jam_selesai, $j
     }
 }
 
-function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode_dept)
+function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode_dept, $kode_jabatan)
 {
 
     //
@@ -229,22 +229,43 @@ function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlamba
                 $keterangan = "Sudah Izin";
                 $cek = 2;
             } else {
-                if ($menitterlambat >= 5 and $menitterlambat < 10) {
-                    $denda = 5000;
-                    $keterangan = "";
-                    $cek = 3;
-                } elseif ($menitterlambat >= 10 and $menitterlambat < 15) {
-                    $denda = 10000;
-                    $keterangan = "";
-                    $cek = 4;
-                } elseif ($menitterlambat >= 15 and $menitterlambat <= 59) {
-                    $denda = 15000;
-                    $keterangan = "";
-                    $cek = 5;
+
+                if ($kode_jabatan == 'J19') {
+                    if ($menitterlambat >= 10 and $menitterlambat < 15) {
+                        $denda = 5000;
+                        $keterangan = "";
+                        $cek = 3;
+                    } elseif ($menitterlambat >= 15 and $menitterlambat < 20) {
+                        $denda = 10000;
+                        $keterangan = "";
+                        $cek = 4;
+                    } elseif ($menitterlambat >= 20 and $menitterlambat <= 59) {
+                        $denda = 15000;
+                        $keterangan = "";
+                        $cek = 5;
+                    } else {
+                        $denda = 0;
+                        $keterangan = "";
+                        $cek = 6;
+                    }
                 } else {
-                    $denda = 0;
-                    $keterangan = "";
-                    $cek = 6;
+                    if ($menitterlambat >= 5 and $menitterlambat < 10) {
+                        $denda = 5000;
+                        $keterangan = "";
+                        $cek = 3;
+                    } elseif ($menitterlambat >= 10 and $menitterlambat < 15) {
+                        $denda = 10000;
+                        $keterangan = "";
+                        $cek = 4;
+                    } elseif ($menitterlambat >= 15 and $menitterlambat <= 59) {
+                        $denda = 15000;
+                        $keterangan = "";
+                        $cek = 5;
+                    } else {
+                        $denda = 0;
+                        $keterangan = "";
+                        $cek = 6;
+                    }
                 }
             }
         } else {
