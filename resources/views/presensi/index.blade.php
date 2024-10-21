@@ -152,6 +152,9 @@
 
                                                 <!--Jika Jadwal Tidak Kosong Tampilkan Nama Jadawal dan Jadwal Masuk dan Jadwal Pulang-->
                                                 @if (!empty($d->kode_jadwal))
+                                                    @php
+                                                        $total_jam_libur = 0;
+                                                    @endphp
                                                     {{ $d->nama_jadwal }}
                                                     ({{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }})
                                                 @else
@@ -357,7 +360,7 @@
                                             <td class="text-center">
                                                 @php
                                                     $total_jam =
-                                                        $d->total_jam +
+                                                        $d->total_jam -
                                                         $total_jam_libur -
                                                         $potongan_jamkeluar -
                                                         $potongan_terlambat -
