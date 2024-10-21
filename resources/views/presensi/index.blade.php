@@ -196,7 +196,7 @@
                                                         <span class="badge bg-danger">Belum Absen</span>
                                                     @endif
                                                 @endif
-                                                {{ $total_jam_libur }}
+                                                {{-- {{ $total_jam_libur }} --}}
                                             </td>
                                             <td class="text-center">
                                                 @if (!empty($d->kode_jadwal) && $d->status_kehadiran == 'h' && !empty($d->jam_in))
@@ -358,6 +358,7 @@
 
                                             </td>
                                             <td class="text-center">
+                                                {{ $total_jam_libur }}
                                                 @php
                                                     $total_jam =
                                                         $d->total_jam +
