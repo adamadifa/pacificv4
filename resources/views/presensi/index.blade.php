@@ -358,7 +358,7 @@
 
                                             </td>
                                             <td class="text-center">
-                                                {{ $total_jam_libur }}
+                                                {{-- {{ $total_jam_libur }} --}}
                                                 @php
                                                     $total_jam =
                                                         $d->total_jam +
