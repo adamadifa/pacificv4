@@ -314,23 +314,25 @@
                                             <p class="text-muted mb-0">{{ $d->nama_salesman }}</p>
                                         </div>
                                         <div class="d-flex">
-                                            @if (($d->jenis_bayar == 'TP' && $penjualan->jenis_bayar != 'TN') || ($d->jenis_bayar == 'TN' && $penjualan->jenis_bayar != 'TN'))
-                                                <div>
-                                                    <a href="#" class="me-1 btnEditBayar" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
-                                                        <i class="ti ti-edit text-primary"></i>
-                                                    </a>
-                                                </div>
-                                                <div>
-                                                    <form method="POST" name="deleteform" class="deleteform" id="bayarform"
-                                                        style="margin-bottom:0px !important; padding:0 !important"
-                                                        action="{{ route('pembayaranpenjualan.delete', Crypt::encrypt($d->no_bukti)) }}">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <a href="#" class="delete-confirm ml-1">
-                                                            <i class="ti ti-trash text-danger"></i>
+                                            @if ($d->tanggal >= date('Y-m-d'))
+                                                @if (($d->jenis_bayar == 'TP' && $penjualan->jenis_bayar != 'TN') || ($d->jenis_bayar == 'TN' && $penjualan->jenis_bayar != 'TN'))
+                                                    <div>
+                                                        <a href="#" class="me-1 btnEditBayar" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
+                                                            <i class="ti ti-edit text-primary"></i>
                                                         </a>
-                                                    </form>
-                                                </div>
+                                                    </div>
+                                                    <div>
+                                                        <form method="POST" name="deleteform" class="deleteform" id="bayarform"
+                                                            style="margin-bottom:0px !important; padding:0 !important"
+                                                            action="{{ route('pembayaranpenjualan.delete', Crypt::encrypt($d->no_bukti)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm ml-1">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    </div>
+                                                @endif
                                             @endif
                                         </div>
                                     </div>
@@ -462,18 +464,20 @@
 @push('myscript')
 <script>
     let jmlprint = "{{ $penjualan->print }}";
+    let jmlprinttagihan = "{{ $print_tagihan }}";
 
     function ajax_print(url, btn) {
-        // alert(jmlprint);
-        // if (jmlprint == 2) {
-        //     swal.fire({
-        //         icon: 'warning',
-        //         title: 'Oops...',
-        //         text: 'Faktur Sudah Di Cetak 2 Kali, Hubungi OM !'
-        //     });
-        //     return false;
-        // }
-        //jmlprint++;
+        // alert(jmlprint + ' ' + jmlprinttagihan);
+        if (jmlprint >= 1 && jmlprinttagihan == 0) {
+            swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Faktur Sudah Tidak Bisa Di Cetak, Hubungi OM !'
+            });
+            return false;
+        }
+        jmlprint++;
+        jmlprinttagihan--;
         b = $(btn);
         b.attr('data-old', b.text());
         b.text('wait');

@@ -259,6 +259,8 @@ class KaskecilController extends Controller
             $cekCostratio = Kaskecilcostratio::where('id', $id)->first();
 
             $cekAkun = substr($request->kode_akun, 0, 3);
+
+            dd($kaskecil);
             //Inseert Cost Ratio
             if ($request->debet_kredit == 'D' and in_array($cekAkun, ['6-1', '6-2'])) {
                 if (!$cekCostratio) {
