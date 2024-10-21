@@ -360,7 +360,7 @@
                                             <td class="text-center">
                                                 @php
                                                     $total_jam =
-                                                        $d->total_jam -
+                                                        $d->total_jam +
                                                         $total_jam_libur -
                                                         $potongan_jamkeluar -
                                                         $potongan_terlambat -
