@@ -368,7 +368,10 @@
                                                         $potongan_pc -
                                                         $potongan_sakit -
                                                         $potongan_izin;
-                                                    if (($d->status_kehadiran == 'h' && empty($d->jam_out)) || empty($d->jam_in)) {
+                                                    if (
+                                                        ($d->status_kehadiran == 'h' && empty($d->jam_out)) ||
+                                                        ($d->status_kehadiran == 'h' && empty($d->jam_in))
+                                                    ) {
                                                         $total_jam = 0;
                                                     }
 
