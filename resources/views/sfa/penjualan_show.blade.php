@@ -467,8 +467,8 @@
     let jmlprinttagihan = "{{ $print_tagihan }}";
 
     function ajax_print(url, btn) {
-        alert(jmlprint + ' ' + jmlprinttagihan);
-        if (jmlprint >= 1 && jmlprinttagihan == 0) {
+        //alert(jmlprint + ' ' + jmlprinttagihan);
+        if (jmlprint >= 1 && jmlprinttagihan <= 0) {
             swal.fire({
                 icon: 'warning',
                 title: 'Oops...',
