@@ -181,7 +181,7 @@
                                                                 }
                                                             }
                                                         @endphp
-                                                        <span class="badge bg-info">Dirumahkan</span>
+                                                        <span class="badge bg-info">Dirumahkan {{ $total_jam_libur }}</span>
                                                     @elseif(!empty($cekliburpengganti))
                                                         @php
                                                             //Jika Hari ini Libur , menggantikan Libur hari Minggu Maka Total Jam adalah 0
