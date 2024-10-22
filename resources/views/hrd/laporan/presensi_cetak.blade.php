@@ -440,13 +440,15 @@
                                         @endphp
                                     @elseif($d[$tanggal_presensi]['status'] == 'c')
                                         @php
-                                            $total_jam = $total_jam_jadwal;
+
                                             $potongan_jam_terlambat = 0;
                                             if ($d[$tanggal_presensi]['kode_cuti'] != 'C01') {
                                                 if (!empty($cekdirumahkan)) {
                                                     $potongan_jam_dirumahkan = $total_jam_jadwal / 2;
+                                                    $total_jam = $total_jam_jadwal / 2;
                                                 } else {
                                                     $potongan_jam_dirumahkan = 0;
+                                                    $total_jam = $total_jam_jadwal;
                                                 }
                                             }
                                             $potongan_jam_izinkeluar = 0;
