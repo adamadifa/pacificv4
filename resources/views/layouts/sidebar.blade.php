@@ -25,6 +25,14 @@
                  <div>Dashboard</div>
              </a>
          </li>
+         @if (auth()->user()->hasAnyPermission(['sfa.trackingsalesman']))
+             <li class="menu-item {{ request()->is(['sfa/trackingsalesman']) ? 'active' : '' }}">
+                 <a href="{{ route('sfa.trackingsalesman') }}" class="menu-link">
+                     <i class="menu-icon tf-icons ti ti-location"></i>
+                     <div>Tracking Salesman</div>
+                 </a>
+             </li>
+         @endif
          <!-- Salesman -->
          @if (auth()->user()->hasAnyPermission(['sfa.pelanggan']))
              <li class="menu-item {{ request()->is(['sfa/pelanggan']) ? 'active' : '' }}">

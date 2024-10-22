@@ -1975,6 +1975,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/sfa/retur/{kode_pelanggan}/addproduk', 'addprodukretur')->name('sfa.addprodukretur')->can('sfa.retur');
         Route::get('/sfa/retur/{no_retur}/show', 'showretur')->name('sfa.showretur')->can('sfa.retur');
         Route::get('/sfa/retur/{no_retur}/edit', 'editretur')->name('sfa.editretur')->can('sfa.retur');
+
+        Route::get('/sfa/trackingsalesman', 'trackingsalesman')->name('sfa.trackingsalesman')->can('sfa.trackingsalesman');
+        Route::get('/sfa/getlocationcheckin', 'getlocationcheckin')->name('sfa.getlocationcheckin')->can('sfa.trackingsalesman');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {

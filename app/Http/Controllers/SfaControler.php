@@ -1502,4 +1502,41 @@ class SfaControler extends Controller
         $data['detail'] = $rtr->getDetailretur($no_retur);
         return view('sfa.retur_show', $data);
     }
+
+
+    public function trackingsalesman()
+    {
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        return view('sfa.trackingsalesman', $data);
+    }
+
+    function getlocationcheckin(Request $request)
+    {
+        $hariini = $request->tanggal;
+        $kode_cabang = $request->kode_cabang;
+        $kode_salesman = $request->kode_salesman;
+
+        $query = Checkinpenjualan::query();
+        $query->select('marketing_penjualan_checkin.*', 'nama_pelanggan', 'pelanggan.foto', 'alamat_pelanggan', 'marker');
+        $query->join('pelanggan', 'marketing_penjualan_checkin.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->leftjoin('users', 'marketing_penjualan_checkin.kode_salesman', '=', 'users.kode_salesman');
+        $query->leftjoin('salesman', 'users.kode_salesman', '=', 'salesman.kode_salesman');
+        if (!empty($hariini)) {
+            $query->where('tanggal', $hariini);
+        } else {
+            $query->where('tanggal', date('Y-m-d'));
+        }
+        if (!empty($kode_cabang)) {
+            $query->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        if (!empty($kode_salesman)) {
+            $query->where('marketing_penjualan_checkin.kode_salesman', $kode_salesman);
+        }
+        $checkin = $query->get();
+
+
+        $jsondata = json_encode($checkin);
+        return $jsondata;
+    }
 }
