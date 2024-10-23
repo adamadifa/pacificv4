@@ -44,7 +44,7 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
     } else if ($kode_dept == 'GDG' && $kategori_jabatan == "NM") {
         $roles_approve =  ['manager gudang', 'gm operasional', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == 'HRD' && $kategori_jabatan == "NM") {
-        $roles_approve =  ['asst. manager hrd', 'direktur'];
+        $roles_approve =  ['asst. manager hrd', 'gm operasional', 'direktur'];
     } else if ($kode_dept == 'MTC' && $kategori_jabatan == "NM") {
         $roles_approve =  ['manager maintenance', 'gm operasional', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == 'PMB' && $kategori_jabatan == "NM") {
