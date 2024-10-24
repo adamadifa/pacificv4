@@ -450,6 +450,9 @@
                                                     $potongan_jam_dirumahkan = 0;
                                                     $total_jam = $total_jam_jadwal;
                                                 }
+                                            } else {
+                                                $potongan_jam_dirumahkan = 0;
+                                                $total_jam = $total_jam_jadwal;
                                             }
                                             $potongan_jam_izinkeluar = 0;
                                             $potongan_jam_pulangcepat = 0;
