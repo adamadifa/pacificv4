@@ -443,8 +443,14 @@ class LaporanhrdController extends Controller
             }
         }
 
-        if (!$user->hasRole($roles_access_all_pjp)) {
-            $query->where('hrd_jabatan.kategori', 'NM');
+        if (request()->is('laporanhrd/cetakgaji')) {
+            if (!$user->hasRole($roles_access_all_pjp)) {
+                $query->where('hrd_jabatan.kategori', 'NM');
+            } else {
+                if (!empty($request->kategori_laporan)) {
+                    $query->where('hrd_jabatan.kategori', $request->kategori_laporan);
+                }
+            }
         } else {
             if (!empty($request->kategori_laporan)) {
                 $query->where('hrd_jabatan.kategori', $request->kategori_laporan);
@@ -487,8 +493,14 @@ class LaporanhrdController extends Controller
             }
         }
 
-        if (!$user->hasRole($roles_access_all_pjp)) {
-            $query->where('hrd_jabatan.kategori', 'NM');
+        if (request()->is('laporanhrd/cetakgaji')) {
+            if (!$user->hasRole($roles_access_all_pjp)) {
+                $query->where('hrd_jabatan.kategori', 'NM');
+            } else {
+                if (!empty($request->kategori_laporan)) {
+                    $query->where('hrd_jabatan.kategori', $request->kategori_laporan);
+                }
+            }
         } else {
             if (!empty($request->kategori_laporan)) {
                 $query->where('hrd_jabatan.kategori', $request->kategori_laporan);
