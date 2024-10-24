@@ -425,23 +425,23 @@ class LaporanhrdController extends Controller
 
         // $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
 
-        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-            } else {
-                if (auth()->user()->kode_cabang != 'PST') {
-                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
-                } else {
-                    if ($user->hasRole(['staff keuangan'])) {
-                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
-                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
-                    } else {
-                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
-                    }
-                }
-            }
-        }
+        // if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+        //     if ($user->hasRole('regional sales manager')) {
+        //         $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+        //     } else {
+        //         if (auth()->user()->kode_cabang != 'PST') {
+        //             $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+        //         } else {
+        //             if ($user->hasRole(['staff keuangan'])) {
+        //                 $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+        //             } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+        //                 $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+        //             } else {
+        //                 $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        //             }
+        //         }
+        //     }
+        // }
 
         if (request()->is('laporanhrd/cetakgaji')) {
             if (!$user->hasRole($roles_access_all_pjp)) {
@@ -475,23 +475,23 @@ class LaporanhrdController extends Controller
         }
 
         // $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
-        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-            } else {
-                if (auth()->user()->kode_cabang != 'PST') {
-                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
-                } else {
-                    if ($user->hasRole(['staff keuangan'])) {
-                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
-                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
-                    } else {
-                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
-                    }
-                }
-            }
-        }
+        // if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+        //     if ($user->hasRole('regional sales manager')) {
+        //         $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+        //     } else {
+        //         if (auth()->user()->kode_cabang != 'PST') {
+        //             $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+        //         } else {
+        //             if ($user->hasRole(['staff keuangan'])) {
+        //                 $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+        //             } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+        //                 $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+        //             } else {
+        //                 $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        //             }
+        //         }
+        //     }
+        // }
 
         if (request()->is('laporanhrd/cetakgaji')) {
             if (!$user->hasRole($roles_access_all_pjp)) {
