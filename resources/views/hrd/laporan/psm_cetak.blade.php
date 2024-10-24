@@ -240,6 +240,7 @@
                                                     $terlambat['menitterlambat'],
                                                     $d[$tanggal_presensi]['kode_izin_terlambat'],
                                                     $d['kode_dept'],
+                                                    $d['kode_jabatan'],
                                                 );
 
                                                 //Cek Pulang Cepat
