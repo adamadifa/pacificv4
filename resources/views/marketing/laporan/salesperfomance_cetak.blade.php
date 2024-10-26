@@ -162,9 +162,9 @@
                                         &#10004;
                                     @endif
                                 </td>
-                        @endif
-                        </td>
-                        </tr>
+
+
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
