@@ -6304,15 +6304,17 @@ class LaporanmarketingController extends Controller
             ->orderBy('checkin_time')
             ->get();
 
-        dd($sp);
+
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
-        $data['cabang'] = $request->cabang;
+        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        $data['salesperfomance'] = $sp;
         if (isset($_GET['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
             header("Content-Disposition: attachment; filename=Sales Performance.xls");
         }
-        return view('marketing.laporan.sales_performance_cetak', $data);
+        return view('marketing.laporan.salesperfomance_cetak', $data);
     }
 }
