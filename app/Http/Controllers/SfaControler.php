@@ -1514,8 +1514,18 @@ class SfaControler extends Controller
 
     function getlocationcheckin(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $hariini = $request->tanggal;
-        $kode_cabang = $request->kode_cabang;
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
         $kode_salesman = $request->kode_salesman;
 
         $query = Checkinpenjualan::query();
