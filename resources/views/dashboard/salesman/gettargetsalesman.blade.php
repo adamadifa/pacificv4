@@ -1,7 +1,7 @@
 @foreach ($target as $d)
     @php
         $realisasi = $d->realisasi / $d->isi_pcs_dus;
-        $persentase = (ROUND($realisasi) / $d->jumlah) * 100;
+        $persentase = !empt($d->jumlah) ? (ROUND($realisasi) / $d->jumlah) * 100 : 0;
         if ($persentase < 50) {
             $color = 'danger';
         } elseif ($persentase < 90) {
