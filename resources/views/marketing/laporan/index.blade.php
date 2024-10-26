@@ -170,6 +170,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('mkt.salesperfomance')
+                    <li class="nav-item" role="salesperfomance">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#salesperfomance"
+                            aria-controls="harganet" aria-selected="false" tabindex="-1">
+                            Sales Perfomance
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 @can('mkt.penjualan')
@@ -274,6 +282,12 @@
                 @can('mkt.routingsalesman')
                     <div class="tab-pane fade" id="routingsalesman" role="tabpanel">
                         @include('marketing.laporan.routingsalesman')
+                    </div>
+                @endcan
+
+                @can('mkt.salesperfomance')
+                    <div class="tab-pane fade" id="salesperfomance" role="tabpanel">
+                        @include('marketing.laporan.salesperfomance')
                     </div>
                 @endcan
             </div>

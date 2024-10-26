@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Checkinpenjualan;
 use App\Models\Detailbelumsetor;
 use App\Models\Detaildpb;
 use App\Models\Detailgiro;
@@ -6283,5 +6284,35 @@ class LaporanmarketingController extends Controller
             header("Content-Disposition: attachment; filename=Ratiobs.xls");
         }
         return view('marketing.laporan.ratiobs_cetak', $data);
+    }
+
+
+    public function cetaksalesperfomance(Request $request)
+    {
+
+        $sp = Checkinpenjualan::select(
+            'marketing_penjualan_checkin.kode_pelanggan',
+            'nama_pelanggan',
+            'checkin_time',
+            'checkout_time',
+            DB::raw('(SELECT COUNT(no_faktur) FROM marketing_penjualan WHERE date(created_at) = marketing_penjualan_checkin.tanggal AND kode_pelanggan = marketing_penjualan_checkin.kode_pelanggan) as cekpenjualan'),
+        )
+            ->join('pelanggan', 'marketing_penjualan_checkin.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+
+            ->where('marketing_penjualan_checkin.kode_salesman', $request->kode_salesman)
+            ->whereBetween('marketing_penjualan_checkin.tanggal', [$request->dari, $request->sampai])
+            ->orderBy('checkin_time')
+            ->get();
+
+        dd($sp);
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['cabang'] = $request->cabang;
+        if (isset($_GET['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Sales Performance.xls");
+        }
+        return view('marketing.laporan.sales_performance_cetak', $data);
     }
 }
