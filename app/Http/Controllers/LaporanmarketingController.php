@@ -6309,6 +6309,14 @@ class LaporanmarketingController extends Controller
         //     ->get();
         // dd($cek);
 
+        $data['jmlkunjungan'] = Checkinpenjualan::whereBetween('tanggal', [$request->dari, $request->sampai])
+            ->where('kode_salesman', $request->kode_salesman)
+            ->count();
+
+        $data['ec'] = Penjualan::selectRaw('DISTINCT(kode_pelanggan)')
+            ->whereBetween('tanggal', [$request->dari, $request->sampai])
+            ->where('kode_salesman', $request->kode_salesman)
+            ->count();
 
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;

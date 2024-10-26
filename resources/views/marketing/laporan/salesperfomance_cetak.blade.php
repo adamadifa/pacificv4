@@ -85,7 +85,30 @@
                 <br>
                 {{ $salesman->nama_salesman }}
             </b>
+            <div style="margin-top: 10px">
+                <table class="datatable3">
+                    <tr>
+                        <td style="text-align: center; font-weight:bold; font-size:18px">
+                            {{ $jmlkunjungan }}
+                        </td>
+                        <td style="text-align: center; font-weight:bold; font-size:18px">
+                            {{ $ec }}
+                        </td>
+                        <td style="text-align: center; font-weight:bold; font-size:18px" id="totalminutes">
 
+                        </td>
+                        <td style="text-align: center; font-weight:bold; font-size:18px" id="ratarataminutes">
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Call</td>
+                        <td>Effective Call</td>
+                        <td>Total Waktu (Menit)</td>
+                        <td>Rata Rata / Transaksi (Menit)</td>
+                    </tr>
+                </table>
+            </div>
             <div style="margin-top: 20px">
                 <table class="datatable3" style="width: 100%">
                     <thead>
@@ -108,7 +131,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $d->kode_pelanggan }}</td>
                                 <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
-                                <td>{{ $d->checkin_time }}</td>
+                                <td>{{ date('H:i', strtotime($d->checkin)) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
