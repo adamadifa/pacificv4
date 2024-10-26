@@ -1507,7 +1507,8 @@ class SfaControler extends Controller
 
     public function trackingsalesman()
     {
-        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
         return view('sfa.trackingsalesman', $data);
     }
 

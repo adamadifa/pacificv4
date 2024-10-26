@@ -32,6 +32,18 @@
         <div class="col-lg-2 col-sm-12 col-xs-12">
             <button class="btn btn-primary" id="btnTrackingSalesman"><i class="ti ti-search"></i></button>
         </div>
+    @else
+        <div class="col-lg-4 col-sm-12 col-xs-12">
+            <x-input-with-icon icon="ti ti-calendar" name="tanggal" label="Tanggal" datepicker="flatpickr-date" />
+        </div>
+        <div class="col-lg-4 col-sm-12 col-xs-12">
+            <select name="kode_salesman" id="kode_salesman" class="form-select select2Kodesalesman">
+                <option value="">Pilih Salesman</option>
+            </select>
+        </div>
+        <div class="col-lg-2 col-sm-12 col-xs-12">
+            <button class="btn btn-primary" id="btnTrackingSalesman"><i class="ti ti-search"></i></button>
+        </div>
     @endrole
 </div>
 <div class="row">
