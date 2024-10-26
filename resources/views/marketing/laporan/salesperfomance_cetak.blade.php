@@ -124,7 +124,7 @@
                             <th>Check Out</th>
                             <th>Durasi (Menit)</th>
                             <th>Penjualan</th>
-                            <th>Jarak (Meter)</th>
+                            <th>Jarak (Km)</th>
                             {{-- <th>Retur</th>
                             <th>Tunai/Tagihan</th> --}}
                         </tr>
@@ -133,6 +133,9 @@
                         @php
                             $totalminutes = 0;
                             $jmldatacheckin = 0;
+                            $lokasi_cabang = explode(',', $cabang->lokasi_cabang);
+                            $lat_start = $lokasi_cabang[0];
+                            $long_start = $lokasi_cabang[1];
                         @endphp
                         @foreach ($salesperfomance as $d)
                             @php
@@ -149,6 +152,8 @@
                                     $minutes = 0;
                                 }
 
+                                $jarak = hitungJarak($lat_start, $long_start, $d->latitude, $d->longitude);
+
                             @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
@@ -162,9 +167,13 @@
                                         &#10004;
                                     @endif
                                 </td>
-
+                                <td class="center">{{ formatAngkaDesimal($jarak / 1000) }}</td>
 
                             </tr>
+                            @php
+                                $lat_start = $d->latitude;
+                                $long_start = $d->longitude;
+                            @endphp
                         @endforeach
                     </tbody>
                 </table>

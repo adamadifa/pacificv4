@@ -6295,6 +6295,8 @@ class LaporanmarketingController extends Controller
             'nama_pelanggan',
             'checkin_time',
             'checkout_time',
+            'marketing_penjualan_checkin.latitude',
+            'marketing_penjualan_checkin.longitude',
             DB::raw('(SELECT COUNT(no_faktur) FROM marketing_penjualan WHERE date(created_at) = marketing_penjualan_checkin.tanggal AND kode_pelanggan = marketing_penjualan_checkin.kode_pelanggan) as cekpenjualan'),
         )
             ->join('pelanggan', 'marketing_penjualan_checkin.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
