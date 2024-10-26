@@ -157,7 +157,14 @@
                                 <td class="center">{{ date('H:i', strtotime($d->checkin_time)) }}</td>
                                 <td class="center">{{ date('H:i', strtotime($d->checkout_time)) }}</td>
                                 <td class="center">{{ $minutes }}</td>
-                            </tr>
+                                <td class="center">
+                                    @if (!empty($d->cekpenjualan))
+                                        &#10004;
+                                    @endif
+                                </td>
+                        @endif
+                        </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
