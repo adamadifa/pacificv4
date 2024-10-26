@@ -178,6 +178,22 @@
                         </button>
                     </li>
                 @endcan
+                @can('mkt.persentasesfa')
+                    <li class="nav-item" role="persentasesfa">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#persentasesfa"
+                            aria-controls="persentasesfa" aria-selected="false" tabindex="-1">
+                            Persentase SFA
+                        </button>
+                    </li>
+                @endcan
+                @can('mkt.persentasesfa')
+                    <li class="nav-item" role="persentasedatapelanggan">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#persentasedatapelanggan"
+                            aria-controls="persentasedatapelanggan" aria-selected="false" tabindex="-1">
+                            Persentase Data Pelanggan
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 @can('mkt.penjualan')
@@ -288,6 +304,17 @@
                 @can('mkt.salesperfomance')
                     <div class="tab-pane fade" id="salesperfomance" role="tabpanel">
                         @include('marketing.laporan.salesperfomance')
+                    </div>
+                @endcan
+
+                @can('mkt.persentasesfa')
+                    <div class="tab-pane fade" id="persentasesfa" role="tabpanel">
+                        @include('marketing.laporan.persentasesfa')
+                    </div>
+                @endcan
+                @can('mkt.persentasesfa')
+                    <div class="tab-pane fade" id="persentasedatapelanggan" role="tabpanel">
+                        @include('marketing.laporan.persentasedatapelanggan')
                     </div>
                 @endcan
             </div>

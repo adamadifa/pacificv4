@@ -1865,6 +1865,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetarroutingsalesman', 'cetarroutingsalesman')->name('laporanmarketing.cetarroutingsalesman')->can('mkt.routingsalesman');
         Route::post('/laporanmarketing/cetaksalesperfomance', 'cetaksalesperfomance')->name('laporanmarketing.cetaksalesperfomance')->can('mkt.salesperfomance');
         Route::post('/laporanmarketing/cetakpersentasesfa', 'cetakpersentasesfa')->name('laporanmarketing.cetakpersentasesfa')->can('mkt.persentasesfa');
+        Route::post('/laporanmarketing/cetakpersentasedatapelanggan', 'cetakpersentasedatapelanggan')->name('laporanmarketing.cetakpersentasedatapelanggan')->can('mkt.persentasesfa');
         Route::post('/laporanmarketing/cetaksmmactivity', 'cetaksmmactivity')->name('laporanmarketing.cetaksmmactivity')->can('mkt.smmactivity');
         Route::post('/laporanmarketing/cetaksrsmactivity', 'cetaksrsmactivity')->name('laporanmarketing.cetaksrsmactivity')->can('mkt.rsmactivity');
         Route::post('/laporanmarketing/cetakkomisisalesman', 'cetakkomisisalesman')->name('laporanmarketing.cetakkomisisalesman')->can('mkt.komisisalesman');

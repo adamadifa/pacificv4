@@ -22,6 +22,7 @@ use App\Models\Historibayarpenjualan;
 use App\Models\Kategorikomisi;
 use App\Models\Kendaraan;
 use App\Models\Movefaktur;
+use App\Models\Pelanggan;
 use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Ratiokomisidriverhelper;
@@ -6331,5 +6332,111 @@ class LaporanmarketingController extends Controller
             header("Content-Disposition: attachment; filename=Sales Performance.xls");
         }
         return view('marketing.laporan.salesperfomance_cetak', $data);
+    }
+
+    public function cetakpersentasesfa(Request $request)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $query = Penjualan::query();
+        $query->select(
+            'marketing_penjualan.kode_salesman',
+            'nama_salesman',
+            'salesman.kode_cabang',
+            DB::raw('COUNT(no_faktur) as totaltransaksi'),
+            DB::raw('SUM(IF(users.kode_salesman = marketing_penjualan.kode_salesman,1,0)) as totaltransaksi_sfa'),
+        );
+        $query->leftJoin('users', 'marketing_penjualan.id_user', '=', 'users.id');
+        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        if (!empty($kode_cabang)) {
+            $query->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        $query->orderBy('salesman.kode_cabang');
+        $query->orderBy('marketing_penjualan.kode_salesman');
+        $query->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'salesman.kode_cabang');
+        $persentasesfa = $query->get();
+
+
+        $data['persentasesfa'] = $persentasesfa;
+
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['persentase'] = $request->persentase;
+        if (isset($_GET['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Persentase SFA.xls");
+        }
+        return view('marketing.laporan.persentasesfa_cetak', $data);
+    }
+
+
+
+    public function cetakpersentasedatapelanggan(Request $request)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $query = Pelanggan::query();
+        $query->select(
+            'pelanggan.kode_salesman',
+            'nama_salesman',
+            'salesman.kode_cabang',
+            DB::raw('COUNT(kode_pelanggan) as jmlpelangganaktif'),
+            DB::raw('SUM(IF(latitude IS NOT NULL AND latitude !=0 AND longitude IS NOT NULL AND longitude !=0,1,0)) as lokasi'),
+            DB::raw('SUM(IF(status_lokasi=1,1,0)) as updatebysfa'),
+            DB::raw('SUM(IF(signature_pemilik IS NOT NULL ,1,0)) as signature_pemilik'),
+            DB::raw('SUM(IF(signature_karyawan IS NOT NULL ,1,0)) as signature_karyawan'),
+            DB::raw('SUM(IF(LENGTH(pelanggan.no_hp_pelanggan) >= 10,1,0)) as nohpcomplete')
+        );
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->where('pelanggan.tanggal_register', '<=', $request->sampai);
+        if (!empty($kode_cabang)) {
+            $query->where('salesman.kode_cabang', $kode_cabang);
+        }
+        $query->where('status_aktif_pelanggan', 1);
+        $query->orderBy('salesman.kode_cabang');
+        $query->orderBy('pelanggan.kode_salesman');
+        $query->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'salesman.kode_cabang');
+        $persentasedatapelanggan = $query->get();
+
+
+
+        $data['persentasedatapelanggan'] = $persentasedatapelanggan;
+
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['persentase'] = $request->persentase;
+        if (isset($_GET['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Persentase SFA.xls");
+        }
+        return view('marketing.laporan.persentasedatapelanggan_cetak', $data);
     }
 }
