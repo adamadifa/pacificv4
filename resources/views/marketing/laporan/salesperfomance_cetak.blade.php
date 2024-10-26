@@ -150,9 +150,9 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $d->kode_pelanggan }}</td>
                                 <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
-                                <td class="text-center">{{ date('H:i', strtotime($d->checkin_time)) }}</td>
-                                <td class="text-center">{{ date('H:i', strtotime($d->checkout_time)) }}</td>
-                                <td class="text-center">{{ $minutes }}</td>
+                                <td class="center">{{ date('H:i', strtotime($d->checkin_time)) }}</td>
+                                <td class="center">{{ date('H:i', strtotime($d->checkout_time)) }}</td>
+                                <td class="center">{{ $minutes }}</td>
                             </tr>
                         @endforeach
                     </tbody>
