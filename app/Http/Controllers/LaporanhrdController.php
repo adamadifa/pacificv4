@@ -425,7 +425,7 @@ class LaporanhrdController extends Controller
 
         // $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
 
-        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan'])) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else {
@@ -474,8 +474,8 @@ class LaporanhrdController extends Controller
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
 
-        // $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
-        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
+        $query->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan'])) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else {
