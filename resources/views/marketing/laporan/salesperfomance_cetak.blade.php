@@ -60,6 +60,10 @@
     @page {
         size: A4
     }
+
+    .center {
+        text-align: center;
+    }
 </style>
 
 
