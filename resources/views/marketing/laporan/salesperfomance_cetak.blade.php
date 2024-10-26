@@ -131,7 +131,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $d->kode_pelanggan }}</td>
                                 <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
-                                <td>{{ date('H:i', strtotime($d->checkin)) }}</td>
+                                <td>{{ date('H:i', strtotime($d->checkin_time)) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
