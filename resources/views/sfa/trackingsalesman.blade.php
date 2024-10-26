@@ -102,7 +102,8 @@
             getsalesmanbyCabang();
         });
 
-
+        var latitude = "{{ $lokasi_cabang[0] }}";
+        var longitude = "{{ $lokasi_cabang[1] }}";
         var map = L.map('map').setView([-7.3665114, 108.2148793], 14);
         var layerGroup = L.layerGroup();
         // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -115,7 +116,7 @@
         }).addTo(map);
 
 
-        L.marker([-7.3665114, 108.2148793]).addTo(map);
+        L.marker([latitude, longitude]).addTo(map);
 
 
         function show(tanggal, kode_cabang, kode_salesman) {

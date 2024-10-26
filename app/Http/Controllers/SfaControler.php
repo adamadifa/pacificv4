@@ -1507,6 +1507,15 @@ class SfaControler extends Controller
 
     public function trackingsalesman()
     {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $cabang = Cabang::where('kode_cabang', $user->kode_cabang)->first();
+        } else {
+            $cabang = Cabang::where('kode_cabang', 'PST')->first();
+        }
+
+        $data['lokasi_cabang'] = explode(",", $cabang->lokasi_cabang);
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
         return view('sfa.trackingsalesman', $data);
