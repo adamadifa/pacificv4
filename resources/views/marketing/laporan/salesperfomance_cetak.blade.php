@@ -126,12 +126,33 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            $totalminutes = 0;
+                            $jmldatacheckin = 0;
+                        @endphp
                         @foreach ($salesperfomance as $d)
+                            @php
+                                if (!empty($d->checkin_time) && !empty($d->checkout_time)) {
+                                    $checkin = new DateTime($d->checkin_time);
+                                    $checkout = new DateTime($d->checkout_time);
+                                    $diff = $checkin->diff($checkout);
+                                    $minutes = $diff->days * 24 * 60 + $diff->h * 60 + $diff->i;
+                                    if (!empty($d->checkout_time)) {
+                                        $totalminutes += $minutes;
+                                        $jmldatacheckin += 1;
+                                    }
+                                } else {
+                                    $minutes = 0;
+                                }
+
+                            @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $d->kode_pelanggan }}</td>
                                 <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
-                                <td>{{ date('H:i', strtotime($d->checkin_time)) }}</td>
+                                <td class="text-center">{{ date('H:i', strtotime($d->checkin_time)) }}</td>
+                                <td class="text-center">{{ date('H:i', strtotime($d->checkout_time)) }}</td>
+                                <td class="text-center">{{ $minutes }}</td>
                             </tr>
                         @endforeach
                     </tbody>
