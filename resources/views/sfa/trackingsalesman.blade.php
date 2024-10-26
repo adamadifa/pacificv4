@@ -32,6 +32,18 @@
         <div class="col-lg-2 col-sm-12 col-xs-12">
             <button class="btn btn-primary" id="btnTrackingSalesman"><i class="ti ti-search"></i></button>
         </div>
+    @else
+        <div class="col-lg-4 col-sm-12 col-xs-12">
+            <x-input-with-icon icon="ti ti-calendar" name="tanggal" label="Tanggal" datepicker="flatpickr-date" />
+        </div>
+        <div class="col-lg-4 col-sm-12 col-xs-12">
+            <select name="kode_salesman" id="kode_salesman" class="form-select select2Kodesalesman">
+                <option value="">Pilih Salesman</option>
+            </select>
+        </div>
+        <div class="col-lg-2 col-sm-12 col-xs-12">
+            <button class="btn btn-primary" id="btnTrackingSalesman"><i class="ti ti-search"></i></button>
+        </div>
     @endrole
 </div>
 <div class="row">
@@ -90,8 +102,9 @@
             getsalesmanbyCabang();
         });
 
-
-        var map = L.map('map').setView([-7.3665114, 108.2148793], 14);
+        var latitude = "{{ $lokasi_cabang[0] }}";
+        var longitude = "{{ $lokasi_cabang[1] }}";
+        var map = L.map('map').setView([latitude, longitude], 14);
         var layerGroup = L.layerGroup();
         // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         //     maxZoom: 19
@@ -103,7 +116,7 @@
         }).addTo(map);
 
 
-        L.marker([-7.3665114, 108.2148793]).addTo(map);
+        L.marker([latitude, longitude]).addTo(map);
 
 
         function show(tanggal, kode_cabang, kode_salesman) {
