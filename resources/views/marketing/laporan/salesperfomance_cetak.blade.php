@@ -159,8 +159,8 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $d->kode_pelanggan }}</td>
                                 <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
-                                <td class="center">{{ date('H:i', strtotime($d->checkin_time)) }}</td>
-                                <td class="center">{{ date('H:i', strtotime($d->checkout_time)) }}</td>
+                                <td class="center">{{ date('H:i:s', strtotime($d->checkin_time)) }}</td>
+                                <td class="center">{{ date('H:i:S', strtotime($d->checkout_time)) }}</td>
                                 <td class="center">{{ $minutes }}</td>
                                 <td class="center">
                                     @if (!empty($d->cekpenjualan))
