@@ -181,5 +181,12 @@
         </article>
     </section>
 </body>
+<script>
+    var totalmenit = "{{ $totalminutes }}";
+    var jmldatacheckin = "{{ $jmldatacheckin }}";
+    var ratarata = parseInt(totalmenit) / parseInt(jmldatacheckin);
+    document.getElementById("totalminutes").innerHTML = totalmenit;
+    document.getElementById("ratarataminutes").innerHTML = Math.floor(ratarata);
+</script>
 
 </html>
