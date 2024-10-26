@@ -361,6 +361,7 @@ class SfaControler extends Controller
                     'tanggal' => $hariini,
                     'kode_salesman' => $kode_salesman,
                     'kode_pelanggan' => $kode_pelanggan,
+                    'checkin_time' => date('Y-m-d H:i:s'),
                     'latitude' => $latitudeCheckin,
                     'longitude' => $longitudeCheckin,
                 ];

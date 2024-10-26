@@ -6304,6 +6304,11 @@ class LaporanmarketingController extends Controller
             ->orderBy('checkin_time')
             ->get();
 
+        $cek = Checkinpenjualan::where('kode_salesmand', $request->kode_salesman)
+            ->whereBetween('tanggal', [$request->dari, $request->sampai])
+            ->get();
+        dd($cek);
+
 
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
