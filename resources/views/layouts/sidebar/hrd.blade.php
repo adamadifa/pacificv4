@@ -144,7 +144,7 @@
             @endif
 
             @if (auth()->user()->hasAnyPermission(['hrd.presensi', 'hrd.psm', 'hrd.gaji', 'hrd.slipgaji']))
-                <li class="menu-item {{ request()->is(['izinabsen', 'izinabsen/*']) ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is(['laporanhrd', 'laporanhrd/*']) ? 'active' : '' }}">
                     <a href="{{ route('laporanhrd.index') }}" class="menu-link">
                         <div>Laporan</div>
                     </a>
