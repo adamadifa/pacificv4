@@ -6418,6 +6418,7 @@ class LaporanmarketingController extends Controller
             $query->where('salesman.kode_cabang', $kode_cabang);
         }
         $query->where('status_aktif_pelanggan', 1);
+        $query->where('salesman.nama_salesman', '!=', '-');
         $query->orderBy('salesman.kode_cabang');
         $query->orderBy('pelanggan.kode_salesman');
         $query->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'salesman.kode_cabang');

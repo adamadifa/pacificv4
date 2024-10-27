@@ -51,11 +51,27 @@
             <table class="datatable3">
                 <thead>
                     <tr>
-                        <th>NO</th>
-                        <th>Kode</th>
-                        <th>Nama Salesman</th>
-                        <th>Total Transaksi</th>
-                        <th>SFA</th>
+                        <th rowspan="2">NO</th>
+                        <th rowspan="2">Kode</th>
+                        <th rowspan="2">Nama Salesman</th>
+                        <th rowspan="2">Cabang</th>
+                        <th rowspan="2">Jumlah <br> Pelanggan Aktif</th>
+                        <th colspan="4">Lokasi</th>
+                        <th colspan="2">No. HP</th>
+                        <th colspan="4">Tanda Tangan</th>
+                    </tr>
+                    <tr>
+                        <th>Terisi</th>
+                        <th>Persentase</th>
+                        <th>Update By SFA</th>
+                        <th>Persentase</th>
+
+                        <th>Terisi</th>
+                        <th>Persentase</th>
+
+                        <th>Pemilik</th>
+                        <th>Persentase</th>
+                        <th>Karyawan</th>
                         <th>Persentase</th>
                     </tr>
                 </thead>
@@ -65,7 +81,45 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_salesman }}</td>
                             <td>{{ $d->nama_salesman }}</td>
+                            <td>{{ $d->kode_cabang }}</td>
+                            <td class="center">{{ $d->jmlpelangganaktif }}</td>
+                            <td class="center">{{ $d->lokasi }}</td>
+                            <td class="center">
+                                @php
+                                    $persentaselokasiterisi = ($d->lokasi / $d->jmlpelangganaktif) * 100;
+                                @endphp
+                                {{ formatAngkaDesimal($persentaselokasiterisi, 2) }} %
+                            </td>
+                            <td class="center">{{ $d->updatebysfa }}</td>
+                            <td class="center">
+                                @php
+                                    $persentaseupdatebysfa = ($d->updatebysfa / $d->jmlpelangganaktif) * 100;
+                                @endphp
+                                {{ formatAngkaDesimal($persentaseupdatebysfa, 2) }} %
+                            </td>
 
+                            <td class="center">{{ $d->nohpcomplete }}</td>
+                            <td class="center">
+                                @php
+                                    $persentasenohpcomplete = ($d->nohpcomplete / $d->jmlpelangganaktif) * 100;
+                                @endphp
+                                {{ formatAngkaDesimal($persentasenohpcomplete, 2) }} %
+                            </td>
+
+                            <td class="center">{{ $d->signature_pemilik }}</td>
+                            <td class="center">
+                                @php
+                                    $persentasesignaturepemilik = ($d->signature_pemilik / $d->jmlpelangganaktif) * 100;
+                                @endphp
+                                {{ formatAngkaDesimal($persentasesignaturepemilik, 2) }} %
+                            </td>
+                            <td class="center">{{ $d->signature_karyawan }}</td>
+                            <td class="center">
+                                @php
+                                    $persentasesignaturekaryawan = ($d->signature_karyawan / $d->jmlpelangganaktif) * 100;
+                                @endphp
+                                {{ formatAngkaDesimal($persentasesignaturekaryawan, 2) }} %
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
