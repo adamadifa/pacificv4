@@ -52,7 +52,7 @@ class Izinpulang extends Model
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J05', 'J06']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->whereIn('hrd_izinpulang.kode_dept', ['AKT', 'KEU']);
-                $query->where('hrd_karyawan.kode_cabang', 'PST');
+                // $query->where('hrd_karyawan.kode_cabang', 'PST');
                 // $query->whereIn('hrd_izincuti.kode_jabatan', ['J04', 'J05', 'J06', 'J12', 'J24', 'J25', 'J26']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->whereIn('hrd_izinpulang.kode_dept', ['MKT']);
@@ -66,8 +66,8 @@ class Izinpulang extends Model
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->whereIn('hrd_izinpulang.kode_dept', ['AKT', 'KEU']);
-                $query->where('hrd_izinpulang.kode_cabang', 'PST');
-                $query->whereIn('hrd_izinpulang.kode_jabatan', ['J28', 'J12', 'J13', 'J14']);
+                // $query->where('hrd_izinpulang.kode_cabang', 'PST');
+                // $query->whereIn('hrd_izinpulang.kode_jabatan', ['J28', 'J12', 'J13', 'J14']);
             } else {
                 if (auth()->user()->kode_cabang == 'PST') {
                     $query->where('hrd_izinpulang.kode_dept', auth()->user()->kode_dept);
@@ -115,7 +115,7 @@ class Izinpulang extends Model
                 $query->orWhere('hrd_izinpulang.kode_dept', 'PDQ');
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
                 $query->orwhereIn('hrd_izinpulang.kode_dept', ['AKT', 'KEU']);
-                $query->where('hrd_karyawan.kode_cabang', 'PST');
+                // $query->where('hrd_karyawan.kode_cabang', 'PST');
                 // $query->whereIn('hrd_izincuti.kode_jabatan', ['J04', 'J05', 'J06', 'J12', 'J24', 'J25', 'J26']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->orwhereIn('hrd_izinpulang.kode_dept', ['MKT']);
@@ -129,8 +129,8 @@ class Izinpulang extends Model
                 $query->whereIn('hrd_izinpulang.kode_jabatan', ['J08']);
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->orwhereIn('hrd_izinpulang.kode_dept', ['AKT', 'KEU']);
-                $query->where('hrd_izinpulang.kode_cabang', 'PST');
-                $query->whereIn('hrd_izinpulang.kode_jabatan', ['J28', 'J12', 'J13', 'J14']);
+                // $query->where('hrd_izinpulang.kode_cabang', 'PST');
+                // $query->whereIn('hrd_izinpulang.kode_jabatan', ['J28', 'J12', 'J13', 'J14']);
             } else {
                 if (auth()->user()->kode_cabang == 'PST') {
                     $query->orwhere('hrd_izinpulang.kode_dept', auth()->user()->kode_dept);
