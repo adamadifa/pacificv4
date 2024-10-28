@@ -966,10 +966,22 @@
 
                         @php
                             $total_gajipokok += $d['gaji_pokok'];
+                            $total_tunjangan_jabatan += $d['t_jabatan'];
+                            $total_tunjangan_masakerja += $d['t_masakerja'];
+                            $total_tunjangan_tanggungjawab += $d['t_tanggungjawab'];
+                            $total_tunjangan_makan += $d['t_makan'];
+                            $total_tunjangan_istri += $d['t_istri'];
+                            $total_tunjangan_skill += $d['t_skill'];
 
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
+                                $total_t_jabatan_administrasi += $d['t_jabatan'];
+                                $total_t_masakerja_administrasi += $d['t_masakerja'];
+                                $total_t_tanggungjawab_administrasi += $d['t_tanggungjawab'];
+                                $total_t_makan_administrasi += $d['t_makan'];
+                                $total_t_istri_administrasi += $d['t_istri'];
+                                $total_t_skill_administrasi += $d['t_skill'];
                             }
 
                             //PENJUALAN
@@ -1075,6 +1087,14 @@
                     <tr>
                         <td>ADMINISTRASI</td>
                         <td style="text-align: right">{{ formatAngka($total_gajipokok_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_jabatan_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_masakerja_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_tanggungjawab_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_makan_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_istri_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_skill_administrasi) }}</td>
+
+
                     </tr>
                     <tr>
                         <td>PENJUALAN</td>
