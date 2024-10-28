@@ -163,13 +163,13 @@
                         $total_t_istri_pcf = 0;
 
                         //Tunjangan Skill Khusus
-                        $total_tunjangan_skillkhusus = 0;
-                        $total_t_skillkhusus_administrasi = 0;
-                        $total_t_skillkhusus_penjualan = 0;
-                        $total_t_skillkhusus_tkl = 0;
-                        $total_t_skillkhusus_tktl = 0;
-                        $total_t_skillkhusus_mp = 0;
-                        $total_t_skillkhusus_pcf = 0;
+                        $total_tunjangan_skill = 0;
+                        $total_t_skill_administrasi = 0;
+                        $total_t_skill_penjualan = 0;
+                        $total_t_skill_tkl = 0;
+                        $total_t_skill_tktl = 0;
+                        $total_t_skill_mp = 0;
+                        $total_t_skill_pcf = 0;
 
                         //Insentif umum Masa Kjra
                         $total_insentif_masakerja = 0;
