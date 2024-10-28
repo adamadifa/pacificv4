@@ -21,34 +21,40 @@
                             <form action="{{ route('pembayarangiro.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                            datepicker="flatpickr-date" />
                                     </div>
                                 </div>
                                 @hasanyrole($roles_show_cabang)
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                                                selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
+                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                                textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                                select2="select2Kodecabangsearch" />
                                         </div>
                                     </div>
                                 @endrole
                                 <div class="row">
                                     <div class="col-lg-3 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <x-input-with-icon label="No. Giro" icon="ti ti-barcode" name="no_giro" value="{{ Request('no_giro') }}" />
+                                            <x-input-with-icon label="No. Giro" icon="ti ti-barcode" name="no_giro"
+                                                value="{{ Request('no_giro') }}" />
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" icon="ti ti-user" name="nama_pelanggan_search" />
+                                            <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" icon="ti ti-user"
+                                                name="nama_pelanggan_search" />
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <select name="kode_salesman_search" id="kode_salesman_search" class="form-select select2Kodesalesmansearch">
+                                            <select name="kode_salesman_search" id="kode_salesman_search"
+                                                class="form-select select2Kodesalesmansearch">
                                                 <option value="">Semua Salesman</option>
                                             </select>
                                         </div>
@@ -109,7 +115,8 @@
                                                 <td>{{ date('d-m-y', strtotime($d->jatuh_tempo)) }}</td>
                                                 <td class="text-center">
                                                     @if ($d->status == '1')
-                                                        <span class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="tooltip-primary"
+                                                        <span class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            data-bs-custom-class="tooltip-primary"
                                                             data-bs-original-title="{{ $d->no_bukti }}">{{ date('d-m-y', strtotime($d->tanggal_diterima)) }}</span>
                                                     @elseif($d->status == '2')
                                                         <i class="ti ti-square-rounded-x text-danger"></i>
@@ -120,19 +127,32 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('pembayarangiro.approve')
-                                                            <div>
-                                                                <a href="#" class="btnApprove me-2" kode_giro="{{ Crypt::encrypt($d->kode_giro) }}"><i
-                                                                        class="ti ti-external-link text-success"></i></a>
-                                                            </div>
+                                                            @if (auth()->user()->kode_cabang != 'PST')
+                                                                @if ($d->status === '0')
+                                                                    <div>
+                                                                        <a href="#" class="btnApprove me-2"
+                                                                            kode_giro="{{ Crypt::encrypt($d->kode_giro) }}"><i
+                                                                                class="ti ti-external-link text-success"></i></a>
+                                                                    </div>
+                                                                @endif
+                                                            @else
+                                                                <div>
+                                                                    <a href="#" class="btnApprove me-2"
+                                                                        kode_giro="{{ Crypt::encrypt($d->kode_giro) }}"><i
+                                                                            class="ti ti-external-link text-success"></i></a>
+                                                                </div>
+                                                            @endif
                                                         @endcan
                                                         @can('pembayarangiro.show')
                                                             <div>
-                                                                <a href="#" class="btnShow" kode_giro="{{ Crypt::encrypt($d->kode_giro) }}"><i class="ti ti-file-description text-info"></i></a>
+                                                                <a href="#" class="btnShow" kode_giro="{{ Crypt::encrypt($d->kode_giro) }}"><i
+                                                                        class="ti ti-file-description text-info"></i></a>
                                                             </div>
                                                         @endcan
                                                         @can('pembayarangiro.delete')
                                                             @if ($d->status === '0')
-                                                                <form method="POST" name="deleteform" class="deleteform" action="/pembayarangiro/{{ Crypt::encrypt($d->kode_giro) }}/deletegiro">
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="/pembayarangiro/{{ Crypt::encrypt($d->kode_giro) }}/deletegiro">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     <a href="#" class="delete-confirm me-1">
