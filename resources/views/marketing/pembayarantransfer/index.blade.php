@@ -129,6 +129,12 @@
                                                                             kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}"><i
                                                                                 class="ti ti-external-link text-success"></i></a>
                                                                     </div>
+                                                                @else
+                                                                    <div>
+                                                                        <a href="#" class="btnReject me-2"
+                                                                            kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}"><i
+                                                                                class="ti ti-external-link text-danger"></i></a>
+                                                                    </div>
                                                                 @endif
                                                             @endif
                                                         @endcan
