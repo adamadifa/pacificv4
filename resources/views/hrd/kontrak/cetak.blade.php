@@ -191,7 +191,7 @@
                             $totalupah = $gaji->gaji_pokok + $gaji->t_jabatan + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill;
                         @endphp
                         @if ($kontrak->kode_jabatan == 'J19')
-                            Pihak kedua setuju menerima upah berdasarkan satuan hasil dengan dasar perhitungan Rp. {{ formatRupiah($total_upah) }}
+                            Pihak kedua setuju menerima upah berdasarkan satuan hasil dengan dasar perhitungan Rp. {{ formatRupiah($totalupah) }}
                             dengan Rincian sebagai berikut :
                         @else
                             Pihak kedua setuju menerima upah Sebesar <b>{{ formatRupiah($totalupah) }},-</b> dengan rincian berikut:
