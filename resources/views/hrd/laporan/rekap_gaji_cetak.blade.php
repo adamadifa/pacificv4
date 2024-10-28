@@ -982,6 +982,11 @@
                                 $total_t_makan_administrasi += $d['t_makan'];
                                 $total_t_istri_administrasi += $d['t_istri'];
                                 $total_t_skill_administrasi += $d['t_skill'];
+
+                                $total_i_masakerja_administrasi += $d['iu_masakerja'];
+                                $total_i_lembur_administrasi += $d['iu_lembur'];
+                                $total_i_penempatan_administrasi += $d['iu_penempatan'];
+                                $total_i_kpi_administrasi += $d['iu_kpi'];
                             }
 
                             //PENJUALAN
@@ -993,6 +998,11 @@
                                 $total_t_makan_penjualan += $d['t_makan'];
                                 $total_t_istri_penjualan += $d['t_istri'];
                                 $total_t_skill_penjualan += $d['t_skill'];
+
+                                $total_i_masakerja_penjualan += $d['iu_masakerja'];
+                                $total_i_lembur_penjualan += $d['iu_lembur'];
+                                $total_i_penempatan_penjualan += $d['iu_penempatan'];
+                                $total_i_kpi_penjualan += $d['iu_kpi'];
                             }
 
                             //TKL
@@ -1004,6 +1014,11 @@
                                 $total_t_makan_tkl += $d['t_makan'];
                                 $total_t_istri_tkl += $d['t_istri'];
                                 $total_t_skill_tkl += $d['t_skill'];
+
+                                $total_i_masakerja_tkl += $d['iu_masakerja'];
+                                $total_i_lembur_tkl += $d['iu_lembur'];
+                                $total_i_penempatan_tkl += $d['iu_penempatan'];
+                                $total_i_kpi_tkl += $d['iu_kpi'];
                             }
 
                             //TKTL
@@ -1015,14 +1030,12 @@
                                 $total_t_makan_tktl += $d['t_makan'];
                                 $total_t_istri_tktl += $d['t_istri'];
                                 $total_t_skill_tktl += $d['t_skill'];
-                            }
 
-                            // $grandtotal_all_t_jabatan += $d['t_jabatan'];
-                            // $grandtotal_all_t_masakerja += $d['t_masakerja'];
-                            // $grandtotal_all_t_tanggungjawab += $d['t_tanggungjawab'];
-                            // $grandtotal_all_t_makan += $d['t_makan'];
-                            // $grandtotal_all_t_istri += $d['t_istri'];
-                            // $grandtotal_all_t_skill += $d['t_skill'];
+                                $total_i_masakerja_tktl += $d['iu_masakerja'];
+                                $total_i_lembur_tktl += $d['iu_lembur'];
+                                $total_i_penempatan_tktl += $d['iu_penempatan'];
+                                $total_i_kpi_tktl += $d['iu_kpi'];
+                            }
 
                             // //Insentif Umum
                             // $grandtotal_all_iu_masakerja += $d['iu_masakerja'];
@@ -1112,6 +1125,12 @@
                         <td style="text-align: right">{{ formatAngka($total_t_istri_administrasi) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_t_skill_administrasi) }}</td>
 
+                        <td style="text-align: right">{{ formatAngka($total_i_masakerja_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_lembur_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_penempatan_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_kpi_administrasi) }}</td>
+
+
 
                     </tr>
                     <tr>
@@ -1123,6 +1142,11 @@
                         <td style="text-align: right">{{ formatAngka($total_t_makan_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_t_istri_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_t_skill_penjualan) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_i_masakerja_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_lembur_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_penempatan_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_kpi_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1133,6 +1157,11 @@
                         <td style="text-align: right">{{ formatAngka($total_t_makan_tkl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_t_istri_tkl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_t_skill_tkl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_i_masakerja_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_lembur_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_penempatan_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_kpi_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1143,6 +1172,11 @@
                         <td style="text-align: right">{{ formatAngka($total_t_makan_tktl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_t_istri_tktl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_t_skill_tktl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_i_masakerja_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_lembur_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_penempatan_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_i_kpi_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
