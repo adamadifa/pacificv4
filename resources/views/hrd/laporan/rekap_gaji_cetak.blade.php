@@ -972,6 +972,21 @@
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
                             }
 
+                            //PENJUALAN
+                            if ($d['kode_klasifikasi'] == 'K04') {
+                                $total_gajipokok_penjualan += $d['gaji_pokok'];
+                            }
+
+                            //TKL
+                            if ($d['kode_klasifikasi'] == 'K01') {
+                                $total_gajipokok_tkl += $d['gaji_pokok'];
+                            }
+
+                            //TKTL
+                            if ($d['kode_klasifikasi'] == 'K02') {
+                                $total_gajipokok_tktl += $d['gaji_pokok'];
+                            }
+
                             // $grandtotal_all_t_jabatan += $d['t_jabatan'];
                             // $grandtotal_all_t_masakerja += $d['t_masakerja'];
                             // $grandtotal_all_t_tanggungjawab += $d['t_tanggungjawab'];
@@ -1063,12 +1078,15 @@
                     </tr>
                     <tr>
                         <td>PENJUALAN</td>
+                        <td style="text-align: right">{{ formatAngka($total_gajipokok_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
+                        <td style="text-align: right">{{ formatAngka($total_gajipokok_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
+                        <td style="text-align: right">{{ formatAngka($total_gajipokok_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
