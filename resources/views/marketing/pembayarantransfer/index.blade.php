@@ -132,9 +132,9 @@
                                                                 @endif
                                                             @else
                                                                 <div>
-                                                                    <a href="#" class="btnReject me-2"
+                                                                    <a href="#" class="btnApprove me-2"
                                                                         kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}"><i
-                                                                            class="ti ti-external-link text-danger"></i></a>
+                                                                            class="ti ti-external-link text-success"></i></a>
                                                                 </div>
                                                             @endif
                                                         @endcan
