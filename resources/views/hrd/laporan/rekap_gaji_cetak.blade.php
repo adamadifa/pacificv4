@@ -107,64 +107,364 @@
                 <tbody>
                     @php
                         $total_jam_satubulan = 173;
-                        $grandtotal_all_gajipokok = 0;
-                        $grandtotal_all_t_jabatan = 0;
-                        $grandtotal_all_t_masakerja = 0;
-                        $grandtotal_all_t_tanggungjawab = 0;
-                        $grandtotal_all_t_makan = 0;
-                        $grandtotal_all_t_istri = 0;
-                        $grandtotal_all_t_skill = 0;
 
-                        //INsentif Umum
-                        $grandtotal_all_iu_masakerja = 0;
-                        $grandtotal_all_iu_lembur = 0;
-                        $grandtotal_all_iu_penempatan = 0;
-                        $grandtotal_all_iu_kpi = 0;
+                        //Gaji Pokok
+                        $total_gajipokok = 0;
+                        $total_gajipokok_administrasi = 0;
+                        $total_gajipokok_penjualan = 0;
+                        $total_gajipokok_tkl = 0;
+                        $total_gajipokok_tktl = 0;
+                        $total_gajipokok_mp = 0;
+                        $total_gajipokok_pcf = 0;
 
-                        //Insentif Manager
-                        $grandtotal_all_im_ruanglingkup = 0;
-                        $grandtotal_all_im_penempatan = 0;
-                        $grandtotal_all_im_kinerja = 0;
-                        $grandtotal_all_im_kendaraan = 0;
+                        //Tunjangan Jabatan
+                        $total_tunjangan_jabatan = 0;
+                        $total_t_jabatan_administrasi = 0;
+                        $total_t_jabatan_penjualan = 0;
+                        $total_t_jabatan_tkl = 0;
+                        $total_t_jabatan_tktl = 0;
+                        $total_t_jabatan_mp = 0;
+                        $total_t_jabatan_pcf = 0;
+
+                        //Tunjangan Masa Kerja
+                        $total_tunjangan_masakerja = 0;
+                        $total_t_masakerja_administrasi = 0;
+                        $total_t_masakerja_penjualan = 0;
+                        $total_t_masakerja_tkl = 0;
+                        $total_t_masakerja_tktl = 0;
+                        $total_t_masakerja_mp = 0;
+                        $total_t_masakerja_pcf = 0;
+
+                        //Tunjangan Tanggung Jawab
+                        $total_tunjangan_tanggungjawab = 0;
+                        $total_t_tanggungjawab_administrasi = 0;
+                        $total_t_tanggungjawab_penjualan = 0;
+                        $total_t_tanggungjawab_tkl = 0;
+                        $total_t_tanggungjawab_tktl = 0;
+                        $total_t_tanggungjawab_mp = 0;
+                        $total_t_tanggungjawab_pcf = 0;
+
+                        //Tunjangan Makan
+                        $total_tunjangan_makan = 0;
+                        $total_t_makan_administrasi = 0;
+                        $total_t_makan_penjualan = 0;
+                        $total_t_makan_tkl = 0;
+                        $total_t_makan_tktl = 0;
+                        $total_t_makan_mp = 0;
+                        $total_t_makan_pcf = 0;
+
+                        //TUnjangan Istri
+                        $total_tunjangan_istri = 0;
+                        $total_t_istri_administrasi = 0;
+                        $total_t_istri_penjualan = 0;
+                        $total_t_istri_tkl = 0;
+                        $total_t_istri_tktl = 0;
+                        $total_t_istri_mp = 0;
+                        $total_t_istri_pcf = 0;
+
+                        //Tunjangan Skill Khusus
+                        $total_tunjangan_skillkhusus = 0;
+                        $total_t_skillkhusus_administrasi = 0;
+                        $total_t_skillkhusus_penjualan = 0;
+                        $total_t_skillkhusus_tkl = 0;
+                        $total_t_skillkhusus_tktl = 0;
+                        $total_t_skillkhusus_mp = 0;
+                        $total_t_skillkhusus_pcf = 0;
+
+                        //Insentif umum Masa Kjra
+                        $total_insentif_masakerja = 0;
+                        $total_i_masakerja_administrasi = 0;
+                        $total_i_masakerja_penjualan = 0;
+                        $total_i_masakerja_tkl = 0;
+                        $total_i_masakerja_tktl = 0;
+                        $total_i_masakerja_mp = 0;
+                        $total_i_masakerja_pcf = 0;
+
+                        //Insentif Lembur
+                        $total_insentif_lembur = 0;
+                        $total_i_lembur_administrasi = 0;
+                        $total_i_lembur_penjualan = 0;
+                        $total_i_lembur_tkl = 0;
+                        $total_i_lembur_tktl = 0;
+                        $total_i_lembur_mp = 0;
+                        $total_i_lembur_pcf = 0;
+
+                        $total_insentif_penempatan = 0;
+                        $total_i_penempatan_administrasi = 0;
+                        $total_i_penempatan_penjualan = 0;
+                        $total_i_penempatan_tkl = 0;
+                        $total_i_penempatan_tktl = 0;
+                        $total_i_penempatan_mp = 0;
+                        $total_i_penempatan_pcf = 0;
+
+                        //Insentif KPI
+                        $total_insentif_kpi = 0;
+                        $total_i_kpi_administrasi = 0;
+                        $total_i_kpi_penjualan = 0;
+                        $total_i_kpi_tkl = 0;
+                        $total_i_kpi_tktl = 0;
+                        $total_i_kpi_mp = 0;
+                        $total_i_kpi_pcf = 0;
+
+                        //Insentif Ruang Lingkup Manager
+                        $total_im_ruanglingkup = 0;
+                        $total_im_ruanglingkup_administrasi = 0;
+                        $total_im_ruanglingkup_penjualan = 0;
+                        $total_im_ruanglingkup_tkl = 0;
+                        $total_im_ruanglingkup_tktl = 0;
+                        $total_im_ruanglingkup_mp = 0;
+                        $total_im_ruanglingkup_pcf = 0;
+
+                        $total_im_penempatan = 0;
+                        $total_im_penempatan_administrasi = 0;
+                        $total_im_penempatan_penjualan = 0;
+                        $total_im_penempatan_tkl = 0;
+                        $total_im_penempatan_tktl = 0;
+                        $total_im_penempatan_mp = 0;
+                        $total_im_penempatan_pcf = 0;
+
+                        $total_im_kinerja = 0;
+                        $total_im_kinerja_administrasi = 0;
+                        $total_im_kinerja_penjualan = 0;
+                        $total_im_kinerja_tkl = 0;
+                        $total_im_kinerja_tktl = 0;
+                        $total_im_kinerja_mp = 0;
+                        $total_im_kinerja_pcf = 0;
+
+                        $total_im_kendaraan = 0;
+                        $total_im_kendaraan_administrasi = 0;
+                        $total_im_kendaraan_penjualan = 0;
+                        $total_im_kendaraan_tkl = 0;
+                        $total_im_kendaraan_tktl = 0;
+                        $total_im_kendaraan_mp = 0;
+                        $total_im_kendaraan_pcf = 0;
 
                         //Upah
-                        $grandtotal_all_upah = 0;
+                        $total_upah = 0;
+                        $total_upah_administrasi = 0;
+                        $total_upah_penjualan = 0;
+                        $total_upah_tkl = 0;
+                        $total_upah_tktl = 0;
+                        $total_upah_mp = 0;
+                        $total_upah_pcf = 0;
 
-                        //Insentif
-                        $grandtotal_all_insentif = 0;
+                        //INSENTIF
+                        $total_insentif = 0;
+                        $total_insentif_administrasi = 0;
+                        $total_insentif_penjualan = 0;
+                        $total_insentif_tkl = 0;
+                        $total_insentif_tktl = 0;
+                        $total_insentif_mp = 0;
+                        $total_insentif_pcf = 0;
 
-                        $grandtotal_all_jamkerja = 0;
-                        $grandtotal_all_upahperjam = 0;
+                        $total_all_jamkerja = 0;
+                        $total_jamkerja_administrasi = 0;
+                        $total_jamkerja_penjualan = 0;
+                        $total_jamkerja_tkl = 0;
+                        $total_jamkerja_tktl = 0;
+                        $total_jamkerja_mp = 0;
+                        $total_jamkerja_pcf = 0;
 
-                        //Overtime
-                        $grandtotal_all_overtime_1 = 0;
-                        $grandtotal_all_upah_overtime_1 = 0;
-                        $grandtotal_all_overtime_2 = 0;
-                        $grandtotal_all_upah_overtime_2 = 0;
-                        $grandtotal_all_overtime_libur = 0;
-                        $grandtotal_all_upah_overtime_libur = 0;
-                        $grandtotal_all_upah_overtime = 0;
+                        $total_all_upahperjam = 0;
+                        $total_upahperjam_administrasi = 0;
+                        $total_upahperjam_penjualan = 0;
+                        $total_upahperjam_tkl = 0;
+                        $total_upahperjam_tktl = 0;
+                        $total_upahperjam_mp = 0;
+                        $total_upahperjam_pcf = 0;
 
-                        //Premi Shift
-                        $grandtotal_all_premi_shift2 = 0;
-                        $grandtotal_all_upah_premi_shift2 = 0;
-                        $grandtotal_all_premi_shift3 = 0;
-                        $grandtotal_all_upah_premi_shift3 = 0;
+                        $total_all_overtime_1 = 0;
+                        $total_overtime_1_administrasi = 0;
+                        $total_overtime_1_penjualan = 0;
+                        $total_overtime_1_tkl = 0;
+                        $total_overtime_1_tktl = 0;
+                        $total_overtime_1_mp = 0;
+                        $total_overtime_1_pcf = 0;
 
-                        $grandtotal_all_bruto = 0;
+                        $total_all_upah_ot_1 = 0;
+                        $total_upah_ot_1_administrasi = 0;
+                        $total_upah_ot_1_penjualan = 0;
+                        $total_upah_ot_1_tkl = 0;
+                        $total_upah_ot_1_tktl = 0;
+                        $total_upah_ot_1_mp = 0;
+                        $total_upah_ot_1_pcf = 0;
 
-                        $grandtotal_all_potongan_jam = 0;
-                        $grandtotal_all_iuran_bpjs_kesehatan = 0;
-                        $grandtotal_all_iuran_bpjs_tk = 0;
-                        $grandtotal_all_denda = 0;
-                        $grandtotal_all_cicilan_pjp = 0;
-                        $grandtotal_all_cicilan_kasbon = 0;
-                        $grandtotal_all_cicilan_piutang = 0;
-                        $grandtotal_all_spip = 0;
-                        $grandtotal_all_pengurang = 0;
-                        $grandtotal_all_total_potongan = 0;
-                        $grandtotal_all_penambahan = 0;
-                        $grandtotal_all_jmlbersih = 0;
+                        //OVERTIME 2
+                        $total_all_overtime_2 = 0;
+                        $total_overtime_2_administrasi = 0;
+                        $total_overtime_2_penjualan = 0;
+                        $total_overtime_2_tkl = 0;
+                        $total_overtime_2_tktl = 0;
+                        $total_overtime_2_mp = 0;
+                        $total_overtime_2_pcf = 0;
+
+                        $total_all_upah_ot_2 = 0;
+                        $total_upah_ot_2_administrasi = 0;
+                        $total_upah_ot_2_penjualan = 0;
+                        $total_upah_ot_2_tkl = 0;
+                        $total_upah_ot_2_tktl = 0;
+                        $total_upah_ot_2_mp = 0;
+                        $total_upah_ot_2_pcf = 0;
+
+                        $total_all_overtime_libur = 0;
+                        $total_overtime_libur_administrasi = 0;
+                        $total_overtime_libur_penjualan = 0;
+                        $total_overtime_libur_tkl = 0;
+                        $total_overtime_libur_tktl = 0;
+                        $total_overtime_libur_mp = 0;
+                        $total_overtime_libur_pcf = 0;
+
+                        $total_all_upah_overtime_libur = 0;
+                        $total_upah_overtime_libur_administrasi = 0;
+                        $total_upah_overtime_libur_penjualan = 0;
+                        $total_upah_overtime_libur_tkl = 0;
+                        $total_upah_overtime_libur_tktl = 0;
+                        $total_upah_overtime_libur_mp = 0;
+                        $total_upah_overtime_libur_pcf = 0;
+
+                        $total_all_upah_overtime = 0;
+                        $total_all_upah_otl_administrasi = 0;
+                        $total_all_upah_otl_penjualan = 0;
+                        $total_all_upah_otl_tkl = 0;
+                        $total_all_upah_otl_tktl = 0;
+                        $total_all_upah_otl_mp = 0;
+                        $total_all_upah_otl_pcf = 0;
+
+                        $total_all_hari_shift_2 = 0;
+                        $total_all_hari_shift_2_administrasi = 0;
+                        $total_all_hari_shift_2_penjualan = 0;
+                        $total_all_hari_shift_2_tkl = 0;
+                        $total_all_hari_shift_2_tktl = 0;
+                        $total_all_hari_shift_2_mp = 0;
+                        $total_all_hari_shift_2_pcf = 0;
+
+                        $total_all_premi_shift_2 = 0;
+                        $total_all_premi_shift_2_administrasi = 0;
+                        $total_all_premi_shift_2_penjualan = 0;
+                        $total_all_premi_shift_2_tkl = 0;
+                        $total_all_premi_shift_2_tktl = 0;
+                        $total_all_premi_shift_2_mp = 0;
+                        $total_all_premi_shift_2_pcf = 0;
+
+                        $total_all_hari_shift_3 = 0;
+                        $total_all_hari_shift_3_administrasi = 0;
+                        $total_all_hari_shift_3_penjualan = 0;
+                        $total_all_hari_shift_3_tkl = 0;
+                        $total_all_hari_shift_3_tktl = 0;
+                        $total_all_hari_shift_3_mp = 0;
+                        $total_all_hari_shift_3_pcf = 0;
+
+                        $total_all_premi_shift_3 = 0;
+                        $total_all_premi_shift_3_administrasi = 0;
+                        $total_all_premi_shift_3_penjualan = 0;
+                        $total_all_premi_shift_3_tkl = 0;
+                        $total_all_premi_shift_3_tktl = 0;
+                        $total_all_premi_shift_3_mp = 0;
+                        $total_all_premi_shift_3_pcf = 0;
+
+                        $total_all_bruto = 0;
+                        $total_all_bruto_administrasi = 0;
+                        $total_all_bruto_penjualan = 0;
+                        $total_all_bruto_tkl = 0;
+                        $total_all_bruto_tktl = 0;
+                        $total_all_bruto_mp = 0;
+                        $total_all_bruto_pcf = 0;
+
+                        $total_all_potongan_jam = 0;
+                        $total_all_potonganjam_administrasi = 0;
+                        $total_all_potonganjam_penjualan = 0;
+                        $total_all_potonganjam_tkl = 0;
+                        $total_all_potonganjam_tktl = 0;
+                        $total_all_potonganjam_mp = 0;
+                        $total_all_potonganjam_pcf = 0;
+
+                        $total_all_bpjskesehatan = 0;
+                        $total_all_bpjskesehatan_administrasi = 0;
+                        $total_all_bpjskesehatan_penjualan = 0;
+                        $total_all_bpjskesehatan_tkl = 0;
+                        $total_all_bpjskesehatan_tktl = 0;
+                        $total_all_bpjskesehatan_mp = 0;
+                        $total_all_bpjskesehatan_pcf = 0;
+
+                        $total_all_bpjstk = 0;
+                        $total_all_bpjstk_administrasi = 0;
+                        $total_all_bpjstk_penjualan = 0;
+                        $total_all_bpjstk_tkl = 0;
+                        $total_all_bpjstk_tktl = 0;
+                        $total_all_bpjstk_mp = 0;
+                        $total_all_bpjstk_pcf = 0;
+
+                        $total_all_denda = 0;
+                        $total_all_denda_administrasi = 0;
+                        $total_all_denda_penjualan = 0;
+                        $total_all_denda_tkl = 0;
+                        $total_all_denda_tktl = 0;
+                        $total_all_denda_mp = 0;
+                        $total_all_denda_pcf = 0;
+
+                        $total_all_pjp = 0;
+                        $total_all_pjp_administrasi = 0;
+                        $total_all_pjp_penjualan = 0;
+                        $total_all_pjp_tkl = 0;
+                        $total_all_pjp_tktl = 0;
+                        $total_all_pjp_mp = 0;
+                        $total_all_pjp_pcf = 0;
+
+                        $total_all_kasbon = 0;
+                        $total_all_kasbon_administrasi = 0;
+                        $total_all_kasbon_penjualan = 0;
+                        $total_all_kasbon_tkl = 0;
+                        $total_all_kasbon_tktl = 0;
+                        $total_all_kasbon_mp = 0;
+                        $total_all_kasbon_pcf = 0;
+
+                        $total_all_nonpjp = 0;
+                        $total_all_nonpjp_administrasi = 0;
+                        $total_all_nonpjp_penjualan = 0;
+                        $total_all_nonpjp_tkl = 0;
+                        $total_all_nonpjp_tktl = 0;
+                        $total_all_nonpjp_mp = 0;
+                        $total_all_nonpjp_pcf = 0;
+
+                        $total_all_spip = 0;
+                        $total_all_spip_administrasi = 0;
+                        $total_all_spip_penjualan = 0;
+                        $total_all_spip_tkl = 0;
+                        $total_all_spip_tktl = 0;
+                        $total_all_spip_mp = 0;
+                        $total_all_spip_pcf = 0;
+
+                        $total_all_pengurang = 0;
+                        $total_all_pengurang_administrasi = 0;
+                        $total_all_pengurang_penjualan = 0;
+                        $total_all_pengurang_tkl = 0;
+                        $total_all_pengurang_tktl = 0;
+                        $total_all_pengurang_mp = 0;
+                        $total_all_pengurang_pcf = 0;
+
+                        $total_all_penambah = 0;
+                        $total_all_penambah_administrasi = 0;
+                        $total_all_penambah_penjualan = 0;
+                        $total_all_penambah_tkl = 0;
+                        $total_all_penambah_tktl = 0;
+                        $total_all_penambah_mp = 0;
+                        $total_all_penambah_pcf = 0;
+
+                        $total_all_potongan = 0;
+                        $total_all_potongan_administrasi = 0;
+                        $total_all_potongan_penjualan = 0;
+                        $total_all_potongan_tkl = 0;
+                        $total_all_potongan_tktl = 0;
+                        $total_all_potongan_mp = 0;
+                        $total_all_potongan_pcf = 0;
+
+                        $total_all_bersih = 0;
+                        $total_all_bersih_administrasi = 0;
+                        $total_all_bersih_penjualan = 0;
+                        $total_all_bersih_tkl = 0;
+                        $total_all_bersih_tktl = 0;
+                        $total_all_bersih_mp = 0;
+                        $total_all_bersih_pcf = 0;
 
                     @endphp
                     @foreach ($presensi as $d)
@@ -665,94 +965,101 @@
                         </tr>
 
                         @php
-                            $grandtotal_all_gajipokok += $d['gaji_pokok'];
-                            $grandtotal_all_t_jabatan += $d['t_jabatan'];
-                            $grandtotal_all_t_masakerja += $d['t_masakerja'];
-                            $grandtotal_all_t_tanggungjawab += $d['t_tanggungjawab'];
-                            $grandtotal_all_t_makan += $d['t_makan'];
-                            $grandtotal_all_t_istri += $d['t_istri'];
-                            $grandtotal_all_t_skill += $d['t_skill'];
+                            $total_gajipokok += $d['gaji_pokok'];
 
-                            //Insentif Umum
-                            $grandtotal_all_iu_masakerja += $d['iu_masakerja'];
-                            $grandtotal_all_iu_lembur += $d['iu_lembur'];
-                            $grandtotal_all_iu_penempatan += $d['iu_penempatan'];
-                            $grandtotal_all_iu_kpi += $d['iu_kpi'];
+                            //ADMINISTRASI
+                            if ($d['kode_klasifikasi'] == 'K03') {
+                                $total_gajipokok_administrasi += $d['gaji_pokok'];
+                            }
 
-                            //Insentif Manager
-                            $grandtotal_all_im_ruanglingkup += $d['im_ruanglingkup'];
-                            $grandtotal_all_im_penempatan += $d['im_penempatan'];
-                            $grandtotal_all_im_kinerja += $d['im_kinerja'];
-                            $grandtotal_all_im_kendaraan += $d['im_kendaraan'];
+                            // $grandtotal_all_t_jabatan += $d['t_jabatan'];
+                            // $grandtotal_all_t_masakerja += $d['t_masakerja'];
+                            // $grandtotal_all_t_tanggungjawab += $d['t_tanggungjawab'];
+                            // $grandtotal_all_t_makan += $d['t_makan'];
+                            // $grandtotal_all_t_istri += $d['t_istri'];
+                            // $grandtotal_all_t_skill += $d['t_skill'];
 
-                            //Upah
-                            $grandtotal_all_upah += $upah;
+                            // //Insentif Umum
+                            // $grandtotal_all_iu_masakerja += $d['iu_masakerja'];
+                            // $grandtotal_all_iu_lembur += $d['iu_lembur'];
+                            // $grandtotal_all_iu_penempatan += $d['iu_penempatan'];
+                            // $grandtotal_all_iu_kpi += $d['iu_kpi'];
 
-                            //Insentif
-                            $grandtotal_all_insentif += $jumlah_insentif;
+                            // //Insentif Manager
+                            // $grandtotal_all_im_ruanglingkup += $d['im_ruanglingkup'];
+                            // $grandtotal_all_im_penempatan += $d['im_penempatan'];
+                            // $grandtotal_all_im_kinerja += $d['im_kinerja'];
+                            // $grandtotal_all_im_kendaraan += $d['im_kendaraan'];
 
-                            //Jam Kerja
-                            $grandtotal_all_jamkerja += $total_jam_kerja;
-                            $grandtotal_all_upahperjam += $upah_perjam;
+                            // //Upah
+                            // $grandtotal_all_upah += $upah;
 
-                            //Overtime
-                            $grandtotal_all_overtime_1 += $total_overtime_1;
-                            $grandtotal_all_overtime_2 += $total_overtime_2;
-                            $grandtotal_all_overtime_libur += $total_overtime_libur;
-                            $grandtotal_all_upah_overtime_1 += $upah_overtime_1;
-                            $grandtotal_all_upah_overtime_2 += $upah_overtime_2;
-                            $grandtotal_all_upah_overtime_libur += $upah_overtime_libur;
-                            $grandtotal_all_upah_overtime += $total_upah_overtime;
+                            // //Insentif
+                            // $grandtotal_all_insentif += $jumlah_insentif;
 
-                            //Premi Shift
-                            $grandtotal_all_premi_shift2 += $premis_shift2;
-                            $grandtotal_all_upah_premi_shift2 += $upah_premi_shift2;
-                            $grandtotal_all_premi_shift3 += $premis_shift3;
-                            $grandtotal_all_upah_premi_shift3 += $upah_premi_shift3;
+                            // //Jam Kerja
+                            // $grandtotal_all_jamkerja += $total_jam_kerja;
+                            // $grandtotal_all_upahperjam += $upah_perjam;
 
-                            //Bruto
-                            $grandtotal_all_bruto += $bruto;
+                            // //Overtime
+                            // $grandtotal_all_overtime_1 += $total_overtime_1;
+                            // $grandtotal_all_overtime_2 += $total_overtime_2;
+                            // $grandtotal_all_overtime_libur += $total_overtime_libur;
+                            // $grandtotal_all_upah_overtime_1 += $upah_overtime_1;
+                            // $grandtotal_all_upah_overtime_2 += $upah_overtime_2;
+                            // $grandtotal_all_upah_overtime_libur += $upah_overtime_libur;
+                            // $grandtotal_all_upah_overtime += $total_upah_overtime;
 
-                            //Potongan Jam
-                            $grandtotal_all_potongan_jam += $grand_total_potongan_jam;
+                            // //Premi Shift
+                            // $grandtotal_all_premi_shift2 += $premis_shift2;
+                            // $grandtotal_all_upah_premi_shift2 += $upah_premi_shift2;
+                            // $grandtotal_all_premi_shift3 += $premis_shift3;
+                            // $grandtotal_all_upah_premi_shift3 += $upah_premi_shift3;
 
-                            //Iuran BPJS Kesehatan
-                            $grandtotal_all_iuran_bpjs_kesehatan += $iuran_bpjs_kesehatan;
+                            // //Bruto
+                            // $grandtotal_all_bruto += $bruto;
 
-                            //Iuran BPJS Tenagakerja
-                            $grandtotal_all_iuran_bpjs_tk += $iuran_bpjs_tenagakerja;
+                            // //Potongan Jam
+                            // $grandtotal_all_potongan_jam += $grand_total_potongan_jam;
 
-                            //Denda
-                            $grandtotal_all_denda += $total_denda;
+                            // //Iuran BPJS Kesehatan
+                            // $grandtotal_all_iuran_bpjs_kesehatan += $iuran_bpjs_kesehatan;
 
-                            //Cicilan PJP
-                            $grandtotal_all_cicilan_pjp += $cicilan_pjp;
+                            // //Iuran BPJS Tenagakerja
+                            // $grandtotal_all_iuran_bpjs_tk += $iuran_bpjs_tenagakerja;
 
-                            //Cicilan Kasbon
-                            $grandtotal_all_cicilan_kasbon += $cicilan_kasbon;
+                            // //Denda
+                            // $grandtotal_all_denda += $total_denda;
 
-                            //Cicilan Piutang
-                            $grandtotal_all_cicilan_piutang += $cicilan_piutang;
+                            // //Cicilan PJP
+                            // $grandtotal_all_cicilan_pjp += $cicilan_pjp;
 
-                            //SPIP
-                            $grandtotal_all_spip += $spip;
+                            // //Cicilan Kasbon
+                            // $grandtotal_all_cicilan_kasbon += $cicilan_kasbon;
 
-                            //Pengurang
-                            $grandtotal_all_pengurang += $jml_pengurang;
+                            // //Cicilan Piutang
+                            // $grandtotal_all_cicilan_piutang += $cicilan_piutang;
 
-                            //Potongan Upah
-                            $grandtotal_all_total_potongan += $jml_potongan_upah;
+                            // //SPIP
+                            // $grandtotal_all_spip += $spip;
 
-                            //Penambahan
-                            $grandtotal_all_penambahan += $jml_penambah;
+                            // //Pengurang
+                            // $grandtotal_all_pengurang += $jml_pengurang;
 
-                            //Jumlah Bersih
-                            $grandtotal_all_jmlbersih += $jmlbersih;
+                            // //Potongan Upah
+                            // $grandtotal_all_total_potongan += $jml_potongan_upah;
+
+                            // //Penambahan
+                            // $grandtotal_all_penambahan += $jml_penambah;
+
+                            // //Jumlah Bersih
+                            // $grandtotal_all_jmlbersih += $jmlbersih;
 
                         @endphp
                     @endforeach
                     <tr>
                         <td>ADMINISTRASI</td>
+                        <td>{{ formatAngka($total_gajipokok_administrasi) }}</td>
                     </tr>
                     <tr>
                         <td>PENJUALAN</td>
