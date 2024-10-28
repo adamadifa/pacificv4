@@ -987,16 +987,34 @@
                             //PENJUALAN
                             if ($d['kode_klasifikasi'] == 'K04') {
                                 $total_gajipokok_penjualan += $d['gaji_pokok'];
+                                $total_t_jabatan_penjualan += $d['t_jabatan'];
+                                $total_t_masakerja_penjualan += $d['t_masakerja'];
+                                $total_t_tanggungjawab_penjualan += $d['t_tanggungjawab'];
+                                $total_t_makan_penjualan += $d['t_makan'];
+                                $total_t_istri_penjualan += $d['t_istri'];
+                                $total_t_skill_penjualan += $d['t_skill'];
                             }
 
                             //TKL
                             if ($d['kode_klasifikasi'] == 'K01') {
                                 $total_gajipokok_tkl += $d['gaji_pokok'];
+                                $total_t_jabatan_tkl += $d['t_jabatan'];
+                                $total_t_masakerja_tkl += $d['t_masakerja'];
+                                $total_t_tanggungjawab_tkl += $d['t_tanggungjawab'];
+                                $total_t_makan_tkl += $d['t_makan'];
+                                $total_t_istri_tkl += $d['t_istri'];
+                                $total_t_skill_tkl += $d['t_skill'];
                             }
 
                             //TKTL
                             if ($d['kode_klasifikasi'] == 'K02') {
                                 $total_gajipokok_tktl += $d['gaji_pokok'];
+                                $total_t_jabatan_tktl += $d['t_jabatan'];
+                                $total_t_masakerja_tktl += $d['t_masakerja'];
+                                $total_t_tanggungjawab_tktl += $d['t_tanggungjawab'];
+                                $total_t_makan_tktl += $d['t_makan'];
+                                $total_t_istri_tktl += $d['t_istri'];
+                                $total_t_skill_tktl += $d['t_skill'];
                             }
 
                             // $grandtotal_all_t_jabatan += $d['t_jabatan'];
@@ -1099,19 +1117,43 @@
                     <tr>
                         <td>PENJUALAN</td>
                         <td style="text-align: right">{{ formatAngka($total_gajipokok_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_jabatan_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_masakerja_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_tanggungjawab_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_makan_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_istri_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_skill_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
                         <td style="text-align: right">{{ formatAngka($total_gajipokok_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_jabatan_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_masakerja_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_tanggungjawab_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_makan_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_istri_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_skill_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
                         <td style="text-align: right">{{ formatAngka($total_gajipokok_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_jabatan_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_masakerja_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_tanggungjawab_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_makan_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_istri_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_t_skill_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <th>TOTAL</th>
                     <th style="text-align: right">{{ formatAngka($total_gajipokok) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_jabatan) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_masakerja) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_tanggungjawab) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_makan) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_istri) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_skill) }}</th>
                 </tfoot>
             </table>
         </div>
