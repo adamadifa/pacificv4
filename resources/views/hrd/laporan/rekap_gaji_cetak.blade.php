@@ -1059,7 +1059,7 @@
                     @endforeach
                     <tr>
                         <td>ADMINISTRASI</td>
-                        <td>{{ formatAngka($total_gajipokok_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_gajipokok_administrasi) }}</td>
                     </tr>
                     <tr>
                         <td>PENJUALAN</td>
@@ -1073,6 +1073,7 @@
                 </tbody>
                 <tfoot>
                     <th>TOTAL</th>
+                    <th style="text-align: right">{{ formatAngka($total_gajipokok) }}</th>
                 </tfoot>
             </table>
         </div>
