@@ -77,15 +77,15 @@
                     <tr>
                         <th>JABATAN</th>
                         <th>MASA KERJA</th>
-                        <th>TANGGUNG<br> JAWAB</th>
+                        <th>T.JAWAB</th>
                         <th>MAKAN</th>
                         <th>ISTRI</th>
-                        <th>SKILL <br>KHUSUS</th>
+                        <th>SKIL</th>
                         <th>MASA KERJA</th>
                         <th>LEMBUR</th>
                         <th>PENEMPATAN</th>
                         <th>KPI</th>
-                        <th>RUANG<br> LINGKUP</th>
+                        <th>R. LINGKUP</th>
                         <th>PENEMPATAN</th>
                         <th>KINERJA</th>
                         <th>KENDARAAN</th>
