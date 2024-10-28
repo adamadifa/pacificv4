@@ -751,9 +751,21 @@
 
                         @endphp
                     @endforeach
+                    <tr>
+                        <td>ADMINISTRASI</td>
+                    </tr>
+                    <tr>
+                        <td>PENJUALAN</td>
+                    </tr>
+                    <tr>
+                        <td>TKL</td>
+                    </tr>
+                    <tr>
+                        <td>TKTL</td>
+                    </tr>
                 </tbody>
                 <tfoot>
-
+                    <th>TOTAL</th>
                 </tfoot>
             </table>
         </div>
