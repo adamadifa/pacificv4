@@ -518,6 +518,9 @@ class IzinkoreksiController extends Controller
                         ->update([
                             'status' => 0
                         ]);
+
+                    Presensiizinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)
+                        ->delete();
                 }
             }
 
