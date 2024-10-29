@@ -993,6 +993,12 @@
                             //UPAH
                             $total_upah += $upah;
 
+                            //INSENTIF
+                            $total_insentif += $jumlah_insentif;
+
+                            //Jam Kerja
+                            $total_all_jamkerja += $total_jamkerja;
+
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
@@ -1014,6 +1020,11 @@
                                 $total_im_kendaraan_administrasi += $d['im_kendaraan'];
 
                                 $total_upah_administrasi += $upah;
+
+                                $total_insentif_administrasi += $jumlah_insentif;
+
+                                //Jam Kerja
+                                $total_jamkerja_administrasi += $total_jamkerja;
                             }
 
                             //PENJUALAN
@@ -1037,6 +1048,11 @@
                                 $total_im_kendaraan_penjualan += $d['im_kendaraan'];
 
                                 $total_upah_penjualan += $upah;
+
+                                $total_insentif_penjualan += $jumlah_insentif;
+
+                                //Jam Kerja
+                                $total_jamkerja_penjualan += $total_jamkerja;
                             }
 
                             //TKL
@@ -1060,6 +1076,11 @@
                                 $total_im_kendaraan_tkl += $d['im_kendaraan'];
 
                                 $total_upah_tkl += $upah;
+
+                                $total_insentif_tkl += $jumlah_insentif;
+
+                                //Jam Kerja
+                                $total_jamkerja_tkl += $total_jamkerja;
                             }
 
                             //TKTL
@@ -1083,6 +1104,11 @@
                                 $total_im_kendaraan_tktl += $d['im_kendaraan'];
 
                                 $total_upah_tktl += $upah;
+
+                                $total_insentif_tktl += $jumlah_insentif;
+
+                                //Jam Kerja
+                                $total_jamkerja_tktl += $total_jamkerja;
                             }
 
                             // //Insentif Umum
@@ -1185,6 +1211,11 @@
 
                         <td style="text-align: right">{{ formatAngka($total_upah_administrasi) }}</td>
 
+                        <td style="text-align: right">{{ formatAngka($total_insentif_administrasi) }}</td>
+
+                        <!--Jam Kerja -->
+                        <td style="text-align: right">{{ formatAngka($total_jamkerja_administrasi) }}</td>
+
 
                     </tr>
                     <tr>
@@ -1208,6 +1239,11 @@
                         <td style="text-align: right">{{ formatAngka($total_im_kendaraan_penjualan) }}</td>
 
                         <td style="text-align: right">{{ formatAngka($total_upah_penjualan) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_insentif_penjualan) }}</td>
+
+                        <!--Jam Kerja -->
+                        <td style="text-align: right">{{ formatAngka($total_jamkerja_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1230,6 +1266,11 @@
                         <td style="text-align: right">{{ formatAngka($total_im_kendaraan_tkl) }}</td>
 
                         <td style="text-align: right">{{ formatAngka($total_upah_tkl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_insentif_tkl) }}</td>
+
+                        <!--Jam Kerja -->
+                        <td style="text-align: right">{{ formatAngka($total_jamkerja_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1252,6 +1293,11 @@
                         <td style="text-align: right">{{ formatAngka($total_im_kendaraan_tktl) }}</td>
 
                         <td style="text-align: right">{{ formatAngka($total_upah_tktl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_insentif_tktl) }}</td>
+
+                        <!--Jam Kerja -->
+                        <td style="text-align: right">{{ formatAngka($total_jamkerja_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1276,6 +1322,11 @@
                     <th style="text-align: right">{{ formatAngka($total_im_kendaraan) }}</th>
 
                     <th style="text-align: right">{{ formatAngka($total_upah) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_insentif) }}</th>
+
+                    <!--Jam Kerja -->
+                    <th style="text-align: right">{{ formatAngka($total_all_jamkerja) }}</th>
 
                 </tfoot>
             </table>
