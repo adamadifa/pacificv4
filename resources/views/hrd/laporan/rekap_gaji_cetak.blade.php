@@ -1365,6 +1365,82 @@
                                 $total_jmlbersih_tktl += $jmlbersih;
                             }
 
+                            if ($d['kode_perusahaan'] == 'MP') {
+                                $total_gajipokok_mp += $d['gaji_pokok'];
+                                $total_t_jabatan_mp += $d['t_jabatan'];
+                                $total_t_masakerja_mp += $d['t_masakerja'];
+                                $total_t_tanggungjawab_mp += $d['t_tanggungjawab'];
+                                $total_t_makan_mp += $d['t_makan'];
+                                $total_t_istri_mp += $d['t_istri'];
+                                $total_t_skill_mp += $d['t_skill'];
+
+                                $total_i_masakerja_mp += $d['iu_masakerja'];
+                                $total_i_lembur_mp += $d['iu_lembur'];
+                                $total_i_penempatan_mp += $d['iu_penempatan'];
+                                $total_i_kpi_mp += $d['iu_kpi'];
+
+                                $total_im_ruanglingkup_mp += $d['im_ruanglingkup'];
+                                $total_im_penempatan_mp += $d['im_penempatan'];
+                                $total_im_kinerja_mp += $d['im_kinerja'];
+                                $total_im_kendaraan_mp += $d['im_kendaraan'];
+
+                                $total_upah_mp += $upah;
+
+                                $total_insentif_mp += $jumlah_insentif;
+
+                                //Jam Kerja
+                                $total_jamkerja_mp += $total_jam_kerja;
+                                $total_upahperjam_mp += $upah_perjam;
+
+                                //Overtime
+
+                                $total_overtime_1_mp += $total_overtime_1;
+                                $total_overtime_2_mp += $total_overtime_2;
+                                $total_overtime_libur_mp += $total_overtime_libur;
+
+                                $total_upah_ot_1_mp += $upah_overtime_1;
+                                $total_upah_ot_2_mp += $upah_overtime_2;
+                                $total_upah_overtime_libur_mp += $upah_overtime_libur;
+
+                                $total_upah_ot_mp += $total_upah_overtime;
+
+                                //Premi
+                                $total_premi_shift2_mp += $premi_shift2;
+                                $total_premi_shift3_mp += $premi_shift3;
+
+                                $total_upah_premi_shift2_mp += $upah_premi_shift2;
+                                $total_upah_premi_shift3_mp += $upah_premi_shift3;
+
+                                $total_bruto_mp += $bruto;
+
+                                //Potongan
+                                $total_potongan_jam_mp += $grand_total_potongan_jam;
+
+                                //BPJS
+                                $total_bpjskesehatan_mp += $iuran_bpjs_kesehatan;
+                                $total_bpjstk_mp += $iuran_bpjs_tenagakerja;
+
+                                //Denda
+                                $total_denda_mp += $total_denda;
+
+                                //Pinjaman
+                                $total_pjp_mp += $cicilan_pjp;
+                                $total_kasbon_mp += $cicilan_kasbon;
+                                $total_nonpjp_mp += $cicilan_piutang;
+
+                                //SPIP
+                                $total_spip_mp += $spip;
+
+                                //Pengurang
+                                $total_pengurang_mp += $jml_pengurang;
+                                $total_potongan_mp += $jml_potongan_upah;
+                                //Penambah
+                                $total_penambah_mp += $jml_penambah;
+
+                                //Jumlah Bersih
+                                $total_jmlbersih_mp += $jmlbersih;
+                            }
+
                             // //Pengurang
                             // $grandtotal_all_pengurang += $jml_pengurang;
 
@@ -1784,10 +1860,6 @@
 
 
                 </tfoot>
-            </table>
-        </div>
-        <div style="margin-top: 20px">
-            <table class="datatable3" style="width: 320%">
                 <thead>
                     <tr>
                         <th rowspan="2">KLASIFIKASI</th>
@@ -1863,10 +1935,17 @@
                         <th style="background-color: #df1b38; color:white;">TK</th>
                     </tr>
                 </thead>
+            </table>
+        </div>
+        {{-- <div style="margin-top: 20px">
+            <table class="datatable3" style="width: 320%">
+                <thead>
+
+                </thead>
                 <tbody>
                 </tbody>
             </table>
-        </div>
+        </div> --}}
     </div>
 </body>
 
