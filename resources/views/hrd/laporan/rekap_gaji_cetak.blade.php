@@ -1416,10 +1416,10 @@
 
                     <!--Overtime-->
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_1) }}</th>
-                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_1) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_ot_1) }}</th>
 
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_2) }}</th>
-                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_2) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_ot_2) }}</th>
 
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_libur) }}</th>
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_libur) }}</th>
