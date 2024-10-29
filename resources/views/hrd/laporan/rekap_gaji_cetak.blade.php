@@ -46,65 +46,76 @@
                 <thead>
                     <tr>
                         <th rowspan="2">KLASIFIKASI</th>
-                        <th rowspan="2">GAJI POKOK</th>
-                        <th colspan="6">TUNJANGAN</th>
-                        <th colspan="4">INSENTIF UMUM</th>
-                        <th colspan="4">INSENTIF MANAGER</th>
-                        <th rowspan="2">UPAH</th>
-                        <th rowspan="2">JUMLAH<br>INSENTIF</th>
-                        <th rowspan="2">Σ JAM KERJA</th>
-                        <th rowspan="2">UPAH / JAM<br> (173)</th>
-                        <th colspan="2">OVERTIME 1</th>
-                        <th colspan="2">OVERTIME 2</th>
-                        <th colspan="2">OT LIBUR 1</th>
-                        <th rowspan="2">TOTAL<br>OVERTIME</th>
-                        <th colspan="2">PREMI SHIFT 2</th>
-                        <th colspan="2">PREMI SHIFT 3</th>
-                        <th rowspan="2" style="background-color: orange;">BRUTO</th>
-                        <th rowspan="2" style="background-color: black;">POTONGAN<br>JAM</th>
-                        <th colspan="3" style="background-color: black;">BPJS</th>
-                        <th rowspan="2" style="background-color: black;">DENDA<br>TERLAMBAT</th>
-                        <th rowspan="2" style="background-color: black;">CICILAN<br>PJP</th>
-                        <th rowspan="2" style="background-color: black;">KASBON</th>
-                        <th rowspan="2" style="background-color: black;">PINJ. PERUSAHAAN</th>
-                        <th rowspan="2" style="background-color: black;">SPIP</th>
-                        <th rowspan="2" style="background-color: black;">PENGURANG</th>
-                        <th rowspan="2" style="background-color: rgb(0, 117, 55);">PENAMBAH</th>
-                        <th rowspan="2" style="background-color: orange;">JUMLAH<br>POTONGAN</th>
-                        <th rowspan="2" style="background-color: orange;">JUMLAH<br>BERSIH</th>
+                        <th rowspan="2">Gaji Pokok</th>
+                        <th colspan="6">Tunjangan</th>
+                        <th colspan="4">Insentif Umum</th>
+                        <th colspan="4">Insentif Manager</th>
+                        <th rowspan="2">Upah</th>
+                        <th rowspan="2">Insentif</th>
+                        <th rowspan="2">Σ Jam</th>
+                        <th rowspan="2">Upah / Jam</th>
+                        <th colspan="2">Overtime 1</th>
+                        <th colspan="2">Overtime 2</th>
+                        <th colspan="2">Overtime Libur</th>
+                        <th rowspan="2">Total OT</th>
+                        <th colspan="2">Premi Shift 2</th>
+                        <th colspan="2">Premi Shift 3</th>
+                        <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
+                        <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">PJP</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Kasbon</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pinjaman</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">SPIP</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">PENGURANG</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">TOTAL<br>POTONGAN</th>
+                        <th rowspan="2" style="background-color: #007b21; color:white;">PENAMBAH</th>
+                        <th rowspan="2">JML BERSIH</th>
 
                     </tr>
                     <tr>
+                        <!-- TUNJANGAN -->
                         <th>JABATAN</th>
                         <th>MASA KERJA</th>
-                        <th>T.JAWAB</th>
+                        <th>T. JAWAB</th>
                         <th>MAKAN</th>
                         <th>ISTRI</th>
-                        <th>SKIL</th>
+                        <th>SKILL</th>
 
+                        <!-- INSENTIF UMUM -->
                         <th>MASA KERJA</th>
                         <th>LEMBUR</th>
                         <th>PENEMPATAN</th>
                         <th>KPI</th>
 
-                        <th>R. LINGKUP</th>
+                        <!-- INSENTIF MANAGER -->
+                        <th>RUANG LINGKUP</th>
                         <th>PENEMPATAN</th>
                         <th>KINERJA</th>
                         <th>KENDARAAN</th>
 
+                        <!-- OVERTIME -->
                         <th>JAM</th>
                         <th>JUMLAH</th>
+
                         <th>JAM</th>
                         <th>JUMLAH</th>
+
                         <th>JAM</th>
                         <th>JUMLAH</th>
+
+                        <!-- PREMI SHIFT -->
                         <th>HARI</th>
                         <th>JUMLAH</th>
+
                         <th>HARI</th>
                         <th>JUMLAH</th>
-                        <th style="background-color: black;">KESEHATAN</th>
-                        <th style="background-color: black;">PERUSAHAAN</th>
-                        <th style="background-color: black;">TENAGA KERJA</th>
+
+                        <!-- BPJS -->
+                        <th style="background-color: #df1b38; color:white;">KES</th>
+                        <th style="background-color: #df1b38; color:white;">PERUSAHAAN</th>
+                        <th style="background-color: #df1b38; color:white;">TK</th>
                     </tr>
                 </thead>
                 <tbody>
