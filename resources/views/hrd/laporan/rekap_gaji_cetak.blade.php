@@ -344,37 +344,37 @@
                         $total_upah_ot_mp = 0;
                         $total_upah_ot_pcf = 0;
 
-                        $total_all_presmi_shift2 = 0;
-                        $total_presmi_shift2_administrasi = 0;
-                        $total_presmi_shift2_penjualan = 0;
-                        $total_presmi_shift2_tkl = 0;
-                        $total_presmi_shift2_tktl = 0;
-                        $total_presmi_shift2_mp = 0;
-                        $total_presmi_shift2_pcf = 0;
+                        $total_all_premis_shift2 = 0;
+                        $total_premis_shift2_administrasi = 0;
+                        $total_premis_shift2_penjualan = 0;
+                        $total_premis_shift2_tkl = 0;
+                        $total_premis_shift2_tktl = 0;
+                        $total_premis_shift2_mp = 0;
+                        $total_premis_shift2_pcf = 0;
 
-                        $total_all_upah_presmi_shift2 = 0;
-                        $total_upah_presmi_shift2_administrasi = 0;
-                        $total_upah_presmi_shift2_penjualan = 0;
-                        $total_upah_presmi_shift2_tkl = 0;
-                        $total_upah_presmi_shift2_tktl = 0;
-                        $total_upah_presmi_shift2_mp = 0;
-                        $total_upah_presmi_shift2_pcf = 0;
+                        $total_all_upah_premis_shift2 = 0;
+                        $total_upah_premis_shift2_administrasi = 0;
+                        $total_upah_premis_shift2_penjualan = 0;
+                        $total_upah_premis_shift2_tkl = 0;
+                        $total_upah_premis_shift2_tktl = 0;
+                        $total_upah_premis_shift2_mp = 0;
+                        $total_upah_premis_shift2_pcf = 0;
 
-                        $total_all_presmi_shift3 = 0;
-                        $total_presmi_shift3_administrasi = 0;
-                        $total_presmi_shift3_penjualan = 0;
-                        $total_presmi_shift3_tkl = 0;
-                        $total_presmi_shift3_tktl = 0;
-                        $total_presmi_shift3_mp = 0;
-                        $total_presmi_shift3_pcf = 0;
+                        $total_all_premis_shift3 = 0;
+                        $total_premis_shift3_administrasi = 0;
+                        $total_premis_shift3_penjualan = 0;
+                        $total_premis_shift3_tkl = 0;
+                        $total_premis_shift3_tktl = 0;
+                        $total_premis_shift3_mp = 0;
+                        $total_premis_shift3_pcf = 0;
 
-                        $total_all_upah_presmi_shift3 = 0;
-                        $total_upah_presmi_shift3_administrasi = 0;
-                        $total_upah_presmi_shift3_penjualan = 0;
-                        $total_upah_presmi_shift3_tkl = 0;
-                        $total_upah_presmi_shift3_tktl = 0;
-                        $total_upah_presmi_shift3_mp = 0;
-                        $total_upah_presmi_shift3_pcf = 0;
+                        $total_all_upah_premis_shift3 = 0;
+                        $total_upah_premis_shift3_administrasi = 0;
+                        $total_upah_premis_shift3_penjualan = 0;
+                        $total_upah_premis_shift3_tkl = 0;
+                        $total_upah_premis_shift3_tktl = 0;
+                        $total_upah_premis_shift3_mp = 0;
+                        $total_upah_premis_shift3_pcf = 0;
 
                         $total_all_bruto = 0;
                         $total_all_bruto_administrasi = 0;
