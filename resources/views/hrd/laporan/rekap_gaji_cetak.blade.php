@@ -344,37 +344,37 @@
                         $total_upah_ot_mp = 0;
                         $total_upah_ot_pcf = 0;
 
-                        $total_all_premis_shift2 = 0;
-                        $total_premis_shift2_administrasi = 0;
-                        $total_premis_shift2_penjualan = 0;
-                        $total_premis_shift2_tkl = 0;
-                        $total_premis_shift2_tktl = 0;
-                        $total_premis_shift2_mp = 0;
-                        $total_premis_shift2_pcf = 0;
+                        $total_all_premi_shift2 = 0;
+                        $total_premi_shift2_administrasi = 0;
+                        $total_premi_shift2_penjualan = 0;
+                        $total_premi_shift2_tkl = 0;
+                        $total_premi_shift2_tktl = 0;
+                        $total_premi_shift2_mp = 0;
+                        $total_premi_shift2_pcf = 0;
 
-                        $total_all_upah_premis_shift2 = 0;
-                        $total_upah_premis_shift2_administrasi = 0;
-                        $total_upah_premis_shift2_penjualan = 0;
-                        $total_upah_premis_shift2_tkl = 0;
-                        $total_upah_premis_shift2_tktl = 0;
-                        $total_upah_premis_shift2_mp = 0;
-                        $total_upah_premis_shift2_pcf = 0;
+                        $total_all_upah_premi_shift2 = 0;
+                        $total_upah_premi_shift2_administrasi = 0;
+                        $total_upah_premi_shift2_penjualan = 0;
+                        $total_upah_premi_shift2_tkl = 0;
+                        $total_upah_premi_shift2_tktl = 0;
+                        $total_upah_premi_shift2_mp = 0;
+                        $total_upah_premi_shift2_pcf = 0;
 
-                        $total_all_premis_shift3 = 0;
-                        $total_premis_shift3_administrasi = 0;
-                        $total_premis_shift3_penjualan = 0;
-                        $total_premis_shift3_tkl = 0;
-                        $total_premis_shift3_tktl = 0;
-                        $total_premis_shift3_mp = 0;
-                        $total_premis_shift3_pcf = 0;
+                        $total_all_premi_shift3 = 0;
+                        $total_premi_shift3_administrasi = 0;
+                        $total_premi_shift3_penjualan = 0;
+                        $total_premi_shift3_tkl = 0;
+                        $total_premi_shift3_tktl = 0;
+                        $total_premi_shift3_mp = 0;
+                        $total_premi_shift3_pcf = 0;
 
-                        $total_all_upah_premis_shift3 = 0;
-                        $total_upah_premis_shift3_administrasi = 0;
-                        $total_upah_premis_shift3_penjualan = 0;
-                        $total_upah_premis_shift3_tkl = 0;
-                        $total_upah_premis_shift3_tktl = 0;
-                        $total_upah_premis_shift3_mp = 0;
-                        $total_upah_premis_shift3_pcf = 0;
+                        $total_all_upah_premi_shift3 = 0;
+                        $total_upah_premi_shift3_administrasi = 0;
+                        $total_upah_premi_shift3_penjualan = 0;
+                        $total_upah_premi_shift3_tkl = 0;
+                        $total_upah_premi_shift3_tktl = 0;
+                        $total_upah_premi_shift3_mp = 0;
+                        $total_upah_premi_shift3_pcf = 0;
 
                         $total_all_bruto = 0;
                         $total_all_bruto_administrasi = 0;
@@ -935,11 +935,11 @@
                                 }
                                 $total_upah_overtime = $upah_overtime_1 + $upah_overtime_2 + $upah_overtime_libur;
 
-                                $premis_shift2 = $total_premi_shift2 + $total_premi_shift2_lembur;
-                                $premis_shift3 = $total_premi_shift3 + $total_premi_shift3_lembur;
+                                $premi_shift2 = $total_premi_shift2 + $total_premi_shift2_lembur;
+                                $premi_shift3 = $total_premi_shift3 + $total_premi_shift3_lembur;
 
-                                $upah_premi_shift2 = 5000 * $premis_shift2;
-                                $upah_premi_shift3 = 6000 * $premis_shift3;
+                                $upah_premi_shift2 = 5000 * $premi_shift2;
+                                $upah_premi_shift3 = 6000 * $premi_shift3;
 
                                 $bruto = $upah_perjam * $total_jam_kerja + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
 
@@ -1022,8 +1022,8 @@
 
                             $total_all_upah_overtime += $total_upah_overtime;
 
-                            $total_all_premi_shift2 += $premis_shift2;
-                            $total_all_premi_shift3 += $premis_shift3;
+                            $total_all_premi_shift2 += $premi_shift2;
+                            $total_all_premi_shift3 += $premi_shift3;
 
                             $total_all_upah_premi_shift2 += $upah_premi_shift2;
                             $total_all_upah_premi_shift3 += $upah_premi_shift3;
@@ -1068,8 +1068,8 @@
                                 $total_upah_ot_administrasi += $total_upah_overtime;
 
                                 //Premi
-                                $total_premi_shift2_administrasi += $premis_shift2;
-                                $total_premi_shift3_administrasi += $premis_shift3;
+                                $total_premi_shift2_administrasi += $premi_shift2;
+                                $total_premi_shift3_administrasi += $premi_shift3;
 
                                 $total_upah_premi_shift2_administrasi += $upah_premi_shift2;
                                 $total_upah_premi_shift3_administrasi += $upah_premi_shift3;
@@ -1116,8 +1116,8 @@
                                 $total_upah_ot_penjualan += $total_upah_overtime;
 
                                 //Premi
-                                $total_premi_shift2_penjualan += $premis_shift2;
-                                $total_premi_shift3_penjualan += $premis_shift3;
+                                $total_premi_shift2_penjualan += $premi_shift2;
+                                $total_premi_shift3_penjualan += $premi_shift3;
 
                                 $total_upah_premi_shift2_penjualan += $upah_premi_shift2;
                                 $total_upah_premi_shift3_penjualan += $upah_premi_shift3;
@@ -1164,8 +1164,8 @@
                                 $total_upah_ot_tkl += $total_upah_overtime;
 
                                 //Premi
-                                $total_premi_shift2_tkl += $premis_shift2;
-                                $total_premi_shift3_tkl += $premis_shift3;
+                                $total_premi_shift2_tkl += $premi_shift2;
+                                $total_premi_shift3_tkl += $premi_shift3;
 
                                 $total_upah_premi_shift2_tkl += $upah_premi_shift2;
                                 $total_upah_premi_shift3_tkl += $upah_premi_shift3;
@@ -1212,17 +1212,17 @@
                                 $total_upah_ot_tktl += $total_upah_overtime;
 
                                 //Premi
-                                $total_premi_shift2_tktl += $premis_shift2;
-                                $total_premi_shift3_tktl += $premis_shift3;
+                                $total_premi_shift2_tktl += $premi_shift2;
+                                $total_premi_shift3_tktl += $premi_shift3;
 
                                 $total_upah_premi_shift2_tktl += $upah_premi_shift2;
                                 $total_upah_premi_shift3_tktl += $upah_premi_shift3;
                             }
 
                             // //Premi Shift
-                            // $grandtotal_all_premi_shift2 += $premis_shift2;
+                            // $grandtotal_all_premi_shift2 += $premi_shift2;
                             // $grandtotal_all_upah_premi_shift2 += $upah_premi_shift2;
-                            // $grandtotal_all_premi_shift3 += $premis_shift3;
+                            // $grandtotal_all_premi_shift3 += $premi_shift3;
                             // $grandtotal_all_upah_premi_shift3 += $upah_premi_shift3;
 
                             // //Bruto
