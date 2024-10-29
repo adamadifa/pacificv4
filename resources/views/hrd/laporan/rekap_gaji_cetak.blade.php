@@ -401,12 +401,12 @@
                         $total_bpjskesehatan_pcf = 0;
 
                         $total_all_bpjstk = 0;
-                        $total_all_bpjstk_administrasi = 0;
-                        $total_all_bpjstk_penjualan = 0;
-                        $total_all_bpjstk_tkl = 0;
-                        $total_all_bpjstk_tktl = 0;
-                        $total_all_bpjstk_mp = 0;
-                        $total_all_bpjstk_pcf = 0;
+                        $total_bpjstk_administrasi = 0;
+                        $total_bpjstk_penjualan = 0;
+                        $total_bpjstk_tkl = 0;
+                        $total_bpjstk_tktl = 0;
+                        $total_bpjstk_mp = 0;
+                        $total_bpjstk_pcf = 0;
 
                         $total_all_denda = 0;
                         $total_all_denda_administrasi = 0;
@@ -417,36 +417,36 @@
                         $total_all_denda_pcf = 0;
 
                         $total_all_pjp = 0;
-                        $total_all_pjp_administrasi = 0;
-                        $total_all_pjp_penjualan = 0;
-                        $total_all_pjp_tkl = 0;
-                        $total_all_pjp_tktl = 0;
-                        $total_all_pjp_mp = 0;
-                        $total_all_pjp_pcf = 0;
+                        $total_pjp_administrasi = 0;
+                        $total_pjp_penjualan = 0;
+                        $total_pjp_tkl = 0;
+                        $total_pjp_tktl = 0;
+                        $total_pjp_mp = 0;
+                        $total_pjp_pcf = 0;
 
                         $total_all_kasbon = 0;
-                        $total_all_kasbon_administrasi = 0;
-                        $total_all_kasbon_penjualan = 0;
-                        $total_all_kasbon_tkl = 0;
-                        $total_all_kasbon_tktl = 0;
-                        $total_all_kasbon_mp = 0;
-                        $total_all_kasbon_pcf = 0;
+                        $total_kasbon_administrasi = 0;
+                        $total_kasbon_penjualan = 0;
+                        $total_kasbon_tkl = 0;
+                        $total_kasbon_tktl = 0;
+                        $total_kasbon_mp = 0;
+                        $total_kasbon_pcf = 0;
 
                         $total_all_nonpjp = 0;
-                        $total_all_nonpjp_administrasi = 0;
-                        $total_all_nonpjp_penjualan = 0;
-                        $total_all_nonpjp_tkl = 0;
-                        $total_all_nonpjp_tktl = 0;
-                        $total_all_nonpjp_mp = 0;
-                        $total_all_nonpjp_pcf = 0;
+                        $total_nonpjp_administrasi = 0;
+                        $total_nonpjp_penjualan = 0;
+                        $total_nonpjp_tkl = 0;
+                        $total_nonpjp_tktl = 0;
+                        $total_nonpjp_mp = 0;
+                        $total_nonpjp_pcf = 0;
 
                         $total_all_spip = 0;
-                        $total_all_spip_administrasi = 0;
-                        $total_all_spip_penjualan = 0;
-                        $total_all_spip_tkl = 0;
-                        $total_all_spip_tktl = 0;
-                        $total_all_spip_mp = 0;
-                        $total_all_spip_pcf = 0;
+                        $total_spip_administrasi = 0;
+                        $total_spip_penjualan = 0;
+                        $total_spip_tkl = 0;
+                        $total_spip_tktl = 0;
+                        $total_spip_mp = 0;
+                        $total_spip_pcf = 0;
 
                         $total_all_pengurang = 0;
                         $total_all_pengurang_administrasi = 0;
@@ -1035,6 +1035,18 @@
                             //BPJS
 
                             $total_all_bpjskesehatan += $iuran_bpjs_kesehatan;
+                            $total_all_bpjstk += $iuran_bpjs_tenagakerja;
+
+                            //Denda
+                            $total_all_denda += $total_denda;
+
+                            //Pinjaman
+                            $total_all_pjp += $cicilan_pjp;
+                            $total_all_kasbon += $cicilan_kasbon;
+                            $total_all_nonpjp += $cicilan_piutang;
+
+                            //SPIP
+                            $total_all_spip += $spip;
 
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
@@ -1089,6 +1101,18 @@
 
                                 //BPJS
                                 $total_bpjskesehatan_administrasi += $iuran_bpjs_kesehatan;
+                                $total_bpjstk_administrasi += $iuran_bpjs_tenagakerja;
+
+                                //Denda
+                                $total_denda_administrasi += $total_denda;
+
+                                //Pinjaman
+                                $total_pjp_administrasi += $cicilan_pjp;
+                                $total_kasbon_administrasi += $cicilan_kasbon;
+                                $total_nonpjp_administrasi += $cicilan_piutang;
+
+                                //SPIP
+                                $total_spip_administrasi += $spip;
                             }
 
                             //PENJUALAN
@@ -1145,6 +1169,18 @@
 
                                 //BPJS
                                 $total_bpjskesehatan_penjualan += $iuran_bpjs_kesehatan;
+                                $total_bpjstk_penjualan += $iuran_bpjs_tenagakerja;
+
+                                //Denda
+                                $total_denda_penjualan += $total_denda;
+
+                                //Pinjaman
+                                $total_pjp_penjualan += $cicilan_pjp;
+                                $total_kasbon_penjualan += $cicilan_kasbon;
+                                $total_nonpjp_penjualan += $cicilan_piutang;
+
+                                //SPIP
+                                $total_spip_penjualan += $spip;
                             }
 
                             //TKL
@@ -1201,6 +1237,18 @@
 
                                 //BPJS
                                 $total_bpjskesehatan_tkl += $iuran_bpjs_kesehatan;
+                                $total_bpjstk_tkl += $iuran_bpjs_tenagakerja;
+
+                                //Denda
+                                $total_denda_tkl += $total_denda;
+
+                                //Pinjaman
+                                $total_pjp_tkl += $cicilan_pjp;
+                                $total_kasbon_tkl += $cicilan_kasbon;
+                                $total_nonpjp_tkl += $cicilan_piutang;
+
+                                //SPIP
+                                $total_spip_tkl += $spip;
                             }
 
                             //TKTL
@@ -1257,10 +1305,19 @@
 
                                 //BPJS
                                 $total_bpjskesehatan_tktl += $iuran_bpjs_kesehatan;
-                            }
+                                $total_bpjstk_tktl += $iuran_bpjs_tenagakerja;
 
-                            // //Iuran BPJS Kesehatan
-                            // $grandtotal_all_iuran_bpjs_kesehatan += $iuran_bpjs_kesehatan;
+                                //Denda
+                                $total_denda_tktl += $total_denda;
+
+                                //Pinjaman
+                                $total_pjp_tktl += $cicilan_pjp;
+                                $total_kasbon_tktl += $cicilan_kasbon;
+                                $total_nonpjp_tktl += $cicilan_piutang;
+
+                                //SPIP
+                                $total_spip_tktl += $spip;
+                            }
 
                             // //Iuran BPJS Tenagakerja
                             // $grandtotal_all_iuran_bpjs_tk += $iuran_bpjs_tenagakerja;
@@ -1349,6 +1406,20 @@
 
                         <!-- BPJS -->
                         <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_administrasi) }}</td>
+                        <td></td>
+                        <td style="text-align: right">{{ formatAngka($total_bpjstk_administrasi) }}</td>
+
+                        <!-- Denda-->
+                        <td style="text-align: right">{{ formatAngka($total_denda_administrasi) }}</td>
+
+                        <!-- Pinjaman-->
+                        <td style="text-align: right">{{ formatAngka($total_pjp_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_kasbon_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_nonpjp_administrasi) }}</td>
+
+                        <!--SPIP -->
+                        <td style="text-align: right">{{ formatAngka($total_sip_administrasi) }}</td>
+
 
 
 
@@ -1410,6 +1481,19 @@
 
                         <!-- BPJS -->
                         <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_penjualan) }}</td>
+                        <td></td>
+                        <td style="text-align: right">{{ formatAngka($total_bpjstk_penjualan) }}</td>
+
+                        <!-- Denda-->
+                        <td style="text-align: right">{{ formatAngka($total_denda_penjualan) }}</td>
+
+                        <!--Pinjaman-->
+                        <td style="text-align: right">{{ formatAngka($total_pjp_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_kasbon_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_nonpjp_penjualan) }}</td>
+
+                        <!-- SPIP-->
+                        <td style="text-align: right">{{ formatAngka($total_spip_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1466,6 +1550,19 @@
 
                         <!-- BPJS -->
                         <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_tkl) }}</td>
+                        <td></td>
+                        <td style="text-align: right">{{ formatAngka($total_bpjstk_tkl) }}</td>
+
+                        <!-- Denda-->
+                        <td style="text-align: right">{{ formatAngka($total_denda_tkl) }}</td>
+
+                        <!--Pinjaman-->
+                        <td style="text-align: right">{{ formatAngka($total_pjp_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_kasbon_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_nonpjp_tkl) }}</td>
+
+                        <!-- SPIP -->
+                        <td style="text-align: right">{{ formatAngka($total_sip_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1522,6 +1619,19 @@
 
                         <!-- BPJS -->
                         <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_tktl) }}</td>
+                        <td></td>
+                        <td style="text-align: right">{{ formatAngka($total_bpjstk_tktl) }}</td>
+
+                        <!-- Denda-->
+                        <td style="text-align: right">{{ formatAngka($total_denda_tktl) }}</td>
+
+                        <!-- Pinjaman-->
+                        <td style="text-align: right">{{ formatAngka($total_pjp_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_kasbon_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_nonpjp_tktl) }}</td>
+
+                        <!--SPIP -->
+                        <td style="text-align: right">{{ formatAngka($total_sip_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1580,6 +1690,19 @@
 
                     <!-- BPJS -->
                     <th style="text-align: right">{{ formatAngka($total_all_bpjskesehatan) }}</th>
+                    <th></th>
+                    <th style="text-align: right">{{ formatAngka($total_all_bpjstk) }}</th>
+
+                    <!-- Denda-->
+                    <th style="text-align: right">{{ formatAngka($total_all_denda) }}</th>
+
+                    <!-- Pinjaman-->
+                    <th style="text-align: right">{{ formatAngka($total_all_pjp) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_kasbon) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_nonpjp) }}</th>
+
+                    <!-- SPIP -->
+                    <th style="text-align: right">{{ formatAngka($total_all_spip) }}</th>
 
 
                 </tfoot>
