@@ -2167,6 +2167,86 @@
                     <!-- JUMLAH BERSIH -->
                     <td style="text-align: right">{{ formatAngka($total_jmlbersih_pcf) }}</td>
                 </tr>
+                <tr>
+                    <th>TOTAL</th>
+                    <th style="text-align: right">{{ formatAngka($total_gajipokok) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_jabatan) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_masakerja) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_tanggungjawab) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_makan) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_istri) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_tunjangan_skill) }}</th>
+
+                    <!--INSENTIF UMUM -->
+                    <th style="text-align: right">{{ formatAngka($total_insentif_masakerja) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_insentif_lembur) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_insentif_penempatan) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_insentif_kpi) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_im_ruanglingkup) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_im_penempatan) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_im_kinerja) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_im_kendaraan) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_upah) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_insentif) }}</th>
+
+                    <!--Jam Kerja -->
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_jamkerja) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_upahperjam) }}</th>
+
+                    <!--Overtime-->
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_1) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_ot_1) }}</th>
+
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_2) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_ot_2) }}</th>
+
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_libur) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_libur) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_all_upah_overtime) }}</th>
+
+                    <!-- Premi -->
+                    <th style="text-align: right">{{ formatAngka($total_all_premi_shift2) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_upah_premi_shift2) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_all_premi_shift3) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_upah_premi_shift3) }}</th>
+
+                    <!-- Bruto -->
+                    <th style="text-align: right">{{ formatAngka($total_all_bruto) }}</th>
+
+                    <!-- Potongan -->
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_potongan_jam) }}</th>
+
+                    <!-- BPJS -->
+                    <th style="text-align: right">{{ formatAngka($total_all_bpjskesehatan) }}</th>
+                    <th></th>
+                    <th style="text-align: right">{{ formatAngka($total_all_bpjstk) }}</th>
+
+                    <!-- Denda-->
+                    <th style="text-align: right">{{ formatAngka($total_all_denda) }}</th>
+
+                    <!-- Pinjaman-->
+                    <th style="text-align: right">{{ formatAngka($total_all_pjp) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_kasbon) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_nonpjp) }}</th>
+
+                    <!-- SPIP -->
+                    <th style="text-align: right">{{ formatAngka($total_all_spip) }}</th>
+
+                    <!-- PENGURANG-->
+                    <th style="text-align: right">{{ formatAngka($total_all_pengurang) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_potongan) }}</th>
+
+                    <!-- PENAMBAH-->
+                    <th style="text-align: right">{{ formatAngka($total_all_penambah) }}</th>
+
+                    <!-- JUMLAH BERSIH -->
+                    <th style="text-align: right">{{ formatAngka($total_all_jmlbersih) }}</th>
+                </tr>
             </table>
         </div>
         {{-- <div style="margin-top: 20px">
