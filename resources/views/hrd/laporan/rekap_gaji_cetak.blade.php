@@ -393,12 +393,12 @@
                         $total_potongan_jam_pcf = 0;
 
                         $total_all_bpjskesehatan = 0;
-                        $total_all_bpjskesehatan_administrasi = 0;
-                        $total_all_bpjskesehatan_penjualan = 0;
-                        $total_all_bpjskesehatan_tkl = 0;
-                        $total_all_bpjskesehatan_tktl = 0;
-                        $total_all_bpjskesehatan_mp = 0;
-                        $total_all_bpjskesehatan_pcf = 0;
+                        $total_bpjskesehatan_administrasi = 0;
+                        $total_bpjskesehatan_penjualan = 0;
+                        $total_bpjskesehatan_tkl = 0;
+                        $total_bpjskesehatan_tktl = 0;
+                        $total_bpjskesehatan_mp = 0;
+                        $total_bpjskesehatan_pcf = 0;
 
                         $total_all_bpjstk = 0;
                         $total_all_bpjstk_administrasi = 0;
@@ -1032,6 +1032,10 @@
                             $total_all_bruto += $bruto;
                             $total_all_potongan_jam += $grand_total_potongan_jam;
 
+                            //BPJS
+
+                            $total_all_bpjskesehatan += $iuran_bpjs_kesehatan;
+
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
@@ -1082,6 +1086,9 @@
 
                                 //Potongan
                                 $total_potongan_jam_administrasi += $grand_total_potongan_jam;
+
+                                //BPJS
+                                $total_bpjskesehatan_administrasi += $iuran_bpjs_kesehatan;
                             }
 
                             //PENJUALAN
@@ -1135,6 +1142,9 @@
 
                                 //Potongan
                                 $total_potongan_jam_penjualan += $grand_total_potongan_jam;
+
+                                //BPJS
+                                $total_bpjskesehatan_penjualan += $iuran_bpjs_kesehatan;
                             }
 
                             //TKL
@@ -1188,6 +1198,9 @@
 
                                 //Potongan
                                 $total_potongan_jam_tkl += $grand_total_potongan_jam;
+
+                                //BPJS
+                                $total_bpjskesehatan_tkl += $iuran_bpjs_kesehatan;
                             }
 
                             //TKTL
@@ -1241,10 +1254,10 @@
 
                                 //Potongan
                                 $total_potongan_jam_tktl += $grand_total_potongan_jam;
-                            }
 
-                            // //Potongan Jam
-                            // $grandtotal_all_potongan_jam += $grand_total_potongan_jam;
+                                //BPJS
+                                $total_bpjskesehatan_tktl += $iuran_bpjs_kesehatan;
+                            }
 
                             // //Iuran BPJS Kesehatan
                             // $grandtotal_all_iuran_bpjs_kesehatan += $iuran_bpjs_kesehatan;
@@ -1334,6 +1347,9 @@
                         <!-- Potongan -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_administrasi) }}</td>
 
+                        <!-- BPJS -->
+                        <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_administrasi) }}</td>
+
 
 
 
@@ -1391,6 +1407,9 @@
 
                         <!-- Potongan -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_penjualan) }}</td>
+
+                        <!-- BPJS -->
+                        <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1444,6 +1463,9 @@
 
                         <!-- Potongan -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_tkl) }}</td>
+
+                        <!-- BPJS -->
+                        <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1497,6 +1519,9 @@
 
                         <!-- Potongan -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_tktl) }}</td>
+
+                        <!-- BPJS -->
+                        <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1552,6 +1577,9 @@
 
                     <!-- Potongan -->
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_potongan_jam) }}</th>
+
+                    <!-- BPJS -->
+                    <th style="text-align: right">{{ formatAngka($total_all_bpjskesehatan) }}</th>
 
 
                 </tfoot>
