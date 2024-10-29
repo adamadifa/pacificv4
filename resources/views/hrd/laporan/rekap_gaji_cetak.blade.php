@@ -1009,6 +1009,7 @@
 
                             //Jam Kerja
                             $total_all_jamkerja += $total_jam_kerja;
+                            $total_all_upahperjam += $upah_perjam;
 
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
@@ -1036,6 +1037,7 @@
 
                                 //Jam Kerja
                                 $total_jamkerja_administrasi += $total_jam_kerja;
+                                $total_upahperjam_administrasi += $upah_perjam;
                             }
 
                             //PENJUALAN
@@ -1064,6 +1066,7 @@
 
                                 //Jam Kerja
                                 $total_jamkerja_penjualan += $total_jam_kerja;
+                                $total_upahperjam_penjualan += $upah_perjam;
                             }
 
                             //TKL
@@ -1092,6 +1095,7 @@
 
                                 //Jam Kerja
                                 $total_jamkerja_tkl += $total_jam_kerja;
+                                $total_upahperjam_tkl += $upah_perjam;
                             }
 
                             //TKTL
@@ -1120,28 +1124,9 @@
 
                                 //Jam Kerja
                                 $total_jamkerja_tktl += $total_jam_kerja;
+                                $total_upahperjam_tktl += $upah_perjam;
                             }
 
-                            // //Insentif Umum
-                            // $grandtotal_all_iu_masakerja += $d['iu_masakerja'];
-                            // $grandtotal_all_iu_lembur += $d['iu_lembur'];
-                            // $grandtotal_all_iu_penempatan += $d['iu_penempatan'];
-                            // $grandtotal_all_iu_kpi += $d['iu_kpi'];
-
-                            // //Insentif Manager
-                            // $grandtotal_all_im_ruanglingkup += $d['im_ruanglingkup'];
-                            // $grandtotal_all_im_penempatan += $d['im_penempatan'];
-                            // $grandtotal_all_im_kinerja += $d['im_kinerja'];
-                            // $grandtotal_all_im_kendaraan += $d['im_kendaraan'];
-
-                            // //Upah
-                            // $grandtotal_all_upah += $upah;
-
-                            // //Insentif
-                            // $grandtotal_all_insentif += $jumlah_insentif;
-
-                            // //Jam Kerja
-                            // $grandtotal_all_jamkerja += $total_jam_kerja;
                             // $grandtotal_all_upahperjam += $upah_perjam;
 
                             // //Overtime
@@ -1226,6 +1211,7 @@
 
                         <!--Jam Kerja -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upahperjam_administrasi) }}</td>
 
 
                     </tr>
@@ -1255,6 +1241,7 @@
 
                         <!--Jam Kerja -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upahperjam_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1282,6 +1269,7 @@
 
                         <!--Jam Kerja -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upahperjam_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1309,6 +1297,7 @@
 
                         <!--Jam Kerja -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upahperjam_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1338,6 +1327,7 @@
 
                     <!--Jam Kerja -->
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_jamkerja) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_upahperjam) }}</th>
 
                 </tfoot>
             </table>
