@@ -1030,6 +1030,7 @@
 
                             //Bruto
                             $total_all_bruto += $bruto;
+                            $total_all_potongan_jam += $grand_total_potongan_jam;
 
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
@@ -1078,6 +1079,9 @@
                                 $total_upah_premi_shift3_administrasi += $upah_premi_shift3;
 
                                 $total_bruto_administrasi += $bruto;
+
+                                //Potongan
+                                $total_potongan_jam_administrasi += $grand_total_potongan_jam;
                             }
 
                             //PENJUALAN
@@ -1128,6 +1132,9 @@
                                 $total_upah_premi_shift3_penjualan += $upah_premi_shift3;
 
                                 $total_bruto_penjualan += $bruto;
+
+                                //Potongan
+                                $total_potongan_jam_penjualan += $grand_total_potongan_jam;
                             }
 
                             //TKL
@@ -1178,6 +1185,9 @@
                                 $total_upah_premi_shift3_tkl += $upah_premi_shift3;
 
                                 $total_bruto_tkl += $bruto;
+
+                                //Potongan
+                                $total_potongan_jam_tkl += $grand_total_potongan_jam;
                             }
 
                             //TKTL
@@ -1228,16 +1238,10 @@
                                 $total_upah_premi_shift3_tktl += $upah_premi_shift3;
 
                                 $total_bruto_tktl += $bruto;
+
+                                //Potongan
+                                $total_potongan_jam_tktl += $grand_total_potongan_jam;
                             }
-
-                            // //Premi Shift
-                            // $grandtotal_all_premi_shift2 += $premi_shift2;
-                            // $grandtotal_all_upah_premi_shift2 += $upah_premi_shift2;
-                            // $grandtotal_all_premi_shift3 += $premi_shift3;
-                            // $grandtotal_all_upah_premi_shift3 += $upah_premi_shift3;
-
-                            // //Bruto
-                            // $grandtotal_all_bruto += $bruto;
 
                             // //Potongan Jam
                             // $grandtotal_all_potongan_jam += $grand_total_potongan_jam;
@@ -1327,6 +1331,9 @@
                         <!-- Bruto-->
                         <td style="text-align: right">{{ formatAngka($total_bruto_administrasi) }}</td>
 
+                        <!-- Potongan -->
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_administrasi) }}</td>
+
 
 
 
@@ -1381,6 +1388,9 @@
 
                         <!-- Bruto-->
                         <td style="text-align: right">{{ formatAngka($total_bruto_penjualan) }}</td>
+
+                        <!-- Potongan -->
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1431,6 +1441,9 @@
 
                         <!-- Bruto-->
                         <td style="text-align: right">{{ formatAngka($total_bruto_tkl) }}</td>
+
+                        <!-- Potongan -->
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1481,6 +1494,9 @@
 
                         <!-- Bruto -->
                         <td style="text-align: right">{{ formatAngka($total_bruto_tktl) }}</td>
+
+                        <!-- Potongan -->
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1533,6 +1549,9 @@
 
                     <!-- Bruto -->
                     <th style="text-align: right">{{ formatAngka($total_all_bruto) }}</th>
+
+                    <!-- Potongan -->
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_potongan_jam) }}</th>
 
 
                 </tfoot>
