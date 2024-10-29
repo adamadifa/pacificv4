@@ -1011,6 +1011,15 @@
                             $total_all_jamkerja += $total_jam_kerja;
                             $total_all_upahperjam += $upah_perjam;
 
+                            //Overtime
+                            $total_all_overtime_1 += $total_overtime_1;
+                            $total_all_overtime_2 += $total_overtime_2;
+                            $total_all_overtime_libur += $total_overtime_libur;
+
+                            $total_all_upah_ot_1 += $upah_overtime_1;
+                            $total_all_upah_ot_2 += $upah_overtime_2;
+                            $total_all_upah_ot_libur += $upah_overtime_libur;
+
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
@@ -1038,6 +1047,15 @@
                                 //Jam Kerja
                                 $total_jamkerja_administrasi += $total_jam_kerja;
                                 $total_upahperjam_administrasi += $upah_perjam;
+
+                                //Overtime
+                                $total_overtime_1_administrasi += $total_overtime_1;
+                                $total_overtime_2_administrasi += $total_overtime_2;
+                                $total_overtime_libur_administrasi += $total_overtime_libur;
+
+                                $total_upah_overtime_1_administrasi += $upah_overtime_1;
+                                $total_upah_overtime_2_administrasi += $upah_overtime_2;
+                                $total_upah_overtime_libur_administrasi += $upah_overtime_libur;
                             }
 
                             //PENJUALAN
@@ -1067,6 +1085,16 @@
                                 //Jam Kerja
                                 $total_jamkerja_penjualan += $total_jam_kerja;
                                 $total_upahperjam_penjualan += $upah_perjam;
+
+                                //Overtime
+
+                                $total_overtime_1_penjualan += $total_overtime_1;
+                                $total_overtime_2_penjualan += $total_overtime_2;
+                                $total_overtime_libur_penjualan += $total_overtime_libur;
+
+                                $total_upah_overtime_1_penjualan += $upah_overtime_1;
+                                $total_upah_overtime_2_penjualan += $upah_overtime_2;
+                                $total_upah_overtime_libur_penjualan += $upah_overtime_libur;
                             }
 
                             //TKL
@@ -1096,6 +1124,16 @@
                                 //Jam Kerja
                                 $total_jamkerja_tkl += $total_jam_kerja;
                                 $total_upahperjam_tkl += $upah_perjam;
+
+                                //Overtime
+
+                                $total_overtime_1_tkl += $total_overtime_1;
+                                $total_overtime_2_tkl += $total_overtime_2;
+                                $total_overtime_libur_tkl += $total_overtime_libur;
+
+                                $total_upah_overtime_1_tkl += $upah_overtime_1;
+                                $total_upah_overtime_2_tkl += $upah_overtime_2;
+                                $total_upah_overtime_libur_tkl += $upah_overtime_libur;
                             }
 
                             //TKTL
@@ -1125,11 +1163,18 @@
                                 //Jam Kerja
                                 $total_jamkerja_tktl += $total_jam_kerja;
                                 $total_upahperjam_tktl += $upah_perjam;
+
+                                //Overtime
+
+                                $total_overtime_1_tktl += $total_overtime_1;
+                                $total_overtime_2_tktl += $total_overtime_2;
+                                $total_overtime_libur_tktl += $total_overtime_libur;
+
+                                $total_upah_overtime_1_tktl += $upah_overtime_1;
+                                $total_upah_overtime_2_tktl += $upah_overtime_2;
+                                $total_upah_overtime_libur_tktl += $upah_overtime_libur;
                             }
 
-                            // $grandtotal_all_upahperjam += $upah_perjam;
-
-                            // //Overtime
                             // $grandtotal_all_overtime_1 += $total_overtime_1;
                             // $grandtotal_all_overtime_2 += $total_overtime_2;
                             // $grandtotal_all_overtime_libur += $total_overtime_libur;
@@ -1213,6 +1258,16 @@
                         <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_administrasi) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_upahperjam_administrasi) }}</td>
 
+                        <!--Overtime-->
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_1_administrasi) }}</td>
+
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_2_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_2_administrasi) }}</td>
+
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_administrasi) }}</td>
+
 
                     </tr>
                     <tr>
@@ -1242,6 +1297,16 @@
                         <!--Jam Kerja -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_upahperjam_penjualan) }}</td>
+
+                        <!--Overtime-->
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_1_penjualan) }}</td>
+
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_2_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_2_penjualan) }}</td>
+
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1270,6 +1335,10 @@
                         <!--Jam Kerja -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_tkl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_upahperjam_tkl) }}</td>
+
+                        <!--Overtime-->
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_1_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1298,6 +1367,10 @@
                         <!--Jam Kerja -->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_tktl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_upahperjam_tktl) }}</td>
+
+                        <!--Overtime-->
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_1_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1328,6 +1401,17 @@
                     <!--Jam Kerja -->
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_jamkerja) }}</th>
                     <th style="text-align: right">{{ formatAngka($total_all_upahperjam) }}</th>
+
+                    <!--Overtime-->
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_1) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_1) }}</th>
+
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_2) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_2) }}</th>
+
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_libur) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_libur) }}</th>
+
 
                 </tfoot>
             </table>
