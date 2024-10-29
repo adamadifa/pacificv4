@@ -422,6 +422,11 @@ class IzinkoreksiController extends Controller
                             'kode_jam_kerja' => $izinkoreksi->kode_jam_kerja,
                             'status' => 'h'
                         ]);
+
+                        Presensiizinkoreksi::create([
+                            'id_presensi' => $cekpresensi->id,
+                            'kode_izin_koreksi' => $kode_izin_koreksi
+                        ]);
                     } else {
                         Presensiizinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)->delete();
                         Presensi::where('nik', $izinkoreksi->nik)->where('tanggal', $izinkoreksi->tanggal)->delete();
@@ -435,13 +440,15 @@ class IzinkoreksiController extends Controller
                             'kode_jam_kerja' => $izinkoreksi->kode_jam_kerja,
                             'status' => 'h'
                         ]);
+
+                        Presensiizinkoreksi::create([
+                            'id_presensi' => $presensi->id,
+                            'kode_izin_koreksi' => $kode_izin_koreksi
+                        ]);
                     }
 
 
-                    Presensiizinkoreksi::create([
-                        'id_presensi' => $presensi->id,
-                        'kode_izin_koreksi' => $kode_izin_koreksi
-                    ]);
+
 
                     //dd($request->direktur);
                     if (isset($request->direktur)) {
