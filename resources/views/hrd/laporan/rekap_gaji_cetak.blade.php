@@ -1418,7 +1418,7 @@
                         <td style="text-align: right">{{ formatAngka($total_nonpjp_administrasi) }}</td>
 
                         <!--SPIP -->
-                        <td style="text-align: right">{{ formatAngka($total_sip_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_spip_administrasi) }}</td>
 
 
 
@@ -1562,7 +1562,7 @@
                         <td style="text-align: right">{{ formatAngka($total_nonpjp_tkl) }}</td>
 
                         <!-- SPIP -->
-                        <td style="text-align: right">{{ formatAngka($total_sip_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_spip_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1631,7 +1631,7 @@
                         <td style="text-align: right">{{ formatAngka($total_nonpjp_tktl) }}</td>
 
                         <!--SPIP -->
-                        <td style="text-align: right">{{ formatAngka($total_sip_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_spip_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
