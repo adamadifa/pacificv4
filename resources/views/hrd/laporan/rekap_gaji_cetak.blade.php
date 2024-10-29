@@ -472,13 +472,13 @@
                         $total_potongan_mp = 0;
                         $total_potongan_pcf = 0;
 
-                        $total_all_bersih = 0;
-                        $total_bersih_administrasi = 0;
-                        $total_bersih_penjualan = 0;
-                        $total_bersih_tkl = 0;
-                        $total_bersih_tktl = 0;
-                        $total_bersih_mp = 0;
-                        $total_bersih_pcf = 0;
+                        $total_all_jmlbersih = 0;
+                        $total_jmlbersih_administrasi = 0;
+                        $total_jmlbersih_penjualan = 0;
+                        $total_jmlbersih_tkl = 0;
+                        $total_jmlbersih_tktl = 0;
+                        $total_jmlbersih_mp = 0;
+                        $total_jmlbersih_pcf = 0;
 
                     @endphp
                     @foreach ($presensi as $d)
@@ -1048,6 +1048,16 @@
                             //SPIP
                             $total_all_spip += $spip;
 
+                            //PENGURANG
+                            $total_all_pengurang += $jml_pengurang;
+                            $total_all_potongan += $jml_potongan_upah;
+
+                            //Penambah
+                            $total_all_penambah += $jml_penambah;
+
+                            //Jumlah Bersih
+                            $total_all_jmlbersih += $jmlbersih;
+
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
@@ -1113,6 +1123,15 @@
 
                                 //SPIP
                                 $total_spip_administrasi += $spip;
+
+                                //Pengurang
+                                $total_pengurang_administrasi += $jml_pengurang;
+                                $total_potongan_administrasi += $jml_potongan_upah;
+                                //Penambah
+                                $total_penambah_administrasi += $jml_penambah;
+
+                                //Jumlah Bersih
+                                $total_jmlbersih_administrasi += $jmlbersih;
                             }
 
                             //PENJUALAN
@@ -1181,6 +1200,15 @@
 
                                 //SPIP
                                 $total_spip_penjualan += $spip;
+
+                                //Pengurang
+                                $total_pengurang_penjualan += $jml_pengurang;
+                                $total_potongan_penjualan += $jml_potongan_upah;
+                                //Penambah
+                                $total_penambah_penjualan += $jml_penambah;
+
+                                //Jumlah Bersih
+                                $total_jmlbersih_penjualan += $jmlbersih;
                             }
 
                             //TKL
@@ -1249,6 +1277,15 @@
 
                                 //SPIP
                                 $total_spip_tkl += $spip;
+
+                                //Pengurang
+                                $total_pengurang_tkl += $jml_pengurang;
+                                $total_potongan_tkl += $jml_potongan_upah;
+                                //Penambah
+                                $total_penambah_tkl += $jml_penambah;
+
+                                //Jumlah Bersih
+                                $total_jmlbersih_tkl += $jmlbersih;
                             }
 
                             //TKTL
@@ -1317,25 +1354,16 @@
 
                                 //SPIP
                                 $total_spip_tktl += $spip;
+
+                                //Pengurang
+                                $total_pengurang_tktl += $jml_pengurang;
+                                $total_potongan_tktl += $jml_potongan_upah;
+                                //Penambah
+                                $total_penambah_tktl += $jml_penambah;
+
+                                //Jumlah Bersih
+                                $total_jmlbersih_tktl += $jmlbersih;
                             }
-
-                            // //Iuran BPJS Tenagakerja
-                            // $grandtotal_all_iuran_bpjs_tk += $iuran_bpjs_tenagakerja;
-
-                            // //Denda
-                            // $grandtotal_all_denda += $total_denda;
-
-                            // //Cicilan PJP
-                            // $grandtotal_all_cicilan_pjp += $cicilan_pjp;
-
-                            // //Cicilan Kasbon
-                            // $grandtotal_all_cicilan_kasbon += $cicilan_kasbon;
-
-                            // //Cicilan Piutang
-                            // $grandtotal_all_cicilan_piutang += $cicilan_piutang;
-
-                            // //SPIP
-                            // $grandtotal_all_spip += $spip;
 
                             // //Pengurang
                             // $grandtotal_all_pengurang += $jml_pengurang;
@@ -1420,6 +1448,15 @@
                         <!--SPIP -->
                         <td style="text-align: right">{{ formatAngka($total_spip_administrasi) }}</td>
 
+                        <!-- PENGURANG-->
+                        <td style="text-align: right">{{ formatAngka($total_pengurang_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_potongan_administrasi) }}</td>
+
+                        <!-- PENAMBAHAN -->
+                        <td style="text-align: right">{{ formatAngka($total_penambahan_administrasi) }}</td>
+
+                        <!-- JUMLAH BERSIH -->
+                        <td style="text-align: right">{{ formatAngka($total_jmlbersih_administrasi) }}</td>
 
 
 
@@ -1494,6 +1531,16 @@
 
                         <!-- SPIP-->
                         <td style="text-align: right">{{ formatAngka($total_spip_penjualan) }}</td>
+
+                        <!-- PENGURANG-->
+                        <td style="text-align: right">{{ formatAngka($total_pengurang_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_potongan_penjualan) }}</td>
+
+                        <!-- PENAMBAHAN -->
+                        <td style="text-align: right">{{ formatAngka($total_penambahan_penjualan) }}</td>
+
+                        <!-- JUMLAH BERSIH -->
+                        <td style="text-align: right">{{ formatAngka($total_jmlbersih_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1563,6 +1610,16 @@
 
                         <!-- SPIP -->
                         <td style="text-align: right">{{ formatAngka($total_spip_tkl) }}</td>
+
+                        <!-- PENGURANG-->
+                        <td style="text-align: right">{{ formatAngka($total_pengurang_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_potongan_tkl) }}</td>
+
+                        <!-- PENAMBAHAN -->
+                        <td style="text-align: right">{{ formatAngka($total_penambahan_tkl) }}</td>
+
+                        <!-- JUMLAH BERSIH -->
+                        <td style="text-align: right">{{ formatAngka($total_jmlbersih_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1632,6 +1689,16 @@
 
                         <!--SPIP -->
                         <td style="text-align: right">{{ formatAngka($total_spip_tktl) }}</td>
+
+                        <!-- PENGURANG-->
+                        <td style="text-align: right">{{ formatAngka($total_pengurang_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_potongan_tktl) }}</td>
+
+                        <!-- PENAMBAHAN -->
+                        <td style="text-align: right">{{ formatAngka($total_penambahan_tktl) }}</td>
+
+                        <!-- JUMLAH BERSIH -->
+                        <td style="text-align: right">{{ formatAngka($total_jmlbersih_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1703,6 +1770,17 @@
 
                     <!-- SPIP -->
                     <th style="text-align: right">{{ formatAngka($total_all_spip) }}</th>
+
+                    <!-- PENGURANG-->
+                    <th style="text-align: right">{{ formatAngka($total_all_pengurang) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_potongan) }}</th>
+
+                    <!-- PENAMBAH-->
+                    <th style="text-align: right">{{ formatAngka($total_all_penambah) }}</th>
+
+                    <!-- JUMLAH BERSIH -->
+                    <th style="text-align: right">{{ formatAngka($total_all_jmlbersih) }}</th>
+
 
 
                 </tfoot>
