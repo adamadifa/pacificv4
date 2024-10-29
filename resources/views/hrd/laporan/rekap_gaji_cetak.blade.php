@@ -1018,7 +1018,7 @@
 
                             $total_all_upah_ot_1 += $upah_overtime_1;
                             $total_all_upah_ot_2 += $upah_overtime_2;
-                            $total_all_upah_ot_libur += $upah_overtime_libur;
+                            $total_all_upah_overtime_libur += $upah_overtime_libur;
 
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
