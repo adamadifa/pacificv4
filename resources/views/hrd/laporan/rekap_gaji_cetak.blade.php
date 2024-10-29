@@ -337,12 +337,12 @@
                         $total_upah_overtime_libur_pcf = 0;
 
                         $total_all_upah_overtime = 0;
-                        $total_all_upah_otl_administrasi = 0;
-                        $total_all_upah_otl_penjualan = 0;
-                        $total_all_upah_otl_tkl = 0;
-                        $total_all_upah_otl_tktl = 0;
-                        $total_all_upah_otl_mp = 0;
-                        $total_all_upah_otl_pcf = 0;
+                        $total_all_upah_ot_administrasi = 0;
+                        $total_all_upah_ot_penjualan = 0;
+                        $total_all_upah_ot_tkl = 0;
+                        $total_all_upah_ot_tktl = 0;
+                        $total_all_upah_ot_mp = 0;
+                        $total_all_upah_ot_pcf = 0;
 
                         $total_all_hari_shift_2 = 0;
                         $total_all_hari_shift_2_administrasi = 0;
@@ -1020,6 +1020,8 @@
                             $total_all_upah_ot_2 += $upah_overtime_2;
                             $total_all_upah_overtime_libur += $upah_overtime_libur;
 
+                            $total_all_upah_overtime += $total_upah_overtime;
+
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
@@ -1056,6 +1058,8 @@
                                 $total_upah_ot_1_administrasi += $upah_overtime_1;
                                 $total_upah_ot_2_administrasi += $upah_overtime_2;
                                 $total_upah_overtime_libur_administrasi += $upah_overtime_libur;
+
+                                $total_upah_ot_administrasi += $total_upah_overtime;
                             }
 
                             //PENJUALAN
@@ -1095,6 +1099,8 @@
                                 $total_upah_ot_1_penjualan += $upah_overtime_1;
                                 $total_upah_ot_2_penjualan += $upah_overtime_2;
                                 $total_upah_overtime_libur_penjualan += $upah_overtime_libur;
+
+                                $total_upah_ot_penjualan += $total_upah_overtime;
                             }
 
                             //TKL
@@ -1134,6 +1140,8 @@
                                 $total_upah_ot_1_tkl += $upah_overtime_1;
                                 $total_upah_ot_2_tkl += $upah_overtime_2;
                                 $total_upah_overtime_libur_tkl += $upah_overtime_libur;
+
+                                $total_upah_ot_tkl += $total_upah_overtime;
                             }
 
                             //TKTL
@@ -1173,14 +1181,10 @@
                                 $total_upah_ot_1_tktl += $upah_overtime_1;
                                 $total_upah_ot_2_tktl += $upah_overtime_2;
                                 $total_upah_overtime_libur_tktl += $upah_overtime_libur;
+
+                                $total_upah_ot_tktl += $total_upah_overtime;
                             }
 
-                            // $grandtotal_all_overtime_1 += $total_overtime_1;
-                            // $grandtotal_all_overtime_2 += $total_overtime_2;
-                            // $grandtotal_all_overtime_libur += $total_overtime_libur;
-                            // $grandtotal_all_upah_overtime_1 += $upah_overtime_1;
-                            // $grandtotal_all_upah_overtime_2 += $upah_overtime_2;
-                            // $grandtotal_all_upah_overtime_libur += $upah_overtime_libur;
                             // $grandtotal_all_upah_overtime += $total_upah_overtime;
 
                             // //Premi Shift
@@ -1268,6 +1272,9 @@
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_administrasi) }}</td>
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_administrasi) }}</td>
 
+                        <td style="text-align: right">{{ formatAngka($total_upah_ot_administrasi) }}</td>
+
+
 
                     </tr>
                     <tr>
@@ -1307,6 +1314,8 @@
 
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_penjualan) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_upah_ot_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1345,6 +1354,8 @@
 
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_tkl) }}</td>
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_tkl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_upah_ot_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1383,6 +1394,8 @@
 
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_tktl) }}</td>
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_tktl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_upah_ot_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1423,6 +1436,8 @@
 
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_overtime_libur) }}</th>
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_libur) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_all_upah_overtime) }}</th>
 
 
                 </tfoot>
