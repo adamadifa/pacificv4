@@ -1214,7 +1214,7 @@
                         <td style="text-align: right">{{ formatAngka($total_insentif_administrasi) }}</td>
 
                         <!--Jam Kerja -->
-                        <td style="text-align: right">{{ formatAngka($total_jamkerja_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_administrasi) }}</td>
 
 
                     </tr>
@@ -1243,7 +1243,7 @@
                         <td style="text-align: right">{{ formatAngka($total_insentif_penjualan) }}</td>
 
                         <!--Jam Kerja -->
-                        <td style="text-align: right">{{ formatAngka($total_jamkerja_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1270,7 +1270,7 @@
                         <td style="text-align: right">{{ formatAngka($total_insentif_tkl) }}</td>
 
                         <!--Jam Kerja -->
-                        <td style="text-align: right">{{ formatAngka($total_jamkerja_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1297,7 +1297,7 @@
                         <td style="text-align: right">{{ formatAngka($total_insentif_tktl) }}</td>
 
                         <!--Jam Kerja -->
-                        <td style="text-align: right">{{ formatAngka($total_jamkerja_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1326,7 +1326,7 @@
                     <th style="text-align: right">{{ formatAngka($total_insentif) }}</th>
 
                     <!--Jam Kerja -->
-                    <th style="text-align: right">{{ formatAngka($total_all_jamkerja) }}</th>
+                    <th style="text-align: right">{{ formatAngkaDesimal($total_all_jamkerja) }}</th>
 
                 </tfoot>
             </table>
