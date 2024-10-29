@@ -385,12 +385,12 @@
                         $total_bruto_pcf = 0;
 
                         $total_all_potongan_jam = 0;
-                        $total_potonganjam_administrasi = 0;
-                        $total_potonganjam_penjualan = 0;
-                        $total_potonganjam_tkl = 0;
-                        $total_potonganjam_tktl = 0;
-                        $total_potonganjam_mp = 0;
-                        $total_potonganjam_pcf = 0;
+                        $total_potongan_jam_administrasi = 0;
+                        $total_potongan_jam_penjualan = 0;
+                        $total_potongan_jam_tkl = 0;
+                        $total_potongan_jam_tktl = 0;
+                        $total_potongan_jam_mp = 0;
+                        $total_potongan_jam_pcf = 0;
 
                         $total_all_bpjskesehatan = 0;
                         $total_all_bpjskesehatan_administrasi = 0;
