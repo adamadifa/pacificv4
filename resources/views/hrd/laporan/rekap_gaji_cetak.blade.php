@@ -1022,8 +1022,8 @@
 
                             $total_all_upah_overtime += $total_upah_overtime;
 
-                            $total_all_premi_shift2 += $premi_shift2;
-                            $total_all_premi_shift3 += $premi_shift3;
+                            $total_all_premi_shift2 += $premis_shift2;
+                            $total_all_premi_shift3 += $premis_shift3;
 
                             $total_all_upah_premi_shift2 += $upah_premi_shift2;
                             $total_all_upah_premi_shift3 += $upah_premi_shift3;
@@ -1068,8 +1068,8 @@
                                 $total_upah_ot_administrasi += $total_upah_overtime;
 
                                 //Premi
-                                $total_premi_shift2_administrasi += $premi_shift2;
-                                $total_premi_shift3_administrasi += $premi_shift3;
+                                $total_premi_shift2_administrasi += $premis_shift2;
+                                $total_premi_shift3_administrasi += $premis_shift3;
 
                                 $total_upah_premi_shift2_administrasi += $upah_premi_shift2;
                                 $total_upah_premi_shift3_administrasi += $upah_premi_shift3;
@@ -1116,8 +1116,8 @@
                                 $total_upah_ot_penjualan += $total_upah_overtime;
 
                                 //Premi
-                                $total_premi_shift2_penjualan += $premi_shift2;
-                                $total_premi_shift3_penjualan += $premi_shift3;
+                                $total_premi_shift2_penjualan += $premis_shift2;
+                                $total_premi_shift3_penjualan += $premis_shift3;
 
                                 $total_upah_premi_shift2_penjualan += $upah_premi_shift2;
                                 $total_upah_premi_shift3_penjualan += $upah_premi_shift3;
@@ -1164,8 +1164,8 @@
                                 $total_upah_ot_tkl += $total_upah_overtime;
 
                                 //Premi
-                                $total_premi_shift2_tkl += $premi_shift2;
-                                $total_premi_shift3_tkl += $premi_shift3;
+                                $total_premi_shift2_tkl += $premis_shift2;
+                                $total_premi_shift3_tkl += $premis_shift3;
 
                                 $total_upah_premi_shift2_tkl += $upah_premi_shift2;
                                 $total_upah_premi_shift3_tkl += $upah_premi_shift3;
@@ -1212,8 +1212,8 @@
                                 $total_upah_ot_tktl += $total_upah_overtime;
 
                                 //Premi
-                                $total_premi_shift2_tktl += $premi_shift2;
-                                $total_premi_shift3_tktl += $premi_shift3;
+                                $total_premi_shift2_tktl += $premis_shift2;
+                                $total_premi_shift3_tktl += $premis_shift3;
 
                                 $total_upah_premi_shift2_tktl += $upah_premi_shift2;
                                 $total_upah_premi_shift3_tktl += $upah_premi_shift3;
