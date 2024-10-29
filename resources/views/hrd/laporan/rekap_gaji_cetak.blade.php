@@ -1441,6 +1441,82 @@
                                 $total_jmlbersih_mp += $jmlbersih;
                             }
 
+                            if ($d['kode_perusahaan'] == 'PC') {
+                                $total_gajipokok_pcf += $d['gaji_pokok'];
+                                $total_t_jabatan_pcf += $d['t_jabatan'];
+                                $total_t_masakerja_pcf += $d['t_masakerja'];
+                                $total_t_tanggungjawab_pcf += $d['t_tanggungjawab'];
+                                $total_t_makan_pcf += $d['t_makan'];
+                                $total_t_istri_pcf += $d['t_istri'];
+                                $total_t_skill_pcf += $d['t_skill'];
+
+                                $total_i_masakerja_pcf += $d['iu_masakerja'];
+                                $total_i_lembur_pcf += $d['iu_lembur'];
+                                $total_i_penempatan_pcf += $d['iu_penempatan'];
+                                $total_i_kpi_pcf += $d['iu_kpi'];
+
+                                $total_im_ruanglingkup_pcf += $d['im_ruanglingkup'];
+                                $total_im_penempatan_pcf += $d['im_penempatan'];
+                                $total_im_kinerja_pcf += $d['im_kinerja'];
+                                $total_im_kendaraan_pcf += $d['im_kendaraan'];
+
+                                $total_upah_pcf += $upah;
+
+                                $total_insentif_pcf += $jumlah_insentif;
+
+                                //Jam Kerja
+                                $total_jamkerja_pcf += $total_jam_kerja;
+                                $total_upahperjam_pcf += $upah_perjam;
+
+                                //Overtime
+
+                                $total_overtime_1_pcf += $total_overtime_1;
+                                $total_overtime_2_pcf += $total_overtime_2;
+                                $total_overtime_libur_pcf += $total_overtime_libur;
+
+                                $total_upah_ot_1_pcf += $upah_overtime_1;
+                                $total_upah_ot_2_pcf += $upah_overtime_2;
+                                $total_upah_overtime_libur_pcf += $upah_overtime_libur;
+
+                                $total_upah_ot_pcf += $total_upah_overtime;
+
+                                //Premi
+                                $total_premi_shift2_pcf += $premi_shift2;
+                                $total_premi_shift3_pcf += $premi_shift3;
+
+                                $total_upah_premi_shift2_pcf += $upah_premi_shift2;
+                                $total_upah_premi_shift3_pcf += $upah_premi_shift3;
+
+                                $total_bruto_pcf += $bruto;
+
+                                //Potongan
+                                $total_potongan_jam_pcf += $grand_total_potongan_jam;
+
+                                //BPJS
+                                $total_bpjskesehatan_pcf += $iuran_bpjs_kesehatan;
+                                $total_bpjstk_pcf += $iuran_bpjs_tenagakerja;
+
+                                //Denda
+                                $total_denda_pcf += $total_denda;
+
+                                //Pinjaman
+                                $total_pjp_pcf += $cicilan_pjp;
+                                $total_kasbon_pcf += $cicilan_kasbon;
+                                $total_nonpjp_pcf += $cicilan_piutang;
+
+                                //SPIP
+                                $total_spip_pcf += $spip;
+
+                                //Pengurang
+                                $total_pengurang_pcf += $jml_pengurang;
+                                $total_potongan_pcf += $jml_potongan_upah;
+                                //Penambah
+                                $total_penambah_pcf += $jml_penambah;
+
+                                //Jumlah Bersih
+                                $total_jmlbersih_pcf += $jmlbersih;
+                            }
+
                             // //Pengurang
                             // $grandtotal_all_pengurang += $jml_pengurang;
 
@@ -2013,7 +2089,83 @@
                     <td style="text-align: right">{{ formatAngka($total_jmlbersih_mp) }}</td>
                 </tr>
                 <tr>
-                    <th>PACIFIC</th>
+                    <td>PCF</td>
+                    <td style="text-align: right">{{ formatAngka($total_gajipokok_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_jabatan_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_masakerja_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_tanggungjawab_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_makan_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_istri_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_skill_pcf) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_i_masakerja_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_i_lembur_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_i_penempatan_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_i_kpi_pcf) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_im_ruanglingkup_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_im_penempatan_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_im_kinerja_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_im_kendaraan_pcf) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_upah_pcf) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_insentif_pcf) }}</td>
+
+                    <!--Jam Kerja -->
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_upahperjam_pcf) }}</td>
+
+                    <!--Overtime-->
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_1_pcf) }}</td>
+
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_2_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_2_pcf) }}</td>
+
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_pcf) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_upah_ot_pcf) }}</td>
+
+                    <!-- Premi -->
+                    <td style="text-align: right">{{ formatAngka($total_premi_shift2_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_upah_premi_shift2_pcf) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_premi_shift3_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_pcf) }}</td>
+
+                    <!-- Bruto -->
+                    <td style="text-align: right">{{ formatAngka($total_bruto_pcf) }}</td>
+
+                    <!-- Potongan -->
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_pcf) }}</td>
+
+                    <!-- BPJS -->
+                    <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_pcf) }}</td>
+                    <td></td>
+                    <td style="text-align: right">{{ formatAngka($total_bpjstk_pcf) }}</td>
+
+                    <!-- Denda -->
+                    <td style="text-align: right">{{ formatAngka($total_denda_pcf) }}</td>
+
+                    <!-- Pinjaman -->
+                    <td style="text-align: right">{{ formatAngka($total_pjp_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_kasbon_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_nonpjp_pcf) }}</td>
+
+                    <!-- SPIP -->
+                    <td style="text-align: right">{{ formatAngka($total_spip_pcf) }}</td>
+
+                    <!-- PENGURANG -->
+                    <td style="text-align: right">{{ formatAngka($total_pengurang_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_potongan_pcf) }}</td>
+
+                    <!-- penambah -->
+                    <td style="text-align: right">{{ formatAngka($total_penambah_pcf) }}</td>
+
+                    <!-- JUMLAH BERSIH -->
+                    <td style="text-align: right">{{ formatAngka($total_jmlbersih_pcf) }}</td>
                 </tr>
             </table>
         </div>
