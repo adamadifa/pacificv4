@@ -412,18 +412,31 @@ class IzinkoreksiController extends Controller
                         ->update([
                             'status' => 1
                         ]);
-                    Presensiizinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)->delete();
-                    Presensi::where('nik', $izinkoreksi->nik)->where('tanggal', $izinkoreksi->tanggal)->delete();
-                    //dd($cekpresensi);
-                    $presensi = Presensi::create([
-                        'nik' => $izinkoreksi->nik,
-                        'tanggal' => $izinkoreksi->tanggal,
-                        'jam_in' => $izinkoreksi->jam_masuk,
-                        'jam_out' => $izinkoreksi->jam_pulang,
-                        'kode_jadwal' => $izinkoreksi->kode_jadwal,
-                        'kode_jam_kerja' => $izinkoreksi->kode_jam_kerja,
-                        'status' => 'h'
-                    ]);
+
+                    $cekpresensi = Presensi::where('nik', $izinkoreksi->nik)->where('tanggal', $izinkoreksi->tanggal)->first();
+                    if ($cekpresensi != null) {
+                        Presensi::where('nik', $izinkoreksi->nik)->where('tanggal', $izinkoreksi->tanggal)->update([
+                            'jam_in' => $izinkoreksi->jam_masuk,
+                            'jam_out' => $izinkoreksi->jam_pulang,
+                            'kode_jadwal' => $izinkoreksi->kode_jadwal,
+                            'kode_jam_kerja' => $izinkoreksi->kode_jam_kerja,
+                            'status' => 'h'
+                        ]);
+                    } else {
+                        Presensiizinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)->delete();
+                        Presensi::where('nik', $izinkoreksi->nik)->where('tanggal', $izinkoreksi->tanggal)->delete();
+                        //dd($cekpresensi);
+                        $presensi = Presensi::create([
+                            'nik' => $izinkoreksi->nik,
+                            'tanggal' => $izinkoreksi->tanggal,
+                            'jam_in' => $izinkoreksi->jam_masuk,
+                            'jam_out' => $izinkoreksi->jam_pulang,
+                            'kode_jadwal' => $izinkoreksi->kode_jadwal,
+                            'kode_jam_kerja' => $izinkoreksi->kode_jam_kerja,
+                            'status' => 'h'
+                        ]);
+                    }
+
 
                     Presensiizinkoreksi::create([
                         'id_presensi' => $presensi->id,

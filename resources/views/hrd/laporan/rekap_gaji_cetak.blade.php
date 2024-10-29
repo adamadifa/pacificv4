@@ -81,14 +81,17 @@
                         <th>MAKAN</th>
                         <th>ISTRI</th>
                         <th>SKIL</th>
+
                         <th>MASA KERJA</th>
                         <th>LEMBUR</th>
                         <th>PENEMPATAN</th>
                         <th>KPI</th>
+
                         <th>R. LINGKUP</th>
                         <th>PENEMPATAN</th>
                         <th>KINERJA</th>
                         <th>KENDARAAN</th>
+
                         <th>JAM</th>
                         <th>JUMLAH</th>
                         <th>JAM</th>
@@ -973,6 +976,20 @@
                             $total_tunjangan_istri += $d['t_istri'];
                             $total_tunjangan_skill += $d['t_skill'];
 
+                            //INSENTIF
+
+                            $total_insentif_masakerja += $d['iu_masakerja'];
+                            $total_insentif_lembur += $d['iu_lembur'];
+                            $total_insentif_penempatan += $d['iu_penempatan'];
+                            $total_insentif_kpi += $d['iu_kpi'];
+
+                            //INSENTIF MANAGER
+
+                            $total_im_ruanglingkup += $d['im_ruanglingkup'];
+                            $total_im_penempatan += $d['im_penempatan'];
+                            $total_im_kinerja += $d['im_kinerja'];
+                            $total_im_kendaraan += $d['im_kendaraan'];
+
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
@@ -987,6 +1004,11 @@
                                 $total_i_lembur_administrasi += $d['iu_lembur'];
                                 $total_i_penempatan_administrasi += $d['iu_penempatan'];
                                 $total_i_kpi_administrasi += $d['iu_kpi'];
+
+                                $total_im_ruanglingkup_administrasi += $d['im_ruanglingkup'];
+                                $total_im_penempatan_administrasi += $d['im_penempatan'];
+                                $total_im_kinerja_administrasi += $d['im_kinerja'];
+                                $total_im_kendaraan_administrasi += $d['im_kendaraan'];
                             }
 
                             //PENJUALAN
@@ -1003,6 +1025,11 @@
                                 $total_i_lembur_penjualan += $d['iu_lembur'];
                                 $total_i_penempatan_penjualan += $d['iu_penempatan'];
                                 $total_i_kpi_penjualan += $d['iu_kpi'];
+
+                                $total_im_ruanglingkup_penjualan += $d['im_ruanglingkup'];
+                                $total_im_penempatan_penjualan += $d['im_penempatan'];
+                                $total_im_kinerja_penjualan += $d['im_kinerja'];
+                                $total_im_kendaraan_penjualan += $d['im_kendaraan'];
                             }
 
                             //TKL
@@ -1019,6 +1046,11 @@
                                 $total_i_lembur_tkl += $d['iu_lembur'];
                                 $total_i_penempatan_tkl += $d['iu_penempatan'];
                                 $total_i_kpi_tkl += $d['iu_kpi'];
+
+                                $total_im_ruanglingkup_tkl += $d['im_ruanglingkup'];
+                                $total_im_penempatan_tkl += $d['im_penempatan'];
+                                $total_im_kinerja_tkl += $d['im_kinerja'];
+                                $total_im_kendaraan_tkl += $d['im_kendaraan'];
                             }
 
                             //TKTL
@@ -1035,6 +1067,11 @@
                                 $total_i_lembur_tktl += $d['iu_lembur'];
                                 $total_i_penempatan_tktl += $d['iu_penempatan'];
                                 $total_i_kpi_tktl += $d['iu_kpi'];
+
+                                $total_im_ruanglingkup_tktl += $d['im_ruanglingkup'];
+                                $total_im_penempatan_tktl += $d['im_penempatan'];
+                                $total_im_kinerja_tktl += $d['im_kinerja'];
+                                $total_im_kendaraan_tktl += $d['im_kendaraan'];
                             }
 
                             // //Insentif Umum
@@ -1130,6 +1167,10 @@
                         <td style="text-align: right">{{ formatAngka($total_i_penempatan_administrasi) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_i_kpi_administrasi) }}</td>
 
+                        <td style="text-align: right">{{ formatAngka($total_im_ruanglingkup_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_penempatan_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_kinerja_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_kendaraan_administrasi) }}</td>
 
 
                     </tr>
@@ -1147,6 +1188,11 @@
                         <td style="text-align: right">{{ formatAngka($total_i_lembur_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_i_penempatan_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_i_kpi_penjualan) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_im_ruanglingkup_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_penempatan_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_kinerja_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_kendaraan_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1162,6 +1208,11 @@
                         <td style="text-align: right">{{ formatAngka($total_i_lembur_tkl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_i_penempatan_tkl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_i_kpi_tkl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_im_ruanglingkup_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_penempatan_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_kinerja_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_kendaraan_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1177,6 +1228,11 @@
                         <td style="text-align: right">{{ formatAngka($total_i_lembur_tktl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_i_penempatan_tktl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_i_kpi_tktl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_im_ruanglingkup_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_penempatan_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_kinerja_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_im_kendaraan_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1188,6 +1244,18 @@
                     <th style="text-align: right">{{ formatAngka($total_tunjangan_makan) }}</th>
                     <th style="text-align: right">{{ formatAngka($total_tunjangan_istri) }}</th>
                     <th style="text-align: right">{{ formatAngka($total_tunjangan_skill) }}</th>
+
+                    <!--INSENTIF UMUM -->
+                    <th style="text-align: right">{{ formatAngka($total_insentif_masakerja) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_insentif_lembur) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_insentif_penempatan) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_insentif_kpi) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_im_ruanglingkup) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_im_penempatan) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_im_kinerja) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_im_kendaraan) }}</th>
+
                 </tfoot>
             </table>
         </div>
