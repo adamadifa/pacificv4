@@ -997,7 +997,7 @@
                             $total_insentif += $jumlah_insentif;
 
                             //Jam Kerja
-                            $total_all_jamkerja += $total_jamkerja;
+                            $total_all_jamkerja += $total_jam_kerja;
 
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
@@ -1024,7 +1024,7 @@
                                 $total_insentif_administrasi += $jumlah_insentif;
 
                                 //Jam Kerja
-                                $total_jamkerja_administrasi += $total_jamkerja;
+                                $total_jamkerja_administrasi += $total_jam_kerja;
                             }
 
                             //PENJUALAN
@@ -1052,7 +1052,7 @@
                                 $total_insentif_penjualan += $jumlah_insentif;
 
                                 //Jam Kerja
-                                $total_jamkerja_penjualan += $total_jamkerja;
+                                $total_jamkerja_penjualan += $total_jam_kerja;
                             }
 
                             //TKL
@@ -1080,7 +1080,7 @@
                                 $total_insentif_tkl += $jumlah_insentif;
 
                                 //Jam Kerja
-                                $total_jamkerja_tkl += $total_jamkerja;
+                                $total_jamkerja_tkl += $total_jam_kerja;
                             }
 
                             //TKTL
@@ -1108,7 +1108,7 @@
                                 $total_insentif_tktl += $jumlah_insentif;
 
                                 //Jam Kerja
-                                $total_jamkerja_tktl += $total_jamkerja;
+                                $total_jamkerja_tktl += $total_jam_kerja;
                             }
 
                             // //Insentif Umum
