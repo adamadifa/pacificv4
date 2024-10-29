@@ -337,12 +337,12 @@
                         $total_upah_overtime_libur_pcf = 0;
 
                         $total_all_upah_overtime = 0;
-                        $total_all_upah_ot_administrasi = 0;
-                        $total_all_upah_ot_penjualan = 0;
-                        $total_all_upah_ot_tkl = 0;
-                        $total_all_upah_ot_tktl = 0;
-                        $total_all_upah_ot_mp = 0;
-                        $total_all_upah_ot_pcf = 0;
+                        $total_upah_ot_administrasi = 0;
+                        $total_upah_ot_penjualan = 0;
+                        $total_upah_ot_tkl = 0;
+                        $total_upah_ot_tktl = 0;
+                        $total_upah_ot_mp = 0;
+                        $total_upah_ot_pcf = 0;
 
                         $total_all_hari_shift_2 = 0;
                         $total_all_hari_shift_2_administrasi = 0;
