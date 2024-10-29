@@ -377,20 +377,20 @@
                         $total_upah_premi_shift3_pcf = 0;
 
                         $total_all_bruto = 0;
-                        $total_all_bruto_administrasi = 0;
-                        $total_all_bruto_penjualan = 0;
-                        $total_all_bruto_tkl = 0;
-                        $total_all_bruto_tktl = 0;
-                        $total_all_bruto_mp = 0;
-                        $total_all_bruto_pcf = 0;
+                        $total_bruto_administrasi = 0;
+                        $total_bruto_penjualan = 0;
+                        $total_bruto_tkl = 0;
+                        $total_bruto_tktl = 0;
+                        $total_bruto_mp = 0;
+                        $total_bruto_pcf = 0;
 
                         $total_all_potongan_jam = 0;
-                        $total_all_potonganjam_administrasi = 0;
-                        $total_all_potonganjam_penjualan = 0;
-                        $total_all_potonganjam_tkl = 0;
-                        $total_all_potonganjam_tktl = 0;
-                        $total_all_potonganjam_mp = 0;
-                        $total_all_potonganjam_pcf = 0;
+                        $total_potonganjam_administrasi = 0;
+                        $total_potonganjam_penjualan = 0;
+                        $total_potonganjam_tkl = 0;
+                        $total_potonganjam_tktl = 0;
+                        $total_potonganjam_mp = 0;
+                        $total_potonganjam_pcf = 0;
 
                         $total_all_bpjskesehatan = 0;
                         $total_all_bpjskesehatan_administrasi = 0;
@@ -1028,6 +1028,9 @@
                             $total_all_upah_premi_shift2 += $upah_premi_shift2;
                             $total_all_upah_premi_shift3 += $upah_premi_shift3;
 
+                            //Bruto
+                            $total_all_bruto += $bruto;
+
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
@@ -1073,6 +1076,8 @@
 
                                 $total_upah_premi_shift2_administrasi += $upah_premi_shift2;
                                 $total_upah_premi_shift3_administrasi += $upah_premi_shift3;
+
+                                $total_bruto_administrasi += $bruto;
                             }
 
                             //PENJUALAN
@@ -1121,6 +1126,8 @@
 
                                 $total_upah_premi_shift2_penjualan += $upah_premi_shift2;
                                 $total_upah_premi_shift3_penjualan += $upah_premi_shift3;
+
+                                $total_bruto_penjualan += $bruto;
                             }
 
                             //TKL
@@ -1169,6 +1176,8 @@
 
                                 $total_upah_premi_shift2_tkl += $upah_premi_shift2;
                                 $total_upah_premi_shift3_tkl += $upah_premi_shift3;
+
+                                $total_bruto_tkl += $bruto;
                             }
 
                             //TKTL
@@ -1217,6 +1226,8 @@
 
                                 $total_upah_premi_shift2_tktl += $upah_premi_shift2;
                                 $total_upah_premi_shift3_tktl += $upah_premi_shift3;
+
+                                $total_bruto_tktl += $bruto;
                             }
 
                             // //Premi Shift
@@ -1313,6 +1324,9 @@
                         <td style="text-align: right">{{ formatAngka($total_premi_shift3_administrasi) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_administrasi) }}</td>
 
+                        <!-- Bruto-->
+                        <td style="text-align: right">{{ formatAngka($total_bruto_administrasi) }}</td>
+
 
 
 
@@ -1364,6 +1378,9 @@
 
                         <td style="text-align: right">{{ formatAngka($total_premi_shift3_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_penjualan) }}</td>
+
+                        <!-- Bruto-->
+                        <td style="text-align: right">{{ formatAngka($total_bruto_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1411,6 +1428,9 @@
 
                         <td style="text-align: right">{{ formatAngka($total_premi_shift3_tkl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_tkl) }}</td>
+
+                        <!-- Bruto-->
+                        <td style="text-align: right">{{ formatAngka($total_bruto_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1458,6 +1478,9 @@
 
                         <td style="text-align: right">{{ formatAngka($total_premi_shift3_tktl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_tktl) }}</td>
+
+                        <!-- Bruto -->
+                        <td style="text-align: right">{{ formatAngka($total_bruto_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1507,6 +1530,9 @@
 
                     <th style="text-align: right">{{ formatAngka($total_all_premi_shift3) }}</th>
                     <th style="text-align: right">{{ formatAngka($total_all_upah_premi_shift3) }}</th>
+
+                    <!-- Bruto -->
+                    <th style="text-align: right">{{ formatAngka($total_all_bruto) }}</th>
 
 
                 </tfoot>
