@@ -344,37 +344,37 @@
                         $total_upah_ot_mp = 0;
                         $total_upah_ot_pcf = 0;
 
-                        $total_all_hari_shift_2 = 0;
-                        $total_all_hari_shift_2_administrasi = 0;
-                        $total_all_hari_shift_2_penjualan = 0;
-                        $total_all_hari_shift_2_tkl = 0;
-                        $total_all_hari_shift_2_tktl = 0;
-                        $total_all_hari_shift_2_mp = 0;
-                        $total_all_hari_shift_2_pcf = 0;
+                        $total_all_presmi_shift2 = 0;
+                        $total_presmi_shift2_administrasi = 0;
+                        $total_presmi_shift2_penjualan = 0;
+                        $total_presmi_shift2_tkl = 0;
+                        $total_presmi_shift2_tktl = 0;
+                        $total_presmi_shift2_mp = 0;
+                        $total_presmi_shift2_pcf = 0;
 
-                        $total_all_premi_shift_2 = 0;
-                        $total_all_premi_shift_2_administrasi = 0;
-                        $total_all_premi_shift_2_penjualan = 0;
-                        $total_all_premi_shift_2_tkl = 0;
-                        $total_all_premi_shift_2_tktl = 0;
-                        $total_all_premi_shift_2_mp = 0;
-                        $total_all_premi_shift_2_pcf = 0;
+                        $total_all_upah_presmi_shift2 = 0;
+                        $total_upah_presmi_shift2_administrasi = 0;
+                        $total_upah_presmi_shift2_penjualan = 0;
+                        $total_upah_presmi_shift2_tkl = 0;
+                        $total_upah_presmi_shift2_tktl = 0;
+                        $total_upah_presmi_shift2_mp = 0;
+                        $total_upah_presmi_shift2_pcf = 0;
 
-                        $total_all_hari_shift_3 = 0;
-                        $total_all_hari_shift_3_administrasi = 0;
-                        $total_all_hari_shift_3_penjualan = 0;
-                        $total_all_hari_shift_3_tkl = 0;
-                        $total_all_hari_shift_3_tktl = 0;
-                        $total_all_hari_shift_3_mp = 0;
-                        $total_all_hari_shift_3_pcf = 0;
+                        $total_all_presmi_shift3 = 0;
+                        $total_presmi_shift3_administrasi = 0;
+                        $total_presmi_shift3_penjualan = 0;
+                        $total_presmi_shift3_tkl = 0;
+                        $total_presmi_shift3_tktl = 0;
+                        $total_presmi_shift3_mp = 0;
+                        $total_presmi_shift3_pcf = 0;
 
-                        $total_all_premi_shift_3 = 0;
-                        $total_all_premi_shift_3_administrasi = 0;
-                        $total_all_premi_shift_3_penjualan = 0;
-                        $total_all_premi_shift_3_tkl = 0;
-                        $total_all_premi_shift_3_tktl = 0;
-                        $total_all_premi_shift_3_mp = 0;
-                        $total_all_premi_shift_3_pcf = 0;
+                        $total_all_upah_presmi_shift3 = 0;
+                        $total_upah_presmi_shift3_administrasi = 0;
+                        $total_upah_presmi_shift3_penjualan = 0;
+                        $total_upah_presmi_shift3_tkl = 0;
+                        $total_upah_presmi_shift3_tktl = 0;
+                        $total_upah_presmi_shift3_mp = 0;
+                        $total_upah_presmi_shift3_pcf = 0;
 
                         $total_all_bruto = 0;
                         $total_all_bruto_administrasi = 0;
@@ -1022,6 +1022,12 @@
 
                             $total_all_upah_overtime += $total_upah_overtime;
 
+                            $total_all_premi_shift2 += $premi_shift2;
+                            $total_all_premi_shift3 += $premi_shift3;
+
+                            $total_all_upah_premi_shift2 += $upah_premi_shift2;
+                            $total_all_upah_premi_shift3 += $upah_premi_shift3;
+
                             //ADMINISTRASI
                             if ($d['kode_klasifikasi'] == 'K03') {
                                 $total_gajipokok_administrasi += $d['gaji_pokok'];
@@ -1060,6 +1066,13 @@
                                 $total_upah_overtime_libur_administrasi += $upah_overtime_libur;
 
                                 $total_upah_ot_administrasi += $total_upah_overtime;
+
+                                //Premi
+                                $total_premi_shift2_administrasi += $premi_shift2;
+                                $total_premi_shift3_administrasi += $premi_shift3;
+
+                                $total_upah_premi_shift2_administrasi += $upah_premi_shift2;
+                                $total_upah_premi_shift3_administrasi += $upah_premi_shift3;
                             }
 
                             //PENJUALAN
@@ -1101,6 +1114,13 @@
                                 $total_upah_overtime_libur_penjualan += $upah_overtime_libur;
 
                                 $total_upah_ot_penjualan += $total_upah_overtime;
+
+                                //Premi
+                                $total_premi_shift2_penjualan += $premi_shift2;
+                                $total_premi_shift3_penjualan += $premi_shift3;
+
+                                $total_upah_premi_shift2_penjualan += $upah_premi_shift2;
+                                $total_upah_premi_shift3_penjualan += $upah_premi_shift3;
                             }
 
                             //TKL
@@ -1142,6 +1162,13 @@
                                 $total_upah_overtime_libur_tkl += $upah_overtime_libur;
 
                                 $total_upah_ot_tkl += $total_upah_overtime;
+
+                                //Premi
+                                $total_premi_shift2_tkl += $premi_shift2;
+                                $total_premi_shift3_tkl += $premi_shift3;
+
+                                $total_upah_premi_shift2_tkl += $upah_premi_shift2;
+                                $total_upah_premi_shift3_tkl += $upah_premi_shift3;
                             }
 
                             //TKTL
@@ -1183,9 +1210,14 @@
                                 $total_upah_overtime_libur_tktl += $upah_overtime_libur;
 
                                 $total_upah_ot_tktl += $total_upah_overtime;
-                            }
 
-                            // $grandtotal_all_upah_overtime += $total_upah_overtime;
+                                //Premi
+                                $total_premi_shift2_tktl += $premi_shift2;
+                                $total_premi_shift3_tktl += $premi_shift3;
+
+                                $total_upah_premi_shift2_tktl += $upah_premi_shift2;
+                                $total_upah_premi_shift3_tktl += $upah_premi_shift3;
+                            }
 
                             // //Premi Shift
                             // $grandtotal_all_premi_shift2 += $premis_shift2;
@@ -1274,6 +1306,15 @@
 
                         <td style="text-align: right">{{ formatAngka($total_upah_ot_administrasi) }}</td>
 
+                        <!-- Premi -->
+                        <td style="text-align: right">{{ formatAngka($total_premi_shift2_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upah_premi_shift2_administrasi) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_premi_shift3_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_administrasi) }}</td>
+
+
+
 
 
                     </tr>
@@ -1316,6 +1357,13 @@
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_penjualan) }}</td>
 
                         <td style="text-align: right">{{ formatAngka($total_upah_ot_penjualan) }}</td>
+
+                        <!-- Premi -->
+                        <td style="text-align: right">{{ formatAngka($total_premi_shift2_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upah_premi_shift2_penjualan) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_premi_shift3_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_penjualan) }}</td>
                     </tr>
                     <tr>
                         <td>TKL</td>
@@ -1356,6 +1404,13 @@
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_tkl) }}</td>
 
                         <td style="text-align: right">{{ formatAngka($total_upah_ot_tkl) }}</td>
+
+                        <!-- Premi -->
+                        <td style="text-align: right">{{ formatAngka($total_premi_shift2_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upah_premi_shift2_tkl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_premi_shift3_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1396,6 +1451,13 @@
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_tktl) }}</td>
 
                         <td style="text-align: right">{{ formatAngka($total_upah_ot_tktl) }}</td>
+
+                        <!-- Premi -->
+                        <td style="text-align: right">{{ formatAngka($total_premi_shift2_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upah_premi_shift2_tktl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngka($total_premi_shift3_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -1438,6 +1500,13 @@
                     <th style="text-align: right">{{ formatAngkaDesimal($total_all_upah_overtime_libur) }}</th>
 
                     <th style="text-align: right">{{ formatAngka($total_all_upah_overtime) }}</th>
+
+                    <!-- Premi -->
+                    <th style="text-align: right">{{ formatAngka($total_all_premi_shift2) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_upah_premi_shift2) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($total_all_premi_shift3) }}</th>
+                    <th style="text-align: right">{{ formatAngka($total_all_upah_premi_shift3) }}</th>
 
 
                 </tfoot>
