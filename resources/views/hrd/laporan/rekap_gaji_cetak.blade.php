@@ -409,12 +409,12 @@
                         $total_bpjstk_pcf = 0;
 
                         $total_all_denda = 0;
-                        $total_all_denda_administrasi = 0;
-                        $total_all_denda_penjualan = 0;
-                        $total_all_denda_tkl = 0;
-                        $total_all_denda_tktl = 0;
-                        $total_all_denda_mp = 0;
-                        $total_all_denda_pcf = 0;
+                        $total_denda_administrasi = 0;
+                        $total_denda_penjualan = 0;
+                        $total_denda_tkl = 0;
+                        $total_denda_tktl = 0;
+                        $total_denda_mp = 0;
+                        $total_denda_pcf = 0;
 
                         $total_all_pjp = 0;
                         $total_pjp_administrasi = 0;
@@ -449,36 +449,36 @@
                         $total_spip_pcf = 0;
 
                         $total_all_pengurang = 0;
-                        $total_all_pengurang_administrasi = 0;
-                        $total_all_pengurang_penjualan = 0;
-                        $total_all_pengurang_tkl = 0;
-                        $total_all_pengurang_tktl = 0;
-                        $total_all_pengurang_mp = 0;
-                        $total_all_pengurang_pcf = 0;
+                        $total_pengurang_administrasi = 0;
+                        $total_pengurang_penjualan = 0;
+                        $total_pengurang_tkl = 0;
+                        $total_pengurang_tktl = 0;
+                        $total_pengurang_mp = 0;
+                        $total_pengurang_pcf = 0;
 
                         $total_all_penambah = 0;
-                        $total_all_penambah_administrasi = 0;
-                        $total_all_penambah_penjualan = 0;
-                        $total_all_penambah_tkl = 0;
-                        $total_all_penambah_tktl = 0;
-                        $total_all_penambah_mp = 0;
-                        $total_all_penambah_pcf = 0;
+                        $total_penambah_administrasi = 0;
+                        $total_penambah_penjualan = 0;
+                        $total_penambah_tkl = 0;
+                        $total_penambah_tktl = 0;
+                        $total_penambah_mp = 0;
+                        $total_penambah_pcf = 0;
 
                         $total_all_potongan = 0;
-                        $total_all_potongan_administrasi = 0;
-                        $total_all_potongan_penjualan = 0;
-                        $total_all_potongan_tkl = 0;
-                        $total_all_potongan_tktl = 0;
-                        $total_all_potongan_mp = 0;
-                        $total_all_potongan_pcf = 0;
+                        $total_potongan_administrasi = 0;
+                        $total_potongan_penjualan = 0;
+                        $total_potongan_tkl = 0;
+                        $total_potongan_tktl = 0;
+                        $total_potongan_mp = 0;
+                        $total_potongan_pcf = 0;
 
                         $total_all_bersih = 0;
-                        $total_all_bersih_administrasi = 0;
-                        $total_all_bersih_penjualan = 0;
-                        $total_all_bersih_tkl = 0;
-                        $total_all_bersih_tktl = 0;
-                        $total_all_bersih_mp = 0;
-                        $total_all_bersih_pcf = 0;
+                        $total_bersih_administrasi = 0;
+                        $total_bersih_penjualan = 0;
+                        $total_bersih_tkl = 0;
+                        $total_bersih_tktl = 0;
+                        $total_bersih_mp = 0;
+                        $total_bersih_pcf = 0;
 
                     @endphp
                     @foreach ($presensi as $d)
