@@ -1371,8 +1371,8 @@
                             // //Potongan Upah
                             // $grandtotal_all_total_potongan += $jml_potongan_upah;
 
-                            // //Penambahan
-                            // $grandtotal_all_penambahan += $jml_penambah;
+                            // //penambah
+                            // $grandtotal_all_penambah += $jml_penambah;
 
                             // //Jumlah Bersih
                             // $grandtotal_all_jmlbersih += $jmlbersih;
@@ -1452,8 +1452,8 @@
                         <td style="text-align: right">{{ formatAngka($total_pengurang_administrasi) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_potongan_administrasi) }}</td>
 
-                        <!-- PENAMBAHAN -->
-                        <td style="text-align: right">{{ formatAngka($total_penambahan_administrasi) }}</td>
+                        <!-- penambah -->
+                        <td style="text-align: right">{{ formatAngka($total_penambah_administrasi) }}</td>
 
                         <!-- JUMLAH BERSIH -->
                         <td style="text-align: right">{{ formatAngka($total_jmlbersih_administrasi) }}</td>
@@ -1536,8 +1536,8 @@
                         <td style="text-align: right">{{ formatAngka($total_pengurang_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_potongan_penjualan) }}</td>
 
-                        <!-- PENAMBAHAN -->
-                        <td style="text-align: right">{{ formatAngka($total_penambahan_penjualan) }}</td>
+                        <!-- penambah -->
+                        <td style="text-align: right">{{ formatAngka($total_penambah_penjualan) }}</td>
 
                         <!-- JUMLAH BERSIH -->
                         <td style="text-align: right">{{ formatAngka($total_jmlbersih_penjualan) }}</td>
@@ -1615,8 +1615,8 @@
                         <td style="text-align: right">{{ formatAngka($total_pengurang_tkl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_potongan_tkl) }}</td>
 
-                        <!-- PENAMBAHAN -->
-                        <td style="text-align: right">{{ formatAngka($total_penambahan_tkl) }}</td>
+                        <!-- penambah -->
+                        <td style="text-align: right">{{ formatAngka($total_penambah_tkl) }}</td>
 
                         <!-- JUMLAH BERSIH -->
                         <td style="text-align: right">{{ formatAngka($total_jmlbersih_tkl) }}</td>
@@ -1694,8 +1694,8 @@
                         <td style="text-align: right">{{ formatAngka($total_pengurang_tktl) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_potongan_tktl) }}</td>
 
-                        <!-- PENAMBAHAN -->
-                        <td style="text-align: right">{{ formatAngka($total_penambahan_tktl) }}</td>
+                        <!-- penambah -->
+                        <td style="text-align: right">{{ formatAngka($total_penambah_tktl) }}</td>
 
                         <!-- JUMLAH BERSIH -->
                         <td style="text-align: right">{{ formatAngka($total_jmlbersih_tktl) }}</td>
