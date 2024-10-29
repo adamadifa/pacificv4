@@ -1933,7 +1933,88 @@
                     <th style="background-color: #df1b38; color:white;">PERUSAHAAN</th>
                     <th style="background-color: #df1b38; color:white;">TK</th>
                 </tr>
+                <tr>
+                    <td>MP</td>
+                    <td style="text-align: right">{{ formatAngka($total_gajipokok_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_jabatan_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_masakerja_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_tanggungjawab_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_makan_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_istri_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_t_skill_mp) }}</td>
 
+                    <td style="text-align: right">{{ formatAngka($total_i_masakerja_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_i_lembur_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_i_penempatan_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_i_kpi_mp) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_im_ruanglingkup_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_im_penempatan_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_im_kinerja_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_im_kendaraan_mp) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_upah_mp) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_insentif_mp) }}</td>
+
+                    <!--Jam Kerja -->
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_jamkerja_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_upahperjam_mp) }}</td>
+
+                    <!--Overtime-->
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_1_mp) }}</td>
+
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_2_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_2_mp) }}</td>
+
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_mp) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_upah_ot_mp) }}</td>
+
+                    <!-- Premi -->
+                    <td style="text-align: right">{{ formatAngka($total_premi_shift2_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_upah_premi_shift2_mp) }}</td>
+
+                    <td style="text-align: right">{{ formatAngka($total_premi_shift3_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_upah_premi_shift3_mp) }}</td>
+
+                    <!-- Bruto -->
+                    <td style="text-align: right">{{ formatAngka($total_bruto_mp) }}</td>
+
+                    <!-- Potongan -->
+                    <td style="text-align: right">{{ formatAngkaDesimal($total_potongan_jam_mp) }}</td>
+
+                    <!-- BPJS -->
+                    <td style="text-align: right">{{ formatAngka($total_bpjskesehatan_mp) }}</td>
+                    <td></td>
+                    <td style="text-align: right">{{ formatAngka($total_bpjstk_mp) }}</td>
+
+                    <!-- Denda -->
+                    <td style="text-align: right">{{ formatAngka($total_denda_mp) }}</td>
+
+                    <!-- Pinjaman -->
+                    <td style="text-align: right">{{ formatAngka($total_pjp_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_kasbon_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_nonpjp_mp) }}</td>
+
+                    <!-- SPIP -->
+                    <td style="text-align: right">{{ formatAngka($total_spip_mp) }}</td>
+
+                    <!-- PENGURANG -->
+                    <td style="text-align: right">{{ formatAngka($total_pengurang_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_potongan_mp) }}</td>
+
+                    <!-- penambah -->
+                    <td style="text-align: right">{{ formatAngka($total_penambah_mp) }}</td>
+
+                    <!-- JUMLAH BERSIH -->
+                    <td style="text-align: right">{{ formatAngka($total_jmlbersih_mp) }}</td>
+                </tr>
+                <tr>
+                    <th>PACIFIC</th>
+                </tr>
             </table>
         </div>
         {{-- <div style="margin-top: 20px">
