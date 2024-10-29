@@ -1053,8 +1053,8 @@
                                 $total_overtime_2_administrasi += $total_overtime_2;
                                 $total_overtime_libur_administrasi += $total_overtime_libur;
 
-                                $total_upah_overtime_1_administrasi += $upah_overtime_1;
-                                $total_upah_overtime_2_administrasi += $upah_overtime_2;
+                                $total_upah_ot_1_administrasi += $upah_overtime_1;
+                                $total_upah_ot_2_administrasi += $upah_overtime_2;
                                 $total_upah_overtime_libur_administrasi += $upah_overtime_libur;
                             }
 
@@ -1092,8 +1092,8 @@
                                 $total_overtime_2_penjualan += $total_overtime_2;
                                 $total_overtime_libur_penjualan += $total_overtime_libur;
 
-                                $total_upah_overtime_1_penjualan += $upah_overtime_1;
-                                $total_upah_overtime_2_penjualan += $upah_overtime_2;
+                                $total_upah_ot_1_penjualan += $upah_overtime_1;
+                                $total_upah_ot_2_penjualan += $upah_overtime_2;
                                 $total_upah_overtime_libur_penjualan += $upah_overtime_libur;
                             }
 
@@ -1131,8 +1131,8 @@
                                 $total_overtime_2_tkl += $total_overtime_2;
                                 $total_overtime_libur_tkl += $total_overtime_libur;
 
-                                $total_upah_overtime_1_tkl += $upah_overtime_1;
-                                $total_upah_overtime_2_tkl += $upah_overtime_2;
+                                $total_upah_ot_1_tkl += $upah_overtime_1;
+                                $total_upah_ot_2_tkl += $upah_overtime_2;
                                 $total_upah_overtime_libur_tkl += $upah_overtime_libur;
                             }
 
@@ -1170,8 +1170,8 @@
                                 $total_overtime_2_tktl += $total_overtime_2;
                                 $total_overtime_libur_tktl += $total_overtime_libur;
 
-                                $total_upah_overtime_1_tktl += $upah_overtime_1;
-                                $total_upah_overtime_2_tktl += $upah_overtime_2;
+                                $total_upah_ot_1_tktl += $upah_overtime_1;
+                                $total_upah_ot_2_tktl += $upah_overtime_2;
                                 $total_upah_overtime_libur_tktl += $upah_overtime_libur;
                             }
 
@@ -1260,10 +1260,10 @@
 
                         <!--Overtime-->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_administrasi) }}</td>
-                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_1_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_1_administrasi) }}</td>
 
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_2_administrasi) }}</td>
-                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_2_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_2_administrasi) }}</td>
 
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_administrasi) }}</td>
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_administrasi) }}</td>
@@ -1300,10 +1300,10 @@
 
                         <!--Overtime-->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_penjualan) }}</td>
-                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_1_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_1_penjualan) }}</td>
 
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_2_penjualan) }}</td>
-                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_2_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_2_penjualan) }}</td>
 
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_penjualan) }}</td>
                         <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_penjualan) }}</td>
@@ -1338,7 +1338,13 @@
 
                         <!--Overtime-->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_tkl) }}</td>
-                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_1_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_1_tkl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_2_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_2_tkl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_tkl) }}</td>
                     </tr>
                     <tr>
                         <td>TKTL</td>
@@ -1370,7 +1376,13 @@
 
                         <!--Overtime-->
                         <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_1_tktl) }}</td>
-                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_1_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_1_tktl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_2_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_ot_2_tktl) }}</td>
+
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_overtime_libur_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngkaDesimal($total_upah_overtime_libur_tktl) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
