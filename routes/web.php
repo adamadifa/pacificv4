@@ -145,6 +145,7 @@ use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisitpelangganController;
 use App\Http\Controllers\WilayahController;
+use App\Http\Controllers\WorksheetomController;
 use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
 use App\Models\Kontrabonpembelian;
@@ -2001,11 +2002,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/worksheetom/costratio', [CostratioController::class, 'index'])->name('worksheetom.costratio')->can('worksheetom.costratio');
     Route::get('/worksheetom/visitpelanggan', [VisitpelangganController::class, 'index'])->name('worksheetom.visitpelanggan')->can('worksheetom.visitpelanggan');
     Route::get('/worksheetom/monitoringretur', [MonitoringreturController::class, 'index'])->name('worksheetom.monitoringretur')->can('worksheetom.monitoringretur');
-    Route::get('/worksheetom/monitoringprogram', 'WorksheetomController@monitoringprogram')->name('worksheetom.monitoringprogram')->can('worksheetom.monitoringprogram');
-    Route::get('/worksheetom/kebutuhancabang', 'WorksheetomController@kebutuhancabang')->name('worksheetom.kebutuhancabang')->can('worksheetom.kebutuhancabang');
-    Route::get('/worksheetom/produkexpired', 'WorksheetomController@produkexpired')->name('worksheetom.produkexpired')->can('worksheetom.produkexpired');
-    Route::get('/worksheetom/evaluasisharing', 'WorksheetomController@evaluasisharing')->name('worksheetom.evaluasisharing')->can('worksheetom.evaluasisharing');
-    Route::get('/worksheetom/bbm', 'WorksheetomController@bbm')->name('worksheetom.bbm')->can('worksheetom.bbm');
+    Route::get('/worksheetom/monitoringprogram', [WorksheetomController::class, 'monitoringprogram'])->name('worksheetom.monitoringprogram')->can('worksheetom.monitoringprogram');
+    Route::get('/worksheetom/kebutuhancabang', [WorksheetomController::class, 'kebutuhancabang'])->name('worksheetom.kebutuhancabang')->can('worksheetom.kebutuhancabang');
+    Route::get('/worksheetom/produkexpired', [WorksheetomController::class, 'produkexpired'])->name('worksheetom.produkexpired')->can('worksheetom.produkexpired');
+    Route::get('/worksheetom/evaluasisharing', [WorksheetomController::class, 'evaluasisharing'])->name('worksheetom.evaluasisharing')->can('worksheetom.evaluasisharing');
+    Route::get('/worksheetom/bbm', [WorksheetomController::class, 'bbm'])->name('worksheetom.bbm')->can('worksheetom.bbm');
     Route::get('/worksheetom/ratiobs', [LaporanmarketingController::class, 'ratiobs'])->name('worksheetom.ratiobs')->can('worksheetom.ratiobs');
 });
 
