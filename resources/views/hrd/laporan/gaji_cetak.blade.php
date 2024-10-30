@@ -215,7 +215,7 @@
                         @endphp
                         <tr>
                             <td style="width:1%">{{ $loop->iteration }}</td>
-                            <td style="width:2%">{{ $d['nik'] }}</td>
+                            <td style="width:2%">'{{ $d['nik'] }}</td>
                             <td style="width:4%">{{ $d['nama_karyawan'] }}</td>
                             <td style="width:2%">{{ $d['no_rekening'] }}</td>
                             <td style="width:2%">{{ $d['no_ktp'] }}</td>
