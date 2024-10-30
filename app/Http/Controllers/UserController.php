@@ -120,9 +120,11 @@ class UserController extends Controller
             'email' => 'required|email',
             'kode_cabang' => 'required',
             'kode_regional' => 'required',
-            'kode_dept' => 'required'
+            'kode_dept' => 'required',
+            'status' => 'required'
         ]);
 
+        $force_logout = $request->status == 0 ? 1 : 0;
         try {
 
             if (isset($request->password)) {
@@ -134,7 +136,9 @@ class UserController extends Controller
                     'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
                     'password' => bcrypt($request->password),
-                    'dept_access' => json_encode($request->dept_access)
+                    'dept_access' => json_encode($request->dept_access),
+                    'status' => $request->status,
+                    'force_logout' => $force_logout
                 ]);
             } else {
                 User::where('id', $id)->update([
@@ -144,7 +148,10 @@ class UserController extends Controller
                     'kode_cabang' => $request->kode_cabang,
                     'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
-                    'dept_access' => json_encode($request->dept_access)
+                    'dept_access' => json_encode($request->dept_access),
+                    'status' => $request->status,
+                    'force_logout' => $force_logout
+
                 ]);
             }
 

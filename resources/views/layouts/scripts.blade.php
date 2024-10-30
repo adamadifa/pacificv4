@@ -11,6 +11,7 @@
  <script src="{{ asset('/assets/vendor/js/menu.js') }}"></script>
  <script src="{{ asset('assets/vendor/js/jquery.maskMoney.js') }}"></script>
  <script src="{{ asset('assets/vendor/js/easy-number-separator.js') }}"></script>
+ <script src="{{ asset('assets/vendor/js/customizer.js') }}"></script>
 
  <!-- endbuild -->
 

@@ -15,6 +15,7 @@ use App\Models\Disposisiizinterlambat;
 use App\Models\Disposisilembur;
 use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Disposisitargetkomisi;
+use App\Models\User;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -449,7 +450,10 @@ class Globalprovider extends ServiceProvider
                 'sagudangcabang.index',
             ]);
 
-
+            $users = User::select("*")
+                ->whereNotNull('last_seen')
+                ->orderBy('last_seen', 'DESC')
+                ->paginate(10);
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
                 'roles_show_cabang_pjp' => $roles_show_cabang_pjp,
@@ -517,7 +521,10 @@ class Globalprovider extends ServiceProvider
                 'notifikasi_hrd' => $notifikasi_hrd,
                 'notifikasi_izindinas' => $notifikasi_izindinas,
 
-                'total_notifikasi' => $total_notifikasi
+                'total_notifikasi' => $total_notifikasi,
+
+
+                'users' => $users
 
             ];
             View::share($shareddata);

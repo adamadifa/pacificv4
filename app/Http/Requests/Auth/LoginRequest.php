@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +54,18 @@ class LoginRequest extends FormRequest
      */
     public function authenticate(): void
     {
+
         $this->ensureIsNotRateLimited();
+
+        // Cari user berdasarkan email
+        $user = User::where('email', $this->email)->orWhere('username', $this->username)->first();
+
+        // Cek apakah user aktif
+        if ($user && $user->status == 0) {
+            throw ValidationException::withMessages([
+                'id_user' => 'Akun Anda dinonaktifkan. Silakan hubungi admin.',
+            ]);
+        }
 
         if (!Auth::attempt($this->only($this->id_type, 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());

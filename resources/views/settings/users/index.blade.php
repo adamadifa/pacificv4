@@ -46,6 +46,7 @@
                                         <th>Cabang</th>
                                         <th>Dept</th>
                                         <th>Regional</th>
+                                        <th>Status</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -64,6 +65,13 @@
                                             <td>{{ textCamelCase($d->nama_cabang) }}</td>
                                             <td>{{ textUpperCase($d->kode_dept) }}</td>
                                             <td>{{ textCamelCase($d->nama_regional) }}</td>
+                                            <td>
+                                                @if ($d->status == 1)
+                                                    <i class="ti ti-circle text-success"></i> Aktif
+                                                @else
+                                                    <i class="ti ti-circle text-danger"></i> Non Aktif
+                                                @endif
+                                            </td>
                                             <td>
                                                 <div class="d-flex">
                                                     <div>

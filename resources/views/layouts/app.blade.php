@@ -67,7 +67,57 @@
         <div class="drag-target"></div>
     </div>
     <!-- / Layout wrapper -->
+    <!-- BEGIN: Customizer-->
+    <div class="customizer d-none d-md-block"><a class="customizer-toggle d-flex align-items-center justify-content-center" href="#"><i
+                class="spinner-grow white"></i></a>
+        <div class="customizer-content">
+            <!-- Customizer header -->
+            <div class="customizer-header px-4 pt-2 pb-0 position-relative">
+                <h4 class="mb-0">Daftar User Online</h4>
+                <p class="m-0">User Online</p>
 
+                <a class="customizer-close" href="#"><i data-feather="x"></i></a>
+            </div>
+            <hr>
+            @foreach ($users as $d)
+                <div class="customizer-menu px-2">
+
+
+
+
+
+                    <div id="customizer-menu-collapsible" class="d-flex justify-content-between align-items-center">
+                        <div class="mr-50 d-flex justify-content-start">
+                            <div class="image">
+                                @if (!empty($d->foto))
+                                    @php
+                                        $path = Storage::url('users/' . $d->foto);
+                                    @endphp
+                                    <img src="{{ url($path) }}" alt="avtar img holder" height="35" width="35">
+                                @else
+                                    <img src="{{ asset('assets/img/avatars/1.png') }}" class="rounded" alt="" height="52" width="52">
+                                @endif
+                            </div>
+                            <div class="user-page-info ms-3">
+                                <span class="mt-1 p-0 mb-0" style="font-size: 16px">{{ $d->name }}</span><br>
+                                <small class="text-success"><i>Last Seen {{ Carbon\Carbon::parse($d->last_seen)->diffForHumans() }}</i></small>
+                            </div>
+                        </div>
+
+                        @if (Cache::has('user-is-online-' . $d->id))
+                            <div class="ml-auto"><i class="fa fa-circle text-success"></i></div>
+                        @else
+                            <div class="ml-auto"><i class="fa fa-circle text-danger"></i></div>
+                        @endif
+
+
+                    </div>
+
+                </div>
+            @endforeach
+        </div>
+    </div>
+    <!-- End: Customizer-->
     <!-- Core JS -->
     @include('layouts.scripts')
     <!-- Page JS -->

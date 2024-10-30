@@ -25,6 +25,13 @@
             @endforeach
         </div>
     @endforeach
+    <div class="form-group mt-3">
+        <select name="status" id="status" class="form-select">
+            <option value="">Status</option>
+            <option value="1" {{ $user->status == '1' ? 'selected' : '' }}>Aktif</option>
+            <option value="0" {{ $user->status == '0' ? 'selected' : '' }}>Non Aktif</option>
+        </select>
+    </div>
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
             <ion-icon name="repeat-outline" class="me-1"></ion-icon>
