@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::apiResource('/slipgaji', App\Http\Controllers\Api\SlipgajiController::class);
+// Route::get('/slipgaji/{bulan}/{tahun}/{nik}', [App\Http\Controllers\Api\SlipgajiController::class, 'show']);
+// Route::get('/api/slipgaji', [App\Http\Controllers\Api\SlipgajiController::class, 'index']);
+
+Route::apiResource('/slipgaji', App\Http\Controllers\Api\SlipgajiController::class);
+Route::get('/slipgaji/{bulangaji}/{tahungaji}/{nik}', [App\Http\Controllers\Api\SlipgajiController::class, 'show']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
