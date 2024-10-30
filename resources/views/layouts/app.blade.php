@@ -80,7 +80,7 @@
             </div>
             <hr>
             @foreach ($users as $d)
-                <div class="customizer-menu px-2">
+                <div class="customizer-menu px-2 mt-2">
 
 
 
