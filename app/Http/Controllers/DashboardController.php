@@ -36,7 +36,11 @@ class DashboardController extends Controller
     public function index()
     {
         // dd(session('screen_width'), session('screen_height'));
+        // $ip = request()->ip(); // dapatkan IP pengguna
+        // $locationData = file_get_contents("http://ipinfo.io/{$ip}/json");
+        // $location = json_decode($locationData);
 
+        // dd($location);
 
         $default_marketing = ['super admin', 'direktur', 'gm marketing', 'gm administrasi', 'regional sales manager', 'manager keuangan', 'manager audit'];
         $user = User::findorfail(auth()->user()->id);

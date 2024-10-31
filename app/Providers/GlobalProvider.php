@@ -453,7 +453,7 @@ class Globalprovider extends ServiceProvider
             $users = User::select("*")
                 ->whereNotNull('last_seen')
                 ->orderBy('last_seen', 'DESC')
-                ->paginate(10);
+                ->get();
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,
                 'roles_show_cabang_pjp' => $roles_show_cabang_pjp,
