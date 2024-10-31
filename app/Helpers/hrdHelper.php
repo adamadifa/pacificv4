@@ -52,7 +52,7 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
     } else if ($kode_dept == 'PRD' && $kategori_jabatan == "NM") {
         $roles_approve =  ['manager produksi', 'gm operasional', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == 'ADT' && $kategori_jabatan == "NM") {
-        $roles_approve =  ['manger audit', 'asst. manager hrd', 'direktur'];
+        $roles_approve =  ['asst. manager hrd', 'direktur'];
     } else {
         $roles_approve =  ['regional operation manager', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     }
