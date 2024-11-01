@@ -138,7 +138,8 @@ class InsentifController extends Controller
             'iu_kpi' => 'required',
             'im_ruanglingkup' => 'required',
             'im_penempatan' => 'required',
-            'im_kinerja' => 'required'
+            'im_kinerja' => 'required',
+            'im_kendaraan' => 'required'
         ]);
 
         try {
@@ -154,7 +155,8 @@ class InsentifController extends Controller
                 'iu_kpi' => toNumber($request->iu_kpi),
                 'im_ruanglingkup' => toNumber($request->im_ruanglingkup),
                 'im_penempatan' => toNumber($request->im_penempatan),
-                'im_kinerja' => toNumber($request->im_kinerja)
+                'im_kinerja' => toNumber($request->im_kinerja),
+                'im_kendaraan' => toNumber($request->im_kendaraan)
             ]);
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));

@@ -1,11 +1,10 @@
-<form action="{{ route('insentif.update', Crypt::encrypt($insentif->kode_insentif)) }}" aria-autocomplete="false"
-    id="formeditInsentif" method="POST">
+<form action="{{ route('insentif.update', Crypt::encrypt($insentif->kode_insentif)) }}" aria-autocomplete="false" id="formeditInsentif" method="POST">
     @csrf
     @method('PUT')
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Berlaku" name="tanggal_berlaku" datepicker="flatpickr-date"
         value="{{ $insentif->tanggal_berlaku }}" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan"
-        select2="select2Karyawan" selected="{{ $insentif->nik }}" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Karyawan"
+        selected="{{ $insentif->nik }}" />
     <div class="divider text-start">
         <div class="divider-text">
             <i class="ti ti-moneybag me-1"></i> Insentif Umum
@@ -24,12 +23,14 @@
             <i class="ti ti-moneybag me-1"></i> Insentif Manager
         </div>
     </div>
-    <x-input-inline-label icon="ti ti-moneybag" label="Ruang Lingkup" name="im_ruanglingkup" money="true"
-        align="right" value="{{ formatRupiah($insentif->im_ruanglingkup) }}" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Ruang Lingkup" name="im_ruanglingkup" money="true" align="right"
+        value="{{ formatRupiah($insentif->im_ruanglingkup) }}" />
     <x-input-inline-label icon="ti ti-moneybag" label="Penempatan" name="im_penempatan" money="true" align="right"
         value="{{ formatRupiah($insentif->im_penempatan) }}" />
     <x-input-inline-label icon="ti ti-moneybag" label="Kinerja" name="im_kinerja" money="true" align="right"
         value="{{ formatRupiah($insentif->im_kinerja) }}" />
+    <x-input-inline-label icon="ti ti-moneybag" label="Kendaraan" name="im_kendaraan" money="true" align="right"
+        value="{{ formatRupiah($insentif->im_kendaraan) }}" />
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
