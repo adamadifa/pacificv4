@@ -11,7 +11,7 @@ return [
     'roles_approve_akt_cabang' => ['operation manager', 'manager keuangan', 'gm administrasi', 'direktur'],
     'roles_approve_mkt_cabang' => ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'],
 
-    'dept_lembur' =>  ['GDG', 'PRD', 'PDQ', 'GAF', 'MTC'],
+    'dept_lembur' =>  ['GDG', 'PRD', 'PDQ', 'GAF', 'MTC', 'HRD'],
     'roles_approve_presensi' => [
         'operation manager',
         'sales marketing manager',
