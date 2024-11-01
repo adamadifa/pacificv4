@@ -519,7 +519,9 @@ class LaporangudangjadiController extends Controller
             'tujuan',
             'gudang_jadi_mutasi.keterangan',
             DB::raw('gudang_jadi_angkutan_suratjalan.tarif+tepung+bs as total_tarif'),
-            'gudang_jadi_angkutan_kontrabon.tanggal as tanggal_kontrabon'
+            'gudang_jadi_angkutan_kontrabon.tanggal as tanggal_kontrabon',
+            'keuangan_ledger.tanggal as tanggal_bayar',
+            'ledgerhutang.tanggal as tanggal_bayar_hutang'
         );
         $query->join('angkutan', 'gudang_jadi_angkutan_suratjalan.kode_angkutan', '=', 'angkutan.kode_angkutan');
         $query->join('angkutan_tujuan', 'gudang_jadi_angkutan_suratjalan.kode_tujuan', '=', 'angkutan_tujuan.kode_tujuan');

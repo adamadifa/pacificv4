@@ -33,6 +33,7 @@
                     <th>BS</th>
                     <th>TOTAL</th>
                     <th>TGL KONTRABON</th>
+                    <th>TGL BAYAR</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +63,15 @@
                         <td class="right">{{ formatAngka($d->bs) }}</td>
                         <td class="right">{{ formatAngka($d->total_tarif) }}</td>
                         <td class="right">{{ DateToIndo($d->tanggal_kontrabon) }}</td>
+                        <td>
+                            @if (!empty($d->tanggal_bayar) || !empty($d->tanggal_bayar_hutang))
+                                <span class="badge bg-success">
+                                    {{ formatIndo($d->tanggal_bayar ?? $d->tanggal_bayar_hutang) }}
+                                </span>
+                            @else
+                                Belum Bayar
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

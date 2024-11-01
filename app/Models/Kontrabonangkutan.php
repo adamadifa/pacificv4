@@ -20,7 +20,12 @@ class Kontrabonangkutan extends Model
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
         $query = Kontrabonangkutan::query();
-        $query->select('gudang_jadi_angkutan_kontrabon.*', 'nama_angkutan', 'keuangan_ledger.tanggal as tanggal_bayar', 'ledgerhutang.tanggal as tanggal_bayar_hutang');
+        $query->select(
+            'gudang_jadi_angkutan_kontrabon.*',
+            'nama_angkutan',
+            'keuangan_ledger.tanggal as tanggal_bayar',
+            'ledgerhutang.tanggal as tanggal_bayar_hutang'
+        );
         $query->leftJoin('keuangan_ledger_kontrabonangkutan', 'gudang_jadi_angkutan_kontrabon.no_kontrabon', '=', 'keuangan_ledger_kontrabonangkutan.no_kontrabon');
         $query->leftJoin('keuangan_ledger', 'keuangan_ledger_kontrabonangkutan.no_bukti', '=', 'keuangan_ledger.no_bukti');
         $query->leftJoin('keuangan_ledger_kontrabonangkutan_hutang', 'gudang_jadi_angkutan_kontrabon.no_kontrabon', '=', 'keuangan_ledger_kontrabonangkutan_hutang.no_kontrabon');
