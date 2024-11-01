@@ -132,7 +132,7 @@
                             @endphp
                             {{ formatAngkaDesimal($qty_saldo_akhir) }}
                         </td>
-                        <td class="right">{{ formatAngka($harga_keluar) }}</td>
+                        <td class="right">{{ formatAngkaDesimal($harga_keluar) }}</td>
                         <td class="right">
                             @php
                                 $jumlah_saldo_akhir = $qty_saldo_akhir * $harga_keluar;
