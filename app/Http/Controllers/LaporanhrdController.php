@@ -214,7 +214,7 @@ class LaporanhrdController extends Controller
 
         $insentif = DB::table('hrd_insentif')
             ->select(
-                'nikd',
+                'nik',
                 'iu_masakerja',
                 'iu_lembur',
                 'iu_penempatan',
@@ -230,9 +230,8 @@ class LaporanhrdController extends Controller
                     ->from('hrd_insentif')
                     ->where('tanggal_berlaku', '<=', $berlakugaji)
                     ->groupBy('nik');
-            })->get();
+            });
 
-        dd($insentif);
 
         $pjp = Historibayarpjp::select(
             'nik',
