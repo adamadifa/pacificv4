@@ -526,6 +526,11 @@ class LaporangudangjadiController extends Controller
         $query->join('gudang_jadi_mutasi', 'gudang_jadi_angkutan_suratjalan.no_dok', '=', 'gudang_jadi_mutasi.no_dok');
         $query->leftJoin('gudang_jadi_angkutan_kontrabon_detail', 'gudang_jadi_angkutan_suratjalan.no_dok', '=', 'gudang_jadi_angkutan_kontrabon_detail.no_dok');
         $query->leftJoin('gudang_jadi_angkutan_kontrabon', 'gudang_jadi_angkutan_kontrabon_detail.no_kontrabon', '=', 'gudang_jadi_angkutan_kontrabon.no_kontrabon');
+        $query->leftJoin('keuangan_ledger_kontrabonangkutan', 'gudang_jadi_angkutan_kontrabon.no_kontrabon', '=', 'keuangan_ledger_kontrabonangkutan.no_kontrabon');
+        $query->leftJoin('keuangan_ledger', 'keuangan_ledger_kontrabonangkutan.no_bukti', '=', 'keuangan_ledger.no_bukti');
+        $query->leftJoin('keuangan_ledger_kontrabonangkutan_hutang', 'gudang_jadi_angkutan_kontrabon.no_kontrabon', '=', 'keuangan_ledger_kontrabonangkutan_hutang.no_kontrabon');
+        $query->leftJoin('keuangan_ledger as ledgerhutang', 'keuangan_ledger_kontrabonangkutan_hutang.no_bukti', '=', 'ledgerhutang.no_bukti');
+
         $query->whereBetween('gudang_jadi_mutasi.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_angkutan)) {
             $query->where('gudang_jadi_angkutan_suratjalan.kode_angkutan', $request->kode_angkutan);
