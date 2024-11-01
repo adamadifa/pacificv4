@@ -214,7 +214,7 @@ class LaporanhrdController extends Controller
 
         $insentif = DB::table('hrd_insentif')
             ->select(
-                'nik',
+                'nikd',
                 'iu_masakerja',
                 'iu_lembur',
                 'iu_penempatan',
