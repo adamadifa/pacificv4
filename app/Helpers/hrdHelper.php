@@ -232,6 +232,8 @@ function cekRoleapprovelembur($kode_dept)
         $roles_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == "GDG") {
         $roles_approve =  ['manager gudang', 'gm operasional', 'asst. manager hrd', 'direktur'];
+    } else if ($kode_dept == "HRD") {
+        $roles_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
     }
 
     return $roles_approve;
