@@ -226,7 +226,7 @@ class LaporanhrdController extends Controller
                 'tanggal_berlaku'
             )
             ->whereIn('kode_insentif', function ($query) use ($berlakugaji) {
-                $query->select(DB::raw('MAX(kode_insentif   )'))
+                $query->select(DB::raw('MAX(kode_insentif)'))
                     ->from('hrd_insentif')
                     ->where('tanggal_berlaku', '<=', $berlakugaji)
                     ->groupBy('nik');
