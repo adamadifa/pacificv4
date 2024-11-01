@@ -205,7 +205,7 @@ class LaporanhrdController extends Controller
                 'tanggal_berlaku'
             )
             ->whereIn('kode_gaji', function ($query) use ($berlakugaji) {
-                $query->select(DB::raw('MAX(kode_gaji   )'))
+                $query->select(DB::raw('MAX(kode_gaji)'))
                     ->from('hrd_gaji')
                     ->where('tanggal_berlaku', '<=', $berlakugaji)
                     ->groupBy('nik');
@@ -230,8 +230,9 @@ class LaporanhrdController extends Controller
                     ->from('hrd_insentif')
                     ->where('tanggal_berlaku', '<=', $berlakugaji)
                     ->groupBy('nik');
-            });
+            })->get();
 
+        dd($insentif);
 
         $pjp = Historibayarpjp::select(
             'nik',
