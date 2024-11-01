@@ -611,15 +611,21 @@ class LaporanhrdController extends Controller
         $data['roles_access_all_pjp'] = $roles_access_all_pjp;
 
         if (request()->is('laporanhrd/cetakgaji')) {
-            if (isset($_POST['exportButton'])) {
-                header("Content-type: application/vnd-ms-excel");
-                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-                header("Content-Disposition: attachment; filename=Laporan Gaji.xls");
-            }
+
 
             if ($request->format_laporan == 1) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                    header("Content-Disposition: attachment; filename=Laporan Gaji.xls");
+                }
                 return view('hrd.laporan.gaji_cetak', $data);
             } else {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                    header("Content-Disposition: attachment; filename=Rekap Gaji.xls");
+                }
                 return view('hrd.laporan.rekap_gaji_cetak', $data);
             }
         } else {
