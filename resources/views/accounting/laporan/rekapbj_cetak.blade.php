@@ -87,7 +87,10 @@
                                         ($d->saldoawal_gudangjadi + $d->gudangjadi_fsthp + $d->gudangjadi_repack + $d->gudangjadi_lainlain_in)
                                     : 0;
 
-                            $saldoakhir_gudangpusat = $d->saldoawal_gudangjadi;
+                            $saldoakhir_gudangpusat =
+                                $d->saldoawal_gudangjadi +
+                                ($d->gudangjadi_fsthp + $d->gudangjadi_repack + $d->gudangjadi_lainlain_in) -
+                                ($d->gudangjadi_suratjalan + $d->gudangjadi_reject + $d->gudangjadi_lainlain_out);
                             $total_harga_gudang = $saldoakhir_gudangpusat * $harga_kirim_cabang;
                             $grandtotal_harga_gudang += $total_harga_gudang;
                         @endphp
