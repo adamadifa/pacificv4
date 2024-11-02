@@ -63,6 +63,19 @@ class SaldoawalkasbesarController extends Controller
 
     public function getsaldo(Request $request)
     {
+
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
         $bulan = $request->bulan;
         $tahun = $request->tahun;
 
@@ -89,10 +102,10 @@ class SaldoawalkasbesarController extends Controller
 
         //Cek Setoran Bulan Depan Yang Masuk Ke Omset Bulan Ini
         $sp = new Setoranpusat();
-        $ceksetoranbulanberikutnya = $sp->cekOmsetsetoranpusatbulandepan($bulanlalu, $tahunlalu, $bulan, $tahun, $request->kode_cabang)->first();
+        $ceksetoranbulanberikutnya = $sp->cekOmsetsetoranpusatbulandepan($bulanlalu, $tahunlalu, $bulan, $tahun, $kode_cabang)->first();
 
         //Cek Setoran Bulan Lalu yang Mausk Ke Omset Bulan Ini
-        $ceksetoranbulansebelumnya = $sp->cekOmsetsetoranpusatbulansebelumnya($lastmonth, $lastyear, $bulan, $tahun, $request->kode_cabang)->first();
+        $ceksetoranbulansebelumnya = $sp->cekOmsetsetoranpusatbulansebelumnya($lastmonth, $lastyear, $bulan, $tahun, $kode_cabang)->first();
 
         if ($ceksetoranbulanberikutnya != null) {
             if (!empty($ceksetoranbulanberikutnya->tanggal_diterima)) {
@@ -120,7 +133,7 @@ class SaldoawalkasbesarController extends Controller
         } else {
             $saldobulanlalu = Saldoawalkasbesar::where('bulan', $bulanlalu)
                 ->where('tahun', $tahunlalu)
-                ->where('kode_cabang', $request->kode_cabang)->first();
+                ->where('kode_cabang', $kode_cabang)->first();
             $setoranpenjualanbulanlalu = Setoranpenjualan::select(
                 DB::raw("SUM(setoran_kertas) as setoran_kertas"),
                 DB::raw("SUM(setoran_logam) as setoran_logam"),
@@ -130,7 +143,7 @@ class SaldoawalkasbesarController extends Controller
                 DB::raw("SUM(giro_to_transfer) as giro_to_transfer")
             )
                 ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
-                ->where('salesman.kode_cabang', $request->kode_cabang)
+                ->where('salesman.kode_cabang', $kode_cabang)
                 ->whereBetween('keuangan_setoranpenjualan.tanggal', [$tgl_dari_bulanlalu, $tgl_sampai_bulanlalu])
                 ->first();
 
@@ -140,7 +153,7 @@ class SaldoawalkasbesarController extends Controller
                 DB::raw("SUM(setoran_transfer) as setoran_transfer"),
                 DB::raw("SUM(setoran_giro) as setoran_giro")
             )
-                ->where('kode_cabang', $request->kode_cabang)
+                ->where('kode_cabang', $kode_cabang)
                 ->whereBetween('tanggal', [$dari, $sampai])
                 ->where('omset_bulan', $bulanlalu)
                 ->where('omset_tahun', $tahunlalu)
@@ -153,7 +166,7 @@ class SaldoawalkasbesarController extends Controller
                 DB::raw("SUM(uang_logam) as setoran_logam")
             )
                 ->join('salesman', 'keuangan_kuranglebihsetor.kode_salesman', '=', 'salesman.kode_salesman')
-                ->where('salesman.kode_cabang', $request->kode_cabang)
+                ->where('salesman.kode_cabang', $kode_cabang)
                 ->whereBetween('tanggal', [$dari, $sampai])
                 ->where('jenis_bayar', 2)
                 ->first();
@@ -164,7 +177,7 @@ class SaldoawalkasbesarController extends Controller
                 DB::raw("SUM(uang_logam) as setoran_logam")
             )
                 ->join('salesman', 'keuangan_kuranglebihsetor.kode_salesman', '=', 'salesman.kode_salesman')
-                ->where('salesman.kode_cabang', $request->kode_cabang)
+                ->where('salesman.kode_cabang', $kode_cabang)
                 ->whereBetween('tanggal', [$dari, $sampai])
                 ->where('jenis_bayar', 1)
                 ->first();
@@ -172,13 +185,13 @@ class SaldoawalkasbesarController extends Controller
             $gantilogamtokertas = Logamtokertas::select(
                 DB::raw("SUM(jumlah) as jml_gantikertas")
             )
-                ->where('kode_cabang', $request->kode_cabang)
+                ->where('kode_cabang', $kode_cabang)
                 ->whereBetween('tanggal', [$dari, $sampai])
                 ->first();
 
 
             //Saldo Sebelumnya
-            $saldo_kertas = $saldobulanlalu->uang_kertas != null ? $saldobulanlalu->uang_kertas : 0;
+            $saldo_kertas = $saldobulanlalu->uang_kertas  ? $saldobulanlalu->uang_kertas : 0;
             $saldo_logam  = $saldobulanlalu->uang_logam != null ? $saldobulanlalu->uang_logam : 0;
             $saldo_giro   = $saldobulanlalu->giro != null ? $saldobulanlalu->giro : 0;
             $saldo_transfer  = $saldobulanlalu->transfer != null ? $saldobulanlalu->transfer : 0;
@@ -227,7 +240,19 @@ class SaldoawalkasbesarController extends Controller
 
     public function store(Request $request)
     {
-        $kode_saldo_awal = "SA" . $request->kode_cabang . $request->bulan . substr($request->tahun, 2, 2);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+        $kode_saldo_awal = "SA" . $kode_cabang . $request->bulan . substr($request->tahun, 2, 2);
         $tanggal = $request->tahun . "-" . $request->bulan . "-01";
         DB::beginTransaction();
         try {
@@ -246,7 +271,7 @@ class SaldoawalkasbesarController extends Controller
                     'uang_logam' => toNumber($request->uang_logam),
                     'giro'  => toNumber($request->giro),
                     'transfer' => toNumber($request->transfer),
-                    'kode_cabang' => $request->kode_cabang,
+                    'kode_cabang' => $kode_cabang,
 
                 ]);
             } else {
@@ -259,7 +284,7 @@ class SaldoawalkasbesarController extends Controller
                     'uang_logam' => toNumber($request->uang_logam),
                     'giro'  => toNumber($request->giro),
                     'transfer' => toNumber($request->transfer),
-                    'kode_cabang' => $request->kode_cabang,
+                    'kode_cabang' => $kode_cabang,
                 ]);
             }
 
