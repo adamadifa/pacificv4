@@ -56,7 +56,7 @@
             <tbody>
                 @php
                     $qty_saldo_awal = $saldo_awal != null ? $saldo_awal->jumlah : 0;
-                    $harga_saldo_awal = $saldo_awal != null ? $saldo_awal->harga / $qty_saldo_awal : 0;
+                    $harga_saldo_awal = $qty_saldo_awal != null ? $saldo_awal->harga / $qty_saldo_awal : 0;
                     $total_qty_saldoawal = 0;
                     $total_qty_pembelian = 0;
                     $total_qty_lainnya = 0;
