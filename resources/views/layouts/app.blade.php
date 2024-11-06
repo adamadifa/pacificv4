@@ -117,6 +117,16 @@
             @endforeach
         </div>
     </div>
+    <!-- Bottom Navigation -->
+    <nav class="navbar fixed-bottom navbar-light bg-light d-md-none">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fa fa-user"></i></a>
+            <a class="navbar-brand" href="#"><i class="fa fa-cog"></i></a>
+            <a class="navbar-brand" href="#"><i class="fa fa-home" style="font-size: 20px; border-radius: 50%;"></i></a>
+            <a class="navbar-brand" href="#"><i class="fa fa-envelope"></i></a>
+            <a class="navbar-brand" href="#"><i class="fa fa-question-circle"></i></a>
+        </div>
+    </nav>
     <!-- End: Customizer-->
     <!-- Core JS -->
     @include('layouts.scripts')

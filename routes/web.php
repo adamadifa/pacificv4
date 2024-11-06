@@ -1000,6 +1000,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/targetkomisi/{kode_target}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
 
         Route::post('/targetkomisi/gettargetsalesman', 'gettargetsalesman')->name('targetkomisi.gettargetsalesman');
+        Route::post('/targetkomisi/gettarget', 'gettarget')->name('targetkomisi.gettarget');
         Route::post('/targetkomisi/gettargetsalesmandashboard', 'gettargetsalesmandashboard')->name('targetkomisi.gettargetsalesmandashboard');
         Route::post('/targetkomisi/gettargetsalesmanedit', 'gettargetsalesmanedit')->name('targetkomisi.gettargetsalesmanedit');
     });

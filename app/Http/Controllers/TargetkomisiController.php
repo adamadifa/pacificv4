@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detailpenjualan;
 use App\Models\Detailtargetkomisi;
 use App\Models\Disposisitargetkomisi;
 use App\Models\Produk;
@@ -587,5 +588,99 @@ class TargetkomisiController extends Controller
             ->where('tahun', $request->tahun)
             ->get();
         return view('dashboard.salesman.gettargetsalesman', $data);
+    }
+
+
+
+    function gettarget(Request $request)
+    {
+
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+        $start_date = $request->tahun . "-" . $request->bulan . "-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+
+        //Realisasi
+        // $query->leftJoin(
+        //     DB::raw("(
+        //         SELECT
+        //             produk_harga.kode_produk,
+        //             SUM(jumlah) as realisasi
+        //         FROM
+        //             marketing_penjualan_detail
+        //         INNER JOIN produk_harga ON marketing_penjualan_detail.kode_harga = produk_harga.kode_harga
+        //         INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
+        //         WHERE tanggal BETWEEN '$start_date' AND '$end_date' AND kode_salesman = '$user->kode_salesman' AND status_promosi = '0'
+        //         GROUP BY produk_harga.kode_produk
+        //     ) detailpenjualan"),
+        //     function ($join) {
+        //         $join->on('marketing_komisi_target_detail.kode_produk', '=', 'detailpenjualan.kode_produk');
+        //     }
+        // );
+
+        $qrealisasi = Detailpenjualan::query();
+        $qrealisasi->select(
+            'produk_harga.kode_produk',
+            DB::raw('SUM(jumlah) as realisasi')
+        );
+        $qrealisasi->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qrealisasi->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $qrealisasi->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qrealisasi->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qrealisasi->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
+        $qrealisasi->where('status_promosi', '0');
+
+        if (!empty($kode_cabang)) {
+            $qrealisasi->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        if (!empty($request->kode_salesman)) {
+            $qrealisasi->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $qrealisasi->groupBy('produk_harga.kode_produk');
+
+
+        // dd($qrealisasi->get());
+
+        $query = Detailtargetkomisi::query();
+        $query->select(
+            'marketing_komisi_target_detail.kode_produk',
+            'nama_produk',
+            'isi_pcs_dus',
+            DB::raw('SUM(jumlah) as jumlah_target'),
+            'realisasi'
+
+        );
+        $query->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk');
+        $query->join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target');
+
+        $query->leftJoinSub($qrealisasi, 'realisasi', function ($join) {
+            $join->on('marketing_komisi_target_detail.kode_produk', '=', 'realisasi.kode_produk');
+        });
+        $query->where('bulan', $request->bulan);
+        $query->where('tahun', $request->tahun);
+        if (!empty($request->kode_salesman)) {
+            $query->where('marketing_komisi_target_detail.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($kode_cabang)) {
+            $query->where('marketing_komisi_target.kode_cabang', $kode_cabang);
+        }
+        $query->groupBy('marketing_komisi_target_detail.kode_produk', 'nama_produk', 'isi_pcs_dus', 'realisasi');
+        $target = $query->get();
+
+        $data['target'] = $target;
+        return view('dashboard.mobile.gettarget', $data);
     }
 }

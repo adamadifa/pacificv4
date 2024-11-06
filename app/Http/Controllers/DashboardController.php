@@ -69,7 +69,7 @@ class DashboardController extends Controller
 
     public function mobilemarketing()
     {
-        return view('dashboard.mobile.marketing');
+        return view('dashboard.mobile.marketing2');
     }
 
 
@@ -162,7 +162,7 @@ class DashboardController extends Controller
         $data['cabang'] = $cbg->getCabang();
         $agent = new Agent();
         if ($agent->isMobile()) {
-            return view('dashboard.mobile.marketing', $data);
+            return view('dashboard.mobile.marketing2', $data);
         } else {
             return view('dashboard.marketing', $data);
         }
