@@ -91,7 +91,7 @@
                  </ul>
              </li>
          @endif
-         @if (auth()->user()->hasRole('super admin'))
+         @if (auth()->user()->hasRole('super admin', 'gm administrasi'))
              <li
                  class="menu-item {{ request()->is(['roles', 'roles/*', 'permissiongroups', 'permissiongroups/*', 'permissions', 'permissions/*', 'users', 'users/*']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
