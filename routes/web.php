@@ -3,6 +3,7 @@
 use App\Http\Controllers\AjuanfakturkreditController;
 use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AjuantransferdanaController;
+use App\Http\Controllers\AktifitassmmController;
 use App\Http\Controllers\AngkutanController;
 use App\Http\Controllers\BadstokgaController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
@@ -1992,7 +1993,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/tutuplaporan/cektutuplaporan', 'cektutuplaporan');
     });
 
-
+    Route::controller(AktifitassmmController::class)->group(function () {
+        Route::get('/aktifitassmm', 'index')->name('aktifitassmm.index');
+        Route::get('/aktifitassmm/create', 'create')->name('aktifitassmm.create');
+    });
 
 
 

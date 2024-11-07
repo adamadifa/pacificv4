@@ -668,6 +668,7 @@ class TargetkomisiController extends Controller
         $query->leftJoinSub($qrealisasi, 'realisasi', function ($join) {
             $join->on('marketing_komisi_target_detail.kode_produk', '=', 'realisasi.kode_produk');
         });
+        $query->orderBy('marketing_komisi_target_detail.kode_produk');
         $query->where('bulan', $request->bulan);
         $query->where('tahun', $request->tahun);
         if (!empty($request->kode_salesman)) {

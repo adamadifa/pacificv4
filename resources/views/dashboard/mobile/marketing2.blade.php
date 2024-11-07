@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('titlepage', 'Dashboard')
 @section('content')
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-xl-12">
             @include('dashboard.welcome')
         </div>
-    </div>
+    </div> --}}
     <div class="row">
         <form action="#" id="formTarget">
             @hasanyrole($roles_show_cabang)

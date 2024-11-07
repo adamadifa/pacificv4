@@ -118,13 +118,15 @@
         </div>
     </div>
     <!-- Bottom Navigation -->
-    <nav class="navbar fixed-bottom navbar-light bg-light d-md-none">
+    <nav class="navbar fixed-bottom navbar-light bg-white shadow d-md-none">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fa fa-user"></i></a>
-            <a class="navbar-brand" href="#"><i class="fa fa-cog"></i></a>
-            <a class="navbar-brand" href="#"><i class="fa fa-home" style="font-size: 20px; border-radius: 50%;"></i></a>
-            <a class="navbar-brand" href="#"><i class="fa fa-envelope"></i></a>
-            <a class="navbar-brand" href="#"><i class="fa fa-question-circle"></i></a>
+            <a class="navbar-brand" href="#"><i class="ti ti-user" style="font-size: 20px"></i></a>
+            <a class="navbar-brand" href="{{ route('aktifitassmm.index') }}"><i
+                    class="ti ti-file-description {{ request()->is('aktifitassmm') ? 'text-primary' : '' }}" style="font-size: 20px"></i></a>
+            <a class="navbar-brand" href="/dashboard"><i class="fa fa-home {{ request()->is('dashboard') ? 'text-primary' : '' }}"
+                    style="font-size: 25px; border-radius: 50%;"></i></a>
+            <a class="navbar-brand" href="#"><i class="ti ti-mail" style="font-size: 20px"></i></a>
+            <a class="navbar-brand" href="#"><i class="ti ti-help" style="font-size: 20px"></i></a>
         </div>
     </nav>
     <!-- End: Customizer-->
