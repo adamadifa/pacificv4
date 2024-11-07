@@ -1996,6 +1996,8 @@ Route::middleware('auth')->group(function () {
     Route::controller(AktifitassmmController::class)->group(function () {
         Route::get('/aktifitassmm', 'index')->name('aktifitassmm.index');
         Route::get('/aktifitassmm/create', 'create')->name('aktifitassmm.create');
+        Route::post('/aktifitassmm/store', 'store')->name('aktifitassmm.store');
+        Route::post('/aktifitassmm/getaktifitas', 'getaktifitas')->name('aktifitassmm.getaktifitas');
     });
 
 

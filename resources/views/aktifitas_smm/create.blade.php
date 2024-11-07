@@ -169,22 +169,17 @@
                     },
                     cache: false,
                     success: function(respond) {
-                        var status = respond.split("|");
-                        if (status[0] == "success") {
-                            Swal.fire({
-                                title: 'Berhasil !',
-                                text: status[1],
-                                icon: 'success'
-                            })
-                            setTimeout("location.href='/aktifitassmm'", 2000);
-                        } else {
-                            Swal.fire({
-                                title: 'Error !',
-                                text: status[1],
-                                icon: 'error'
-                            })
-                            $("#sendactivity").prop('disabled', false);
-                        }
+                        Swal.fire({
+                            title: 'Berhasil !',
+                            text: respond.message,
+                            icon: 'success'
+                        })
+                        setTimeout("location.href='/aktifitassmm'", 2000);
+                    },
+                    error: function(xhr) {
+                        $("#sendactivity").prop('disabled', false);
+                        $("#sendactivity").text('Kirim');
+                        Swal.fire("Error", xhr.responseJSON.message, "error");
                     }
                 });
             }

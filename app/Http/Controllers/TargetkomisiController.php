@@ -637,11 +637,16 @@ class TargetkomisiController extends Controller
         $qrealisasi->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
         $qrealisasi->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qrealisasi->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qrealisasi->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $qrealisasi->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
         $qrealisasi->where('status_promosi', '0');
 
         if (!empty($kode_cabang)) {
             $qrealisasi->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if ($user->hasRole('regional sales manager')) {
+                $qrealisasi->where('cabang.kode_regional', $user->kode_regional);
+            }
         }
 
         if (!empty($request->kode_salesman)) {
@@ -664,7 +669,7 @@ class TargetkomisiController extends Controller
         );
         $query->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk');
         $query->join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target');
-
+        $query->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftJoinSub($qrealisasi, 'realisasi', function ($join) {
             $join->on('marketing_komisi_target_detail.kode_produk', '=', 'realisasi.kode_produk');
         });
@@ -677,6 +682,10 @@ class TargetkomisiController extends Controller
 
         if (!empty($kode_cabang)) {
             $query->where('marketing_komisi_target.kode_cabang', $kode_cabang);
+        } else {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', $user->kode_regional);
+            }
         }
         $query->groupBy('marketing_komisi_target_detail.kode_produk', 'nama_produk', 'isi_pcs_dus', 'realisasi');
         $target = $query->get();

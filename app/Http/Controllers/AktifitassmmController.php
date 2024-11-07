@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\sendActivityJob;
+use App\Models\AktifitasSMM;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AktifitassmmController extends Controller
 {
@@ -18,11 +21,30 @@ class AktifitassmmController extends Controller
         return view('aktifitas_smm.create');
     }
 
+    public function getaktifitas(Request $request)
+    {
+
+        if (!isset($request->tanggal)) {
+            $tanggal = date("Y-m-d");
+        } else {
+            $tanggal = $request->tanggal;
+        }
+        $aktifitas = AktifitasSMM::where('tanggal', $tanggal)->get();
+        $data['aktifitas'] = $aktifitas;
+        return view('aktifitas_smm.getaktifitas', $data);
+    }
+
     public function store(Request $request)
     {
+
+
         $id = auth()->user()->id;
-        $id_group_wa = auth()->user()->id->id_group_wa;
+        $id_group_wa = auth()->user()->id_group_wa;
+        $user = User::findorfail($id);
+        $role_name = $user->getRoleNames()[0];
+        // dd($role_name);
         $cekuser = User::where('id', $id)->first();
+
         $nama = $cekuser->name;
         $lokasi = $request->lokasi;
         $activity = $request->activity;
@@ -36,21 +58,21 @@ class AktifitassmmController extends Controller
         $hariini = date("Y-m-d");
         $tanggaljam = date("Y-m-d H:i:s");
         $format = $tahunskrg . $bulanskrg . $tglskrg;
-        $smactivity = DB::table("activity_sm")
+        $smactivity = DB::table("aktifitas_smm")
             ->whereRaw('DATE(tanggal)="' . $hariini . '"')
-            ->orderBy("kode_act_sm", "desc")
+            ->orderBy("kode_aktifitas", "desc")
             ->first();
         if ($smactivity == null) {
             $lastkode = '';
         } else {
-            $lastkode = $smactivity->kode_act_sm;
+            $lastkode = $smactivity->kode_aktifitas;
         }
-        $kode_act_sm  = buatkode($lastkode, $format, 4);
+        $kode_aktifitas  = buatkode($lastkode, $format, 4);
 
         if (isset($request->image)) {
             $image = $request->image;
-            $folderPath = "public/uploads/smactivity/";
-            $formatName = $kode_act_sm;
+            $folderPath = "public/uploads/aktifitas_smm/";
+            $formatName = $kode_aktifitas;
             $image_parts = explode(";base64", $image);
             $image_base64 = base64_decode($image_parts[1]);
             $fileName = $formatName . ".png";
@@ -66,25 +88,25 @@ class AktifitassmmController extends Controller
             //     ->count();
             $cek = 0;
             if ($cek > 0) {
-                echo "error|Anda Sudah Melakukan Aktifitas pada Pelanggan Ini !";
+                return response()->json(['status' => 'error', 'message' => 'Data Sudah Ada'], 400);
             } else {
                 $data = [
-                    'kode_act_sm' => $kode_act_sm,
+                    'kode_aktifitas' => $kode_aktifitas,
                     'tanggal' => $tanggaljam,
                     'id_user' => $id,
                     'latitude' => $latitude,
                     'longitude' => $longitude,
-                    'aktifitas' => $activity,
+                    'keterangan' => $activity,
                     'foto' => $fileName
                 ];
 
-                DB::table('activity_sm')->insert($data);
+                DB::table('aktifitas_smm')->insert($data);
                 if (isset($request->image)) {
                     Storage::put($file, $image_base64);
                 }
-                $path_image = Storage::url('uploads/smactivity/' . $fileName);
+                $path_image = Storage::url('uploads/aktifitas_smm/' . $fileName);
 
-                dispatch(new sendActivityJob($id_group_wa, $nama, $cekuser->kode_cabang, $activity, $fileName, $cekuser->level));
+                dispatch(new sendActivityJob($id_group_wa, $nama, $cekuser->kode_cabang, $activity, $fileName, $role_name));
                 // $pesan = [
                 //     'api_key' => 'B2TSubtfeWwb3eDHdIyoa0qRXJVgq8',
                 //     'sender' => '6289670444321',
@@ -113,10 +135,11 @@ class AktifitassmmController extends Controller
 
                 // $response = curl_exec($curl);
                 // curl_close($curl);
-                echo "success|Data Berhasil Disimpan";
+
+                return response()->json(['status' => 'success', 'message' => 'Data Berhasil Disimpan'], 200);
             }
         } catch (\Exception $e) {
-            dd($e);
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
     }
 }

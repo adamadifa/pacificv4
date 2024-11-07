@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class AktifitasSMM extends Model
 {
     use HasFactory;
+
+    protected $table = 'aktifitas_smm';
+    protected $guarded = [];
+    protected $primaryKey = 'kode_aktifitas';
 }
