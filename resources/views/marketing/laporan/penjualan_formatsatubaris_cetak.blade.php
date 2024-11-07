@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="{{ asset('assets/vendor/libs/freeze/js/freeze-table.min.js') }}"></script>
-    <style>
+    {{-- <style>
         .freeze-table {
             height: auto;
             max-height: 830px;
             overflow: auto;
         }
-    </style>
+    </style> --}}
 
     <style>
         .text-red {
@@ -210,10 +210,10 @@
 </body>
 
 </html>
-<script>
+{{-- <script>
     $(".freeze-table").freezeTable({
         'scrollable': true,
         'columnNum': 5,
         'shadow': true,
     });
-</script>
+</script> --}}

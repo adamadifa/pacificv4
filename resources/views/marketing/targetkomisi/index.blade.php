@@ -238,7 +238,7 @@
 
 
 <x-modal-form id="modal" size="modal-fullscreen" show="loadmodal" title="" />
-<x-modal-form id="modalDetail" size="modal-xl" show="loadmodalDetail" title="" />
+<x-modal-form id="modalDetail" size="modal-fullscreen" show="loadmodalDetail" title="" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
