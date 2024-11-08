@@ -85,7 +85,7 @@ class sendActivityJob implements ShouldQueue
                 'number' => $this->id_group_wa,
                 'media_type' => 'image',
                 'caption' => '*' . $this->nama . ': (' . $this->cabang . ')* ' . $this->activity,
-                'url' => $url
+                'url' => $url . $this->foto
             ];
 
             $curl = curl_init();
