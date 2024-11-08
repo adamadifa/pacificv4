@@ -60,7 +60,7 @@
     <div class="col">
         <table class="table">
             <tr>
-                <td class="bg-green"></td>
+                <td class="bg-success"></td>
                 <td>Rata Rata Penjualan 3 Bulan Terakhir</td>
             </tr>
         </table>
