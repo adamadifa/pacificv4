@@ -32,7 +32,7 @@ class AktifitassmmController extends Controller
         } else {
             $tanggal = $request->tanggal;
         }
-        $aktifitas = AktifitasSMM::where('tanggal', $tanggal)->get();
+        $aktifitas = AktifitasSMM::where('tanggal', $tanggal)->where('id_user', auth()->user()->id)->get();
         $data['aktifitas'] = $aktifitas;
         return view('aktifitas_smm.getaktifitas', $data);
     }
