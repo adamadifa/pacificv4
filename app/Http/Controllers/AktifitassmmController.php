@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\sendActivityJob;
 use App\Models\AktifitasSMM;
+use App\Models\Cabang;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,9 @@ class AktifitassmmController extends Controller
 
     public function getaktifitas(Request $request)
     {
-
+        $user = User::findorfail(auth()->user()->id);
+        $cabang = Cabang::where('kode_cabang', $user->kode_cabang)->first();
+        $data['lokasi'] = explode(",", $cabang->lokasi_cabang);
         if (!isset($request->tanggal)) {
             $tanggal = date("Y-m-d");
         } else {
