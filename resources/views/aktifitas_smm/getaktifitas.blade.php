@@ -16,7 +16,7 @@
             // $totalwaktu = hitungjamdesimal($start_time, $d->tanggal);
         @endphp
     @endif
-    <div class="card mb-1 border border-primary p-0">
+    <div class="card mb-1 border border-primary p-0 shadow">
         <div class="card-body p-3">
             <div class="d-flex">
                 <div class="img-thumbnail">
@@ -24,7 +24,7 @@
                         @php
                             $path = Storage::url('uploads/aktifitas_smm/' . $d->foto);
                         @endphp
-                        <img src="{{ url($path) }}" class="avatar avatar-40 rounded-circle" alt="">
+                        <img src="{{ url($path) }}" class="avatar avatar-md rounded-circle" alt="">
                     @else
                         <img src="{{ asset('assets/img/marker/default.png') }}" class="avatar avatar-40 rounded-circle" alt="">
                     @endif

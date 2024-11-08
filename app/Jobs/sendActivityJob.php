@@ -43,7 +43,7 @@ class sendActivityJob implements ShouldQueue
         $group_wa = ['120363181708613638@g.us', '120363048652516047@g.us', '120363023468297226@g.us'];
         // $url = "https://sfa.pacific-tasikmalaya.com/storage/uploads/smactivity/";
         // $url = "https://sfa.pedasalami.com/storage/uploads/smactivity/";
-        $url = "https://id-test-11.slatic.net/p/962dc9be7a9dd9f9ff1b5901755b3977.jpg";
+        $url = "https://app.portalmp.com/storage/uploads/aktifitas_smm/";
 
         if ($this->lv == "gm marketing") {
             foreach ($group_wa as $d) {
@@ -53,7 +53,7 @@ class sendActivityJob implements ShouldQueue
                     'number' => $d,
                     'media_type' => 'image',
                     'caption' => '*' . $this->nama . ': (' . $this->cabang . ')* ' . $this->activity,
-                    'url' => $url
+                    'url' => $url . $this->foto
                 ];
 
                 $curl = curl_init();
