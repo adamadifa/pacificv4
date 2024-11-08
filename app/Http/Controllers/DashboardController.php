@@ -111,8 +111,13 @@ class DashboardController extends Controller
         $data['start_year'] = config('global.start_year');
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            $this->marketing();
+        } else {
+            return view('dashboard.operationmanager', $data);
+        }
 
-        return view('dashboard.operationmanager', $data);
         die;
 
 
