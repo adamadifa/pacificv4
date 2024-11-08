@@ -113,7 +113,7 @@ class DashboardController extends Controller
         $data['cabang'] = $cbg->getCabang();
         $agent = new Agent();
         if ($agent->isMobile()) {
-            $this->marketing();
+            return  $this->marketing();
         } else {
             return view('dashboard.operationmanager', $data);
         }
