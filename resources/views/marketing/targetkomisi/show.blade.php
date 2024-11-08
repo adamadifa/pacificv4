@@ -56,3 +56,13 @@
         </table>
     </div>
 </div>
+<div class="row">
+    <div class="col">
+        <table class="table">
+            <tr>
+                <td class="bg-green"></td>
+                <td>Rata Rata Penjualan 3 Bulan Terakhir</td>
+            </tr>
+        </table>
+    </div>
+</div>
