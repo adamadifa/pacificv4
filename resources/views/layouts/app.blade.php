@@ -118,17 +118,19 @@
         </div>
     </div>
     <!-- Bottom Navigation -->
-    <nav class="navbar fixed-bottom navbar-light bg-white shadow d-md-none">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="ti ti-user" style="font-size: 20px"></i></a>
-            <a class="navbar-brand" href="{{ route('aktifitassmm.index') }}"><i
-                    class="ti ti-file-description {{ request()->is('aktifitassmm') ? 'text-primary' : '' }}" style="font-size: 20px"></i></a>
-            <a class="navbar-brand" href="/dashboard"><i class="fa fa-home {{ request()->is('dashboard') ? 'text-primary' : '' }}"
-                    style="font-size: 25px; border-radius: 50%;"></i></a>
-            <a class="navbar-brand" href="#"><i class="ti ti-mail" style="font-size: 20px"></i></a>
-            <a class="navbar-brand" href="#"><i class="ti ti-help" style="font-size: 20px"></i></a>
-        </div>
-    </nav>
+    @hasanyrole(['gm marketing', 'regional sales manager', 'sales marketing manager'])
+        <nav class="navbar fixed-bottom navbar-light bg-white shadow d-md-none">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#"><i class="ti ti-user" style="font-size: 20px"></i></a>
+                <a class="navbar-brand" href="{{ route('aktifitassmm.index') }}"><i
+                        class="ti ti-file-description {{ request()->is('aktifitassmm') ? 'text-primary' : '' }}" style="font-size: 20px"></i></a>
+                <a class="navbar-brand" href="/dashboard"><i class="fa fa-home {{ request()->is('dashboard') ? 'text-primary' : '' }}"
+                        style="font-size: 25px; border-radius: 50%;"></i></a>
+                <a class="navbar-brand" href="#"><i class="ti ti-mail" style="font-size: 20px"></i></a>
+                <a class="navbar-brand" href="#"><i class="ti ti-help" style="font-size: 20px"></i></a>
+            </div>
+        </nav>
+    @endhasanyrole
     <!-- End: Customizer-->
     <!-- Core JS -->
     @include('layouts.scripts')
