@@ -171,6 +171,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\GlobalProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Ladumor\LaravelPwa\PWAServiceProvider::class,
 
 
 
@@ -190,6 +191,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'LaravelPwa' => \Ladumor\LaravelPwa\LaravelPwa::class,
 
     ])->toArray(),
 
