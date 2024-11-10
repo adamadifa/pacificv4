@@ -1081,7 +1081,8 @@ class SfaControler extends Controller
 
             //Update Print
             Penjualan::where('no_faktur', $no_faktur)->update([
-                'print' => DB::raw('print + 1')
+                'print' => DB::raw('print + 1'),
+                'lock_print' => 0
             ]);
 
             Historibayarpenjualan::where('no_faktur', $no_faktur)->update([

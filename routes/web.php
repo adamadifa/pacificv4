@@ -1036,6 +1036,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/penjualan/cetaksuratjalanrange', 'cetaksuratjalanrange')->name('penjualan.cetaksuratjalanrange')->can('penjualan.cetaksuratjalan');
         Route::get('/penjualan/{no_faktur}/generatefaktur', 'generatefaktur')->name('penjualan.generatefaktur')->can('penjualan.update');
 
+        Route::get('/penjualan/{no_faktur}/updatelockprint', 'updatelockprint')->name('penjualan.updatelockprint')->can('penjualan.updatelockprint');
 
         //AJAX REQUEST
         Route::post('/penjualan/generatenofaktur', 'generatenofaktur')->name('penjualan.generatenofaktur');
