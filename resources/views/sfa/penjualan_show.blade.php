@@ -468,16 +468,16 @@
 
     function ajax_print(url, btn) {
         //alert(jmlprint + ' ' + jmlprinttagihan);
-        // if (jmlprint >= 1 && jmlprinttagihan <= 0) {
-        //     swal.fire({
-        //         icon: 'warning',
-        //         title: 'Oops...',
-        //         text: 'Faktur Sudah Tidak Bisa Di Cetak, Hubungi OM !'
-        //     });
-        //     return false;
-        // }
-        // jmlprint++;
-        // jmlprinttagihan--;
+        if (jmlprint >= 1 && jmlprinttagihan <= 0) {
+            swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Faktur Sudah Tidak Bisa Di Cetak, Hubungi OM !'
+            });
+            return false;
+        }
+        jmlprint++;
+        jmlprinttagihan--;
         b = $(btn);
         b.attr('data-old', b.text());
         b.text('wait');

@@ -576,18 +576,14 @@ class SfaControler extends Controller
 
         //Update Jumlah Print
 
-        Penjualan::where('no_faktur', $no_faktur)->update([
-            'print' => DB::raw('print + 1')
-        ]);
 
-        Historibayarpenjualan::where('no_faktur', $no_faktur)->update([
-            'print_tagihan' => 1
-        ]);
         //Data Faktur
         $pnj = new Penjualan();
         $penjualan = $pnj->getFaktur($no_faktur);
         $faktur = $penjualan;
-
+        // if ($faktur->jenis_transaksi == 'K' && $faktur->print == 0) {
+        //     dd('OK');
+        // }
         //Detail Faktur
         $detailpenjualan = new Penjualan();
         $detail = $detailpenjualan->getDetailpenjualan($no_faktur);
@@ -1082,6 +1078,15 @@ class SfaControler extends Controller
             echo $e->getMessage();
         } finally {
             $printer->close();
+
+            //Update Print
+            Penjualan::where('no_faktur', $no_faktur)->update([
+                'print' => DB::raw('print + 1')
+            ]);
+
+            Historibayarpenjualan::where('no_faktur', $no_faktur)->update([
+                'print_tagihan' => 1
+            ]);
         }
     }
 

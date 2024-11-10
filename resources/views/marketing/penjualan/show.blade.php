@@ -50,6 +50,10 @@
                         </div>
                         <div>
                             <a href="{{ route('penjualan.create') }}" class="btn btn-primary"><i class="ti ti-plus me-1"></i>Input Penjualan Baru</a>
+                            @if ($penjualan->lock_print == 0)
+                                <a href="{{ route('penjualan.create') }}" class="btn btn-danger"><i class="ti ti-printer-off me-1"></i>Buka Kunci</a>
+                            @endif
+
                             @if ($penjualan->status_aktif_pelanggan === '1')
                                 <a href="javascript:void(0)" class="btn btn-success waves-effect waves-light">
                                     <i class="ti ti-check me-1"></i> Aktif
