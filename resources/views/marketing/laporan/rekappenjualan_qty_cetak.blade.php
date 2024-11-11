@@ -65,7 +65,7 @@
                         <td>{{ $d->nama_produk }}</td>
                         @foreach ($cbg as $c)
                             @php
-                                $qty = $d->{"qty_$c->kode_cabang"} / $d->isi_pcs_dus;
+                                $qty = !empty($d->isi_pcs_dus) ? $d->{"qty_$c->kode_cabang"} / $d->isi_pcs_dus : 0;
                             @endphp
                             <td align="right">{{ formatAngkaDesimal($qty) }}</td>
                         @endforeach
