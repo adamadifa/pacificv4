@@ -71,7 +71,7 @@
                         @endforeach
                         <td align="right">
                             @php
-                                $total_qty = $d->total_qty / $d->isi_pcs_dus;
+                                $total_qty = !empty($d->isi_pcs_dus) ? $d->total_qty / $d->isi_pcs_dus : 0;
                             @endphp
                             {{ formatAngkaDesimal($total_qty) }}
                         </td>
