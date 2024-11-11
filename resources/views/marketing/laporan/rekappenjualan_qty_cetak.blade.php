@@ -99,14 +99,14 @@
                         <td>{{ $d->nama_produk }}</td>
                         @foreach ($cbg as $c)
                             @php
-                                $qty = $d->{"qty_$c->kode_cabang"} / $d->isi_pcs_dus;
+                                $qty = !empty($d->isi_pcs_dus) ? $d->{"qty_$c->kode_cabang"} / $d->isi_pcs_dus : 0;
                                 $harga_rata_rata = $d->{"subtotal_$c->kode_cabang"} / $qty;
                             @endphp
                             <td align="right">{{ formatAngka($harga_rata_rata) }}</td>
                         @endforeach
                         <td align="right">
                             @php
-                                $total_qty = $d->total_qty / $d->isi_pcs_dus;
+                                $total_qty = !empty($d->isi_pcs_dus) ? $d->total_qty / $d->isi_pcs_dus : 0;
                                 $total_harga_rata_rata = $d->total_subtotal / $total_qty;
                             @endphp
                             {{ formatAngka($total_harga_rata_rata) }}
