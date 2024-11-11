@@ -128,6 +128,8 @@ class Globalprovider extends ServiceProvider
                     $qajuantransferdana->whereNull('keuangan_setoranpusat_ajuantransfer.kode_setoran');
                     $qajuantransferdana->where('keuangan_ajuantransferdana.kode_cabang', auth()->user()->kode_cabang);
                     $notifikasiajuantransferdana  = $qajuantransferdana->count();
+                } else {
+                    $notifikasiajuantransferdana = 0;
                 }
 
                 $notifikasi_hrd = $notifikasi_penilaiankaryawan + $notifikasi_pengajuan_izin + $notifikasi_lembur;
