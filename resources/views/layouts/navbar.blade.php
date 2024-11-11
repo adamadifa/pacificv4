@@ -43,7 +43,7 @@
 
                             </div>
                         </div>
-                        <div class="dropdown-shortcuts-list scrollable-container">
+                        <div class="dropdown-shortcuts-list scrollable-container h-auto">
                             <div class="row row-bordered overflow-visible g-0">
                                 <div class="dropdown-shortcuts-item col">
                                     <span class="dropdown-shortcuts-icon rounded-circle mb-2">
@@ -127,7 +127,20 @@
                                     <small class="text-muted mb-0">Karyawan</small>
                                 </div>
                             </div>
+                            <div class="row row-bordered overflow-visible g-0">
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-wallet fs-4"></i>
+                                        @if (!empty($notifikasiajuantransferdana))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasiajuantransferdana }}</span>
+                                        @endif
+                                    </span>
 
+                                    <a href="{{ route('ajuantransfer.index') }}" class="stretched-link">Ajuan Transfer</a>
+                                    <small class="text-muted mb-0">Dana</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </li>

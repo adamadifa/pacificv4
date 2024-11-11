@@ -609,11 +609,11 @@ class LaporanhrdController extends Controller
         $data['datalemburharilibur'] = getlembur($start_date, $end_date, 2);
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
         $data['roles_access_all_pjp'] = $roles_access_all_pjp;
-
+        $data['format_laporan'] = $request->format_laporan;
         if (request()->is('laporanhrd/cetakgaji')) {
 
 
-            if ($request->format_laporan == 1) {
+            if ($request->format_laporan == 1 || $request->format_laporan == 3) {
                 if (isset($_POST['exportButton'])) {
                     header("Content-type: application/vnd-ms-excel");
                     // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
