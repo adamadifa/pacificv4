@@ -373,7 +373,7 @@ class PembayarangiroController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
-            function updatesetoran($kode_giro, $status, $omset_bulan, $omset_tahun, $no_bukti = null, $tanggal)
+            function updatesetoran($kode_giro, $status, $omset_bulan, $omset_tahun, $no_bukti = null, $tanggal = null)
             {
                 $setorangiro = Setoranpusatgiro::where('kode_giro', $kode_giro)->first();
                 if ($setorangiro != null) {
@@ -419,7 +419,7 @@ class PembayarangiroController extends Controller
 
                 ]);
 
-                updatesetoran($kode_giro, 0, NULL, NULL, NULL);
+                updatesetoran($kode_giro, 0, NULL, NULL, NULL, NULL);
             }
             //Jika Diterima
             if ($request->status === '1') {
