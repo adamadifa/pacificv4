@@ -373,7 +373,7 @@ class PembayarangiroController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
-            function updatesetoran($kode_giro, $status, $omset_bulan, $omset_tahun, $no_bukti = null)
+            function updatesetoran($kode_giro, $status, $omset_bulan, $omset_tahun, $no_bukti = null, $tanggal = null)
             {
                 $setorangiro = Setoranpusatgiro::where('kode_giro', $kode_giro)->first();
                 if ($setorangiro != null) {
@@ -386,6 +386,9 @@ class PembayarangiroController extends Controller
                     if ($status == '1') {
                         //dd($status);
                         //dd($no_bukti);
+                        Setoranpusat::where('kode_setoran', $setorangiro->kode_setoran)->update([
+                            'tanggal' => $tanggal
+                        ]);
                         Ledgersetoranpusat::create([
                             'no_bukti' => $no_bukti,
                             'kode_setoran' => $setorangiro->kode_setoran
@@ -418,7 +421,7 @@ class PembayarangiroController extends Controller
 
                 ]);
 
-                updatesetoran($kode_giro, 0, NULL, NULL);
+                updatesetoran($kode_giro, 0, NULL, NULL, NULL, NULL);
             }
             //Jika Diterima
             if ($request->status === '1') {
@@ -496,7 +499,7 @@ class PembayarangiroController extends Controller
                     'kode_giro' => $kode_giro
                 ]);
 
-                updatesetoran($kode_giro, 1, $request->omset_bulan, $request->omset_tahun, $no_bukti);
+                updatesetoran($kode_giro, 1, $request->omset_bulan, $request->omset_tahun, $no_bukti, $request->tanggal);
             } elseif ($request->status == '2') {
                 prosespending($kode_giro);
                 Giro::where('kode_giro', $kode_giro)->update([
@@ -506,7 +509,7 @@ class PembayarangiroController extends Controller
                     'omset_tahun' => date('Y', strtotime($giro->jatuh_tempo)),
                 ]);
 
-                updatesetoran($kode_giro, 2, date('m', strtotime($giro->jatuh_tempo)), date('Y', strtotime($giro->jatuh_tempo)));
+                updatesetoran($kode_giro, 2, date('m', strtotime($giro->jatuh_tempo)), date('Y', strtotime($giro->jatuh_tempo)), NULL, $request->tanggal);
             } else if ($request->status === '0') {
 
                 prosespending($kode_giro);
