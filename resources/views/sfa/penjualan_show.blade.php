@@ -313,8 +313,9 @@
                                             <h5 class="mb-1">{{ formatAngka($d->jumlah) }}</h5>
                                             <p class="text-muted mb-0">{{ $d->nama_salesman }}</p>
                                         </div>
-                                        <div class="d-flex">
-                                            @if ($d->tanggal >= date('Y-m-d'))
+                                        <div class="d-flex aksihistoribayar">
+                                            {{-- {{ $d->print_tagihan }} --}}
+                                            @if ($d->tanggal >= date('Y-m-d') && $d->print_tagihan == 0)
                                                 @if (($d->jenis_bayar == 'TP' && $penjualan->jenis_bayar != 'TN') || ($d->jenis_bayar == 'TN' && $penjualan->jenis_bayar != 'TN'))
                                                     <div>
                                                         <a href="#" class="me-1 btnEditBayar" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
@@ -465,10 +466,12 @@
 <script>
     let jmlprint = "{{ $penjualan->print }}";
     let jmlprinttagihan = "{{ $print_tagihan }}";
+    let lock_print = "{{ $penjualan->lock_print }}";
 
     function ajax_print(url, btn) {
+        // alert(lock_print);
         //alert(jmlprint + ' ' + jmlprinttagihan);
-        if (jmlprint >= 1 && jmlprinttagihan <= 0) {
+        if (jmlprint >= 1 && jmlprinttagihan <= 0 && lock_print == 0) {
             swal.fire({
                 icon: 'warning',
                 title: 'Oops...',
@@ -476,13 +479,18 @@
             });
             return false;
         }
-        jmlprint++;
-        jmlprinttagihan--;
+
         b = $(btn);
         b.attr('data-old', b.text());
         b.text('wait');
         $.get(url, function(data) {
             window.location.href = data; // main action
+            document.querySelectorAll('.aksihistoribayar').forEach(function(element) {
+                element.style.display = 'none';
+            });
+            jmlprint++;
+            jmlprinttagihan--;
+            lock_print = 0;
         }).fail(function() {
             alert("ajax error");
         }).always(function() {

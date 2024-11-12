@@ -27,6 +27,7 @@
             <option value="">Format Laporan</option>
             <option value="1" selected>Detail</option>
             <option value="2">Rekap</option>
+            <option value="3">SPIP & BPJS</option>
         </select>
     </div>
     @hasanyrole($roles_access_all_pjp)

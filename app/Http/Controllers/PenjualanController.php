@@ -1158,4 +1158,16 @@ class PenjualanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    public function updatelockprint($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
+        $lock_print =  $penjualan->lock_print == 0 ? 1 : 0;
+        Penjualan::where('no_faktur', $no_faktur)->update([
+            'lock_print' => $lock_print
+        ]);
+        return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+    }
 }

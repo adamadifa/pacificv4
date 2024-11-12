@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Ajuantransferdana;
 use App\Models\Disposisiajuanfaktur;
 use App\Models\Disposisiajuanlimitkredit;
 use App\Models\Disposisiizinabsen;
@@ -97,10 +98,45 @@ class Globalprovider extends ServiceProvider
 
                 $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
 
+                if ($level_user == "manager keuangan") {
+                    $qajuantransferdana = Ajuantransferdana::query();
+                    $qajuantransferdana->select(
+                        'keuangan_ajuantransferdana.*',
+                        'keuangan_setoranpusat_ajuantransfer.kode_setoran',
+                        'keuangan_setoranpusat.tanggal as tanggal_proses',
+                        'keuangan_setoranpusat.status as status_setoran',
+                        'nama_cabang'
+                    );
+                    $qajuantransferdana->join('cabang', 'keuangan_ajuantransferdana.kode_cabang', '=', 'cabang.kode_cabang');
+                    $qajuantransferdana->leftJoin('keuangan_setoranpusat_ajuantransfer', 'keuangan_ajuantransferdana.no_pengajuan', '=', 'keuangan_setoranpusat_ajuantransfer.no_pengajuan');
+                    $qajuantransferdana->leftJoin('keuangan_setoranpusat', 'keuangan_setoranpusat_ajuantransfer.kode_setoran', '=', 'keuangan_setoranpusat.kode_setoran');
+                    $qajuantransferdana->where('keuangan_ajuantransferdana.status', 0);
+                    $notifikasiajuantransferdana  = $qajuantransferdana->count();
+                } else if ($level_user == "operation manager") {
+
+                    $qajuantransferdana = Ajuantransferdana::query();
+                    $qajuantransferdana->select(
+                        'keuangan_ajuantransferdana.*',
+                        'keuangan_setoranpusat_ajuantransfer.kode_setoran',
+                        'keuangan_setoranpusat.tanggal as tanggal_proses',
+                        'keuangan_setoranpusat.status as status_setoran',
+                        'nama_cabang'
+                    );
+                    $qajuantransferdana->join('cabang', 'keuangan_ajuantransferdana.kode_cabang', '=', 'cabang.kode_cabang');
+                    $qajuantransferdana->leftJoin('keuangan_setoranpusat_ajuantransfer', 'keuangan_ajuantransferdana.no_pengajuan', '=', 'keuangan_setoranpusat_ajuantransfer.no_pengajuan');
+                    $qajuantransferdana->leftJoin('keuangan_setoranpusat', 'keuangan_setoranpusat_ajuantransfer.kode_setoran', '=', 'keuangan_setoranpusat.kode_setoran');
+                    $qajuantransferdana->whereNull('keuangan_setoranpusat_ajuantransfer.kode_setoran');
+                    $qajuantransferdana->where('keuangan_ajuantransferdana.kode_cabang', auth()->user()->kode_cabang);
+                    $notifikasiajuantransferdana  = $qajuantransferdana->count();
+                } else {
+                    $notifikasiajuantransferdana = 0;
+                }
+
                 $notifikasi_hrd = $notifikasi_penilaiankaryawan + $notifikasi_pengajuan_izin + $notifikasi_lembur;
-                $total_notifikasi = $notifikasi_marketing + $notifikasi_hrd;
+                $total_notifikasi = $notifikasi_marketing + $notifikasi_hrd + $notifikasiajuantransferdana;
             } else {
                 $level_user = '';
+                $notifikasiajuantransferdana = 0;
                 $notifikasi_limitkredit = 0;
                 $notifikasi_ajuanfaktur = 0;
                 $notifikasi_pengajuan_marketing = 0;
@@ -520,6 +556,8 @@ class Globalprovider extends ServiceProvider
                 'notifikasi_izinkoreksi' => $notifikasi_izinkoreksi,
                 'notifikasi_hrd' => $notifikasi_hrd,
                 'notifikasi_izindinas' => $notifikasi_izindinas,
+
+                'notifikasiajuantransferdana' => $notifikasiajuantransferdana,
 
                 'total_notifikasi' => $total_notifikasi,
 

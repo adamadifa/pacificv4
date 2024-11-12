@@ -42,93 +42,103 @@
     </div>
     <div class="content">
         <div class="freeze-table">
-            <table class="datatable3" style="width: 320%">
+            <table class="datatable3" style="width: {{ $format_laporan != 3 ? '320%' : '50%' }}">
                 <thead>
                     <tr>
                         <th rowspan="2">No</th>
                         <th rowspan="2">Nik</th>
                         <th rowspan="2">Nama Karyawan</th>
-                        <th rowspan="2">Rekening</th>
-                        <th rowspan="2">No KTP</th>
-                        <th rowspan="2">SK</th>
-                        <th rowspan="2">Group</th>
-                        <th colspan="9">DATA KARYAWAN</th>
-                        <th rowspan="2">Gaji Pokok</th>
-                        <th colspan="6">Tunjangan</th>
-                        <th colspan="4">Insentif Umum</th>
-                        <th colspan="4">Insentif Manager</th>
-                        <th rowspan="2">Upah</th>
-                        <th rowspan="2">Insentif</th>
-                        <th rowspan="2">Σ Jam</th>
-                        <th rowspan="2">Upah / Jam</th>
-                        <th colspan="2">Overtime 1</th>
-                        <th colspan="2">Overtime 2</th>
-                        <th colspan="2">Overtime Libur</th>
-                        <th rowspan="2">Total OT</th>
-                        <th colspan="2">Premi Shift 2</th>
-                        <th colspan="2">Premi Shift 3</th>
-                        <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
+                        @if ($format_laporan != 3)
+                            <th rowspan="2">Rekening</th>
+                            <th rowspan="2">No KTP</th>
+                            <th rowspan="2">SK</th>
+                            <th rowspan="2">Group</th>
+                            <th colspan="9">DATA KARYAWAN</th>
+                            <th rowspan="2">Gaji Pokok</th>
+                            <th colspan="6">Tunjangan</th>
+                            <th colspan="4">Insentif Umum</th>
+                            <th colspan="4">Insentif Manager</th>
+                            <th rowspan="2">Upah</th>
+                            <th rowspan="2">Insentif</th>
+                            <th rowspan="2">Σ Jam</th>
+                            <th rowspan="2">Upah / Jam</th>
+                            <th colspan="2">Overtime 1</th>
+                            <th colspan="2">Overtime 2</th>
+                            <th colspan="2">Overtime Libur</th>
+                            <th rowspan="2">Total OT</th>
+                            <th colspan="2">Premi Shift 2</th>
+                            <th colspan="2">Premi Shift 3</th>
+                            <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
+                            <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
+                        @endif
+
                         <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">PJP</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">Kasbon</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pinjaman</th>
+                        @if ($format_laporan != 3)
+                            <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
+                            <th rowspan="2" style="background-color: #df1b38; color:white;">PJP</th>
+                            <th rowspan="2" style="background-color: #df1b38; color:white;">Kasbon</th>
+                            <th rowspan="2" style="background-color: #df1b38; color:white;">Pinjaman</th>
+                        @endif
+
                         <th rowspan="2" style="background-color: #df1b38; color:white;">SPIP</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">PENGURANG</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">TOTAL<br>POTONGAN</th>
-                        <th rowspan="2" style="background-color: #007b21; color:white;">PENAMBAH</th>
-                        <th rowspan="2">JML BERSIH</th>
+                        @if ($format_laporan != 3)
+                            <th rowspan="2" style="background-color: #df1b38; color:white;">PENGURANG</th>
+                            <th rowspan="2" style="background-color: #df1b38; color:white;">TOTAL<br>POTONGAN</th>
+                            <th rowspan="2" style="background-color: #007b21; color:white;">PENAMBAH</th>
+                            <th rowspan="2">JML BERSIH</th>
+                        @endif
+
                     </tr>
                     <tr>
-                        <!-- DATA KARYAWAN -->
-                        <th>TGL MASUK</th>
-                        <th>MASA KERJA</th>
-                        <th>DEPT</th>
-                        <th>JABATAN</th>
-                        <th>KANTOR</th>
-                        <th>PERUSAHAAN</th>
-                        <th>KLASIFIKASI</th>
-                        <th>JK</th>
-                        <th>STATUS</th>
+                        @if ($format_laporan != 3)
+                            <!-- DATA KARYAWAN -->
+                            <th>TGL MASUK</th>
+                            <th>MASA KERJA</th>
+                            <th>DEPT</th>
+                            <th>JABATAN</th>
+                            <th>KANTOR</th>
+                            <th>PERUSAHAAN</th>
+                            <th>KLASIFIKASI</th>
+                            <th>JK</th>
+                            <th>STATUS</th>
 
-                        <!-- TUNJANGAN -->
-                        <th>JABATAN</th>
-                        <th>MASA KERJA</th>
-                        <th>T. JAWAB</th>
-                        <th>MAKAN</th>
-                        <th>ISTRI</th>
-                        <th>SKILL</th>
+                            <!-- TUNJANGAN -->
+                            <th>JABATAN</th>
+                            <th>MASA KERJA</th>
+                            <th>T. JAWAB</th>
+                            <th>MAKAN</th>
+                            <th>ISTRI</th>
+                            <th>SKILL</th>
 
-                        <!-- INSENTIF UMUM -->
-                        <th>MASA KERJA</th>
-                        <th>LEMBUR</th>
-                        <th>PENEMPATAN</th>
-                        <th>KPI</th>
+                            <!-- INSENTIF UMUM -->
+                            <th>MASA KERJA</th>
+                            <th>LEMBUR</th>
+                            <th>PENEMPATAN</th>
+                            <th>KPI</th>
 
-                        <!-- INSENTIF MANAGER -->
-                        <th>RUANG LINGKUP</th>
-                        <th>PENEMPATAN</th>
-                        <th>KINERJA</th>
-                        <th>KENDARAAN</th>
+                            <!-- INSENTIF MANAGER -->
+                            <th>RUANG LINGKUP</th>
+                            <th>PENEMPATAN</th>
+                            <th>KINERJA</th>
+                            <th>KENDARAAN</th>
 
-                        <!-- OVERTIME -->
-                        <th>JAM</th>
-                        <th>JUMLAH</th>
+                            <!-- OVERTIME -->
+                            <th>JAM</th>
+                            <th>JUMLAH</th>
 
-                        <th>JAM</th>
-                        <th>JUMLAH</th>
+                            <th>JAM</th>
+                            <th>JUMLAH</th>
 
-                        <th>JAM</th>
-                        <th>JUMLAH</th>
+                            <th>JAM</th>
+                            <th>JUMLAH</th>
 
-                        <!-- PREMI SHIFT -->
-                        <th>HARI</th>
-                        <th>JUMLAH</th>
+                            <!-- PREMI SHIFT -->
+                            <th>HARI</th>
+                            <th>JUMLAH</th>
 
-                        <th>HARI</th>
-                        <th>JUMLAH</th>
-
+                            <th>HARI</th>
+                            <th>JUMLAH</th>
+                        @endif
                         <!-- BPJS -->
                         <th style="background-color: #df1b38; color:white;">KES</th>
                         <th style="background-color: #df1b38; color:white;">PERUSAHAAN</th>
@@ -212,52 +222,52 @@
                             $insentif = $d['iu_masakerja'] + $d['iu_lembur'] + $d['iu_penempatan'] + $d['iu_kpi'];
                             $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
                             $jumlah_insentif = $insentif + $insentif_manager;
+                            $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
                         @endphp
                         <tr>
                             <td style="width:1%">{{ $loop->iteration }}</td>
                             <td style="width:2%">'{{ $d['nik'] }}</td>
                             <td style="width:4%">{{ $d['nama_karyawan'] }}</td>
-                            <td style="width:2%">{{ $d['no_rekening'] }}</td>
-                            <td style="width:2%">{{ $d['no_ktp'] }}</td>
-                            <td style="width:1%">{{ $d['kode_status_kawin'] }}</td>
-                            <td style="width:2%">{{ $d['nama_group'] }}</td>
-                            <td style="width:3%; text-align: center">{{ $d['tanggal_masuk'] }}</td>
-                            <td style="width:3%; text-align: center">
-                                @php
-                                    $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
-                                @endphp
-                                {{ $masakerja['tahun'] }} Tahun {{ $masakerja['bulan'] < 10 ? '0' . $masakerja['bulan'] : $masakerja['bulan'] }}
-                                Bulan
-                            </td>
-                            <td style="width:2%; text-align: center">{{ $d['kode_dept'] }}</td>
-                            <td style="width:4%;">{{ textUpperCase(singkatString($d['nama_jabatan'])) }}</td>
-                            <td style="width:2%; text-align: center">{{ $d['kode_cabang'] }}</td>
-                            <td style="width:2%; text-align: center">{{ $d['kode_perusahaan'] }}</td>
-                            <td style="width:3%;">{{ $d['klasifikasi'] }}</td>
-                            <td style="width:2%; text-align: center">{{ $d['jenis_kelamin'] }}</td>
-                            <td style="width:2%; text-align: center">{{ $d['status_karyawan'] }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['gaji_pokok']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_jabatan']) }}</td>
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['t_masakerja']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_tanggungjawab']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_makan']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_istri']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['t_skill']) }}</td>
+                            @if ($format_laporan != 3)
+                                <td style="width:2%">{{ $d['no_rekening'] }}</td>
+                                <td style="width:2%">{{ $d['no_ktp'] }}</td>
+                                <td style="width:1%">{{ $d['kode_status_kawin'] }}</td>
+                                <td style="width:2%">{{ $d['nama_group'] }}</td>
+                                <td style="width:3%; text-align: center">{{ $d['tanggal_masuk'] }}</td>
+                                <td style="width:3%; text-align: center">
 
-                            <!-- INSENTIF UMUM -->
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['iu_masakerja']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['iu_lembur']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['iu_penempatan']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['iu_kpi']) }}</td>
+                                    {{ $masakerja['tahun'] }} Tahun {{ $masakerja['bulan'] < 10 ? '0' . $masakerja['bulan'] : $masakerja['bulan'] }}
+                                    Bulan
+                                </td>
+                                <td style="width:2%; text-align: center">{{ $d['kode_dept'] }}</td>
+                                <td style="width:4%;">{{ textUpperCase(singkatString($d['nama_jabatan'])) }}</td>
+                                <td style="width:2%; text-align: center">{{ $d['kode_cabang'] }}</td>
+                                <td style="width:2%; text-align: center">{{ $d['kode_perusahaan'] }}</td>
+                                <td style="width:3%;">{{ $d['klasifikasi'] }}</td>
+                                <td style="width:2%; text-align: center">{{ $d['jenis_kelamin'] }}</td>
+                                <td style="width:2%; text-align: center">{{ $d['status_karyawan'] }}</td>
+                                <td style="width:3%; text-align: right">{{ formatAngka($d['gaji_pokok']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['t_jabatan']) }}</td>
+                                <td style="width:3%; text-align: right">{{ formatAngka($d['t_masakerja']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['t_tanggungjawab']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['t_makan']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['t_istri']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['t_skill']) }}</td>
 
-                            <!-- INSENTIF MANAGER -->
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['im_ruanglingkup']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['im_penempatan']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['im_kinerja']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($upah) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($jumlah_insentif) }}</td>
+                                <!-- INSENTIF UMUM -->
+                                <td style="width:3%; text-align: right">{{ formatAngka($d['iu_masakerja']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['iu_lembur']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['iu_penempatan']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['iu_kpi']) }}</td>
 
+                                <!-- INSENTIF MANAGER -->
+                                <td style="width:3%; text-align: right">{{ formatAngka($d['im_ruanglingkup']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['im_penempatan']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['im_kinerja']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($upah) }}</td>
+                                <td style="width:2%; text-align: right">{{ formatAngka($jumlah_insentif) }}</td>
+                            @endif
                             @php
                                 $tanggal_presensi = $start_date;
                                 $total_potongan_jam_terlambat = 0;
@@ -734,57 +744,66 @@
 
                                 $jmlbersih = $bruto - $jml_potongan_upah + $jml_penambah;
                             @endphp
-                            <td style="font-weight: bold; text-align:center; width:2%">
-                                {{-- @php
+                            @if ($format_laporan != 3)
+                                <td style="font-weight: bold; text-align:center; width:2%">
+                                    {{-- @php
                                     $total_jam_kerja = $total_jam_satubulan - $grand_total_potongan_jam;
                                 @endphp --}}
-                                {{ formatAngkaDesimal($total_jam_kerja) }}
-                            </td>
-                            <td style="font-weight: bold;  text-align:right; width:2%">
-                                {{ formatAngkaDesimal($upah_perjam) }}
-                            </td>
-                            <td style="font-weight: bold; text-align:center;width:2%">
-                                {{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:right;width:2%">
-                                {{ !empty($upah_overtime_1) ? formatAngka($upah_overtime_1) : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:center;width:2%">
-                                {{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:right;width:2%">
-                                {{ !empty($upah_overtime_2) ? formatAngka($upah_overtime_2) : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:center;width:2%">
-                                {{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}</td>
-                            <td style="font-weight: bold; text-align:right;width:2%">
-                                {{ !empty($upah_overtime_libur) ? formatAngka($upah_overtime_libur) : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:right;width:2%">
-                                {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
-                            </td>
-                            <td style="text-align: center; width:2%">{{ !empty($premis_shift2) ? $premis_shift2 : '' }}</td>
-                            <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
-                            <td style="text-align: center; width:2%">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
-                            <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
-                            <td style="text-align: right; font-weight:bold; width:2%">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
-                            <td style="text-align:center; width:2%">
-                                {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
-                            </td>
+                                    {{ formatAngkaDesimal($total_jam_kerja) }}
+                                </td>
+                                <td style="font-weight: bold;  text-align:right; width:2%">
+                                    {{ formatAngkaDesimal($upah_perjam) }}
+                                </td>
+                                <td style="font-weight: bold; text-align:center;width:2%">
+                                    {{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}
+                                </td>
+                                <td style="font-weight: bold; text-align:right;width:2%">
+                                    {{ !empty($upah_overtime_1) ? formatAngka($upah_overtime_1) : '' }}
+                                </td>
+                                <td style="font-weight: bold; text-align:center;width:2%">
+                                    {{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}
+                                </td>
+                                <td style="font-weight: bold; text-align:right;width:2%">
+                                    {{ !empty($upah_overtime_2) ? formatAngka($upah_overtime_2) : '' }}
+                                </td>
+                                <td style="font-weight: bold; text-align:center;width:2%">
+                                    {{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}</td>
+                                <td style="font-weight: bold; text-align:right;width:2%">
+                                    {{ !empty($upah_overtime_libur) ? formatAngka($upah_overtime_libur) : '' }}
+                                </td>
+                                <td style="font-weight: bold; text-align:right;width:2%">
+                                    {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
+                                </td>
+                                <td style="text-align: center; width:2%">{{ !empty($premis_shift2) ? $premis_shift2 : '' }}</td>
+                                <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
+                                <td style="text-align: center; width:2%">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
+                                <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
+                                <td style="text-align: right; font-weight:bold; width:2%">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
+                                <td style="text-align:center; width:2%">
+                                    {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
+                                </td>
+                            @endif
+
                             <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}
                             </td>
-                            <td></td>
-                            <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_tenagakerja) ? formatAngka($iuran_bpjs_tenagakerja) : '' }}
+                            <td style="text-align: right; width:4%"></td>
+                            <td style="text-align:right; width:2%">
+                                {{ !empty($iuran_bpjs_tenagakerja) ? formatAngka($iuran_bpjs_tenagakerja) : '' }}
                             </td>
-                            <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($cicilan_pjp) ? formatAngka($cicilan_pjp) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($cicilan_kasbon) ? formatAngka($cicilan_kasbon) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($cicilan_piutang) ? formatAngka($cicilan_piutang) : '' }}</td>
+                            @if ($format_laporan != 3)
+                                <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
+                                <td style="text-align:right; width:2%">{{ !empty($cicilan_pjp) ? formatAngka($cicilan_pjp) : '' }}</td>
+                                <td style="text-align:right; width:2%">{{ !empty($cicilan_kasbon) ? formatAngka($cicilan_kasbon) : '' }}</td>
+                                <td style="text-align:right; width:2%">{{ !empty($cicilan_piutang) ? formatAngka($cicilan_piutang) : '' }}</td>
+                            @endif
+
                             <td style="text-align:right; width:2%">{{ !empty($spip) ? formatAngka($spip) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($jml_pengurang) ? formatAngka($jml_pengurang) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($jml_potongan_upah) ? formatAngka($jml_potongan_upah) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($jml_penambah) ? formatAngka($jml_penambah) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($jmlbersih) ? formatAngka($jmlbersih) : '' }}</td>
+                            @if ($format_laporan != 3)
+                                <td style="text-align:right; width:2%">{{ !empty($jml_pengurang) ? formatAngka($jml_pengurang) : '' }}</td>
+                                <td style="text-align:right; width:2%">{{ !empty($jml_potongan_upah) ? formatAngka($jml_potongan_upah) : '' }}</td>
+                                <td style="text-align:right; width:2%">{{ !empty($jml_penambah) ? formatAngka($jml_penambah) : '' }}</td>
+                                <td style="text-align:right; width:2%">{{ !empty($jmlbersih) ? formatAngka($jmlbersih) : '' }}</td>
+                            @endif
                         </tr>
 
                         @php
@@ -877,51 +896,62 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="16">TOTAL</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_gajipokok) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_jabatan) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_masakerja) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_tanggungjawab) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_makan) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_istri) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_skill) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_masakerja) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_lembur) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_penempatan) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_kpi) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_ruanglingkup) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_penempatan) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kinerja) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kendaraan) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_insentif) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_jamkerja) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_upahperjam) }}</th>
-                        <th style="text-align:center;">{{ formatAngka($grandtotal_all_overtime_1) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_overtime_1) }}</th>
-                        <th style="text-align:center;">{{ formatAngka($grandtotal_all_overtime_2) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_overtime_2) }}</th>
-                        <th style="text-align:center;">{{ formatAngka($grandtotal_all_overtime_libur) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_overtime_libur) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_overtime) }}</th>
-                        <th style="text-align:center;">{{ formatAngka($grandtotal_all_premi_shift2) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_premi_shift2) }}</th>
-                        <th style="text-align:center;">{{ formatAngka($grandtotal_all_premi_shift3) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_premi_shift3) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_bruto) }}</th>
-                        <th style="text-align:center;">{{ formatAngkaDesimal($grandtotal_all_potongan_jam) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_iuran_bpjs_kesehatan) }}</th>
-                        <th></th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_iuran_bpjs_tk) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_denda) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_cicilan_pjp) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_cicilan_kasbon) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_cicilan_piutang) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_spip) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_pengurang) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_total_potongan) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_penambahan) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_jmlbersih) }}</th>
+                        @if ($format_laporan != 3)
+                            <th colspan="16">TOTAL</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_gajipokok) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_jabatan) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_masakerja) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_tanggungjawab) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_makan) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_istri) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_skill) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_masakerja) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_lembur) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_penempatan) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_kpi) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_ruanglingkup) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_penempatan) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kinerja) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kendaraan) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_insentif) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_jamkerja) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_upahperjam) }}</th>
+                            <th style="text-align:center;">{{ formatAngka($grandtotal_all_overtime_1) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_overtime_1) }}</th>
+                            <th style="text-align:center;">{{ formatAngka($grandtotal_all_overtime_2) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_overtime_2) }}</th>
+                            <th style="text-align:center;">{{ formatAngka($grandtotal_all_overtime_libur) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_overtime_libur) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_overtime) }}</th>
+                            <th style="text-align:center;">{{ formatAngka($grandtotal_all_premi_shift2) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_premi_shift2) }}</th>
+                            <th style="text-align:center;">{{ formatAngka($grandtotal_all_premi_shift3) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah_premi_shift3) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_bruto) }}</th>
+                            <th style="text-align:center;">{{ formatAngkaDesimal($grandtotal_all_potongan_jam) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_iuran_bpjs_kesehatan) }}</th>
+                            <th></th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_iuran_bpjs_tk) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_denda) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_cicilan_pjp) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_cicilan_kasbon) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_cicilan_piutang) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_spip) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_pengurang) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_total_potongan) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_penambahan) }}</th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_jmlbersih) }}</th>
+                        @else
+                            <th colspan="3">TOTAL</th>
+
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_iuran_bpjs_kesehatan) }}</th>
+                            <th></th>
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_iuran_bpjs_tk) }}</th>
+
+                            <th style="text-align:right;">{{ formatAngka($grandtotal_all_spip) }}</th>
+                        @endif
+
                     </tr>
                 </tfoot>
             </table>
