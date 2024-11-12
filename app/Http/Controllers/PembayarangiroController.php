@@ -419,7 +419,7 @@ class PembayarangiroController extends Controller
 
                 ]);
 
-                updatesetoran($kode_giro, 0, NULL, NULL);
+                updatesetoran($kode_giro, 0, NULL, NULL, NULL);
             }
             //Jika Diterima
             if ($request->status === '1') {
@@ -507,7 +507,7 @@ class PembayarangiroController extends Controller
                     'omset_tahun' => date('Y', strtotime($giro->jatuh_tempo)),
                 ]);
 
-                updatesetoran($kode_giro, 2, date('m', strtotime($giro->jatuh_tempo)), date('Y', strtotime($giro->jatuh_tempo)));
+                updatesetoran($kode_giro, 2, date('m', strtotime($giro->jatuh_tempo)), date('Y', strtotime($giro->jatuh_tempo)), NULL, $request->tanggal);
             } else if ($request->status === '0') {
 
                 prosespending($kode_giro);
