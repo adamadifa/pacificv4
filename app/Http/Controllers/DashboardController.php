@@ -161,13 +161,20 @@ class DashboardController extends Controller
 
     public function marketing()
     {
+        $user = User::findorfail(auth()->user()->id);
+
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
         $agent = new Agent();
-        if ($agent->isMobile()) {
-            return view('dashboard.mobile.marketing2', $data);
+
+        if ($user->hasRole(['sales marketing manager', 'regional sales manager', 'gm marketing'])) {
+            if ($agent->isMobile()) {
+                return view('dashboard.mobile.marketing2', $data);
+            } else {
+                return view('dashboard.marketing', $data);
+            }
         } else {
             return view('dashboard.marketing', $data);
         }
