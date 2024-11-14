@@ -52,7 +52,9 @@
                             @if (!empty($d->foto))
                                 @if (Storage::disk('public')->exists('/uploads/aktifitas_smm/' . $d->foto))
                                     <div class="avatar avatar-xs me-2">
-                                        <img src="{{ getfotoAktifitias($d->foto) }}" alt="" class="rounded-circle">
+                                        <a href="{{ getfotoAktifitias($d->foto) }}">
+                                            <img src="{{ getfotoAktifitias($d->foto) }}" alt="" class="rounded-circle">
+                                        </a>
                                     </div>
                                 @else
                                     <div class="avatar avatar-xs me-2">
