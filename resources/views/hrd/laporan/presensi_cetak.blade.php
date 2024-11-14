@@ -638,9 +638,11 @@
                                                 if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                     $potongan_jam_tidakhadir = 5;
                                                     $total_jam = 5;
+                                                    $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
                                                 } else {
                                                     $potongan_jam_tidakhadir = 7;
                                                     $total_jam = 7;
+                                                    $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
                                                 }
                                             }
                                         @endphp
