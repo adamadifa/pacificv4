@@ -1983,6 +1983,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/sfa/trackingsalesman', 'trackingsalesman')->name('sfa.trackingsalesman')->can('sfa.trackingsalesman');
         Route::get('/sfa/getlocationcheckin', 'getlocationcheckin')->name('sfa.getlocationcheckin')->can('sfa.trackingsalesman');
+
+        Route::get('/sfa/dashboard', 'dashboard')->name('dashboard.sfa')->can('dashboard.sfa');
     });
 
     Route::controller(TutuplaporanController::class)->group(function () {

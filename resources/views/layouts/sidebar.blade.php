@@ -25,6 +25,15 @@
                  <div>Dashboard</div>
              </a>
          </li>
+         @if (auth()->user()->hasAnyPermission(['dashboard.sfa']))
+             <li class="menu-item {{ request()->is(['sfa/dashboard', 'sfa/dashboard/*']) ? 'active' : '' }}">
+                 <a href="{{ route('dashboard.sfa') }}" class="menu-link">
+                     <i class="menu-icon tf-icons ti ti-home"></i>
+                     <div>Dashboard SFA</div>
+                 </a>
+             </li>
+         @endif
+
          @if (auth()->user()->hasAnyPermission(['sfa.trackingsalesman']))
              <li class="menu-item {{ request()->is(['sfa/trackingsalesman']) ? 'active' : '' }}">
                  <a href="{{ route('sfa.trackingsalesman') }}" class="menu-link">

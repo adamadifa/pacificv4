@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ajuanfakturkredit;
 use App\Models\Ajuanlimitkredit;
+use App\Models\AktifitasSMM;
 use App\Models\Cabang;
 use App\Models\Checkinpenjualan;
 use App\Models\Detailgiro;
@@ -69,8 +70,82 @@ class item
 
 class SfaControler extends Controller
 {
+
+    public function dashboard(Request $request)
+    {
+
+        $bulan = $request->bulan ?? date('m');
+        $tahun = $request->tahun ?? date('Y');
+        $start_date = $tahun . "-" . $bulan . "-01";
+        $dari = $tahun . "-" . $bulan . "-01";
+        $sampai = date("Y-m-t", strtotime($dari));
+        $i = 1;
+        $select_date_activity = [];
+        $field_date_activity = [];
+        while (strtotime($dari) <= strtotime($sampai)) {
+            $select_date_activity[] = DB::raw("SUM(IF(DATE(tanggal)='" . $dari . "',1,0)) as tgl_" . $i);
+            $field_date_activity[] = "tgl_" . $i;
+            $i++;
+            $dari = date("Y-m-d", strtotime("+1 day", strtotime($dari)));
+        }
+        $activity = AktifitasSMM::select('id_user', ...$select_date_activity)
+            ->whereBetween('tanggal', [$start_date, $sampai])
+            ->groupBy('id_user');
+
+
+        $users = User::select('id', 'name', 'kode_cabang', ...$field_date_activity)
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'sales marketing manager');
+            })
+            ->leftjoinSub($activity, 'activity', function ($join) {
+                $join->on('users.id', '=', 'activity.id_user');
+            })
+            ->where('users.status', 1)
+            ->orderBy('name')
+            ->get();
+
+
+        $rsm = User::select('id', 'name', 'users.kode_cabang', 'nama_regional', ...$field_date_activity)
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'regional sales manager');
+            })
+            ->leftjoinSub($activity, 'activity', function ($join) {
+                $join->on('users.id', '=', 'activity.id_user');
+            })
+
+            ->join('regional', 'users.kode_regional', '=', 'regional.kode_regional')
+            ->where('users.status', 1)
+            ->orderBy('name')
+            ->get();
+
+        $gm = User::select('id', 'name', 'users.kode_cabang', 'nama_regional', ...$field_date_activity)
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'gm marketing');
+            })
+            ->leftjoinSub($activity, 'activity', function ($join) {
+                $join->on('users.id', '=', 'activity.id_user');
+            })
+
+            ->join('regional', 'users.kode_regional', '=', 'regional.kode_regional')
+            ->where('users.status', 1)
+            ->orderBy('name')
+            ->get();
+
+        $data['users']  = $users;
+        $data['rsm']  = $rsm;
+        $data['gm']  = $gm;
+        $data['start_date'] = $start_date;
+        $data['end_date'] = $sampai;
+        $data['jmlhari'] = $i - 1;
+        $data['bulan'] = $bulan;
+        $data['tahun'] = $tahun;
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        return view('sfa.dashboard', $data);
+    }
     public function pelanggan()
     {
+
         return view('sfa.pelanggan');
     }
 
