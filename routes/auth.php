@@ -17,12 +17,12 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
-    Route::get('/loginportal', [AuthenticatedSessionController::class, 'create'])
+    Route::get('/', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    Route::get('/', function () {
-        return redirect('https://www.pedasalami.com');
-    })->name('login');
+    // Route::get('/', function () {
+    //     return redirect('https://www.pedasalami.com');
+    // })->name('login');
 
     Route::post('/', [AuthenticatedSessionController::class, 'store']);
 
