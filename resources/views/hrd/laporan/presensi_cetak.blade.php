@@ -653,7 +653,7 @@
                                             $potongan_jam_izin;
                                     @endphp
                                     <td style="background-color: {{ $color }}; color:white;">
-                                        {!! $keterangan !!} {{ $ceksabtu ?? '' }}
+                                        {!! $keterangan !!} {{ $ceksabtu ?? 'false' }}
                                         <br>
                                         @if (!empty($total_jam))
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
