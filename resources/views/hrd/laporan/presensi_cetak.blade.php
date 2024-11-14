@@ -619,17 +619,20 @@
                                             if (!empty($cekdirumahkan)) {
                                                 if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                     // $potongan_jam_tidakhadir = 2.5;
-                                                    $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
+
                                                     if ($tanggal_presensi == '2024-10-26') {
                                                         $total_jam = 3.5;
                                                         $potongan_jam_tidakhadir = 3.5;
+                                                        $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
                                                     } else {
                                                         $potongan_jam_tidakhadir = 2.5;
                                                         $total_jam = 2.5;
+                                                        $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
                                                     }
                                                 } else {
                                                     $potongan_jam_tidakhadir = 3.5;
                                                     $total_jam = 3.5;
+                                                    $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
                                                 }
                                             } else {
                                                 if (getNamahari($tanggal_presensi) == 'Sabtu') {
