@@ -9,6 +9,11 @@
 
         }
     </style> --}}
+    <style>
+        .detail {
+            cursor: pointer;
+        }
+    </style>
 @section('navigasi')
     @include('dashboard.navigasi')
 @endsection
@@ -88,7 +93,8 @@
                                 @php
                                     $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
                                 @endphp
-                                <td class="{{ $bgcolor }}">{{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
+                                <td class="{{ $bgcolor }} detail text-center" id_user="{{ $d->id }}" tanggal="{{ $start }}">
+                                    {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
                                 @php
                                     $i++;
                                     $start = date('Y-m-d', strtotime('+1 day', strtotime($start)));
@@ -111,7 +117,8 @@
                                 @php
                                     $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
                                 @endphp
-                                <td class="{{ $bgcolor }}">{{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
+                                <td class="{{ $bgcolor }} detail text-center" tanggal="{{ $start }}" id_user="{{ $d->id }}">
+                                    {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
                                 @php
                                     $i++;
                                     $start = date('Y-m-d', strtotime('+1 day', strtotime($start)));
@@ -134,7 +141,8 @@
                                 @php
                                     $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
                                 @endphp
-                                <td class="{{ $bgcolor }}">{{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
+                                <td class="{{ $bgcolor }} detail text-center" id_user="{{ $d->id }}" tanggal="{{ $start }}">
+                                    {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
                                 @php
                                     $i++;
                                     $start = date('Y-m-d', strtotime('+1 day', strtotime($start)));
@@ -147,7 +155,7 @@
         </div>
     </div>
 </div>
-
+<x-modal-form id="modal" show="loadmodal" title="Detail Aktifitas" size="modal-lg" />
 @endsection
 @push('myscript')
 <script>
@@ -159,6 +167,13 @@
             'columnNum': 2,
 
         });
+
+        $(".detail").click(function() {
+            let id_user = $(this).attr('id_user');
+            let tanggal = $(this).attr('tanggal');
+            $("#modal").modal("show");
+            $("#loadmodal").load('/aktifitassmm/' + id_user + '/' + tanggal + '/getdetailaktifitas');
+        })
     });
 </script>
 @endpush

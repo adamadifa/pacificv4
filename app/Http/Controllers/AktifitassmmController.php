@@ -145,4 +145,11 @@ class AktifitassmmController extends Controller
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
     }
+
+    public function getdetailaktifitas($id_user, $tanggal)
+    {
+        $aktifitas = AktifitasSMM::where('id_user', $id_user)->where('tanggal', $tanggal)->get();
+        $data['aktifitas'] = $aktifitas;
+        return view('aktifitas_smm.getdetailaktifitas', $data);
+    }
 }

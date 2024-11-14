@@ -2001,6 +2001,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/aktifitassmm/create', 'create')->name('aktifitassmm.create');
         Route::post('/aktifitassmm/store', 'store')->name('aktifitassmm.store');
         Route::post('/aktifitassmm/getaktifitas', 'getaktifitas')->name('aktifitassmm.getaktifitas');
+        Route::get('/aktifitassmm/{id_user}/{tanggal}/getdetailaktifitas', 'getdetailaktifitas')->name('aktifitassmm.getdetailaktifitas');
     });
 
 

@@ -56,6 +56,11 @@ function getfotoPelanggan($file)
     return $url;
 }
 
+function getfotoAktifitias($file)
+{
+    $url = url('/storage/uploads/aktifitas_smm/' . $file);
+    return $url;
+}
 
 function getfotoKaryawan($file)
 {
