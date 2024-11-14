@@ -12,10 +12,10 @@
         </table>
     </div>
 </div>
-<div class="row">
+<div class="row mt-2">
     <div class="col">
-        <table class="table">
-            <thead>
+        <table class="table table-bordered">
+            <thead class="table-dark">
                 <tr>
                     <th>No.</th>
                     <th>Waktu</th>
