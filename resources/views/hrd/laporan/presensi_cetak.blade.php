@@ -616,6 +616,7 @@
                                             $keterangan = '';
                                             // $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            $ceksabtu = '';
                                             if (!empty($cekdirumahkan)) {
                                                 if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                     // $potongan_jam_tidakhadir = 2.5;
