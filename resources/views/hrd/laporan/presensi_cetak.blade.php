@@ -619,6 +619,7 @@
                                             if (!empty($cekdirumahkan)) {
                                                 if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                     // $potongan_jam_tidakhadir = 2.5;
+                                                    $ceksabtu = $tanggal_presensi == '2024-10-26';
                                                     if ($tanggal_presensi == '2024-10-26') {
                                                         $total_jam = 3.5;
                                                         $potongan_jam_tidakhadir = 3.5;
@@ -652,7 +653,7 @@
                                             $potongan_jam_izin;
                                     @endphp
                                     <td style="background-color: {{ $color }}; color:white;">
-                                        {!! $keterangan !!}
+                                        {!! $keterangan !!} {{ $ceksabtu ?? '' }}
                                         <br>
                                         @if (!empty($total_jam))
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
