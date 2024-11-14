@@ -149,7 +149,7 @@ class AktifitassmmController extends Controller
     public function getdetailaktifitas($id_user, $tanggal)
     {
         $aktifitas = AktifitasSMM::where('id_user', $id_user)->where('tanggal', $tanggal)->get();
-        $user = User::where('id_user', $id_user)
+        $user = User::where('id', $id_user)
             ->join('cabang', 'user.kode_cabang', '=', 'cabang.kode_cabang')
             ->first();
         $data['user'] = $user;
