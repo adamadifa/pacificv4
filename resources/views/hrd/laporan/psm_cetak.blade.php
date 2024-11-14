@@ -560,7 +560,11 @@
                                             $color = 'rgb(69, 2, 140)';
 
                                             if (getNamahari($tanggal_presensi) == 'Sabtu') {
-                                                $total_jam = 2.5;
+                                                if ($tanggal_presensi == '2024-10-26') {
+                                                    $total_jam = 3.5;
+                                                } else {
+                                                    $total_jam = 2.5;
+                                                }
                                             } else {
                                                 if (!empty($cektanggallimajam)) {
                                                     $total_jam = 2.5;
