@@ -581,7 +581,11 @@
                                             $color = 'rgb(69, 2, 140)';
                                             $keterangan = 'Dirumahkan';
                                             if (getNamahari($tanggal_presensi) == 'Sabtu') {
-                                                $total_jam = 2.5;
+                                                if ($tanggal_presensi == '2024-10-26') {
+                                                    $total_jam = 3.5;
+                                                } else {
+                                                    $total_jam = 2.5;
+                                                }
                                             } else {
                                                 if (!empty($cektanggallimajam)) {
                                                     $total_jam = 2.5;
@@ -616,34 +620,21 @@
                                             $keterangan = '';
                                             // $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
-                                            $ceksabtu = '';
                                             if (!empty($cekdirumahkan)) {
                                                 if (getNamahari($tanggal_presensi) == 'Sabtu') {
-                                                    // $potongan_jam_tidakhadir = 2.5;
-
-                                                    if ($tanggal_presensi == '2024-10-26') {
-                                                        $total_jam = 3.5;
-                                                        $potongan_jam_tidakhadir = 3.5;
-                                                        $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
-                                                    } else {
-                                                        $potongan_jam_tidakhadir = 2.5;
-                                                        $total_jam = 2.5;
-                                                        $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
-                                                    }
+                                                    $potongan_jam_tidakhadir = 2.5;
+                                                    $total_jam = 2.5;
                                                 } else {
                                                     $potongan_jam_tidakhadir = 3.5;
                                                     $total_jam = 3.5;
-                                                    $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
                                                 }
                                             } else {
                                                 if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                     $potongan_jam_tidakhadir = 5;
                                                     $total_jam = 5;
-                                                    $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
                                                 } else {
                                                     $potongan_jam_tidakhadir = 7;
                                                     $total_jam = 7;
-                                                    $ceksabtu = $tanggal_presensi . '=' . '2024-10-26';
                                                 }
                                             }
                                         @endphp
@@ -659,7 +650,7 @@
                                             $potongan_jam_izin;
                                     @endphp
                                     <td style="background-color: {{ $color }}; color:white;">
-                                        {!! $keterangan !!} {{ $ceksabtu }} {{ $tanggal_presensi == '2024-10-26' }}
+                                        {!! $keterangan !!}
                                         <br>
                                         @if (!empty($total_jam))
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
