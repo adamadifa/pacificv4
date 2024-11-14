@@ -15,9 +15,9 @@
                 <td>{{ $d->keterangan }}</td>
                 <td>
                     @if (!empty($d->foto))
-                        @if (Storage::disk('public')->exists('/aktifitas_smm/' . $d->foto))
+                        @if (Storage::disk('public')->exists('/uploads/aktifitas_smm/' . $d->foto))
                             <div class="avatar avatar-xs me-2">
-                                <img src="{{ getfotoPelanggan($d->foto) }}" alt="" class="rounded-circle">
+                                <img src="{{ getfotoAktifitias($d->foto) }}" alt="" class="rounded-circle">
                             </div>
                         @else
                             <div class="avatar avatar-xs me-2">
