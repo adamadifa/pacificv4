@@ -21,9 +21,6 @@ class SlipgajiController extends Controller
 {
     public function show($bulangaji, $tahungaji, $nik)
     {
-
-
-
         $lastbulan = getbulandantahunlalu($bulangaji, $tahungaji, "bulan");
         $lasttahun = getbulandantahunlalu($bulangaji, $tahungaji, "tahun");
 

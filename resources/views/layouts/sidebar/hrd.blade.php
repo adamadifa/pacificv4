@@ -16,6 +16,8 @@
             'izinterlambat.index',
             'presensi.index',
             'presensi.presensikaryawan',
+            'slipgaji.index',
+            'penyupah.index',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -39,6 +41,8 @@
             'izinterlambat',
             'presensi',
             'presensikaryawan',
+            'slipgaji',
+            'penyupah',
         ])
             ? 'open'
             : '' }}">
@@ -142,7 +146,21 @@
                     </a>
                 </li>
             @endif
+            @if (auth()->user()->hasAnyPermission(['slipgaji.index']))
+                <li class="menu-item {{ request()->is(['slipgaji', 'slipgaji/*']) ? 'active' : '' }}">
+                    <a href="{{ route('slipgaji.index') }}" class="menu-link">
+                        <div>Slip Gaji</div>
+                    </a>
+                </li>
+            @endif
 
+            @if (auth()->user()->hasAnyPermission(['penyupah.index']))
+                <li class="menu-item {{ request()->is(['penyupah', 'penyupah/*']) ? 'active' : '' }}">
+                    <a href="{{ route('penyupah.index') }}" class="menu-link">
+                        <div>Penyesuaian Upah</div>
+                    </a>
+                </li>
+            @endif
             @if (auth()->user()->hasAnyPermission(['hrd.presensi', 'hrd.psm', 'hrd.gaji', 'hrd.slipgaji']))
                 <li class="menu-item {{ request()->is(['laporanhrd', 'laporanhrd/*']) ? 'active' : '' }}">
                     <a href="{{ route('laporanhrd.index') }}" class="menu-link">

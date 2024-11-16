@@ -5,6 +5,7 @@ use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AjuantransferdanaController;
 use App\Http\Controllers\AktifitassmmController;
 use App\Http\Controllers\AngkutanController;
+// use App\Http\Controllers\Api\SlipgajiController;
 use App\Http\Controllers\BadstokgaController;
 use App\Http\Controllers\BarangkeluargudangbahanController;
 use App\Http\Controllers\BarangkeluargudanglogistikController;
@@ -101,6 +102,7 @@ use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenilaiankaryawanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
+use App\Http\Controllers\PenyesuaianupahController;
 use App\Http\Controllers\PermintaankirimanController;
 use App\Http\Controllers\PermintaanproduksiController;
 use App\Http\Controllers\Permission_groupController;
@@ -135,6 +137,8 @@ use App\Http\Controllers\SetoranpenjualanController;
 use App\Http\Controllers\SetoranpusatController;
 use App\Http\Controllers\SetorantransferController;
 use App\Http\Controllers\SfaControler;
+
+use App\Http\Controllers\SlipgajiController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
@@ -1799,6 +1803,25 @@ Route::middleware('auth')->group(function () {
         Route::get('/presensi/{id}/{status}/show', 'show')->name('presensi.show')->can('presensi.index');
     });
 
+    Route::controller(SlipgajiController::class)->group(function () {
+        Route::get('/slipgaji', 'index')->name('slipgaji.index')->can('slipgaji.index');
+        Route::get('/slipgaji/create', 'create')->name('slipgaji.create')->can('slipgaji.create');
+        Route::post('/slipgaji/store', 'store')->name('slipgaji.store')->can('slipgaji.store');
+        Route::get('/slipgaji/{kode_slip}/show', 'show')->name('slipgaji.show')->can('slipgaji.show');
+        Route::get('/slipgaji/{kode_slip}/edit', 'edit')->name('slipgaji.edit')->can('slipgaji.edit');
+        Route::put('/slipgaji/{kode_slip}/update', 'update')->name('slipgaji.update')->can('slipgaji.update');
+        Route::delete('/slipgaji/{kode_slip}/delete', 'destroy')->name('slipgaji.delete')->can('slipgaji.delete');
+    });
+
+    Route::controller(PenyesuaianupahController::class)->group(function () {
+        Route::get('/penyupah', 'index')->name('penyupah.index')->can('penyupah.index');
+        Route::get('/penyupah/create', 'create')->name('penyupah.create')->can('penyupah.create');
+        Route::post('/penyupah/store', 'store')->name('penyupah.store')->can('penyupah.store');
+        Route::get('/penyupah/{kode_penyupah}/show', 'show')->name('penyupah.show')->can('penyupah.show');
+        Route::get('/penyupah/{kode_penyupah}/edit', 'edit')->name('penyupah.edit')->can('penyupah.edit');
+        Route::put('/penyupah/{kode_penyupah}/update', 'update')->name('penyupah.update')->can('penyupah.update');
+        Route::delete('/penyupah/{kode_penyupah}/delete', 'destroy')->name('penyupah.delete')->can('penyupah.delete');
+    });
     Route::controller(LaporangeneralaffairController::class)->group(function () {
         Route::get('/laporanga', 'index')->name('laporanga.index')->can('ga.servicekendaraan', 'ga.rekapbadstok');
         Route::post('/laporanga/cetakservicekendaraaan', 'cetakservicekendaraan')->name('laporanga.cetakservicekendaraan')->can('ga.servicekendaraan');
