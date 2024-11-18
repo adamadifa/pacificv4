@@ -9,7 +9,7 @@
         </select>
     </div>
     <x-input-with-icon label="Pengurang" name="pengurang" icon="ti ti-minus" align="right" money="true" />
-    <x-input-with-icon label="Pengurang" name="Penambah" icon="ti ti-plus" align="right" money="true" />
+    <x-input-with-icon label="Pengurang" name="penambah" icon="ti ti-plus" align="right" money="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>
