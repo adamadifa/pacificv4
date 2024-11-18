@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-header">
                 @can('penyupah.create')
-                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Buat Penyesuaian Upah</a>
+                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Tambah Karyawan</a>
                 @endcan
             </div>
             <div class="card-body">
@@ -54,7 +54,7 @@
                                             <td class="text-end">{{ formatAngka($d->penambah) }}</td>
                                             <td>
                                                 <form method="POST" name="deleteform" class="deleteform"
-                                                    action="{{ route('penyupah.delete', Crypt::encrypt($d->kode_gaji)) }}">
+                                                    action="{{ route('penyupah.deletekaryawan', [Crypt::encrypt($d->kode_gaji), Crypt::encrypt($d->nik)]) }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <a href="#" class="delete-confirm me-1">
@@ -78,3 +78,15 @@
 </div>
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection
+@push('myscript')
+<script>
+    $(function() {
+        $('#btnCreate').click(function() {
+            let kode_gaji = "{{ Crypt::encrypt($penyupah->kode_gaji) }}";
+            $('#modal').modal('show');
+            $('#modal').find('.modal-title').text('Tambah Karyawan');
+            $('#loadmodal').load('/penyupah/' + kode_gaji + '/tambahkaryawan');
+        });
+    });
+</script>
+@endpush
