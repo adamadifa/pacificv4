@@ -2,17 +2,17 @@
     <ul class="nav nav-tabs" role="tablist">
         @can('sagudanglogistik.index')
             <li class="nav-item" role="presentation">
-                <a href="{{ route('sagudanglogistik.index') }}"
-                    class="nav-link {{ request()->is(['sagudanglogistik', 'sagudanglogistik/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Kumulatif
+                <a href="{{ route('monitoringprogram.index') }}"
+                    class="nav-link {{ request()->is(['monitoringprogram', 'monitoringprogram/*']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Program
                 </a>
             </li>
         @endcan
         @can('sagudanglogistik.index')
             <li class="nav-item" role="presentation">
-                <a href="{{ route('sagudanglogistik.index') }}"
-                    class="nav-link {{ request()->is(['sagudanglogistik', 'sagudanglogistik/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ikatan
+                <a href="{{ route('pencairanprogram.index') }}"
+                    class="nav-link {{ request()->is(['pencairanprogram', 'pencairanprogram/*']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Pencairan
                 </a>
             </li>
         @endcan

@@ -100,6 +100,7 @@ use App\Http\Controllers\PembayaranpiutangkaryawanController;
 use App\Http\Controllers\PembayaranpjpController;
 use App\Http\Controllers\PembayarantransferController;
 use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\PencairanprogramController;
 use App\Http\Controllers\PenilaiankaryawanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
@@ -2040,6 +2041,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/monitoringprogram/{id}/edit', 'edit')->name('monitoringprogram.edit')->can('monitoringprogram.edit');
         Route::post('/monitoringprogram/{id}/update', 'update')->name('monitoringprogram.update')->can('monitoringprogram.update');
         Route::delete('/monitoringprogram/{id}/destroy', 'destroy')->name('monitoringprogram.destroy')->can('monitoringprogram.delete');
+    });
+
+    Route::controller(PencairanprogramController::class)->group(function () {
+        Route::get('/pencairanprogram', 'index')->name('pencairanprogram.index')->can('pencairanprogram.index');
+        Route::get('/pencairanprogram/create', 'create')->name('pencairanprogram.create')->can('pencairanprogram.create');
+        Route::post('/pencairanprogram/store', 'store')->name('pencairanprogram.store')->can('pencairanprogram.store');
+        Route::get('/pencairanprogram/{kode_pencairan}/edit', 'edit')->name('pencairanprogram.edit')->can('pencairanprogram.edit');
+        Route::post('/pencairanprogram/{kode_pencairan}/update', 'update')->name('pencairanprogram.update')->can('pencairanprogram.update');
+        Route::delete('/pencairanprogram/{kode_pencairan}/destroy', 'destroy')->name('pencairanprogram.destroy')->can('pencairanprogram.delete');
     });
 
 
