@@ -102,9 +102,9 @@
                 </li>
             @endcan
 
-            @can('worksheetom.monitoringprogram')
-                <li class="menu-item {{ request()->is('worksheetom/monitoringprogram') ? 'active' : '' }}">
-                    <a href="{{ route('worksheetom.monitoringprogram') }}" class="menu-link">
+            @can('monitoringprogram.index')
+                <li class="menu-item {{ request()->is('monitoringprogram') ? 'active' : '' }}">
+                    <a href="{{ route('monitoringprogram.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-box"></i>
                         <div>Monitoring Program</div>
                     </a>

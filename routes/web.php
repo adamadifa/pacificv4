@@ -82,6 +82,7 @@ use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\LemburController;
 use App\Http\Controllers\LogamtokertasController;
+use App\Http\Controllers\MonitoringprogramController;
 use App\Http\Controllers\MonitoringreturController;
 use App\Http\Controllers\MutasibankController;
 use App\Http\Controllers\MutasidpbController;
@@ -2029,6 +2030,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/aktifitassmm/store', 'store')->name('aktifitassmm.store');
         Route::post('/aktifitassmm/getaktifitas', 'getaktifitas')->name('aktifitassmm.getaktifitas');
         Route::get('/aktifitassmm/{id_user}/{tanggal}/getdetailaktifitas', 'getdetailaktifitas')->name('aktifitassmm.getdetailaktifitas');
+    });
+
+
+    Route::controller(MonitoringprogramController::class)->group(function () {
+        Route::get('/monitoringprogram', 'index')->name('monitoringprogram.index')->can('monitoringprogram.index');
+        Route::get('/monitoringprogram/create', 'create')->name('monitoringprogram.create')->can('monitoringprogram.create');
+        Route::post('/monitoringprogram/store', 'store')->name('monitoringprogram.store')->can('monitoringprogram.store');
+        Route::get('/monitoringprogram/{id}/edit', 'edit')->name('monitoringprogram.edit')->can('monitoringprogram.edit');
+        Route::post('/monitoringprogram/{id}/update', 'update')->name('monitoringprogram.update')->can('monitoringprogram.update');
+        Route::delete('/monitoringprogram/{id}/destroy', 'destroy')->name('monitoringprogram.destroy')->can('monitoringprogram.delete');
     });
 
 
