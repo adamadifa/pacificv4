@@ -45,15 +45,40 @@
                                 <table class="table table-striped table-hover table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th>No. Bukti</th>
-                                            <th>Supplier</th>
-                                            <th>Tanggal Pembelian</th>
-                                            <th>Tanggal Diterima</th>
+                                            <th>No. Ajuan</th>
+                                            <th>Tanggal</th>
+                                            <th>Bulan</th>
+                                            <th>Tahun</th>
+                                            <th>Status</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach ($pencairanprogram as $d)
+                                            <tr>
+                                                <td>{{ $d->kode_pencairan }}</td>
+                                                <td>{{ DateToIndo($d->tanggal) }}</td>
+                                                <td>{{ $namabulan[$d->bulan] }}</td>
+                                                <td>{{ $d->tahun }}</td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="me-1">
+                                                            <i class="ti ti-settings text-primary"></i>
+                                                        </a>
 
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('pencairanprogram.delete', Crypt::encrypt($d->kode_pencairan)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm ml-1">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

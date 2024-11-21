@@ -2049,7 +2049,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/pencairanprogram/store', 'store')->name('pencairanprogram.store')->can('pencairanprogram.store');
         Route::get('/pencairanprogram/{kode_pencairan}/edit', 'edit')->name('pencairanprogram.edit')->can('pencairanprogram.edit');
         Route::post('/pencairanprogram/{kode_pencairan}/update', 'update')->name('pencairanprogram.update')->can('pencairanprogram.update');
-        Route::delete('/pencairanprogram/{kode_pencairan}/destroy', 'destroy')->name('pencairanprogram.destroy')->can('pencairanprogram.delete');
+        Route::delete('/pencairanprogram/{kode_pencairan}/delete', 'destroy')->name('pencairanprogram.delete')->can('pencairanprogram.delete');
     });
 
 

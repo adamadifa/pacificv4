@@ -113,7 +113,7 @@
                             <td>{{ $d->no_bukti }}</td>
                             <td>{{ $d->nama_supplier }}</td>
                             <td>{{ $namabarang }}</td>
-                            <td>{{ $d->keterangan }}</td>
+                            <td>{{ $d->keterangan ?? $d->keterangan_penjualan }}</td>
                             <td class="center">{{ $d->jenis_transaksi }}</td>
                             <td class="center">{{ $d->kode_cabang }}</td>
                             <td class="center">'{{ $d->kode_akun }}</td>
