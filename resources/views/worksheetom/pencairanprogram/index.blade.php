@@ -49,6 +49,7 @@
                                             <th>Tanggal</th>
                                             <th>Bulan</th>
                                             <th>Tahun</th>
+                                            <th>Program</th>
                                             <th>Status</th>
                                             <th>#</th>
                                         </tr>
@@ -60,10 +61,12 @@
                                                 <td>{{ DateToIndo($d->tanggal) }}</td>
                                                 <td>{{ $namabulan[$d->bulan] }}</td>
                                                 <td>{{ $d->tahun }}</td>
+                                                <td>{{ $d->kode_program == 'PR001' ? 'BB & DP' : 'AIDA' }}</td>
                                                 <td></td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="#" class="me-1">
+                                                        <a href="{{ route('pencairanprogram.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                            class="me-1">
                                                             <i class="ti ti-settings text-primary"></i>
                                                         </a>
 

@@ -34,10 +34,10 @@
         </div>
     </div>
     <div class="form-group mb-3">
-        <select name="kode_jenis_program" id="kode_jenis_program" class="form-select">
-            <option value="">Jenis Program</option>
-            <option value="KM">Kumulatif</option>
-            <option value="IK">Ikatan</option>
+        <select name="kode_program" id="kode_program" class="form-select">
+            <option value="PR001">BB & DP</option>
+            <option value="PR002">AIDA</option>
+
         </select>
     </div>
     <x-textarea label="Keterangan" name="keterangan" />
@@ -60,6 +60,15 @@
         }
         $(".flatpickr-date").flatpickr();
 
+        function buttonDisable() {
+            $("#btnSimpan").prop('disabled', true);
+            $("#btnSimpan").html(`
+                <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Loading..
+            `);
+        }
         const form = $('#formPencairan');
         $("#formPencairan").submit(function(e) {
             let tanggal = form.find('input[name="tanggal"]').val();
@@ -122,6 +131,8 @@
                     },
                 });
                 return false;
+            } else {
+                buttonDisable();
             }
         });
 

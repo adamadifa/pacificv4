@@ -2050,6 +2050,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/pencairanprogram/{kode_pencairan}/edit', 'edit')->name('pencairanprogram.edit')->can('pencairanprogram.edit');
         Route::post('/pencairanprogram/{kode_pencairan}/update', 'update')->name('pencairanprogram.update')->can('pencairanprogram.update');
         Route::delete('/pencairanprogram/{kode_pencairan}/delete', 'destroy')->name('pencairanprogram.delete')->can('pencairanprogram.delete');
+
+        Route::get('/pencairanprogram/{kode_pencairan}/setpencairan', 'setpencairan')->name('pencairanprogram.setpencairan')->can('pencairanprogram.create');
+        Route::get('/pencairanprogram/{bulan}/{tahun}/{kode_cabang}/{kode_program}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogram.tambahpelanggan')->can('pencairanprogram.create');
     });
 
 
