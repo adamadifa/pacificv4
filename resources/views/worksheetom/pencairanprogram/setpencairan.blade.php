@@ -65,6 +65,7 @@
     </div>
 </div>
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
+<x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -80,6 +81,18 @@
                 "/tambahpelanggan");
 
         });
+
+        $(document).on('click', '.btnDetailfaktur', function(e) {
+            e.preventDefault();
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            let kategori_diskon = $(this).attr('kategori_diskon');
+            let bulan = "{{ $pencairanprogram->bulan }}";
+            let tahun = "{{ $pencairanprogram->tahun }}";
+            $("#modalDetailfaktur").modal("show");
+            $("#modalDetailfaktur").find(".modal-title").text('Detail Faktur');
+            $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
+                `/pencairanprogram/${kode_pelanggan}/${kategori_diskon}/${bulan}/${tahun}/detailfaktur`);
+        })
     });
 </script>
 @endpush

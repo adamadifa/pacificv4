@@ -94,7 +94,16 @@ class PencairanprogramController extends Controller
         return view('worksheetom.pencairanprogram.setpencairan', $data);
     }
 
-    public function tambahpelanggan(Request $request)
+    function tambahpelanggan(Request $request)
+    {
+        $data['kode_program'] = $request->kode_program;
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['kode_cabang'] = $request->kode_cabang;
+        return view('worksheetom.pencairanprogram.tambahpelanggan', $data);
+    }
+
+    public function getpelanggan(Request $request)
     {
         if ($request->kode_program == 'PR001') {
             $produk = ['BB', 'DEP'];
@@ -111,7 +120,7 @@ class PencairanprogramController extends Controller
             'marketing_penjualan.kode_pelanggan',
             'nama_pelanggan',
             DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
-            DB::raw('(SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="D001") as diskon'),
+            DB::raw('(SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon'),
             DB::raw('floor(jumlah/isi_pcs_dus) * (SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon_reguler'),
 
         )
@@ -129,23 +138,79 @@ class PencairanprogramController extends Controller
             ->orderBy('nama_pelanggan')
             ->get();
 
+        $diskon = Diskon::where('kode_kategori_diskon', $kategori_diskon)->get();
         $detail = $detailpenjualan->groupBy('kode_pelanggan')
-            ->map(function ($item) {
+            ->map(function ($group) use ($diskon) {
+                $diskon_kumulatif = $diskon->first(function ($diskonItem) use ($group) {
+                    return $diskonItem->min_qty <= $group->sum('jml_dus') && $diskonItem->max_qty >= $group->sum('jml_dus');
+                })->diskon ?? 0;
+                $total_diskon_kumulatif = $diskon_kumulatif * $group->sum('jml_dus');
+                $cashback = $total_diskon_kumulatif - $group->sum('diskon_reguler');
                 return [
-                    'kode_pelanggan' => $item->first()->kode_pelanggan,
-                    'nama_pelanggan' => $item->first()->nama_pelanggan,
-                    'jml_dus' => $item->sum('jml_dus'),
-                    'diskon_reguler' => $item->sum('diskon_reguler'),
+                    'kode_pelanggan' => $group->first()->kode_pelanggan,
+                    'nama_pelanggan' => $group->first()->nama_pelanggan,
+                    'jml_dus' => $group->sum('jml_dus'),
+                    'diskon_reguler' => $group->sum('diskon_reguler'),
+                    'diskon_kumulatif' => $total_diskon_kumulatif,
+                    'cashback' => $cashback,
                 ];
             })
             ->sortBy('nama_pelanggan')
+            ->filter(function ($item) {
+                return $item['cashback'] > 0;
+            })
             ->values()
             ->all();
 
 
 
         $data['detail'] = $detail;
-        $data['diskon'] = Diskon::where('kode_kategori_diskon', $kategori_diskon)->get();
-        return view('worksheetom.pencairanprogram.tambahpelanggan', $data);
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['diskon'] = $request->diskon;
+        $data['kategori_diskon'] = $kategori_diskon;
+        $data['kode_program'] = $request->kode_program;
+        $data['kode_cabang'] = $request->kode_cabang;
+        return view('worksheetom.pencairanprogram.getpelanggan', $data);
+    }
+
+
+    public function detailfaktur($kode_pelanggan, $kategori_diskon, $bulan, $tahun)
+    {
+
+        if ($kategori_diskon == 'D001') {
+            $produk = ['BB', 'DEP'];
+        } else {
+            $produk = ['AB', 'AR', 'AS'];
+        }
+        $start_date = $tahun . '-' . $bulan . '-01';
+        $end_date = date('Y-m-t', strtotime($start_date));
+        $detailpenjualan = Detailpenjualan::select(
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.tanggal_pelunasan',
+            'marketing_penjualan.jenis_transaksi',
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
+            DB::raw('(SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon'),
+            DB::raw('floor(jumlah/isi_pcs_dus) * (SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon_reguler'),
+
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            ->where('status', 1)
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 14")
+            ->where('status_batal', 0)
+            ->whereIn('produk_harga.kode_produk', $produk)
+            ->orderBy('nama_pelanggan')
+            ->get();
+
+        return view('worksheetom.pencairanprogram.detailfaktur', compact('detailpenjualan'));
     }
 }
