@@ -94,18 +94,20 @@ class PencairanprogramController extends Controller
         return view('worksheetom.pencairanprogram.setpencairan', $data);
     }
 
-    function tambahpelanggan(Request $request)
+    function tambahpelanggan($kode_pencairan)
     {
-        $data['kode_program'] = $request->kode_program;
-        $data['bulan'] = $request->bulan;
-        $data['tahun'] = $request->tahun;
-        $data['kode_cabang'] = $request->kode_cabang;
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
+        $data['pencairanprogram'] = $pencairanprogram;
         return view('worksheetom.pencairanprogram.tambahpelanggan', $data);
     }
 
     public function getpelanggan(Request $request)
     {
-        if ($request->kode_program == 'PR001') {
+
+        $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
+        $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
+        if ($pencairanprogram->kode_program == 'PR001') {
             $produk = ['BB', 'DEP'];
             $kategori_diskon = 'D001';
         } else {
@@ -113,7 +115,7 @@ class PencairanprogramController extends Controller
             $kategori_diskon = 'D002';
         }
 
-        $start_date = $request->tahun . '-' . $request->bulan . '-01';
+        $start_date = $pencairanprogram->tahun . '-' . $pencairanprogram->bulan . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
 
         $detailpenjualan = Detailpenjualan::select(
@@ -130,7 +132,7 @@ class PencairanprogramController extends Controller
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
-            ->where('salesman.kode_cabang', $request->kode_cabang)
+            ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
             ->where('status', 1)
             ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 14")
             ->where('status_batal', 0)
@@ -165,12 +167,12 @@ class PencairanprogramController extends Controller
 
 
         $data['detail'] = $detail;
-        $data['bulan'] = $request->bulan;
-        $data['tahun'] = $request->tahun;
-        $data['diskon'] = $request->diskon;
-        $data['kategori_diskon'] = $kategori_diskon;
-        $data['kode_program'] = $request->kode_program;
-        $data['kode_cabang'] = $request->kode_cabang;
+        // $data['bulan'] = $request->bulan;
+        // $data['tahun'] = $request->tahun;
+        // $data['diskon'] = $request->diskon;
+        // $data['kategori_diskon'] = $kategori_diskon;
+        // $data['kode_program'] = $request->kode_program;
+        // $data['kode_cabang'] = $request->kode_cabang;
         return view('worksheetom.pencairanprogram.getpelanggan', $data);
     }
 

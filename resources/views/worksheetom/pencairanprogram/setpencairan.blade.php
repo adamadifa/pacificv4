@@ -71,14 +71,10 @@
 <script>
     $(function() {
         $("#btnCreate").click(function() {
-            let bulan = "{{ $pencairanprogram->bulan }}";
-            let tahun = "{{ $pencairanprogram->tahun }}";
-            let kode_cabang = "{{ $pencairanprogram->kode_cabang }}";
-            let kode_program = "{{ $pencairanprogram->kode_program }}";
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Tambah Pelanggan");
-            $("#loadmodal").load("/pencairanprogram/" + bulan + "/" + tahun + "/" + kode_cabang + "/" + kode_program +
-                "/tambahpelanggan");
+            $("#loadmodal").load("/pencairanprogram/" + kode_pencairan + "/tambahpelanggan");
 
         });
 

@@ -21,20 +21,14 @@
 <script>
     $(document).ready(function() {
         function loadpenjualanpelanggan() {
-            let kode_program = "{{ $kode_program }}";
-            let bulan = "{{ $bulan }}";
-            let tahun = "{{ $tahun }}";
-            let kode_cabang = "{{ $kode_cabang }}";
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
             $("#loadpenjualanpelanggan").html("<tr class='text-center'><td colspan='8'>Loading...</td></tr>");
             $.ajax({
                 type: 'POST',
                 url: '/pencairanprogram/getpelanggan',
                 data: {
                     _token: "{{ csrf_token() }}",
-                    kode_program: kode_program,
-                    bulan: bulan,
-                    tahun: tahun,
-                    kode_cabang: kode_cabang
+                    kode_pencairan: kode_pencairan
                 },
                 cache: false,
                 success: function(data) {
@@ -44,5 +38,9 @@
         }
 
         loadpenjualanpelanggan();
+
+        $(document).on('click', '.btnTambahpelanggan', function(e) {
+            alert('test');
+        });
     });
 </script>

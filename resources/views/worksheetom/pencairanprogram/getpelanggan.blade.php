@@ -8,9 +8,14 @@
         <td class="text-end">{{ formatAngka($d['diskon_kumulatif']) }}</td>
         <td class="text-end">{{ formatAngka($d['cashback']) }}</td>
         <td>
-            <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d['kode_pelanggan'] }}" kategori_diskon="{{ $kategori_diskon }}">
-                <i class="ti ti-file-description"></i>
-            </a>
+            <div class="d-flex">
+                <a href="#" class="btnDetailfaktur me-2" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                    <i class="ti ti-file-description"></i>
+                </a>
+                <a href="#" class="btnTambahpelanggan" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                    <i class="ti ti-plus"></i>
+                </a>
+            </div>
         </td>
 
     </tr>

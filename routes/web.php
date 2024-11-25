@@ -2052,7 +2052,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/pencairanprogram/{kode_pencairan}/delete', 'destroy')->name('pencairanprogram.delete')->can('pencairanprogram.delete');
 
         Route::get('/pencairanprogram/{kode_pencairan}/setpencairan', 'setpencairan')->name('pencairanprogram.setpencairan')->can('pencairanprogram.create');
-        Route::get('/pencairanprogram/{bulan}/{tahun}/{kode_cabang}/{kode_program}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogram.tambahpelanggan')->can('pencairanprogram.create');
+        Route::get('/pencairanprogram/{kode_pencairan}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogram.tambahpelanggan')->can('pencairanprogram.create');
         Route::get('/pencairanprogram/{kode_pelanggan}/{kategori_diskon}/{bulan}/{tahun}/detailfaktur', 'detailfaktur')->name('pencairanprogram.detailfaktur')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/getpelanggan', 'getpelanggan')->name('pencairanprogram.getpelanggan')->can('pencairanprogram.create');
     });
