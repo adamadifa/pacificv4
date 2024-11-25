@@ -53,6 +53,7 @@
                                     <th rowspan="2" class="text-center" valign="middle">Qty</th>
                                     <th colspan="2" class="text-center" valign="middle">Diskon</th>
                                     <th rowspan="2" class="text-center" valign="middle">Cashback</th>
+                                    <th rowspan="2" class="text-center" valign="middle">#</th>
                                 </tr>
                                 <tr>
                                     <th>Reguler</th>
@@ -96,7 +97,7 @@
 
         function getdetailpencairan() {
             let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
-            $("#loaddetailpencairan").html("<tr class='text-center'><td colspan='5'>Loading...</td></tr>");
+            // $("#loaddetailpencairan").html("<tr class='text-center'><td colspan='5'>Loading...</td></tr>");
             $.ajax({
                 type: 'POST',
                 url: '/pencairanprogram/getdetailpencairan',
@@ -115,7 +116,7 @@
 
         function loadpenjualanpelanggan() {
             let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
-            $("#loadpenjualanpelanggan").html("<tr class='text-center'><td colspan='8'>Loading...</td></tr>");
+            // $("#loadpenjualanpelanggan").html("<tr class='text-center'><td colspan='8'>Loading...</td></tr>");
             $.ajax({
                 type: 'POST',
                 url: '/pencairanprogram/getpelanggan',
@@ -161,6 +162,59 @@
                         didClose: (e) => {
                             getdetailpencairan();
                         },
+                    });
+                }
+            });
+
+        });
+
+        $(document).on('click', '.deletedetailpencairan', function(e) {
+            e.preventDefault();
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data ini akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Lanjutkan dengan penghapusan jika dikonfirmasi
+                    $.ajax({
+                        type: 'POST',
+                        url: '/pencairanprogram/deletedetailpencairan',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            kode_pencairan: kode_pencairan,
+                            kode_pelanggan: kode_pelanggan
+                        },
+                        cache: false,
+                        success: function(respond) {
+                            Swal.fire({
+                                title: "Sukses!",
+                                text: "Data Berhasil Dihapus!",
+                                icon: "success",
+                                showConfirmButton: true,
+                                didClose: (e) => {
+                                    getdetailpencairan();
+                                    loadpenjualanpelanggan();
+                                },
+                            });
+                        },
+                        error: function(respond) {
+                            Swal.fire({
+                                title: "Oops!",
+                                text: respond.responseJSON.message,
+                                icon: "warning",
+                                showConfirmButton: true,
+                                didClose: (e) => {
+                                    getdetailpencairan();
+                                },
+                            });
+                        }
                     });
                 }
             });

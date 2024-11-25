@@ -2057,6 +2057,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/pencairanprogram/getpelanggan', 'getpelanggan')->name('pencairanprogram.getpelanggan')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/storepelanggan', 'storepelanggan')->name('pencairanprogram.storepelanggan')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/getdetailpencairan', 'getdetailpencairan')->name('pencairanprogram.getdetailpencairan')->can('pencairanprogram.create');
+        Route::post('/pencairanprogram/deletedetailpencairan', 'deletedetailpencairan')->name('pencairanprogram.deletedetailpencairan')->can('pencairanprogram.create');
     });
 
 

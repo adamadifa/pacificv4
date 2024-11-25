@@ -119,6 +119,8 @@ class PencairanprogramController extends Controller
         $start_date = $pencairanprogram->tahun . '-' . $pencairanprogram->bulan . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
 
+
+
         $detailpenjualan = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
             'nama_pelanggan',
@@ -138,6 +140,14 @@ class PencairanprogramController extends Controller
             ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 14")
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
+            ->whereNotIn('marketing_penjualan.kode_pelanggan', function ($query) use ($pencairanprogram) {
+                $query->select('kode_pelanggan')
+                    ->from('marketing_program_pencairan_detail')
+                    ->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan')
+                    ->where('bulan', $pencairanprogram->bulan)
+                    ->where('tahun', $pencairanprogram->tahun)
+                    ->where('kode_program', $pencairanprogram->kode_program);
+            })
             ->orderBy('nama_pelanggan')
             ->get();
 
@@ -273,5 +283,28 @@ class PencairanprogramController extends Controller
             ->get();
         $data['detailpencairan'] = $detailpencairan;
         return view('worksheetom.pencairanprogram.getdetailpencairan', $data);
+    }
+
+    public function deletedetailpencairan(Request $request)
+    {
+        $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
+        $kode_pelanggan = $request->kode_pelanggan;
+
+        try {
+            //code...
+            Detailpencairan::where('kode_pencairan', $kode_pencairan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil dihapus'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ], 400);
+        }
     }
 }
