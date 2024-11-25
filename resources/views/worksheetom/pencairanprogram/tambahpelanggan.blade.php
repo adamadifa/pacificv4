@@ -39,8 +39,6 @@
 
         loadpenjualanpelanggan();
 
-        $(document).on('click', '.btnTambahpelanggan', function(e) {
-            alert('test');
-        });
+
     });
 </script>

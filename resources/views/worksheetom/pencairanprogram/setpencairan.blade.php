@@ -7,7 +7,7 @@
 @endsection
 
 <div class="row">
-    <div class="col-lg-6 col-sm-12 col-xs-12">
+    <div class="col-lg-8 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
                 @can('pencairanprogram.create')
@@ -47,14 +47,19 @@
                         <table class="table table-bordered table-striped">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>Nik</th>
-                                    <th>Nama Karyawan</th>
-                                    <th>Dept</th>
-                                    <th>Grup</th>
-                                    <th>#</th>
+                                    <th rowspan="2" class="text-center" valign="middle">Nik</th>
+                                    <th rowspan="2" class="text-center" valign="middle">Kode Pel</th>
+                                    <th rowspan="2" valign="middle">Nama Pelanggan</th>
+                                    <th rowspan="2" class="text-center" valign="middle">Qty</th>
+                                    <th colspan="2" class="text-center" valign="middle">Diskon</th>
+                                    <th rowspan="2" class="text-center" valign="middle">Cashback</th>
+                                </tr>
+                                <tr>
+                                    <th>Reguler</th>
+                                    <th>Kumulatif</th>
                                 </tr>
                             </thead>
-                            <tbody id="loadpelanggan">
+                            <tbody id="loaddetailpencairan">
 
                             </tbody>
                         </table>
@@ -81,14 +86,86 @@
         $(document).on('click', '.btnDetailfaktur', function(e) {
             e.preventDefault();
             let kode_pelanggan = $(this).attr('kode_pelanggan');
-            let kategori_diskon = $(this).attr('kategori_diskon');
-            let bulan = "{{ $pencairanprogram->bulan }}";
-            let tahun = "{{ $pencairanprogram->tahun }}";
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
             $("#modalDetailfaktur").modal("show");
             $("#modalDetailfaktur").find(".modal-title").text('Detail Faktur');
             $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
-                `/pencairanprogram/${kode_pelanggan}/${kategori_diskon}/${bulan}/${tahun}/detailfaktur`);
-        })
+                `/pencairanprogram/${kode_pelanggan}/${kode_pencairan}/detailfaktur`);
+        });
+
+
+        function getdetailpencairan() {
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
+            $("#loaddetailpencairan").html("<tr class='text-center'><td colspan='5'>Loading...</td></tr>");
+            $.ajax({
+                type: 'POST',
+                url: '/pencairanprogram/getdetailpencairan',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_pencairan: kode_pencairan
+                },
+                cache: false,
+                success: function(data) {
+                    $("#loaddetailpencairan").html(data);
+                }
+            });
+        }
+
+        getdetailpencairan();
+
+        function loadpenjualanpelanggan() {
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
+            $("#loadpenjualanpelanggan").html("<tr class='text-center'><td colspan='8'>Loading...</td></tr>");
+            $.ajax({
+                type: 'POST',
+                url: '/pencairanprogram/getpelanggan',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_pencairan: kode_pencairan
+                },
+                cache: false,
+                success: function(data) {
+                    $("#loadpenjualanpelanggan").html(data);
+                }
+            })
+        }
+
+        loadpenjualanpelanggan();
+
+        $(document).on('submit', '.formAddpelanggan', function(e) {
+            e.preventDefault();
+            let formData = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/pencairanprogram/storepelanggan',
+                data: formData,
+                cache: false,
+                success: function(respond) {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: "Data Berhasil Disimpan !",
+                        icon: "success",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            getdetailpencairan();
+                            loadpenjualanpelanggan();
+                        },
+                    });
+                },
+                error: function(respond) {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: respond.responseJSON.message,
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            getdetailpencairan();
+                        },
+                    });
+                }
+            });
+
+        });
     });
 </script>
 @endpush

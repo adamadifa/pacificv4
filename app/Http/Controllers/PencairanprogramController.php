@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detailpencairan;
 use App\Models\Detailpenjualan;
 use App\Models\Diskon;
 use App\Models\Pencairanprogram;
@@ -167,6 +168,7 @@ class PencairanprogramController extends Controller
 
 
         $data['detail'] = $detail;
+        $data['kode_pencairan'] = $kode_pencairan;
         // $data['bulan'] = $request->bulan;
         // $data['tahun'] = $request->tahun;
         // $data['diskon'] = $request->diskon;
@@ -177,13 +179,21 @@ class PencairanprogramController extends Controller
     }
 
 
-    public function detailfaktur($kode_pelanggan, $kategori_diskon, $bulan, $tahun)
+    public function detailfaktur($kode_pelanggan, $kode_pencairan)
     {
 
-        if ($kategori_diskon == 'D001') {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+
+        $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
+        $bulan = $pencairanprogram->bulan;
+        $tahun = $pencairanprogram->tahun;
+
+        if ($pencairanprogram->kode_program == 'PR001') {
             $produk = ['BB', 'DEP'];
+            $kategori_diskon = 'D001';
         } else {
             $produk = ['AB', 'AR', 'AS'];
+            $kategori_diskon = 'D002';
         }
         $start_date = $tahun . '-' . $bulan . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
@@ -214,5 +224,54 @@ class PencairanprogramController extends Controller
             ->get();
 
         return view('worksheetom.pencairanprogram.detailfaktur', compact('detailpenjualan'));
+    }
+
+
+    public function storepelanggan(Request $request)
+    {
+        try {
+            $cek  = Detailpencairan::where('kode_pencairan', $request->kode_pencairan)
+                ->where('kode_pelanggan', $request->kode_pelanggan)
+                ->first();
+            if ($cek) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data sudah ada'
+                ], 400);
+            }
+            Detailpencairan::create([
+                'kode_pencairan' => $request->kode_pencairan,
+                'kode_pelanggan' => $request->kode_pelanggan,
+                'jumlah' => $request->jml_dus,
+                'diskon_reguler' => $request->diskon_reguler,
+                'diskon_kumulatif' => $request->diskon_kumulatif
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function getdetailpencairan(Request $request)
+    {
+        $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
+        $detailpencairan = Detailpencairan::where('kode_pencairan', $kode_pencairan)
+            ->select(
+                'marketing_program_pencairan_detail.kode_pelanggan',
+                'nama_pelanggan',
+                'jumlah',
+                'diskon_reguler',
+                'diskon_kumulatif'
+            )
+            ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->get();
+        $data['detailpencairan'] = $detailpencairan;
+        return view('worksheetom.pencairanprogram.getdetailpencairan', $data);
     }
 }
