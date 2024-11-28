@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AjuanfakturkreditController;
 use App\Http\Controllers\AjuanlimitkreditController;
+use App\Http\Controllers\AjuanprogramikatanController;
 use App\Http\Controllers\AjuantransferdanaController;
 use App\Http\Controllers\AktifitassmmController;
 use App\Http\Controllers\AngkutanController;
@@ -2060,6 +2061,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/pencairanprogram/deletedetailpencairan', 'deletedetailpencairan')->name('pencairanprogram.deletedetailpencairan')->can('pencairanprogram.create');
     });
 
+
+    Route::controller(AjuanprogramikatanController::class)->group(function () {
+        Route::get('/ajuanprogramikatan', 'index')->name('ajuanprogramikatan.index')->can('ajuanprogramikatan.index');
+        Route::get('/ajuanprogramikatan/create', 'create')->name('ajuanprogramikatan.create')->can('ajuanprogramikatan.create');
+        Route::post('/ajuanprogramikatan/store', 'store')->name('ajuanprogramikatan.store')->can('ajuanprogramikatan.store');
+        Route::get('/ajuanprogramikatan/{id}/edit', 'edit')->name('ajuanprogramikatan.edit')->can('ajuanprogramikatan.edit');
+        Route::post('/ajuanprogramikatan/{id}/update', 'update')->name('ajuanprogramikatan.update')->can('ajuanprogramikatan.update');
+        Route::delete('/ajuanprogramikatan/{id}/destroy', 'destroy')->name('ajuanprogramikatan.destroy')->can('ajuanprogramikatan.delete');
+    });
 
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');

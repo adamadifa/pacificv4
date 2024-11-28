@@ -104,7 +104,7 @@
 
             @can('monitoringprogram.index')
                 <li class="menu-item {{ request()->is('monitoringprogram') ? 'active' : '' }}">
-                    <a href="{{ route('monitoringprogram.index') }}" class="menu-link">
+                    <a href="{{ route('ajuanprogramikatan.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-box"></i>
                         <div>Monitoring Program</div>
                     </a>
