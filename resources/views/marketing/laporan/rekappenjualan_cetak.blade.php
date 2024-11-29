@@ -233,7 +233,8 @@
                         <td class="right">{{ formatAngka($d['lain']) }}</td>
                         <td class="right">
                             {{ formatAngka($saldo_awal_piutang) }}
-                            {{-- {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] }} --}}
+                            ---
+                            {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] }}
                         </td>
                         <td class="right">{{ formatAngka($saldo_akhir_piutang) }}</td>
                     </tr>
