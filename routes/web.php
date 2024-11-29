@@ -2068,7 +2068,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanprogramikatan/store', 'store')->name('ajuanprogramikatan.store')->can('ajuanprogramikatan.store');
         Route::get('/ajuanprogramikatan/{id}/edit', 'edit')->name('ajuanprogramikatan.edit')->can('ajuanprogramikatan.edit');
         Route::post('/ajuanprogramikatan/{id}/update', 'update')->name('ajuanprogramikatan.update')->can('ajuanprogramikatan.update');
-        Route::delete('/ajuanprogramikatan/{id}/destroy', 'destroy')->name('ajuanprogramikatan.destroy')->can('ajuanprogramikatan.delete');
+        Route::delete('/ajuanprogramikatan/{id}/destroy', 'destroy')->name('ajuanprogramikatan.delete')->can('ajuanprogramikatan.delete');
+        Route::get('/ajuanprogramikatan/{no_pengajuan}/setajuanprogramikatan', 'setajuanprogramikatan')->name('ajuanprogramikatan.setajuanprogramikatan')->can('ajuanprogramikatan.create');
+        Route::get('/ajuanprogramikatan/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('ajuanprogramikatan.tambahpelanggan')->can('ajuanprogramikatan.create');
+        Route::post('/ajuanprogramikatan/storepelanggan', 'storepelanggan')->name('ajuanprogramikatan.storepelanggan')->can('ajuanprogramikatan.create');
     });
 
 

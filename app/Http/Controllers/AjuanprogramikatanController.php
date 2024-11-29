@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Ajuanprogramikatan;
 use App\Models\Cabang;
+use App\Models\Pelanggan;
 use App\Models\Programikatan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
 
 class AjuanprogramikatanController extends Controller
@@ -82,5 +85,27 @@ class AjuanprogramikatanController extends Controller
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+    public function setajuanprogramikatan($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $data['programikatan'] = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        return view('worksheetom.ajuanprogramikatan.setajuanprogramikatan', $data);
+    }
+
+    public function tambahpelanggan($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $ajuanprogramikatan = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)->first();
+        $data['ajuanprogramikatan'] = $ajuanprogramikatan;
+
+        $pelanggan = Pelanggan::where('kode_cabang', $ajuanprogramikatan->kode_cabang)->get();
+        $data['pelanggan'] = $pelanggan;
+
+
+        return view('worksheetom.ajuanprogramikatan.tambahpelanggan', $data);
     }
 }

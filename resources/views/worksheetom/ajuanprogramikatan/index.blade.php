@@ -45,14 +45,20 @@
                                 <table class="table table-striped table-hover table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th>No.</th>
-                                            <th>No Pengajuan</th>
-                                            <th>No. Dok</th>
-                                            <th>Tanggal</th>
-                                            <th>Program</th>
-                                            <th>Cabang</th>
-                                            <th>Periode</th>
-                                            <th>#</th>
+                                            <th rowspan="2">No.</th>
+                                            <th rowspan="2">No Pengajuan</th>
+                                            <th rowspan="2">No. Dok</th>
+                                            <th rowspan="2">Tanggal</th>
+                                            <th rowspan="2">Program</th>
+                                            <th rowspan="2">Cabang</th>
+                                            <th rowspan="2">Periode</th>
+                                            <th colspan="3">Persetujuan</th>
+                                            <th rowspan="2">#</th>
+                                        </tr>
+                                        <tr>
+                                            <th>RSM</th>
+                                            <th>GM</th>
+                                            <th>Direktur</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -65,8 +71,25 @@
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ $d->nama_cabang }}</td>
                                                 <td>{{ $d->periode_dari }} - {{ $d->periode_sampai }}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
                                                 <td>
+                                                    <div class="d-flex">
+                                                        <a href="{{ route('ajuanprogramikatan.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"
+                                                            class="me-1">
+                                                            <i class="ti ti-settings text-primary"></i>
+                                                        </a>
 
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('ajuanprogramikatan.delete', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm ml-1">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    </div>
                                                 </td>
                                         @endforeach
                                     </tbody>
