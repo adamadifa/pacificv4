@@ -189,7 +189,7 @@
                         $subtotal_lain += $d['lain'];
                         $grandtotal_lain += $d['lain'];
 
-                        $saldo_awal_piutang = $d['saldopiutangpindahan'];
+                        $saldo_awal_piutang = $d['saldoawalpiutang'] + $d['saldopiutangpindahan'] - $d['saldopiutangpindahkesaleslain'];
                         $saldo_akhir_piutang = $saldo_awal_piutang + $netto - $d['totalbayarpiutang'];
 
                         $subtotal_saldoawal += $saldo_awal_piutang;
@@ -231,7 +231,10 @@
                         <td class="right">{{ formatAngka($d['wapu']) }}</td>
                         <td class="right">{{ formatAngka($d['pph22']) }}</td>
                         <td class="right">{{ formatAngka($d['lain']) }}</td>
-                        <td class="right">{{ formatAngka($saldo_awal_piutang) }}</td>
+                        <td class="right">
+
+                            {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] }}
+                        </td>
                         <td class="right">{{ formatAngka($saldo_akhir_piutang) }}</td>
                     </tr>
                     @if ($cbg != $d['kode_cabang'])
