@@ -175,7 +175,8 @@
                             </td>
                             <td class="center">
                                 @php
-                                    $ratio_routing = ROUND(!empty($d->jmlkunjungan) ? ($d->jmlsesuaijadwal / $d->jmlkunjungan) * 100 : 0);
+                                    $ratio_routing = !empty($d->jmlkunjungan) ? ($d->jmlsesuaijadwal / $d->jmlkunjungan) * 100 : 0;
+                                    $ratio_routing = ROUND($ratio_routing, 2);
                                 @endphp
                                 {{ $ratio_routing }} %
                             </td>
