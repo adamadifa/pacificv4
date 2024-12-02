@@ -225,12 +225,12 @@
                                                     <td>{{ $d->kode_cabang }}</td>
                                                     <td>
                                                         <div class='d-flex'>
-                                                            @if ($cekhistoribayar === 0)
-                                                                <div>
-                                                                    <a href="#" class="btnEditbarang me-1" id="index_{{ $no }}"><i
-                                                                            class="ti ti-edit text-success"></i></a>
-                                                                </div>
-                                                            @endif
+                                                            {{-- @if ($cekhistoribayar === 0) --}}
+                                                            <div>
+                                                                <a href="#" class="btnEditbarang me-1" id="index_{{ $no }}"><i
+                                                                        class="ti ti-edit text-success"></i></a>
+                                                            </div>
+                                                            {{-- @endif --}}
 
                                                             <div>
                                                                 <a href="#" class="btnSplit me-1" id="index_{{ $no }}">
