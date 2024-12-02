@@ -1027,7 +1027,8 @@
                 'penyesuaian': penyesuaian,
                 'kode_akun': kode_akun,
                 'keterangan': keterangan,
-                'kode_cabang': kode_cabang
+                'kode_cabang': kode_cabang,
+                'cekhistoribayar': "{{ $cekhistoribayar }}",
             };
             console.log(dataBarang);
             $.ajax({
