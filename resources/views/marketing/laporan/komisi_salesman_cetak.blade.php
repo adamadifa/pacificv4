@@ -192,7 +192,7 @@
                                         if ($ratio_target > 1.2) {
                                             $poin = 12;
                                         } else {
-                                            $poin = $ratio_target * $k->poin;
+                                            $poin = $ratio_target * 12;
                                         }
                                     } else {
                                         if ($ratio_target > 1) {

@@ -70,7 +70,7 @@ class HariliburController extends Controller
 
 
             $last3digit = substr($last_kode_libur, -3);
-            if ($last3digit == '999' && $lasthariliburLR) {
+            if ($last3digit == '999') {
                 $format = "LR";
             } else {
                 $format = "LB";
