@@ -60,7 +60,13 @@ class HariliburController extends Controller
                 ->orderBy('kode_libur', 'desc')
                 ->first();
             $last_kode_libur = $lastharilibur != null ? $lastharilibur->kode_libur : '';
-            $kode_libur = buatkode($last_kode_libur, "LB" . date('y', strtotime($request->tanggal)), 3);
+            $last3digit = substr($last_kode_libur, -3);
+            if ($last3digit == '999') {
+                $format = "LR";
+            } else {
+                $format = "LB";
+            }
+            $kode_libur = buatkode($last_kode_libur, $format . date('y', strtotime($request->tanggal)), 3);
 
             $tanggal_limajam = isset($request->limajam) ?  date('Y-m-d', strtotime('-1 day', strtotime($request->tanggal))) : null;
 
