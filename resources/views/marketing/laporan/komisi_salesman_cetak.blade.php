@@ -188,9 +188,9 @@
                                         ? $d->{"realisasi_$k->kode_kategori"} / $d->{"target_$k->kode_kategori"}
                                         : 0;
 
-                                    if ($k->kode_kategori == 'KKQ03') {
+                                    if (in_array($k->kode_kategori, ['KKQ03', 'KKQ06', 'KKQ07'])) {
                                         if ($ratio_target > 1.2) {
-                                            $poin = $k->poin;
+                                            $poin = 12;
                                         } else {
                                             $poin = $ratio_target * $k->poin;
                                         }
