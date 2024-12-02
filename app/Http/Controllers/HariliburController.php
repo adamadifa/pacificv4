@@ -57,11 +57,20 @@ class HariliburController extends Controller
         try {
             $lastharilibur = Harilibur::select('kode_libur')
                 ->whereRaw('MID(kode_libur,3,2)="' . date('y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('LEFT(kode_libur,2)="' . "LB" . '"')
                 ->orderBy('kode_libur', 'desc')
                 ->first();
+
+            // $lasthariliburLR = Harilibur::select('kode_libur')
+            //     ->whereRaw('MID(kode_libur,3,2)="' . date('y', strtotime($request->tanggal)) . '"')
+            //     ->whereRaw('LEFT(kode_libur,2)="' . "LR" . '"')
+            //     ->orderBy('kode_libur', 'desc')
+            //     ->first();
             $last_kode_libur = $lastharilibur != null ? $lastharilibur->kode_libur : '';
+
+
             $last3digit = substr($last_kode_libur, -3);
-            if ($last3digit == '999') {
+            if ($last3digit == '999' && $lasthariliburLR) {
                 $format = "LR";
             } else {
                 $format = "LB";
