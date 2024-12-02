@@ -4,10 +4,22 @@
     @endphp
     <x-input-with-icon label="Kode Barang" name="kode_barang" icon="ti ti-barcode" disabled="true" value="{{ $databarang['kode_barang'] }}" />
     <x-input-with-icon label="Nama Barang" name="nama_barang" icon="ti ti-box" disabled="true" value="{{ textCamelCase($barang->nama_barang) }}" />
-    <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" value="{{ $databarang['jumlah'] }}" align="right" numberFormat="true" />
-    <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" value="{{ $databarang['harga'] }}" align="right" numberFormat="true" />
-    <x-input-with-icon label="Penyesuaian" name="penyesuaian" icon="ti ti-moneybag" value="{{ $databarang['penyesuaian'] }}" align="right"
-        numberFormat="true" />
+    @if ($databarang['cekhistoribayar'] == '1')
+        <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" value="{{ $databarang['jumlah'] }}" align="right" numberFormat="true"
+            disabled="true" />
+        <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" value="{{ $databarang['harga'] }}" align="right" numberFormat="true"
+            disabled="true" />
+        <x-input-with-icon label="Penyesuaian" name="penyesuaian" icon="ti ti-moneybag" value="{{ $databarang['penyesuaian'] }}" align="right"
+            numberFormat="true" disabled="true" />
+    @else
+        <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" value="{{ $databarang['jumlah'] }}" align="right" numberFormat="true" />
+        <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" value="{{ $databarang['harga'] }}" align="right"
+            numberFormat="true" />
+        <x-input-with-icon label="Penyesuaian" name="penyesuaian" icon="ti ti-moneybag" value="{{ $databarang['penyesuaian'] }}" align="right"
+            numberFormat="true" />
+    @endif
+
+
     <x-input-with-icon label="Total" name="total" icon="ti ti-moneybag" value="{{ formatAngkaDesimal($total) }}" align="right" disabled="true"
         numberFormat="true" />
     <div class="form-group mb-3">

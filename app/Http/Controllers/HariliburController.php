@@ -57,10 +57,33 @@ class HariliburController extends Controller
         try {
             $lastharilibur = Harilibur::select('kode_libur')
                 ->whereRaw('MID(kode_libur,3,2)="' . date('y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('LEFT(kode_libur,2)="' . "LB" . '"')
+                ->orderBy('kode_libur', 'desc')
+                ->first();
+
+            // $lasthariliburLR = Harilibur::select('kode_libur')
+            //     ->whereRaw('MID(kode_libur,3,2)="' . date('y', strtotime($request->tanggal)) . '"')
+            //     ->whereRaw('LEFT(kode_libur,2)="' . "LR" . '"')
+            //     ->orderBy('kode_libur', 'desc')
+            //     ->first();
+            $last_kode_libur = $lastharilibur != null ? $lastharilibur->kode_libur : '';
+
+
+            $last3digit = substr($last_kode_libur, -3);
+            if ($last3digit == '999') {
+                $format = "LR";
+            } else {
+                $format = "LB";
+            }
+
+            $lastharilibur = Harilibur::select('kode_libur')
+                ->whereRaw('MID(kode_libur,3,2)="' . date('y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('LEFT(kode_libur,2)="' . $format . '"')
                 ->orderBy('kode_libur', 'desc')
                 ->first();
             $last_kode_libur = $lastharilibur != null ? $lastharilibur->kode_libur : '';
-            $kode_libur = buatkode($last_kode_libur, "LB" . date('y', strtotime($request->tanggal)), 3);
+
+            $kode_libur = buatkode($last_kode_libur, $format . date('y', strtotime($request->tanggal)), 3);
 
             $tanggal_limajam = isset($request->limajam) ?  date('Y-m-d', strtotime('-1 day', strtotime($request->tanggal))) : null;
 

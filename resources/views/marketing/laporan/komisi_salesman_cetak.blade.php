@@ -187,11 +187,21 @@
                                     $ratio_target = !empty($d->{"target_$k->kode_kategori"})
                                         ? $d->{"realisasi_$k->kode_kategori"} / $d->{"target_$k->kode_kategori"}
                                         : 0;
-                                    if ($ratio_target > 1) {
-                                        $poin = $k->poin;
+
+                                    if (in_array($k->kode_kategori, ['KKQ03', 'KKQ06', 'KKQ07'])) {
+                                        if ($ratio_target > 1.2) {
+                                            $poin = 12;
+                                        } else {
+                                            $poin = $ratio_target * $k->poin;
+                                        }
                                     } else {
-                                        $poin = $ratio_target * $k->poin;
+                                        if ($ratio_target > 1) {
+                                            $poin = $k->poin;
+                                        } else {
+                                            $poin = $ratio_target * $k->poin;
+                                        }
                                     }
+
                                     $total_poin += $poin;
                                     ${"total_target_$k->kode_kategori"} += $d->{"target_$k->kode_kategori"};
                                     ${"total_realisasi_$k->kode_kategori"} += $d->{"realisasi_$k->kode_kategori"};
