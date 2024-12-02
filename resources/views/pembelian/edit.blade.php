@@ -20,7 +20,7 @@
                     <div class="card">
                         <div class="card-body">
                             <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" value="{{ $pembelian->no_bukti }}" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date"
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-datepmb"
                                 value="{{ $pembelian->tanggal }}" />
                             <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
                                 upperCase="true" select2="select2Kodesupplier" selected="{{ $pembelian->kode_supplier }}" />
@@ -42,7 +42,7 @@
                                     <option value="K" {{ $pembelian->jenis_transaksi == 'K' ? 'selected' : '' }}>Kredit</option>
                                 </select>
                             </div>
-                            <x-input-with-icon label="Jatuh Tempo" name="jatuh_tempo" icon="ti ti-calendar" datepicker="flatpickr-date"
+                            <x-input-with-icon label="Jatuh Tempo" name="jatuh_tempo" icon="ti ti-calendar" datepicker="flatpickr-datepmb"
                                 value="{{ $pembelian->jatuh_tempo }}" />
                             <div class="form-group mb-3">
                                 <small class="text-light fw-medium d-block mb-2 mt-2">PPN</small>
