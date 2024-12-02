@@ -66,6 +66,14 @@ class HariliburController extends Controller
             } else {
                 $format = "LB";
             }
+
+            $lastharilibur = Harilibur::select('kode_libur')
+                ->whereRaw('MID(kode_libur,3,2)="' . date('y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('LEFT(kode_libur,2)="' . $format . '"')
+                ->orderBy('kode_libur', 'desc')
+                ->first();
+            $last_kode_libur = $lastharilibur != null ? $lastharilibur->kode_libur : '';
+
             $kode_libur = buatkode($last_kode_libur, $format . date('y', strtotime($request->tanggal)), 3);
 
             $tanggal_limajam = isset($request->limajam) ?  date('Y-m-d', strtotime('-1 day', strtotime($request->tanggal))) : null;
