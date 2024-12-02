@@ -83,6 +83,8 @@
              }, ]
          });
 
+         $(".flatpickr-datepmb").flatpickr();
+
          function toggleZoomScreen() {
              var width = window.screen.width;
 
