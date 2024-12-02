@@ -11,8 +11,8 @@
         @can('pencairanprogram.index')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('pencairanprogram.index') }}"
-                    class="nav-link {{ request()->is(['pencairanprogram', 'pencairanprogram/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Pencairan Program Kumulatif
+                    class="nav-link {{ request()->is(['pencairanprogramikatan', 'pencairanprogramikatan/*']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Pencairan Program Ikatan
                 </a>
             </li>
         @endcan
@@ -20,10 +20,11 @@
             <li class="nav-item" role="presentation">
                 <a href="{{ route('pencairanprogram.index') }}"
                     class="nav-link {{ request()->is(['pencairanprogram', 'pencairanprogram/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Pencairan Program Ikatan
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Pencairan Program Kumulatif
                 </a>
             </li>
         @endcan
+
 
     </ul>
 @endif

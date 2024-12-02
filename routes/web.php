@@ -356,7 +356,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkredit', 'getlistFakturkredit')->name('pelanggan.getlistFakturkredit');
         Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkreditoption', 'getlistfakturkreditoption')->name('pelanggan.getlistfakturkreditoption');
         Route::get('/pelanggan/getpelangganjson', 'getPelangganjson')->name('pelanggan.getpelangganjson');
+        Route::get('/pelanggan/{kode_cabang}/getpelanggancabangjson', 'getPelanggancabangjson')->name('pelanggan.getpelanggancabangjson');
 
+
+        Route::get('/pelanggan/{kode_pelanggan}/{kode_program}/getavgpelanggan', 'getAvgpelanggan')->name('pelanggan.getAvgpelanggan');
         // Route::get('/sfa/pelanggan', 'index')->name('sfa.pelanggan');
     });
 
@@ -2071,7 +2074,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/ajuanprogramikatan/{id}/destroy', 'destroy')->name('ajuanprogramikatan.delete')->can('ajuanprogramikatan.delete');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/setajuanprogramikatan', 'setajuanprogramikatan')->name('ajuanprogramikatan.setajuanprogramikatan')->can('ajuanprogramikatan.create');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('ajuanprogramikatan.tambahpelanggan')->can('ajuanprogramikatan.create');
-        Route::post('/ajuanprogramikatan/storepelanggan', 'storepelanggan')->name('ajuanprogramikatan.storepelanggan')->can('ajuanprogramikatan.create');
+        Route::post('/ajuanprogramikatan/{no_pengajuan}/storepelanggan', 'storepelanggan')->name('ajuanprogramikatan.storepelanggan')->can('ajuanprogramikatan.create');
+        Route::get('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/edit', 'editpelanggan')->name('ajuanprogramikatan.editpelanggan')->can('ajuanprogramikatan.create');
+        Route::put('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('ajuanprogramikatan.updatepelanggan')->can('ajuanprogramikatan.create');
     });
 
 

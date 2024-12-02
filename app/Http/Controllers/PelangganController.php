@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ajuanprogramikatan;
 use App\Models\Cabang;
+use App\Models\Detailpenjualan;
 use App\Models\Detailsaldoawalpiutangpelanggan;
 use App\Models\Klasifikasioutlet;
 use App\Models\Pelanggan;
 use App\Models\Pengajuanfaktur;
 use App\Models\Penjualan;
+use App\Models\Programikatan;
 use App\Models\Saldoawalpiutangpelanggan;
 use App\Models\User;
 use App\Models\Wilayah;
@@ -422,6 +425,52 @@ class PelangganController extends Controller
         ]);
     }
 
+    public function getAvgpelanggan($kode_pelanggan, $kode_program)
+    {
+        $kode_program = Crypt::decrypt($kode_program);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $programikatan = Ajuanprogramikatan::where('marketing_program_ikatan.kode_program', $kode_program)
+            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        $bulan = date('m', strtotime($programikatan->periode_dari));
+        $tahun = date('Y', strtotime($programikatan->periode_dari));
+        $lastbulan = getbulandantahunlalu($bulan, $tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($bulan, $tahun, "tahun");
+        $dari_lastbulan = $lasttahun . "-" . $lastbulan . "-01";
+
+
+        $lastduabulan = getbulandantahunlalu($lastbulan, $lasttahun, "bulan");
+        $lastduabulantahun = getbulandantahunlalu($lastbulan, $lasttahun, "tahun");
+
+
+        $dari_lastduabulan = $lastduabulantahun . "-" . $lastduabulan . "-01";
+        $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
+
+
+        $produk = json_decode($programikatan->produk, true) ?? [];
+        $detailpenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->whereIn('produk_harga.kode_produk', $produk)
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            ->whereBetween('marketing_penjualan.tanggal', [$dari_lastduabulan, $sampai_lastbulan])
+            ->where('status_promosi', 0)
+            ->where('status_batal', 0)
+            ->select(
+                'marketing_penjualan.kode_pelanggan',
+                'nama_pelanggan',
+                DB::raw('SUM(FLOOR(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus)) as qty'),
+            )
+            ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan')
+            ->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Pelanggan',
+            'data'    => $detailpenjualan
+        ]);
+    }
+
     public function cekFotopelanggan(Request $request)
     {
         $filePath = $request->file;
@@ -488,6 +537,43 @@ class PelangganController extends Controller
                     $query->where('pelanggan.kode_cabang', auth()->user()->kode_cabang);
                 }
             }
+            $pelanggan = $query;
+            return DataTables::of($pelanggan)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    }
+
+
+    public function getPelanggancabangjson(Request $request, $kode_cabang)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if ($request->ajax()) {
+            $query = Pelanggan::query();
+            $query->select(
+                'pelanggan.*',
+                'wilayah.nama_wilayah',
+                'salesman.nama_salesman',
+                DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan")
+            );
+            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+            // if (!$user->hasRole($roles_access_all_cabang)) {
+            //     if ($user->hasRole('regional sales manager')) {
+            //         $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            //     } else {
+            //         $query->where('pelanggan.kode_cabang', auth()->user()->kode_cabang);
+            //     }
+            // }
+            $query->where('pelanggan.kode_cabang', $kode_cabang);
             $pelanggan = $query;
             return DataTables::of($pelanggan)
                 ->addIndexColumn()

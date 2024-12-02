@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ajuanprogramikatan;
 use App\Models\Cabang;
+use App\Models\Detailajuanprogramikatan;
 use App\Models\Pelanggan;
 use App\Models\Programikatan;
 use App\Models\User;
@@ -93,6 +94,9 @@ class AjuanprogramikatanController extends Controller
         $data['programikatan'] = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
             ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
             ->first();
+        $data['detail'] = Detailajuanprogramikatan::join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->where('no_pengajuan', $no_pengajuan)
+            ->get();
         return view('worksheetom.ajuanprogramikatan.setajuanprogramikatan', $data);
     }
 
@@ -107,5 +111,72 @@ class AjuanprogramikatanController extends Controller
 
 
         return view('worksheetom.ajuanprogramikatan.tambahpelanggan', $data);
+    }
+
+    public function editpelanggan($no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $data['detail'] = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+            ->join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->where('marketing_program_ikatan_detail.kode_pelanggan', $kode_pelanggan)
+            ->first();
+        return view('worksheetom.ajuanprogramikatan.editpelanggan', $data);
+    }
+
+    public function storepelanggan(Request $request, $no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $request->validate([
+            'kode_pelanggan' => 'required',
+            'target' => 'required',
+            'reward' => 'required',
+        ]);
+
+        try {
+            //code...
+            $cek = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $request->kode_pelanggan)
+                ->first();
+
+            if ($cek) {
+                return Redirect::back()->with(messageError('Pelanggan Sudah Ada'));
+            }
+            Detailajuanprogramikatan::create([
+                'no_pengajuan' => $no_pengajuan,
+                'kode_pelanggan' => $request->kode_pelanggan,
+                'qty_target' => toNumber($request->target),
+                'qty_avg' => toNumber($request->qty_avg),
+                'reward' => toNumber($request->reward)
+            ]);
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function updatepelanggan(Request $request, $no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $request->validate([
+            'target' => 'required',
+            'reward' => 'required',
+        ]);
+
+        try {
+            //code...
+            Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->update([
+                    'qty_target' => toNumber($request->target),
+                    'reward' => toNumber($request->reward)
+                ]);
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Update'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

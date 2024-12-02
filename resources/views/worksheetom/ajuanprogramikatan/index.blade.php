@@ -107,6 +107,7 @@
 </div>
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
+
 @endsection
 @push('myscript')
 <script>
@@ -123,6 +124,8 @@
             </div>`);
             $("#loadmodal").load("/ajuanprogramikatan/create");
         });
+
+
     });
 </script>
 @endpush
