@@ -2077,6 +2077,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanprogramikatan/{no_pengajuan}/storepelanggan', 'storepelanggan')->name('ajuanprogramikatan.storepelanggan')->can('ajuanprogramikatan.create');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/edit', 'editpelanggan')->name('ajuanprogramikatan.editpelanggan')->can('ajuanprogramikatan.create');
         Route::put('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('ajuanprogramikatan.updatepelanggan')->can('ajuanprogramikatan.create');
+        Route::delete('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('ajuanprogramikatan.deletepelanggan')->can('ajuanprogramikatan.create');
     });
 
 

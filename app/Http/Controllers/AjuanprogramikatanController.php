@@ -179,4 +179,18 @@ class AjuanprogramikatanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function deletepelanggan($no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        try {
+            Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Hapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

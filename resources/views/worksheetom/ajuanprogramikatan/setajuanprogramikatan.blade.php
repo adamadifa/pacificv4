@@ -73,9 +73,19 @@
                                         <td>
                                             <div class="d-flex">
                                                 @can('ajuanprogramikatan.edit')
-                                                    <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit">
+                                                    <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit me-1">
                                                         <i class="ti ti-edit text-success"></i>
                                                     </a>
+                                                @endcan
+                                                @can('ajuanprogramikatan.delete')
+                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                        action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <a href="#" class="delete-confirm ml-1">
+                                                            <i class="ti ti-trash text-danger"></i>
+                                                        </a>
+                                                    </form>
                                                 @endcan
                                             </div>
                                         </td>
