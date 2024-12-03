@@ -50,7 +50,13 @@ class TutuplaporanController extends Controller
             $tutuplap = Tutuplaporan::where('bulan', $request->bulan)->where('tahun', $request->tahun)->orderBy('kode_tutup_laporan', 'desc')->first();
             $lastkode = $tutuplap != null ? $tutuplap->kode_tutup_laporan : '';
             $kode_tutup_laporan = buatkode($lastkode, $request->tahun . $request->bulan, 2);
-
+            $cek = Tutuplaporan::where('jenis_laporan', $request->jenis_laporan)
+                ->where('bulan', $request->bulan)
+                ->where('tahun', $request->tahun)
+                ->first();
+            if (!empty($cek)) {
+                return Redirect::back()->with(messageError('Data Sudah Ada'));
+            }
             Tutuplaporan::create([
                 'kode_tutup_laporan' => $kode_tutup_laporan,
                 'bulan' => $request->bulan,
