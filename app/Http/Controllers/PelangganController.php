@@ -435,6 +435,8 @@ class PelangganController extends Controller
         $bulan = date('m', strtotime($programikatan->periode_dari));
         $tahun = date('Y', strtotime($programikatan->periode_dari));
         $lastbulan = getbulandantahunlalu($bulan, $tahun, "bulan");
+
+
         $lasttahun = getbulandantahunlalu($bulan, $tahun, "tahun");
         $dari_lastbulan = $lasttahun . "-" . $lastbulan . "-01";
 
@@ -442,8 +444,12 @@ class PelangganController extends Controller
         $lastduabulan = getbulandantahunlalu($lastbulan, $lasttahun, "bulan");
         $lastduabulantahun = getbulandantahunlalu($lastbulan, $lasttahun, "tahun");
 
+        $lastigabulan = getbulandantahunlalu($lastduabulan, $lastduabulantahun, "bulan");
+        $lasttigabulantahun = getbulandantahunlalu($lastduabulan, $lastduabulantahun, "tahun");
 
-        $dari_lastduabulan = $lastduabulantahun . "-" . $lastduabulan . "-01";
+
+
+        $dari_lasttigabulan = $lasttigabulantahun . "-" . $lastigabulan . "-01";
         $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
 
 
@@ -454,7 +460,7 @@ class PelangganController extends Controller
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->whereIn('produk_harga.kode_produk', $produk)
             ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
-            ->whereBetween('marketing_penjualan.tanggal', [$dari_lastduabulan, $sampai_lastbulan])
+            ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
             ->select(
@@ -574,6 +580,7 @@ class PelangganController extends Controller
             //     }
             // }
             $query->where('pelanggan.kode_cabang', $kode_cabang);
+            $query->where('status_aktif_pelanggan', 1);
             $pelanggan = $query;
             return DataTables::of($pelanggan)
                 ->addIndexColumn()

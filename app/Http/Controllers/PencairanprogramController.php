@@ -34,9 +34,17 @@ class PencairanprogramController extends Controller
             $query->where('kode_cabang', $kode_cabang);
         }
 
-        $pencairanprogram = $query->get();
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+        }
+
+        $pencairanprogram = $query->paginate(15);
+        $pencairanprogram->appends(request()->all());
 
         $data['pencairanprogram'] = $pencairanprogram;
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
 
         return view('worksheetom.pencairanprogram.index', $data);
     }

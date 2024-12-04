@@ -102,6 +102,7 @@ use App\Http\Controllers\PembayaranpjpController;
 use App\Http\Controllers\PembayarantransferController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PencairanprogramController;
+use App\Http\Controllers\PencairanprogramikatanController;
 use App\Http\Controllers\PenilaiankaryawanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
@@ -2064,6 +2065,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/pencairanprogram/deletedetailpencairan', 'deletedetailpencairan')->name('pencairanprogram.deletedetailpencairan')->can('pencairanprogram.create');
     });
 
+    Route::controller(PencairanprogramikatanController::class)->group(function () {
+        Route::get('/pencairanprogramikatan', 'index')->name('pencairanprogramikatan.index')->can('pencairanprogramikt.index');
+        Route::get('/pencairanprogramikatan/create', 'create')->name('pencairanprogramikatan.create')->can('pencairanprogramikt.create');
+        Route::post('/pencairanprogramikatan/store', 'store')->name('pencairanprogramikatan.store')->can('pencairanprogramikt.store');
+        Route::get('/pencairanprogramikatan/{kode_pencairan}/setpencairan', 'setpencairan')->name('pencairanprogramikatan.setpencairan')->can('pencairanprogramikt.create');
+        Route::delete('/pencairanprogramikatan/{kode_pencairan}/destroy', 'destroy')->name('pencairanprogramikatan.delete')->can('pencairanprogramikt.delete');
+        Route::get('/pencairanprogramikatan/{kode_pencairan}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogramikatan.tambahpelanggan')->can('pencairanprogramikt.create');
+        Route::post('/pencairanprogramikatan/getpelanggan', 'getpelanggan')->name('pencairanprogramikatan.getpelanggan')->can('pencairanprogramikt.create');
+    });
+
 
     Route::controller(AjuanprogramikatanController::class)->group(function () {
         Route::get('/ajuanprogramikatan', 'index')->name('ajuanprogramikatan.index')->can('ajuanprogramikatan.index');
@@ -2078,6 +2089,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/edit', 'editpelanggan')->name('ajuanprogramikatan.editpelanggan')->can('ajuanprogramikatan.create');
         Route::put('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('ajuanprogramikatan.updatepelanggan')->can('ajuanprogramikatan.create');
         Route::delete('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('ajuanprogramikatan.deletepelanggan')->can('ajuanprogramikatan.create');
+
+        Route::get('/ajuanprogramikatan/getajuanprogramikatan', 'getajuanprogramikatan')->name('ajuanprogramikatan.getajuanprogramikatan')->can('ajuanprogramikatan.create');
     });
 
 

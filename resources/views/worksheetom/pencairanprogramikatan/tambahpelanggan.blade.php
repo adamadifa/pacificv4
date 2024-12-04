@@ -1,24 +1,22 @@
-<table class="table table-bordered table-striped table-hover">
+<table class="table table-bordered ">
     <thead class="table-dark">
         <tr>
-            <th rowspan="2">No</th>
-            <th rowspan="2">Kode Pelanggan</th>
-            <th rowspan="2">Nama Pelanggan</th>
-            <th rowspan="2">Qty</th>
-            <th colspan="2">Diskon</th>
-            <th rowspan="2">Cashback</th>
-            <th rowspan="2">#</th>
+            <th>No</th>
+            <th>Kode Pelanggan</th>
+            <th>Nama Pelanggan</th>
+            <th class="text-center">Target</th>
+            <th>Realisasi</th>
+            <th>Reward</th>
+            <th>Total Reward</th>
+            <th>#</th>
         </tr>
-        <tr>
-            <th>Reguler</th>
-            <th>Kumulatif</th>
-        </tr>
+
     </thead>
     <tbody id="loadpenjualanpelanggan">
 
     </tbody>
 </table>
-<div class="row mt-2">
+<div class="row mt-3">
     <div class="col">
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block" id="btnSimpan"><i class="ti ti-plus me-1"></i>Tambahkan Semua</button>
@@ -28,11 +26,11 @@
 <script>
     $(document).ready(function() {
         function loadpenjualanpelanggan() {
-            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
+            let kode_pencairan = "{{ Crypt::encrypt($kode_pencairan) }}";
             $("#loadpenjualanpelanggan").html("<tr class='text-center'><td colspan='8'>Loading...</td></tr>");
             $.ajax({
                 type: 'POST',
-                url: '/pencairanprogram/getpelanggan',
+                url: '/pencairanprogramikatan/getpelanggan',
                 data: {
                     _token: "{{ csrf_token() }}",
                     kode_pencairan: kode_pencairan

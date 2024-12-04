@@ -124,8 +124,6 @@
             </div>`);
             $("#loadmodal").load("/ajuanprogramikatan/create");
         });
-
-
     });
 </script>
 @endpush

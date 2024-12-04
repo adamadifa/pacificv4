@@ -193,4 +193,25 @@ class AjuanprogramikatanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function getajuanprogramikatan()
+    {
+        $query = Ajuanprogramikatan::query();
+        $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->orderBy('marketing_program_ikatan.no_pengajuan', 'desc');
+        $data['ajuanprogramikatan'] = $query->get();
+        return view('worksheetom.ajuanprogramikatan.getajuanprogramikatan', $data);
+    }
+
+    public function destroy($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        try {
+            Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

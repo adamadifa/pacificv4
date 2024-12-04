@@ -12,6 +12,9 @@
             'worksheetom.evaluasisharing',
             'worksheetom.bbm',
             'worksheetom.ratiobs',
+            'ajuanprogramikatan.index',
+            'pencairanprogramikt.index',
+            'pencairanprogram.index',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -30,6 +33,12 @@
             'worksheetom/bbm',
             'worksheetom/ratiobs',
             'worksheetom/*',
+            'ajuanprogramikatan',
+            'ajuanprogramikatan/*',
+            'pencairanprogramikatan',
+            'pencairanprogramikatan/*',
+            'pencairanprogram',
+            'pencairanprogram/*',
         ])
             ? 'open'
             : '' }}">
@@ -103,7 +112,8 @@
             @endcan
 
             @can('monitoringprogram.index')
-                <li class="menu-item {{ request()->is('monitoringprogram') ? 'active' : '' }}">
+                <li
+                    class="menu-item {{ request()->is('monitoringprogram', 'ajuanprogramikatan', 'ajuanprogramikatan/*', 'pencairanprogram', 'pencairanprogram/*', 'pencairanprogramikatan', 'pencairanprogramikatan/*') ? 'active' : '' }}">
                     <a href="{{ route('ajuanprogramikatan.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-box"></i>
                         <div>Monitoring Program</div>

@@ -8,9 +8,9 @@
                 </a>
             </li>
         @endcan
-        @can('pencairanprogram.index')
+        @can('pencairanprogramikt.index')
             <li class="nav-item" role="presentation">
-                <a href="{{ route('pencairanprogram.index') }}"
+                <a href="{{ route('pencairanprogramikatan.index') }}"
                     class="nav-link {{ request()->is(['pencairanprogramikatan', 'pencairanprogramikatan/*']) ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Pencairan Program Ikatan
                 </a>

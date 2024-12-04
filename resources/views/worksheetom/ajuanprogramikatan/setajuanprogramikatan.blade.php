@@ -229,6 +229,15 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
+                    if (response.data === null) {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: "Pelanggan Tidak Memiliki Histori Transaksi!",
+                            icon: "warning",
+                            showConfirmButton: true
+                        });
+                        return;
+                    }
                     $("#modalPelanggan").modal("hide");
                     $(document).find("input[name='qty_avg']").val(response.data.qty);
                     $(document).find("input[name='nama_pelanggan']").val(response.data.nama_pelanggan);
