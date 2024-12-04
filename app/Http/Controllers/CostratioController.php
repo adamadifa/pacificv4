@@ -41,6 +41,9 @@ class CostratioController extends Controller
             }
         }
 
+        if (!empty($request->kode_cabang_search)) {
+            $query->where('accounting_costratio.kode_cabang', $request->kode_cabang_search);
+        }
         if (!empty($request->kode_sumber_search)) {
             $query->where('accounting_costratio.kode_sumber', $request->kode_sumber_search);
         }
