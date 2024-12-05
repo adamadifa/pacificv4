@@ -58,12 +58,14 @@ class IzincutiController extends Controller
             'keterangan' => 'required',
             'kode_cuti' => 'required',
         ]);
+        $format = "IC" . date('ym', strtotime($request->dari));
         DB::beginTransaction();
         try {
 
             $lastizincuti = Izincuti::select('kode_izin_cuti')
-                ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->dari)) . '"')
-                ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->dari)) . '"')
+                // ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->dari)) . '"')
+                // ->whereRaw('MONTH(tanggal)="' . date('m', strtotime($request->dari)) . '"')
+                ->whereRaw('LEFT(kode_izin_cuti,6)="' . $format . '"')
                 ->orderBy("kode_izin_cuti", "desc")
                 ->first();
             $last_kode_izin_cuti = $lastizincuti != null ? $lastizincuti->kode_izin_cuti : '';
