@@ -19,6 +19,22 @@
     <x-input-with-icon label="Target / Bulan" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right" />
     <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right" />
     <div class="form-group mb-3">
+        <select name="budget" id="budget" class="form-select">
+            <option value="">Budget</option>
+            <option value="SMM">SMM</option>
+            <option value="RSM">RSM</option>
+            <option value="GM">GM</option>
+        </select>
+    </div>
+    <div class="form-group mb-3">
+        <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
+            <option value="">Metode Pembayaran</option>
+            <option value="TN">Tunai</option>
+            <option value="TF">Transfer</option>
+            <option value="VC">Voucher</option>
+        </select>
+    </div>
+    <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>
 </form>

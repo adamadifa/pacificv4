@@ -470,11 +470,23 @@ class PelangganController extends Controller
             )
             ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan')
             ->first();
-        return response()->json([
-            'success' => true,
-            'message' => 'Detail Pelanggan',
-            'data'    => $detailpenjualan
-        ]);
+
+        if ($detailpenjualan != null) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Pelanggan',
+                'type'    => 1,
+                'data'    => $detailpenjualan
+            ]);
+        } else {
+            $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Pelanggan',
+                'type'    => 2,
+                'data'    => $pelanggan
+            ]);
+        }
     }
 
     public function cekFotopelanggan(Request $request)

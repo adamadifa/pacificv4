@@ -45,6 +45,7 @@ class AjuanprogramikatanController extends Controller
             'periode_dari' => 'required',
             'periode_sampai' => 'required',
             'keterangan' => 'required',
+
         ]);
 
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
@@ -131,6 +132,8 @@ class AjuanprogramikatanController extends Controller
             'kode_pelanggan' => 'required',
             'target' => 'required',
             'reward' => 'required',
+            'budget' => 'required',
+            'metode_pembayaran' => 'required',
         ]);
 
         try {
@@ -142,12 +145,15 @@ class AjuanprogramikatanController extends Controller
             if ($cek) {
                 return Redirect::back()->with(messageError('Pelanggan Sudah Ada'));
             }
+
             Detailajuanprogramikatan::create([
                 'no_pengajuan' => $no_pengajuan,
                 'kode_pelanggan' => $request->kode_pelanggan,
                 'qty_target' => toNumber($request->target),
-                'qty_avg' => toNumber($request->qty_avg),
-                'reward' => toNumber($request->reward)
+                'qty_avg' => !empty($request->qty_avg) ? toNumber($request->qty_avg) : 0,
+                'reward' => toNumber($request->reward),
+                'budget' => $request->budget,
+                'metode_pembayaran' => $request->metode_pembayaran
             ]);
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));

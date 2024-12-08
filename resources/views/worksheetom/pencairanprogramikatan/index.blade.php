@@ -6,7 +6,7 @@
     <span>Pencairan Program</span>
 @endsection
 <div class="row">
-    <div class="col-lg-10 col-md-12 col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
             @include('layouts.navigation_monitoringprogram')
             <div class="tab-content">

@@ -7,7 +7,7 @@
 @endsection
 
 <div class="row">
-    <div class="col-lg-8 col-sm-12 col-xs-12">
+    <div class="col-lg-10 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
                 @can('ajuanprogramikatan.create')
@@ -58,10 +58,19 @@
                                     <th>Avg Penjualan</th>
                                     <th>Qty Target</th>
                                     <th>Reward</th>
+                                    <th>Budget</th>
+                                    <th>Pembayaran</th>
                                     <th>#</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $metode_pembayaran = [
+                                        'TN' => 'Tunai',
+                                        'TF' => 'Transfer',
+                                        'VC' => 'Voucher',
+                                    ];
+                                @endphp
                                 @foreach ($detail as $d)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
@@ -70,6 +79,8 @@
                                         <td class="text-end">{{ formatAngka($d->qty_avg) }}</td>
                                         <td class="text-end">{{ formatAngka($d->qty_target) }}</td>
                                         <td class="text-end">{{ formatAngka($d->reward) }}</td>
+                                        <td>{{ $d->budget }}</td>
+                                        <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                                         <td>
                                             <div class="d-flex">
                                                 @can('ajuanprogramikatan.edit')
@@ -229,13 +240,11 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    if (response.data === null) {
-                        Swal.fire({
-                            title: "Oops!",
-                            text: "Pelanggan Tidak Memiliki Histori Transaksi!",
-                            icon: "warning",
-                            showConfirmButton: true
-                        });
+                    if (response.type === 2) {
+                        $("#modalPelanggan").modal("hide");
+                        $(document).find("input[name='qty_avg']").val(0);
+                        $(document).find("input[name='nama_pelanggan']").val(response.data.nama_pelanggan);
+                        $(document).find("input[name='kode_pelanggan']").val(response.data.kode_pelanggan);
                         return;
                     }
                     $("#modalPelanggan").modal("hide");
@@ -259,6 +268,8 @@
             let kode_pelanggan = $(this).find("input[name='kode_pelanggan']").val();
             let target = $(this).find("input[name='target']").val();
             let reward = $(this).find("input[name='reward']").val();
+            let budget = $(this).find("select[name='budget']").val();
+            let metode_pembayaran = $(this).find("select[name='metode_pembayaran']").val();
 
             if (kode_pelanggan == "") {
                 Swal.fire({
@@ -290,6 +301,28 @@
                     showConfirmButton: true,
                     didClose: () => {
                         $(this).find("#reward").focus();
+                    },
+                });
+                return false;
+            } else if (budget == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Budget harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#budget").focus();
+                    },
+                });
+                return false;
+            } else if (metode_pembayaran == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Metode Pembayaran harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#metode_pembayaran").focus();
                     },
                 });
                 return false;
