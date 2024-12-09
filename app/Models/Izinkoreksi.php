@@ -124,7 +124,7 @@ class Izinkoreksi extends Model
                 // $query->whereIn('hrd_izincuti.kode_jabatan', ['J04', 'J05', 'J06', 'J12', 'J24', 'J25', 'J26']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->orwhereIn('hrd_izinkoreksi.kode_dept', ['MKT']);
-                $query->whereIn('hrd_izinkoreksi.kode_jabatan', ['J03', 'J05', 'J06']);
+                // $query->whereIn('hrd_izinkoreksi.kode_jabatan', ['J03', 'J05', 'J06']);
             } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
                 $query->orwhere('hrd_izinkoreksi.kode_dept', 'MKT');
                 $query->where('hrd_izinkoreksi.kode_jabatan', 'J07');
