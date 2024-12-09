@@ -101,7 +101,7 @@
                         $total_bk_totalharga += $bk_totalharga;
 
                         $total_saldo_akhir += $saldo_akhir;
-                        $saldo_akhir_totalharga = $saldo_akhir * $harga_keluar;
+                        $saldo_akhir_totalharga = $saldo_akhir * ROUND($harga_keluar, 2);
                         $total_saldo_akhir_totalharga += $saldo_akhir_totalharga;
 
                         $total_opname += $d->opname_qty;
