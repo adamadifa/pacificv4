@@ -10,12 +10,14 @@
             $reward = 0;
         }
         $total_reward += $reward;
+        $status = $reward == 0 ? 0 : 1;
     @endphp
 
     <tr class=" {{ $color_reward }}">
         <td>{{ $loop->iteration }}</td>
         <td>
             <input type="hidden" name="kode_pelanggan[]" value="{{ $d->kode_pelanggan }}">
+            <input type="hidden" name="status[]" value="{{ $status }}">
             {{ $d->kode_pelanggan }}
         </td>
         <td>{{ $d->nama_pelanggan }}</td>

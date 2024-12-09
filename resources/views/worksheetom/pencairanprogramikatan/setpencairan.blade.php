@@ -7,7 +7,7 @@
 @endsection
 
 <div class="row">
-    <div class="col-lg-8 col-sm-12 col-xs-12">
+    <div class="col-lg-10 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
                 @can('pencairanprogramikt.create')
@@ -60,6 +60,7 @@
                                     <th>Budget</th>
                                     <th>Pembayaran</th>
                                     <th>No. Rekening</th>
+                                    <th>Total Reward</th>
                                 </tr>
 
                             </thead>
@@ -72,6 +73,9 @@
                                     ];
                                 @endphp
                                 @foreach ($detail as $d)
+                                    @php
+                                        $total_reward = $d->reward * $d->jumlah;
+                                    @endphp
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $d->kode_pelanggan }}</td>
@@ -82,6 +86,7 @@
                                         <td class="text-center">{{ $d->budget }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                                         <td>{{ $d->no_rekening }}</td>
+                                        <td class="text-end">{{ formatAngka($total_reward) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

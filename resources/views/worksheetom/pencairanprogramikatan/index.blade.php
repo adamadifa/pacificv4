@@ -182,7 +182,7 @@
                 bulan2 = parseInt(bulan2) + 12;
             }
 
-            var bln = bulan1;
+            var bln = bulan1 * 1;
             var thn = tahun1;
 
 
