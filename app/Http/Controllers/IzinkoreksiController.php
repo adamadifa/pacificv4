@@ -378,6 +378,12 @@ class IzinkoreksiController extends Controller
             $userrole = User::role($nextrole)
                 ->where('status', 1)
                 ->first();
+        } else {
+            $cek_index = count($roles_approve) - 1;
+            $nextrole = $roles_approve[$cek_index];
+            $userrole = User::role($nextrole)
+                ->where('status', 1)
+                ->first();
         }
 
         //dd($userrole);
