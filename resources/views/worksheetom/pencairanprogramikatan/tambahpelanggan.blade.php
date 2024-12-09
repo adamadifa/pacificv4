@@ -1,28 +1,33 @@
-<table class="table table-bordered ">
-    <thead class="table-dark">
-        <tr>
-            <th>No</th>
-            <th>Kode Pelanggan</th>
-            <th>Nama Pelanggan</th>
-            <th class="text-center">Target</th>
-            <th>Realisasi</th>
-            <th>Reward</th>
-            <th>Total Reward</th>
-            <th>#</th>
-        </tr>
+<form action="{{ route('pencairanprogramikatan.storepelanggan', Crypt::encrypt($kode_pencairan)) }}" id="formprosesPelanggan" method="POST">
 
-    </thead>
-    <tbody id="loadpenjualanpelanggan">
+    @csrf
+    <table class="table table-bordered ">
+        <thead class="table-dark">
+            <tr>
+                <th>No</th>
+                <th>Kode Pelanggan</th>
+                <th>Nama Pelanggan</th>
+                <th class="text-center">Target</th>
+                <th>Realisasi</th>
+                <th>Reward</th>
+                <th>Total Reward</th>
+                <th>#</th>
+            </tr>
 
-    </tbody>
-</table>
-<div class="row mt-3">
-    <div class="col">
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block" id="btnSimpan"><i class="ti ti-plus me-1"></i>Tambahkan Semua</button>
+        </thead>
+        <tbody id="loadpenjualanpelanggan">
+
+        </tbody>
+    </table>
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block w-100" id="btnSimpan"><i class="ti ti-send me-1 "></i>Proses</button>
+            </div>
         </div>
     </div>
-</div>
+</form>
 <script>
     $(document).ready(function() {
         function loadpenjualanpelanggan() {
@@ -44,6 +49,15 @@
 
         loadpenjualanpelanggan();
 
+        $("#formprosesPelanggan").submit(function(e) {
+            $("#btnSimpan").attr("disabled", true);
+            $("#btnSimpan").html(`
+                <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Loading..
+            `);
+        });
 
     });
 </script>

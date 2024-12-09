@@ -55,11 +55,12 @@
                                     <th>No.</th>
                                     <th>Kode</th>
                                     <th>Nama Pelanggan</th>
-                                    <th>Avg Penjualan</th>
-                                    <th>Qty Target</th>
+                                    <th class="text-center">Avg Penjualan</th>
+                                    <th class="text-center">Qty Target</th>
                                     <th>Reward</th>
                                     <th>Budget</th>
                                     <th>Pembayaran</th>
+                                    <th>No. Rekening</th>
                                     <th>#</th>
                                 </tr>
                             </thead>
@@ -76,11 +77,12 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $d->kode_pelanggan }}</td>
                                         <td>{{ $d->nama_pelanggan }}</td>
-                                        <td class="text-end">{{ formatAngka($d->qty_avg) }}</td>
-                                        <td class="text-end">{{ formatAngka($d->qty_target) }}</td>
+                                        <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
+                                        <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                                         <td class="text-end">{{ formatAngka($d->reward) }}</td>
                                         <td>{{ $d->budget }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+                                        <td>{{ $d->no_rekening }}</td>
                                         <td>
                                             <div class="d-flex">
                                                 @can('ajuanprogramikatan.edit')

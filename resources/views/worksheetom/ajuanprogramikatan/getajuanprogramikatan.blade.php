@@ -20,7 +20,7 @@
                 <td>{{ formatIndo($d->tanggal) }}</td>
                 <td>{{ $d->nama_program }}</td>
                 <td>{{ $d->nama_cabang }}</td>
-                <td>{{ formatIndo($d->periode_dari) }} - {{ formatIndo($d->periode_sampai) }}</td>
+                <td>{{ formatIndo($d->periode_dari) }}/{{ formatIndo($d->periode_sampai) }}</td>
                 <td>
                     <a href="#" class="pilihajuan"><i class="ti ti-external-link"></i></a>
                 </td>

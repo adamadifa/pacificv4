@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Detailajuanprogramikatan;
+use App\Models\Detailpencairanprogramikatan;
 use App\Models\Detailpenjualan;
 use App\Models\Pencairanprogram;
 use App\Models\Pencairanprogramikatan;
@@ -52,9 +53,8 @@ class PencairanprogramikatanController extends Controller
     {
         $request->validate([
             'tanggal' => 'required',
-            'bulan' => 'required',
+            'periodepencairan' => 'required',
             'no_pengajuan' => 'required',
-            'tahun' => 'required',
             'keterangan' => 'required'
         ]);
 
@@ -67,13 +67,16 @@ class PencairanprogramikatanController extends Controller
         $kode_pencairan = buatkode($last_kode_pencairan, "PI" . $request->kode_cabang . date('y', strtotime($request->tanggal)), 4);
 
         try {
+            $periodepencairan = explode('-', $request->periodepencairan);
+            $bulan = $periodepencairan[0];
+            $tahun = $periodepencairan[1];
             //code...
             Pencairanprogramikatan::create([
                 'kode_pencairan' => $kode_pencairan,
                 'tanggal' => $request->tanggal,
                 'no_pengajuan' => $request->no_pengajuan,
-                'bulan' => $request->bulan,
-                'tahun' => $request->tahun,
+                'bulan' => $bulan,
+                'tahun' => $tahun,
                 'keterangan' => $request->keterangan
             ]);
             return Redirect::back()->with(messageSuccess("Data Berhasil Disimpan"));
@@ -103,7 +106,18 @@ class PencairanprogramikatanController extends Controller
         $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
         $query->where('kode_pencairan', $kode_pencairan);
         $pencairanprogramikatan = $query->first();
+
+
+        $pelangganprogram = Detailajuanprogramikatan::where('no_pengajuan', $pencairanprogramikatan->no_pengajuan);
+        $detail = Detailpencairanprogramikatan::join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan')
+            ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
+                $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
+            })
+            ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
+            ->get();
         $data['pencairanprogram'] = $pencairanprogramikatan;
+        $data['detail'] = $detail;
         return view('worksheetom.pencairanprogramikatan.setpencairan', $data);
     }
 
@@ -195,5 +209,27 @@ class PencairanprogramikatanController extends Controller
         // $data['kode_program'] = $request->kode_program;
         // $data['kode_cabang'] = $request->kode_cabang;
         return view('worksheetom.pencairanprogramikatan.getpelanggan', $data);
+    }
+
+    public function storepelanggan(Request $request, $kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $kode_pelanggan = $request->kode_pelanggan;
+        $jumlah = $request->jumlah;
+        DB::beginTransaction();
+        try {
+            for ($i = 0; $i < count($kode_pelanggan); $i++) {
+                Detailpencairanprogramikatan::create([
+                    'kode_pencairan' => $kode_pencairan,
+                    'kode_pelanggan' => $kode_pelanggan[$i],
+                    'jumlah' => toNumber($jumlah[$i])
+                ]);
+            }
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Pelanggan Berhasil Di Proses'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

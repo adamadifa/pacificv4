@@ -2073,6 +2073,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/pencairanprogramikatan/{kode_pencairan}/destroy', 'destroy')->name('pencairanprogramikatan.delete')->can('pencairanprogramikt.delete');
         Route::get('/pencairanprogramikatan/{kode_pencairan}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogramikatan.tambahpelanggan')->can('pencairanprogramikt.create');
         Route::post('/pencairanprogramikatan/getpelanggan', 'getpelanggan')->name('pencairanprogramikatan.getpelanggan')->can('pencairanprogramikt.create');
+        Route::post('/pencairanprogramikatan/{kode_pencairan}/storepelanggan', 'storepelanggan')->name('pencairanprogramikatan.storepelanggan')->can('pencairanprogramikt.create');
     });
 
 

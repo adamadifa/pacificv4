@@ -51,21 +51,39 @@
                         <table class="table table-bordered table-striped">
                             <thead class="table-dark">
                                 <tr>
-                                    <th rowspan="2" class="text-center" valign="middle">Nik</th>
-                                    <th rowspan="2" class="text-center" valign="middle">Kode Pel</th>
-                                    <th rowspan="2" valign="middle">Nama Pelanggan</th>
-                                    <th rowspan="2" class="text-center" valign="middle">Qty</th>
-                                    <th colspan="2" class="text-center" valign="middle">Diskon</th>
-                                    <th rowspan="2" class="text-center" valign="middle">Cashback</th>
-                                    <th rowspan="2" class="text-center" valign="middle">#</th>
+                                    <th>No.</th>
+                                    <th>Kode Pelanggan</th>
+                                    <th>Nama Pelanggan</th>
+                                    <th class="text-center">Target</th>
+                                    <th class="text-center">Realisasi</th>
+                                    <th>Reward</th>
+                                    <th>Budget</th>
+                                    <th>Pembayaran</th>
+                                    <th>No. Rekening</th>
                                 </tr>
-                                <tr>
-                                    <th>Reguler</th>
-                                    <th>Kumulatif</th>
-                                </tr>
+
                             </thead>
                             <tbody id="loaddetailpencairan">
-
+                                @php
+                                    $metode_pembayaran = [
+                                        'TN' => 'Tunai',
+                                        'TF' => 'Transfer',
+                                        'VC' => 'Voucher',
+                                    ];
+                                @endphp
+                                @foreach ($detail as $d)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $d->kode_pelanggan }}</td>
+                                        <td>{{ $d->nama_pelanggan }}</td>
+                                        <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
+                                        <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
+                                        <td class="text-end">{{ formatAngka($d->reward) }}</td>
+                                        <td class="text-center">{{ $d->budget }}</td>
+                                        <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+                                        <td>{{ $d->no_rekening }}</td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

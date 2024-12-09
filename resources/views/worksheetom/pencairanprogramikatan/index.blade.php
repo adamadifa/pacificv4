@@ -165,16 +165,56 @@
             var cabang = rowData.eq(5).text(); // Cabang
             var periode = rowData.eq(6).text(); // Periode
 
+            var periodeSplit = periode.split("/");
+            var tanggal1 = periodeSplit[0];
+            var tanggal2 = periodeSplit[1];
+
+            var bulanTahun1 = tanggal1.split("-");
+            var bulan1 = bulanTahun1[1];
+            var tahun1 = bulanTahun1[2];
+
+            var bulanTahun2 = tanggal2.split("-");
+            var bulan2 = bulanTahun2[1];
+            var tahun2 = bulanTahun2[2];
+
+
+            if (parseInt(bulan2) < parseInt(bulan1)) {
+                bulan2 = parseInt(bulan2) + 12;
+            }
+
+            var bln = bulan1;
+            var thn = tahun1;
+
+
+            var namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober",
+                "November", "Desember"
+            ];
+            for (var i = parseInt(bulan1); i <= parseInt(bulan2); i++) {
+                if (i > 12) {
+                    bln = i - 12;
+                    thn = parseInt(tahun1) + 1;
+                }
+                $(document).find("#periodepencairan").append(`<option value="${bln}-${thn}">${namaBulan[bln]} ${thn}</option>`);
+                console.log("Bulan : " + bln + " Tahun : " + thn);
+                bln++;
+            }
+            // alert(tanggal1);
+
             // Lakukan sesuatu dengan data yang diambil, misalnya menampilkan di modal
             console.log(noPengajuan, noDokumen, tanggal, program, cabang, periode);
-            $(document).find("#tabeldataajuan").find("#no_pengajuan_text").text(noPengajuan);
+            $(document).find("#tabeldataajuan").find(
+                "#no_pengajuan_text").text(noPengajuan);
             $(document).find("#tabeldataajuan").find("#nomor_dokumen").text(noDokumen);
-            $(document).find("#tabeldataajuan").find("#tanggal").text(tanggal);
-            $(document).find("#tabeldataajuan").find("#nama_program").text(program);
+            $(
+                document).find("#tabeldataajuan").find("#tanggal").text(tanggal);
+            $(document).find("#tabeldataajuan").find(
+                "#nama_program").text(program);
             $(document).find("#tabeldataajuan").find("#nama_cabang").text(cabang);
-            $(document).find("#tabeldataajuan").find("#periode").text(periode);
+            $(document).find(
+                "#tabeldataajuan").find("#periode").text(periode);
             $(document).find("#no_pengajuan").val(noPengajuan);
-            $("#modalajuanProgram").modal("hide");
+            $(
+                "#modalajuanProgram").modal("hide");
         });
     });
 </script>

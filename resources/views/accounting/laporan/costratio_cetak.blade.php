@@ -53,7 +53,7 @@
                     @foreach ($costratio as $d)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $d->kode_akun }}</td>
+                            <td>'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
                             @foreach ($cabang as $c)
                                 @php
