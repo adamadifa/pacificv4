@@ -159,6 +159,12 @@
                                                                 <i class="ti ti-settings text-primary"></i>
                                                             </a>
                                                         @endcan
+                                                        @can('pencairanprogramikt.show')
+                                                            <a href="{{ route('pencairanprogramikatan.cetak', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                                class="me-1" target="_blank">
+                                                                <i class="ti ti-printer text-success"></i>
+                                                            </a>
+                                                        @endcan
                                                         @can('pencairanprogramikt.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
                                                                 action="{{ route('pencairanprogramikatan.delete', Crypt::encrypt($d->kode_pencairan)) }}">
@@ -178,7 +184,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{-- {{ $barangmasuk->links() }} --}}
+                                {{ $pencairanprogramikatan->links() }}
                             </div>
                         </div>
                     </div>

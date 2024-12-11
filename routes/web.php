@@ -2066,6 +2066,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/pencairanprogram/{kode_pencairan}/approve', 'approve')->name('pencairanprogram.approve')->can('pencairanprogram.approve');
         Route::post('/pencairanprogram/{kode_pencairan}/storeapprove', 'storeapprove')->name('pencairanprogram.storeapprove')->can('pencairanprogram.approve');
+        Route::get('/pencairanprogram/{kode_pencairan}/cetak', 'cetak')->name('pencairanprogram.cetak')->can('pencairanprogram.show');
     });
 
     Route::controller(PencairanprogramikatanController::class)->group(function () {
@@ -2080,6 +2081,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/pencairanprogramikatan/{kode_pencairan}/approve', 'approve')->name('pencairanprogramikatan.approve')->can('ajuanprogramikatan.approve');
         Route::post('/pencairanprogramikatan/{kode_pencairan}/storeapprove', 'storeapprove')->name('pencairanprogramikatan.storeapprove')->can('ajuanprogramikatan.approve');
+        Route::get('/pencairanprogramikatan/{kode_pencairan}/{kode_pelanggan}/upload', 'upload')->name('pencairanprogramikatan.upload')->can('pencairanprogramikt.upload');
+        Route::post('/pencairanprogramikatan/{kode_pencairan}/{kode_pelanggan}/storeupload', 'storeupload')->name('pencairanprogramikatan.storeupload')->can('pencairanprogramikt.upload');
+        Route::get('/pencairanprogramikatan/{kode_pencairan}/cetak', 'cetak')->name('pencairanprogramikatan.cetak')->can('pencairanprogramikt.show');
     });
 
 
@@ -2100,6 +2104,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajuanprogramikatan/getajuanprogramikatan', 'getajuanprogramikatan')->name('ajuanprogramikatan.getajuanprogramikatan')->can('ajuanprogramikatan.create');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/approve', 'approve')->name('ajuanprogramikatan.approve')->can('ajuanprogramikatan.approve');
         Route::post('/ajuanprogramikatan/{no_pengajuan}/storeapprove', 'storeapprove')->name('ajuanprogramikatan.storeapprove')->can('ajuanprogramikatan.approve');
+        Route::get('/ajuanprogramikatan/{no_pengajuan}/cetak', 'cetak')->name('ajuanprogramikatan.cetak')->can('ajuanprogramikatan.show');
     });
 
 

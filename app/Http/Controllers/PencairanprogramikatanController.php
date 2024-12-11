@@ -385,4 +385,65 @@ class PencairanprogramikatanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function upload($kode_pencairan, $kode_pelanggan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $data['kode_pencairan'] = $kode_pencairan;
+        $data['kode_pelanggan'] = $kode_pelanggan;
+        return view('worksheetom.pencairanprogramikatan.upload', $data);
+    }
+
+    public function storeupload(Request $request, $kode_pencairan, $kode_pelanggan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        try {
+            //code...
+            Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->update([
+                    'bukti_transfer' => $request->bukti_transfer
+                ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Upload'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cetak($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $query = Pencairanprogramikatan::query();
+        $query->select(
+            'marketing_pencairan_ikatan.*',
+            'cabang.nama_cabang',
+            'nama_program',
+            'nomor_dokumen',
+            'periode_dari',
+            'periode_sampai'
+        );
+        $query->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan');
+        $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
+        $query->where('kode_pencairan', $kode_pencairan);
+        $pencairanprogramikatan = $query->first();
+
+
+        $pelangganprogram = Detailajuanprogramikatan::where('no_pengajuan', $pencairanprogramikatan->no_pengajuan);
+        $detail = Detailpencairanprogramikatan::join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan')
+            ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
+                $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
+            })
+            ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
+            ->orderBy('pelangganprogram.metode_pembayaran')
+            ->get();
+        $data['pencairanprogram'] = $pencairanprogramikatan;
+        $data['detail'] = $detail;
+        return view('worksheetom.pencairanprogramikatan.cetak', $data);
+    }
 }

@@ -64,7 +64,9 @@
                                     <th>No. Rekening</th>
                                     <th>Pemilik</th>
                                     <th>Bank</th>
-                                    <th>Total Reward</th>
+                                    <th>Total</th>
+                                    <th>Bukti</th>
+                                    <th>#</th>
                                 </tr>
 
                             </thead>
@@ -98,11 +100,31 @@
                                         <td></td>
                                         <td></td>
                                         <td class="text-end">{{ formatAngka($total_reward) }}</td>
+                                        <td>
+                                            @if (!empty($d->bukti_transfer))
+                                                <a href="{{ url($d->bukti_transfer) }}" target="_blank">
+                                                    <i class="ti ti-receipt text-success"></i>
+                                                </a>
+                                            @else
+                                                <i class="ti ti-hourglass-empty text-warning"></i>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @can('pencairanprogramikt.upload')
+                                                <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
+                                                    kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
+                                                    <i class="ti ti-upload text-primary"></i>
+                                                </a>
+                                            @endcan
+
+                                        </td>
                                     </tr>
                                     @if ($d->metode_pembayaran != $next_metode_pembayaran)
                                         <tr class="table-dark">
                                             <td colspan="11">TOTAL REWARD </td>
                                             <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                         @php
                                             $subtotal_reward = 0;
@@ -114,6 +136,8 @@
                                 <tr>
                                     <td colspan="11">GRAND TOTAL REWARD </td>
                                     <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -124,6 +148,7 @@
     </div>
 </div>
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
+<x-modal-form id="modalUpload" size="" show="loadmodalupload" title="" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
 @push('myscript')
@@ -134,6 +159,15 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Tambah Pelanggan");
             $("#loadmodal").load("/pencairanprogramikatan/" + kode_pencairan + "/tambahpelanggan");
+        });
+
+        $(".btnUpload").click(function(e) {
+            e.preventDefault();
+            let kode_pencairan = $(this).attr("kode_pencairan");
+            let kode_pelanggan = $(this).attr("kode_pelanggan");
+            $("#modalUpload").modal("show");
+            $("#modalUpload").find(".modal-title").text("Upload Bukti Transfer");
+            $("#loadmodalupload").load("/pencairanprogramikatan/" + kode_pencairan + "/" + kode_pelanggan + "/upload");
         });
     });
 </script>

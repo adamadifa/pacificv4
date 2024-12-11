@@ -332,4 +332,17 @@ class AjuanprogramikatanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    public function cetak($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $data['programikatan'] = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        $data['detail'] = Detailajuanprogramikatan::join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->where('no_pengajuan', $no_pengajuan)
+            ->get();
+        return view('worksheetom.ajuanprogramikatan.cetak', $data);
+    }
 }

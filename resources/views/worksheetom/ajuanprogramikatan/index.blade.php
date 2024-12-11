@@ -156,6 +156,13 @@
                                                                 <i class="ti ti-settings text-primary"></i>
                                                             </a>
                                                         @endcan
+                                                        @can('ajuanprogramikatan.show')
+                                                            <a href="{{ route('ajuanprogramikatan.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
+                                                                target="_blank">
+                                                                <i class="ti ti-printer text-success"></i>
+                                                            </a>
+                                                        @endcan
+
                                                         @can('ajuanprogramikatan.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
                                                                 action="{{ route('ajuanprogramikatan.delete', Crypt::encrypt($d->no_pengajuan)) }}">
@@ -166,6 +173,7 @@
                                                                 </a>
                                                             </form>
                                                         @endcan
+
 
                                                     </div>
                                                 </td>

@@ -38,6 +38,10 @@ class PencairanprogramController extends Controller
             $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
         }
 
+
+        if (!empty($request->kode_program)) {
+            $query->where('kode_program', $request->kode_program);
+        }
         $pencairanprogram = $query->paginate(15);
         $pencairanprogram->appends(request()->all());
 

@@ -26,6 +26,13 @@
                                         </div>
                                     </div>
                                 @endrole
+                                <div class="form-group">
+                                    <select name="kode_program" id="kode_program" class="form-select">
+                                        <option value="">Semua Program</option>
+                                        <option value="PR001" {{ Request('kode_program') == 'PR001' ? 'selected' : '' }}>BB & DP</option>
+                                        <option value="PR002" {{ Request('kode_program') == 'PR002' ? 'selected' : '' }}>AIDA</option>
+                                    </select>
+                                </div>
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
@@ -53,15 +60,15 @@
                                 <table class="table table-striped table-hover table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th rowspan="2">No. Ajuan</th>
-                                            <th rowspan="2">Tanggal</th>
-                                            <th rowspan="2">Bulan</th>
-                                            <th rowspan="2">Tahun</th>
-                                            <th rowspan="2">Program</th>
-                                            <th rowspan="2">Cabang</th>
-                                            <th colspan="4">Persetujuan</th>
-                                            <th rowspan="2">Status</th>
-                                            <th rowspan="2">#</th>
+                                            <th rowspan="2" valign="middle">No. Ajuan</th>
+                                            <th rowspan="2" valign="middle">Tanggal</th>
+                                            <th rowspan="2" valign="middle">Bulan</th>
+                                            <th rowspan="2" valign="middle">Tahun</th>
+                                            <th rowspan="2" valign="middle">Program</th>
+                                            <th rowspan="2" valign="middle">Cabang</th>
+                                            <th colspan="4" valign="middle" class="text-center">Persetujuan</th>
+                                            <th rowspan="2" valign="middle">Status</th>
+                                            <th rowspan="2" valign="middle">#</th>
                                         </tr>
                                         <tr>
                                             <th class="text-center">OM</th>
