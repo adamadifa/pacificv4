@@ -9,6 +9,8 @@ use App\Models\Detailpencairanprogramikatan;
 use App\Models\Detailpenjualan;
 use App\Models\Pencairanprogram;
 use App\Models\Pencairanprogramikatan;
+use App\Models\Programikatan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -18,9 +20,10 @@ class PencairanprogramikatanController extends Controller
 {
     public function index()
     {
-        $cbg = new Cabang();
-        $cabang = $cbg->getCabang();
-        $data['cabang'] = $cabang;
+
+        $user = User::find(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
 
         $query = Pencairanprogramikatan::query();
         $query->select(
@@ -38,6 +41,11 @@ class PencairanprogramikatanController extends Controller
         $pencairanprogramikatan = $query->paginate(15);
         $pencairanprogramikatan->appends(request()->all());
         $data['pencairanprogramikatan'] = $pencairanprogramikatan;
+
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+
+        $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         return view('worksheetom.pencairanprogramikatan.index', $data);
     }
 

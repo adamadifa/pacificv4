@@ -315,4 +315,17 @@ class PencairanprogramController extends Controller
             ], 400);
         }
     }
+
+
+    public function destroy($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        try {
+            //code...
+            Pencairanprogram::where('kode_pencairan', $kode_pencairan)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

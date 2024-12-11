@@ -6,18 +6,33 @@
     <span>Monitoring Program</span>
 @endsection
 <div class="row">
-    <div class="col-lg-10 col-md-12 col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
             @include('layouts.navigation_monitoringprogram')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('barangmasukgl.create')
+                    @can('ajuanprogramikatan.create')
                         <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
                             Tambah Data</a>
                     @endcan
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('monitoringprogram.index') }}">
+                            <form action="{{ route('ajuanprogramikatan.index') }}">
+                                @hasanyrole($roles_show_cabang)
+                                    <div class="form-group mb-3">
+                                        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
+                                            <option value="">Semua Cabang</option>
+                                            @foreach ($cabang as $d)
+                                                <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endrole
+                                <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
+                                    icon="ti ti-barcode" />
+                                <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
+                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
+
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
@@ -52,13 +67,15 @@
                                             <th rowspan="2">Program</th>
                                             <th rowspan="2">Cabang</th>
                                             <th rowspan="2">Periode</th>
-                                            <th colspan="3">Persetujuan</th>
+                                            <th colspan="4">Persetujuan</th>
+                                            <th rowspan="2">Status</th>
                                             <th rowspan="2">#</th>
                                         </tr>
                                         <tr>
-                                            <th>RSM</th>
-                                            <th>GM</th>
-                                            <th>Direktur</th>
+                                            <th class="text-center">OM</th>
+                                            <th class="text-center">RSM</th>
+                                            <th class="text-center">GM</th>
+                                            <th class="text-center">Direktur</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -69,26 +86,70 @@
                                                 <td>{{ $d->nomor_dokumen }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nama_program }}</td>
-                                                <td>{{ $d->nama_cabang }}</td>
+                                                <td>{{ strtoUpper($d->nama_cabang) }}</td>
                                                 <td>{{ $d->periode_dari }} - {{ $d->periode_sampai }}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="text-center">
+                                                    @if (empty($d->om))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->rsm))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->gm))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->direktur))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($d->status == '0')
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @elseif ($d->status == '1')
+                                                        <i class="ti ti-checks text-success"></i>
+                                                    @elseif($d->status == '2')
+                                                        <span class="badge bg-danger">Ditolak</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="{{ route('ajuanprogramikatan.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"
-                                                            class="me-1">
-                                                            <i class="ti ti-settings text-primary"></i>
-                                                        </a>
-
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('ajuanprogramikatan.delete', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm ml-1">
-                                                                <i class="ti ti-trash text-danger"></i>
+                                                        @can('ajuanprogramikatan.approve')
+                                                            <a href="#" class="btnApprove me-1"
+                                                                no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                <i class="ti ti-external-link text-success"></i>
                                                             </a>
-                                                        </form>
+                                                        @endcan
+                                                        @can('ajuanprogramikatan.edit')
+                                                            <a href="{{ route('ajuanprogramikatan.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"
+                                                                class="me-1">
+                                                                <i class="ti ti-settings text-primary"></i>
+                                                            </a>
+                                                        @endcan
+                                                        @can('ajuanprogramikatan.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuanprogramikatan.delete', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endcan
+
                                                     </div>
                                                 </td>
                                         @endforeach
@@ -107,6 +168,7 @@
 </div>
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
+<x-modal-form id="modalApprove" size="modal-xl" show="loadmodalapprove" title="" />
 
 @endsection
 @push('myscript')
@@ -123,6 +185,33 @@
             <div class="sk-wave-rect"></div>
             </div>`);
             $("#loadmodal").load("/ajuanprogramikatan/create");
+        });
+
+        const select2Kodecabang = $(".select2Kodecabang");
+        if (select2Kodecabang.length) {
+            select2Kodecabang.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Semua Cabang',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
+        $(".btnApprove").click(function(e) {
+            const no_pengajuan = $(this).attr('no_pengajuan');
+            e.preventDefault();
+            $('#modalApprove').modal("show");
+            $("#modalApprove").find(".modal-title").text("Approve Ajuan Program");
+            $("#loadmodalapprove").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+            $("#loadmodalapprove").load('/ajuanprogramikatan/' + no_pengajuan + '/approve');
         });
     });
 </script>

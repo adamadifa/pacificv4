@@ -15,13 +15,60 @@ use Illuminate\Support\Facades\Redirect;
 
 class AjuanprogramikatanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = User::find(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $query = Ajuanprogramikatan::query();
         $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->orderBy('marketing_program_ikatan.no_pengajuan', 'desc');
-        $data['ajuanprogramikatan'] = $query->get();
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_program_ikatan.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
+        if (!empty($request->kode_cabang)) {
+            $query->where('marketing_program_ikatan.kode_cabang', $request->kode_cabang);
+        }
+
+        if (!empty($request->kode_program)) {
+            $query->where('marketing_program_ikatan.kode_program', $request->kode_program);
+        }
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('marketing_program_ikatan.tanggal', [$request->dari, $request->sampai]);
+        }
+
+        if (!empty($request->nomor_dokumen)) {
+            $query->where('marketing_program_ikatan.nomor_dokumen', $request->nomor_dokumen);
+        }
+
+        if ($user->hasRole('regional sales manager')) {
+            $query->whereNotNull('marketing_program_ikatan.om');
+            $query->where('marketing_program_ikatan.status', '!=', 2);
+        }
+
+        if ($user->hasRole('gm marketing')) {
+            $query->whereNotNull('marketing_program_ikatan.rsm');
+            $query->where('marketing_program_ikatan.status', '!=', 2);
+        }
+
+        if ($user->hasRole('direktur')) {
+            $query->whereNotNull('marketing_program_ikatan.gm');
+            $query->where('marketing_program_ikatan.status', '!=', 2);
+        }
+        $ajuanprogramikatan = $query->paginate(15);
+        $ajuanprogramikatan->appends(request()->all());
+        $data['ajuanprogramikatan'] = $ajuanprogramikatan;
+
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+
+        $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         return view('worksheetom.ajuanprogramikatan.index', $data);
     }
 
@@ -202,10 +249,20 @@ class AjuanprogramikatanController extends Controller
 
     public function getajuanprogramikatan()
     {
+        $user = User::find(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $query = Ajuanprogramikatan::query();
         $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->orderBy('marketing_program_ikatan.no_pengajuan', 'desc');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_program_ikatan.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+        $query->where('status', 1);
         $data['ajuanprogramikatan'] = $query->get();
         return view('worksheetom.ajuanprogramikatan.getajuanprogramikatan', $data);
     }
@@ -216,6 +273,61 @@ class AjuanprogramikatanController extends Controller
         try {
             Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)->delete();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function approve($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $data['programikatan'] = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        $data['detail'] = Detailajuanprogramikatan::join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->where('no_pengajuan', $no_pengajuan)
+            ->get();
+        return view('worksheetom.ajuanprogramikatan.approve', $data);
+    }
+
+
+    public function storeapprove(Request $request, $no_pengajuan)
+    {
+        $user = User::find(auth()->user()->id);
+        if ($user->hasRole('operation manager')) {
+            $field = 'om';
+        } else if ($user->hasRole('regional sales manager')) {
+            $field = 'rsm';
+        } else if ($user->hasRole('gm marketing')) {
+            $field = 'gm';
+        } else if ($user->hasRole('direktur')) {
+            $field = 'direktur';
+        }
+
+
+        // dd(isset($_POST['decline']));
+        if (isset($_POST['decline'])) {
+            $status  = 2;
+        } else {
+            $status = $user->hasRole('direktur') || $user->hasRole('super admin') ? 1 : 0;
+        }
+
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        try {
+            if ($user->hasRole('super admin')) {
+                Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+                    ->update([
+                        'status' => $status
+                    ]);
+            } else {
+                Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+                    ->update([
+                        $field => auth()->user()->id,
+                        'status' => $status
+                    ]);
+            }
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }

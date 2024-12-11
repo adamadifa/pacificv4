@@ -28,3 +28,8 @@
         @endforeach
     </tbody>
 </table>
+<script>
+    $(document).ready(function() {
+        $('#tabelajuanprogram').DataTable();
+    });
+</script>

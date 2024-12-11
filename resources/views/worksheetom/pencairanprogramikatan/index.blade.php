@@ -17,15 +17,22 @@
                     @endcan
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('monitoringprogram.index') }}">
+                            <form action="{{ route('ajuanprogramikatan.index') }}">
                                 @hasanyrole($roles_show_cabang)
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                                upperCase="true" selected="{{ Request('kode_cabang') }}" select2="select2Kodecabang" />
-                                        </div>
+                                    <div class="form-group mb-3">
+                                        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
+                                            <option value="">Semua Cabang</option>
+                                            @foreach ($cabang as $d)
+                                                <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 @endrole
+                                <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
+                                    icon="ti ti-barcode" />
+                                <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
+                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
+
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
@@ -61,10 +68,11 @@
                                             <th rowspan="2" valign="middle">Program</th>
                                             <th rowspan="2" valign="middle">Cabang</th>
                                             <th rowspan="2" valign="middle">Periode</th>
-                                            <th colspan="3" class="text-center">Persetujuan</th>
+                                            <th colspan="4" class="text-center">Persetujuan</th>
                                             <th rowspan="2">#</th>
                                         </tr>
                                         <tr>
+                                            <th class="text-center">OM</th>
                                             <th class="text-center">RSM</th>
                                             <th class="text-center">GM</th>
                                             <th class="text-center">Direktur</th>
@@ -81,6 +89,7 @@
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
                                                 <td>{{ formatIndo($d->periode_dari) }} - {{ formatIndo($d->periode_sampai) }}</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
