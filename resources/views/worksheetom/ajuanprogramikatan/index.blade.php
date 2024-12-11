@@ -128,10 +128,27 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('ajuanprogramikatan.approve')
-                                                            <a href="#" class="btnApprove me-1"
-                                                                no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                <i class="ti ti-external-link text-success"></i>
-                                                            </a>
+                                                            @if (auth()->user()->hasRole('operation manager') && $d->rsm == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @elseif (auth()->user()->hasRole('regional sales manager') && $d->gm == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @elseif (auth()->user()->hasRole('gm marketing') && $d->direktur == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @else
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @endif
                                                         @endcan
                                                         @can('ajuanprogramikatan.edit')
                                                             <a href="{{ route('ajuanprogramikatan.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"

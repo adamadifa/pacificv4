@@ -7,11 +7,13 @@
 @endsection
 
 <div class="row">
-    <div class="col-lg-10 col-sm-12 col-xs-12">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
                 @can('pencairanprogramikt.create')
-                    <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                    @if ($pencairanprogram->status == 0)
+                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                    @endif
                 @endcan
             </div>
             <div class="card-body">
@@ -60,6 +62,8 @@
                                     <th>Budget</th>
                                     <th>Pembayaran</th>
                                     <th>No. Rekening</th>
+                                    <th>Pemilik</th>
+                                    <th>Bank</th>
                                     <th>Total Reward</th>
                                 </tr>
 
@@ -72,8 +76,9 @@
                                         'VC' => 'Voucher',
                                     ];
                                 @endphp
-                                @foreach ($detail as $d)
+                                @foreach ($detail as $key => $d)
                                     @php
+                                        $next_tanggal = @$setoran_penjualan[$key + 1]->tanggal;
                                         $total_reward = $d->reward * $d->jumlah;
                                     @endphp
                                     <tr>
@@ -86,6 +91,8 @@
                                         <td class="text-center">{{ $d->budget }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                                         <td>{{ $d->no_rekening }}</td>
+                                        <td></td>
+                                        <td></td>
                                         <td class="text-end">{{ formatAngka($total_reward) }}</td>
                                     </tr>
                                 @endforeach

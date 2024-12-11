@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class PencairanprogramikatanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
         $user = User::find(auth()->user()->id);
@@ -110,7 +110,7 @@ class PencairanprogramikatanController extends Controller
             'nama_program',
             'nomor_dokumen',
             'periode_dari',
-            'periode_sampai',
+            'periode_sampai'
         );
         $query->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan');
         $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
@@ -127,6 +127,7 @@ class PencairanprogramikatanController extends Controller
                 $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
             })
             ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
+            ->orderBy('pelangganprogram.metode_pembayaran')
             ->get();
         $data['pencairanprogram'] = $pencairanprogramikatan;
         $data['detail'] = $detail;

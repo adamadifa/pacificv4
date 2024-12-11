@@ -69,6 +69,7 @@
                                             <th rowspan="2" valign="middle">Cabang</th>
                                             <th rowspan="2" valign="middle">Periode</th>
                                             <th colspan="4" class="text-center">Persetujuan</th>
+                                            <th rowspan="2" valign="middle">Status</th>
                                             <th rowspan="2">#</th>
                                         </tr>
                                         <tr>
@@ -89,10 +90,43 @@
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
                                                 <td>{{ formatIndo($d->periode_dari) }} - {{ formatIndo($d->periode_sampai) }}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="text-center">
+                                                    @if (empty($d->om))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->rsm))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->gm))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->direktur))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($d->status == '0')
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @elseif ($d->status == '1')
+                                                        <i class="ti ti-checks text-success"></i>
+                                                    @elseif($d->status == '2')
+                                                        <span class="badge bg-danger">Ditolak</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="d-flex">
                                                         <a href="{{ route('pencairanprogramikatan.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"

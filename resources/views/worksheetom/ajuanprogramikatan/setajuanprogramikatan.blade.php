@@ -7,11 +7,13 @@
 @endsection
 
 <div class="row">
-    <div class="col-lg-10 col-sm-12 col-xs-12">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
                 @can('ajuanprogramikatan.create')
-                    <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                    @if ($programikatan->status == 0)
+                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                    @endif
                 @endcan
             </div>
             <div class="card-body">
@@ -61,6 +63,8 @@
                                     <th>Budget</th>
                                     <th>Pembayaran</th>
                                     <th>No. Rekening</th>
+                                    <th>Pemilik</th>
+                                    <th>Bank</th>
                                     <th>#</th>
                                 </tr>
                             </thead>
@@ -83,24 +87,30 @@
                                         <td>{{ $d->budget }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                                         <td>{{ $d->no_rekening }}</td>
+                                        <td></td>
+                                        <td></td>
                                         <td>
-                                            <div class="d-flex">
-                                                @can('ajuanprogramikatan.edit')
-                                                    <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit me-1">
-                                                        <i class="ti ti-edit text-success"></i>
-                                                    </a>
-                                                @endcan
-                                                @can('ajuanprogramikatan.delete')
-                                                    <form method="POST" name="deleteform" class="deleteform"
-                                                        action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <a href="#" class="delete-confirm ml-1">
-                                                            <i class="ti ti-trash text-danger"></i>
+                                            @if ($programikatan->status == 0)
+                                                <div class="d-flex">
+                                                    @can('ajuanprogramikatan.edit')
+                                                        <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
+                                                            class="btnEdit me-1">
+                                                            <i class="ti ti-edit text-success"></i>
                                                         </a>
-                                                    </form>
-                                                @endcan
-                                            </div>
+                                                    @endcan
+                                                    @can('ajuanprogramikatan.delete')
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm ml-1">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    @endcan
+                                                </div>
+                                            @endif
+
                                         </td>
                                     </tr>
                                 @endforeach
