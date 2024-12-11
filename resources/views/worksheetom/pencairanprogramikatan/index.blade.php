@@ -11,19 +11,20 @@
             @include('layouts.navigation_monitoringprogram')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('barangmasukgl.create')
+                    @can('pencairanprogramikt.create')
                         <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
                             Tambah Data</a>
                     @endcan
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('ajuanprogramikatan.index') }}">
+                            <form action="{{ route('pencairanprogramikatan.index') }}">
                                 @hasanyrole($roles_show_cabang)
                                     <div class="form-group mb-3">
                                         <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
                                             <option value="">Semua Cabang</option>
                                             @foreach ($cabang as $d)
-                                                <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                                                    {{ textUpperCase($d->nama_cabang) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -129,19 +130,46 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="{{ route('pencairanprogramikatan.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"
-                                                            class="me-1">
-                                                            <i class="ti ti-settings text-primary"></i>
-                                                        </a>
-
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('pencairanprogramikatan.delete', Crypt::encrypt($d->kode_pencairan)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm ml-1">
-                                                                <i class="ti ti-trash text-danger"></i>
+                                                        @can('ajuanprogramikatan.approve')
+                                                            @if (auth()->user()->hasRole('operation manager') && $d->rsm == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @elseif (auth()->user()->hasRole('regional sales manager') && $d->gm == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @elseif (auth()->user()->hasRole('gm marketing') && $d->direktur == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @else
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @endif
+                                                        @endcan
+                                                        @can('pencairanprogramikt.edit')
+                                                            <a href="{{ route('pencairanprogramikatan.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                                class="me-1">
+                                                                <i class="ti ti-settings text-primary"></i>
                                                             </a>
-                                                        </form>
+                                                        @endcan
+                                                        @can('pencairanprogramikt.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('pencairanprogramikatan.delete', Crypt::encrypt($d->kode_pencairan)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endcan
+
                                                     </div>
                                                 </td>
                                             </tr>
@@ -161,6 +189,7 @@
 </div>
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
+<x-modal-form id="modalApprove" size="modal-xxl" show="loadmodalapprove" title="" />
 <x-modal-form id="modalajuanProgram" size="modal-xl" show="loadmodalajuanProgram" title="Ajuan Program Ikatan" />
 
 @endsection
@@ -258,6 +287,21 @@
             $(document).find("#no_pengajuan").val(noPengajuan);
             $(
                 "#modalajuanProgram").modal("hide");
+        });
+
+        $(".btnApprove").click(function(e) {
+            const kode_pencairan = $(this).attr('kode_pencairan');
+            e.preventDefault();
+            $('#modalApprove').modal("show");
+            $("#modalApprove").find(".modal-title").text("Approve Pencairan Program Ikatan");
+            $("#loadmodalapprove").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+            $("#loadmodalapprove").load('/pencairanprogramikatan/' + kode_pencairan + '/approve');
         });
     });
 </script>

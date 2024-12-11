@@ -2063,6 +2063,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/pencairanprogram/storepelanggan', 'storepelanggan')->name('pencairanprogram.storepelanggan')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/getdetailpencairan', 'getdetailpencairan')->name('pencairanprogram.getdetailpencairan')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/deletedetailpencairan', 'deletedetailpencairan')->name('pencairanprogram.deletedetailpencairan')->can('pencairanprogram.create');
+
+        Route::get('/pencairanprogram/{kode_pencairan}/approve', 'approve')->name('pencairanprogram.approve')->can('pencairanprogram.approve');
+        Route::post('/pencairanprogram/{kode_pencairan}/storeapprove', 'storeapprove')->name('pencairanprogram.storeapprove')->can('pencairanprogram.approve');
     });
 
     Route::controller(PencairanprogramikatanController::class)->group(function () {
@@ -2074,6 +2077,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/pencairanprogramikatan/{kode_pencairan}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogramikatan.tambahpelanggan')->can('pencairanprogramikt.create');
         Route::post('/pencairanprogramikatan/getpelanggan', 'getpelanggan')->name('pencairanprogramikatan.getpelanggan')->can('pencairanprogramikt.create');
         Route::post('/pencairanprogramikatan/{kode_pencairan}/storepelanggan', 'storepelanggan')->name('pencairanprogramikatan.storepelanggan')->can('pencairanprogramikt.create');
+
+        Route::get('/pencairanprogramikatan/{kode_pencairan}/approve', 'approve')->name('pencairanprogramikatan.approve')->can('ajuanprogramikatan.approve');
+        Route::post('/pencairanprogramikatan/{kode_pencairan}/storeapprove', 'storeapprove')->name('pencairanprogramikatan.storeapprove')->can('ajuanprogramikatan.approve');
     });
 
 

@@ -6,7 +6,7 @@
     <span>Pencairan Program</span>
 @endsection
 <div class="row">
-    <div class="col-lg-10 col-md-12 col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
             @include('layouts.navigation_monitoringprogram')
             <div class="tab-content">
@@ -17,7 +17,7 @@
                     @endcan
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('monitoringprogram.index') }}">
+                            <form action="{{ route('pencairanprogram.index') }}">
                                 @hasanyrole($roles_show_cabang)
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -59,13 +59,15 @@
                                             <th rowspan="2">Tahun</th>
                                             <th rowspan="2">Program</th>
                                             <th rowspan="2">Cabang</th>
-                                            <th colspan="3">Persetujuan</th>
+                                            <th colspan="4">Persetujuan</th>
+                                            <th rowspan="2">Status</th>
                                             <th rowspan="2">#</th>
                                         </tr>
                                         <tr>
-                                            <th>RSM</th>
-                                            <th>GM</th>
-                                            <th>Direktur</th>
+                                            <th class="text-center">OM</th>
+                                            <th class="text-center">RSM</th>
+                                            <th class="text-center">GM</th>
+                                            <th class="text-center">Direktur</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -77,24 +79,84 @@
                                                 <td>{{ $d->tahun }}</td>
                                                 <td>{{ $d->kode_program == 'PR001' ? 'BB & DP' : 'AIDA' }}</td>
                                                 <td>{{ $d->kode_cabang }}</td>
-                                                <td class="text-center"><i class="ti ti-hourglass-empty text-warning"></i></td>
-                                                <td class="text-center"><i class="ti ti-hourglass-empty text-warning"></i></td>
-                                                <td class="text-center"><i class="ti ti-hourglass-empty text-warning"></i></td>
+                                                <td class="text-center">
+                                                    @if (empty($d->om))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->rsm))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->gm))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (empty($d->direktur))
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($d->status == '0')
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @elseif ($d->status == '1')
+                                                        <i class="ti ti-checks text-success"></i>
+                                                    @elseif($d->status == '2')
+                                                        <span class="badge bg-danger">Ditolak</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="{{ route('pencairanprogram.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"
-                                                            class="me-1">
-                                                            <i class="ti ti-settings text-primary"></i>
-                                                        </a>
-
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('pencairanprogram.delete', Crypt::encrypt($d->kode_pencairan)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm ml-1">
-                                                                <i class="ti ti-trash text-danger"></i>
+                                                        @can('pencairanprogram.approve')
+                                                            @if (auth()->user()->hasRole('operation manager') && $d->rsm == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @elseif (auth()->user()->hasRole('regional sales manager') && $d->gm == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @elseif (auth()->user()->hasRole('gm marketing') && $d->direktur == null)
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @else
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                    <i class="ti ti-external-link text-success"></i>
+                                                                </a>
+                                                            @endif
+                                                        @endcan
+                                                        @can('pencairanprogram.edit')
+                                                            <a href="{{ route('pencairanprogram.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                                class="me-1">
+                                                                <i class="ti ti-settings text-primary"></i>
                                                             </a>
-                                                        </form>
+                                                        @endcan
+                                                        @can('pencairanprogram.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('pencairanprogram.delete', Crypt::encrypt($d->kode_pencairan)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endcan
                                                     </div>
                                                 </td>
                                             </tr>
@@ -114,6 +176,7 @@
 </div>
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
+<x-modal-form id="modalApprove" size="modal-xl" show="loadmodalapprove" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -136,6 +199,20 @@
             });
         }
 
+        $(".btnApprove").click(function(e) {
+            const kode_pencairan = $(this).attr('kode_pencairan');
+            e.preventDefault();
+            $('#modalApprove').modal("show");
+            $("#modalApprove").find(".modal-title").text("Approve Pencairan Program Ikatan");
+            $("#loadmodalapprove").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+            $("#loadmodalapprove").load('/pencairanprogram/' + kode_pencairan + '/approve');
+        });
 
     });
 </script>

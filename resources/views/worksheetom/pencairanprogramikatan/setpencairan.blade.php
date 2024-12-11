@@ -75,11 +75,15 @@
                                         'TF' => 'Transfer',
                                         'VC' => 'Voucher',
                                     ];
+                                    $subtotal_reward = 0;
+                                    $grandtotal_reward = 0;
                                 @endphp
                                 @foreach ($detail as $key => $d)
                                     @php
-                                        $next_tanggal = @$setoran_penjualan[$key + 1]->tanggal;
+                                        $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
                                         $total_reward = $d->reward * $d->jumlah;
+                                        $subtotal_reward += $total_reward;
+                                        $grandtotal_reward += $total_reward;
                                     @endphp
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
@@ -95,8 +99,23 @@
                                         <td></td>
                                         <td class="text-end">{{ formatAngka($total_reward) }}</td>
                                     </tr>
+                                    @if ($d->metode_pembayaran != $next_metode_pembayaran)
+                                        <tr class="table-dark">
+                                            <td colspan="11">TOTAL REWARD </td>
+                                            <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
+                                        </tr>
+                                        @php
+                                            $subtotal_reward = 0;
+                                        @endphp
+                                    @endif
                                 @endforeach
                             </tbody>
+                            <tfoot class="table-dark">
+                                <tr>
+                                    <td colspan="11">GRAND TOTAL REWARD </td>
+                                    <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

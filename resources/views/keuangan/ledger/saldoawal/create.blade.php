@@ -7,7 +7,7 @@
             @foreach ($list_bulan as $d)
                 <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
             @endforeach
-        </select>
+        </select>ap
     </div>
     <div class="form-group mb-3">
         <select name="tahun" id="tahun" class="form-select">

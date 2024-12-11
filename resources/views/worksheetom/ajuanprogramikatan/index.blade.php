@@ -174,7 +174,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{-- {{ $barangmasuk->links() }} --}}
+                                {{ $ajuanprogramikatan->links() }}
                             </div>
                         </div>
                     </div>

@@ -328,4 +328,66 @@ class PencairanprogramController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    public function approve(Request $request)
+    {
+        $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
+        $detailpencairan = Detailpencairan::where('kode_pencairan', $kode_pencairan)
+            ->select(
+                'marketing_program_pencairan_detail.kode_pelanggan',
+                'nama_pelanggan',
+                'jumlah',
+                'diskon_reguler',
+                'diskon_kumulatif'
+            )
+            ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->get();
+        $data['detailpencairan'] = $detailpencairan;
+        $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
+        $data['pencairanprogram'] = $pencairanprogram;
+        return view('worksheetom.pencairanprogram.approve', $data);
+    }
+
+    public function storeapprove(Request $request, $kode_pencairan)
+    {
+        $user = User::find(auth()->user()->id);
+        if ($user->hasRole('operation manager')) {
+            $field = 'om';
+        } else if ($user->hasRole('regional sales manager')) {
+            $field = 'rsm';
+        } else if ($user->hasRole('gm marketing')) {
+            $field = 'gm';
+        } else if ($user->hasRole('direktur')) {
+            $field = 'direktur';
+        }
+
+
+        // dd(isset($_POST['decline']));
+        if (isset($_POST['decline'])) {
+            $status  = 2;
+        } else {
+            $status = $user->hasRole('direktur') || $user->hasRole('super admin') ? 1 : 0;
+        }
+
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        try {
+            if ($user->hasRole('super admin')) {
+                Pencairanprogram::where('kode_pencairan', $kode_pencairan)
+                    ->update([
+                        'status' => $status
+                    ]);
+            } else {
+                Pencairanprogram::where('kode_pencairan', $kode_pencairan)
+                    ->update([
+                        $field => auth()->user()->id,
+                        'status' => $status
+                    ]);
+            }
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

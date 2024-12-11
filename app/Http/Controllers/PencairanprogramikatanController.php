@@ -38,6 +38,47 @@ class PencairanprogramikatanController extends Controller
         $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_program_ikatan.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
+        if (!empty($request->kode_cabang)) {
+            $query->where('marketing_program_ikatan.kode_cabang', $request->kode_cabang);
+        }
+
+        if (!empty($request->kode_program)) {
+            $query->where('marketing_program_ikatan.kode_program', $request->kode_program);
+        }
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('marketing_pencairan_ikatan.tanggal', [$request->dari, $request->sampai]);
+        }
+
+        if (!empty($request->nomor_dokumen)) {
+            $query->where('marketing_program_ikatan.nomor_dokumen', $request->nomor_dokumen);
+        }
+
+        if ($user->hasRole('regional sales manager')) {
+            $query->whereNotNull('marketing_program_ikatan.om');
+            $query->where('marketing_pencairan_ikatan.status', '!=', 2);
+        }
+
+        if ($user->hasRole('gm marketing')) {
+            $query->whereNotNull('marketing_program_ikatan.rsm');
+            $query->where('marketing_pencairan_ikatan.status', '!=', 2);
+        }
+
+        if ($user->hasRole('direktur')) {
+            $query->whereNotNull('marketing_program_ikatan.gm');
+            $query->where('marketing_pencairan_ikatan.status', '!=', 2);
+        }
+
+
         $pencairanprogramikatan = $query->paginate(15);
         $pencairanprogramikatan->appends(request()->all());
         $data['pencairanprogramikatan'] = $pencairanprogramikatan;
@@ -208,6 +249,7 @@ class PencairanprogramikatanController extends Controller
             ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
                 $join->on('marketing_program_ikatan_detail.kode_pelanggan', '=', 'detailpenjualan.kode_pelanggan');
             })
+            ->where('marketing_program_ikatan_detail.status', 1)
             ->where('marketing_program_ikatan.no_pengajuan', $pencairanprogram->no_pengajuan)
             ->get();
 
@@ -263,6 +305,82 @@ class PencairanprogramikatanController extends Controller
         try {
             Pencairanprogramikatan::where('kode_pencairan', $kode_pencairan)->delete();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function approve($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $query = Pencairanprogramikatan::query();
+        $query->select(
+            'marketing_pencairan_ikatan.*',
+            'cabang.nama_cabang',
+            'nama_program',
+            'nomor_dokumen',
+            'periode_dari',
+            'periode_sampai'
+        );
+        $query->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan');
+        $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
+        $query->where('kode_pencairan', $kode_pencairan);
+        $pencairanprogramikatan = $query->first();
+
+
+        $pelangganprogram = Detailajuanprogramikatan::where('no_pengajuan', $pencairanprogramikatan->no_pengajuan);
+        $detail = Detailpencairanprogramikatan::join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan')
+            ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
+                $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
+            })
+            ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
+            ->orderBy('pelangganprogram.metode_pembayaran')
+            ->get();
+        $data['pencairanprogram'] = $pencairanprogramikatan;
+        $data['detail'] = $detail;
+        return view('worksheetom.pencairanprogramikatan.approve', $data);
+    }
+
+    public function storeapprove(Request $request, $kode_pencairan)
+    {
+        $user = User::find(auth()->user()->id);
+        if ($user->hasRole('operation manager')) {
+            $field = 'om';
+        } else if ($user->hasRole('regional sales manager')) {
+            $field = 'rsm';
+        } else if ($user->hasRole('gm marketing')) {
+            $field = 'gm';
+        } else if ($user->hasRole('direktur')) {
+            $field = 'direktur';
+        }
+
+
+        // dd(isset($_POST['decline']));
+        if (isset($_POST['decline'])) {
+            $status  = 2;
+        } else {
+            $status = $user->hasRole('direktur') || $user->hasRole('super admin') ? 1 : 0;
+        }
+
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        try {
+            if ($user->hasRole('super admin')) {
+                Pencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
+                    ->update([
+                        'status' => $status
+                    ]);
+            } else {
+                Pencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
+                    ->update([
+                        $field => auth()->user()->id,
+                        'status' => $status
+                    ]);
+            }
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
