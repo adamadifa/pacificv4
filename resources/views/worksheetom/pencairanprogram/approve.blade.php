@@ -46,9 +46,13 @@
                     </tr>
                 </thead>
                 <tbody id="loaddetailpencairan">
+                    @php
+                        $total_cashback = 0;
+                    @endphp
                     @foreach ($detailpencairan as $d)
                         @php
                             $cashback = $d->diskon_kumulatif - $d->diskon_reguler;
+                            $total_cashback += $cashback;
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -67,6 +71,13 @@
                     @endforeach
 
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" class="text-end">GRAND TOTAL CASHBACK</td>
+                        <td class="text-end">{{ formatAngka($total_cashback) }}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

@@ -394,4 +394,25 @@ class PencairanprogramController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    public function cetak($kode_pencairan)
+    {
+
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $detailpencairan = Detailpencairan::where('kode_pencairan', $kode_pencairan)
+            ->select(
+                'marketing_program_pencairan_detail.kode_pelanggan',
+                'nama_pelanggan',
+                'jumlah',
+                'diskon_reguler',
+                'diskon_kumulatif'
+            )
+            ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->get();
+        $data['detailpencairan'] = $detailpencairan;
+        $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
+        $data['pencairanprogram'] = $pencairanprogram;
+        return view('worksheetom.pencairanprogram.cetak', $data);
+    }
 }

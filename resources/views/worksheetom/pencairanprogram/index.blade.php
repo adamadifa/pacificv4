@@ -154,6 +154,12 @@
                                                                 <i class="ti ti-settings text-primary"></i>
                                                             </a>
                                                         @endcan
+                                                        @can('pencairanprogram.show')
+                                                            <a href="{{ route('pencairanprogram.cetak', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                                class="me-1">
+                                                                <i class="ti ti-printer text-success"></i>
+                                                            </a>
+                                                        @endcan
                                                         @can('pencairanprogram.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
                                                                 action="{{ route('pencairanprogram.delete', Crypt::encrypt($d->kode_pencairan)) }}">
