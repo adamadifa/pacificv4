@@ -156,7 +156,7 @@
                                                         @endcan
                                                         @can('pencairanprogram.show')
                                                             <a href="{{ route('pencairanprogram.cetak', Crypt::encrypt($d->kode_pencairan)) }}"
-                                                                class="me-1">
+                                                                class="me-1" target="_blank">
                                                                 <i class="ti ti-printer text-success"></i>
                                                             </a>
                                                         @endcan

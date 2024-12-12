@@ -272,7 +272,7 @@
 
                                 $piutang = $saldoawalpiutang->{"piutang_$c->kode_cabang"} + $penjualan->{"penjualan_$c->kode_cabang"};
 
-                                $costratio_piutang_aida = !empty($netto_swan) ? ($piutang / $netto_aida) * 100 : 0;
+                                $costratio_piutang_aida = !empty($netto_aida) ? ($piutang / $netto_aida) * 100 : 0;
                             @endphp
                             <th class="center" style="background-color:rgb(187, 109, 8); color:white"> {{ formatAngka($costratio_piutang_aida) }} %
                             </th>

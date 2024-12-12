@@ -90,7 +90,11 @@
                                                 <td>{{ $d->nomor_dokumen }}</td>
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
-                                                <td>{{ formatIndo($d->periode_dari) }} - {{ formatIndo($d->periode_sampai) }}</td>
+                                                <td>{{ $namabulan[date('m', strtotime($d->periode_dari)) * 1] }}
+                                                    {{ date('y', strtotime($d->periode_dari)) }} -
+                                                    {{ $namabulan[date('m', strtotime($d->periode_sampai)) * 1] }}
+                                                    {{ date('y', strtotime($d->periode_sampai)) }}
+                                                </td>
                                                 <td class="text-center">
                                                     @if (empty($d->om))
                                                         <i class="ti ti-hourglass-empty text-warning"></i>

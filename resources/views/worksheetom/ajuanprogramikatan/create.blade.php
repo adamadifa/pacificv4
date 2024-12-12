@@ -1,4 +1,4 @@
-<form action="{{ route('ajuanprogramikatan.store') }}" method="POST" id="formAjuanprogram">
+<form action="{{ route('ajuanprogramikatan.store') }}" method="POST" id="formAjuanprogram" enctype="multipart/form-data">
     @csrf
     <x-input-with-icon label="No. Dokumen" name="no_dokumen" icon="ti ti-barcode" />
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
@@ -28,6 +28,7 @@
         </div>
     </div>
     <x-textarea label="Keterangan" name="keterangan" />
+
     <div class="form-group mb3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>
