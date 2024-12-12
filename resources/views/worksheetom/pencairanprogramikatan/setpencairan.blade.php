@@ -97,8 +97,8 @@
                                         <td class="text-center">{{ $d->budget }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                                         <td>{{ $d->no_rekening }}</td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{ $d->pemilik_rekening }}</td>
+                                        <td>{{ $d->bank }}</td>
                                         <td class="text-end">{{ formatAngka($total_reward) }}</td>
                                         <td>
                                             @if (!empty($d->bukti_transfer))
@@ -110,13 +110,17 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @can('pencairanprogramikt.upload')
-                                                <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
-                                                    kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
-                                                    <i class="ti ti-upload text-primary"></i>
+                                            <div class="d-flex">
+                                                <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                                                    <i class="ti ti-file-description"></i>
                                                 </a>
-                                            @endcan
-
+                                                @can('pencairanprogramikt.upload')
+                                                    <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
+                                                        kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
+                                                        <i class="ti ti-upload text-primary"></i>
+                                                    </a>
+                                                @endcan
+                                            </div>
                                         </td>
                                     </tr>
                                     @if ($d->metode_pembayaran != $next_metode_pembayaran)
@@ -168,6 +172,16 @@
             $("#modalUpload").modal("show");
             $("#modalUpload").find(".modal-title").text("Upload Bukti Transfer");
             $("#loadmodalupload").load("/pencairanprogramikatan/" + kode_pencairan + "/" + kode_pelanggan + "/upload");
+        });
+
+        $(document).on('click', '.btnDetailfaktur', function(e) {
+            e.preventDefault();
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
+            $("#modalDetailfaktur").modal("show");
+            $("#modalDetailfaktur").find(".modal-title").text('Detail Faktur');
+            $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
+                `/pencairanprogramikatan/${kode_pelanggan}/${kode_pencairan}/detailfaktur`);
         });
     });
 </script>

@@ -87,6 +87,17 @@
                     <option value="45" {{ $pelanggan->ljt == 45 ? 'selected' : '' }}>45</option>
                 </select>
             </div>
+            <x-input-with-icon icon="ti ti-credit-card" label="No Rekening" name="no_rekening" value="{{ $pelanggan->no_rekening }}" />
+            <x-input-with-icon icon="ti ti-user" label="Pemilik Rekening" name="pemilik_rekening" value="{{ $pelanggan->pemilik_rekening }}" />
+            <x-input-with-icon icon="ti ti-building" label="Nama Bank" name="bank" value="{{ $pelanggan->bank }}" />
+            <div class="form-group mb-3">
+                <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
+                    <option value="">Metode Pembayaran Program</option>
+                    <option value="TN">Tunai</option>
+                    <option value="TF">Transfer</option>
+                    <option value="VC">Voucher</option>
+                </select>
+            </div>
             <div class="form-group mb-3">
                 <select name="status_aktif_pelanggan" id="status_aktif_pelanggan" class="form-select">
                     <option value="">Status</option>

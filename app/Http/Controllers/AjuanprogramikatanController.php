@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class AjuanprogramikatanController extends Controller
 {
@@ -181,6 +182,7 @@ class AjuanprogramikatanController extends Controller
             'reward' => 'required',
             'budget' => 'required',
             'metode_pembayaran' => 'required',
+            'file_doc' => 'required',
         ]);
 
         try {
@@ -193,6 +195,10 @@ class AjuanprogramikatanController extends Controller
                 return Redirect::back()->with(messageError('Pelanggan Sudah Ada'));
             }
 
+            $file_name =  $no_pengajuan . "-" . $request->kode_pelanggan . "." . $request->file('file_doc')->getClientOriginalExtension();
+            $destination_foto_path = "/public/ajuanprogramikatan";
+            $file = $file_name;
+
             Detailajuanprogramikatan::create([
                 'no_pengajuan' => $no_pengajuan,
                 'kode_pelanggan' => $request->kode_pelanggan,
@@ -200,8 +206,11 @@ class AjuanprogramikatanController extends Controller
                 'qty_avg' => !empty($request->qty_avg) ? toNumber($request->qty_avg) : 0,
                 'reward' => toNumber($request->reward),
                 'budget' => $request->budget,
-                'metode_pembayaran' => $request->metode_pembayaran
+                'metode_pembayaran' => $request->metode_pembayaran,
+                'file_doc' => $file
+
             ]);
+            $request->file('file_doc')->storeAs($destination_foto_path, $file_name);
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
@@ -237,10 +246,17 @@ class AjuanprogramikatanController extends Controller
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $detail = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->first();
         try {
+
             Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
                 ->where('kode_pelanggan', $kode_pelanggan)
                 ->delete();
+
+            $destination_foto_path = "/public/ajuanprogramikatan";
+            Storage::delete($destination_foto_path . "/" . $detail->file_doc);
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Hapus'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
@@ -270,6 +286,7 @@ class AjuanprogramikatanController extends Controller
     public function destroy($no_pengajuan)
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
+
         try {
             Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)->delete();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));

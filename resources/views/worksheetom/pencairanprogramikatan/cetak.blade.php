@@ -129,8 +129,8 @@
 
                             <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                             <td>{{ $d->no_rekening }}</td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ $d->pemilik_rekening }}</td>
+                            <td>{{ $d->bank }}</td>
                             <td class="right">{{ formatAngka($total_reward) }}</td>
 
                         </tr>

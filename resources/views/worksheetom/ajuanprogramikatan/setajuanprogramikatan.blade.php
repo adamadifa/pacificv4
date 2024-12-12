@@ -65,6 +65,7 @@
                                     <th>No. Rekening</th>
                                     <th>Pemilik</th>
                                     <th>Bank</th>
+                                    <th>Doc</th>
                                     <th>#</th>
                                 </tr>
                             </thead>
@@ -87,8 +88,15 @@
                                         <td>{{ $d->budget }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                                         <td>{{ $d->no_rekening }}</td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{ $d->pemilik_rekening }}</td>
+                                        <td>{{ $d->bank }}</td>
+                                        <td>
+                                            @if ($d->file_doc != null)
+                                                <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}" target="_blank">
+                                                    <i class="ti ti-file-text"></i>
+                                                </a>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if ($programikatan->status == 0)
                                                 <div class="d-flex">
