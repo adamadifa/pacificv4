@@ -347,7 +347,7 @@
                                     $penjualanbruto->{"bruto_aida_$c->kode_cabang"} -
                                     $penjualanpotongan->{"potongan_aida_$c->kode_cabang"} -
                                     $retur->{"retur_aida_$c->kode_cabang"};
-                                $cr_biaya_piutang_aida = !empty($netto_swan) ? ($biaya_piutang / $netto_aida) * 100 : 0;
+                                $cr_biaya_piutang_aida = !empty($netto_aida) ? ($biaya_piutang / $netto_aida) * 100 : 0;
                             @endphp
                             <th class="center" style="background-color:rgb(187, 8, 106); color:white"> {{ formatAngka($cr_biaya_piutang_aida) }} %
                             </th>

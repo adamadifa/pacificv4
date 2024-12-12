@@ -282,6 +282,7 @@
             let reward = $(this).find("input[name='reward']").val();
             let budget = $(this).find("select[name='budget']").val();
             let metode_pembayaran = $(this).find("select[name='metode_pembayaran']").val();
+            let file_doc = $(this).find("input[name='file_doc']").val();
 
             if (kode_pelanggan == "") {
                 Swal.fire({
@@ -326,6 +327,17 @@
                         $(this).find("#budget").focus();
                     },
                 });
+                return false;
+            } else if (file_doc == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "File Dokumen harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#file_doc").focus();
+                    },
+                })
                 return false;
             } else if (metode_pembayaran == "") {
                 Swal.fire({
