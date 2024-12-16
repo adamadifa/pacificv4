@@ -707,6 +707,7 @@ class DashboardController extends Controller
 
             $query->where('salesman.kode_cabang', $kode_cabang);
             $query->where('nama_salesman', '!=', '-');
+            $query->where('status_batal', 0);
             $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
             $query->groupBy('marketing_penjualan.kode_salesman', 'salesman.kode_cabang', 'salesman.nama_salesman', 'total_bruto', 'total_retur', 'total_potongan', 'total_potongan_istimewa', 'total_penyesuaian', 'total_ppn');
             $query->orderBy('salesman.nama_salesman');
