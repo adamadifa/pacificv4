@@ -714,6 +714,8 @@ class DashboardController extends Controller
             $rekappenjualan = $query->get();
             $data['rekappenjualan'] = $rekappenjualan;
 
+
+
             $qpembayaran = Historibayarpenjualan::query();
             $qpembayaran->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
             $qpembayaran->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
