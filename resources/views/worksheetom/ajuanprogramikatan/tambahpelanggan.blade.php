@@ -1,4 +1,5 @@
-<form action="{{ route('ajuanprogramikatan.storepelanggan', Crypt::encrypt($ajuanprogramikatan->no_pengajuan)) }}" method="POST" id="formEditpelanggan">
+<form action="{{ route('ajuanprogramikatan.storepelanggan', Crypt::encrypt($ajuanprogramikatan->no_pengajuan)) }}" method="POST" id="formEditpelanggan"
+    enctype="multipart/form-data">
     @csrf
     {{-- <div class="form-group">
         <select name="kode_pelanggan" id="kode_pelanggan" class="form-select select2Kodepelanggan">
@@ -34,6 +35,7 @@
             <option value="VC">Voucher</option>
         </select>
     </div>
+    <x-input-file name="file_doc" label="Dokumen Kesepakatan" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

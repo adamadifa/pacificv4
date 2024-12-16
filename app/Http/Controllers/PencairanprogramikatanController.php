@@ -446,4 +446,52 @@ class PencairanprogramikatanController extends Controller
         $data['detail'] = $detail;
         return view('worksheetom.pencairanprogramikatan.cetak', $data);
     }
+
+
+    public function detailfaktur($kode_pelanggan, $kode_pencairan)
+    {
+
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+
+        $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
+        $bulan = $pencairanprogram->bulan;
+        $tahun = $pencairanprogram->tahun;
+
+        if ($pencairanprogram->kode_program == 'PR001') {
+            $produk = ['BB', 'DEP'];
+            $kategori_diskon = 'D001';
+        } else {
+            $produk = ['AB', 'AR', 'AS'];
+            $kategori_diskon = 'D002';
+        }
+        $start_date = $tahun . '-' . $bulan . '-01';
+        $end_date = date('Y-m-t', strtotime($start_date));
+        $detailpenjualan = Detailpenjualan::select(
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.tanggal_pelunasan',
+            'marketing_penjualan.jenis_transaksi',
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
+            DB::raw('(SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon'),
+            DB::raw('floor(jumlah/isi_pcs_dus) * (SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon_reguler'),
+
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            ->where('status', 1)
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 14")
+            ->where('status_batal', 0)
+            ->whereIn('produk_harga.kode_produk', $produk)
+            ->orderBy('nama_pelanggan')
+            ->get();
+
+        return view('worksheetom.pencairanprogram.detailfaktur', compact('detailpenjualan'));
+    }
 }

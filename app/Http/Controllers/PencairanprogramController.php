@@ -289,7 +289,11 @@ class PencairanprogramController extends Controller
                 'nama_pelanggan',
                 'jumlah',
                 'diskon_reguler',
-                'diskon_kumulatif'
+                'diskon_kumulatif',
+                'no_rekening',
+                'pemilik_rekening',
+                'bank',
+                'metode_bayar'
             )
             ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->get();
