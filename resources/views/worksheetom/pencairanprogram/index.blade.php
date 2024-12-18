@@ -190,6 +190,7 @@
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 <x-modal-form id="modalApprove" size="modal-xl" show="loadmodalapprove" title="" />
+<x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -198,6 +199,16 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Buat Pencairan Program");
             $("#loadmodal").load("/pencairanprogram/create");
+        });
+
+        $(document).on('click', '.btnDetailfaktur', function(e) {
+            e.preventDefault();
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            let kode_pencairan = $(this).attr('kode_pencairan');
+            $("#modalDetailfaktur").modal("show");
+            $("#modalDetailfaktur").find(".modal-title").text('Detail Faktur');
+            $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
+                `/pencairanprogram/${kode_pelanggan}/${kode_pencairan}/detailfaktur`);
         });
 
         const select2Kodecabang = $('.select2Kodecabang');

@@ -46,6 +46,7 @@
                         <th>Budget</th>
                         <th>Pembayaran</th>
                         <th>No. Rekening</th>
+                        <th>Doc</th>
 
                     </tr>
                 </thead>
@@ -68,6 +69,13 @@
                             <td>{{ $d->budget }}</td>
                             <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                             <td>{{ $d->no_rekening }}</td>
+                            <td>
+                                @if ($d->file_doc != null)
+                                    <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}" target="_blank">
+                                        <i class="ti ti-file-text"></i>
+                                    </a>
+                                @endif
+                            </td>
 
                         </tr>
                     @endforeach

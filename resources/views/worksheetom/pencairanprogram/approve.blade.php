@@ -63,8 +63,9 @@
                             <td class="text-end">{{ formatAngka($d->diskon_kumulatif) }}</td>
                             <td class="text-end">{{ formatAngka($cashback) }}</td>
                             <td>
-                                <a href="#" kode_pelanggan = "{{ $d->kode_pelanggan }}" class="deletedetailpencairan">
-                                    <i class="ti ti-trash text-danger"></i>
+                                <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d->kode_pelanggan }}"
+                                    kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}">
+                                    <i class="ti ti-file-description"></i>
                                 </a>
                             </td>
                         </tr>

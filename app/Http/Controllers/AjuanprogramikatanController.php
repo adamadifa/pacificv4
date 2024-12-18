@@ -182,7 +182,7 @@ class AjuanprogramikatanController extends Controller
             'reward' => 'required',
             'budget' => 'required',
             'metode_pembayaran' => 'required',
-            'file_doc' => 'required',
+
         ]);
 
         try {
@@ -195,9 +195,14 @@ class AjuanprogramikatanController extends Controller
                 return Redirect::back()->with(messageError('Pelanggan Sudah Ada'));
             }
 
-            $file_name =  $no_pengajuan . "-" . $request->kode_pelanggan . "." . $request->file('file_doc')->getClientOriginalExtension();
-            $destination_foto_path = "/public/ajuanprogramikatan";
-            $file = $file_name;
+            if ($request->file('file_doc')) {
+                $file_name =  $no_pengajuan . "-" . $request->kode_pelanggan . "." . $request->file('file_doc')->getClientOriginalExtension();
+                $destination_foto_path = "/public/ajuanprogramikatan";
+                $file = $file_name;
+                $request->file('file_doc')->storeAs($destination_foto_path, $file_name);
+            } else {
+                $file = null;
+            }
 
             Detailajuanprogramikatan::create([
                 'no_pengajuan' => $no_pengajuan,
@@ -210,10 +215,16 @@ class AjuanprogramikatanController extends Controller
                 'file_doc' => $file
 
             ]);
-            $request->file('file_doc')->storeAs($destination_foto_path, $file_name);
+
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
+            if ($request->file('file_doc')) {
+                $file_name =  $no_pengajuan . "-" . $request->kode_pelanggan . "." . $request->file('file_doc')->getClientOriginalExtension();
+                $destination_foto_path = "/public/ajuanprogramikatan";
+                $file = $file_name;
+                Storage::delete($destination_foto_path . "/" . $file_name);
+            }
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
@@ -225,15 +236,37 @@ class AjuanprogramikatanController extends Controller
         $request->validate([
             'target' => 'required',
             'reward' => 'required',
+            'budget' => 'required',
+            'metode_pembayaran' => 'required',
+            'file_doc' => 'file|mimes:pdf|max:2048',
         ]);
 
         try {
             //code...
+            $detail = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->first();
+
+            if ($request->file('file_doc')) {
+                $file_name =  $no_pengajuan . "-" . $request->kode_pelanggan . "." . $request->file('file_doc')->getClientOriginalExtension();
+                $destination_foto_path = "/public/ajuanprogramikatan";
+                $file = $file_name;
+                if ($detail->file_doc) {
+                    Storage::delete($destination_foto_path . "/" . $detail->file_doc);
+                }
+                $request->file('file_doc')->storeAs($destination_foto_path, $file_name);
+            } else {
+                $file = $detail->file_doc;
+            }
+
             Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
                 ->where('kode_pelanggan', $kode_pelanggan)
                 ->update([
                     'qty_target' => toNumber($request->target),
-                    'reward' => toNumber($request->reward)
+                    'reward' => toNumber($request->reward),
+                    'budget' => $request->budget,
+                    'metode_pembayaran' => $request->metode_pembayaran,
+                    'file_doc' => $file,
                 ]);
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Update'));
@@ -361,5 +394,20 @@ class AjuanprogramikatanController extends Controller
             ->where('no_pengajuan', $no_pengajuan)
             ->get();
         return view('worksheetom.ajuanprogramikatan.cetak', $data);
+    }
+
+
+    public function cetakkesepakatan($no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $data['kesepakatan'] = Detailajuanprogramikatan::where('marketing_program_ikatan_detail.no_pengajuan', $no_pengajuan)
+            ->where('marketing_program_ikatan_detail.kode_pelanggan', $kode_pelanggan)
+            ->join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
+            ->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->first();
+        return view('worksheetom.ajuanprogramikatan.cetakkesepakatan', $data);
     }
 }

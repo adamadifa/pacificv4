@@ -193,7 +193,7 @@
 </div>
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
-<x-modal-form id="modalApprove" size="modal-xl" show="loadmodalapprove" title="" />
+<x-modal-form id="modalApprove" size="modal-xxl" show="loadmodalapprove" title="" />
 
 @endsection
 @push('myscript')

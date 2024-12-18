@@ -98,14 +98,19 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($programikatan->status == 0)
-                                                <div class="d-flex">
+                                            <div class="d-flex">
+                                                <a href="{{ route('ajuanprogramikatan.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
+                                                    target="_blank">
+                                                    <i class="ti ti-printer text-primary"></i>
+                                                </a>
+                                                @if ($programikatan->status == 0)
                                                     @can('ajuanprogramikatan.edit')
                                                         <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
                                                             class="btnEdit me-1">
                                                             <i class="ti ti-edit text-success"></i>
                                                         </a>
                                                     @endcan
+
                                                     @can('ajuanprogramikatan.delete')
                                                         <form method="POST" name="deleteform" class="deleteform"
                                                             action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
@@ -116,9 +121,8 @@
                                                             </a>
                                                         </form>
                                                     @endcan
-                                                </div>
-                                            @endif
-
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -336,17 +340,6 @@
                     },
                 });
                 return false;
-            } else if (file_doc == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "File Dokumen harus diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: () => {
-                        $(this).find("#file_doc").focus();
-                    },
-                })
-                return false;
             } else if (metode_pembayaran == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -359,6 +352,32 @@
                 });
                 return false;
             } else {
+                let fileDoc = $(this).find("#file_doc")[0].files[0];
+                if (fileDoc) {
+                    if (fileDoc.type !== 'application/pdf') {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: "Format file harus PDF !",
+                            icon: "warning",
+                            showConfirmButton: true,
+                            didClose: () => {
+                                $(this).find("#file_doc").focus();
+                            },
+                        });
+                        return false;
+                    } else if (fileDoc.size > 2 * 1024 * 1024) {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: "Ukuran file maksimal 2 MB !",
+                            icon: "warning",
+                            showConfirmButton: true,
+                            didClose: () => {
+                                $(this).find("#file_doc").focus();
+                            },
+                        });
+                        return false;
+                    }
+                }
                 $(this).find("#btnSimpan").prop('disabled', true);
                 $(this).find("#btnSimpan").html(` <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                 <span class="visually-hidden">Loading...</span>
