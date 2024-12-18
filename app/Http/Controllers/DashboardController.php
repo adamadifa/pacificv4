@@ -739,6 +739,7 @@ class DashboardController extends Controller
                     'salesman.kode_cabang',
                     DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto'),
                 )
+                ->where('status_batal', 0)
                 ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
                 ->groupBy('salesman.kode_cabang');
 
