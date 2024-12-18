@@ -707,11 +707,14 @@ class DashboardController extends Controller
 
             $query->where('salesman.kode_cabang', $kode_cabang);
             $query->where('nama_salesman', '!=', '-');
+            $query->where('status_batal', 0);
             $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
             $query->groupBy('marketing_penjualan.kode_salesman', 'salesman.kode_cabang', 'salesman.nama_salesman', 'total_bruto', 'total_retur', 'total_potongan', 'total_potongan_istimewa', 'total_penyesuaian', 'total_ppn');
             $query->orderBy('salesman.nama_salesman');
             $rekappenjualan = $query->get();
             $data['rekappenjualan'] = $rekappenjualan;
+
+
 
             $qpembayaran = Historibayarpenjualan::query();
             $qpembayaran->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
@@ -764,6 +767,7 @@ class DashboardController extends Controller
                     DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
                     DB::raw('SUM(marketing_penjualan.ppn) as total_ppn'),
                 )
+                ->where('status_batal', 0)
                 ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
                 ->groupBy('salesman.kode_cabang');
 

@@ -48,6 +48,7 @@ class LaporankeuanganController extends Controller
     public function cetakledger(Request $request)
     {
 
+        $user = User::findorfail(auth()->user()->id);
         if (lockreport($request->dari) == "error") {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }

@@ -91,6 +91,7 @@ class Harga extends Model
                     ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
                     ->where('kode_kategori_salesman', $kode_kategori_salesman)
                     ->where('kode_cabang', $kode_cabang)
+                    ->whereNull('produk_harga.kode_pelanggan')
                     ->where('status_aktif_produk', 1)
                     ->where('status_promo', 0)
                     ->orderBy('nama_produk')
