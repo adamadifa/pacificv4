@@ -53,6 +53,7 @@
                                     <th rowspan="2" class="text-center" valign="middle">Qty</th>
                                     <th colspan="2" class="text-center" valign="middle">Diskon</th>
                                     <th rowspan="2" class="text-center" valign="middle">Cashback</th>
+                                    <th rowspan="2" class="text-center" valign="middle">T/TF/VC</th>
                                     <th rowspan="2" class="text-center" valign="middle">No. Rek</th>
                                     <th rowspan="2" class="text-center" valign="middle">Pemilik</th>
                                     <th rowspan="2" class="text-center" valign="middle">Bank</th>

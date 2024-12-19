@@ -408,6 +408,10 @@ class PencairanprogramController extends Controller
             ->select(
                 'marketing_program_pencairan_detail.kode_pelanggan',
                 'nama_pelanggan',
+                'no_rekening',
+                'pemilik_rekening',
+                'bank',
+                'metode_bayar',
                 'jumlah',
                 'diskon_reguler',
                 'diskon_kumulatif'

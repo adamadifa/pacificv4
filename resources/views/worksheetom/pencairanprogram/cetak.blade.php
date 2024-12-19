@@ -100,6 +100,13 @@
                     </tr>
                 </thead>
                 <tbody id="loaddetailpencairan">
+                    @php
+                        $metode_pembayaran = [
+                            'TN' => 'Tunai',
+                            'TF' => 'Transfer',
+                            'VC' => 'Voucher',
+                        ];
+                    @endphp
                     @foreach ($detailpencairan as $d)
                         @php
                             $cashback = $d->diskon_kumulatif - $d->diskon_reguler;
@@ -112,10 +119,10 @@
                             <td class="right">{{ formatAngka($d->diskon_reguler) }}</td>
                             <td class="right">{{ formatAngka($d->diskon_kumulatif) }}</td>
                             <td class="right">{{ formatAngka($cashback) }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ !empty($d->metode_bayar) ? $metode_pembayaran[$d->metode_bayar] : '' }}</td>
+                            <td>{{ $d->bank }}</td>
+                            <td>{{ $d->no_rekening }}</td>
+                            <td>{{ $d->pemilik_rekening }}</td>
                         </tr>
                     @endforeach
 

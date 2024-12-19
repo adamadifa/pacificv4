@@ -1,5 +1,10 @@
 @php
     $total_cashback = 0;
+    $metode_pembayaran = [
+        'TN' => 'Tunai',
+        'TF' => 'Transfer',
+        'VC' => 'Voucher',
+    ];
 @endphp
 @foreach ($detailpencairan as $d)
     @php
@@ -14,6 +19,7 @@
         <td class="text-end">{{ formatAngka($d->diskon_reguler) }}</td>
         <td class="text-end">{{ formatAngka($d->diskon_kumulatif) }}</td>
         <td class="text-end">{{ formatAngka($cashback) }}</td>
+        <td>{{ !empty($d->metode_bayar) ? $metode_pembayaran[$d->metode_bayar] : '-' }}</td>
         <td>{{ $d->no_rekening }}</td>
         <td>{{ $d->pemilik_rekening }}</td>
         <td>{{ $d->bank }}</td>

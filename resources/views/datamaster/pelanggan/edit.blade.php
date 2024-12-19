@@ -91,7 +91,7 @@
             <x-input-with-icon icon="ti ti-user" label="Pemilik Rekening" name="pemilik_rekening" value="{{ $pelanggan->pemilik_rekening }}" />
             <x-input-with-icon icon="ti ti-building" label="Nama Bank" name="bank" value="{{ $pelanggan->bank }}" />
             <div class="form-group mb-3">
-                <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
+                <select name="metode_bayar" id="metode_bayar" class="form-select">
                     <option value="">Metode Pembayaran Program</option>
                     <option value="TN">Tunai</option>
                     <option value="TF">Transfer</option>
