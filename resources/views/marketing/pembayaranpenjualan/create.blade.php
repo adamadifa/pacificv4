@@ -1,7 +1,6 @@
 <form id="formBayar" method="POST" action="{{ route('pembayaranpenjualan.store', Crypt::encrypt($no_faktur)) }}">
     @csrf
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date"
-        value="{{ date('Y-m-d') }} readonly/>
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" />
     <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" />
 
     @if ($level_user == 'salesman')
@@ -62,12 +61,12 @@
         }
 
 
-        // $(".flatpickr-date").flatpickr({
-        //     enable: [{
-        //         from: "{{ $start_periode }}",
-        //         to: "{{ date('Y-m-d') }}"
-        //     }, ]
-        // });
+        $(".flatpickr-date").flatpickr({
+            enable: [{
+                from: "{{ $start_periode }}",
+                to: "{{ date('Y-m-d') }}"
+            }, ]
+        });
 
 
         const select2Kodesalesman = $('.select2Kodesalesman');
