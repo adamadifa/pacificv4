@@ -393,14 +393,25 @@
                                         @endphp
                                         @if (!empty($d[$tanggal_presensi]['doc_sid']) || $d[$tanggal_presensi]['izin_sakit_direktur'] == '1')
                                             @php
-                                                $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+
+                                                if ($tanggal_presensi >= '2024-11-21') {
+                                                    $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
+                                                } else {
+                                                    $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                }
                                                 $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : 0;
                                                 $keterangan = 'SID';
                                             @endphp
                                         @else
                                             @php
-                                                $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
-                                                $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : $total_jam;
+                                                if ($tanggal_presensi >= '2024-11-21') {
+                                                    $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
+                                                    $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam_jadwal - $total_jam : $total_jam;
+                                                } else {
+                                                    $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                    $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : $total_jam;
+                                                }
+
                                                 $keterangan = '';
                                             @endphp
                                         @endif
@@ -450,12 +461,22 @@
 
                                             $potongan_jam_terlambat = 0;
                                             if ($d[$tanggal_presensi]['kode_cuti'] != 'C01') {
-                                                if (!empty($cekdirumahkan)) {
-                                                    $potongan_jam_dirumahkan = $total_jam_jadwal / 2;
-                                                    $total_jam = $total_jam_jadwal / 2;
+                                                if ($tanggal_presensi >= '2024-11-21') {
+                                                    if (!empty($cekdirumahkan)) {
+                                                        $total_jam = ROUND($total_jam_jadwal / 1.33, 2);
+                                                        $potongan_jam_dirumahkan = $total_jam_jadwal - $total_jam;
+                                                    } else {
+                                                        $potongan_jam_dirumahkan = 0;
+                                                        $total_jam = $total_jam_jadwal;
+                                                    }
                                                 } else {
-                                                    $potongan_jam_dirumahkan = 0;
-                                                    $total_jam = $total_jam_jadwal;
+                                                    if (!empty($cekdirumahkan)) {
+                                                        $potongan_jam_dirumahkan = $total_jam_jadwal / 2;
+                                                        $total_jam = $total_jam_jadwal / 2;
+                                                    } else {
+                                                        $potongan_jam_dirumahkan = 0;
+                                                        $total_jam = $total_jam_jadwal;
+                                                    }
                                                 }
                                             } else {
                                                 $potongan_jam_dirumahkan = 0;
@@ -509,11 +530,21 @@
                                             $potongan_jam_tidakhadir = 0;
                                             $potongan_jam_sakit = 0;
                                             if ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
-                                                $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
-                                                $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam : 0;
+                                                if ($tanggal_presensi >= '2024-11-21') {
+                                                    $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
+                                                    $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal - $total_jam : 0;
+                                                } else {
+                                                    $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                    $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam : 0;
+                                                }
                                             } else {
-                                                $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
-                                                $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                if ($tanggal_presensi >= '2024-11-21') {
+                                                    $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
+                                                    $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal - $total_jam : $total_jam_jadwal;
+                                                } else {
+                                                    $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                    $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                }
                                             }
 
                                             //Jika Jabatan Salesman
