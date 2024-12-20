@@ -63,7 +63,7 @@
 
         $(".flatpickr-date").flatpickr({
             enable: [{
-                from: "{{ date('Y-m-d') }}",
+                from: "{{ $start_periode }}",
                 to: "{{ date('Y-m-d') }}"
             }, ]
         });
