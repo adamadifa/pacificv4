@@ -657,7 +657,7 @@
                                             }
 
                                             if (in_array($d['nik'], $privillage_karyawan) && $tanggal_presensi >= '2024-11-21') {
-                                                $total_jam = 0;
+                                                $potongan_jam_dirumahkan = 0;
                                             }
                                             $potongan_jam_dirumahkan = $potongan_jam_dirumahkan;
                                         @endphp
