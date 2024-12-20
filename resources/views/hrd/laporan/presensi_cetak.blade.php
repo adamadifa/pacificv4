@@ -605,6 +605,10 @@
                                                     $total_jam = 3.5;
                                                 }
                                             }
+
+                                            if (in_array($d['nik'], $privillage_karyawan)) {
+                                                $total_jam = 0;
+                                            }
                                             $potongan_jam_dirumahkan = $total_jam;
                                         @endphp
                                     @elseif(!empty($cekliburnasional))
