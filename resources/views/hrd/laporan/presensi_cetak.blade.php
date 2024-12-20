@@ -606,7 +606,8 @@
                                                 }
                                             }
 
-                                            if (in_array($d['nik'], $privillage_karyawan)) {
+                                            //Mulai Berlaku Dari Tanggal 2024-11-21
+                                            if (in_array($d['nik'], $privillage_karyawan) && $tanggal_presensi >= '2024-11-21') {
                                                 $total_jam = 0;
                                             }
                                             $potongan_jam_dirumahkan = $total_jam;
