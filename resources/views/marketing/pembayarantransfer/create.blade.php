@@ -22,12 +22,7 @@
 <script>
     $(function() {
         const form = $("#formBayar");
-        $(".flatpickr-date").flatpickr({
-            enable: [{
-                from: "{{ $start_periode }}",
-                to: "{{ $end_periode }}"
-            }, ]
-        });
+        $(".flatpickr-date").flatpickr();
 
         function buttonDisable() {
             $("#btnSimpan").prop('disabled', true);

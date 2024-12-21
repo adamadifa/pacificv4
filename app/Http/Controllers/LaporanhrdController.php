@@ -614,6 +614,22 @@ class LaporanhrdController extends Controller
         $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
         $data['roles_access_all_pjp'] = $roles_access_all_pjp;
         $data['format_laporan'] = $request->format_laporan;
+        $privillage_karyawan = [
+            '16.11.266',
+            '22.08.339',
+            '19.10.142',
+            '17.03.025',
+            '00.12.062',
+            '08.07.092',
+            '16.05.259',
+            '17.08.023',
+            '15.10.043',
+            '17.07.302',
+            '15.10.143',
+            '03.03.065',
+            '23.12.337',
+        ];
+        $data['privillage_karyawan'] = $privillage_karyawan;
         if (request()->is('laporanhrd/cetakgaji')) {
 
 
