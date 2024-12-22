@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detailgiro;
+use App\Models\Detailpencairan;
 use App\Models\Historibayarpenjualan;
 use App\Models\Historibayarpenjualangiro;
 use App\Models\Jenisvoucher;
@@ -45,6 +46,11 @@ class PembayaranpenjualanController extends Controller
             ->whereNull('cek_pembayaran_giro')
             ->get();
         $data['no_faktur'] = $no_faktur;
+        $data['saldo_voucher'] = Detailpencairan::where('kode_pelanggan', $penjualan->kode_pelanggan)
+            ->select(DB::raw("SUM(diskon_kumulatif - diskon_reguler) as jml_voucher"))
+            ->where('metode_pembayaran', 'VC')
+            ->first();
+        // dd($data['saldo_voucher']);
         return view('marketing.pembayaranpenjualan.create', $data);
     }
 

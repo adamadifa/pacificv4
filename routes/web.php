@@ -3,6 +3,7 @@
 use App\Http\Controllers\AjuanfakturkreditController;
 use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AjuanprogramikatanController;
+use App\Http\Controllers\AjuanprogramkumulatifController;
 use App\Http\Controllers\AjuantransferdanaController;
 use App\Http\Controllers\AktifitassmmController;
 use App\Http\Controllers\AngkutanController;
@@ -2107,6 +2108,27 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanprogramikatan/{no_pengajuan}/storeapprove', 'storeapprove')->name('ajuanprogramikatan.storeapprove')->can('ajuanprogramikatan.approve');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/cetak', 'cetak')->name('ajuanprogramikatan.cetak')->can('ajuanprogramikatan.show');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/cetakkesepakatan', 'cetakkesepakatan')->name('ajuanprogramikatan.cetakkesepakatan')->can('ajuanprogramikatan.show');
+    });
+
+    Route::controller(AjuanprogramkumulatifController::class)->group(function () {
+        Route::get('/ajuankumulatif', 'index')->name('ajuankumulatif.index')->can('ajuankumulatif.index');
+        Route::get('/ajuankumulatif/create', 'create')->name('ajuankumulatif.create')->can('ajuankumulatif.create');
+        Route::post('/ajuankumulatif/store', 'store')->name('ajuankumulatif.store')->can('ajuankumulatif.store');
+        Route::get('/ajuankumulatif/{id}/edit', 'edit')->name('ajuankumulatif.edit')->can('ajuankumulatif.edit');
+        Route::post('/ajuankumulatif/{id}/update', 'update')->name('ajuankumulatif.update')->can('ajuankumulatif.update');
+        Route::delete('/ajuankumulatif/{id}/destroy', 'destroy')->name('ajuankumulatif.delete')->can('ajuankumulatif.delete');
+        Route::get('/ajuankumulatif/{no_pengajuan}/setajuankumulatif', 'setajuankumulatif')->name('ajuankumulatif.setajuankumulatif')->can('ajuankumulatif.create');
+        Route::get('/ajuankumulatif/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('ajuankumulatif.tambahpelanggan')->can('ajuankumulatif.create');
+        Route::post('/ajuankumulatif/{no_pengajuan}/storepelanggan', 'storepelanggan')->name('ajuankumulatif.storepelanggan')->can('ajuankumulatif.create');
+        Route::get('/ajuankumulatif/{no_pengajuan}/{kode_pelanggan}/editpelanggan', 'editpelanggan')->name('ajuankumulatif.editpelanggan')->can('ajuankumulatif.create');
+        Route::put('/ajuankumulatif/{no_pengajuan}/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('ajuankumulatif.updatepelanggan')->can('ajuankumulatif.create');
+        Route::delete('/ajuankumulatif/{no_pengajuan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('ajuankumulatif.deletepelanggan')->can('ajuankumulatif.create');
+
+        Route::get('/ajuankumulatif/getajuankumulatif', 'getajuankumulatif')->name('ajuankumulatif.getajuankumulatif')->can('ajuankumulatif.create');
+        Route::get('/ajuankumulatif/{no_pengajuan}/approve', 'approve')->name('ajuankumulatif.approve')->can('ajuankumulatif.approve');
+        Route::post('/ajuankumulatif/{no_pengajuan}/storeapprove', 'storeapprove')->name('ajuankumulatif.storeapprove')->can('ajuankumulatif.approve');
+        Route::get('/ajuankumulatif/{no_pengajuan}/cetak', 'cetak')->name('ajuankumulatif.cetak')->can('ajuankumulatif.show');
+        Route::get('/ajuankumulatif/{no_pengajuan}/{kode_pelanggan}/cetakkesepakatan', 'cetakkesepakatan')->name('ajuankumulatif.cetakkesepakatan')->can('ajuankumulatif.show');
     });
 
 

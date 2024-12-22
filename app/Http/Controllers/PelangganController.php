@@ -601,7 +601,7 @@ class PelangganController extends Controller
             return DataTables::of($pelanggan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" nama_pelanggan="' . $row->nama_pelanggan . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])

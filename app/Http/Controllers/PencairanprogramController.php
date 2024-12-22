@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detailajuanprogramkumulatif;
 use App\Models\Detailpencairan;
 use App\Models\Detailpenjualan;
 use App\Models\Diskon;
+use App\Models\Pelanggan;
 use App\Models\Pencairanprogram;
 use App\Models\Penjualan;
 use App\Models\User;
@@ -160,6 +162,11 @@ class PencairanprogramController extends Controller
                     ->where('tahun', $pencairanprogram->tahun)
                     ->where('kode_program', $pencairanprogram->kode_program);
             })
+
+            ->whereIn('marketing_penjualan.kode_pelanggan', function ($query) use ($pencairanprogram) {
+                $query->select('kode_pelanggan')
+                    ->from('marketing_program_kumulatif_detail');
+            })
             ->orderBy('nama_pelanggan')
             ->get();
 
@@ -261,12 +268,16 @@ class PencairanprogramController extends Controller
                     'message' => 'Data sudah ada'
                 ], 400);
             }
+            $pelanggan = Detailajuanprogramkumulatif::where('kode_pelanggan', $request->kode_pelanggan)->first();
+            $selisih = $request->diskon_kumulatif - $request->diskon_reguler;
+            $metode_pembayaran = $selisih < 100000 ? 'VC' : $pelanggan->metode_pembayaran;
             Detailpencairan::create([
                 'kode_pencairan' => $request->kode_pencairan,
                 'kode_pelanggan' => $request->kode_pelanggan,
                 'jumlah' => $request->jml_dus,
                 'diskon_reguler' => $request->diskon_reguler,
-                'diskon_kumulatif' => $request->diskon_kumulatif
+                'diskon_kumulatif' => $request->diskon_kumulatif,
+                'metode_pembayaran' => $metode_pembayaran
             ]);
             return response()->json([
                 'status' => 'success',
@@ -293,7 +304,7 @@ class PencairanprogramController extends Controller
                 'no_rekening',
                 'pemilik_rekening',
                 'bank',
-                'metode_bayar'
+                'marketing_program_pencairan_detail.metode_pembayaran as metode_bayar'
             )
             ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->get();

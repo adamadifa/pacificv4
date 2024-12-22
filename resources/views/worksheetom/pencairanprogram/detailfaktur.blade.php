@@ -28,7 +28,7 @@
                 <td>{{ formatIndo($d->tanggal) }}</td>
                 <td>{{ formatIndo($d->tanggal_pelunasan) }}</td>
                 <td>
-                    {{ hitungHari($d->tanggal, $d->tanggal_pelunasan) }} hari
+                    {{ hitungHari($d->tanggal, $d->tanggal_pelunasan) - 1 }} hari
                 </td>
                 <td class="text-end">{{ formatAngka($d->jml_dus) }}</td>
                 <td class="text-end">{{ formatAngka($d->diskon) }}</td>

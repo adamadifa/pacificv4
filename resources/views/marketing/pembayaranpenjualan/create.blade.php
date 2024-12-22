@@ -1,3 +1,4 @@
+<h4 class="title">Saldo Voucher : {{ formatAngka($saldo_voucher->jml_voucher) }}</h4>
 <form id="formBayar" method="POST" action="{{ route('pembayaranpenjualan.store', Crypt::encrypt($no_faktur)) }}">
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" />
