@@ -10,9 +10,13 @@
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('pencairanprogram.create')
-                    <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
-                @endcan
+                <div class="d-flex justify-content-between">
+                    <a href="{{ route('pencairanprogram.index') }}" class="btn btn-danger"><i class="fa fa-arrow-left me-2"></i> Kembali</a>
+                    @can('pencairanprogram.create')
+                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                    @endcan
+                </div>
+
             </div>
             <div class="card-body">
                 <div class="row">
@@ -44,7 +48,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered">
                             <thead class="table-dark">
                                 <tr>
                                     <th rowspan="2" class="text-center" valign="middle">Nik</th>

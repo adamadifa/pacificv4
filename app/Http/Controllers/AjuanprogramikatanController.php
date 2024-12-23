@@ -78,7 +78,8 @@ class AjuanprogramikatanController extends Controller
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
-
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         return view('worksheetom.ajuanprogramikatan.create', $data);
     }
@@ -90,14 +91,19 @@ class AjuanprogramikatanController extends Controller
             'tanggal' => 'required',
             'kode_cabang' => 'required',
             'kode_program' => 'required',
-            'periode_dari' => 'required',
-            'periode_sampai' => 'required',
+            'bulan_dari' => 'required',
+            'tahun_dari' => 'required',
+            'bulan_sampai' => 'required',
+            'tahun_sampai' => 'required',
             'keterangan' => 'required',
 
         ]);
 
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
+        $periode_dari = $request->tahun_dari . '-' . $request->bulan_dari . '-01';
+        $sampai = $request->tahun_sampai . '-' . $request->bulan_sampai . '-01';
+        $periode_sampai = date('Y-m-t', strtotime($sampai));
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
@@ -127,8 +133,8 @@ class AjuanprogramikatanController extends Controller
                 'tanggal' => $request->tanggal,
                 'kode_program' => $request->kode_program,
                 'kode_cabang' => $kode_cabang,
-                'periode_dari' => $request->periode_dari,
-                'periode_sampai' => $request->periode_sampai,
+                'periode_dari' => $periode_dari,
+                'periode_sampai' => $periode_sampai,
                 // 'keterangan' => $request->keterangan,
             ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
@@ -180,7 +186,6 @@ class AjuanprogramikatanController extends Controller
             'kode_pelanggan' => 'required',
             'target' => 'required',
             'reward' => 'required',
-            'budget' => 'required',
             'metode_pembayaran' => 'required',
 
         ]);
@@ -210,7 +215,9 @@ class AjuanprogramikatanController extends Controller
                 'qty_target' => toNumber($request->target),
                 'qty_avg' => !empty($request->qty_avg) ? toNumber($request->qty_avg) : 0,
                 'reward' => toNumber($request->reward),
-                'budget' => $request->budget,
+                'budget_smm' => toNumber($request->budget_smm),
+                'budget_rsm' => toNumber($request->budget_rsm),
+                'budget_gm' => toNumber($request->budget_gm),
                 'metode_pembayaran' => $request->metode_pembayaran,
                 'file_doc' => $file
 
@@ -236,7 +243,6 @@ class AjuanprogramikatanController extends Controller
         $request->validate([
             'target' => 'required',
             'reward' => 'required',
-            'budget' => 'required',
             'metode_pembayaran' => 'required',
             'file_doc' => 'file|mimes:pdf|max:2048',
         ]);
@@ -264,7 +270,9 @@ class AjuanprogramikatanController extends Controller
                 ->update([
                     'qty_target' => toNumber($request->target),
                     'reward' => toNumber($request->reward),
-                    'budget' => $request->budget,
+                    'budget_smm' => toNumber($request->budget_smm),
+                    'budget_rsm' => toNumber($request->budget_rsm),
+                    'budget_gm' => toNumber($request->budget_gm),
                     'metode_pembayaran' => $request->metode_pembayaran,
                     'file_doc' => $file,
                 ]);

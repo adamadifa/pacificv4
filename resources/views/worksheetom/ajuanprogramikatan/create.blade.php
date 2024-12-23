@@ -1,7 +1,7 @@
 <form action="{{ route('ajuanprogramikatan.store') }}" method="POST" id="formAjuanprogram" enctype="multipart/form-data">
     @csrf
     <x-input-with-icon label="No. Dokumen" name="no_dokumen" icon="ti ti-barcode" />
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ date('Y-m-d') }}" readonly />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" value="{{ date('Y-m-d') }}" readonly />
     @hasanyrole($roles_show_cabang)
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -20,11 +20,49 @@
         </select>
     </div>
     <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-12">
-            <x-input-with-icon label="Periode Dari" name="periode_dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+        <div class="col-lg-8 col-md-12 col-sm-12">
+            <div class="form-group">
+                <select name="bulan_dari" id="bulan_dari" class="form-select">
+                    <option value="">Bulan</option>
+                    @foreach ($list_bulan as $d)
+                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+
         </div>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-            <x-input-with-icon label="Periode Sampai" name="periode_sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+        <div class="col-lg-4 col-md-12 col-sm-12">
+            <div class="form-group">
+                <select name="tahun_dari" id="tahun_dari" class="form-select">
+                    <option value="">Tahun</option>
+                    @for ($t = $start_year; $t <= date('Y'); $t++)
+                        <option value="{{ $t }}">{{ $t }}</option>
+                    @endfor
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-md-12 col-sm-12">
+            <div class="form-group">
+                <select name="bulan_sampai" id="bulan_sampai" class="form-select">
+                    <option value="">Bulan</option>
+                    @foreach ($list_bulan as $d)
+                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+        </div>
+        <div class="col-lg-4 col-md-12 col-sm-12">
+            <div class="form-group">
+                <select name="tahun_sampai" id="tahun_sampai" class="form-select">
+                    <option value="">Tahun</option>
+                    @for ($t = $start_year; $t <= date('Y'); $t++)
+                        <option value="{{ $t }}">{{ $t }}</option>
+                    @endfor
+                </select>
+            </div>
         </div>
     </div>
     <x-textarea label="Keterangan" name="keterangan" />
@@ -46,7 +84,7 @@
                 });
             });
         }
-        // $(".flatpickr-date").flatpickr();
+        $(".flatpickr-date").flatpickr();
 
         function buttonDisable() {
             $("#btnSimpan").prop('disabled', true);
@@ -60,12 +98,14 @@
 
         const form = $('#formAjuanprogram');
         form.submit(function(e) {
-            let no_dokumen = form.find('input[name="no_dok"]').val();
+            let no_dokumen = form.find('input[name="no_dokumen"]').val();
             let tanggal = form.find('input[name="tanggal"]').val();
             let kode_cabang = form.find('select[name="kode_cabang"]').val();
             let kode_program = form.find('select[name="kode_program"]').val();
-            let periode_dari = form.find('input[name="periode_dari"]').val();
-            let periode_sampai = form.find('input[name="periode_sampai"]').val();
+            let bulan_dari = form.find('select[name="bulan_dari"]').val();
+            let tahun_dari = form.find('select[name="tahun_dari"]').val();
+            let bulan_sampai = form.find('select[name="bulan_sampai"]').val();
+            let tahun_sampai = form.find('select[name="tahun_sampai"]').val();
             if (no_dokumen == '') {
                 Swal.fire({
                     title: "Oops!",
@@ -110,26 +150,15 @@
                     },
                 });
                 return false;
-            } else if (periode_dari == '') {
+            } else if (bulan_dari == '' || tahun_dari == '' || bulan_sampai == '' || tahun_sampai == '') {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Periode Dari harus diisi !",
+                    text: "Periode harus diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        form.find("#periode_dari").focus();
-                    },
-                });
-                return false;
-            } else if (periode_sampai == '') {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Periode Sampai harus diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: () => {
-                        form.find("#periode_sampai").focus();
-                    },
+                        form.find("#bulan_dari").focus();
+                    }
                 });
                 return false;
             } else {

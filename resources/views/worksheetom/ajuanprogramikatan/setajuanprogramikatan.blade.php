@@ -54,19 +54,24 @@
                         <table class="table table-bordered table-striped">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>No.</th>
-                                    <th>Kode</th>
-                                    <th>Nama Pelanggan</th>
-                                    <th class="text-center">Avg Penjualan</th>
-                                    <th class="text-center">Qty Target</th>
-                                    <th>Reward</th>
-                                    <th>Budget</th>
-                                    <th>Pembayaran</th>
-                                    <th>No. Rekening</th>
-                                    <th>Pemilik</th>
-                                    <th>Bank</th>
-                                    <th>Doc</th>
-                                    <th>#</th>
+                                    <th rowspan="2">No.</th>
+                                    <th rowspan="2">Kode</th>
+                                    <th rowspan="2">Nama Pelanggan</th>
+                                    <th rowspan="2" class="text-center">Avg Penjualan</th>
+                                    <th rowspan="2" class="text-center">Qty Target</th>
+                                    <th rowspan="2">Reward</th>
+                                    <th colspan="3">Budget</th>
+                                    <th rowspan="2">Pembayaran</th>
+                                    <th rowspan="2">No. Rekening</th>
+                                    <th rowspan="2">Pemilik</th>
+                                    <th rowspan="2">Bank</th>
+                                    <th rowspan="2">Doc</th>
+                                    <th rowspan="2">#</th>
+                                </tr>
+                                <tr>
+                                    <th>SMM</th>
+                                    <th>RSM</th>
+                                    <th>GM</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,7 +90,9 @@
                                         <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
                                         <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                                         <td class="text-end">{{ formatAngka($d->reward) }}</td>
-                                        <td>{{ $d->budget }}</td>
+                                        <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
+                                        <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
+                                        <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                                         <td>{{ $d->no_rekening }}</td>
                                         <td>{{ $d->pemilik_rekening }}</td>
@@ -278,11 +285,24 @@
                 }
             });
         }
+
+        function gethistoripelangganprogram(kode_pelanggan, kode_program) {
+
+            $.ajax({
+                url: `/pelanggan/${kode_pelanggan}/${kode_program}/gethistoripelangganprogram`,
+                type: "GET",
+                cache: false,
+                success: function(response) {
+                    $("#gethistoripelangganprogram").html(response);
+                }
+            });
+        }
         $('#tabelpelanggan tbody').on('click', '.pilihpelanggan', function(e) {
             e.preventDefault();
             let kode_pelanggan = $(this).attr('kode_pelanggan');
             let kode_program = "{{ Crypt::encrypt($programikatan->kode_program) }}";
             getavgPelanggan(kode_pelanggan, kode_program);
+            gethistoripelangganprogram(kode_pelanggan, kode_program);
 
         });
 
@@ -292,7 +312,10 @@
             let kode_pelanggan = $(this).find("input[name='kode_pelanggan']").val();
             let target = $(this).find("input[name='target']").val();
             let reward = $(this).find("input[name='reward']").val();
-            let budget = $(this).find("select[name='budget']").val();
+            let budget_smm = $(this).find("input[name='budget_smm']").val();
+            let bugdet_rsm = $(this).find("input[name='budget_rsm']").val();
+            let budget_gm = $(this).find("input[name='budget_gm']").val();
+
             let metode_pembayaran = $(this).find("select[name='metode_pembayaran']").val();
             let file_doc = $(this).find("input[name='file_doc']").val();
 
@@ -329,14 +352,14 @@
                     },
                 });
                 return false;
-            } else if (budget == "") {
+            } else if (budget_smm == "" && bugdet_rsm == "" && budget_gm == "") {
                 Swal.fire({
                     title: "Oops!",
                     text: "Budget harus diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        $(this).find("#budget").focus();
+                        $(this).find("#budget_smm").focus();
                     },
                 });
                 return false;

@@ -362,6 +362,7 @@ Route::middleware('auth')->group(function () {
 
 
         Route::get('/pelanggan/{kode_pelanggan}/{kode_program}/getavgpelanggan', 'getAvgpelanggan')->name('pelanggan.getAvgpelanggan');
+        Route::get('/pelanggan/{kode_pelanggan}/{kode_program}/gethistoripelangganprogram', 'gethistoripelangganprogram')->name('pelanggan.gethistoripelangganprogram');
         // Route::get('/sfa/pelanggan', 'index')->name('sfa.pelanggan');
     });
 

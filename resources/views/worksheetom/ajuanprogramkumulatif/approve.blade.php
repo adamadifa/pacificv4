@@ -1,32 +1,23 @@
-<form action="{{ route('ajuanprogramikatan.storeapprove', Crypt::encrypt($programikatan->no_pengajuan)) }}" method="POST">
+<form action="{{ route('ajuankumulatif.storeapprove', Crypt::encrypt($programkumulatif->no_pengajuan)) }}" method="POST">
     @csrf
     <div class="row">
         <div class="col">
             <table class="table">
                 <tr>
                     <th>No. Pengajuan</th>
-                    <td class="text-end">{{ $programikatan->no_pengajuan }}</td>
+                    <td class="text-end">{{ $programkumulatif->no_pengajuan }}</td>
                 </tr>
                 <tr>
                     <th>No. Dokumen</th>
-                    <td class="text-end">{{ $programikatan->nomor_dokumen }}</td>
+                    <td class="text-end">{{ $programkumulatif->nomor_dokumen }}</td>
                 </tr>
                 <tr>
                     <th>Tanggal</th>
-                    <td class="text-end">{{ DateToIndo($programikatan->tanggal) }}</td>
-                </tr>
-                <tr>
-                    <th>Periode Penjualan</th>
-                    <td class="text-end">{{ DateToIndo($programikatan->periode_dari) }} s.d
-                        {{ DateToIndo($programikatan->periode_sampai) }}</td>
-                </tr>
-                <tr>
-                    <th>Program</th>
-                    <td class="text-end">{{ $programikatan->nama_program }}</td>
+                    <td class="text-end">{{ DateToIndo($programkumulatif->tanggal) }}</td>
                 </tr>
                 <tr>
                     <th>Cabang</th>
-                    <td class="text-end">{{ $programikatan->kode_cabang }}</td>
+                    <td class="text-end">{{ $programkumulatif->kode_cabang }}</td>
                 </tr>
 
             </table>
@@ -40,10 +31,6 @@
                         <th>No.</th>
                         <th>Kode</th>
                         <th>Nama Pelanggan</th>
-                        <th class="text-center">Avg Penjualan</th>
-                        <th class="text-center">Qty Target</th>
-                        <th>Reward</th>
-                        <th>Budget</th>
                         <th>Pembayaran</th>
                         <th>No. Rekening</th>
                         <th>Doc</th>
@@ -63,15 +50,11 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
-                            <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
-                            <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                            <td class="text-end">{{ formatAngka($d->reward) }}</td>
-                            <td>{{ $d->budget }}</td>
                             <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                             <td>{{ $d->no_rekening }}</td>
                             <td>
                                 @if ($d->file_doc != null)
-                                    <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}" target="_blank">
+                                    <a href="{{ asset('storage/ajuanprogramkumulatif/' . $d->file_doc) }}" target="_blank">
                                         <i class="ti ti-file-text"></i>
                                     </a>
                                 @endif

@@ -22,14 +22,12 @@
         value="{{ formatAngka($detail->qty_target) }}" />
     <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
         value="{{ formatAngka($detail->reward) }}" />
-    <div class="form-group mb-3">
-        <select name="budget" id="budget" class="form-select">
-            <option value="">Pilih Budget</option>
-            <option value="SMM" @selected($detail->budget == 'SMM')>SMM</option>
-            <option value="RSM" @selected($detail->budget == 'RSM')>RSM</option>
-            <option value="GM" @selected($detail->budget == 'GM')>GM</option>
-        </select>
-    </div>
+    <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right"
+        value="{{ formatAngka($detail->budget_smm) }}" />
+    <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right"
+        value="{{ formatAngka($detail->budget_rsm) }}" />
+    <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right"
+        value="{{ formatAngka($detail->budget_gm) }}" />
     <div class="form-group mb-3">
         <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
             <option value="">Pilih Metode Pembayaran</option>
@@ -58,6 +56,6 @@
             });
         }
 
-        $("#target, #reward").maskMoney();
+        $("#target, #reward,#budget_smm,#budget_rsm,#budget_gm").maskMoney();
     });
 </script>

@@ -165,7 +165,9 @@ class PencairanprogramController extends Controller
 
             ->whereIn('marketing_penjualan.kode_pelanggan', function ($query) use ($pencairanprogram) {
                 $query->select('kode_pelanggan')
-                    ->from('marketing_program_kumulatif_detail');
+                    ->from('marketing_program_kumulatif_detail')
+                    ->join('marketing_program_kumulatif', 'marketing_program_kumulatif_detail.no_pengajuan', '=', 'marketing_program_kumulatif.no_pengajuan')
+                    ->where('status', 1);
             })
             ->orderBy('nama_pelanggan')
             ->get();
@@ -422,7 +424,7 @@ class PencairanprogramController extends Controller
                 'no_rekening',
                 'pemilik_rekening',
                 'bank',
-                'metode_bayar',
+                'metode_pembayaran as metode_bayar',
                 'jumlah',
                 'diskon_reguler',
                 'diskon_kumulatif'

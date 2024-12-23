@@ -17,16 +17,22 @@
     </div>
     <x-input-with-icon label="Qty Rata - rata 3 Bulan Terakhir" name="qty_avg" icon="ti ti-file-description"
         placeholder="Qty Rata - rata 3 Bulan Terakhir" align="right" readonly />
+    <div class="row">
+        <div class="col" id="gethistoripelangganprogram"></div>
+    </div>
     <x-input-with-icon label="Target / Bulan" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right" />
     <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right" />
-    <div class="form-group mb-3">
-        <select name="budget" id="budget" class="form-select">
-            <option value="">Budget</option>
-            <option value="SMM">SMM</option>
-            <option value="RSM">RSM</option>
-            <option value="GM">GM</option>
+    <hr class="my-4">
+    <div class="form-group">
+        <select name="top" id="top" class="form-select">
+            <option value="">TOP</option>
+            <option value="14">14 Hari</option>
+            <option value="30">30 Hari</option>
         </select>
     </div>
+    <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right" />
+    <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right" />
+    <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right" />
     <div class="form-group mb-3">
         <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
             <option value="">Metode Pembayaran</option>
@@ -55,6 +61,6 @@
             });
         }
 
-        $("#target, #reward").maskMoney();
+        $("#target, #reward,#budget_smm,#budget_rsm,#budget_gm").maskMoney();
     });
 </script>

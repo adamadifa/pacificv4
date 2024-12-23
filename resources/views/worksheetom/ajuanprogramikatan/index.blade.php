@@ -87,7 +87,9 @@
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
-                                                <td>{{ $d->periode_dari }} - {{ $d->periode_sampai }}</td>
+                                                <td>{{ date('m', strtotime($d->periode_dari)) }}/{{ date('y', strtotime($d->periode_dari)) }} -
+                                                    {{ date('m', strtotime($d->periode_sampai)) }}/{{ date('y', strtotime($d->periode_sampai)) }}
+                                                </td>
                                                 <td class="text-center">
                                                     @if (empty($d->om))
                                                         <i class="ti ti-hourglass-empty text-warning"></i>

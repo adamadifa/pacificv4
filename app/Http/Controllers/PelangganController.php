@@ -439,8 +439,6 @@ class PelangganController extends Controller
         $bulan = date('m', strtotime($programikatan->periode_dari));
         $tahun = date('Y', strtotime($programikatan->periode_dari));
         $lastbulan = getbulandantahunlalu($bulan, $tahun, "bulan");
-
-
         $lasttahun = getbulandantahunlalu($bulan, $tahun, "tahun");
         $dari_lastbulan = $lasttahun . "-" . $lastbulan . "-01";
 
@@ -491,6 +489,53 @@ class PelangganController extends Controller
                 'data'    => $pelanggan
             ]);
         }
+    }
+
+    public function gethistoripelangganprogram($kode_pelanggan, $kode_program)
+    {
+        $kode_program = Crypt::decrypt($kode_program);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $programikatan = Ajuanprogramikatan::where('marketing_program_ikatan.kode_program', $kode_program)
+            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        $bulan = date('m', strtotime($programikatan->periode_dari));
+        $tahun = date('Y', strtotime($programikatan->periode_dari));
+        $lastbulan = getbulandantahunlalu($bulan, $tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($bulan, $tahun, "tahun");
+        $dari_lastbulan = $lasttahun . "-" . $lastbulan . "-01";
+
+
+        $lastduabulan = getbulandantahunlalu($lastbulan, $lasttahun, "bulan");
+        $lastduabulantahun = getbulandantahunlalu($lastbulan, $lasttahun, "tahun");
+
+        $lastigabulan = getbulandantahunlalu($lastduabulan, $lastduabulantahun, "bulan");
+        $lasttigabulantahun = getbulandantahunlalu($lastduabulan, $lastduabulantahun, "tahun");
+
+
+
+        $dari_lasttigabulan = $lasttigabulantahun . "-" . $lastigabulan . "-01";
+        $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
+
+
+        $produk = json_decode($programikatan->produk, true) ?? [];
+        $detailpenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->whereIn('produk_harga.kode_produk', $produk)
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
+            ->where('status_promosi', 0)
+            ->where('status_batal', 0)
+            ->select(
+                'marketing_penjualan.no_faktur',
+                'marketing_penjualan.tanggal',
+                DB::raw('SUM(FLOOR(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus)) as qty'),
+            )
+            ->groupBy('marketing_penjualan.no_faktur', 'marketing_penjualan.tanggal')
+            ->get();
+
+        return view('datamaster.pelanggan.gethistoripelangganprogram', compact('detailpenjualan'));
     }
 
     public function cekFotopelanggan(Request $request)

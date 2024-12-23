@@ -305,7 +305,6 @@ class AjuanprogramkumulatifController extends Controller
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $data['programkumulatif'] = Ajuanprogramkumulatif::where('no_pengajuan', $no_pengajuan)
-            ->join('program_kumulatif', 'marketing_program_kumulatif.kode_program', '=', 'program_kumulatif.kode_program')
             ->first();
         $data['detail'] = Detailajuanprogramkumulatif::join('pelanggan', 'marketing_program_kumulatif_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->where('no_pengajuan', $no_pengajuan)
