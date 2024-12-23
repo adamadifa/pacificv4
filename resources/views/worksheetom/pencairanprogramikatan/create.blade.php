@@ -1,6 +1,6 @@
 <form action="{{ route('pencairanprogramikatan.store') }}" method="POST" id="formPencairanProgramikatan">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ date('Y-m-d') }}" readonly />
     <div class="input-group mb-2">
         <input type="text" class="form-control" name="no_pengajuan" id="no_pengajuan" readonly placeholder="Cari Ajuan Program"
             aria-label="Cari Ajuan Program" aria-describedby="no_pengajuan">
@@ -47,7 +47,7 @@
 </form>
 <script>
     $(function() {
-        $(".flatpickr-date").flatpickr();
+        // $(".flatpickr-date").flatpickr();
         $("#formPencairanProgramikatan").submit(function(e) {
             let tanggal = $(this).find('input[name="tanggal"]').val();
             let no_pengajuan = $(this).find('input[name="no_pengajuan"]').val();

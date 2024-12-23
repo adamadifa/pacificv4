@@ -1,7 +1,7 @@
 <form action="{{ route('ajuanprogramikatan.store') }}" method="POST" id="formAjuanprogram" enctype="multipart/form-data">
     @csrf
     <x-input-with-icon label="No. Dokumen" name="no_dokumen" icon="ti ti-barcode" />
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ date('Y-m-d') }}" readonly />
     @hasanyrole($roles_show_cabang)
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -46,7 +46,7 @@
                 });
             });
         }
-        $(".flatpickr-date").flatpickr();
+        // $(".flatpickr-date").flatpickr();
 
         function buttonDisable() {
             $("#btnSimpan").prop('disabled', true);

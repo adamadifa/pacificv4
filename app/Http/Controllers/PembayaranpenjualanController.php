@@ -46,10 +46,21 @@ class PembayaranpenjualanController extends Controller
             ->whereNull('cek_pembayaran_giro')
             ->get();
         $data['no_faktur'] = $no_faktur;
-        $data['saldo_voucher'] = Detailpencairan::where('kode_pelanggan', $penjualan->kode_pelanggan)
+        $saldo_voucher_program = Detailpencairan::where('kode_pelanggan', $penjualan->kode_pelanggan)
+            ->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan')
             ->select(DB::raw("SUM(diskon_kumulatif - diskon_reguler) as jml_voucher"))
             ->where('metode_pembayaran', 'VC')
+            ->where('status', '1')
             ->first();
+        $tanggal_mulai = date('Y-m-d', strtotime("2024-12-23"));
+        $diskonprogram = Historibayarpenjualan::join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select(DB::raw("SUM(jumlah) as jml_voucher"))
+            ->where('marketing_penjualan.kode_pelanggan', $penjualan->kode_pelanggan)
+            ->where('jenis_voucher', 2)
+            ->where('marketing_penjualan_historibayar.tanggal', '>=', $tanggal_mulai)
+            ->first();
+        $saldo_voucher = $saldo_voucher_program->jml_voucher - $diskonprogram->jml_voucher;
+        $data['saldo_voucher'] = $saldo_voucher;
         // dd($data['saldo_voucher']);
         return view('marketing.pembayaranpenjualan.create', $data);
     }

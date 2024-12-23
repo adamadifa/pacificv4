@@ -1,6 +1,6 @@
 <form action="{{ route('pencairanprogram.store') }}" method="POST" id="formPencairan">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" readonly value="{{ date('Y-m-d') }}" />
     @hasanyrole($roles_show_cabang)
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -58,7 +58,7 @@
                 });
             });
         }
-        $(".flatpickr-date").flatpickr();
+        // $(".flatpickr-date").flatpickr();
 
         function buttonDisable() {
             $("#btnSimpan").prop('disabled', true);

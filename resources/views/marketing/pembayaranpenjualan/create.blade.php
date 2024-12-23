@@ -1,4 +1,4 @@
-<h4 class="title">Saldo Voucher : {{ formatAngka($saldo_voucher->jml_voucher) }}</h4>
+<h4 class="title">Saldo Voucher : {{ formatAngka($saldo_voucher) }}</h4>
 <form id="formBayar" method="POST" action="{{ route('pembayaranpenjualan.store', Crypt::encrypt($no_faktur)) }}">
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" />
@@ -125,6 +125,7 @@
             const jumlah = parseInt(jml.replace(/\./g, ''));
             const kode_salesman = $(this).find("#kode_salesman").val();
             const jenis_voucher = $(this).find("#jenis_voucher").val();
+            let saldo_voucher = "{{ $saldo_voucher }}";
             const kode_giro = $(this).find("#kode_giro").val();
             if (isNaN(sisa_bayar)) {
                 sisa_bayar = 0;
@@ -182,6 +183,18 @@
                 Swal.fire({
                     title: "Oops!",
                     text: "Jenis Voucher Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#jenis_voucher").focus();
+                    },
+                });
+
+                return false;
+            } else if ($(".agreementvoucher").is(':checked') && jenis_voucher == "2" && parseInt(jumlah) > parseInt(saldo_voucher)) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Saldo Voucher Tidak Cukup !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
