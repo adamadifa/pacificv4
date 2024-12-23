@@ -34,12 +34,23 @@ class LaporankeuanganController extends Controller
 {
     public function index()
     {
+        $user = User::findorfail(auth()->user()->id);
         $b = new Bank();
         $data['bank'] = $b->getBank()->get();
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
+
         $data['coa'] = Coa::orderby('kode_akun')->get();
+        if ($user->hasRole('admin pajak')) {
+            $data['coa'] = Coa::orderby('kode_akun')
+                ->where(DB::raw('LEFT(kode_akun, 2)'), '5-')
+                ->orWhere(DB::raw('LEFT(kode_akun, 2)'), '6-')
+                ->orWhere(DB::raw('LEFT(kode_akun, 2)'), '7-')
+                ->orWhere(DB::raw('LEFT(kode_akun, 2)'), '8-')
+                ->orWhere(DB::raw('LEFT(kode_akun, 2)'), '9-')
+                ->get();
+        }
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
         return view('keuangan.laporan.index', $data);
@@ -90,6 +101,9 @@ class LaporankeuanganController extends Controller
             if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
                 $query->whereBetween('keuangan_ledger.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
             }
+            if ($user->hasRole('admin pajak')) {
+                $query->whereIn(DB::raw('LEFT(keuangan_ledger.kode_akun, 2)'), ['5-', '6-', '7-', '8-', '9-']);
+            }
             $data['ledger'] = $query->get();
 
             $data['saldo_awal'] = Saldoawalledger::where('bulan', date('m', strtotime($request->dari)))
@@ -117,6 +131,9 @@ class LaporankeuanganController extends Controller
             $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
             if (!empty($request->kode_bank_ledger)) {
                 $query->where('keuangan_ledger.kode_bank', $request->kode_bank_ledger);
+            }
+            if ($user->hasRole('admin pajak')) {
+                $query->whereIn(DB::raw('LEFT(keuangan_ledger.kode_akun, 2)'), ['5-', '6-', '7-', '8-', '9-']);
             }
             $query->groupBy('keuangan_ledger.kode_akun', 'nama_akun');
             $data['ledger'] = $query->get();
