@@ -59,7 +59,7 @@
                                     <th class="text-center">Target</th>
                                     <th class="text-center">Realisasi</th>
                                     <th>Reward</th>
-                                    <th>Budget</th>
+
                                     <th>Pembayaran</th>
                                     <th>No. Rekening</th>
                                     <th>Pemilik</th>
@@ -94,7 +94,7 @@
                                         <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                                         <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
                                         <td class="text-end">{{ formatAngka($d->reward) }}</td>
-                                        <td class="text-center">{{ $d->budget }}</td>
+
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
                                         <td>{{ $d->no_rekening }}</td>
                                         <td>{{ $d->pemilik_rekening }}</td>
@@ -125,7 +125,7 @@
                                     </tr>
                                     @if ($d->metode_pembayaran != $next_metode_pembayaran)
                                         <tr class="table-dark">
-                                            <td colspan="11">TOTAL REWARD </td>
+                                            <td colspan="10">TOTAL REWARD </td>
                                             <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
                                             <td></td>
                                             <td></td>
@@ -138,7 +138,7 @@
                             </tbody>
                             <tfoot class="table-dark">
                                 <tr>
-                                    <td colspan="11">GRAND TOTAL REWARD </td>
+                                    <td colspan="10">GRAND TOTAL REWARD </td>
                                     <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
                                     <td></td>
                                     <td></td>

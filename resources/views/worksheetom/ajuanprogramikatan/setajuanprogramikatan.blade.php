@@ -10,11 +10,17 @@
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('ajuanprogramikatan.create')
-                    @if ($programikatan->status == 0)
-                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
-                    @endif
-                @endcan
+                <div class="d-flex justify-content-between">
+                    <a href="{{ route('ajuanprogramikatan.index') }}" class="me-1 btn btn-danger">
+                        <i class="fa fa-arrow-left me-2"></i> Kembali
+                    </a>
+                    @can('ajuanprogramikatan.create')
+                        @if ($programikatan->status == 0)
+                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                        @endif
+                    @endcan
+                </div>
+
             </div>
             <div class="card-body">
                 <div class="row">
@@ -60,11 +66,12 @@
                                     <th rowspan="2" class="text-center">Avg Penjualan</th>
                                     <th rowspan="2" class="text-center">Qty Target</th>
                                     <th rowspan="2">Reward</th>
+                                    <th rowspan="2">TOP</th>
                                     <th colspan="3">Budget</th>
                                     <th rowspan="2">Pembayaran</th>
-                                    <th rowspan="2">No. Rekening</th>
+                                    {{-- <th rowspan="2">No. Rek</th>
                                     <th rowspan="2">Pemilik</th>
-                                    <th rowspan="2">Bank</th>
+                                    <th rowspan="2">Bank</th> --}}
                                     <th rowspan="2">Doc</th>
                                     <th rowspan="2">#</th>
                                 </tr>
@@ -90,24 +97,25 @@
                                         <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
                                         <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                                         <td class="text-end">{{ formatAngka($d->reward) }}</td>
+                                        <td class="text-end">{{ $d->top }}</td>
                                         <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
                                         <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
                                         <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
-                                        <td>{{ $d->no_rekening }}</td>
+                                        {{-- <td>{{ $d->no_rekening }}</td>
                                         <td>{{ $d->pemilik_rekening }}</td>
-                                        <td>{{ $d->bank }}</td>
+                                        <td>{{ $d->bank }}</td> --}}
                                         <td>
                                             @if ($d->file_doc != null)
                                                 <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}" target="_blank">
-                                                    <i class="ti ti-file-text"></i>
+                                                    <i class="ti ti-file-text" class="me-1"></i>
                                                 </a>
                                             @endif
                                         </td>
                                         <td>
                                             <div class="d-flex">
                                                 <a href="{{ route('ajuanprogramikatan.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
-                                                    target="_blank">
+                                                    target="_blank" class="me-1">
                                                     <i class="ti ti-printer text-primary"></i>
                                                 </a>
                                                 @if ($programikatan->status == 0)
@@ -318,6 +326,7 @@
 
             let metode_pembayaran = $(this).find("select[name='metode_pembayaran']").val();
             let file_doc = $(this).find("input[name='file_doc']").val();
+            let top = $(this).find("select[name='top']").val();
 
             if (kode_pelanggan == "") {
                 Swal.fire({
@@ -350,6 +359,17 @@
                     didClose: () => {
                         $(this).find("#reward").focus();
                     },
+                });
+                return false;
+            } else if (top == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Top harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#top").focus();
+                    }
                 });
                 return false;
             } else if (budget_smm == "" && bugdet_rsm == "" && budget_gm == "") {

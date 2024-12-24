@@ -187,6 +187,7 @@ class AjuanprogramikatanController extends Controller
             'target' => 'required',
             'reward' => 'required',
             'metode_pembayaran' => 'required',
+            'top' => 'required',
 
         ]);
 
@@ -219,6 +220,7 @@ class AjuanprogramikatanController extends Controller
                 'budget_rsm' => toNumber($request->budget_rsm),
                 'budget_gm' => toNumber($request->budget_gm),
                 'metode_pembayaran' => $request->metode_pembayaran,
+                'top' => $request->top,
                 'file_doc' => $file
 
             ]);

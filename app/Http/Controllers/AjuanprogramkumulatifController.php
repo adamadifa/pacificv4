@@ -373,13 +373,12 @@ class AjuanprogramkumulatifController extends Controller
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
-        $data['kesepakatan'] = Detailajuanprogramkumulatif::where('marketing_program_ikatan_detail.no_pengajuan', $no_pengajuan)
-            ->where('marketing_program_ikatan_detail.kode_pelanggan', $kode_pelanggan)
-            ->join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-            ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
-            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
-            ->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang')
+        $data['kesepakatan'] = Detailajuanprogramkumulatif::where('marketing_program_kumulatif_detail.no_pengajuan', $no_pengajuan)
+            ->where('marketing_program_kumulatif_detail.kode_pelanggan', $kode_pelanggan)
+            ->join('pelanggan', 'marketing_program_kumulatif_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_kumulatif', 'marketing_program_kumulatif_detail.no_pengajuan', '=', 'marketing_program_kumulatif.no_pengajuan')
+            ->join('cabang', 'marketing_program_kumulatif.kode_cabang', '=', 'cabang.kode_cabang')
             ->first();
-        return view('worksheetom.ajuanprogramikatan.cetakkesepakatan', $data);
+        return view('worksheetom.ajuanprogramkumulatif.cetakkesepakatan', $data);
     }
 }

@@ -71,7 +71,7 @@
             </table>
 
             <h3 style="text-align: center">
-                SURAT KESEPAKATAN TARGET
+                SURAT KESEPAKATAN PROGRAM DISCOUNT KUMULATIF
                 <br>
                 PROGRAM {{ $kesepakatan->nama_program }}
             </h3>
