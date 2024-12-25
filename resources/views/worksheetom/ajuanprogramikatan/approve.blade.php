@@ -37,17 +37,21 @@
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
-                        <th>No.</th>
-                        <th>Kode</th>
-                        <th>Nama Pelanggan</th>
-                        <th class="text-center">Avg Penjualan</th>
-                        <th class="text-center">Qty Target</th>
-                        <th>Reward</th>
-                        <th>Budget</th>
-                        <th>Pembayaran</th>
-                        <th>No. Rekening</th>
-                        <th>Doc</th>
-
+                        <th rowspan="2">No.</th>
+                        <th rowspan="2">Kode</th>
+                        <th rowspan="2">Nama Pelanggan</th>
+                        <th rowspan="2" class="text-center">Avg Penjualan</th>
+                        <th rowspan="2" class="text-center">Qty Target</th>
+                        <th rowspan="2">Reward</th>
+                        <th rowspan="2">TOP</th>
+                        <th colspan="3">Budget</th>
+                        <th rowspan="2">Pembayaran</th>
+                        <th rowspan="2">Doc</th>
+                    </tr>
+                    <tr>
+                        <th>SMM</th>
+                        <th>RSM</th>
+                        <th>GM</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,9 +70,11 @@
                             <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                             <td class="text-end">{{ formatAngka($d->reward) }}</td>
-                            <td>{{ $d->budget }}</td>
+                            <td class="text-end">{{ $d->top }}</td>
+                            <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
+                            <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
+                            <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
                             <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
-                            <td>{{ $d->no_rekening }}</td>
                             <td>
                                 @if ($d->file_doc != null)
                                     <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}" target="_blank">
