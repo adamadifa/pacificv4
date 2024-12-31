@@ -42,7 +42,26 @@
             </div>
         </div>
         <div class="tab-pane fade " id="navs-top-profile" role="tabpanel">
+            <table class="table table-bordered table-striped table-hover mt-2">
+                <thead class="table-dark">
+                    <tr>
+                        <th rowspan="2">No</th>
+                        <th rowspan="2">Kode Pelanggan</th>
+                        <th rowspan="2">Nama Pelanggan</th>
+                        <th rowspan="2">Qty</th>
+                        <th colspan="2">Diskon</th>
+                        <th rowspan="2">Cashback</th>
+                        <th rowspan="2">#</th>
+                    </tr>
+                    <tr>
+                        <th>Reguler</th>
+                        <th>Kumulatif</th>
+                    </tr>
+                </thead>
+                <tbody id="loadpenjualanpelanggantop30">
 
+                </tbody>
+            </table>
         </div>
 
     </div>
@@ -67,7 +86,25 @@
             })
         }
 
+        function loadpenjualanpelanggantop30() {
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
+            $("#loadpenjualanpelanggantop30").html("<tr class='text-center'><td colspan='8'>Loading...</td></tr>");
+            $.ajax({
+                type: 'POST',
+                url: '/pencairanprogram/getpelanggantop30',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_pencairan: kode_pencairan
+                },
+                cache: false,
+                success: function(data) {
+                    $("#loadpenjualanpelanggantop30").html(data);
+                }
+            })
+        }
+
         loadpenjualanpelanggan();
+        loadpenjualanpelanggantop30();
 
 
     });

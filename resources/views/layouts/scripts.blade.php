@@ -76,12 +76,7 @@
 
  <script>
      $(function() {
-         $(".flatpickr-date").flatpickr({
-             enable: [{
-                 from: "{{ $start_periode }}",
-                 to: "{{ $end_periode }}"
-             }, ]
-         });
+         $(".flatpickr-date").flatpickr();
 
          $(".flatpickr-datepmb").flatpickr();
 

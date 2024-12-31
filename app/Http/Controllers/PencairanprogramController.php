@@ -206,11 +206,108 @@ class PencairanprogramController extends Controller
         // $data['kategori_diskon'] = $kategori_diskon;
         // $data['kode_program'] = $request->kode_program;
         // $data['kode_cabang'] = $request->kode_cabang;
+        $data['top'] = 14;
         return view('worksheetom.pencairanprogram.getpelanggan', $data);
     }
 
 
-    public function detailfaktur($kode_pelanggan, $kode_pencairan)
+    public function getpelanggantop30(Request $request)
+    {
+
+        $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
+        $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
+        if ($pencairanprogram->kode_program == 'PR001') {
+            $produk = ['BB', 'DEP'];
+            $kategori_diskon = 'D001';
+        } else {
+            $produk = ['AB', 'AR', 'AS'];
+            $kategori_diskon = 'D002';
+        }
+
+        $start_date = $pencairanprogram->tahun . '-' . $pencairanprogram->bulan . '-01';
+        $end_date = date('Y-m-t', strtotime($start_date));
+
+
+
+        $detailpenjualan = Detailpenjualan::select(
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
+            DB::raw('(SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon'),
+            DB::raw('floor(jumlah/isi_pcs_dus) * (SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon_reguler'),
+
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
+            ->where('status', 1)
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 30")
+            // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) > 14")
+            // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) > 14")
+            ->where('status_batal', 0)
+            ->whereIn('produk_harga.kode_produk', $produk)
+            ->whereNotIn('marketing_penjualan.kode_pelanggan', function ($query) use ($pencairanprogram) {
+                $query->select('kode_pelanggan')
+                    ->from('marketing_program_pencairan_detail')
+                    ->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan')
+                    ->where('bulan', $pencairanprogram->bulan)
+                    ->where('tahun', $pencairanprogram->tahun)
+                    ->where('kode_program', $pencairanprogram->kode_program);
+            })
+
+            ->whereIn('marketing_penjualan.kode_pelanggan', function ($query) use ($pencairanprogram) {
+                $query->select('kode_pelanggan')
+                    ->from('marketing_program_kumulatif_detail')
+                    ->join('marketing_program_kumulatif', 'marketing_program_kumulatif_detail.no_pengajuan', '=', 'marketing_program_kumulatif.no_pengajuan')
+                    ->where('status', 1);
+            })
+            ->orderBy('nama_pelanggan')
+            ->get();
+
+        $diskon = Diskon::where('kode_kategori_diskon', $kategori_diskon)->get();
+        $detail = $detailpenjualan->groupBy('kode_pelanggan')
+            ->map(function ($group) use ($diskon) {
+                $diskon_kumulatif = $diskon->first(function ($diskonItem) use ($group) {
+                    return $diskonItem->min_qty <= $group->sum('jml_dus') && $diskonItem->max_qty >= $group->sum('jml_dus');
+                })->diskon ?? 0;
+                $total_diskon_kumulatif = $diskon_kumulatif * $group->sum('jml_dus');
+                $cashback = $total_diskon_kumulatif - $group->sum('diskon_reguler');
+                return [
+                    'kode_pelanggan' => $group->first()->kode_pelanggan,
+                    'nama_pelanggan' => $group->first()->nama_pelanggan,
+                    'jml_dus' => $group->sum('jml_dus'),
+                    'diskon_reguler' => $group->sum('diskon_reguler'),
+                    'diskon_kumulatif' => $total_diskon_kumulatif,
+                    'cashback' => $cashback,
+                ];
+            })
+            ->sortBy('nama_pelanggan')
+            ->filter(function ($item) {
+                return $item['cashback'] > 0;
+            })
+            ->values()
+            ->all();
+
+
+
+        $data['detail'] = $detail;
+        $data['kode_pencairan'] = $kode_pencairan;
+        // $data['bulan'] = $request->bulan;
+        // $data['tahun'] = $request->tahun;
+        // $data['diskon'] = $request->diskon;
+        // $data['kategori_diskon'] = $kategori_diskon;
+        // $data['kode_program'] = $request->kode_program;
+        // $data['kode_cabang'] = $request->kode_cabang;
+        $data['top'] = 30;
+        return view('worksheetom.pencairanprogram.getpelanggan', $data);
+    }
+
+
+    public function detailfaktur($kode_pelanggan, $kode_pencairan, $top)
     {
 
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
@@ -248,7 +345,7 @@ class PencairanprogramController extends Controller
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
             ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
             ->where('status', 1)
-            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 14")
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= '" . $top . "'")
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
             ->orderBy('nama_pelanggan')
@@ -279,7 +376,8 @@ class PencairanprogramController extends Controller
                 'jumlah' => $request->jml_dus,
                 'diskon_reguler' => $request->diskon_reguler,
                 'diskon_kumulatif' => $request->diskon_kumulatif,
-                'metode_pembayaran' => $metode_pembayaran
+                'metode_pembayaran' => $metode_pembayaran,
+                'top' => $request->top
             ]);
             return response()->json([
                 'status' => 'success',
@@ -306,7 +404,8 @@ class PencairanprogramController extends Controller
                 'no_rekening',
                 'pemilik_rekening',
                 'bank',
-                'marketing_program_pencairan_detail.metode_pembayaran as metode_bayar'
+                'marketing_program_pencairan_detail.metode_pembayaran as metode_bayar',
+                'top'
             )
             ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->get();

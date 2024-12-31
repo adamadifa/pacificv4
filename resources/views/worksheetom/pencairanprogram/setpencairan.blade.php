@@ -96,10 +96,11 @@
             e.preventDefault();
             let kode_pelanggan = $(this).attr('kode_pelanggan');
             let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
+            let top = $(this).attr('top');
             $("#modalDetailfaktur").modal("show");
             $("#modalDetailfaktur").find(".modal-title").text('Detail Faktur');
             $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
-                `/pencairanprogram/${kode_pelanggan}/${kode_pencairan}/detailfaktur`);
+                `/pencairanprogram/${kode_pelanggan}/${kode_pencairan}/${top}/detailfaktur`);
         });
 
 
@@ -139,7 +140,27 @@
             })
         }
 
+        function loadpenjualanpelanggantop30() {
+            let kode_pencairan = "{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}";
+            $("#loadpenjualanpelanggantop30").html("<tr class='text-center'><td colspan='8'>Loading...</td></tr>");
+            $.ajax({
+                type: 'POST',
+                url: '/pencairanprogram/getpelanggantop30',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_pencairan: kode_pencairan
+                },
+                cache: false,
+                success: function(data) {
+                    $("#loadpenjualanpelanggantop30").html(data);
+                }
+            })
+        }
+
+
+
         loadpenjualanpelanggan();
+        loadpenjualanpelanggantop30();
 
         $(document).on('submit', '.formAddpelanggan', function(e) {
             e.preventDefault();
@@ -158,6 +179,7 @@
                         didClose: (e) => {
                             getdetailpencairan();
                             loadpenjualanpelanggan();
+                            loadpenjualanpelanggantop30();
                         },
                     });
                 },

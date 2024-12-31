@@ -9,7 +9,7 @@
         <td class="text-end">{{ formatAngka($d['cashback']) }}</td>
         <td>
             <div class="d-flex">
-                <a href="#" class="btnDetailfaktur me-2" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                <a href="#" class="btnDetailfaktur me-2" kode_pelanggan="{{ $d['kode_pelanggan'] }}" top="{{ $top }}">
                     <i class="ti ti-file-description"></i>
                 </a>
                 <form action="#" class="formAddpelanggan" method="POST">
@@ -19,6 +19,7 @@
                     <input type="hidden" name="diskon_reguler" value="{{ $d['diskon_reguler'] }}">
                     <input type="hidden" name="diskon_kumulatif" value="{{ $d['diskon_kumulatif'] }}">
                     <input type="hidden" name="kode_pencairan" value="{{ $kode_pencairan }}">
+                    <input type="hidden" name="top" value="{{ $top }}">
                     <button class="btnTambahfaktur" style="border: none; background-color: transparent"><i
                             class="ti ti-plus text-success"></i></button>
                 </form>

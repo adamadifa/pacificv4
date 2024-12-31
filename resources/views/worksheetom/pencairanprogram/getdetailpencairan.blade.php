@@ -11,7 +11,7 @@
         $cashback = $d->diskon_kumulatif - $d->diskon_reguler;
         $total_cashback += $cashback;
     @endphp
-    <tr>
+    <tr class="{{ $d->top == 30 ? 'bg-warning text-dark' : '' }}">
         <td>{{ $loop->iteration }}</td>
         <td>{{ $d->kode_pelanggan }}</td>
         <td>{{ $d->nama_pelanggan }}</td>
@@ -25,7 +25,7 @@
         <td>{{ $d->bank }}</td>
         <td>
             <div class="d-flex">
-                <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}" top="{{ $d->top }}">
                     <i class="ti ti-file-description"></i>
                 </a>
                 <a href="#" kode_pelanggan = "{{ $d->kode_pelanggan }}" class="deletedetailpencairan">

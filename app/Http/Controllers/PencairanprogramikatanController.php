@@ -206,6 +206,8 @@ class PencairanprogramikatanController extends Controller
         $query->where('kode_pencairan', $kode_pencairan);
         $pencairanprogram = $query->first();
 
+        $listpelangganikatan = Detailajuanprogramikatan::where('no_pengajuan', $pencairanprogram->no_pengajuan);
+
         $start_date = $pencairanprogram->tahun . '-' . $pencairanprogram->bulan . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
 
@@ -220,10 +222,13 @@ class PencairanprogramikatanController extends Controller
             ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->joinSub($listpelangganikatan, 'listpelangganikatan', function ($join) {
+                $join->on('marketing_penjualan.kode_pelanggan', '=', 'listpelangganikatan.kode_pelanggan');
+            })
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
             ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
-            // ->where('status', 1)
-            // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 14")
+            ->where('marketing_penjualan.status', 1)
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top")
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
             // ->whereNotIn('marketing_penjualan.kode_pelanggan', function ($query) use ($pencairanprogram) {

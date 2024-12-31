@@ -10,11 +10,17 @@
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('pencairanprogramikt.create')
-                    @if ($pencairanprogram->status == 0)
-                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
-                    @endif
-                @endcan
+                <div class="d-flex justify-content-between">
+                    <a href="{{ route('pencairanprogramikatan.index') }}" class="me-1 btn btn-danger">
+                        <i class="fa fa-arrow-left me-2"></i> Kembali
+                    </a>
+                    @can('pencairanprogramikt.create')
+                        @if ($pencairanprogram->status == 0)
+                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                        @endif
+                    @endcan
+                </div>
+
             </div>
             <div class="card-body">
                 <div class="row">

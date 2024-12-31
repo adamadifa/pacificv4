@@ -2060,8 +2060,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/pencairanprogram/{kode_pencairan}/setpencairan', 'setpencairan')->name('pencairanprogram.setpencairan')->can('pencairanprogram.create');
         Route::get('/pencairanprogram/{kode_pencairan}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogram.tambahpelanggan')->can('pencairanprogram.create');
-        Route::get('/pencairanprogram/{kode_pelanggan}/{kode_pencairan}/detailfaktur', 'detailfaktur')->name('pencairanprogram.detailfaktur')->can('pencairanprogram.create');
+        Route::get('/pencairanprogram/{kode_pelanggan}/{kode_pencairan}/{top}/detailfaktur', 'detailfaktur')->name('pencairanprogram.detailfaktur')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/getpelanggan', 'getpelanggan')->name('pencairanprogram.getpelanggan')->can('pencairanprogram.create');
+        Route::post('/pencairanprogram/getpelanggantop30', 'getpelanggantop30')->name('pencairanprogram.getpelanggantop30')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/storepelanggan', 'storepelanggan')->name('pencairanprogram.storepelanggan')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/getdetailpencairan', 'getdetailpencairan')->name('pencairanprogram.getdetailpencairan')->can('pencairanprogram.create');
         Route::post('/pencairanprogram/deletedetailpencairan', 'deletedetailpencairan')->name('pencairanprogram.deletedetailpencairan')->can('pencairanprogram.create');
