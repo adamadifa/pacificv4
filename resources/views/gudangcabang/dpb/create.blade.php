@@ -122,12 +122,7 @@
         }
 
 
-        $(".flatpickr-date").flatpickr({
-            enable: [{
-                from: "{{ $start_periode }}",
-                to: "{{ $end_periode }}"
-            }, ]
-        });
+        $(".flatpickr-date").flatpickr();
 
 
         const select2Kodecabang = $('.select2Kodecabang');
