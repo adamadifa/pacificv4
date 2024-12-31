@@ -35,7 +35,7 @@
                                         <div class="form-group mb-3">
                                             <select name="tahun_search" id="tahun_search" class="form-select">
                                                 <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
+                                                @for ($t = $start_year; $t <= date('Y') + 1; $t++)
                                                     <option
                                                         @if (!empty(Request('tahun_search'))) {{ Request('tahun_search') == $t ? 'selected' : '' }}
                                                     @else
