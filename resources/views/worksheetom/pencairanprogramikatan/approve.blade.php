@@ -48,6 +48,7 @@
                         <th>Pemilik</th>
                         <th>Bank</th>
                         <th>Total Reward</th>
+                        <th>#</th>
                     </tr>
 
                 </thead>
@@ -81,11 +82,18 @@
                             <td></td>
                             <td></td>
                             <td class="text-end">{{ formatAngka($total_reward) }}</td>
+                            <td>
+                                <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}"
+                                    kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}">
+                                    <i class="ti ti-file-description"></i>
+                                </a>
+                            </td>
                         </tr>
                         @if ($d->metode_pembayaran != $next_metode_pembayaran)
                             <tr class="table-dark">
                                 <td colspan="11">TOTAL REWARD </td>
                                 <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
+                                <td></td>
                             </tr>
                             @php
                                 $subtotal_reward = 0;
@@ -97,6 +105,7 @@
                     <tr>
                         <td colspan="11">GRAND TOTAL REWARD </td>
                         <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>

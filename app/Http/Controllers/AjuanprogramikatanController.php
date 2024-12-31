@@ -171,7 +171,9 @@ class AjuanprogramikatanController extends Controller
     public function editpelanggan($no_pengajuan, $kode_pelanggan)
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $ajuanprogramikatan = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)->first();
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $data['ajuanprogramikatan'] = $ajuanprogramikatan;
         $data['detail'] = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
             ->join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->where('marketing_program_ikatan_detail.kode_pelanggan', $kode_pelanggan)

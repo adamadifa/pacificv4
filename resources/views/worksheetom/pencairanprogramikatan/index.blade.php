@@ -202,7 +202,7 @@
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 <x-modal-form id="modalApprove" size="modal-xxl" show="loadmodalapprove" title="" />
 <x-modal-form id="modalajuanProgram" size="modal-xl" show="loadmodalajuanProgram" title="Ajuan Program Ikatan" />
-
+<x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -313,6 +313,16 @@
             <div class="sk-wave-rect"></div>
             </div>`);
             $("#loadmodalapprove").load('/pencairanprogramikatan/' + kode_pencairan + '/approve');
+        });
+
+        $(document).on('click', '.btnDetailfaktur', function(e) {
+            e.preventDefault();
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            let kode_pencairan = $(this).attr('kode_pencairan');
+            $("#modalDetailfaktur").modal("show");
+            $("#modalDetailfaktur").find(".modal-title").text('Detail Faktur');
+            $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
+                `/pencairanprogramikatan/${kode_pelanggan}/${kode_pencairan}/detailfaktur`);
         });
     });
 </script>

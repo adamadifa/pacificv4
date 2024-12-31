@@ -18,16 +18,30 @@
     </div>
     <x-input-with-icon label="Qty Rata - rata 3 Bulan Terakhir" name="qty_avg" icon="ti ti-file-description"
         placeholder="Qty Rata - rata 3 Bulan Terakhir" align="right" readonly value="{{ formatAngka($detail->qty_avg) }}" disabled />
-    <x-input-with-icon label="Target / Bulan" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right"
-        value="{{ formatAngka($detail->qty_target) }}" />
-    <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
-        value="{{ formatAngka($detail->reward) }}" />
-    <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right"
-        value="{{ formatAngka($detail->budget_smm) }}" />
-    <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right"
-        value="{{ formatAngka($detail->budget_rsm) }}" />
-    <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right"
-        value="{{ formatAngka($detail->budget_gm) }}" />
+    @if ($ajuanprogramikatan->status == 0)
+        <x-input-with-icon label="Target / Bulan" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right"
+            value="{{ formatAngka($detail->qty_target) }}" />
+        <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
+            value="{{ formatAngka($detail->reward) }}" />
+        <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right"
+            value="{{ formatAngka($detail->budget_smm) }}" />
+        <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right"
+            value="{{ formatAngka($detail->budget_rsm) }}" />
+        <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right"
+            value="{{ formatAngka($detail->budget_gm) }}" />
+    @else
+        <x-input-with-icon label="Target / Bulan" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right"
+            value="{{ formatAngka($detail->qty_target) }}" readonly />
+        <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
+            value="{{ formatAngka($detail->reward) }}" readonly />
+        <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right"
+            value="{{ formatAngka($detail->budget_smm) }}" readonly />
+        <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right"
+            value="{{ formatAngka($detail->budget_rsm) }}" readonly />
+        <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right"
+            value="{{ formatAngka($detail->budget_gm) }}" readonly />
+    @endif
+
     <div class="form-group mb-3">
         <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
             <option value="">Pilih Metode Pembayaran</option>

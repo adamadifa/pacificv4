@@ -114,18 +114,18 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
-                                                <a href="{{ route('ajuanprogramikatan.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
-                                                    target="_blank" class="me-1">
-                                                    <i class="ti ti-printer text-primary"></i>
-                                                </a>
+                                                @if ($programikatan->status == 1)
+                                                    <a href="{{ route('ajuanprogramikatan.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
+                                                        target="_blank" class="me-1">
+                                                        <i class="ti ti-printer text-primary"></i>
+                                                    </a>
+                                                @endif
+                                                @can('ajuanprogramikatan.edit')
+                                                    <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit me-1">
+                                                        <i class="ti ti-edit text-success"></i>
+                                                    </a>
+                                                @endcan
                                                 @if ($programikatan->status == 0)
-                                                    @can('ajuanprogramikatan.edit')
-                                                        <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
-                                                            class="btnEdit me-1">
-                                                            <i class="ti ti-edit text-success"></i>
-                                                        </a>
-                                                    @endcan
-
                                                     @can('ajuanprogramikatan.delete')
                                                         <form method="POST" name="deleteform" class="deleteform"
                                                             action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">

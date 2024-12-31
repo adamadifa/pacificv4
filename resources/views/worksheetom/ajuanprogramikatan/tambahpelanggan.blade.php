@@ -21,7 +21,7 @@
         <div class="col" id="gethistoripelangganprogram"></div>
     </div>
     <x-input-with-icon label="Target / Bulan" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right" />
-    <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right" />
+    <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right" readonly />
     <hr class="my-4">
     <div class="form-group">
         <select name="top" id="top" class="form-select">
@@ -62,5 +62,22 @@
         }
 
         $("#target, #reward,#budget_smm,#budget_rsm,#budget_gm").maskMoney();
+
+        function calculateReward() {
+            let budget_smm = $("#budget_smm").val();
+            let budget_rsm = $("#budget_rsm").val();
+            let budget_gm = $("#budget_gm").val();
+
+
+            let smm = budget_smm == "" ? 0 : budget_smm.replace(/\./g, '');
+            let rsm = budget_rsm == "" ? 0 : budget_rsm.replace(/\./g, '');
+            let gm = budget_gm == "" ? 0 : budget_gm.replace(/\./g, '');
+            let totalReward = parseInt(smm) + parseInt(rsm) + parseInt(gm);
+            $("#reward").val(totalReward);
+        }
+
+        $("#budget_smm, #budget_rsm, #budget_gm").on('keyup', function() {
+            calculateReward();
+        });
     });
 </script>
