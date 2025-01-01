@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Ajuanprogramikatan;
+use App\Models\Ajuanprogramkumulatif;
 use App\Models\Ajuantransferdana;
 use App\Models\Disposisiajuanfaktur;
 use App\Models\Disposisiajuanlimitkredit;
@@ -16,6 +18,8 @@ use App\Models\Disposisiizinterlambat;
 use App\Models\Disposisilembur;
 use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Disposisitargetkomisi;
+use App\Models\Pencairanprogram;
+use App\Models\Pencairanprogramikatan;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\View;
@@ -132,6 +136,90 @@ class Globalprovider extends ServiceProvider
                     $notifikasiajuantransferdana = 0;
                 }
 
+
+                //NOtifikasi Ajuan Program
+                if ($level_user == 'operation manager') {
+                    $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('om')->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.om')
+                        ->where('kode_cabang', auth()->user()->kode_cabang)
+                        ->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+                        ->count();
+
+                    $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('om')->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('om')
+                        ->where('kode_cabang', auth()->user()->kode_cabang)
+                        ->count();
+                } else if ($level_user == 'regional sales manager') {
+                    $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('rsm')
+                        ->whereNotNull('om')
+                        ->where('status', 0)
+                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.rsm')
+                        ->where('marketing_pencairan_ikatan.status', 0)
+                        ->whereNotNull('marketing_pencairan_ikatan.om')
+                        ->where('kode_cabang', auth()->user()->kode_cabang)
+                        ->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+                        ->count();
+
+                    $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('rsm')
+                        ->whereNotNull('om')
+                        ->where('status', 0)
+                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('rsm')
+                        ->where('kode_cabang', auth()->user()->kode_cabang)
+                        ->whereNotNull('om')
+                        ->where('status', 0)
+                        ->count();
+                } else if ($level_user == 'gm marketing') {
+                    $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('gm')
+                        ->whereNotNull('rsm')
+                        ->where('status', 0)
+                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.gm')
+                        ->where('marketing_pencairan_ikatan.status', 0)
+                        ->whereNotNull('marketing_pencairan_ikatan.rsm')
+                        ->where('kode_cabang', auth()->user()->kode_cabang)
+                        ->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+                        ->count();
+
+                    $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('gm')
+                        ->whereNotNull('rsm')
+                        ->where('status', 0)
+                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('gm')
+                        ->where('kode_cabang', auth()->user()->kode_cabang)
+                        ->whereNotNull('rsm')
+                        ->where('status', 0)
+                        ->count();
+                } else if ($level_user == 'direktur') {
+                    $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('direktur')
+                        ->whereNotNull('gm')
+                        ->where('status', 0)
+                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.direktur')
+                        ->where('marketing_pencairan_ikatan.status', 0)
+                        ->whereNotNull('marketing_pencairan_ikatan.gm')
+                        ->where('kode_cabang', auth()->user()->kode_cabang)
+                        ->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+                        ->count();
+
+                    $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('direktur')
+                        ->whereNotNull('gm')
+                        ->where('status', 0)
+                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('direktur')
+                        ->where('kode_cabang', auth()->user()->kode_cabang)
+                        ->whereNotNull('rsm')
+                        ->where('status', 0)
+                        ->count();
+                } else {
+                    $notifikasi_ajuanprogramikatan = 0;
+                    $notifikasi_pencairanprogramikatan = 0;
+                    $notifikasi_ajuanprogramkumulatif = 0;
+                    $notifikasi_pencairanprogramkumulatif = 0;
+                }
+
+                $notifikasi_ajuan_program = $notifikasi_ajuanprogramikatan + $notifikasi_pencairanprogramikatan + $notifikasi_ajuanprogramkumulatif + $notifikasi_pencairanprogramkumulatif;
                 $notifikasi_hrd = $notifikasi_penilaiankaryawan + $notifikasi_pengajuan_izin + $notifikasi_lembur;
                 $total_notifikasi = $notifikasi_marketing + $notifikasi_hrd + $notifikasiajuantransferdana;
             } else {
@@ -157,6 +245,12 @@ class Globalprovider extends ServiceProvider
 
                 $notifikasi_hrd = 0;
                 $total_notifikasi = 0;
+
+                $notifikasi_ajuanprogramikatan = 0;
+                $notifikasi_pencairanprogramikatan = 0;
+                $notifikasi_ajuanprogramkumulatif = 0;
+                $notifikasi_pencairanprogramkumulatif = 0;
+                $notifikasi_ajuan_program = 0;
             }
 
             if ($level_user == "gm administrasi") {
@@ -561,6 +655,11 @@ class Globalprovider extends ServiceProvider
 
                 'total_notifikasi' => $total_notifikasi,
 
+                'notifikasi_ajuanprogramikatan' => $notifikasi_ajuanprogramikatan,
+                'notifikasi_pencairanprogramikatan' => $notifikasi_pencairanprogramikatan,
+                'notifikasi_ajuanprogramkumulatif' => $notifikasi_ajuanprogramkumulatif,
+                'notifikasi_pencairanprogramkumulatif' => $notifikasi_pencairanprogramkumulatif,
+                'notifikasi_ajuan_program' => $notifikasi_ajuan_program,
 
                 'users' => $users
 

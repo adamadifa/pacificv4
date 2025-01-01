@@ -15,6 +15,7 @@
             'ajuanprogramikatan.index',
             'pencairanprogramikt.index',
             'pencairanprogram.index',
+            'ajuankumulatif.index',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -39,6 +40,8 @@
             'pencairanprogramikatan/*',
             'pencairanprogram',
             'pencairanprogram/*',
+            'ajuankumulatif',
+            'ajuankumulatif/*',
         ])
             ? 'open'
             : '' }}">
@@ -113,7 +116,19 @@
 
             @can('monitoringprogram.index')
                 <li
-                    class="menu-item {{ request()->is('monitoringprogram', 'ajuanprogramikatan', 'ajuanprogramikatan/*', 'pencairanprogram', 'pencairanprogram/*', 'pencairanprogramikatan', 'pencairanprogramikatan/*') ? 'active' : '' }}">
+                    class="menu-item {{ request()->is(
+                        'monitoringprogram',
+                        'ajuanprogramikatan',
+                        'ajuanprogramikatan/*',
+                        'pencairanprogram',
+                        'pencairanprogram/*',
+                        'pencairanprogramikatan',
+                        'pencairanprogramikatan/*',
+                        'ajuankumulatif',
+                        'ajuankumulatif/*',
+                    )
+                        ? 'active'
+                        : '' }}">
                     <a href="{{ route('ajuanprogramikatan.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-box"></i>
                         <div>Monitoring Program</div>

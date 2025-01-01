@@ -1,4 +1,10 @@
-@if (auth()->user()->hasAnyPermission(['monitoringprogram.index']))
+@if (auth()->user()->hasAnyPermission([
+            'monitoringprogram.index',
+            'ajuanprogramikatan.index',
+            'pencairanprogramikatan.index',
+            'ajuankumulatif.index',
+            'pencairanprogram.index',
+        ]))
     <ul class="nav nav-tabs" role="tablist">
         @can('ajuanprogramikatan.index')
             <li class="nav-item" role="presentation">

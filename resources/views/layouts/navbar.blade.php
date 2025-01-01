@@ -144,6 +144,80 @@
                         </div>
                     </div>
                 </li>
+                <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false">
+                        <i class="ti ti-archive ti-md"></i>
+                        <span class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_ajuan_program }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end py-0">
+                        <div class="dropdown-menu-header border-bottom">
+                            <div class="dropdown-header d-flex align-items-center py-3">
+                                <h5 class="text-body mb-0 me-auto">Shortcuts</h5>
+                                <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Add shortcuts">
+                                    <i class="ti ti-sm ti-archive"></i>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="dropdown-shortcuts-list scrollable-container h-auto">
+                            <div class="row row-bordered overflow-visible g-0">
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-file-invoice fs-4"></i>
+                                        @if (!empty($notifikasi_ajuanprogramikatan))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_ajuanprogramikatan }}</span>
+                                        @endif
+
+                                    </span>
+
+                                    <a href="{{ route('ajuanprogramikatan.index') }}" class="stretched-link">Ajuan</a>
+                                    <small class="text-muted mb-0">Program Ikatan</small>
+                                </div>
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-file-invoice fs-4"></i>
+                                        @if (!empty($notifikasi_pencairanprogramikatan))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pencairanprogramikatan }}</span>
+                                        @endif
+                                    </span>
+                                    <a href="{{ route('pencairanprogramikatan.index') }}" class="stretched-link">Pencairan</a>
+                                    <small class="text-muted mb-0">Program Ikatan</small>
+                                </div>
+                            </div>
+                            <div class="row row-bordered overflow-visible g-0">
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-file-invoice fs-4"></i>
+                                        @if (!empty($notifikasi_ajuanprogramkumulatif))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_ajuanprogramkumulatif }}</span>
+                                        @endif
+
+                                    </span>
+
+                                    <a href="{{ route('ajuankumulatif.index') }}" class="stretched-link">Ajuan</a>
+                                    <small class="text-muted mb-0">Program Kumulatif</small>
+                                </div>
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-file-invoice fs-4"></i>
+                                        @if (!empty($notifikasi_pencairanprogramkumulatif))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pencairanprogramkumulatif }}</span>
+                                        @endif
+                                    </span>
+                                    <a href="{{ route('pencairanprogram.index') }}" class="stretched-link">Pencairan</a>
+                                    <small class="text-muted mb-0">Program Kumulatif</small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </li>
             @endif
             <!-- Quick links  -->
 
