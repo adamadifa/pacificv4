@@ -15,7 +15,7 @@
                         <i class="fa fa-arrow-left me-2"></i> Kembali
                     </a>
                     @can('ajuanprogramikatan.create')
-                        @if ($user->hasRole(['operation manager', 'sales marketing mana']) && $programikatan->rsm == null)
+                        @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $programikatan->rsm == null)
                             @if ($programikatan->status == 0)
                                 <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
                             @endif
@@ -127,7 +127,7 @@
                                                         <i class="ti ti-edit text-success"></i>
                                                     </a>
                                                 @endcan
-                                                @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
                                                     @if ($programikatan->status == 0)
                                                         @can('ajuanprogramikatan.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"

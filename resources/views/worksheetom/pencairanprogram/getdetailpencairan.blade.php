@@ -28,9 +28,23 @@
                 <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}" top="{{ $d->top }}">
                     <i class="ti ti-file-description"></i>
                 </a>
-                <a href="#" kode_pelanggan = "{{ $d->kode_pelanggan }}" class="deletedetailpencairan">
-                    <i class="ti ti-trash text-danger"></i>
-                </a>
+                @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
+                    <a href="#" kode_pelanggan = "{{ $d->kode_pelanggan }}" class="deletedetailpencairan">
+                        <i class="ti ti-trash text-danger"></i>
+                    </a>
+                @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
+                    <a href="#" kode_pelanggan = "{{ $d->kode_pelanggan }}" class="deletedetailpencairan">
+                        <i class="ti ti-trash text-danger"></i>
+                    </a>
+                @elseif($user->hasRole('gm marketing') && $d->direktur == null)
+                    <a href="#" kode_pelanggan = "{{ $d->kode_pelanggan }}" class="deletedetailpencairan">
+                        <i class="ti ti-trash text-danger"></i>
+                    </a>
+                @elseif($user->hasRole(['super admin', 'direktur']))
+                    <a href="#" kode_pelanggan = "{{ $d->kode_pelanggan }}" class="deletedetailpencairan">
+                        <i class="ti ti-trash text-danger"></i>
+                    </a>
+                @endif
             </div>
 
         </td>

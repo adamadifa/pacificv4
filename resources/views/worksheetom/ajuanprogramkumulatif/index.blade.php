@@ -160,7 +160,7 @@
                                                         @endcan
 
                                                         @can('ajuankumulatif.delete')
-                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                            @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
                                                                 <form method="POST" name="deleteform" class="deleteform"
                                                                     action="{{ route('ajuankumulatif.delete', Crypt::encrypt($d->no_pengajuan)) }}">
                                                                     @csrf

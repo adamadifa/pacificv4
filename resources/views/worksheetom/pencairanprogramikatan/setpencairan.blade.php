@@ -15,7 +15,7 @@
                         <i class="fa fa-arrow-left me-2"></i> Kembali
                     </a>
                     @can('pencairanprogramikt.create')
-                        @if ($user->hasRole(['operation manager', 'sales marketing mana']) && $pencairanprogram->rsm == null)
+                        @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $pencairanprogram->rsm == null)
                             @if ($pencairanprogram->status == 0)
                                 <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
                             @endif

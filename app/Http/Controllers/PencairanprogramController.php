@@ -123,8 +123,10 @@ class PencairanprogramController extends Controller
     public function setpencairan($kode_pencairan)
     {
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $user = User::find(auth()->user()->id);
         $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
         $data['pencairanprogram'] = $pencairanprogram;
+        $data['user'] = $user;
         return view('worksheetom.pencairanprogram.setpencairan', $data);
     }
 
@@ -413,7 +415,8 @@ class PencairanprogramController extends Controller
     public function getdetailpencairan(Request $request)
     {
         $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
-        $detailpencairan = Detailpencairan::where('kode_pencairan', $kode_pencairan)
+        $user = User::find(auth()->user()->id);
+        $detailpencairan = Detailpencairan::where('marketing_program_pencairan_detail.kode_pencairan', $kode_pencairan)
             ->select(
                 'marketing_program_pencairan_detail.kode_pelanggan',
                 'nama_pelanggan',
@@ -424,11 +427,17 @@ class PencairanprogramController extends Controller
                 'pemilik_rekening',
                 'bank',
                 'marketing_program_pencairan_detail.metode_pembayaran as metode_bayar',
-                'top'
+                'top',
+                'om',
+                'rsm',
+                'gm',
+                'direktur'
             )
+            ->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan')
             ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->get();
         $data['detailpencairan'] = $detailpencairan;
+        $data['user'] = $user;
         return view('worksheetom.pencairanprogram.getdetailpencairan', $data);
     }
 

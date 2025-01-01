@@ -15,7 +15,7 @@
                         <i class="fa fa-arrow-left me-2"></i> Kembali
                     </a>
                     @can('ajuankumulatif.create')
-                        @if ($user->hasRole(['operation manager', 'sales marketing mana']) && $programkumulatif->rsm == null)
+                        @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $programkumulatif->rsm == null)
                             @if ($programkumulatif->status == 0)
                                 <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
                             @endif
@@ -105,7 +105,7 @@
                                                         </a>
                                                     @endcan
                                                     @can('ajuankumulatif.delete')
-                                                        @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                        @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
                                                             <form method="POST" name="deleteform" class="deleteform"
                                                                 action="{{ route('ajuankumulatif.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
                                                                 @csrf

@@ -166,7 +166,7 @@
                                                             </a>
                                                         @endcan
                                                         @can('pencairanprogramikt.delete')
-                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                            @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
                                                                 <form method="POST" name="deleteform" class="deleteform"
                                                                     action="{{ route('pencairanprogramikatan.delete', Crypt::encrypt($d->kode_pencairan)) }}">
                                                                     @csrf
