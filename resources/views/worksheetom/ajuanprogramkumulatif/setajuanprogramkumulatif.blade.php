@@ -10,17 +10,19 @@
     <div class="col-lg-10 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('ajuankumulatif.create')
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('ajuankumulatif.index') }}" class="btn btn-danger">
-                            <i class="fa fa-arrow-left me-2"></i> Kembali
-                        </a>
-                        @if ($programkumulatif->status == 0)
-                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ route('ajuankumulatif.index') }}" class="btn btn-danger">
+                        <i class="fa fa-arrow-left me-2"></i> Kembali
+                    </a>
+                    @can('ajuankumulatif.create')
+                        @if ($user->hasRole(['operation manager', 'sales marketing mana']) && $programkumulatif->rsm == null)
+                            @if ($programkumulatif->status == 0)
+                                <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                            @endif
                         @endif
-                    </div>
 
-                @endcan
+                    @endcan
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -102,16 +104,44 @@
                                                             <i class="ti ti-edit text-success"></i>
                                                         </a>
                                                     @endcan
-
                                                     @can('ajuankumulatif.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('ajuankumulatif.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm ml-1">
-                                                                <i class="ti ti-trash text-danger"></i>
-                                                            </a>
-                                                        </form>
+                                                        @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuankumulatif.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @elseif($user->hasRole('regional sales manager') && $d->gm == null)
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuankumulatif.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @elseif($user->hasRole('gm marketing') && $d->direktur == null)
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuankumulatif.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @elseif($user->hasRole(['super admin', 'direktur']))
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuankumulatif.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endif
                                                     @endcan
                                                 @endif
                                             </div>

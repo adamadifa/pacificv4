@@ -28,8 +28,8 @@
                                         </select>
                                     </div>
                                 @endrole
-                                <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
-                                    icon="ti ti-barcode" />
+                                {{-- <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
+                                    icon="ti ti-barcode" /> --}}
                                 <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
                                     select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
 
@@ -62,7 +62,7 @@
                                         <tr>
                                             <th rowspan="2">No.</th>
                                             <th rowspan="2">No Pengajuan</th>
-                                            <th rowspan="2">No. Dok</th>
+                                            {{-- <th rowspan="2">No. Dok</th> --}}
                                             <th rowspan="2">Tanggal</th>
                                             <th rowspan="2">Program</th>
                                             <th rowspan="2">Cabang</th>
@@ -83,7 +83,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $d->no_pengajuan }}</td>
-                                                <td>{{ $d->nomor_dokumen }}</td>
+                                                {{-- <td>{{ $d->nomor_dokumen }}</td> --}}
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
@@ -130,33 +130,29 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('ajuanprogramikatan.approve')
-                                                            @if (auth()->user()->hasRole('operation manager') && $d->rsm == null)
+                                                            {{-- {{ $d->rsm }} {{ auth()->user()->hasRole('operation manager') }} --}}
+                                                            {{-- {{ dd($user->hasRole('operation manager')) }} --}}
+                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif (auth()->user()->hasRole('regional sales manager') && $d->gm == null)
+                                                            @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif (auth()->user()->hasRole('gm marketing') && $d->direktur == null)
+                                                            @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @else
+                                                            @elseif($user->hasRole(['super admin', 'direktur']))
                                                                 <a href="#" class="btnApprove me-1"
                                                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
                                                             @endif
-                                                        @endcan
-                                                        @can('ajuanprogramikatan.edit')
-                                                            <a href="{{ route('ajuanprogramikatan.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"
-                                                                class="me-1">
-                                                                <i class="ti ti-settings text-primary"></i>
-                                                            </a>
                                                         @endcan
                                                         @can('ajuanprogramikatan.show')
                                                             <a href="{{ route('ajuanprogramikatan.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
@@ -164,16 +160,25 @@
                                                                 <i class="ti ti-printer text-success"></i>
                                                             </a>
                                                         @endcan
+                                                        @can('ajuanprogramikatan.edit')
+                                                            <a href="{{ route('ajuanprogramikatan.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"
+                                                                class="me-1">
+                                                                <i class="ti ti-settings text-primary"></i>
+                                                            </a>
+                                                        @endcan
+
 
                                                         @can('ajuanprogramikatan.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('ajuanprogramikatan.delete', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
+                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('ajuanprogramikatan.delete', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm ml-1">
+                                                                        <i class="ti ti-trash text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @endif
                                                         @endcan
 
 

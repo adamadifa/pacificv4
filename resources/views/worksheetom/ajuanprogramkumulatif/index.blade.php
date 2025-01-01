@@ -60,7 +60,7 @@
                                         <tr>
                                             <th rowspan="2">No.</th>
                                             <th rowspan="2">No Pengajuan</th>
-                                            <th rowspan="2">No. Dok</th>
+                                            {{-- <th rowspan="2">No. Dok</th> --}}
                                             <th rowspan="2">Tanggal</th>
                                             <th rowspan="2">Cabang</th>
                                             <th colspan="4">Persetujuan</th>
@@ -79,7 +79,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $d->no_pengajuan }}</td>
-                                                <td>{{ $d->nomor_dokumen }}</td>
+                                                {{-- <td>{{ $d->nomor_dokumen }}</td> --}}
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
 
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
@@ -124,22 +124,22 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('ajuankumulatif.approve')
-                                                            @if (auth()->user()->hasRole('operation manager') && $d->rsm == null)
+                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif (auth()->user()->hasRole('regional sales manager') && $d->gm == null)
+                                                            @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif (auth()->user()->hasRole('gm marketing') && $d->direktur == null)
+                                                            @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @else
+                                                            @elseif($user->hasRole(['super admin', 'direktur']))
                                                                 <a href="#" class="btnApprove me-1"
                                                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
@@ -160,14 +160,16 @@
                                                         @endcan
 
                                                         @can('ajuankumulatif.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('ajuankumulatif.delete', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
+                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('ajuankumulatif.delete', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm ml-1">
+                                                                        <i class="ti ti-trash text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @endif
                                                         @endcan
 
 

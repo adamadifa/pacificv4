@@ -15,8 +15,10 @@
                         <i class="fa fa-arrow-left me-2"></i> Kembali
                     </a>
                     @can('ajuanprogramikatan.create')
-                        @if ($programikatan->status == 0)
-                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                        @if ($user->hasRole(['operation manager', 'sales marketing mana']) && $programikatan->rsm == null)
+                            @if ($programikatan->status == 0)
+                                <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                            @endif
                         @endif
                     @endcan
                 </div>
@@ -125,18 +127,60 @@
                                                         <i class="ti ti-edit text-success"></i>
                                                     </a>
                                                 @endcan
-                                                @if ($programikatan->status == 0)
-                                                    @can('ajuanprogramikatan.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm ml-1">
-                                                                <i class="ti ti-trash text-danger"></i>
-                                                            </a>
-                                                        </form>
-                                                    @endcan
+                                                @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                    @if ($programikatan->status == 0)
+                                                        @can('ajuanprogramikatan.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endcan
+                                                    @endif
+                                                @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
+                                                    @if ($programikatan->status == 0)
+                                                        @can('ajuanprogramikatan.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endcan
+                                                    @endif
+                                                @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
+                                                    @if ($programikatan->status == 0)
+                                                        @can('ajuanprogramikatan.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endcan
+                                                    @endif
+                                                @elseif($user->hasRole(['super admin', 'direktur']))
+                                                    @if ($programikatan->status == 0)
+                                                        @can('ajuanprogramikatan.delete')
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endcan
+                                                    @endif
                                                 @endif
+
                                             </div>
                                         </td>
                                     </tr>

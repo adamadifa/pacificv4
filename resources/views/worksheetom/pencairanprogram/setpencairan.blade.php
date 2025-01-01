@@ -13,7 +13,9 @@
                 <div class="d-flex justify-content-between">
                     <a href="{{ route('pencairanprogram.index') }}" class="btn btn-danger"><i class="fa fa-arrow-left me-2"></i> Kembali</a>
                     @can('pencairanprogram.create')
-                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                        @if ($user->hasRole(['operation manager', 'sales marketing mana']) && $pencairanprogram->rsm == null)
+                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                        @endif
                     @endcan
                 </div>
 

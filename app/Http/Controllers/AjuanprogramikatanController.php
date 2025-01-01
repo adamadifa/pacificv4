@@ -68,7 +68,7 @@ class AjuanprogramikatanController extends Controller
 
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
-
+        $data['user'] = $user;
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         return view('worksheetom.ajuanprogramikatan.index', $data);
     }
@@ -86,18 +86,6 @@ class AjuanprogramikatanController extends Controller
 
     public function  store(Request $request)
     {
-        $request->validate([
-            'no_dokumen' => 'required',
-            'tanggal' => 'required',
-            'kode_cabang' => 'required',
-            'kode_program' => 'required',
-            'bulan_dari' => 'required',
-            'tahun_dari' => 'required',
-            'bulan_sampai' => 'required',
-            'tahun_sampai' => 'required',
-            'keterangan' => 'required',
-
-        ]);
 
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
@@ -111,9 +99,34 @@ class AjuanprogramikatanController extends Controller
             } else {
                 $kode_cabang = $user->kode_cabang;
             }
+            $request->validate([
+                'no_dokumen' => 'required',
+                'tanggal' => 'required',
+                'kode_program' => 'required',
+                'bulan_dari' => 'required',
+                'tahun_dari' => 'required',
+                'bulan_sampai' => 'required',
+                'tahun_sampai' => 'required',
+                'keterangan' => 'required',
+
+            ]);
         } else {
+            $request->validate([
+                'no_dokumen' => 'required',
+                'tanggal' => 'required',
+                'kode_cabang' => 'required',
+                'kode_program' => 'required',
+                'bulan_dari' => 'required',
+                'tahun_dari' => 'required',
+                'bulan_sampai' => 'required',
+                'tahun_sampai' => 'required',
+                'keterangan' => 'required',
+
+            ]);
             $kode_cabang = $request->kode_cabang;
         }
+
+
         $tahun = date('Y', strtotime($request->tanggal));
         $lastajuan = Ajuanprogramikatan::select('no_pengajuan')
             ->whereRaw('YEAR(tanggal) = "' . $tahun . '"')
@@ -145,13 +158,16 @@ class AjuanprogramikatanController extends Controller
 
     public function setajuanprogramikatan($no_pengajuan)
     {
+        $user = User::find(auth()->user()->id);
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $data['programikatan'] = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
             ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
             ->first();
         $data['detail'] = Detailajuanprogramikatan::join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-            ->where('no_pengajuan', $no_pengajuan)
+            ->where('marketing_program_ikatan_detail.no_pengajuan', $no_pengajuan)
+            ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->get();
+        $data['user'] = $user;
         return view('worksheetom.ajuanprogramikatan.setajuanprogramikatan', $data);
     }
 

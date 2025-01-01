@@ -85,7 +85,7 @@ class PencairanprogramikatanController extends Controller
 
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
-
+        $data['user'] = $user;
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         return view('worksheetom.pencairanprogramikatan.index', $data);
     }
@@ -119,10 +119,57 @@ class PencairanprogramikatanController extends Controller
         // dd($last_kode_pencairan);
         $kode_pencairan = buatkode($last_kode_pencairan, "PI" . $ajuan->kode_cabang . date('y', strtotime($request->tanggal)), 4);
 
+        $periode_dari = $ajuan->periode_dari;
+        $periode_sampai = $ajuan->periode_sampai;
+
+        $bulan_dari = (int) date('m', strtotime($periode_dari));
+        $tahun_dari = (int) date('Y', strtotime($periode_dari));
+        $bulan_sampai = (int) date('m', strtotime($periode_sampai));
+        $tahun_sampai = (int) date('Y', strtotime($periode_sampai));
+
+        $array_bulan = [];
+        for ($tahun = $tahun_dari; $tahun <= $tahun_sampai; $tahun++) {
+            for ($bulan = $tahun == $tahun_dari ? $bulan_dari : 1; $tahun == $tahun_sampai ? $bulan <= $bulan_sampai : $bulan <= 12; $bulan++) {
+                $array_bulan[] = $bulan . '-' . $tahun;
+            }
+        }
+
+
         try {
             $periodepencairan = explode('-', $request->periodepencairan);
             $bulan = $periodepencairan[0];
             $tahun = $periodepencairan[1];
+            $cekajuan = Pencairanprogramikatan::where('no_pengajuan', $request->no_pengajuan)
+                ->where('bulan', $bulan)
+                ->where('tahun', $tahun)
+                ->first();
+            if (!empty($cekajuan)) {
+                return Redirect::back()->with(messageError('Periode Pencairan Sudah Ada'));
+            }
+            $cek = Pencairanprogramikatan::where('no_pengajuan', $request->no_pengajuan)
+                ->first();
+
+            $bulan_sebelumnya = getbulandantahunlalu($bulan, $tahun, "bulan");
+            $tahun_sebelumnya = getbulandantahunlalu($bulan, $tahun, "tahun");
+
+            $periode_pertama = $array_bulan[0];
+            if (empty($cek) && $periode_pertama != $request->periodepencairan) {
+                $bulan_tahun_periode_pertama = explode('-', $periode_pertama);
+                $bulan_periode_pertama = $bulan_tahun_periode_pertama[0];
+                $tahun_periode_pertama = $bulan_tahun_periode_pertama[1];
+                return Redirect::back()->with(messageError('Periode Pencairan Harus Dimulai dari Periode ' . getMonthName($bulan_periode_pertama) . ' ' . $tahun_periode_pertama));
+            } else {
+                if ($request->periodepencairan != $periode_pertama) {
+                    $cek_bulan_sebelumnya = Pencairanprogramikatan::where('no_pengajuan', $request->no_pengajuan)
+                        ->where('bulan', $bulan_sebelumnya)
+                        ->where('tahun', $tahun_sebelumnya)
+                        ->first();
+                    if (empty($cek_bulan_sebelumnya)) {
+                        return Redirect::back()->with(messageError('Periode Bulan ' . getMonthName($bulan_sebelumnya) . ' Tahun ' . $tahun_sebelumnya . ' Belum Dicairkan'));
+                    }
+                }
+            }
+
             //code...
             Pencairanprogramikatan::create([
                 'kode_pencairan' => $kode_pencairan,

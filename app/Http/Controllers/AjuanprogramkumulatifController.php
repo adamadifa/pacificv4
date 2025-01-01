@@ -63,7 +63,7 @@ class AjuanprogramkumulatifController extends Controller
 
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
-
+        $data['user'] = $user;
 
         return view('worksheetom.ajuanprogramkumulatif.index', $data);
     }
@@ -80,11 +80,6 @@ class AjuanprogramkumulatifController extends Controller
 
     public function  store(Request $request)
     {
-        $request->validate([
-            'no_dokumen' => 'required',
-            'tanggal' => 'required',
-            'kode_cabang' => 'required',
-        ]);
 
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
@@ -95,8 +90,17 @@ class AjuanprogramkumulatifController extends Controller
             } else {
                 $kode_cabang = $user->kode_cabang;
             }
+            $request->validate([
+                'no_dokumen' => 'required',
+                'tanggal' => 'required',
+            ]);
         } else {
             $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'no_dokumen' => 'required',
+                'tanggal' => 'required',
+                'kode_cabang' => 'required',
+            ]);
         }
         $tahun = date('Y', strtotime($request->tanggal));
         $lastajuan = Ajuanprogramkumulatif::select('no_pengajuan')
@@ -127,11 +131,14 @@ class AjuanprogramkumulatifController extends Controller
     public function setajuankumulatif($no_pengajuan)
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $user = User::find(auth()->user()->id);
         $data['programkumulatif'] = Ajuanprogramkumulatif::where('no_pengajuan', $no_pengajuan)
             ->first();
         $data['detail'] = Detailajuanprogramkumulatif::join('pelanggan', 'marketing_program_kumulatif_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-            ->where('no_pengajuan', $no_pengajuan)
+            ->where('marketing_program_kumulatif_detail.no_pengajuan', $no_pengajuan)
+            ->join('marketing_program_kumulatif', 'marketing_program_kumulatif_detail.no_pengajuan', '=', 'marketing_program_kumulatif.no_pengajuan')
             ->get();
+        $data['user'] = $user;
         return view('worksheetom.ajuanprogramkumulatif.setajuanprogramkumulatif', $data);
     }
 

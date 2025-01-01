@@ -1,6 +1,7 @@
 <form action="{{ route('ajuankumulatif.store') }}" method="POST" id="formAjuanprogram" enctype="multipart/form-data">
     @csrf
-    <x-input-with-icon label="No. Dokumen" name="no_dokumen" icon="ti ti-barcode" />
+    {{-- <x-input-with-icon label="No. Dokumen" name="no_dokumen" icon="ti ti-barcode" /> --}}
+    <input type="hidden" name="no_dokumen" id="no_dokumen" value="-">
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ date('Y-m-d') }}" readonly />
     @hasanyrole($roles_show_cabang)
         <div class="row">

@@ -38,7 +38,7 @@
             <option value="">Metode Pembayaran</option>
             <option value="TN">Tunai</option>
             <option value="TF">Transfer</option>
-            <option value="VC">Voucher</option>
+            {{-- <option value="VC">Voucher</option> --}}
         </select>
     </div>
     <x-input-file name="file_doc" label="Dokumen Kesepakatan" />

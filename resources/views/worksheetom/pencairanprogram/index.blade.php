@@ -11,7 +11,7 @@
             @include('layouts.navigation_monitoringprogram')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('barangmasukgl.create')
+                    @can('pencairanprogram.create')
                         <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
                             Tambah Data</a>
                     @endcan
@@ -130,22 +130,22 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('pencairanprogram.approve')
-                                                            @if (auth()->user()->hasRole('operation manager') && $d->rsm == null)
+                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif (auth()->user()->hasRole('regional sales manager') && $d->gm == null)
+                                                            @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif (auth()->user()->hasRole('gm marketing') && $d->direktur == null)
+                                                            @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @else
+                                                            @elseif ($user->hasRole(['super admin', 'direktur']))
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
@@ -165,14 +165,16 @@
                                                             </a>
                                                         @endcan
                                                         @can('pencairanprogram.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('pencairanprogram.delete', Crypt::encrypt($d->kode_pencairan)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
+                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('pencairanprogram.delete', Crypt::encrypt($d->kode_pencairan)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm ml-1">
+                                                                        <i class="ti ti-trash text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @endif
                                                         @endcan
                                                     </div>
                                                 </td>

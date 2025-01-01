@@ -24,7 +24,7 @@
             <td id="nama_cabang"></td>
         </tr>
         <tr>
-            <th>Periode</th>
+            <th>Periode Kontrak</th>
             <td id="periode"></td>
         </tr>
     </table>

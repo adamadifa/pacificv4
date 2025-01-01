@@ -51,7 +51,7 @@ class PencairanprogramController extends Controller
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
-
+        $data['user'] = $user;
         return view('worksheetom.pencairanprogram.index', $data);
     }
 
@@ -68,14 +68,33 @@ class PencairanprogramController extends Controller
     public function store(Request $request)
     {
         //Kode Pencairan Program PCBDG240001
-        $request->validate([
-            'tanggal' => 'required',
-            'kode_cabang' => 'required',
-            'bulan' => 'required',
-            'tahun' => 'required',
-            'kode_program' => 'required',
-            'keterangan' => 'required'
-        ]);
+        $user = User::find(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $request->validate([
+                'tanggal' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required',
+                'kode_program' => 'required',
+                'keterangan' => 'required'
+            ]);
+
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $request->validate([
+                'tanggal' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required',
+                'kode_program' => 'required',
+                'keterangan' => 'required'
+            ]);
+            $kode_cabang = $request->kode_cabang;
+        }
+
         $lastpencairan = Pencairanprogram::select('kode_pencairan')->orderBy('kode_pencairan', 'desc')
             ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
             ->where('kode_cabang', $request->kode_cabang)
@@ -88,7 +107,7 @@ class PencairanprogramController extends Controller
             Pencairanprogram::create([
                 'kode_pencairan' => $kode_pencairan,
                 'tanggal' => $request->tanggal,
-                'kode_cabang' => $request->kode_cabang,
+                'kode_cabang' => $kode_cabang,
                 'bulan' => $request->bulan,
                 'tahun' => $request->tahun,
                 'kode_jenis_program' => 'KM',

@@ -29,8 +29,8 @@
                                         </select>
                                     </div>
                                 @endrole
-                                <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
-                                    icon="ti ti-barcode" />
+                                {{-- <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
+                                    icon="ti ti-barcode" /> --}}
                                 <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
                                     select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
 
@@ -68,7 +68,7 @@
                                             <th rowspan="2" valign="middle">No. Dok</th>
                                             <th rowspan="2" valign="middle">Program</th>
                                             <th rowspan="2" valign="middle">Cabang</th>
-                                            <th rowspan="2" valign="middle">Periode</th>
+                                            {{-- <th rowspan="2" valign="middle">Periode</th> --}}
                                             <th colspan="4" class="text-center">Persetujuan</th>
                                             <th rowspan="2" valign="middle">Keuangan</th>
                                             <th rowspan="2" valign="middle">Status</th>
@@ -88,10 +88,10 @@
                                                 <td>{{ $d->tanggal }}</td>
                                                 <td>{{ $namabulan[$d->bulan] }}</td>
                                                 <td>{{ $d->tahun }}</td>
-                                                <td>{{ $d->nomor_dokumen }}</td>
+                                                <td>{{ $d->no_pengajuan }}</td>
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
-                                                <td>{{ $namabulan[$d->bulan] }} {{ $d->tahun }}</td>
+                                                {{-- <td>{{ $namabulan[$d->bulan] }} {{ $d->tahun }}</td> --}}
                                                 </td>
                                                 <td class="text-center">
                                                     @if (empty($d->om))
@@ -136,22 +136,17 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('ajuanprogramikatan.approve')
-                                                            @if (auth()->user()->hasRole('operation manager') && $d->rsm == null)
+                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif (auth()->user()->hasRole('regional sales manager') && $d->gm == null)
+                                                            @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif (auth()->user()->hasRole('gm marketing') && $d->direktur == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @else
+                                                            @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
@@ -171,14 +166,16 @@
                                                             </a>
                                                         @endcan
                                                         @can('pencairanprogramikt.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('pencairanprogramikatan.delete', Crypt::encrypt($d->kode_pencairan)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
+                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
+                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                    action="{{ route('pencairanprogramikatan.delete', Crypt::encrypt($d->kode_pencairan)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="delete-confirm ml-1">
+                                                                        <i class="ti ti-trash text-danger"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @endif
                                                         @endcan
 
                                                     </div>
@@ -272,6 +269,7 @@
             var namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober",
                 "November", "Desember"
             ];
+            $(document).find("#periodepencairan").empty();
             for (var i = parseInt(bulan1); i <= parseInt(bulan2); i++) {
                 if (i > 12) {
                     bln = i - 12;
