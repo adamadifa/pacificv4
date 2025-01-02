@@ -183,6 +183,7 @@ class LaporanhrdController extends Controller
             $sampai = $request->tahun . "-" . $bulan . "-20";
         }
 
+        dd($dari);
         $start_date = $dari;
         $end_date = $sampai;
 
