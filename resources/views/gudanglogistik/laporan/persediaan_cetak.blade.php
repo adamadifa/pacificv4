@@ -45,7 +45,7 @@
                 @foreach ($persediaan as $d)
                     @php
                         $saldo_akhir = $d->saldo_awal_qty + $d->bm_jumlah - $d->bk_jumlah;
-                        $selisih = ROUND($saldo_akhir, 2) - ROUND($d->opname_qty);
+                        $selisih = ROUND($saldo_akhir) - ROUND($d->opname_qty);
                         $total_saldo_awal += $d->saldo_awal_qty;
                         $total_bm_jumlah += $d->bm_jumlah;
                         $total_bk_jumlah += $d->bk_jumlah;
