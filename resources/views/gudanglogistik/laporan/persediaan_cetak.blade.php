@@ -64,7 +64,7 @@
                         <td class="right">{{ formatAngkaDesimal($d->bk_jumlah) }}</td>
                         <td class="right">{{ formatAngkaDesimal($saldo_akhir) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d->opname_qty) }}</td>
-                        <td class="right">{{ formatAngkaDesimal($selisih) }}</td>
+                        <td class="right">{{ $selisih }}</td>
                     </tr>
                 @endforeach
             </tbody>
