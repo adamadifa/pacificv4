@@ -630,9 +630,13 @@
                                         @endphp
                                     @else
                                         @php
-                                            if ($d['tanggal_masuk'] < $tanggal_presensi || $d['kode_jabatan'] != 'J01') {
+                                            if ($d['tanggal_masuk'] < $tanggal_presensi) {
                                                 $color = 'red';
                                                 $keterangan = 'A';
+                                                if ($d['kode_jabatan'] == 'J01') {
+                                                    $color = '';
+                                                    $keterangan = '';
+                                                }
                                             } else {
                                                 $color = '';
                                                 $keterangan = '';
