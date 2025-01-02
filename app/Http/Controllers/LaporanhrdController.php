@@ -176,7 +176,7 @@ class LaporanhrdController extends Controller
         $lastbulan = $lastbulan < 10 ? '0' . $lastbulan : $lastbulan;
         $bulan = $request->bulan < 10 ? '0' . $request->bulan : $request->bulan;
         if ($request->periode_laporan == 2) {
-            $dari = $request->tahun . "-" . $request->bulan . "-01";
+            $dari = $request->tahun . "-" . $request->bulan * 1 . "-01";
             $sampai = date("Y-m-t", strtotime($dari));
         } else {
             $dari = $lasttahun . "-" . $lastbulan . "-21";
