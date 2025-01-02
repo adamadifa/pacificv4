@@ -64,7 +64,7 @@
                         <td class="right">{{ formatAngkaDesimal($d->bk_jumlah) }}</td>
                         <td class="right">{{ formatAngkaDesimal($saldo_akhir) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d->opname_qty) }}</td>
-                        <td class="right">{{ ROUND($saldo_akhir, 2) . '-' . ROUND($d->opname_qty, 2) . '=' . formatAngkaDesimal($selisih) }}</td>
+                        <td class="right">0</td>
                     </tr>
                 @endforeach
             </tbody>
