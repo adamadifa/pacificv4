@@ -65,10 +65,14 @@
                 <tbody>
                     @php
                         $total_omset = 0;
+                        $total_swan = 0;
+                        $total_aida = 0;
                     @endphp
                     @foreach ($omsetpelanggan as $d)
                         @php
                             $total_omset += $d->total_netto;
+                            $total_swan += $d->total_netto_swan;
+                            $total_aida += $d->total_netto_aida;
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -87,8 +91,8 @@
                     <tr>
                         <th colspan="5">TOTAL</th>
                         <th class="right">{{ formatAngka($total_omset) }}</th>
-                        <th></th>
-                        <th></th>
+                        <th class="right">{{ formatAngka($total_swan) }}</th>
+                        <th class="right">{{ formatAngka($total_aida) }}</th>
                         <th></th>
                     </tr>
                 </tfoot>
