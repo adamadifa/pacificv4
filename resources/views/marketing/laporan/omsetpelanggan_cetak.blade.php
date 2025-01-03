@@ -57,6 +57,8 @@
                         <th>PASAR</th>
                         <th>KLASIFIKASI</th>
                         <th>TOTAL OMSET</th>
+                        <th>SWAN</th>
+                        <th>AIDA</th>
                         <th>SALESMAN</th>
                     </tr>
                 </thead>
@@ -75,6 +77,8 @@
                             <td>{{ $d->nama_wilayah }}</td>
                             <td>{{ $d->klasifikasi }}</td>
                             <td class="right">{{ formatAngka($d->total_netto) }}</td>
+                            <td class="right">{{ formatAngka($d->total_netto_swan) }}</td>
+                            <td class="right">{{ formatAngka($d->total_netto_aida) }}</td>
                             <td>{{ $d->nama_salesman }}</td>
                         </tr>
                     @endforeach
@@ -83,6 +87,8 @@
                     <tr>
                         <th colspan="5">TOTAL</th>
                         <th class="right">{{ formatAngka($total_omset) }}</th>
+                        <th></th>
+                        <th></th>
                         <th></th>
                     </tr>
                 </tfoot>
