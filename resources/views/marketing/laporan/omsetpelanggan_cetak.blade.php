@@ -57,6 +57,7 @@
                         <th>PASAR</th>
                         <th>KLASIFIKASI</th>
                         <th>TOTAL OMSET</th>
+                        <th>OMSET BRUTO</th>
                         <th>SWAN</th>
                         <th>AIDA</th>
                         <th>SALESMAN</th>
@@ -67,12 +68,14 @@
                         $total_omset = 0;
                         $total_swan = 0;
                         $total_aida = 0;
+                        $total_bruto = 0;
                     @endphp
                     @foreach ($omsetpelanggan as $d)
                         @php
                             $total_omset += $d->total_netto;
                             $total_swan += $d->total_netto_swan;
                             $total_aida += $d->total_netto_aida;
+                            $total_bruto += $d->total_bruto;
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -81,6 +84,7 @@
                             <td>{{ $d->nama_wilayah }}</td>
                             <td>{{ $d->klasifikasi }}</td>
                             <td class="right">{{ formatAngka($d->total_netto) }}</td>
+                            <td class="right">{{ formatAngka($d->total_bruto) }}</td>
                             <td class="right">{{ formatAngka($d->total_netto_swan) }}</td>
                             <td class="right">{{ formatAngka($d->total_netto_aida) }}</td>
                             <td>{{ $d->nama_salesman }}</td>
@@ -91,6 +95,7 @@
                     <tr>
                         <th colspan="5">TOTAL</th>
                         <th class="right">{{ formatAngka($total_omset) }}</th>
+                        <th class="right">{{ formatAngka($total_bruto) }}</th>
                         <th class="right">{{ formatAngka($total_swan) }}</th>
                         <th class="right">{{ formatAngka($total_aida) }}</th>
                         <th></th>

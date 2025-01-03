@@ -1816,8 +1816,9 @@ class LaporanmarketingController extends Controller
             'nama_wilayah',
             'klasifikasi',
             DB::raw('SUM(total_bruto - potongan + penyesuaian + potongan_istimewa + ppn) as total_netto'),
-            DB::raw('SUM(total_aida - potongan_aida) as total_netto_aida'),
-            DB::raw('SUM(total_swan - potongan_swan - potongan_stick - potongan_sambal) as total_netto_swan'),
+            DB::raw('SUM(total_aida) as total_netto_aida'),
+            DB::raw('SUM(total_swan) as total_netto_swan'),
+            DB::raw('SUM(total_bruto) as total_bruto')
         );
 
 
