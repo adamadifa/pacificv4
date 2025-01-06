@@ -27,12 +27,7 @@
                             <td>{{ textUpperCase($data->nama_cabang) }}</td>
                             @foreach ($products as $product)
                                 @php
-                                    ${"saldo_akhir_$product->kode_produk"} =
-                                        ($data->{"saldo_$product->kode_produk"} +
-                                            $data->{"mutasi_$product->kode_produk"} -
-                                            $data->{"ambil_$product->kode_produk"} +
-                                            $data->{"kembali_$product->kode_produk"}) /
-                                        $product->isi_pcs_dus;
+                                    ${"saldo_akhir_$product->kode_produk"} = $data->{"saldo_$product->kode_produk"} / $product->isi_pcs_dus;
 
                                     ${"saldo_akhir_$product->kode_produk"} =
                                         ${"saldo_akhir_$product->kode_produk"} < 0 ? 0 : ${"saldo_akhir_$product->kode_produk"};
