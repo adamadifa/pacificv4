@@ -1776,8 +1776,12 @@ class LaporanmarketingController extends Controller
         $qdetailpenjualan = Detailpenjualan::query();
         $qdetailpenjualan->select(
             'marketing_penjualan_detail.no_faktur',
+            DB::raw('SUM(CASE WHEN kode_kategori_produk = \'P01\' THEN subtotal ELSE 0 END) as total_aida'),
+            DB::raw('SUM(CASE WHEN kode_kategori_produk = \'P02\' THEN subtotal ELSE 0 END) as total_swan'),
             DB::raw('SUM(subtotal) as total_bruto'),
         );
+        $qdetailpenjualan->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qdetailpenjualan->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
         $qdetailpenjualan->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qdetailpenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $qdetailpenjualan->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
@@ -1812,6 +1816,9 @@ class LaporanmarketingController extends Controller
             'nama_wilayah',
             'klasifikasi',
             DB::raw('SUM(total_bruto - potongan + penyesuaian + potongan_istimewa + ppn) as total_netto'),
+            DB::raw('SUM(total_aida-potongan_aida) as total_netto_aida'),
+            DB::raw('SUM(total_swan - potongan_swan - potongan_stick - potongan_sp - potongan_sambal) as total_netto_swan'),
+            DB::raw('SUM(total_bruto-potongan+penyesuaian+potongan_istimewa) as total_bruto')
         );
 
 

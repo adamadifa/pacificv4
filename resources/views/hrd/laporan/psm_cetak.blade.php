@@ -630,8 +630,18 @@
                                         @endphp
                                     @else
                                         @php
-                                            $color = 'red';
-                                            $keterangan = 'A';
+                                            if ($d['tanggal_masuk'] < $tanggal_presensi) {
+                                                $color = 'red';
+                                                $keterangan = 'A';
+                                                if ($d['kode_jabatan'] == 'J01') {
+                                                    $color = '';
+                                                    $keterangan = '';
+                                                }
+                                            } else {
+                                                $color = '';
+                                                $keterangan = '';
+                                            }
+
                                             // $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
                                             if (!empty($cekdirumahkan)) {
