@@ -52,6 +52,8 @@ class DashboardController extends Controller
             return $this->salesman();
         } else if ($user->hasRole('admin penjualan')) {
             return $this->operationmanager();
+        } else if ($user->hasRole('admin persediaan cabang')) {
+            return $this->operationmanager();
         } else if ($user->hasRole('gm operasional') || $user->hasRole('spv produksi') || $user->hasRole('manager produksi') || $user->hasRole('admin gudang pusat') || $user->hasRole('manager gudang') || $user->hasRole('spv gudang pusat') || $user->hasRole('spv pdqc')) {
             return $this->operasional();
         } else if ($user->hasAnyRole(['asst. manager hrd', 'spv presensi', 'spv recruitment'])) {
