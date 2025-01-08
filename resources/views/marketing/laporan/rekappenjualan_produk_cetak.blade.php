@@ -127,7 +127,7 @@
                             $total_netto =
                                 $jumlahall -
                                 $penjualan->potongan -
-                                $penjualan->potistimewa -
+                                $penjualan->potongan_istimewa -
                                 $penjualan->penyharga +
                                 $penjualan->ppn -
                                 $retur->total_retur -
