@@ -77,10 +77,12 @@
                             $total_aida += $d->total_netto_aida;
                             $total_bruto += $d->total_bruto;
                             $total_aida_swan = $d->total_netto_swan + $d->total_netto_aida;
-                            $potongan_istimewa_swan = ($d->total_netto_swan / $total_aida_swan) * $d->total_potongan_istimewa;
-                            $potongan_istimewa_aida = ($d->total_netto_aida / $total_aida_swan) * $d->total_potongan_istimewa;
-                            $ppn_swan = ($d->total_netto_swan / $total_aida_swan) * $d->total_ppn;
-                            $ppn_aida = ($d->total_netto_aida / $total_aida_swan) * $d->total_ppn;
+                            $potongan_istimewa_swan =
+                                $total_aida_swan == 0 ? 0 : ($d->total_netto_swan / $total_aida_swan) * $d->total_potongan_istimewa;
+                            $potongan_istimewa_aida =
+                                $total_aida_swan == 0 ? 0 : ($d->total_netto_aida / $total_aida_swan) * $d->total_potongan_istimewa;
+                            $ppn_swan = $total_aida_swan == 0 ? 0 : ($d->total_netto_swan / $total_aida_swan) * $d->total_ppn;
+                            $ppn_aida = $total_aida_swan == 0 ? 0 : ($d->total_netto_aida / $total_aida_swan) * $d->total_ppn;
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
