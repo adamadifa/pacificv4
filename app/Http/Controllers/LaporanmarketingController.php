@@ -4873,6 +4873,7 @@ class LaporanmarketingController extends Controller
         if (!empty($request->kode_salesman)) {
             $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
+        $query->where('status_batal', 0);
         $query->groupBy('produk.nama_produk', 'produk_harga.kode_produk', 'produk.kode_jenis_produk', 'nama_jenis_produk');
         $query->orderBy('kode_jenis_produk', 'asc');
 
@@ -4891,6 +4892,7 @@ class LaporanmarketingController extends Controller
         if ($request->id_karyawan != "") {
             $querypenjualan->where('marketing_penjualan.kode_salesman', $request->id_karyawan);
         }
+        $querypenjualan->where('status_batal', 0);
         $data['penjualan'] = $querypenjualan->first();
 
         $queryretur = Detailretur::query();
