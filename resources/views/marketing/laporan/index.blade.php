@@ -226,7 +226,7 @@
                         @include('marketing.laporan.dpp')
                     </div>
                 @endcan
-                @can('mkt.dpp')
+                @can('mkt.omsetpelanggan')
                     <div class="tab-pane fade" id="omsetpelanggan" role="tabpanel">
                         @include('marketing.laporan.omsetpelanggan')
                     </div>
