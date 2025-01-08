@@ -19,142 +19,143 @@
             </ul>
             <div class="tab-content" id="tab-content-main">
                 <div class="tab-pane fade show active" id="navs-pills-justified-home" role="tabpanel">
-
-                    <div class="row">
-                        <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Rekap Penjualan</h4>
+                    @hasanyrole(['operation manager', 'admin penjualan'])
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Rekap Penjualan</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="#" id="formRekappenjualan">
+                                            @hasanyrole($roles_show_cabang)
+                                                <x-select label="Cabang" name="kode_cabang_rekappenjualan" :data="$cabang" key="kode_cabang"
+                                                    textShow="nama_cabang" select2="select2Kodecabangrekappenjualan" upperCase="true" />
+                                            @endhasanyrole
+                                            <div class="form-group mb-3">
+                                                <select name="bulan" id="bulan" class="form-select">
+                                                    <option value="">Bulan</option>
+                                                    @foreach ($list_bulan as $d)
+                                                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <select name="tahun" id="tahun" class="form-select">
+                                                    <option value="">Tahun</option>
+                                                    @for ($t = $start_year; $t <= date('Y'); $t++)
+                                                        <option value="{{ $t }}">{{ $t }}</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <button class="btn btn-primary w-100" id="btnRekappenjualan"><i
+                                                        class="ti ti-eye me-1"></i>Tampilkan</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <form action="#" id="formRekappenjualan">
-                                        @hasanyrole($roles_show_cabang)
-                                            <x-select label="Cabang" name="kode_cabang_rekappenjualan" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" select2="select2Kodecabangrekappenjualan" upperCase="true" />
-                                        @endhasanyrole
-                                        <div class="form-group mb-3">
-                                            <select name="bulan" id="bulan" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <select name="tahun" id="tahun" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option value="{{ $t }}">{{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100" id="btnRekappenjualan"><i
-                                                    class="ti ti-eye me-1"></i>Tampilkan</button>
-                                        </div>
-                                    </form>
+                            </div>
+                            <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Analisa Umur Piutang</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="#" id="formAup">
+                                            @hasanyrole($roles_show_cabang)
+                                                <x-select label="Cabang" name="kode_cabang_aup" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                                    select2="select2KodecabangAup" upperCase="true" />
+                                            @endhasanyrole
+                                            <x-input-with-icon label="Lihat per Tanggal" name="tanggal" icon="ti ti-calendar"
+                                                datepicker="flatpickr-date" />
+                                            <div class="form-group mb-3">
+                                                <select name="exclude" id="exclude" class="form-select">
+                                                    <option value="1">Exclude Pusat</option>
+                                                    <option value="2">Include Pusat</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <button class="btn btn-primary w-100" id="btnAup">
+                                                    <i class="ti ti-eye me-1"></i>Tampilkan
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Rekap DPPP</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="#" id="formDppp">
+                                            @hasanyrole($roles_show_cabang)
+                                                <x-select label="Cabang" name="kode_cabang_rekapdppp" :data="$cabang" key="kode_cabang"
+                                                    textShow="nama_cabang" select2="select2Kodecabangrekapdppp" upperCase="true" />
+                                            @endhasanyrole
+                                            <div class="form-group mb-3">
+                                                <select name="bulan" id="bulan" class="form-select">
+                                                    <option value="">Bulan</option>
+                                                    @foreach ($list_bulan as $d)
+                                                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <select name="tahun" id="tahun" class="form-select">
+                                                    <option value="">Tahun</option>
+                                                    @for ($t = $start_year; $t <= date('Y'); $t++)
+                                                        <option value="{{ $t }}">{{ $t }}</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <button class="btn btn-primary w-100" id="btnRekapdppp"><i class="ti ti-eye me-1"></i>Tampilkan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Rekap Kendaraan</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="#" id="formRekapkendaraan">
+                                            @hasanyrole($roles_show_cabang)
+                                                <x-select label="Cabang" name="kode_cabang_rekapkendaraan" :data="$cabang" key="kode_cabang"
+                                                    textShow="nama_cabang" select2="select2Kodecabangrekapkendaraan" upperCase="true" />
+                                            @endhasanyrole
+                                            <div class="form-group mb-3">
+                                                <select name="bulan" id="bulan" class="form-select">
+                                                    <option value="">Bulan</option>
+                                                    @foreach ($list_bulan as $d)
+                                                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <select name="tahun" id="tahun" class="form-select">
+                                                    <option value="">Tahun</option>
+                                                    @for ($t = $start_year; $t <= date('Y'); $t++)
+                                                        <option value="{{ $t }}">{{ $t }}</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <button class="btn btn-primary w-100" id="btnRekapkendaraan"><i
+                                                        class="ti ti-eye me-1"></i>Tampilkan</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Analisa Umur Piutang</h4>
-                                </div>
-                                <div class="card-body">
-                                    <form action="#" id="formAup">
-                                        @hasanyrole($roles_show_cabang)
-                                            <x-select label="Cabang" name="kode_cabang_aup" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                                select2="select2KodecabangAup" upperCase="true" />
-                                        @endhasanyrole
-                                        <x-input-with-icon label="Lihat per Tanggal" name="tanggal" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
-                                        <div class="form-group mb-3">
-                                            <select name="exclude" id="exclude" class="form-select">
-                                                <option value="1">Exclude Pusat</option>
-                                                <option value="2">Include Pusat</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100" id="btnAup">
-                                                <i class="ti ti-eye me-1"></i>Tampilkan
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Rekap DPPP</h4>
-                                </div>
-                                <div class="card-body">
-                                    <form action="#" id="formDppp">
-                                        @hasanyrole($roles_show_cabang)
-                                            <x-select label="Cabang" name="kode_cabang_rekapdppp" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" select2="select2Kodecabangrekapdppp" upperCase="true" />
-                                        @endhasanyrole
-                                        <div class="form-group mb-3">
-                                            <select name="bulan" id="bulan" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <select name="tahun" id="tahun" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option value="{{ $t }}">{{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100" id="btnRekapdppp"><i class="ti ti-eye me-1"></i>Tampilkan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Rekap Kendaraan</h4>
-                                </div>
-                                <div class="card-body">
-                                    <form action="#" id="formRekapkendaraan">
-                                        @hasanyrole($roles_show_cabang)
-                                            <x-select label="Cabang" name="kode_cabang_rekapkendaraan" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" select2="select2Kodecabangrekapkendaraan" upperCase="true" />
-                                        @endhasanyrole
-                                        <div class="form-group mb-3">
-                                            <select name="bulan" id="bulan" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <select name="tahun" id="tahun" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option value="{{ $t }}">{{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100" id="btnRekapkendaraan"><i
-                                                    class="ti ti-eye me-1"></i>Tampilkan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @role('operation manager')
+                    @endrole
+                    @hasanyrole(['operation manager', 'admin persediaan cabang'])
                         <div class="row">
                             <h4>Rekap Persediaan</h4>
                             <div class="col-lg-6 col-md-12 col-sm-12" id="loadrekappersediaan"></div>

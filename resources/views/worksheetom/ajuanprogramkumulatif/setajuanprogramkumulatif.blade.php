@@ -21,6 +21,9 @@
                             @endif
                         @endif
 
+                        @if ($user->hasRole('super admin'))
+                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                        @endif
                     @endcan
                 </div>
             </div>
