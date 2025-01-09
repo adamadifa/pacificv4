@@ -1822,7 +1822,7 @@ class LaporanmarketingController extends Controller
         $qretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
         $qretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
-
+        $qretur->whereBetween('marketing_retur.tanggald', [$request->dari, $request->sampai]);
 
         $qretur->where('jenis_retur', 'PF');
 
