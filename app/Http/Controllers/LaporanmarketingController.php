@@ -6347,6 +6347,13 @@ class LaporanmarketingController extends Controller
 
     public function cetaksalesperfomance(Request $request)
     {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $kode_cabang = $user->kode_cabang;
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
 
         $sp = Checkinpenjualan::select(
             'marketing_penjualan_checkin.kode_pelanggan',
@@ -6380,7 +6387,7 @@ class LaporanmarketingController extends Controller
 
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
-        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
         $data['salesperfomance'] = $sp;
         if (isset($_GET['exportButton'])) {
