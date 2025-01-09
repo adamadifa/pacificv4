@@ -71,6 +71,7 @@
                         $total_bruto = 0;
                         $grandtotal_aida = 0;
                         $grandtotal_swan = 0;
+                        $total_retur = 0;
                     @endphp
                     @foreach ($omsetpelanggan as $d)
                         @php
@@ -89,6 +90,7 @@
                             $total_aida_fix = $d->total_netto_aida - $potongan_istimewa_aida + $ppn_aida;
                             $grandtotal_aida += $total_aida_fix;
                             $grandtotal_swan += $total_swan_fix;
+                            $total_retur += $d->total_retur;
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -115,6 +117,7 @@
                     </tr>
                 </tfoot>
             </table>
+            {{ $total_retur }}
         </div>
     </div>
 </body>
