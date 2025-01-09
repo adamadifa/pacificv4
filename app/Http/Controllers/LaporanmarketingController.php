@@ -1860,7 +1860,7 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(total_retur) as total_retur'),
             DB::raw('SUM(total_bruto - potongan + penyesuaian + potongan_istimewa + ppn) as total_netto'),
             DB::raw('SUM(total_aida-potongan_aida-peny_aida) as total_netto_aida'),
-            DB::raw('SUM(total_swan - potongan_swan - potongan_stick - potongan_sp - potongan_sambal - peny_swan - peny_stick)) as total_netto_swan'),
+            DB::raw('SUM(total_swan - potongan_swan - potongan_stick - potongan_sp - potongan_sambal - peny_swan - peny_stick) as total_netto_swan'),
             DB::raw('SUM(total_bruto - potongan - penyesuaian - potongan_istimewa + ppn - IFNULL(retur.total_retur,0)) as total_bruto'),
             DB::raw('SUM(potongan_istimewa) as total_potongan_istimewa'),
             DB::raw('SUM(ppn) as total_ppn'),
