@@ -1808,6 +1808,46 @@ class LaporanmarketingController extends Controller
         $qdetailpenjualan->groupBy('marketing_penjualan_detail.no_faktur');
         $subqueryDetailpenjualan = $qdetailpenjualan;
 
+
+        $qretur = Detailretur::query();
+        $qretur->select(
+            'marketing_retur.no_faktur',
+            DB::raw('SUM(CASE WHEN kode_kategori_produk = \'P01\' THEN subtotal ELSE 0 END) as total_retur_aida'),
+            DB::raw('SUM(CASE WHEN kode_kategori_produk = \'P02\' THEN subtotal ELSE 0 END) as total__retur_swan'),
+            DB::raw('SUM(subtotal) as total_retur')
+        );
+        $qretur->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qretur->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $qretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $qretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
+        $qretur->where('salesman.kode_cabang', $kode_cabang);
+        $qretur->where('jenis_retur', 'PF');
+
+        if (!empty($kode_cabang)) {
+            $qretur->where('salesman.kode_cabang', $kode_cabang);
+        } else {
+            if (!$user->hasRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $qretur->where('cabang.kode_regional', $user->kode_regional);
+                } else {
+                    $qretur->where('salesman.kode_cabang', $user->kode_cabang);
+                }
+            }
+        }
+        if (!empty($request->kode_salesman)) {
+            $qretur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        if (!empty($request->kode_pelanggan)) {
+            $qretur->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+        }
+        $qretur->groupBy('marketing_retur.no_faktur');
+        $subqueryReteur = $qretur;
+
+
+
         $query =  Penjualan::query();
         $query->select(
             'marketing_penjualan.kode_pelanggan',
@@ -1816,9 +1856,9 @@ class LaporanmarketingController extends Controller
             'nama_wilayah',
             'klasifikasi',
             DB::raw('SUM(total_bruto - potongan + penyesuaian + potongan_istimewa + ppn) as total_netto'),
-            DB::raw('SUM(total_aida-potongan_aida-peny_aida) as total_netto_aida'),
-            DB::raw('SUM(total_swan - potongan_swan - potongan_stick - potongan_sp - potongan_sambal - peny_swan - peny_stick) as total_netto_swan'),
-            DB::raw('SUM(total_bruto - potongan - penyesuaian - potongan_istimewa + ppn) as total_bruto'),
+            DB::raw('SUM(total_aida-potongan_aida-peny_aida-IFNULL(retur.total_retur_aida,0)) as total_netto_aida'),
+            DB::raw('SUM(total_swan - potongan_swan - potongan_stick - potongan_sp - potongan_sambal - peny_swan - peny_stick - IFNULL(retur.total__retur_swan,0)) as total_netto_swan'),
+            DB::raw('SUM(total_bruto - potongan - penyesuaian - potongan_istimewa + ppn - IFNULL(retur.total_retur,0)) as total_bruto'),
             DB::raw('SUM(potongan_istimewa) as total_potongan_istimewa'),
             DB::raw('SUM(ppn) as total_ppn'),
         );
@@ -1833,6 +1873,9 @@ class LaporanmarketingController extends Controller
         $query->leftjoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
         $query->leftjoinSub($subqueryDetailpenjualan, 'dp', function ($join) {
             $join->on('marketing_penjualan.no_faktur', '=', 'dp.no_faktur');
+        });
+        $query->leftjoinSub($subqueryReteur, 'retur', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'retur.no_faktur');
         });
         $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         $query->where('status_batal', 0);
