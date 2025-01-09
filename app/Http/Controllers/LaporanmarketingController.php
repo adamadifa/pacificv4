@@ -1817,12 +1817,15 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(CASE WHEN kode_kategori_produk = \'P02\' THEN subtotal ELSE 0 END) as total__retur_swan'),
             DB::raw('SUM(subtotal) as total_retur')
         );
-        $qretur->leftjoin('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
-        $qretur->leftjoin('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
-        $qretur->leftjoin('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
-        $qretur->leftjoin('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
-        $qretur->leftjoin('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
-        $qretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
+        $qretur->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qretur->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $qretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $qretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+
+
+        $qretur->where('jenis_retur', 'PF');
+
         if (!empty($kode_cabang)) {
             $qretur->where('salesman.kode_cabang', $kode_cabang);
         } else {
