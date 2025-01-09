@@ -61,6 +61,7 @@
                         <th>SWAN</th>
                         <th>AIDA</th>
                         <th>SALESMAN</th>
+                        <th>RETUR</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,6 +104,7 @@
                             <td class="right">{{ formatAngka($total_swan_fix) }}</td>
                             <td class="right">{{ formatAngka($total_aida_fix) }}</td>
                             <td>{{ $d->nama_salesman }}</td>
+                            <td class="right">{{ formatAngka($d->total_retur) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
