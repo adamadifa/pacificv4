@@ -69,6 +69,8 @@
                         $total_swan = 0;
                         $total_aida = 0;
                         $total_bruto = 0;
+                        $grandtotal_aida = 0;
+                        $grandtotal_swan = 0;
                     @endphp
                     @foreach ($omsetpelanggan as $d)
                         @php
