@@ -1805,6 +1805,7 @@ class LaporanmarketingController extends Controller
         if (!empty($request->kode_pelanggan)) {
             $qdetailpenjualan->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
         }
+
         $qdetailpenjualan->groupBy('marketing_penjualan_detail.no_faktur');
         $subqueryDetailpenjualan = $qdetailpenjualan;
 

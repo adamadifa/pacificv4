@@ -83,6 +83,10 @@
                                 $total_aida_swan == 0 ? 0 : ($d->total_netto_aida / $total_aida_swan) * $d->total_potongan_istimewa;
                             $ppn_swan = $total_aida_swan == 0 ? 0 : ($d->total_netto_swan / $total_aida_swan) * $d->total_ppn;
                             $ppn_aida = $total_aida_swan == 0 ? 0 : ($d->total_netto_aida / $total_aida_swan) * $d->total_ppn;
+                            $total_swan_fix = $d->total_netto_swan - $potongan_istimewa_swan + $ppn_swan;
+                            $total_aida_fix = $d->total_netto_aida - $potongan_istimewa_aida + $ppn_aida;
+                            $grandtotal_aida += $total_aida_fix;
+                            $grandtotal_swan += $total_swan_fix;
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -92,8 +96,8 @@
                             <td>{{ $d->klasifikasi }}</td>
                             {{-- <td class="right">{{ formatAngka($d->total_netto) }}</td> --}}
                             <td class="right">{{ formatAngka($d->total_bruto) }}</td>
-                            <td class="right">{{ formatAngka($d->total_netto_swan - $potongan_istimewa_swan + $ppn_swan) }}</td>
-                            <td class="right">{{ formatAngka($d->total_netto_aida - $potongan_istimewa_aida + $ppn_aida) }}</td>
+                            <td class="right">{{ formatAngka($total_swan_fix) }}</td>
+                            <td class="right">{{ formatAngka($total_aida_fix) }}</td>
                             <td>{{ $d->nama_salesman }}</td>
                         </tr>
                     @endforeach
@@ -103,8 +107,8 @@
                         <th colspan="5">TOTAL</th>
                         {{-- <th class="right">{{ formatAngka($total_omset) }}</th> --}}
                         <th class="right">{{ formatAngka($total_bruto) }}</th>
-                        <th class="right">{{ formatAngka($total_swan) }}</th>
-                        <th class="right">{{ formatAngka($total_aida) }}</th>
+                        <th class="right">{{ formatAngka($grandtotal_swan) }}</th>
+                        <th class="right">{{ formatAngka($grandtotal_aida) }}</th>
                         <th></th>
                     </tr>
                 </tfoot>
