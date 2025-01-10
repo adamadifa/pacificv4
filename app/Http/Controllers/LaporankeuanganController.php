@@ -1836,7 +1836,9 @@ class LaporankeuanganController extends Controller
                     $query->where('kode_cabang', auth()->user()->kode_cabang);
                 }
             } else {
-                $query->where('kode_cabang', $request->kode_cabang);
+                if (!empty($request->kode_cabang)) {
+                    $query->where('kode_cabang', $request->kode_cabang);
+                }
             }
 
 
@@ -1882,7 +1884,9 @@ class LaporankeuanganController extends Controller
                     $query->where('kode_cabang', auth()->user()->kode_cabang);
                 }
             } else {
-                $query->where('kode_cabang', $request->kode_cabang);
+                if (!empty($request->kode_cabang)) {
+                    $query->where('kode_cabang', $request->kode_cabang);
+                }
             }
 
 
