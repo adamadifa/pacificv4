@@ -87,8 +87,12 @@
                                 $total_aida_swan == 0 ? 0 : ($d->total_netto_aida / $total_aida_swan) * $d->total_potongan_istimewa;
                             $ppn_swan = $total_aida_swan == 0 ? 0 : ($d->total_netto_swan / $total_aida_swan) * $d->total_ppn;
                             $ppn_aida = $total_aida_swan == 0 ? 0 : ($d->total_netto_aida / $total_aida_swan) * $d->total_ppn;
-                            $total_swan_fix = $d->total_netto_swan - $potongan_istimewa_swan + $ppn_swan;
-                            $total_aida_fix = $d->total_netto_aida - $potongan_istimewa_aida + $ppn_aida;
+
+                            $retur_swan = $total_aida_swan == 0 ? 0 : ($d->total_netto_swan / $total_aida_swan) * $d->total_retur;
+                            $retur_aida = $total_aida_swan == 0 ? 0 : ($d->total_netto_aida / $total_aida_swan) * $d->total_retur;
+
+                            $total_swan_fix = $d->total_netto_swan - $potongan_istimewa_swan + $ppn_swan - $retur_swan;
+                            $total_aida_fix = $d->total_netto_aida - $potongan_istimewa_aida + $ppn_aida - $retur_aida;
                             $grandtotal_aida += $total_aida_fix;
                             $grandtotal_swan += $total_swan_fix;
                             $total_retur += $d->total_retur;
