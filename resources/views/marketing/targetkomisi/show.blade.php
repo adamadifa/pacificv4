@@ -28,6 +28,7 @@
                 <tr>
                     <th rowspan="2" align="middle">Kode</th>
                     <th rowspan="2" align="middle">Salesman</th>
+                    <th rowspan="2" align="middle">Masa Kerja</th>
                     <th colspan="{{ count($produk) * 2 }}" class="text-center">Produk</th>
                 </tr>
                 <tr>
@@ -43,6 +44,15 @@
                     <tr>
                         <td>{{ $d->kode_salesman }}</td>
                         <td>{{ $d->nama_salesman }}</td>
+                        <td>
+                            @php
+                                $end_date = $targetkomisi->tahun . '-' . $targetkomisi->bulan . '-01';
+                                $masakerja = hitungMasakerja($d->tanggal_masuk, $end_date);
+                            @endphp
+                            @if (!empty($d->tanggal_masuk))
+                                {{ $masakerja['tahun'] }} Tahun {{ $masakerja['bulan'] }} Bulan
+                            @endif
+                        </td>
                         @foreach ($produk as $p)
                             @php
                                 $jml_penjualan = $d->{"penjualan_$p->kode_produk"} / $p->isi_pcs_dus / 3;

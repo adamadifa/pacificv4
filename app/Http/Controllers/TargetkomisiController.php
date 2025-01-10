@@ -297,10 +297,12 @@ class TargetkomisiController extends Controller
         $data['detail'] = Detailtargetkomisi::select(
             'marketing_komisi_target_detail.kode_salesman',
             'nama_salesman',
+            'tanggal_masuk',
             ...$select_produk,
             ...$s_penjualan
         )
             ->join('salesman', 'marketing_komisi_target_detail.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin('hrd_karyawan', 'salesman.nik', '=', 'hrd_karyawan.nik')
             ->leftJoinSub($qpenjualan, 'penjualan', function ($join) {
                 $join->on('salesman.kode_salesman', '=', 'penjualan.kode_salesman');
             })
