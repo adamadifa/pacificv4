@@ -1795,12 +1795,12 @@ class LaporankeuanganController extends Controller
 
     public function cetakkaskecil(Request $request)
     {
-
-        if (lockreport($request->dari) == "error") {
+        $user = User::findorfail(auth()->user()->id);
+        if (lockreport($request->dari) == "error" && !$user->hasRole('admin pajak')) {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
 
-        $user = User::findorfail(auth()->user()->id);
+
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $awal_kas_kecil = '2019-04-30';
         $sehariSebelumDari = date('Y-m-d', strtotime('-1 day', strtotime($request->dari)));
