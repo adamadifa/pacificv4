@@ -6,7 +6,7 @@
     @hasanyrole(array_merge($roles_show_cabang, $role_admin_pusat))
         <div class="form-group mb-3">
             <select name="kode_cabang" id="kode_cabang_kaskecil" class="form-select select2Kodecabangkaskecil">
-                <option value="">Pilih Cabang</option>
+                <option value="">Semua Cabang</option>
                 @foreach ($cabang as $d)
                     <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
                 @endforeach

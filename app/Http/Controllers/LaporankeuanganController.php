@@ -1817,7 +1817,9 @@ class LaporankeuanganController extends Controller
                 $qsaldoawal->where('kode_cabang', auth()->user()->kode_cabang);
             }
         } else {
-            $qsaldoawal->where('kode_cabang', $request->kode_cabang);
+            if (!empty($request->kode_cabang)) {
+                $qsaldoawal->where('kode_cabang', $request->kode_cabang);
+            }
         }
         $saldoawal = $qsaldoawal->first();
 
