@@ -124,18 +124,19 @@
                 const sampai = formKaskecil.find('#sampai').val();
                 const start = new Date(dari);
                 const end = new Date(sampai);
-                if (kode_cabang == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Cabang Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            formKaskecil.find("#kode_cabang_kaskecil").focus();
-                        },
-                    })
-                    return false;
-                } else if (formatlaporan == "") {
+                // if (kode_cabang == "") {
+                //     Swal.fire({
+                //         title: "Oops!",
+                //         text: 'Cabang Harus Diisi !',
+                //         icon: "warning",
+                //         showConfirmButton: true,
+                //         didClose: (e) => {
+                //             formKaskecil.find("#kode_cabang_kaskecil").focus();
+                //         },
+                //     })
+                //     return false;
+                // } else
+                if (formatlaporan == "") {
                     Swal.fire({
                         title: "Oops!",
                         text: 'Format Laporan Harus Diisi !',
