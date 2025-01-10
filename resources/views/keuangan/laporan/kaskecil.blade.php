@@ -73,7 +73,7 @@
                 select2Kodecabangkaskecil.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
-                        placeholder: 'Pilih Cabang',
+                        placeholder: 'Semua Cabang',
                         allowClear: true,
                         dropdownParent: $this.parent()
                     });
