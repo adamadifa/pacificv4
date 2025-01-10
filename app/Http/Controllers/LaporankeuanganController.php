@@ -60,7 +60,7 @@ class LaporankeuanganController extends Controller
     {
 
         $user = User::findorfail(auth()->user()->id);
-        if (lockreport($request->dari) == "error") {
+        if (lockreport($request->dari) == "error" && !$user->hasRole('admin pajak')) {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
         $data['dari'] = $request->dari;
