@@ -60,7 +60,7 @@
                         <th>OMSET</th>
                         <th>SWAN</th>
                         <th>AIDA</th>
-                        <th>SALESMAN</th>
+                        {{-- <th>SALESMAN</th> --}}
                         <th>RETUR</th>
                     </tr>
                 </thead>
@@ -107,14 +107,14 @@
                             <td class="right">{{ formatAngka($d->total_bruto) }}</td>
                             <td class="right">{{ formatAngka($total_swan_fix) }}</td>
                             <td class="right">{{ formatAngka($total_aida_fix) }}</td>
-                            <td>{{ $d->nama_salesman }}</td>
+                            {{-- <td>{{ $d->nama_salesman }}</td> --}}
                             <td class="right">{{ formatAngka($d->total_retur) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="5">TOTAL</th>
+                        <th colspan="4">TOTAL</th>
                         {{-- <th class="right">{{ formatAngka($total_omset) }}</th> --}}
                         <th class="right">{{ formatAngka($total_bruto) }}</th>
                         <th class="right">{{ formatAngka($grandtotal_swan) }}</th>

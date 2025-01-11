@@ -1854,7 +1854,6 @@ class LaporanmarketingController extends Controller
         $query->select(
             'marketing_penjualan.kode_pelanggan',
             'nama_pelanggan',
-            'nama_salesman',
             'nama_wilayah',
             'klasifikasi',
             DB::raw('SUM(total_retur) as total_retur'),
@@ -1903,7 +1902,6 @@ class LaporanmarketingController extends Controller
         $query->groupBy(
             'marketing_penjualan.kode_pelanggan',
             'nama_pelanggan',
-            'nama_salesman',
             'nama_wilayah',
             'klasifikasi',
         );
