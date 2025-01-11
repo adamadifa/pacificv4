@@ -1784,7 +1784,7 @@ class LaporanmarketingController extends Controller
         $qdetailpenjualan->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
         $qdetailpenjualan->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qdetailpenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $qdetailpenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qdetailpenjualan->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $qdetailpenjualan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $qdetailpenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         if (!empty($kode_cabang)) {
@@ -1821,7 +1821,8 @@ class LaporanmarketingController extends Controller
         $qretur->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
         $qretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
         $qretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
-        $qretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qretur->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $qretur->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $qretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
 
         $qretur->where('jenis_retur', 'PF');
@@ -1869,7 +1870,7 @@ class LaporanmarketingController extends Controller
 
 
         $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->leftjoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
