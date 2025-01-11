@@ -4950,10 +4950,10 @@ class LaporanmarketingController extends Controller
         $queryretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $queryretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_cabang)) {
-            $query->where('salesman.kode_cabang', $kode_cabang);
+            $queryretur->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
-            $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+            $queryretur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
         $queryretur->where('jenis_retur', 'PF');
         $data['retur'] = $queryretur->first();
