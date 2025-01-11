@@ -114,7 +114,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="4">TOTAL</th>
+                        <th colspan="5">TOTAL</th>
                         {{-- <th class="right">{{ formatAngka($total_omset) }}</th> --}}
                         <th class="right">{{ formatAngka($total_bruto) }}</th>
                         <th class="right">{{ formatAngka($grandtotal_swan) }}</th>
