@@ -64,7 +64,7 @@
                             $tanggal_presensi = $start_date;
                         @endphp
                         @while (strtotime($tanggal_presensi) <= strtotime($end_date))
-                            <th style="width: 100px">{{ getNamahari(date('Y-m-d', strtotime($tanggal_presensi))) }}</th>
+                            <th>{{ getNamahari(date('Y-m-d', strtotime($tanggal_presensi))) }}</th>
                             @php
                                 $tanggal_presensi = date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)));
                             @endphp
