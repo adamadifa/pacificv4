@@ -58,6 +58,7 @@
                         <th rowspan="3">OT2</th>
                         <th rowspan="3">OTL</th>
                         <th rowspan="2" colspan="3">Masuk SHIFT</th>
+                        <th rowspan="2" colspan="7">Tidak Masuk Karena</th>
                     </tr>
                     <tr>
                         @php
@@ -83,6 +84,13 @@
                         <th>P</th>
                         <th>S</th>
                         <th>M</th>
+
+                        <th>SID</th>
+                        <th>SKT</th>
+                        <th>A</th>
+                        <th>IK</th>
+                        <th>C</th>
+                        <th>ITH</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -777,6 +785,12 @@
                             <td class="center">
                                 {{ $jml_hadir_malam }}
                             </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     @endforeach
                 </tbody>
