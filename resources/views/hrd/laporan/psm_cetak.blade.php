@@ -703,15 +703,6 @@
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
                                         @endif --}}
                                     </td>
-                                    <td class="center">
-                                        {{ $jml_hadir_pagi }}
-                                    </td>
-                                    <td class="center">
-                                        {{ $jml_hadir_siang }}
-                                    </td>
-                                    <td class="center">
-                                        {{ $jml_hadir_malam }}
-                                    </td>
                                 @endif
                                 @php
                                     $total_potongan_jam_terlambat += $potongan_jam_terlambat;
