@@ -59,6 +59,8 @@
                         <th rowspan="3">OTL</th>
                         <th rowspan="2" colspan="3">Masuk SHIFT</th>
                         <th rowspan="2" colspan="7">Tidak Masuk Karena</th>
+                        <th rowspan="3">Terlambat</th>
+                        <th rowspan="2" colspan="4">TOTAL</th>
                     </tr>
                     <tr>
                         @php
@@ -787,6 +789,13 @@
                             </td>
                             <td></td>
                             <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+
                             <td></td>
                             <td></td>
                             <td></td>
