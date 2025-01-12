@@ -304,7 +304,6 @@ class PenjualanController extends Controller
         }
 
 
-        dd($last_no_faktur);
 
 
         // echo $lastnofak;
@@ -314,7 +313,7 @@ class PenjualanController extends Controller
         $nomor_awal = substr($cekpenjualan->no_faktur, 4);
         $jmlchar = strlen($nomor_awal);
         $no_faktur_auto  =  buatkode($last_no_faktur, $kode_cabang . $kode_faktur, $jmlchar);
-
+        dd($no_faktur_auto);
         $kode_sales = $salesman->kode_sales;
         $kode_pt = $salesman->kode_pt;
 
