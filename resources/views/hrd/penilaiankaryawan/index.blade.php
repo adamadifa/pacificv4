@@ -257,7 +257,7 @@
                                                         @endif
                                                     @endcan
 
-                                                    @hasanyrole('manager hrd')
+                                                    @hasanyrole('asst. manager hrd')
                                                         <form method="POST" name="deleteform" class="deleteform"
                                                             action="{{ route('penilaiankaryawan.cancel', Crypt::encrypt($d->kode_penilaian)) }}">
                                                             @csrf
