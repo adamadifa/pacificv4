@@ -259,11 +259,11 @@
 
                                                     @hasanyrole('asst. manager hrd')
                                                         <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('penilaiankaryawan.cancel', Crypt::encrypt($d->kode_penilaian)) }}">
+                                                            action="{{ route('penilaiankaryawan.delete', Crypt::encrypt($d->kode_penilaian)) }}">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <a href="#" class="cancel-confirm me-1">
-                                                                <i class="ti ti-square-rounded-x text-danger"></i>
+                                                            <a href="#" class="delete-confirm me-1">
+                                                                <i class="ti ti-trash text-danger"></i>
                                                             </a>
                                                         </form>
                                                     @endhasanyrole
