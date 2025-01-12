@@ -304,6 +304,8 @@ class PenjualanController extends Controller
         }
 
 
+        dd($last_no_faktur);
+
 
         // echo $lastnofak;
         // die;
