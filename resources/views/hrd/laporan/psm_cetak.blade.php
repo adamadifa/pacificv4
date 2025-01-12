@@ -768,6 +768,15 @@
                             <td style="font-weight: bold; color:#026720; text-align:center">
                                 {{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}
                             </td>
+                            <td class="center">
+                                {{ $jml_hadir_pagi }}
+                            </td>
+                            <td class="center">
+                                {{ $jml_hadir_siang }}
+                            </td>
+                            <td class="center">
+                                {{ $jml_hadir_malam }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
