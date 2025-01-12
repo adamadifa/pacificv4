@@ -305,7 +305,6 @@ class PenjualanController extends Controller
 
 
 
-
         // echo $lastnofak;
         // die;
         $kode_cabang = $salesman->kode_cabang;
@@ -313,7 +312,7 @@ class PenjualanController extends Controller
         $nomor_awal = substr($cekpenjualan->no_faktur, 4);
         $jmlchar = strlen($nomor_awal);
         $no_faktur_auto  =  buatkode($last_no_faktur, $kode_cabang . $kode_faktur, $jmlchar);
-        // dd($no_faktur_auto);
+
         $kode_sales = $salesman->kode_sales;
         $kode_pt = $salesman->kode_pt;
 
@@ -324,19 +323,17 @@ class PenjualanController extends Controller
         if ($penjualan->tanggal >= '2024-03-01') {
             $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
                 ->where('tanggal', '>=', $start_date)
-                ->where('kode_salesd', $kode_sales)
+                ->where('kode_sales', $kode_sales)
                 ->where('kode_cabang', $kode_cabang)
                 ->whereRaw('YEAR(tanggal)="' . $thn . '"')
                 ->whereRaw('LEFT(no_faktur,3)="' . $kode_pt . '"')
                 ->orderBy('no_faktur', 'desc')
                 ->first();
             $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
-
-            dd($last_no_faktur);
             $no_faktur_auto = buatkode($last_no_faktur, $kode_pt . $tahun . $kode_sales, 6);
         }
 
-
+        // echo $no_fak_penj_auto;
         // die;
         try {
 
