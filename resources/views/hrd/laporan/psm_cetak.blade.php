@@ -34,7 +34,7 @@
     </div>
     <div class="content">
         <div class="freeze-table">
-            <table class="datatable3" style="width: 200%">
+            <table class="datatable3" style="width: 250%">
                 <thead>
                     <tr>
                         <th rowspan="3">No</th>
@@ -57,6 +57,7 @@
                         <th rowspan="3">OT1</th>
                         <th rowspan="3">OT2</th>
                         <th rowspan="3">OTL</th>
+                        <th rowspan="2"></th>
                     </tr>
                     <tr>
                         @php
@@ -79,6 +80,9 @@
                                 $tanggal_presensi = date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)));
                             @endphp
                         @endwhile
+                        <th>P</th>
+                        <th>S</th>
+                        <th>M</th>
                     </tr>
                 </thead>
                 <tbody>
