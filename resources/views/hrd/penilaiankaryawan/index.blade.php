@@ -257,6 +257,17 @@
                                                         @endif
                                                     @endcan
 
+                                                    @hasanyrole('manager hrd')
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('penilaiankaryawan.cancel', Crypt::encrypt($d->kode_penilaian)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="cancel-confirm me-1">
+                                                                <i class="ti ti-square-rounded-x text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    @endhasanyrole
+
                                                 </div>
                                             </td>
                                         </tr>
