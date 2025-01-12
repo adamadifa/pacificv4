@@ -114,6 +114,10 @@
                                 $total_overtime_libur = 0;
                                 $total_premi_shift2_lembur = 0;
                                 $total_premi_shift3_lembur = 0;
+
+                                $jml_hadir_pagi = 0;
+                                $jml_hadir_siang = 0;
+                                $jml_hadir_malam = 0;
                             @endphp
                             @while (strtotime($tanggal_presensi) <= strtotime($end_date))
                                 @php
@@ -304,6 +308,7 @@
                                                 //Denda
                                                 $jumlah_denda = $denda['denda'];
                                                 $kode_shift = 'P';
+                                                $jml_hadir_pagi += 1;
 
                                                 //PREMI
                                                 if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD003') {
@@ -311,6 +316,7 @@
                                                         $total_premi_shift2 += 1;
                                                     }
                                                     $kode_shift = 'S';
+                                                    $jml_hadir_siang += 1;
                                                 }
 
                                                 if ($d[$tanggal_presensi]['kode_jadwal'] == 'JD004') {
@@ -318,6 +324,7 @@
                                                         $total_premi_shift3 += 1;
                                                     }
                                                     $kode_shift = 'M';
+                                                    $jml_hadir_malam += 1;
                                                 }
 
                                             @endphp
@@ -695,6 +702,15 @@
                                         @if (!empty($total_jam))
                                             <span style="font-weight: bold ;color:#fae603">Total Jam :{{ $total_jam }}</span>
                                         @endif --}}
+                                    </td>
+                                    <td class="center">
+                                        {{ $jml_hadir_pagi }}
+                                    </td>
+                                    <td class="center">
+                                        {{ $jml_hadir_siang }}
+                                    </td>
+                                    <td class="center">
+                                        {{ $jml_hadir_malam }}
                                     </td>
                                 @endif
                                 @php
