@@ -313,7 +313,7 @@ class PenjualanController extends Controller
         $nomor_awal = substr($cekpenjualan->no_faktur, 4);
         $jmlchar = strlen($nomor_awal);
         $no_faktur_auto  =  buatkode($last_no_faktur, $kode_cabang . $kode_faktur, $jmlchar);
-        dd($no_faktur_auto);
+        // dd($no_faktur_auto);
         $kode_sales = $salesman->kode_sales;
         $kode_pt = $salesman->kode_pt;
 
@@ -331,10 +331,12 @@ class PenjualanController extends Controller
                 ->orderBy('no_faktur', 'desc')
                 ->first();
             $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
+
+            dd($last_no_faktur);
             $no_faktur_auto = buatkode($last_no_faktur, $kode_pt . $tahun . $kode_sales, 6);
         }
 
-        // echo $no_fak_penj_auto;
+
         // die;
         try {
 
