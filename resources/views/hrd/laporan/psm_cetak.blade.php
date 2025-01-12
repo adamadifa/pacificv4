@@ -57,7 +57,7 @@
                         <th rowspan="3">OT1</th>
                         <th rowspan="3">OT2</th>
                         <th rowspan="3">OTL</th>
-                        <th rowspan="2"></th>
+                        <th rowspan="2" colspan="3">Masuk SHIFT</th>
                     </tr>
                     <tr>
                         @php
