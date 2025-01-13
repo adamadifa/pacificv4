@@ -247,7 +247,7 @@ class KaskecilController extends Controller
                 ]);
             } else {
                 Kaskecil::where('id', $id)->update([
-                    'no_bukti' => $request->no_bukti,
+                    // 'no_bukti' => $request->no_bukti,
                     'tanggal' => $request->tanggal,
                     'keterangan' => $request->keterangan,
                     'kode_akun' => $request->kode_akun,
