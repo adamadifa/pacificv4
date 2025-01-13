@@ -297,6 +297,7 @@ class TargetkomisiController extends Controller
         $data['detail'] = Detailtargetkomisi::select(
             'marketing_komisi_target_detail.kode_salesman',
             'nama_salesman',
+            'salesman.nik',
             'tanggal_masuk',
             ...$select_produk,
             ...$s_penjualan

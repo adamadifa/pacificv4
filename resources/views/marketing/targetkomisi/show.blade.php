@@ -27,6 +27,7 @@
             <thead class="table-dark">
                 <tr>
                     <th rowspan="2" align="middle">Kode</th>
+                    <th rowspan="2" align="middle">NIK</th>
                     <th rowspan="2" align="middle">Salesman</th>
                     <th rowspan="2" align="middle">Masa Kerja</th>
                     <th colspan="{{ count($produk) * 2 }}" class="text-center">Produk</th>
@@ -43,6 +44,7 @@
                 @foreach ($detail as $d)
                     <tr>
                         <td>{{ $d->kode_salesman }}</td>
+                        <td>{{ $d->nik }}</td>
                         <td>{{ $d->nama_salesman }}</td>
                         <td>
                             @php
