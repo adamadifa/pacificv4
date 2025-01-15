@@ -20,7 +20,7 @@ class MutasibankController extends Controller
         $lg = new Ledger();
         $data['ledger'] = $lg->getLedger(request: $request)->get();
         $bnk = new Bank();
-        $data['bank'] = $bnk->getBank()->get();
+        $data['bank'] = $bnk->getMutasibank()->get();
 
         $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
         $tahun = !empty($request->dari) ? date('Y', strtotime($request->dari)) : '';

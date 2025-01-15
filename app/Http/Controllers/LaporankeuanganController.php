@@ -36,7 +36,7 @@ class LaporankeuanganController extends Controller
     {
         $user = User::findorfail(auth()->user()->id);
         $b = new Bank();
-        $data['bank'] = $b->getBank()->get();
+        $data['bank'] = $b->getMutasibank()->get();
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
