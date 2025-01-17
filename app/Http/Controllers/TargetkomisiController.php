@@ -673,7 +673,7 @@ class TargetkomisiController extends Controller
 
     public function gettargetsalesmanedit(Request $request)
     {
-        $kode_target = Crypt::decrypt($request->kode_target);
+        $kode_target = $request->kode_target;
         $target = Targetkomisi::where('kode_target', $kode_target)->first();
         $bulan = $target->bulan;
         $tahun = $target->tahun;
