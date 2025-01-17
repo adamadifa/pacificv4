@@ -290,6 +290,8 @@ class LaporangudangbahanController extends Controller
             ->orderBy('nama_barang')
             ->get();
 
+        dd($data['persediaan']);
+
         $data['dari'] = $dari;
         $data['sampai'] = $sampai;
         $data['kategori'] = Kategoribarangpembelian::where('kode_kategori', $request->kode_kategori)->first();
