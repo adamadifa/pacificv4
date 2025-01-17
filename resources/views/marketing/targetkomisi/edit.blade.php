@@ -9,7 +9,7 @@
 <form action="{{ route('targetkomisi.update', Crypt::encrypt($targetkomisi->kode_target)) }}" method="POST" id="formTargetkomisi">
     @method('PUT')
     @csrf
-    {{-- <div class="row">
+    <div class="row">
         <div class="co-12">
 
             <div class="row">
@@ -64,7 +64,7 @@
                 @endhasanyrole
             </div>
         </div>
-    </div> --}}
+    </div>
     <div class="row mb-3">
         <div class="col">
             <div class="table-modal">
