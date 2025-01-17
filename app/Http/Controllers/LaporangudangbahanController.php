@@ -260,28 +260,94 @@ class LaporangudangbahanController extends Controller
             )
 
             ->where(function ($query) {
-                $query->whereNotNull('saldo_awal_qty_unit')
-                    ->orWhereNotNull('saldo_awal_qty_berat')
-                    ->orWhereNotNull('opname_qty_unit')
-                    ->orWhereNotNull('opname_qty_berat')
-                    ->orWhereNotNull('bm_qty_unit_pembelian')
-                    ->orWhereNotNull('bm_qty_unit_lainnya')
-                    ->orWhereNotNull('bm_qty_unit_returpengganti')
-                    ->orWhereNotNull('bm_qty_berat_pembelian')
-                    ->orWhereNotNull('bm_qty_berat_lainnya')
-                    ->orWhereNotNull('bm_qty_berat_returpengganti')
-                    ->orWhereNotNull('bk_qty_unit_produksi')
-                    ->orWhereNotNull('bk_qty_unit_seasoning')
-                    ->orWhereNotNull('bk_qty_unit_pdqc')
-                    ->orWhereNotNull('bk_qty_unit_susut')
-                    ->orWhereNotNull('bk_qty_unit_lainnya')
-                    ->orWhereNotNull('bk_qty_unit_cabang')
-                    ->orWhereNotNull('bk_qty_berat_produksi')
-                    ->orWhereNotNull('bk_qty_berat_seasoning')
-                    ->orWhereNotNull('bk_qty_berat_pdqc')
-                    ->orWhereNotNull('bk_qty_berat_susut')
-                    ->orWhereNotNull('bk_qty_berat_lainnya')
-                    ->orWhereNotNull('bk_qty_berat_cabang');
+                $query->where(function ($query) {
+                    $query->whereNotNull('saldo_awal_qty_unit')
+                        ->where('saldo_awal_qty_unit', '<>', 0.0);
+                })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('saldo_awal_qty_berat')
+                            ->where('saldo_awal_qty_berat', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('opname_qty_unit')
+                            ->where('opname_qty_unit', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('opname_qty_berat')
+                            ->where('opname_qty_berat', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bm_qty_unit_pembelian')
+                            ->where('bm_qty_unit_pembelian', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bm_qty_unit_lainnya')
+                            ->where('bm_qty_unit_lainnya', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bm_qty_unit_returpengganti')
+                            ->where('bm_qty_unit_returpengganti', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bm_qty_berat_pembelian')
+                            ->where('bm_qty_berat_pembelian', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bm_qty_berat_lainnya')
+                            ->where('bm_qty_berat_lainnya', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bm_qty_berat_returpengganti')
+                            ->where('bm_qty_berat_returpengganti', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_unit_produksi')
+                            ->where('bk_qty_unit_produksi', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_unit_seasoning')
+                            ->where('bk_qty_unit_seasoning', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_unit_pdqc')
+                            ->where('bk_qty_unit_pdqc', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_unit_susut')
+                            ->where('bk_qty_unit_susut', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_unit_lainnya')
+                            ->where('bk_qty_unit_lainnya', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_unit_cabang')
+                            ->where('bk_qty_unit_cabang', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_berat_produksi')
+                            ->where('bk_qty_berat_produksi', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_berat_seasoning')
+                            ->where('bk_qty_berat_seasoning', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_berat_pdqc')
+                            ->where('bk_qty_berat_pdqc', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_berat_susut')
+                            ->where('bk_qty_berat_susut', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_berat_lainnya')
+                            ->where('bk_qty_berat_lainnya', '<>', 0.0);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->whereNotNull('bk_qty_berat_cabang')
+                            ->where('bk_qty_berat_cabang', '<>', 0.0);
+                    });
             })
             ->where('pembelian_barang.kode_group', 'GDB')
             ->where('pembelian_barang.kode_kategori', $request->kode_kategori)
