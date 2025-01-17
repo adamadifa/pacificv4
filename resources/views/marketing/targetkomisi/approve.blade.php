@@ -134,10 +134,10 @@
     </div>
 
 </form>
-<script>
+{{-- <script>
     $(".table-modal").freezeTable({
         'scrollable': true,
         'columnNum': 3,
         'shadow': true,
     });
-</script>
+</script> --}}
