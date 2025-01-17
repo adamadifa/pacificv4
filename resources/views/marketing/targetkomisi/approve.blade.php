@@ -1,3 +1,11 @@
+<style>
+    .table-modal {
+        height: auto;
+        max-height: 550px;
+        overflow-y: scroll;
+
+    }
+</style>
 <form action="{{ route('targetkomisi.approvestore', Crypt::encrypt($targetkomisi->kode_target)) }}">
     @csrf
     <div class="row">
@@ -128,3 +136,10 @@
     </div>
 
 </form>
+<script>
+    $(".freeze-table").freezeTable({
+        'scrollable': true,
+        'columnNum': 3,
+        'shadow': true,
+    });
+</script>
