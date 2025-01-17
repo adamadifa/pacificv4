@@ -56,7 +56,7 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <div class="table-responsive">
+            <div class="table-modal">
                 <table class="table table-bordered  table-hover">
                     <thead class="table-dark" style="width: 400%">
                         <tr>
@@ -137,7 +137,7 @@
 
 </form>
 <script>
-    $(".freeze-table").freezeTable({
+    $(".table-modal").freezeTable({
         'scrollable': true,
         'columnNum': 3,
         'shadow': true,
