@@ -92,8 +92,8 @@
                                     @endphp
                                     <td class="text-end bg-success text-white"> {{ formatAngka($rata_rata_penjualan) }}</td>
                                     <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_tigabulan) }}</td>
-                                    <td class="text-end bg-warning text-white">{{ formatAngka($jml_penjualan_duabulan) }}</td>
-                                    <td class="text-end bg-danger text-white">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
+                                    <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_duabulan) }}</td>
+                                    <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
                                     <td class="text-end">{{ formatAngka($d->{"target_$p->kode_produk"}) }}</td>
                                 @endforeach
                             </tr>
