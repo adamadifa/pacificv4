@@ -1,3 +1,11 @@
+<style>
+    .table-modal {
+        height: auto;
+        max-height: 550px;
+        overflow-y: scroll;
+
+    }
+</style>
 <div class="row">
     <div class="col">
         <table class="table">
@@ -106,3 +114,10 @@
         </table>
     </div>
 </div>
+<script>
+    $(".table-modal").freezeTable({
+        'scrollable': true,
+        'columnNum': 3,
+        'shadow': true,
+    });
+</script>
