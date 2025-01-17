@@ -67,7 +67,7 @@
     </div>
     <div class="row mb-3">
         <div class="col">
-            <div class="table-modal">
+            <div class="table-responsive">
                 <table class="table table-bordered  table-hover" style="width: 270%">
                     <thead class="table-dark">
                         <tr>
