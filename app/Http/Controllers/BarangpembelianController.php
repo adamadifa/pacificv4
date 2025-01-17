@@ -28,6 +28,8 @@ class BarangpembelianController extends Controller
             $query->where('pembelian_barang.kode_group', 'GAF');
         } else if ($user->hasRole('admin gudang logistik')) {
             $query->where('pembelian_barang.kode_group', 'GDL');
+        } else if ($user->hasRole('admin pembelian')) {
+            $query->where('pembelian_barang.kode_group', '!=', 'GDL');
         }
         $query->orderBy('created_at', 'desc');
         $barang = $query->paginate(10);
