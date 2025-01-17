@@ -612,7 +612,7 @@ class TargetkomisiController extends Controller
             }
         }
 
-        // dd($data);
+        dd($data);
         DB::beginTransaction();
         try {
             $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
@@ -637,7 +637,7 @@ class TargetkomisiController extends Controller
                 'tahun' => $tahun,
                 'kode_cabang' => $kode_cabang,
             ]);
-            Detailtargetkomisi::where('kode_targetd', $kode_target)->delete();
+            Detailtargetkomisi::where('kode_target', $kode_target)->delete();
             Detailtargetkomisi::insert($data);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
