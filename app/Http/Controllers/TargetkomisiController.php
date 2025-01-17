@@ -673,25 +673,121 @@ class TargetkomisiController extends Controller
 
     public function gettargetsalesmanedit(Request $request)
     {
-        $kode_target = $request->kode_target;
+        $kode_target = Crypt::decrypt($request->kode_target);
+        $target = Targetkomisi::where('kode_target', $kode_target)->first();
+        $bulan = $target->bulan;
+        $tahun = $target->tahun;
+        $lastbulan = getbulandantahunlalu($bulan, $tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($bulan, $tahun, "tahun");
+
+        $lastduabulan = getbulandantahunlalu($lastbulan, $lasttahun, "bulan");
+        $lastduabulantahun = getbulandantahunlalu($lastbulan, $lasttahun, "tahun");
+
+        $lasttigabulan = getbulandantahunlalu($lastduabulan, $lastduabulantahun, "bulan");
+        $lasttigabulantahun = getbulandantahunlalu($lastduabulan, $lastduabulantahun, "tahun");
+
+        // if (in_array($bulan, [1, 2, 3])) {
+        //     $bulan = $bulan + 12;
+        //     $tahun = $tahun - 1;
+        // }
+
+        // $last3bulan = $bulan - 3;
+
+
+        $start_date = $lasttigabulantahun . "-" . $lasttigabulan . "-01";
+        $end_date = date('Y-m-t', strtotime($lasttahun . "-" . $lastbulan . "-01"));
+
+
+        // dd($start_date, $end_date);
+        $data['targetkomisi'] = Targetkomisi::select('marketing_komisi_target.*', 'nama_cabang')
+            ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('kode_target', $kode_target)
+            ->first();
         $produk = Detailtargetkomisi::select('kode_produk')
             ->orderBy('kode_produk')
             ->groupBy('kode_produk')
             ->where('kode_target', $kode_target)
             ->get();
 
+        $produk = Detailtargetkomisi::select('marketing_komisi_target_detail.kode_produk', 'isi_pcs_dus')
+            ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
+            ->orderBy('marketing_komisi_target_detail.kode_produk')
+            ->groupBy('marketing_komisi_target_detail.kode_produk')
+            ->where('kode_target', $kode_target)
+            ->get();
+
+        $select_produk = [];
+        $select_produk_penjualan = [];
+        $s_penjualan = [];
+        $select_penjualan_tiga_bulan = [];
+        $select_penjualan_dua_bulan = [];
+        $select_penjualan_last_bulan = [];
+
+        $s_penjualan_tiga_bulan = [];
+        $s_penjualan_dua_bulan = [];
+        $s_penjualan_last_bulan = [];
+
         foreach ($produk as $d) {
-            $select_produk[] = "SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_" . $d->kode_produk . "`";
+            // $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_" . $d->kode_produk . "`");
+            $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_$d->kode_produk`");
+            $select_produk_penjualan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk',jumlah,0)) as `penjualan_$d->kode_produk`");
+
+            $select_penjualan_tiga_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lasttigabulan' AND YEAR(tanggal) = '$lasttigabulantahun',jumlah,0)) as `penjualan_tiga_bulan_$d->kode_produk`");
+
+            $select_penjualan_dua_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lastduabulan' AND YEAR(tanggal) = '$lastduabulantahun',jumlah,0)) as `penjualan_dua_bulan_$d->kode_produk`");
+
+            $select_penjualan_last_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lastbulan' AND YEAR(tanggal) = '$lasttahun',jumlah,0)) as `penjualan_last_bulan_$d->kode_produk`");
+
+            $s_penjualan[] = "penjualan_$d->kode_produk";
+
+            $s_penjualan_tiga_bulan[] = "penjualan_tiga_bulan_$d->kode_produk";
+
+            $s_penjualan_dua_bulan[] = "penjualan_dua_bulan_$d->kode_produk";
+
+            $s_penjualan_last_bulan[] = "penjualan_last_bulan_$d->kode_produk";
         }
 
-        $s_produk = implode(",", $select_produk);
-        $data['detail'] = Detailtargetkomisi::select('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', DB::raw("$s_produk"))
+        $qpenjualan = Detailpenjualan::join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                ...$select_produk_penjualan,
+                ...$select_penjualan_tiga_bulan,
+                ...$select_penjualan_dua_bulan,
+                ...$select_penjualan_last_bulan
+            )
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->where('salesman.kode_cabang', $target->kode_cabang)
+            // ->where('status_promosi', 0)
+            ->groupBy('marketing_penjualan.kode_salesman');
+
+        // $s_produk = implode(",", $select_produk);
+        $data['detail'] = Detailtargetkomisi::select(
+            'marketing_komisi_target_detail.kode_salesman',
+            'nama_salesman',
+            'salesman.nik',
+            'tanggal_masuk',
+            ...$select_produk,
+            ...$s_penjualan,
+            ...$s_penjualan_tiga_bulan,
+            ...$s_penjualan_dua_bulan,
+            ...$s_penjualan_last_bulan
+        )
             ->join('salesman', 'marketing_komisi_target_detail.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin('hrd_karyawan', 'salesman.nik', '=', 'hrd_karyawan.nik')
+            ->leftJoinSub($qpenjualan, 'penjualan', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'penjualan.kode_salesman');
+            })
             ->where('kode_target', $kode_target)
-            ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman')
+            ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', ...$s_penjualan)
             ->get();
 
         $data['produk'] = $produk;
+        $data['lasttigabulan'] = $lasttigabulan;
+        $data['lastduabulan'] = $lastduabulan;
+        $data['lastbulan'] = $lastbulan;
 
         return view('marketing.targetkomisi.gettargetsalesman_edit', $data);
     }
