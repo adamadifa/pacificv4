@@ -210,6 +210,13 @@
                     },
                 });
                 return false;
+            } else {
+                $("#btnSimpan").attr("disabled", true);
+                $("#btnSimpan").html(`
+                <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Loading..`);
             }
         });
     });
