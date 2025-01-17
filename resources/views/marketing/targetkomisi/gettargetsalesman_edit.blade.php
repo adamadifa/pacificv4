@@ -36,10 +36,10 @@
 <script>
     $(".money").maskMoney();
 </script>
-<script>
+{{-- <script>
     $(".table-modal").freezeTable({
         'scrollable': true,
         'columnNum': 3,
         'shadow': true,
     });
-</script>
+</script> --}}
