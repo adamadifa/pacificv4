@@ -31,29 +31,7 @@
 
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-            <table class="table">
-                <tr>
-                    <th style="width: 20%">Kode Target</th>
-                    <td>{{ $targetkomisi->kode_target }}</td>
-                </tr>
-                <tr>
-                    <th>Bulan</th>
-                    <td>{{ $namabulan[$targetkomisi->bulan] }}</td>
-                </tr>
-                <tr>
-                    <th>Tahun</th>
-                    <td>{{ $targetkomisi->tahun }}</td>
-                </tr>
-                <tr>
-                    <th>Cabang</th>
-                    <td>{{ $targetkomisi->nama_cabang }}</td>
-                </tr>
-            </table>
 
-        </div>
-    </div>
     <div class="row mt-2">
         <div class="col">
             <div class="table-modal">
