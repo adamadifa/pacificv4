@@ -339,11 +339,11 @@ class TargetkomisiController extends Controller
         // $last3bulan = $bulan - 3;
 
 
-        $start_date = $tahun . "-" . $lasttigabulan . "-01";
+        $start_date = $lasttigabulantahun . "-" . $lasttigabulan . "-01";
         $end_date = date('Y-m-t', strtotime($lasttahun . "-" . $lastbulan . "-01"));
 
 
-        dd($start_date, $end_date);
+        // dd($start_date, $end_date);
         $data['targetkomisi'] = Targetkomisi::select('marketing_komisi_target.*', 'nama_cabang')
             ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('kode_target', $kode_target)
