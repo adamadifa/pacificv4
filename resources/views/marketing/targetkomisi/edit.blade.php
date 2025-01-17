@@ -1,6 +1,14 @@
+<style>
+    .table-modal {
+        height: auto;
+        max-height: 550px;
+        overflow-y: scroll;
+
+    }
+</style>
 <form action="{{ route('targetkomisi.update', Crypt::encrypt($targetkomisi->kode_target)) }}" method="POST" id="formTargetkomisi">
     @method('PUT')
-    <div class="row">
+    {{-- <div class="row">
         <div class="co-12">
             @csrf
             <div class="row">
@@ -55,10 +63,10 @@
                 @endhasanyrole
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="row mb-3">
         <div class="col">
-            <div class="table-responsive">
+            <div class="table-modal">
                 <table class="table table-bordered  table-hover" style="width: 270%">
                     <thead class="table-dark">
                         <tr>
@@ -203,5 +211,12 @@
                 return false;
             }
         });
+    });
+</script>
+<script>
+    $(".table-modal").freezeTable({
+        'scrollable': true,
+        'columnNum': 3,
+        'shadow': true,
     });
 </script>
