@@ -319,6 +319,21 @@ class TargetkomisiController extends Controller
     public function approve($kode_target)
     {
         $kode_target = Crypt::decrypt($kode_target);
+        $target = Targetkomisi::where('kode_target', $kode_target)->first();
+        $bulan = $target->bulan;
+        $tahun = $target->tahun;
+        $lastbulan = getbulandantahunlalu($bulan, $tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($bulan, $tahun, "tahun");
+        if (in_array($bulan, [1, 2, 3])) {
+            $bulan = $bulan + 12;
+            $tahun = $tahun - 1;
+        }
+
+        $last3bulan = $bulan - 3;
+
+
+        $start_date = $tahun . "-" . $last3bulan . "-01";
+        $end_date = date('Y-m-t', strtotime($lasttahun . "-" . $lastbulan . "-01"));
         $data['targetkomisi'] = Targetkomisi::select('marketing_komisi_target.*', 'nama_cabang')
             ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('kode_target', $kode_target)
@@ -356,7 +371,7 @@ class TargetkomisiController extends Controller
             // ->where('status_promosi', 0)
             ->groupBy('marketing_penjualan.kode_salesman');
 
-        $s_produk = implode(",", $select_produk);
+        // $s_produk = implode(",", $select_produk);
         $data['detail'] = Detailtargetkomisi::select(
             'marketing_komisi_target_detail.kode_salesman',
             'nama_salesman',
