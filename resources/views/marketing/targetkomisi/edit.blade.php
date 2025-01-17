@@ -8,9 +8,10 @@
 </style>
 <form action="{{ route('targetkomisi.update', Crypt::encrypt($targetkomisi->kode_target)) }}" method="POST" id="formTargetkomisi">
     @method('PUT')
+    @csrf
     {{-- <div class="row">
         <div class="co-12">
-            @csrf
+
             <div class="row">
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-6 col-md-12 col-sm-12">
