@@ -329,15 +329,49 @@ class TargetkomisiController extends Controller
             ->where('kode_target', $kode_target)
             ->get();
 
+        $produk = Detailtargetkomisi::select('marketing_komisi_target_detail.kode_produk', 'isi_pcs_dus')
+            ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
+            ->orderBy('marketing_komisi_target_detail.kode_produk')
+            ->groupBy('marketing_komisi_target_detail.kode_produk')
+            ->where('kode_target', $kode_target)
+            ->get();
+
+        $select_produk = [];
+        $select_produk_penjualan = [];
+        $s_penjualan = [];
         foreach ($produk as $d) {
-            $select_produk[] = "SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_" . $d->kode_produk . "`";
+            // $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_" . $d->kode_produk . "`");
+            $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_$d->kode_produk`");
+            $select_produk_penjualan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk',jumlah,0)) as `penjualan_$d->kode_produk`");
+            $s_penjualan[] = "penjualan_$d->kode_produk";
         }
 
+        $qpenjualan = Detailpenjualan::join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->select('marketing_penjualan.kode_salesman', ...$select_produk_penjualan)
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->where('salesman.kode_cabang', $target->kode_cabang)
+            // ->where('status_promosi', 0)
+            ->groupBy('marketing_penjualan.kode_salesman');
+
         $s_produk = implode(",", $select_produk);
-        $data['detail'] = Detailtargetkomisi::select('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', DB::raw("$s_produk"))
+        $data['detail'] = Detailtargetkomisi::select(
+            'marketing_komisi_target_detail.kode_salesman',
+            'nama_salesman',
+            'salesman.nik',
+            'tanggal_masuk',
+            ...$select_produk,
+            ...$s_penjualan
+        )
             ->join('salesman', 'marketing_komisi_target_detail.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin('hrd_karyawan', 'salesman.nik', '=', 'hrd_karyawan.nik')
+            ->leftJoinSub($qpenjualan, 'penjualan', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'penjualan.kode_salesman');
+            })
             ->where('kode_target', $kode_target)
-            ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman')
+            ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', ...$s_penjualan)
             ->get();
 
         $data['produk'] = $produk;
