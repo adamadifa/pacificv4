@@ -57,8 +57,8 @@
     <div class="row mt-2">
         <div class="col">
             <div class="table-modal">
-                <table class="table table-bordered  table-hover">
-                    <thead class="table-dark" style="width: 400%">
+                <table class="table table-bordered  table-hover" style="width: 200%">
+                    <thead class="table-dark">
                         <tr>
                             <th rowspan="2" align="middle" style="width: 5%">Kode</th>
                             <th rowspan="2" align="middle" style="width: 5%">NIK</th>
