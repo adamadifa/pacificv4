@@ -369,6 +369,11 @@ class TargetkomisiController extends Controller
         $select_penjualan_tiga_bulan = [];
         $select_penjualan_dua_bulan = [];
         $select_penjualan_last_bulan = [];
+
+        $s_penjualan_tiga_bulan = [];
+        $s_penjualan_dua_bulan = [];
+        $s_penjualan_last_bulan = [];
+
         foreach ($produk as $d) {
             // $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_" . $d->kode_produk . "`");
             $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_$d->kode_produk`");
@@ -381,6 +386,12 @@ class TargetkomisiController extends Controller
             $select_penjualan_last_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lastbulan' AND YEAR(tanggal) = '$lasttahun',jumlah,0)) as `penjualan_last_bulan_$d->kode_produk`");
 
             $s_penjualan[] = "penjualan_$d->kode_produk";
+
+            $s_penjualan_tiga_bulan[] = "penjualan_tiga_bulan_$d->kode_produk";
+
+            $s_penjualan_dua_bulan[] = "penjualan_dua_bulan_$d->kode_produk";
+
+            $s_penjualan_last_bulan[] = "penjualan_last_bulan_$d->kode_produk";
         }
 
         $qpenjualan = Detailpenjualan::join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
@@ -406,7 +417,10 @@ class TargetkomisiController extends Controller
             'salesman.nik',
             'tanggal_masuk',
             ...$select_produk,
-            ...$s_penjualan
+            ...$s_penjualan,
+            ...$s_penjualan_tiga_bulan,
+            ...$s_penjualan_dua_bulan,
+            ...$s_penjualan_last_bulan
         )
             ->join('salesman', 'marketing_komisi_target_detail.kode_salesman', '=', 'salesman.kode_salesman')
             ->leftJoin('hrd_karyawan', 'salesman.nik', '=', 'hrd_karyawan.nik')
