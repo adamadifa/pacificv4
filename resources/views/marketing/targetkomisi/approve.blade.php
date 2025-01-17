@@ -49,7 +49,7 @@
     <div class="row mt-2">
         <div class="col">
             <table class="table table-bordered  table-hover">
-                <thead class="table-dark" style="width: 150%">
+                <thead class="table-dark" style="width: 200%">
                     <tr>
                         <th rowspan="2" align="middle">Kode</th>
                         <th rowspan="2" align="middle">NIK</th>
