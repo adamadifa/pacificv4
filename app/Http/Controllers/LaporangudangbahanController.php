@@ -356,7 +356,7 @@ class LaporangudangbahanController extends Controller
             ->orderBy('nama_barang')
             ->get();
 
-        dd($data['persediaan']);
+        // dd($data['persediaan']);
 
         $data['dari'] = $dari;
         $data['sampai'] = $sampai;
