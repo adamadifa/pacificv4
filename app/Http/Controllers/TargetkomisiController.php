@@ -343,7 +343,7 @@ class TargetkomisiController extends Controller
         $end_date = date('Y-m-t', strtotime($lasttahun . "-" . $lastbulan . "-01"));
 
 
-
+        dd($start_date, $end_date);
         $data['targetkomisi'] = Targetkomisi::select('marketing_komisi_target.*', 'nama_cabang')
             ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('kode_target', $kode_target)
