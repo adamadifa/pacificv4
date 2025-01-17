@@ -35,7 +35,7 @@
     <div class="row mt-2">
         <div class="col">
             <div class="table-modal">
-                <table class="table table-bordered  table-hover" style="width: 140%">
+                <table class="table table-bordered  table-hover" style="width: 200%">
                     <thead class="table-dark">
                         <tr>
                             <th rowspan="4" align="middle" style="width: 5%">Kode</th>
@@ -52,16 +52,21 @@
                             @endforeach
                         </tr>
                         <tr>
-                            <th rowspan="2">AVG</th>
-                            <th colspan="3">Realisasi</th>
-                            <th rowspan="2">Target</th>
+                            @foreach ($produk as $d)
+                                <th rowspan="2">AVG</th>
+                                <th colspan="3">Realisasi</th>
+                                <th rowspan="2">Target</th>
+                            @endforeach
                         </tr>
                         <tr>
-                            <th>{{ getMonthName2($lasttigabulan) }}</th>
-                            <th>{{ getMonthName2($lastduabulan) }}</th>
-                            <th>{{ getMonthName2($lastbulan) }}</th>
+                            @foreach ($produk as $d)
+                                <th>{{ getMonthName2($lasttigabulan) }}</th>
+                                <th>{{ getMonthName2($lastduabulan) }}</th>
+                                <th>{{ getMonthName2($lastbulan) }}</th>
+                            @endforeach
 
                         </tr>
+
                     </thead>
                     <tbody>
                         @foreach ($detail as $d)
