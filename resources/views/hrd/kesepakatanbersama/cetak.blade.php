@@ -111,7 +111,7 @@
             </table>
             </p>
             <p style="text-indent:1cm; text-align:justify">
-                Untuk selanjutnya disebut PIHAK PERTAMA ( I ) dan bertindak atas nama CV. Makmur Permata dan CV Pacific yang
+                Untuk selanjutnya disebut PIHAK PERTAMA ( I ) dan bertindak atas nama CV. Makmur Permata yang
                 beralamat di Jl. Perintis Kemerdekaan No. 160 Tasikmalaya.
             </p>
             <p>
