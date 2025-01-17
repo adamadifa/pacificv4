@@ -24,22 +24,38 @@
 <div class="row mt-2">
     <div class="col">
         <div class="table-modal">
-            <table class="table table-bordered  table-hover" style="width: 140%">
+            <table class="table table-bordered  table-hover" style="width: 230%">
                 <thead class="table-dark">
                     <tr>
-                        <th rowspan="2" align="middle" style="width: 5%">Kode</th>
-                        <th rowspan="2" align="middle" style="width: 5%">NIK</th>
-                        <th rowspan="2" align="middle" style="width: 30%">Salesman</th>
-                        <th rowspan="2" align="middle" style="width: 30%">Masa Kerja</th>
-                        <th colspan="{{ count($produk) * 3 }}" class="text-center">Produk</th>
+                        <th rowspan="4" align="middle" style="width: 5%">Kode</th>
+                        <th rowspan="4" align="middle" style="width: 5%">NIK</th>
+                        <th rowspan="4" align="middle" style="width: 30%">Salesman</th>
+                        <th rowspan="4" align="middle" style="width: 30%">Masa Kerja</th>
+                        <th colspan="{{ count($produk) * 5 }}" class="text-center">Produk</th>
                     </tr>
                     <tr>
                         @foreach ($produk as $d)
-                            <th class="text-center" colspan="3">
+                            <th class="text-center" colspan="5">
                                 {{ $d->kode_produk }}
                             </th>
                         @endforeach
                     </tr>
+                    <tr>
+                        @foreach ($produk as $d)
+                            <th rowspan="2">AVG</th>
+                            <th colspan="3">Realisasi</th>
+                            <th rowspan="2">Target</th>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        @foreach ($produk as $d)
+                            <th>{{ getMonthName2($lasttigabulan) }}</th>
+                            <th>{{ getMonthName2($lastduabulan) }}</th>
+                            <th>{{ getMonthName2($lastbulan) }}</th>
+                        @endforeach
+
+                    </tr>
+
                 </thead>
                 <tbody>
                     @foreach ($detail as $d)
@@ -59,10 +75,14 @@
                             @foreach ($produk as $p)
                                 @php
                                     $rata_rata_penjualan = $d->{"penjualan_$p->kode_produk"} / $p->isi_pcs_dus / 3;
-                                    $jml_penjualan = $d->{"penjualan_$p->kode_produk"} / $p->isi_pcs_dus;
+                                    $jml_penjualan_tigabulan = $d->{"penjualan_tiga_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
+                                    $jml_penjualan_duabulan = $d->{"penjualan_dua_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
+                                    $jml_penjualan_lastbulan = $d->{"penjualan_last_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
                                 @endphp
                                 <td class="text-end bg-success text-white"> {{ formatAngka($rata_rata_penjualan) }}</td>
-                                <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan) }}</td>
+                                <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_tigabulan) }}</td>
+                                <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_duabulan) }}</td>
+                                <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
                                 <td class="text-end">{{ formatAngka($d->{"target_$p->kode_produk"}) }}</td>
                             @endforeach
                         </tr>
