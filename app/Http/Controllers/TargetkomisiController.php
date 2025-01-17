@@ -372,9 +372,9 @@ class TargetkomisiController extends Controller
             $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_$d->kode_produk`");
             $select_produk_penjualan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk',jumlah,0)) as `penjualan_$d->kode_produk`");
 
-            $select_penjualan_tiga_bulan = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lasttigabulan' AND YEAR(tanggal) = '$lasttigabulantahun',jumlah,0)) as `penjualan_tiga_bulan_$d->kode_produk`");
+            $select_penjualan_tiga_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lasttigabulan' AND YEAR(tanggal) = '$lasttigabulantahun',jumlah,0)) as `penjualan_tiga_bulan_$d->kode_produk`");
 
-            $select_penjualan_dua_bulan = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lastduabulan' AND YEAR(tanggal) = '$lastduabulantahun',jumlah,0)) as `penjualan_dua_bulan_$d->kode_produk`");
+            $select_penjualan_dua_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lastduabulan' AND YEAR(tanggal) = '$lastduabulantahun',jumlah,0)) as `penjualan_dua_bulan_$d->kode_produk`");
 
             $select_penjualan_last_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lastbulan' AND YEAR(tanggal) = '$lasttahun',jumlah,0)) as `penjualan_last_bulan_$d->kode_produk`");
 
