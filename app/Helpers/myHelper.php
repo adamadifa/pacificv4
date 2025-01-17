@@ -692,6 +692,26 @@ function getMonthName($month)
     return $monthNames[$month - 1];
 }
 
+
+function getMonthName2($month)
+{
+    $monthNames = array(
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mei",
+        "Jun",
+        "Jul",
+        "Agu",
+        "Sep",
+        "Okt",
+        "Nov",
+        "Des"
+    );
+    return $monthNames[$month - 1];
+}
+
 // function getroleuser()
 // {
 

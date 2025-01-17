@@ -312,6 +312,8 @@ class TargetkomisiController extends Controller
             ->get();
 
         $data['produk'] = $produk;
+
+
         return view('marketing.targetkomisi.show', $data);
     }
 
@@ -416,6 +418,9 @@ class TargetkomisiController extends Controller
             ->get();
 
         $data['produk'] = $produk;
+        $data['lasttigabulan'] = $lasttigabulan;
+        $data['lastduabulan'] = $lastduabulan;
+        $data['lastbulan'] = $lastbulan;
         return view('marketing.targetkomisi.approve', $data);
     }
 

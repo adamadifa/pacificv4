@@ -38,18 +38,29 @@
                 <table class="table table-bordered  table-hover" style="width: 140%">
                     <thead class="table-dark">
                         <tr>
-                            <th rowspan="2" align="middle" style="width: 5%">Kode</th>
-                            <th rowspan="2" align="middle" style="width: 5%">NIK</th>
-                            <th rowspan="2" align="middle" style="width: 30%">Salesman</th>
-                            <th rowspan="2" align="middle" style="width: 30%">Masa Kerja</th>
-                            <th colspan="{{ count($produk) * 3 }}" class="text-center">Produk</th>
+                            <th rowspan="4" align="middle" style="width: 5%">Kode</th>
+                            <th rowspan="4" align="middle" style="width: 5%">NIK</th>
+                            <th rowspan="4" align="middle" style="width: 30%">Salesman</th>
+                            <th rowspan="4" align="middle" style="width: 30%">Masa Kerja</th>
+                            <th colspan="{{ count($produk) * 5 }}" class="text-center">Produk</th>
                         </tr>
                         <tr>
                             @foreach ($produk as $d)
-                                <th class="text-center" colspan="3">
+                                <th class="text-center" colspan="5">
                                     {{ $d->kode_produk }}
                                 </th>
                             @endforeach
+                        </tr>
+                        <tr>
+                            <th rowspan="2">AVG</th>
+                            <th colspan="3">Realisasi</th>
+                            <th rowspan="2">Target</th>
+                        </tr>
+                        <tr>
+                            <th>{{ getMonthName2($lasttigabulan) }}</th>
+                            <th>{{ getMonthName2($lastduabulan) }}</th>
+                            <th>{{ getMonthName2($lastbulan) }}</th>
+
                         </tr>
                     </thead>
                     <tbody>
