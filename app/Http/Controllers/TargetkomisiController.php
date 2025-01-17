@@ -598,6 +598,7 @@ class TargetkomisiController extends Controller
         $kode_target_new =  $kode_cabang . $bln . $tahun;
         $kode_salesman = $request->kode_salesman;
 
+        dd($kode_salesman);
         //dd($request->BB);
         for ($i = 0; $i < count($kode_salesman); $i++) {
             foreach ($produk as $p) {
