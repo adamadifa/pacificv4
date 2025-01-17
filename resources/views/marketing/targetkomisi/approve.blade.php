@@ -55,7 +55,7 @@
                             <th rowspan="2" align="middle" style="width: 5%">Kode</th>
                             <th rowspan="2" align="middle" style="width: 5%">NIK</th>
                             <th rowspan="2" align="middle" style="width: 15%">Salesman</th>
-                            <th rowspan="2" align="middle" style="width: 20%">Masa Kerja</th>
+                            <th rowspan="2" align="middle" style="width: 30%">Masa Kerja</th>
                             <th colspan="{{ count($produk) * 3 }}" class="text-center">Produk</th>
                         </tr>
                         <tr>
