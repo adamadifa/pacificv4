@@ -258,6 +258,31 @@ class LaporangudangbahanController extends Controller
                     $join->on('pembelian_barang.kode_barang', '=', 'barangkeluar.kode_barang');
                 }
             )
+
+            ->where(function ($query) {
+                $query->whereNotNull('saldo_awal_qty_unit')
+                    ->orWhereNotNull('saldo_awal_qty_berat')
+                    ->orWhereNotNull('opname_qty_unit')
+                    ->orWhereNotNull('opname_qty_berat')
+                    ->orWhereNotNull('bm_qty_unit_pembelian')
+                    ->orWhereNotNull('bm_qty_unit_lainnya')
+                    ->orWhereNotNull('bm_qty_unit_returpengganti')
+                    ->orWhereNotNull('bm_qty_berat_pembelian')
+                    ->orWhereNotNull('bm_qty_berat_lainnya')
+                    ->orWhereNotNull('bm_qty_berat_returpengganti')
+                    ->orWhereNotNull('bk_qty_unit_produksi')
+                    ->orWhereNotNull('bk_qty_unit_seasoning')
+                    ->orWhereNotNull('bk_qty_unit_pdqc')
+                    ->orWhereNotNull('bk_qty_unit_susut')
+                    ->orWhereNotNull('bk_qty_unit_lainnya')
+                    ->orWhereNotNull('bk_qty_unit_cabang')
+                    ->orWhereNotNull('bk_qty_berat_produksi')
+                    ->orWhereNotNull('bk_qty_berat_seasoning')
+                    ->orWhereNotNull('bk_qty_berat_pdqc')
+                    ->orWhereNotNull('bk_qty_berat_susut')
+                    ->orWhereNotNull('bk_qty_berat_lainnya')
+                    ->orWhereNotNull('bk_qty_berat_cabang');
+            })
             ->where('pembelian_barang.kode_group', 'GDB')
             ->where('pembelian_barang.kode_kategori', $request->kode_kategori)
             ->orderBy('kode_jenis_barang')
