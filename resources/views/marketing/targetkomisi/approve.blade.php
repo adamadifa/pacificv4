@@ -86,9 +86,9 @@
                                         $rata_rata_penjualan = $d->{"penjualan_$p->kode_produk"} / $p->isi_pcs_dus / 3;
                                         $jml_penjualan = $d->{"penjualan_$p->kode_produk"} / $p->isi_pcs_dus;
                                     @endphp
-                                    <td class="text-end bg-success text-white">{{ formatAngka($rata_rata_penjualan) }}</td>
-                                    <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan) }}</td>
-                                    <td class="text-end">{{ formatAngka($d->{"target_$p->kode_produk"}) }}</td>
+                                    <td class="text-end bg-success text-white" style="width: 10%"> {{ formatAngka($rata_rata_penjualan) }}</td>
+                                    <td class="text-end bg-info text-white" style="width: 10%">{{ formatAngka($jml_penjualan) }}</td>
+                                    <td class="text-end" style="width: 10%">{{ formatAngka($d->{"target_$p->kode_produk"}) }}</td>
                                 @endforeach
                             </tr>
                         @endforeach
