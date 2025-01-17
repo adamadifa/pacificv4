@@ -35,7 +35,7 @@
     <div class="row mt-2">
         <div class="col">
             <div class="table-modal">
-                <table class="table table-bordered  table-hover" style="width: 250%">
+                <table class="table table-bordered  table-hover" style="width: 220%">
                     <thead class="table-dark">
                         <tr>
                             <th rowspan="4" align="middle" style="width: 5%">Kode</th>
