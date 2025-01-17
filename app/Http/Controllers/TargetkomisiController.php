@@ -612,7 +612,7 @@ class TargetkomisiController extends Controller
             }
         }
 
-        dd($data);
+        // dd($data);
         DB::beginTransaction();
         try {
             $cektutuplaporan = cektutupLaporan($tanggal, "penjualan");
