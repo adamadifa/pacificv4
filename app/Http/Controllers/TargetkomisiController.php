@@ -535,6 +535,18 @@ class TargetkomisiController extends Controller
     public function edit($kode_target)
     {
         $kode_target = Crypt::decrypt($kode_target);
+        $target = Targetkomisi::where('kode_target', $kode_target)->first();
+        $bulan = $target->bulan;
+        $tahun = $target->tahun;
+        $lastbulan = getbulandantahunlalu($bulan, $tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($bulan, $tahun, "tahun");
+
+        $lastduabulan = getbulandantahunlalu($lastbulan, $lasttahun, "bulan");
+        $lastduabulantahun = getbulandantahunlalu($lastbulan, $lasttahun, "tahun");
+
+        $lasttigabulan = getbulandantahunlalu($lastduabulan, $lastduabulantahun, "bulan");
+        $lasttigabulantahun = getbulandantahunlalu($lastduabulan, $lastduabulantahun, "tahun");
+
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
@@ -548,6 +560,9 @@ class TargetkomisiController extends Controller
             ->where('kode_target', $kode_target)
             ->get();
         $data['produk'] = $produk;
+        $data['lasttigabulan'] = $lasttigabulan;
+        $data['lastduabulan'] = $lastduabulan;
+        $data['lastbulan'] = $lastbulan;
         return view('marketing.targetkomisi.edit', $data);
     }
 
