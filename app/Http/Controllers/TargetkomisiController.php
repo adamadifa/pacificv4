@@ -308,6 +308,8 @@ class TargetkomisiController extends Controller
             $s_penjualan_dua_bulan[] = "penjualan_dua_bulan_$d->kode_produk";
 
             $s_penjualan_last_bulan[] = "penjualan_last_bulan_$d->kode_produk";
+
+            $s_target_last[] = "target_last_$d->kode_produk";
         }
 
         $qlasttarget = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
