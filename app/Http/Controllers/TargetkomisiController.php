@@ -779,7 +779,7 @@ class TargetkomisiController extends Controller
             ->where('salesman.kode_cabang', $target->kode_cabang)
             ->where('marketing_komisi_target.tahun', $lasttahun)
             ->where('marketing_komisi_target.bulan', $lastbulan)
-            ->groupBy('marketing_komisi_target.kode_salesman');
+            ->groupBy('marketing_komisi_target_detail.kode_salesman');
 
         $qpenjualan = Detailpenjualan::join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
