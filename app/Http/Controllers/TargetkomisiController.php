@@ -768,9 +768,7 @@ class TargetkomisiController extends Controller
             $s_target_last[] = "target_last_$d->kode_produk";
         }
 
-        $qlasttarget = Detailtargetkomisi::join('produk_harga', 'marketing_komisi_target_detail.kode_harga', '=', 'produk_harga.kode_harga')
-            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
-            ->join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+        $qlasttarget = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
             ->join('salesman', 'marketing_komisi_target_detail.kode_salesman', '=', 'salesman.kode_salesman')
             ->select(
                 'marketing_komisi_target_detail.kode_salesman',
