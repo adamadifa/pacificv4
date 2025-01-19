@@ -38,8 +38,8 @@
                         <th rowspan="4" align="middle" style="width: 5%">Kode</th>
                         <th rowspan="4" align="middle" style="width: 5%">NIK</th>
                         <th rowspan="4" align="middle" style="width: 30%">Salesman</th>
-                        <th rowspan="4" align="middle" style="width: 30%">Masa Kerja</th>
-                        <th colspan="{{ count($produk) * 5 }}" class="text-center">Produk</th>
+                        <th rowspan="4" align="middle" style="width: 40%">Masa Kerja</th>
+                        <th colspan="{{ count($produk) * 6 }}" class="text-center">Produk</th>
                     </tr>
                     <tr>
                         @foreach ($produk as $d)
