@@ -75,7 +75,7 @@
                             <th rowspan="4" align="middle" style="width: 5%">NIK</th>
                             <th rowspan="4" align="middle" style="width: 30%">Salesman</th>
                             <th rowspan="4" align="middle" style="width: 30%">Masa Kerja</th>
-                            <th colspan="{{ count($produk) * 5 }}" class="text-center">Produk</th>
+                            <th colspan="{{ count($produk) * 6 }}" class="text-center">Produk</th>
                         </tr>
                         <tr>
                             @foreach ($produk as $d)
@@ -88,6 +88,7 @@
                             @foreach ($produk as $d)
                                 <th rowspan="2">AVG</th>
                                 <th colspan="3">Realisasi</th>
+                                <th rowspan="2">Last</th>
                                 <th rowspan="2">Target</th>
                             @endforeach
                         </tr>
