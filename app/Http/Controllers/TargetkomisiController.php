@@ -773,7 +773,7 @@ class TargetkomisiController extends Controller
             ->join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
             ->join('salesman', 'marketing_komisi_target_detail.kode_salesman', '=', 'salesman.kode_salesman')
             ->select(
-                'marketing_komisi_target.kode_salesman',
+                'marketing_komisi_target_detail.kode_salesman',
                 ...$select_produk_last
             )
             ->where('salesman.kode_cabang', $target->kode_cabang)
