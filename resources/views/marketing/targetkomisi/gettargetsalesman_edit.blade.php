@@ -5,6 +5,7 @@
             {{ $d->kode_salesman }}
         </td>
         <td>{{ $d->nik }}</td>
+        <td style="width: 30%">{{ $d->nama_salesman }}</td>
         <td>
             @php
                 $end_date = $targetkomisi->tahun . '-' . $targetkomisi->bulan . '-01';
@@ -14,7 +15,7 @@
                 {{ $masakerja['tahun'] }} Tahun {{ $masakerja['bulan'] }} Bulan
             @endif
         </td>
-        <td style="width: 30%">{{ $d->nama_salesman }}</td>
+
         @foreach ($produk as $p)
             @php
                 $rata_rata_penjualan = $d->{"penjualan_$p->kode_produk"} / $p->isi_pcs_dus / 3;

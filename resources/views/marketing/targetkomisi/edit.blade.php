@@ -79,7 +79,7 @@
                         </tr>
                         <tr>
                             @foreach ($produk as $d)
-                                <th class="text-center" colspan="5">
+                                <th class="text-center" colspan="6">
                                     {{ $d->kode_produk }}
                                 </th>
                             @endforeach
