@@ -286,6 +286,7 @@ class TargetkomisiController extends Controller
         $s_penjualan_tiga_bulan = [];
         $s_penjualan_dua_bulan = [];
         $s_penjualan_last_bulan = [];
+        $s_target_last = [];
 
         foreach ($produk as $d) {
             // $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_" . $d->kode_produk . "`");
@@ -298,6 +299,8 @@ class TargetkomisiController extends Controller
 
             $select_penjualan_last_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lastbulan' AND YEAR(tanggal) = '$lasttahun',jumlah,0)) as `penjualan_last_bulan_$d->kode_produk`");
 
+            $select_produk_last[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_last_$d->kode_produk`");
+
             $s_penjualan[] = "penjualan_$d->kode_produk";
 
             $s_penjualan_tiga_bulan[] = "penjualan_tiga_bulan_$d->kode_produk";
@@ -307,6 +310,16 @@ class TargetkomisiController extends Controller
             $s_penjualan_last_bulan[] = "penjualan_last_bulan_$d->kode_produk";
         }
 
+        $qlasttarget = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+            ->join('salesman', 'marketing_komisi_target_detail.kode_salesman', '=', 'salesman.kode_salesman')
+            ->select(
+                'marketing_komisi_target_detail.kode_salesman',
+                ...$select_produk_last
+            )
+            ->where('salesman.kode_cabang', $target->kode_cabang)
+            ->where('marketing_komisi_target.tahun', $lasttahun)
+            ->where('marketing_komisi_target.bulan', $lastbulan)
+            ->groupBy('marketing_komisi_target_detail.kode_salesman');
         $qpenjualan = Detailpenjualan::join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
@@ -339,6 +352,9 @@ class TargetkomisiController extends Controller
             ->leftJoin('hrd_karyawan', 'salesman.nik', '=', 'hrd_karyawan.nik')
             ->leftJoinSub($qpenjualan, 'penjualan', function ($join) {
                 $join->on('salesman.kode_salesman', '=', 'penjualan.kode_salesman');
+            })
+            ->leftJoinSub($qlasttarget, 'lasttarget', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'lasttarget.kode_salesman');
             })
             ->where('kode_target', $kode_target)
             ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', ...$s_penjualan)

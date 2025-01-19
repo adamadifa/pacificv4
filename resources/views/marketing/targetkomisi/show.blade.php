@@ -32,7 +32,7 @@
 <div class="row mt-2">
     <div class="col">
         <div class="table-modal">
-            <table class="table table-bordered  table-hover" style="width: 230%">
+            <table class="table table-bordered  table-hover" style="width: 270%">
                 <thead class="table-dark">
                     <tr>
                         <th rowspan="4" align="middle" style="width: 5%">Kode</th>
@@ -52,6 +52,7 @@
                         @foreach ($produk as $d)
                             <th rowspan="2">AVG</th>
                             <th colspan="3">Realisasi</th>
+                            <th rowspan="2">Last</th>
                             <th rowspan="2">Target</th>
                         @endforeach
                     </tr>
@@ -91,6 +92,7 @@
                                 <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_tigabulan) }}</td>
                                 <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_duabulan) }}</td>
                                 <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
+                                <td class="text-end bg-primary text-white">{{ formatAngka($d->{"target_last_$p->kode_produk"}) }}</td>
                                 <td class="text-end">{{ formatAngka($d->{"target_$p->kode_produk"}) }}</td>
                             @endforeach
                         </tr>
