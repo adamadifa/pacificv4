@@ -27,7 +27,7 @@
             <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_tigabulan) }}</td>
             <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_duabulan) }}</td>
             <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
-            <td class="text-end bg-info text-white">{{ formatAngka($jml_last_target) }}</td>
+            <td class="text-end bg-primary text-white">{{ formatAngka($jml_last_target) }}</td>
             <td>
                 <input type="text" class="noborder-form text-end money" value="{{ formatAngka($d->{"target_$p->kode_produk"}) }}"
                     name="{{ $p->kode_produk }}[]">

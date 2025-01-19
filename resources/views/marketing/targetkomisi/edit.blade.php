@@ -68,7 +68,7 @@
     <div class="row mb-3">
         <div class="col">
             <div class="table-responsive">
-                <table class="table table-bordered  table-hover" style="width: 270%">
+                <table class="table table-bordered  table-hover" style="width: 300%">
                     <thead class="table-dark">
                         <tr>
                             <th rowspan="4" align="middle" style="width: 5%">Kode</th>
