@@ -1,8 +1,17 @@
+<style>
+    .table-modal {
+        height: auto;
+        max-height: 550px;
+        overflow-y: scroll;
+
+    }
+</style>
 <form action="{{ route('targetkomisi.update', Crypt::encrypt($targetkomisi->kode_target)) }}" method="POST" id="formTargetkomisi">
     @method('PUT')
+    @csrf
     <div class="row">
         <div class="co-12">
-            @csrf
+
             <div class="row">
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-6 col-md-12 col-sm-12">
@@ -59,17 +68,37 @@
     <div class="row mb-3">
         <div class="col">
             <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered  table-hover" style="width: 300%">
                     <thead class="table-dark">
                         <tr>
-                            <th rowspan="2" class="align-middle">Kode</th>
-                            <th rowspan="2" class="align-middle">Salesman</th>
-                            <th colspan="{{ count($produk) }}" class="text-center">Produk</th>
+                            <th rowspan="4" align="middle" style="width: 5%">Kode</th>
+                            <th rowspan="4" align="middle" style="width: 5%">NIK</th>
+                            <th rowspan="4" align="middle" style="width: 30%">Salesman</th>
+                            <th rowspan="4" align="middle" style="width: 30%">Masa Kerja</th>
+                            <th colspan="{{ count($produk) * 6 }}" class="text-center">Produk</th>
                         </tr>
                         <tr>
                             @foreach ($produk as $d)
-                                <th class="text-center">{{ $d->kode_produk }}</th>
+                                <th class="text-center" colspan="6">
+                                    {{ $d->kode_produk }}
+                                </th>
                             @endforeach
+                        </tr>
+                        <tr>
+                            @foreach ($produk as $d)
+                                <th rowspan="2">AVG</th>
+                                <th colspan="3">Realisasi</th>
+                                <th rowspan="2">Last</th>
+                                <th rowspan="2">Target</th>
+                            @endforeach
+                        </tr>
+                        <tr>
+                            @foreach ($produk as $d)
+                                <th>{{ getMonthName2($lasttigabulan) }}</th>
+                                <th>{{ getMonthName2($lastduabulan) }}</th>
+                                <th>{{ getMonthName2($lastbulan) }}</th>
+                            @endforeach
+
                         </tr>
 
                     </thead>
@@ -182,6 +211,13 @@
                     },
                 });
                 return false;
+            } else {
+                $("#btnSimpan").attr("disabled", true);
+                $("#btnSimpan").html(`
+                <div class="spinner-border spinner-border-sm text-white me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Loading..`);
             }
         });
     });

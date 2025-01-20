@@ -35,18 +35,18 @@
     <div class="row mt-2">
         <div class="col">
             <div class="table-modal">
-                <table class="table table-bordered  table-hover" style="width: 270%">
+                <table class="table table-bordered  table-hover" style="width: 300%">
                     <thead class="table-dark">
                         <tr>
                             <th rowspan="4" align="middle" style="width: 5%">Kode</th>
                             <th rowspan="4" align="middle" style="width: 5%">NIK</th>
                             <th rowspan="4" align="middle" style="width: 30%">Salesman</th>
                             <th rowspan="4" align="middle" style="width: 30%">Masa Kerja</th>
-                            <th colspan="{{ count($produk) * 5 }}" class="text-center">Produk</th>
+                            <th colspan="{{ count($produk) * 6 }}" class="text-center">Produk</th>
                         </tr>
                         <tr>
                             @foreach ($produk as $d)
-                                <th class="text-center" colspan="5">
+                                <th class="text-center" colspan="6">
                                     {{ $d->kode_produk }}
                                 </th>
                             @endforeach
@@ -55,6 +55,7 @@
                             @foreach ($produk as $d)
                                 <th rowspan="2">AVG</th>
                                 <th colspan="3">Realisasi</th>
+                                <th rowspan="2">Last</th>
                                 <th rowspan="2">Target</th>
                             @endforeach
                         </tr>
@@ -89,11 +90,13 @@
                                         $jml_penjualan_tigabulan = $d->{"penjualan_tiga_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
                                         $jml_penjualan_duabulan = $d->{"penjualan_dua_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
                                         $jml_penjualan_lastbulan = $d->{"penjualan_last_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
+                                        $jml_last_target = $d->{"target_last_$p->kode_produk"};
                                     @endphp
                                     <td class="text-end bg-success text-white"> {{ formatAngka($rata_rata_penjualan) }}</td>
                                     <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_tigabulan) }}</td>
                                     <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_duabulan) }}</td>
                                     <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
+                                    <td class="text-end bg-primary text-white">{{ formatAngka($jml_last_target) }}</td>
                                     <td class="text-end">{{ formatAngka($d->{"target_$p->kode_produk"}) }}</td>
                                 @endforeach
                             </tr>
@@ -137,7 +140,7 @@
 <script>
     $(".table-modal").freezeTable({
         'scrollable': true,
-        'columnNum': 3,
+        'columnNum': 4,
         'shadow': true,
     });
 </script>

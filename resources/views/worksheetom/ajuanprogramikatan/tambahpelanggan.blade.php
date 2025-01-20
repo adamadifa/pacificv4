@@ -21,6 +21,50 @@
         <div class="col" id="gethistoripelangganprogram"></div>
     </div>
     <x-input-with-icon label="Target / Bulan" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right" />
+    <table class="table table-bordered mb-2" id="targetperbulantable">
+        <thead>
+            <tr>
+                <th>Bulan</th>
+                <th>Tahun</th>
+                <th>Target</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $start_date = date('Y-m-d', strtotime($ajuanprogramikatan->periode_dari));
+                $end_date = date('Y-m-d', strtotime($ajuanprogramikatan->periode_sampai));
+                $current_date = $start_date;
+            @endphp
+            @while (strtotime($current_date) <= strtotime($end_date))
+                <tr class="targetbulanan">
+                    <td>
+                        <input type="hidden" name="bulan[]" value="" class="noborder-form">
+                        {{ getMonthName(date('m', strtotime($current_date))) }}
+                    </td>
+                    <td>
+                        <input type="hidden" name="tahun[]" value="" class="noborder-form">
+                        {{ date('Y', strtotime($current_date)) }}
+                    </td>
+                    <td>
+                        <input type="text" name="target_perbulan[]" value="" style="text-align: right"
+                            class="noborder-form number-separator">
+                    </td>
+                </tr>
+                @php
+                    $current_date = date('Y-m-d', strtotime('+1 month', strtotime($current_date)));
+                @endphp
+            @endwhile
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">TOTAL</td>
+                <td class="text-end" id="gradTotaltarget"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+
+
     <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right" readonly />
     <hr class="my-4">
     <div class="form-group">
@@ -49,6 +93,26 @@
 
 <script>
     $(document).ready(function() {
+        function convertToRupiah(number) {
+            if (number) {
+                var rupiah = "";
+                var numberrev = number
+                    .toString()
+                    .split("")
+                    .reverse()
+                    .join("");
+                for (var i = 0; i < numberrev.length; i++)
+                    if (i % 3 == 0) rupiah += numberrev.substr(i, 3) + ".";
+                return (
+                    rupiah
+                    .split("", rupiah.length - 1)
+                    .reverse()
+                    .join("")
+                );
+            } else {
+                return number;
+            }
+        }
         const select2Kodepelanggan = $('.select2Kodepelanggan');
         if (select2Kodepelanggan.length) {
             select2Kodepelanggan.each(function() {
@@ -61,7 +125,43 @@
             });
         }
 
-        $("#target, #reward,#budget_smm,#budget_rsm,#budget_gm").maskMoney();
+        function calculateTargetPerBulan() {
+            let totalBulan = $('.targetbulanan').length; // Menghitung jumlah bulan
+            let totalTargetString = $('#target').val(); // Mengambil nilai target
+            let totalTarget = totalTargetString == "" ? 0 : totalTargetString.replace(/\./g, '');
+            let targetPerBulan = parseInt(totalTarget) / parseInt(totalBulan); // Menghitung target per bulan
+
+            $('input[name="target_perbulan[]"]').val(convertToRupiah(targetPerBulan)); // Mengisi otomatis target per bulan
+        }
+
+        function calculateTotalTarget() {
+            let total = 0;
+            $('input[name="target_perbulan[]"]').each(function() {
+                let value = $(this).val().replace(/\./g, '');
+                if (!isNaN(value) && value.length != 0) {
+                    total += parseFloat(value);
+                }
+            });
+            $('#gradTotaltarget').text(total.toLocaleString());
+        }
+
+        $('#target').on('keyup keydown', function() {
+            calculateTargetPerBulan();
+            calculateTotalTarget();
+        });
+
+
+
+
+
+        $('input[name="target_perbulan[]"]').on('keyup', function() {
+            calculateTotalTarget();
+        });
+
+        calculateTotalTarget(); // Menjalankan fungsi saat halaman di-load
+        calculateTargetPerBulan(); // Menjalankan fungsi saat halaman di-load
+
+        $("#target,#reward,#budget_smm,#budget_rsm,#budget_gm").maskMoney();
 
         function calculateReward() {
             let budget_smm = $("#budget_smm").val();
