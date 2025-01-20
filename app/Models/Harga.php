@@ -41,6 +41,7 @@ class Harga extends Model
                 ->where('kode_cabang', $kode_cabang)
                 ->where('status_aktif_produk', 1)
                 ->where('status_promo', 0)
+                ->whereNull('kode_pelanggan')
                 ->orderBy('nama_produk')
                 ->get();
         } else if (str_contains($pelanggan->nama_pelanggan, 'SMM')) {
