@@ -62,10 +62,12 @@ class Harga extends Model
                     ->where('kode_cabang', $kode_cabang)
                     ->where('status_aktif_produk', 1)
                     ->where('status_promo', 0)
+                    ->whereNull('kode_pelanggan')
                     ->orWhere('kode_kategori_salesman', 'TO')
                     ->where('kode_cabang', $kode_cabang)
                     ->where('status_aktif_produk', 1)
                     ->where('status_promo', 0)
+                    ->whereNull('kode_pelanggan')
                     ->orderBy('nama_produk')
                     ->get();
 
