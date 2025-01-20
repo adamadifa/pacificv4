@@ -208,7 +208,9 @@ class AjuanprogramikatanController extends Controller
             'top' => 'required',
 
         ]);
-
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+        $target = $request->targetperbulan;
         try {
             //code...
             $cek = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
