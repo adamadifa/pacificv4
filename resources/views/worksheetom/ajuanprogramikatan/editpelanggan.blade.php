@@ -229,8 +229,8 @@
             if (sisa > 0) {
                 $('input[name="target_perbulan[]"]:last').val(convertToRupiah(sisa));
             }
-            alert(grandTotaltarget);
             calculateTotalTarget();
+            console.log(targetPerBulan);
         }
 
         function calculateTotalTarget() {
@@ -243,6 +243,7 @@
             });
             $('#gradTotaltarget').text(convertToRupiah(total));
             grandTotaltarget = total;
+
         }
 
         $('#target').on('keyup keydown', function() {
