@@ -259,7 +259,7 @@
         });
 
         calculateTotalTarget(); // Menjalankan fungsi saat halaman di-load
-        calculateTargetPerBulan(); // Menjalankan fungsi saat halaman di-load
+        // calculateTargetPerBulan(); // Menjalankan fungsi saat halaman di-load
 
         $("#target,#reward,#budget_smm,#budget_rsm,#budget_gm").maskMoney();
 
