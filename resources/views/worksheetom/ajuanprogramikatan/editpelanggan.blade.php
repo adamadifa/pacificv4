@@ -232,7 +232,7 @@
                     total += parseFloat(value);
                 }
             });
-            $('#gradTotaltarget').text(total.toLocaleString());
+            $('#gradTotaltarget').text(convertToRupiah(total));
         }
 
         $('#target').on('keyup keydown', function() {
