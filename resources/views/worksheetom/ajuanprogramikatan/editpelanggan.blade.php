@@ -219,8 +219,12 @@
             let totalBulan = $('.targetbulanan').length; // Menghitung jumlah bulan
             let totalTargetString = $('#target').val(); // Mengambil nilai target
             let totalTarget = totalTargetString == "" ? 0 : totalTargetString.replace(/\./g, '');
-            let targetPerBulan = parseInt(totalTarget) / parseInt(totalBulan); // Menghitung target per bulan
-
+            let targetPerBulan = Math.floor(parseInt(totalTarget) / parseInt(totalBulan)); // Menghitung target per bulan
+            console.log(grandTotaltarget);
+            let sisa = parseInt(totalTarget) - parseInt(grandTotaltarget);
+            if (sisa > 0) {
+                $('input[name="target_perbulan[]"]:last').val(convertToRupiah(targetPerBulan + sisa));
+            }
             $('input[name="target_perbulan[]"]').val(convertToRupiah(targetPerBulan)); // Mengisi otomatis target per bulan
         }
 
@@ -249,7 +253,7 @@
         });
 
         calculateTotalTarget(); // Menjalankan fungsi saat halaman di-load
-        // calculateTargetPerBulan(); // Menjalankan fungsi saat halaman di-load
+        calculateTargetPerBulan(); // Menjalankan fungsi saat halaman di-load
 
         $("#target,#reward,#budget_smm,#budget_rsm,#budget_gm").maskMoney();
 
