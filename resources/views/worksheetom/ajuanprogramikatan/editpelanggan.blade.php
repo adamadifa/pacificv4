@@ -226,9 +226,9 @@
             $('input[name="target_perbulan[]"]').val(convertToRupiah(targetPerBulan)); // Mengisi otomatis target per bulan
             console.log(grandTotaltarget);
             let sisa = parseInt(totalTarget) - parseInt(grandTotaltarget);
-            if (sisa > 0) {
-                $('input[name="target_perbulan[]"]:last').val(convertToRupiah(sisa));
-            }
+            // if (sisa > 0) {
+            //     $('input[name="target_perbulan[]"]:last').val(convertToRupiah(sisa));
+            // }
             calculateTotalTarget();
             console.log(targetPerBulan);
         }
