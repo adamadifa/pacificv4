@@ -6,11 +6,13 @@ namespace App\Http\Controllers;
 use App\Models\Ajuanprogramikatan;
 use App\Models\Cabang;
 use App\Models\Detailajuanprogramikatan;
+use App\Models\Detailtargetikatan;
 use App\Models\Pelanggan;
 use App\Models\Programikatan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 
@@ -194,6 +196,15 @@ class AjuanprogramikatanController extends Controller
             ->join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->where('marketing_program_ikatan_detail.kode_pelanggan', $kode_pelanggan)
             ->first();
+        $detailtarget = Detailtargetikatan::where('no_pengajuan', $no_pengajuan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->get();
+        $array_target = [];
+        foreach ($detailtarget as $d) {
+            $array_target[$d->bulan . $d->tahun] = $d->target_perbulan;
+        }
+
+        $data['array_target'] = $array_target;
         return view('worksheetom.ajuanprogramikatan.editpelanggan', $data);
     }
 
@@ -207,10 +218,12 @@ class AjuanprogramikatanController extends Controller
             'metode_pembayaran' => 'required',
             'top' => 'required',
 
+
         ]);
         $bulan = $request->bulan;
         $tahun = $request->tahun;
-        $target = $request->targetperbulan;
+        $target_perbulan = $request->target_perbulan;
+        DB::beginTransaction();
         try {
             //code...
             $cek = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
@@ -240,12 +253,26 @@ class AjuanprogramikatanController extends Controller
                 'budget_rsm' => toNumber($request->budget_rsm),
                 'budget_gm' => toNumber($request->budget_gm),
                 'metode_pembayaran' => $request->metode_pembayaran,
+                'periode_pencairan' => $request->periode_pencairan,
                 'top' => $request->top,
                 'file_doc' => $file
 
             ]);
 
+            for ($i = 0; $i < count($bulan); $i++) {
+                $target_perbulan[$i] = toNumber($target_perbulan[$i]);
+                $detailtarget[] = [
+                    'no_pengajuan' => $no_pengajuan,
+                    'kode_pelanggan' => $request->kode_pelanggan,
+                    'bulan' => $bulan[$i],
+                    'tahun' => $tahun[$i],
+                    'target_perbulan' => toNumber($target_perbulan[$i])
+                ];
+            }
 
+            // dd($detailtarget);
+            Detailtargetikatan::insert($detailtarget);
+            DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             if ($request->file('file_doc')) {
@@ -254,6 +281,8 @@ class AjuanprogramikatanController extends Controller
                 $file = $file_name;
                 Storage::delete($destination_foto_path . "/" . $file_name);
             }
+            DB::rollBack();
+            // dd($e->getMessage());
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
@@ -268,7 +297,10 @@ class AjuanprogramikatanController extends Controller
             'metode_pembayaran' => 'required',
             'file_doc' => 'file|mimes:pdf|max:2048',
         ]);
-
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+        $target_perbulan = $request->target_perbulan;
+        DB::beginTransaction();
         try {
             //code...
             $detail = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
@@ -287,6 +319,7 @@ class AjuanprogramikatanController extends Controller
                 $file = $detail->file_doc;
             }
 
+
             Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
                 ->where('kode_pelanggan', $kode_pelanggan)
                 ->update([
@@ -296,11 +329,29 @@ class AjuanprogramikatanController extends Controller
                     'budget_rsm' => toNumber($request->budget_rsm),
                     'budget_gm' => toNumber($request->budget_gm),
                     'metode_pembayaran' => $request->metode_pembayaran,
+                    'periode_pencairan' => $request->periode_pencairan,
                     'file_doc' => $file,
                 ]);
+            for ($i = 0; $i < count($bulan); $i++) {
+                $target_perbulan[$i] = toNumber($target_perbulan[$i]);
+                $detailtarget[] = [
+                    'no_pengajuan' => $no_pengajuan,
+                    'kode_pelanggan' => $request->kode_pelanggan,
+                    'bulan' => $bulan[$i],
+                    'tahun' => $tahun[$i],
+                    'target_perbulan' => toNumber($target_perbulan[$i])
+                ];
+            }
 
+            // dd($detailtarget);
+            DB::commit();
+            Detailtargetikatan::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->delete();
+            Detailtargetikatan::insert($detailtarget);
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Update'));
         } catch (\Exception $e) {
+            DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
@@ -439,5 +490,19 @@ class AjuanprogramikatanController extends Controller
             ->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang')
             ->first();
         return view('worksheetom.ajuanprogramikatan.cetakkesepakatan', $data);
+    }
+
+    public function detailtarget($no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+
+        $data['programikatan'] = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        $data['detailtarget'] = Detailtargetikatan::where('no_pengajuan', $no_pengajuan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->get();
+        return view('worksheetom.ajuanprogramikatan.detailtarget', $data);
     }
 }

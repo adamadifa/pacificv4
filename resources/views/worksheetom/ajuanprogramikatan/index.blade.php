@@ -201,6 +201,7 @@
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 <x-modal-form id="modalApprove" size="modal-xxl" show="loadmodalapprove" title="" />
+<x-modal-form id="modalDetailtarget" size="" show="loadmodaldetailtarget" title="" />
 
 @endsection
 @push('myscript')
@@ -244,6 +245,18 @@
             <div class="sk-wave-rect"></div>
             </div>`);
             $("#loadmodalapprove").load('/ajuanprogramikatan/' + no_pengajuan + '/approve');
+        });
+
+
+
+        $(document).on('click', '.btnDetailTarget', function(e) {
+            e.preventDefault();
+            let no_pengajuan = $(this).attr('no_pengajuan');
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            $("#modalDetailtarget").modal("show");
+            $("#modalDetailtarget").find(".modal-title").text('Detail Target Pelanggan');
+            $("#modalDetailtarget").find("#loadmodaldetailtarget").load(
+                `/ajuanprogramikatan/${no_pengajuan}/${kode_pelanggan}/detailtarget`);
         });
     });
 </script>

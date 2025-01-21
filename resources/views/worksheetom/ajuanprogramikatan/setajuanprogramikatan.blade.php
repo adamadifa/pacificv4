@@ -75,6 +75,7 @@
                                     <th rowspan="2">TOP</th>
                                     <th colspan="3">Budget</th>
                                     <th rowspan="2">Pembayaran</th>
+                                    <th rowspan="2">Pencairan</th>
                                     {{-- <th rowspan="2">No. Rek</th>
                                     <th rowspan="2">Pemilik</th>
                                     <th rowspan="2">Bank</th> --}}
@@ -108,6 +109,7 @@
                                         <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
                                         <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+                                        <td class="text-end">{{ formatAngka($d->periode_pencairan) }} Bulan</td>
                                         {{-- <td>{{ $d->no_rekening }}</td>
                                         <td>{{ $d->pemilik_rekening }}</td>
                                         <td>{{ $d->bank }}</td> --}}
@@ -376,6 +378,13 @@
             let file_doc = $(this).find("input[name='file_doc']").val();
             let top = $(this).find("select[name='top']").val();
 
+            let gradTotaltarget = $(this).find("#gradTotaltarget").text();
+
+            let targetValue = target.replace(/\./g, '');
+            let gradTotaltargetValue = gradTotaltarget.replace(/\./g, '');
+
+            let periode_pencarian = $(this).find("select[name='periode_pencarian']").val();
+
             if (kode_pelanggan == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -398,6 +407,17 @@
                     },
                 });
                 return false;
+            } else if (gradTotaltargetValue != targetValue) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Target harus sama dengan Total Target !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#target").focus();
+                    },
+                });
+                return false;
             } else if (reward == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -409,6 +429,17 @@
                     },
                 });
                 return false;
+            } else if (gradTotaltargetValue != targetValue) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Target harus sama dengan Total Target !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#target").focus();
+                    },
+                });
+                return false;
             } else if (top == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -417,6 +448,17 @@
                     showConfirmButton: true,
                     didClose: () => {
                         $(this).find("#top").focus();
+                    }
+                });
+                return false;
+            } else if (periode_pencarian == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Periode Pencairan harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#periode_pencarian").focus();
                     }
                 });
                 return false;

@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col" id="gethistoripelangganprogram"></div>
     </div>
-    <x-input-with-icon label="Target / Bulan" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right" />
+    <x-input-with-icon label="Total Target" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right" />
     <table class="table table-bordered mb-2" id="targetperbulantable">
         <thead>
             <tr>
@@ -38,11 +38,11 @@
             @while (strtotime($current_date) <= strtotime($end_date))
                 <tr class="targetbulanan">
                     <td>
-                        <input type="hidden" name="bulan[]" value="" class="noborder-form">
+                        <input type="hidden" name="bulan[]" value="{{ date('m', strtotime($current_date)) }}" class="noborder-form">
                         {{ getMonthName(date('m', strtotime($current_date))) }}
                     </td>
                     <td>
-                        <input type="hidden" name="tahun[]" value="" class="noborder-form">
+                        <input type="hidden" name="tahun[]" value="{{ date('Y', strtotime($current_date)) }}" class="noborder-form">
                         {{ date('Y', strtotime($current_date)) }}
                     </td>
                     <td>
@@ -65,7 +65,7 @@
 
 
 
-    <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right" readonly />
+
     <hr class="my-4">
     <div class="form-group">
         <select name="top" id="top" class="form-select">
@@ -74,9 +74,19 @@
             <option value="30">30 Hari</option>
         </select>
     </div>
+    <div class="form-group">
+        <select name="periode_pencairan" id="periode_pencairan" class="form-select">
+            <option value="">Periode Pencairan</option>
+            <option value="1">1 Bulan</option>
+            <option value="3">3 Bulan</option>
+            <option value="6">6 Bulan</option>
+            <option value="12">12 Bulan</option>
+        </select>
+    </div>
     <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right" />
     <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right" />
     <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right" />
+    <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right" readonly />
     <div class="form-group mb-3">
         <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
             <option value="">Metode Pembayaran</option>
@@ -93,6 +103,8 @@
 
 <script>
     $(document).ready(function() {
+        let grandTotaltarget = 0;
+
         function convertToRupiah(number) {
             if (number) {
                 var rupiah = "";
@@ -129,8 +141,12 @@
             let totalBulan = $('.targetbulanan').length; // Menghitung jumlah bulan
             let totalTargetString = $('#target').val(); // Mengambil nilai target
             let totalTarget = totalTargetString == "" ? 0 : totalTargetString.replace(/\./g, '');
-            let targetPerBulan = parseInt(totalTarget) / parseInt(totalBulan); // Menghitung target per bulan
-
+            let targetPerBulan = Math.floor(parseInt(totalTarget) / parseInt(totalBulan)); // Menghitung target per bulan
+            console.log(grandTotaltarget);
+            let sisa = parseInt(totalTarget) - parseInt(grandTotaltarget);
+            if (sisa > 0) {
+                $('input[name="target_perbulan[]"]:last').val(convertToRupiah(targetPerBulan + sisa));
+            }
             $('input[name="target_perbulan[]"]').val(convertToRupiah(targetPerBulan)); // Mengisi otomatis target per bulan
         }
 
@@ -142,10 +158,11 @@
                     total += parseFloat(value);
                 }
             });
+            grandTotaltarget = total;
             $('#gradTotaltarget').text(total.toLocaleString());
         }
 
-        $('#target').on('keyup keydown', function() {
+        $('#target').on('keyup keydown change', function() {
             calculateTargetPerBulan();
             calculateTotalTarget();
         });

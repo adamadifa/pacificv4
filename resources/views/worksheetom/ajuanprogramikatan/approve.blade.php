@@ -39,14 +39,16 @@
                     <tr>
                         <th rowspan="2">No.</th>
                         <th rowspan="2">Kode</th>
-                        <th rowspan="2">Nama Pelanggan</th>
-                        <th rowspan="2" class="text-center">Avg Penjualan</th>
+                        <th rowspan="2">Nama </th>
+                        <th rowspan="2" class="text-center">Avg </th>
                         <th rowspan="2" class="text-center">Qty Target</th>
                         <th rowspan="2">Reward</th>
                         <th rowspan="2">TOP</th>
                         <th colspan="3">Budget</th>
                         <th rowspan="2">Pembayaran</th>
+                        <th rowspan="2">Pencairan</th>
                         <th rowspan="2">Doc</th>
+                        <th rowspan="2">#</th>
                     </tr>
                     <tr>
                         <th>SMM</th>
@@ -54,7 +56,7 @@
                         <th>GM</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="font-size: 14px !important">
                     @php
                         $metode_pembayaran = [
                             'TN' => 'Tunai',
@@ -75,6 +77,7 @@
                             <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
                             <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
                             <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+                            <td class="text-end">{{ $d->periode_pencairan }} Bulan</td>
                             <td>
                                 @if ($d->file_doc != null)
                                     <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}" target="_blank">
@@ -82,7 +85,12 @@
                                     </a>
                                 @endif
                             </td>
-
+                            <td>
+                                <a href="#" class="btnDetailTarget" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}"
+                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                    <i class="ti ti-file-description"></i>
+                                </a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

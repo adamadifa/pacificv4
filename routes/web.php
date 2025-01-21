@@ -2110,6 +2110,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanprogramikatan/{no_pengajuan}/storeapprove', 'storeapprove')->name('ajuanprogramikatan.storeapprove')->can('ajuanprogramikatan.approve');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/cetak', 'cetak')->name('ajuanprogramikatan.cetak')->can('ajuanprogramikatan.show');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/cetakkesepakatan', 'cetakkesepakatan')->name('ajuanprogramikatan.cetakkesepakatan')->can('ajuanprogramikatan.show');
+        Route::get('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/detailtarget', 'detailtarget')->name('ajuanprogramikatan.detailtarget')->can('ajuanprogramikatan.show');
     });
 
     Route::controller(AjuanprogramkumulatifController::class)->group(function () {
