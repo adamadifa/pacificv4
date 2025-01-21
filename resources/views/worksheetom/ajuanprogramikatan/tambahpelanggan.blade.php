@@ -159,7 +159,7 @@
                 }
             });
             grandTotaltarget = total;
-            $('#gradTotaltarget').text(total.toLocaleString());
+            $('#gradTotaltarget').text(convertToRupiah(total));
         }
 
         $('#target').on('keyup keydown change', function() {
