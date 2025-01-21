@@ -227,7 +227,7 @@
             console.log(grandTotaltarget);
             let sisa = parseInt(totalTarget) - parseInt(grandTotaltarget);
             if (sisa > 0) {
-                $('input[name="target_perbulan[]"]:last').val(convertToRupiah(targetPerBulan + sisa));
+                $('input[name="target_perbulan[]"]:last').val(convertToRupiah(sisa));
             }
             calculateTotalTarget();
         }
