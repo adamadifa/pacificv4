@@ -229,6 +229,7 @@
             if (sisa > 0) {
                 $('input[name="target_perbulan[]"]:last').val(convertToRupiah(sisa));
             }
+            alert(grandTotaltarget);
             calculateTotalTarget();
         }
 
