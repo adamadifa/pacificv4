@@ -183,6 +183,8 @@
 
 <script>
     $(document).ready(function() {
+        let grandTotaltarget = 0;
+
         function convertToRupiah(number) {
             if (number) {
                 var rupiah = "";
