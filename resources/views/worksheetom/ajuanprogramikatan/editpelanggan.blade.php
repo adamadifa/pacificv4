@@ -241,6 +241,7 @@
                 }
             });
             $('#gradTotaltarget').text(convertToRupiah(total));
+            grandTotaltarget = total;
         }
 
         $('#target').on('keyup keydown', function() {
