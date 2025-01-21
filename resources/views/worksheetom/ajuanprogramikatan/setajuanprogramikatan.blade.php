@@ -383,7 +383,7 @@
             let targetValue = target.replace(/\./g, '');
             let gradTotaltargetValue = gradTotaltarget.replace(/\./g, '');
 
-            let periode_pencarian = $(this).find("select[name='periode_pencarian']").val();
+            let periode_pencairan = $(this).find("select[name='periode_pencairan']").val();
 
             if (kode_pelanggan == "") {
                 Swal.fire({
@@ -451,7 +451,7 @@
                     }
                 });
                 return false;
-            } else if (periode_pencarian == "") {
+            } else if (periode_pencairan == "") {
                 Swal.fire({
                     title: "Oops!",
                     text: "Periode Pencairan harus diisi !",
