@@ -799,7 +799,10 @@ class SfaControler extends Controller
 
             $subtotal = new item('Subtotal', formatRupiah($faktur->total_bruto));
             $potongan = new item('Potongan', formatRupiah($faktur->potongan));
-            $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
+            if (!empty($faktur->penyesuaian)) {
+                $penyesuaian = new item('Penyesuaian', formatRupiah($faktur->penyesuaian));
+            }
+            $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga - $faktur->penyesuaian;
             $total = new item('Total', formatAngka($totalnonppn));
             if (!empty($faktur->ppn)) {
                 $ppn = new item('PPN', formatAngka($faktur->ppn));
