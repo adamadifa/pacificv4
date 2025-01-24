@@ -489,6 +489,9 @@ class AjuanprogramikatanController extends Controller
             ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
             ->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang')
             ->first();
+        $data['detailtarget'] = Detailtargetikatan::where('no_pengajuan', $no_pengajuan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->get();
         return view('worksheetom.ajuanprogramikatan.cetakkesepakatan', $data);
     }
 

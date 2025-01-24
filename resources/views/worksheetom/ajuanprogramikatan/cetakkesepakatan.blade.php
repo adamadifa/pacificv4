@@ -144,9 +144,8 @@
             <p>
                 Adapun hak dan kewajiban antara Pihak Ke-1 dan Pihak Ke-2 yang harus disepakati bersama dalam surat kesepakatan ini antara lain :
             <ol>
-                <li>Pihak Ke-2 Memilih target penjualan sebanyak _____ Produk {{ $kesepakatan->nama_program }} atau
-                    {{ formatAngka($kesepakatan->qty_target) }}
-                    Ball/Dus per Bulan</li>
+                <li>Pihak Ke-2 Memilih target penjualan sebanyak {{ formatAngka($kesepakatan->qty_target) }} {{ $kesepakatan->nama_program }}
+                    dengan rincian target per bulan terlampir</li>
                 <li>Dengan hadiah berupa Cashback sebesar Rp.{{ $kesepakatan->reward }} / Ball/Dus</li>
                 <li>Periode Program dimulai dari {{ $namabulan[date('m', strtotime($kesepakatan->periode_dari)) * 1] }} s/d
                     {{ $namabulan[date('m', strtotime($kesepakatan->periode_sampai)) * 1] }}
@@ -218,6 +217,38 @@
                 </tr>
             </table>
             </p>
+        </section>
+        <section class="sheet padding-10mm">
+            <table class="datatable3">
+                <thead>
+                    <tr>
+                        <th>Bulan</th>
+                        <th>Tahun</th>
+                        <th>Target</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $total_target = 0;
+                    @endphp
+                    @foreach ($detailtarget as $d)
+                        @php
+                            $total_target += $d->target_perbulan;
+                        @endphp
+                        <tr>
+                            <td>{{ getMonthName($d->bulan) }}</td>
+                            <td>{{ $d->tahun }}</td>
+                            <td class="text-end">{{ formatAngka($d->target_perbulan) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2">TOTAL</th>
+                        <th class="text-end">{{ formatAngka($total_target) }}</th>
+                    </tr>
+                </tfoot>
+            </table>
         </section>
 
     </body>
