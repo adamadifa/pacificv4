@@ -219,6 +219,7 @@
             </p>
         </section>
         <section class="sheet padding-10mm">
+            <h2>Lampiran Target Per Bulan</h2>
             <table class="datatable3">
                 <thead>
                     <tr>
@@ -238,14 +239,14 @@
                         <tr>
                             <td>{{ getMonthName($d->bulan) }}</td>
                             <td>{{ $d->tahun }}</td>
-                            <td class="text-end">{{ formatAngka($d->target_perbulan) }}</td>
+                            <td style="text-align: right">{{ formatAngka($d->target_perbulan) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
                         <th colspan="2">TOTAL</th>
-                        <th class="text-end">{{ formatAngka($total_target) }}</th>
+                        <th style="text-align: right">{{ formatAngka($total_target) }}</th>
                     </tr>
                 </tfoot>
             </table>
