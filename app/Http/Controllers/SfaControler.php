@@ -802,7 +802,7 @@ class SfaControler extends Controller
             if (!empty($faktur->penyesuaian)) {
                 $penyesuaian = new item('Penyesuaian', formatRupiah($faktur->penyesuaian));
             }
-            $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga - $faktur->penyesuaian;
+            $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa  - $faktur->penyesuaian;
             $total = new item('Total', formatAngka($totalnonppn));
             if (!empty($faktur->ppn)) {
                 $ppn = new item('PPN', formatAngka($faktur->ppn));
@@ -820,6 +820,9 @@ class SfaControler extends Controller
 
             // /* Tax and total */
             $printer->text($potongan->getAsString(32));
+            if (!empty($faktur->penyesuaian)) {
+                $printer->text($penyesuaian->getAsString(32));
+            }
             $printer->text($total->getAsString(32));
             if (!empty($faktur->ppn)) {
                 $printer->text($ppn->getAsString(32));
@@ -933,7 +936,10 @@ class SfaControler extends Controller
 
             $subtotal = new item('Subtotal', formatRupiah($faktur->total_bruto));
             $potongan = new item('Potongan', formatRupiah($faktur->potongan));
-            $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
+            if (!empty($faktur->penyesuaian)) {
+                $penyesuaian = new item('Penyesuaian', formatRupiah($faktur->penyesuaian));
+            }
+            $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa  - $faktur->penyesuaian;
             $total = new item('Total', formatAngka($totalnonppn));
             if (!empty($faktur->ppn)) {
                 $ppn = new item('PPN', formatAngka($faktur->ppn));
@@ -951,6 +957,9 @@ class SfaControler extends Controller
 
             // /* Tax and total */
             $printer->text($potongan->getAsString(32));
+            if (!empty($faktur->penyesuaian)) {
+                $printer->text($penyesuaian->getAsString(32));
+            }
             $printer->text($total->getAsString(32));
             if (!empty($faktur->ppn)) {
                 $printer->text($ppn->getAsString(32));
@@ -1054,7 +1063,10 @@ class SfaControler extends Controller
 
                 $subtotal = new item('Subtotal', formatRupiah($faktur->total_bruto));
                 $potongan = new item('Potongan', formatRupiah($faktur->potongan));
-                $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa - $faktur->penyharga;
+                if (!empty($faktur->penyesuaian)) {
+                    $penyesuaian = new item('Penyesuaian', formatRupiah($faktur->penyesuaian));
+                }
+                $totalnonppn = $faktur->total_bruto - $faktur->potongan - $faktur->potistimewa  - $faktur->penyesuaian;
                 $total = new item('Total', formatAngka($totalnonppn));
                 if (!empty($faktur->ppn)) {
                     $ppn = new item('PPN', formatAngka($faktur->ppn));
@@ -1072,6 +1084,9 @@ class SfaControler extends Controller
 
                 // /* Tax and total */
                 $printer->text($potongan->getAsString(32));
+                if (!empty($faktur->penyesuaian)) {
+                    $printer->text($penyesuaian->getAsString(32));
+                }
                 $printer->text($total->getAsString(32));
                 if (!empty($faktur->ppn)) {
                     $printer->text($ppn->getAsString(32));
