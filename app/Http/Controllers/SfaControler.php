@@ -313,7 +313,7 @@ class SfaControler extends Controller
             'no_hp_pelanggan' => $request->no_hp_pelanggan,
             'kode_wilayah' => $request->kode_wilayah,
             'hari' => $request->hari,
-            'limit_pelanggan' => isset($request->limit_pelanggan) ?  toNumber($request->limit_pelanggan) : NULL,
+            // 'limit_pelanggan' => isset($request->limit_pelanggan) ?  toNumber($request->limit_pelanggan) : NULL,
             'ljt' => $request->ljt,
             'kepemilikan' => $request->kepemilikan,
             'lama_berjualan' => $request->lama_berjualan,
