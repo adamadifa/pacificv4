@@ -122,12 +122,10 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
-                                                @if ($programikatan->status == 1)
-                                                    <a href="{{ route('ajuanprogramikatan.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
-                                                        target="_blank" class="me-1">
-                                                        <i class="ti ti-printer text-primary"></i>
-                                                    </a>
-                                                @endif
+                                                <a href="{{ route('ajuanprogramikatan.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
+                                                    target="_blank" class="me-1">
+                                                    <i class="ti ti-printer text-primary"></i>
+                                                </a>
                                                 @can('ajuanprogramikatan.edit')
                                                     <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit me-1">
                                                         <i class="ti ti-edit text-success"></i>
