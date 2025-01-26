@@ -335,7 +335,7 @@
                         return;
                     }
                     $("#modalPelanggan").modal("hide");
-                    $(document).find("input[name='qty_avg']").val(Math.round(response.data.qty / 3));
+                    $(document).find("input[name='qty_avg']").val(Math.round(response.data.qty));
                     $(document).find("input[name='nama_pelanggan']").val(response.data.nama_pelanggan);
                     $(document).find("input[name='kode_pelanggan']").val(response.data.kode_pelanggan);
                 }
