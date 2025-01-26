@@ -179,7 +179,7 @@ class AjuanprogramikatanController extends Controller
             // ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
             // ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
             ->whereRaw('YEAR(marketing_penjualan.tanggal)="' . $tahunlalu . '"')
-            ->where('salesman.kode_cabang', $programikatan->kode_cabang)
+            // ->where('salesman.kode_cabang', $programikatan->kode_cabang)
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
             ->select(
@@ -189,6 +189,9 @@ class AjuanprogramikatanController extends Controller
             )
             ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan');
         $data['programikatan'] = $programikatan;
+
+
+
         $data['detail'] = Detailajuanprogramikatan::join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->where('marketing_program_ikatan_detail.no_pengajuan', $no_pengajuan)
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')

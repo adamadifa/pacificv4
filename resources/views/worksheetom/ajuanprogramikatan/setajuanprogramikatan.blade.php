@@ -101,7 +101,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $d->kode_pelanggan }}</td>
                                         <td>{{ $d->nama_pelanggan }}</td>
-                                        <td class="text-center">{{ formatAngka($d->qty_rata_rata / 12) }}</td>
+                                        <td class="text-center">{{ formatAngka($d->qty_rata_rata) }}</td>
                                         <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                                         <td class="text-end">{{ formatAngka($d->reward) }}</td>
                                         <td class="text-end">{{ $d->top }}</td>
