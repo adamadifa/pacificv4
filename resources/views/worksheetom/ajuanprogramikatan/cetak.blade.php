@@ -128,7 +128,7 @@
                                     $persentase = ($kenaikan / $d->qty_rata_rata) * 100;
                                     $persentase = number_format($persentase, 2);
                                 @endphp
-                                {{ $persentase }}
+                                {{ $persentase }}%
                             </td>
                             <td class="text-end">{{ formatAngka($d->reward) }}</td>
                             <td>{{ $d->budget }}</td>
