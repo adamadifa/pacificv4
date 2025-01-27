@@ -44,6 +44,10 @@
         h3 {
             margin: 5px;
         }
+
+        .sheet {
+            overflow: auto !important;
+        }
     </style>
 </head>
 
