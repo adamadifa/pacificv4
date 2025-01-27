@@ -446,11 +446,45 @@ class AjuanprogramikatanController extends Controller
     public function approve($no_pengajuan)
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
-        $data['programikatan'] = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+        $programikatan = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
             ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
             ->first();
+        $list_pelanggan = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
+            ->select('marketing_program_ikatan_detail.kode_pelanggan')
+            ->get();
+        $tanggal_ajuan = $programikatan->tanggal;
+        $tahun = date('Y', strtotime($tanggal_ajuan));
+        $tahunlalu = $tahun - 1;
+        $produk = json_decode($programikatan->produk, true) ?? [];
+        $detailpenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->whereIn('produk_harga.kode_produk', $produk)
+            // ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            // ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
+            ->whereIn('marketing_penjualan.kode_pelanggan', $list_pelanggan)
+            ->whereRaw('YEAR(marketing_penjualan.tanggal)="' . $tahunlalu . '"')
+            // ->where('salesman.kode_cabang', $programikatan->kode_cabang)
+            ->where('status_promosi', 0)
+            ->where('status_batal', 0)
+            ->select(
+                'marketing_penjualan.kode_pelanggan',
+                'nama_pelanggan',
+                DB::raw('SUM(FLOOR(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus)) as qty_rata_rata'),
+            )
+            ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan');
+        $data['programikatan'] = $programikatan;
+
+
+
         $data['detail'] = Detailajuanprogramikatan::join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-            ->where('no_pengajuan', $no_pengajuan)
+            ->where('marketing_program_ikatan_detail.no_pengajuan', $no_pengajuan)
+            ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+            ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
+                $join->on('detailpenjualan.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
             ->get();
         return view('worksheetom.ajuanprogramikatan.approve', $data);
     }
