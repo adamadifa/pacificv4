@@ -41,7 +41,7 @@
                         <th rowspan="2">Kode</th>
                         <th rowspan="2">Nama </th>
                         <th rowspan="2" class="text-center">Avg </th>
-                        <th rowspan="2" class="text-center">Qty Target</th>
+                        <th rowspan="2" class="text-center">Target</th>
                         <th rowspan="2" class="text-center">%</th>
                         <th rowspan="2">Reward</th>
                         <th rowspan="2">TOP</th>
