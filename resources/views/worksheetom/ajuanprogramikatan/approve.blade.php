@@ -39,7 +39,7 @@
                     <tr>
                         <th rowspan="2">No.</th>
                         <th rowspan="2">Kode</th>
-                        <th rowspan="2">Nama </th>
+                        <th rowspan="2" style="width: 15%">Nama </th>
                         <th rowspan="2" class="text-center">Avg </th>
                         <th rowspan="2" class="text-center">Target</th>
                         <th rowspan="2" class="text-center">%</th>
