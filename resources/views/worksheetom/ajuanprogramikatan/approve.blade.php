@@ -46,7 +46,7 @@
                         <th rowspan="2">Reward</th>
                         <th rowspan="2">TOP</th>
                         <th colspan="3">Budget</th>
-                        <th rowspan="2">Pembayaran</th>
+                        <th rowspan="2">PMB</th>
                         <th rowspan="2">Pencairan</th>
                         <th rowspan="2">Doc</th>
                         <th rowspan="2">#</th>
