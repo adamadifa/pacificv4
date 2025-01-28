@@ -91,7 +91,7 @@
                         <td>No.</td>
                         <td>Kode</td>
                         <td>Pelanggan</td>
-                        <td class="text-center">Avg</td>
+                        <td class="text-center">TOTAL<br>PENJUALAN</td>
                         <td class="text-center">Target</td>
                         <td>Reward</td>
                         <td>Budget</td>
