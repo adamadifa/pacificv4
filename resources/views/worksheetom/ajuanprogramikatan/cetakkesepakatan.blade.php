@@ -163,7 +163,7 @@
                 </li>
                 <li>
                     Sebagai upaya mempercepat proses realisasi hadiah untuk pelanggan perusahan, Pihak Ke-2 bersedia <b>Melunasi seluruh faktur yang
-                        ada</b> (Paling lambat 14 hari dari berakhirnya masa program)
+                        ada</b> (Paling lambat {{ $kesepakatan->top }} hari dari berakhirnya masa program)
                 </li>
                 <li>
                     Pengembalian produk oleh Pihak Ke-2 tidak dapat dilakukan dengan cara potong faktur maupun diluangkan. Pengembalian produk hanya

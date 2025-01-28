@@ -31,8 +31,8 @@
                     <td class="text-end">{{ formatAngka($total_qty) }}</td>
                 </tr>
                 <tr>
-                    <th colspan="3">RATA RATA 3 BULAN</th>
-                    <td class="text-end">{{ formatAngka(ROUND($total_qty / 3)) }}</td>
+                    <th colspan="3">TOTAL PENJUALAN 1 TAHUN</th>
+                    <td class="text-end">{{ formatAngka(ROUND($total_qty)) }}</td>
                 </tr>
             </tfoot>
         </table>

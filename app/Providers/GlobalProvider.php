@@ -174,20 +174,20 @@ class Globalprovider extends ServiceProvider
                     $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('gm')
                         ->whereNotNull('rsm')
                         ->where('status', 0)
-                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                        ->count();
+
                     $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.gm')
                         ->where('marketing_pencairan_ikatan.status', 0)
                         ->whereNotNull('marketing_pencairan_ikatan.rsm')
-                        ->where('kode_cabang', auth()->user()->kode_cabang)
                         ->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
                         ->count();
 
                     $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('gm')
                         ->whereNotNull('rsm')
                         ->where('status', 0)
-                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                        ->count();
                     $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('gm')
-                        ->where('kode_cabang', auth()->user()->kode_cabang)
+
                         ->whereNotNull('rsm')
                         ->where('status', 0)
                         ->count();
@@ -195,20 +195,20 @@ class Globalprovider extends ServiceProvider
                     $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('direktur')
                         ->whereNotNull('gm')
                         ->where('status', 0)
-                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                        ->count();
                     $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.direktur')
                         ->where('marketing_pencairan_ikatan.status', 0)
                         ->whereNotNull('marketing_pencairan_ikatan.gm')
-                        ->where('kode_cabang', auth()->user()->kode_cabang)
+
                         ->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
                         ->count();
 
                     $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('direktur')
                         ->whereNotNull('gm')
                         ->where('status', 0)
-                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                        ->count();
                     $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('direktur')
-                        ->where('kode_cabang', auth()->user()->kode_cabang)
+
                         ->whereNotNull('rsm')
                         ->where('status', 0)
                         ->count();

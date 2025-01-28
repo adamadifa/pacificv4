@@ -39,13 +39,14 @@
                     <tr>
                         <th rowspan="2">No.</th>
                         <th rowspan="2">Kode</th>
-                        <th rowspan="2">Nama </th>
+                        <th rowspan="2" style="width: 15%">Nama </th>
                         <th rowspan="2" class="text-center">Avg </th>
-                        <th rowspan="2" class="text-center">Qty Target</th>
+                        <th rowspan="2" class="text-center">Target</th>
+                        <th rowspan="2" class="text-center">%</th>
                         <th rowspan="2">Reward</th>
                         <th rowspan="2">TOP</th>
                         <th colspan="3">Budget</th>
-                        <th rowspan="2">Pembayaran</th>
+                        <th rowspan="2">PMB</th>
                         <th rowspan="2">Pencairan</th>
                         <th rowspan="2">Doc</th>
                         <th rowspan="2">#</th>
@@ -69,8 +70,16 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
-                            <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
+                            <td class="text-center">{{ formatAngka($d->qty_rata_rata) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
+                            <td class="text-center">
+                                @php
+                                    $kenaikan = $d->qty_target - $d->qty_rata_rata;
+                                    $persentase = ($kenaikan / $d->qty_rata_rata) * 100;
+                                    $persentase = number_format($persentase, 2);
+                                @endphp
+                                {{ $persentase }}%
+                            </td>
                             <td class="text-end">{{ formatAngka($d->reward) }}</td>
                             <td class="text-end">{{ $d->top }}</td>
                             <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>

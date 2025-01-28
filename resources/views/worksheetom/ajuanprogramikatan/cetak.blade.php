@@ -44,6 +44,11 @@
         h3 {
             margin: 5px;
         }
+
+        .sheet {
+            overflow: auto !important;
+            height: auto !important;
+        }
     </style>
 </head>
 
@@ -93,10 +98,11 @@
                         <td>Pelanggan</td>
                         <td class="text-center">TOTAL<br>PENJUALAN</td>
                         <td class="text-center">Target</td>
+                        <td class="text-center">%</td>
                         <td>Reward</td>
                         <td>Budget</td>
                         <td>T/TF/V</td>
-                        <td>No. Rekening</td>
+                        <td>Rekening</td>
                         <td>Pemilik</td>
                         <td>Bank</td>
                     </tr>
@@ -114,8 +120,16 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
-                            <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
+                            <td class="text-center">{{ formatAngka($d->qty_rata_rata) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
+                            <td class="text-center">
+                                @php
+                                    $kenaikan = $d->qty_target - $d->qty_rata_rata;
+                                    $persentase = ($kenaikan / $d->qty_rata_rata) * 100;
+                                    $persentase = number_format($persentase, 2);
+                                @endphp
+                                {{ $persentase }}%
+                            </td>
                             <td class="text-end">{{ formatAngka($d->reward) }}</td>
                             <td>{{ $d->budget }}</td>
                             <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>

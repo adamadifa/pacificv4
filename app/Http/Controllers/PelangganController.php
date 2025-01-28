@@ -454,7 +454,7 @@ class PelangganController extends Controller
         $dari_lasttigabulan = $lasttigabulantahun . "-" . $lastigabulan . "-01";
         $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
 
-
+        $tahunlalu = $tahun - 1;
         $produk = json_decode($programikatan->produk, true) ?? [];
         $detailpenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
@@ -462,7 +462,8 @@ class PelangganController extends Controller
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->whereIn('produk_harga.kode_produk', $produk)
             ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
-            ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
+            // ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
+            ->whereRaw('YEAR(marketing_penjualan.tanggal)="' . $tahunlalu . '"')
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
             ->select(
@@ -516,6 +517,7 @@ class PelangganController extends Controller
         $dari_lasttigabulan = $lasttigabulantahun . "-" . $lastigabulan . "-01";
         $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
 
+        $tahunlalu = $tahun - 1;
 
         $produk = json_decode($programikatan->produk, true) ?? [];
         $detailpenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
@@ -524,7 +526,8 @@ class PelangganController extends Controller
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->whereIn('produk_harga.kode_produk', $produk)
             ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
-            ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
+            // ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
+            ->whereRaw('YEAR(marketing_penjualan.tanggal)="' . $tahunlalu . '"')
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
             ->select(
