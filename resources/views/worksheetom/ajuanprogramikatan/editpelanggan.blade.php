@@ -16,8 +16,8 @@
             aria-label="Cari Pelanggan" aria-describedby="nama_pelanggan" value="{{ $detail->nama_pelanggan }}" disabled>
         {{-- <a class="btn btn-primary waves-effect" id="kode_pelanggan_search"><i class="ti ti-search text-white"></i></a> --}}
     </div>
-    <x-input-with-icon-label label="Qty Rata - rata 3 Bulan Terakhir" name="qty_avg" icon="ti ti-file-description"
-        placeholder="Qty Rata - rata 3 Bulan Terakhir" align="right" readonly value="{{ formatAngka($detail->qty_avg) }}" disabled />
+    {{-- <x-input-with-icon-label label="Qty Rata - rata 3 Bulan Terakhir" name="qty_avg" icon="ti ti-file-description"
+        placeholder="Qty Rata - rata 3 Bulan Terakhir" align="right" readonly value="{{ formatAngka($detail->qty_avg) }}" disabled /> --}}
     @if ($ajuanprogramikatan->status == 0)
         <x-input-with-icon-label label="Total Target" name="target" icon="ti ti-file-description" placeholder="Total Target" align="right"
             value="{{ formatAngka($detail->qty_target) }}" />
@@ -67,6 +67,13 @@
                 </tr>
             </tfoot>
         </table>
+        <div class="form-group">
+            <select name="tipe_reward" id="tipe_reward" class="form-select">
+                <option value="">Pilih Tipe Reward</option>
+                <option value="1" @selected($detail->tipe_reward == '1')>Quantity</option>
+                <option value="2" @selected($detail->tipe_reward == '2')>Flat</option>
+            </select>
+        </div>
         <div class="row">
             <div class="col">
                 <x-input-with-icon-label label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right"
@@ -136,10 +143,17 @@
                 </tr>
             </tfoot>
         </table>
+        <div class="form-group">
+            <select name="tipe_reward" id="tipe_reward" class="form-select" disabled>
+                <option value="">Pilih Tipe Reward</option>
+                <option value="1" @selected($detail->tipe_reward == '1')>Quantity</option>
+                <option value="2" @selected($detail->tipe_reward == '2')>Flat</option>
+            </select>
+        </div>
         <div class="row">
             <div class="col">
-                <x-input-with-icon-label label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right"
-                    value="{{ formatAngka($detail->budget_smm) }}" readonly />
+                <x-input-with-icon-label label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM"
+                    align="right" value="{{ formatAngka($detail->budget_smm) }}" readonly />
             </div>
             <div class="col">
                 <x-input-with-icon-label label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM"

@@ -283,6 +283,7 @@ class AjuanprogramikatanController extends Controller
                 'qty_target' => toNumber($request->target),
                 'qty_avg' => !empty($request->qty_avg) ? toNumber($request->qty_avg) : 0,
                 'reward' => toNumber($request->reward),
+                'tipe_reward' => $request->tipe_reward,
                 'budget_smm' => toNumber($request->budget_smm),
                 'budget_rsm' => toNumber($request->budget_rsm),
                 'budget_gm' => toNumber($request->budget_gm),
@@ -359,6 +360,7 @@ class AjuanprogramikatanController extends Controller
                 ->update([
                     'qty_target' => toNumber($request->target),
                     'reward' => toNumber($request->reward),
+                    'tipe_reward' => $request->tipe_reward,
                     'budget_smm' => toNumber($request->budget_smm),
                     'budget_rsm' => toNumber($request->budget_rsm),
                     'budget_gm' => toNumber($request->budget_gm),

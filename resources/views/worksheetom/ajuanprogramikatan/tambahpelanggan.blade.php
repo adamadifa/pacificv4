@@ -83,6 +83,13 @@
             <option value="12">12 Bulan</option>
         </select>
     </div>
+    <div class="form-group">
+        <select name="tipe_reward" id="tipe_reward" class="form-select">
+            <option value="">Type Reward</option>
+            <option value="1">Quantity</option>
+            <option value="2">Flat</option>
+        </select>
+    </div>
     <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right" />
     <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right" />
     <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right" />

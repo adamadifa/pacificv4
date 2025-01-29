@@ -389,6 +389,7 @@
 
             let periode_pencairan = $(this).find("select[name='periode_pencairan']").val();
 
+            let tipe_reward = $(this).find("select[name='tipe_reward']").val();
             if (kode_pelanggan == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -459,6 +460,17 @@
                 Swal.fire({
                     title: "Oops!",
                     text: "Periode Pencairan harus diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#periode_pencarian").focus();
+                    }
+                });
+                return false;
+            } else if (tipe_reward == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tipe Reward harus diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
