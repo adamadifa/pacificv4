@@ -75,7 +75,7 @@
                             <td class="text-center">
                                 @php
                                     $kenaikan = $d->qty_target - $d->qty_rata_rata;
-                                    $persentase = ($kenaikan / $d->qty_rata_rata) * 100;
+                                    $persentase = !empty($d->qty_rata_rata) ? ($kenaikan / $d->qty_rata_rata) * 100 : 0;
                                     $persentase = number_format($persentase, 2);
                                 @endphp
                                 {{ $persentase }}%
