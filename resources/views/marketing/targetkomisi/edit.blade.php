@@ -68,18 +68,18 @@
     <div class="row mb-3">
         <div class="col">
             <div class="table-responsive">
-                <table class="table table-bordered  table-hover" style="width: 300%">
+                <table class="table table-bordered  table-hover" style="width: 600%">
                     <thead class="table-dark">
                         <tr>
-                            <th rowspan="4" align="middle" style="width: 5%">Kode</th>
-                            <th rowspan="4" align="middle" style="width: 5%">NIK</th>
-                            <th rowspan="4" align="middle" style="width: 30%">Salesman</th>
-                            <th rowspan="4" align="middle" style="width: 30%">Masa Kerja</th>
-                            <th colspan="{{ count($produk) * 6 }}" class="text-center">Produk</th>
+                            <th rowspan="4" align="middle" style="width: 1%">Kode</th>
+                            <th rowspan="4" align="middle" style="width: 1%">NIK</th>
+                            <th rowspan="4" align="middle" style="width: 3%">Salesman</th>
+                            <th rowspan="4" align="middle" style="width: 2%">Masa Kerja</th>
+                            <th colspan="{{ count($produk) * 10 }}" class="text-center">Produk</th>
                         </tr>
                         <tr>
                             @foreach ($produk as $d)
-                                <th class="text-center" colspan="6">
+                                <th class="text-center" colspan="10">
                                     {{ $d->kode_produk }}
                                 </th>
                             @endforeach
@@ -89,7 +89,7 @@
                                 <th rowspan="2">AVG</th>
                                 <th colspan="3">Realisasi</th>
                                 <th rowspan="2">Last</th>
-                                <th rowspan="2">Target</th>
+                                <th colspan="5" class="text-center">Target</th>
                             @endforeach
                         </tr>
                         <tr>
@@ -97,7 +97,14 @@
                                 <th>{{ getMonthName2($lasttigabulan) }}</th>
                                 <th>{{ getMonthName2($lastduabulan) }}</th>
                                 <th>{{ getMonthName2($lastbulan) }}</th>
+                                <th>AWAL</th>
+                                <th style="width: 1%">RSM</th>
+                                <th style="width: 1%">GM</th>
+                                <th style="width: 1%">DIRUT</th>
+                                <th style="width: 1%">AKHIR</th>
                             @endforeach
+
+
 
                         </tr>
 
