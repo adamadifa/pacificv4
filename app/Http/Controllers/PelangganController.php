@@ -689,15 +689,15 @@ class PelangganController extends Controller
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
 
         $query = Pelanggan::query();
-        $query->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang');
+        // $query->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang');
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', $user->kode_regional);
+                $query->where('pelanggan.kode_cabang', $request->kode_cabang);
             } else {
-                $query->where('cabang.kode_cabang', $user->kode_cabang);
+                $query->where('pelanggan.kode_cabang', $user->kode_cabang);
             }
         } else {
-            $query->where('cabang.kode_cabang', $request->kode_cabang);
+            $query->where('pelanggan.kode_cabang', $request->kode_cabang);
         }
 
         if (!empty($kode_salesman)) {
