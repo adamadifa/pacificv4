@@ -474,7 +474,7 @@ class AjuanprogramikatanController extends Controller
             ->select(
                 'marketing_penjualan.kode_pelanggan',
                 'nama_pelanggan',
-                DB::raw('SUM(FLOOR(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus)) as qty_rata_rata'),
+                DB::raw('SUM(ROUND(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus,2)) as qty_rata_rata'),
             )
             ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan');
         $data['programikatan'] = $programikatan;
@@ -564,7 +564,7 @@ class AjuanprogramikatanController extends Controller
             ->select(
                 'marketing_penjualan.kode_pelanggan',
                 'nama_pelanggan',
-                DB::raw('SUM(FLOOR(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus)) as qty_rata_rata'),
+                DB::raw('SUM(ROUND(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus,2)) as qty_rata_rata'),
             )
             ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan');
         $data['programikatan'] = $programikatan;
