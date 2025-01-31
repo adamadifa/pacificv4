@@ -219,7 +219,7 @@ class SaldoawalgudanglogistikController extends Controller
                 ->where('pembelian_barang.kode_kategori', $request->kode_kategori)
                 ->get();
         } else {
-            //dd(1);
+
             //Jika Saldo Bulan Lalu Ada Maka Hitung Saldo Awal Bulan Lalu - Mutasi Bulan Lalu
             $barang = Barangpembelian::select(
                 'pembelian_barang.kode_barang',
@@ -246,7 +246,7 @@ class SaldoawalgudanglogistikController extends Controller
                     FROM
                         gudang_logistik_saldoawal_detail
                     INNER JOIN gudang_logistik_saldoawal ON gudang_logistik_saldoawal_detail.kode_saldo_awal = gudang_logistik_saldoawal.kode_saldo_awal
-                    WHERE buland = '$bulanlalu' AND tahun='$tahunlalu'
+                    WHERE bulan = '$bulanlalu' AND tahun='$tahunlalu'
                 ) saldo_awal"),
                     function ($join) {
                         $join->on('pembelian_barang.kode_barang', '=', 'saldo_awal.kode_barang');
