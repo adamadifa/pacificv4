@@ -184,7 +184,7 @@ class SaldoawalgudanglogistikController extends Controller
         $ceksaldobulanlalu = Saldoawalgudanglogistik::where('bulan', $bulanlalu)->where('tahun', $tahunlalu)
             ->where('kode_kategori', $request->kode_kategori)
             ->count();
-        dd($ceksaldobulanlalu);
+
         //Cek Saldo Bulan Ini
         $ceksaldobulanini = Saldoawalgudanglogistik::where('bulan', $bulan)->where('tahun', $tahun)
             ->where('kode_kategori', $request->kode_kategori)
@@ -219,7 +219,7 @@ class SaldoawalgudanglogistikController extends Controller
                 ->where('pembelian_barang.kode_kategori', $request->kode_kategori)
                 ->get();
         } else {
-
+            dd(1);
             //Jika Saldo Bulan Lalu Ada Maka Hitung Saldo Awal Bulan Lalu - Mutasi Bulan Lalu
             $barang = Barangpembelian::select(
                 'pembelian_barang.kode_barang',
