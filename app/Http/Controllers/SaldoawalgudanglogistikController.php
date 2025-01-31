@@ -297,7 +297,7 @@ class SaldoawalgudanglogistikController extends Controller
 
         $data = ['barang', 'readonly'];
         //dd($request->kode_kategori);
-        if (empty($ceksaldo)) {
+        if (empty($ceksaldo) && empty($ceksaldobulanlalu)) {
             $readonly = false;
             return view('gudanglogistik.saldoawal.getdetailsaldo', compact($data));
         } else {
