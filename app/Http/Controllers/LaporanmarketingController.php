@@ -6278,7 +6278,7 @@ class LaporanmarketingController extends Controller
         $qproduk->groupby('produk_harga.kode_produk');
         $produk = $qproduk->get();
 
-        dd($produk);
+
         $selectReject = [];
         $fieldReject = [];
         $selectTotalretur = [];
