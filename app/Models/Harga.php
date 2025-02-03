@@ -26,7 +26,7 @@ class Harga extends Model
         $cek_harga_pelanggan = Harga::where('kode_pelanggan', $kode_pelanggan)->count();
 
         if ($cek_harga_pelanggan > 0) {
-            $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon')
+            $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon', 'kode_kategori_produk')
                 ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                 ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
                 ->where('kode_pelanggan', $kode_pelanggan)

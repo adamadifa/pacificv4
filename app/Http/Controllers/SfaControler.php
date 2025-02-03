@@ -1254,6 +1254,7 @@ class SfaControler extends Controller
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
         $hrg = new Harga();
         $data['harga'] = $hrg->getHargabypelanggan($kode_pelanggan);
+        $kode_pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
         return view('sfa.penjualan_addproduk', $data);
     }
 

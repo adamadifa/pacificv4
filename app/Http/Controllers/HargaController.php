@@ -186,7 +186,6 @@ class HargaController extends Controller
     {
         $hrg = new Harga();
         $harga = $hrg->getHargabypelanggan($kode_pelanggan);
-
         return view('datamaster.harga.gethargabypelanggan', compact('harga'));
     }
 
