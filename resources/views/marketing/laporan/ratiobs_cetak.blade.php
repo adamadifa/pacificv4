@@ -121,11 +121,11 @@
                                     $harga =
                                         $d->{"retur_$p->kode_produk"} > 0
                                             ? $d->{"total_retur_$p->kode_produk"} / ROUND($d->{"retur_$p->kode_produk"}, 2)
-                                            : $p->harga_retur_dus;
+                                            : 0;
                                     $total = ROUND($jml_reject, 2) * $harga;
                                     $grand_total += $total;
                                 @endphp
-                                <td class="center">{{ formatAngkaDesimal($jml_reject) }} - {{ $harga }}</td>
+                                <td class="center">{{ formatAngkaDesimal($jml_reject) }}</td>
                                 <td class="right">{{ formatAngka($harga) }} </td>
                                 <td class="right">{{ formatAngka($total) }}</td>
                             @endforeach
