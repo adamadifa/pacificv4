@@ -7,13 +7,8 @@
         <select name="kode_harga" id="kode_harga" class="form-select">
             <option value="">Pilih Produk</option>
             @foreach ($harga as $d)
-                @php
-                    if (str_contains($pelanggan->nama_pelanggan, 'KPBN')) {
-                        $harga_dus = $d->harga_dus + 1000;
-                    }
-                @endphp
                 <option data-isi_pcs_dus = "{{ $d->isi_pcs_dus }}" data-isi_pcs_pack = "{{ $d->isi_pcs_pack }}"
-                    data-harga_dus = "{{ formatAngka($harga_dus) }}" data-harga_pack = "{{ formatAngka($d->harga_pack) }}"
+                    data-harga_dus = "{{ formatAngka($d->harga_dus) }}" data-harga_pack = "{{ formatAngka($d->harga_pack) }}"
                     data-harga_pcs = "{{ formatAngka($d->harga_pcs) }}" data-kode_kategori_diskon = "{{ $d->kode_kategori_diskon }}"
                     value="{{ $d->kode_harga }}">
                     {{ $d->nama_produk }} ({{ $d->kode_kategori_salesman }})</option>
