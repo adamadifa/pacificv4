@@ -37,7 +37,7 @@ class Harga extends Model
             $harga = Harga::select('produk_harga.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'produk.kode_kategori_diskon')
                 ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                 ->leftjoin('produk_diskon_kategori', 'produk.kode_kategori_diskon', '=', 'produk_diskon_kategori.kode_kategori_diskon')
-                ->where('kode_kategori_salesman', 'CV')
+                ->where('kode_kategori_salesman', 'TO')
                 ->where('kode_cabang', $kode_cabang)
                 ->where('status_aktif_produk', 1)
                 ->where('status_promo', 0)
