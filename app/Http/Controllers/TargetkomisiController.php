@@ -170,7 +170,8 @@ class TargetkomisiController extends Controller
                     'kode_target' => $kode_target,
                     'kode_salesman' => $kode_salesman[$i],
                     'kode_produk' => $kode_produk,
-                    'jumlah' => toNumber(${$kode_produk}[$i])
+                    'jumlah' => toNumber(${$kode_produk}[$i]),
+                    'jml_awal' => toNumber(${$kode_produk}[$i]),
                 ];
             }
         }
@@ -283,6 +284,11 @@ class TargetkomisiController extends Controller
         $select_penjualan_dua_bulan = [];
         $select_penjualan_last_bulan = [];
 
+        $select_target_awal = [];
+        $select_target_rsm = [];
+        $select_target_gm = [];
+        $select_target_dirut = [];
+
         $s_penjualan_tiga_bulan = [];
         $s_penjualan_dua_bulan = [];
         $s_penjualan_last_bulan = [];
@@ -291,6 +297,11 @@ class TargetkomisiController extends Controller
         foreach ($produk as $d) {
             // $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_" . $d->kode_produk . "`");
             $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_$d->kode_produk`");
+            $select_target_awal[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jml_awal,0)) as `target_awal_$d->kode_produk`");
+            $select_target_rsm[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',rsm,0)) as `target_rsm_$d->kode_produk`");
+            $select_target_gm[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',gm,0)) as `target_gm_$d->kode_produk`");
+            $select_target_dirut[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',direktur,0)) as `target_dirut_$d->kode_produk`");
+
             $select_produk_penjualan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk',jumlah,0)) as `penjualan_$d->kode_produk`");
 
             $select_penjualan_tiga_bulan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk' AND MONTH(tanggal) = '$lasttigabulan' AND YEAR(tanggal) = '$lasttigabulantahun',jumlah,0)) as `penjualan_tiga_bulan_$d->kode_produk`");
@@ -347,6 +358,11 @@ class TargetkomisiController extends Controller
             'salesman.nik',
             'tanggal_masuk',
             ...$select_produk,
+            ...$select_target_awal,
+            ...$select_target_rsm,
+            ...$select_target_gm,
+            ...$select_target_dirut,
+            ...$select_produk_last,
             ...$s_penjualan,
             ...$s_penjualan_tiga_bulan,
             ...$s_penjualan_dua_bulan,
@@ -424,6 +440,13 @@ class TargetkomisiController extends Controller
         $select_produk_last = [];
         $select_produk_penjualan = [];
         $s_penjualan = [];
+
+        $select_target_awal = [];
+        $select_target_rsm = [];
+        $select_target_gm = [];
+        $select_target_dirut = [];
+
+
         $select_penjualan_tiga_bulan = [];
         $select_penjualan_dua_bulan = [];
         $select_penjualan_last_bulan = [];
@@ -437,6 +460,13 @@ class TargetkomisiController extends Controller
         foreach ($produk as $d) {
             // $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_" . $d->kode_produk . "`");
             $select_produk[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_$d->kode_produk`");
+
+            $select_target_awal[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jml_awal,0)) as `target_awal_$d->kode_produk`");
+            $select_target_rsm[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',rsm,0)) as `target_rsm_$d->kode_produk`");
+            $select_target_gm[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',gm,0)) as `target_gm_$d->kode_produk`");
+            $select_target_dirut[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',direktur,0)) as `target_dirut_$d->kode_produk`");
+
+
             $select_produk_last[] = DB::raw("SUM(IF(kode_produk='$d->kode_produk',jumlah,0)) as `target_last_$d->kode_produk`");
             $select_produk_penjualan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$d->kode_produk',jumlah,0)) as `penjualan_$d->kode_produk`");
 
@@ -490,6 +520,10 @@ class TargetkomisiController extends Controller
             'salesman.nik',
             'tanggal_masuk',
             ...$select_produk,
+            ...$select_target_awal,
+            ...$select_target_rsm,
+            ...$select_target_gm,
+            ...$select_target_dirut,
             ...$s_penjualan,
             ...$s_penjualan_tiga_bulan,
             ...$s_penjualan_dua_bulan,
@@ -509,6 +543,8 @@ class TargetkomisiController extends Controller
             ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', ...$s_penjualan)
             ->get();
 
+
+        //dd($data['detail']);
         $data['produk'] = $produk;
         $data['lasttigabulan'] = $lasttigabulan;
         $data['lastduabulan'] = $lastduabulan;
@@ -647,12 +683,14 @@ class TargetkomisiController extends Controller
                 $kode_produk = $p->kode_produk;
                 ${$kode_produk} = $request->$kode_produk;
                 ${'target_rsm_' . $kode_produk} = $request->{'rsm_' . $kode_produk};
+                ${'target_awal_' . $kode_produk} = $request->{'target_awal_' . $kode_produk};
                 ${'target_gm_' . $kode_produk} = $request->{'gm_' . $kode_produk};
                 ${'target_dirut_' . $kode_produk} = $request->{'dirut_' . $kode_produk};
                 $data[] = [
                     'kode_target' => $kode_target_new,
                     'kode_salesman' => $kode_salesman[$i],
                     'kode_produk' => $kode_produk,
+                    'jml_awal' => toNumber(${'target_awal_' . $kode_produk}[$i]),
                     'rsm' => toNumber(${'target_rsm_' . $kode_produk}[$i]),
                     'gm' => toNumber(${'target_gm_' . $kode_produk}[$i]),
                     'direktur' => toNumber(${'target_dirut_' . $kode_produk}[$i]),
