@@ -10,6 +10,8 @@
                 @php
                     if (str_contains($pelanggan->nama_pelanggan, 'KPBN')) {
                         $harga_dus = $d->harga_dus + 1000;
+                    } else {
+                        $harga_dus = $d->harga_dus;
                     }
                 @endphp
                 <option data-isi_pcs_dus = "{{ $d->isi_pcs_dus }}" data-isi_pcs_pack = "{{ $d->isi_pcs_pack }}"
