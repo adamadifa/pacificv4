@@ -275,7 +275,7 @@ function cekRoleapprovepresensi($kode_dept, $kode_cabang, $kategori_jabatan, $ko
         $roles_approve =  ['manager gudang', 'asst. manager hrd'];
     } else if ($kode_dept == 'HRD' && $kategori_jabatan == "NM") { // HRD Non Manajemen
         $roles_approve =  ['asst. manager hrd'];
-    } else if ($kode_dept == 'HRD' && $kategori_jabatan == "M") { // HRD Non Manajemen
+    } else if ($kode_dept == 'HRD' && $kategori_jabatan != "NM") { // HRD Non Manajemen
         $roles_approve =  ['gm operasional', 'asst. manager hrd'];
     } else if ($kode_dept == 'MTC' && $kategori_jabatan == "NM") { // Maintenance Non Manajemen
         $roles_approve =  ['manager maintenance', 'asst. manager hrd'];
