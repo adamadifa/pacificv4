@@ -203,6 +203,7 @@ class AjuanprogramikatanController extends Controller
                 $join->on('detailpenjualan.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
             })
             ->get();
+        dd($data['detail']);
         $data['user'] = $user;
         return view('worksheetom.ajuanprogramikatan.setajuanprogramikatan', $data);
     }
