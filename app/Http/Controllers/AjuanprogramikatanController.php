@@ -195,7 +195,6 @@ class AjuanprogramikatanController extends Controller
             ->where('status_batal', 0)
             ->select(
                 'marketing_penjualan.kode_pelanggan',
-                'nama_pelanggan',
                 DB::raw('SUM(ROUND(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus,2)) as qty_rata_rata'),
             )
             ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan');
@@ -210,7 +209,7 @@ class AjuanprogramikatanController extends Controller
                 $join->on('detailpenjualan.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
             })
             ->get();
-        dd($data['detail']);
+        //dd($data['detail']);
         $data['user'] = $user;
         return view('worksheetom.ajuanprogramikatan.setajuanprogramikatan', $data);
     }
