@@ -65,7 +65,7 @@ class AjuanprogramikatanController extends Controller
 
             if (!empty($request->status)) {
                 if ($request->status == 'pending') {
-                    $query->whereNull('marketing_program_ikatan.gm');
+                    $query->whereNotnull('marketing_program_ikatan.gm');
                     $query->whereNull('marketing_program_ikatan.direktur');
                     $query->where('status', 0);
                 } else if ($request->status == 'approved') {
