@@ -62,6 +62,18 @@ class AjuanprogramikatanController extends Controller
         }
 
         if ($user->hasRole('direktur')) {
+
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->whereNull('marketing_program_ikatan.gm');
+                    $query->whereNull('marketing_program_ikatan.direktur');
+                    $query->where('status', 0);
+                } else if ($request->status == 'approved') {
+                    $query->where('status', 1);
+                } else if ($request->status == 'rejected') {
+                    $query->where('status', 2);
+                }
+            }
             $query->whereNotNull('marketing_program_ikatan.gm');
             $query->where('marketing_program_ikatan.status', '!=', 2);
         }
