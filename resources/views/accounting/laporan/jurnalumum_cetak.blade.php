@@ -68,7 +68,7 @@
                             <td>{{ $d->kode_ju }}</td>
                             <td>{{ $d->keterangan }}</td>
                             <td>{{ $d->kode_peruntukan == 'PC' ? $d->kode_cabang : $d->kode_peruntukan }}</td>
-                            <td>{{ $d->kode_akun }}</td>
+                            <td>'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
                             <td class="right">{{ formatAngka($debet) }}</td>
                             <td class="right">{{ formatAngka($kredit) }}</td>
