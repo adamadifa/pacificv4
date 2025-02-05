@@ -23,7 +23,8 @@
                                         <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
                                             <option value="">Semua Cabang</option>
                                             @foreach ($cabang as $d)
-                                                <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                                                    {{ textUpperCase($d->nama_cabang) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -32,7 +33,14 @@
                                     icon="ti ti-barcode" /> --}}
                                 <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
                                     select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
-
+                                <div class="form-group mb-3">
+                                    <select name="status" id="status" class="form-select">
+                                        <option value="">Semua Status</option>
+                                        <option value="pending" {{ Request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="approved" {{ Request('status') == 'approved' ? 'selected' : '' }}>Disetujui</option>
+                                        <option value="rejected" {{ Request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                                    </select>
+                                </div>
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
