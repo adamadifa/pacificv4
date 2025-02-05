@@ -209,7 +209,7 @@ class AjuanprogramikatanController extends Controller
             ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
                 $join->on('detailpenjualan.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
             })
-            ->select('marketing_program_ikatan_detail.*', 'detailpenjualan.qty_rata_rata', 'detailpenjualan.nama_pelanggan')
+            ->select('marketing_program_ikatan_detail.*', 'detailpenjualan.qty_rata_rata', 'pelanggan.nama_pelanggan')
             ->get();
         // dd($data['detail']);
         $data['user'] = $user;
