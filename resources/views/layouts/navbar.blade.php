@@ -173,7 +173,7 @@
 
                                     </span>
 
-                                    <a href="{{ route('ajuanprogramikatan.index') }}" class="stretched-link">Ajuan</a>
+                                    <a href="{{ route('ajuanprogramikatan.index') }}?status=pending" class="stretched-link">Ajuan</a>
                                     <small class="text-muted mb-0">Program Ikatan</small>
                                 </div>
                                 <div class="dropdown-shortcuts-item col">
