@@ -199,7 +199,7 @@
 
                                     </span>
 
-                                    <a href="{{ route('ajuankumulatif.index') }}" class="stretched-link">Ajuan</a>
+                                    <a href="{{ route('ajuankumulatif.index') }}?status=pending" class="stretched-link">Ajuan</a>
                                     <small class="text-muted mb-0">Program Kumulatif</small>
                                 </div>
                                 <div class="dropdown-shortcuts-item col">
