@@ -30,28 +30,34 @@
             <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
             <td class="text-end bg-primary text-white">{{ formatAngka($jml_last_target) }}</td>
             <td class="text-end">
-                {{ formatAngka($d->{"target_$p->kode_produk"}) }}
-                <input type="hidden" class="noborder-form text-end money target_awal" value="{{ formatAngka($d->{"target_awal_$p->kode_produk"}) }}"
-                    name="target_awal_{{ $p->kode_produk }}[]">
+                {{ formatAngka($d->{"target_awal_$p->kode_produk"}) }}
+                <input type="hidden" class="noborder-form text-end money target_awal t_awal_{{ $p->kode_produk }}"
+                    value="{{ formatAngka($d->{"target_awal_$p->kode_produk"}) }}" name="target_awal_{{ $p->kode_produk }}[]"
+                    kode_produk="{{ $p->kode_produk }}">
             </td>
             <td>
-                <input type="text" class="noborder-form text-end money target_rsm" value="{{ formatAngka($d->{"target_rsm_$p->kode_produk"}) }}"
-                    name="rsm_{{ $p->kode_produk }}[]"
-                    {{ $level_user == 'regional sales manager' || $level_user == 'super admin' ? '' : 'disabled' }}>
+                <input type="text"
+                    class="noborder-form text-end {{ $level_user == 'regional sales manager' || $level_user == 'super admin' ? 'money' : '' }} target_rsm t_rsm_{{ $p->kode_produk }}"
+                    value="{{ formatAngka($d->{"target_rsm_$p->kode_produk"}) }}" name="rsm_{{ $p->kode_produk }}[]"
+                    {{ $level_user == 'regional sales manager' || $level_user == 'super admin' ? '' : 'readonly' }}
+                    kode_produk="{{ $p->kode_produk }}">
             </td>
             <td>
-                <input type="text" class="noborder-form text-end money target_gm" value="{{ formatAngka($d->{"target_gm_$p->kode_produk"}) }}"
-                    name="gm_{{ $p->kode_produk }}[]" {{ $level_user == 'gm marketing' || $level_user == 'super admin' ? '' : 'disabled' }}>
+                <input type="text"
+                    class="noborder-form text-end {{ $level_user == 'gm marketing' || $level_user == 'super admin' ? 'money' : '' }} target_gm t_gm_{{ $p->kode_produk }}"
+                    value="{{ formatAngka($d->{"target_gm_$p->kode_produk"}) }}" name="gm_{{ $p->kode_produk }}[]"
+                    {{ $level_user == 'gm marketing' || $level_user == 'super admin' ? '' : 'readonly' }} kode_produk="{{ $p->kode_produk }}">
             </td>
             <td>
-                <input type="text" class="noborder-form text-end money target_dirut"
+                <input type="text"
+                    class="noborder-form text-end {{ $level_user == 'direktur' || $level_user == 'super admin' ? 'money' : '' }} target_dirut t_dirut_{{ $p->kode_produk }}"
                     value="{{ formatAngka($d->{"target_dirut_$p->kode_produk"}) }}" name="dirut_{{ $p->kode_produk }}[]"
-                    {{ $level_user == 'direktur' || $level_user == 'super admin' ? '' : 'disabled' }}>
+                    {{ $level_user == 'direktur' || $level_user == 'super admin' ? '' : 'readonly' }} kode_produk="{{ $p->kode_produk }}">
             </td>
             <td class="text-end">
                 {{-- {{ formatAngka($d->{"target_$p->kode_produk"}) }} --}}
-                <input type="text" class="noborder-form text-end target_akhir" value="{{ formatAngka($d->{"target_$p->kode_produk"}) }}"
-                    name="{{ $p->kode_produk }}[]" readonly>
+                <input type="text" class="noborder-form text-end target_akhir_{{ $p->kode_produk }}"
+                    value="{{ formatAngka($d->{"target_$p->kode_produk"}) }}" name="{{ $p->kode_produk }}[]" readonly>
             </td>
         @endforeach
     </tr>
@@ -60,13 +66,16 @@
     $(function() {
         $(".money").maskMoney();
         $(".target_rsm, .target_gm, .target_dirut").on("keyup keydown", function() {
-            var target_rsm = $(this).closest("tr").find(".target_rsm").val();
-            var target_gm = $(this).closest("tr").find(".target_gm").val();
-            var target_dirut = $(this).closest("tr").find(".target_dirut").val();
-            var target_awal = $(this).closest("tr").find(".target_awal").val();
+            var kode_produk = $(this).attr("kode_produk");
 
-            var target_akhir = !target_rsm ? target_awal : !target_gm ? target_rsm : !target_dirut ? target_gm : target_dirut;
-            $(this).closest("tr").find(".target_akhir").val(target_akhir);
+            var target_rsm = $(this).closest("tr").find(".t_rsm_" + kode_produk).val();
+            var target_gm = $(this).closest("tr").find(".t_gm_" + kode_produk).val();
+            var target_dirut = $(this).closest("tr").find(".t_dirut_" + kode_produk).val();
+            var target_awal = $(this).closest("tr").find(".t_awal_" + kode_produk).val();
+
+            var target_akhir = target_dirut ? target_dirut : target_gm ? target_gm : target_rsm ? target_rsm : target_awal;
+
+            $(this).closest("tr").find(".target_akhir_" + kode_produk).val(target_akhir);
         });
     });
 </script>
