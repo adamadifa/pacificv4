@@ -146,7 +146,8 @@
             <ol>
                 <li>Pihak Ke-2 Memilih target penjualan sebanyak {{ formatAngka($kesepakatan->qty_target) }} {{ $kesepakatan->nama_program }}
                     dengan rincian target per bulan terlampir</li>
-                <li>Dengan hadiah berupa Cashback sebesar Rp.{{ $kesepakatan->reward }} / Ball/Dus</li>
+                <li>Dengan hadiah berupa Cashback sebesar Rp.{{ $kesepakatan->reward }}
+                    {{ $kesepakatan->tipe_reward == '2' ? 'Flat' : '/Dus/Ball' }}</li>
                 <li>Periode Program dimulai dari {{ $namabulan[date('m', strtotime($kesepakatan->periode_dari)) * 1] }} s/d
                     {{ $namabulan[date('m', strtotime($kesepakatan->periode_sampai)) * 1] }}
                     {{ date('Y', strtotime($kesepakatan->periode_sampai)) }}
