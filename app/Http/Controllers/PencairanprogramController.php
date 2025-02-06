@@ -190,6 +190,7 @@ class PencairanprogramController extends Controller
                     ->join('marketing_program_kumulatif', 'marketing_program_kumulatif_detail.no_pengajuan', '=', 'marketing_program_kumulatif.no_pengajuan')
                     ->where('status', 1);
             })
+            ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan')
             ->orderBy('nama_pelanggan')
             ->get();
 
