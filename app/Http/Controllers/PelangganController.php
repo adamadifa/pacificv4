@@ -347,6 +347,10 @@ class PelangganController extends Controller
                 'longitude' => $longitude,
                 'omset_toko' => isset($request->omset_toko) ?  toNumber($request->omset_toko) : NULL,
                 'status_aktif_pelanggan' => $request->status_aktif_pelanggan,
+                'no_rekening' => $request->no_rekening,
+                'bank' => $request->bank,
+                'pemilik_rekening' => $request->pemilik_rekening,
+                'metode_bayar' => $request->metode_bayar
             ];
         }
         $data = array_merge($data_pelanggan, $data_foto);
