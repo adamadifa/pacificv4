@@ -9,9 +9,20 @@
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-                @can('costratio.create')
-                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Cost Ratio</a>
-                @endcan
+                <div class="d-flex justify-content-between">
+                    @can('costratio.create')
+                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Cost Ratio</a>
+                    @endcan
+                    @can('costratio.index')
+                        <form action="/costratio/cetak" method="GET" id="formCetak" target="_blank">
+                            <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
+                            <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
+                            <input type="hidden" name="kode_cabang_search" id="kode_cabang_cetak" value="{{ Request('kode_cabang_search') }}" />
+                            <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
+                            <button class="btn btn-success" name="exportButton"><i class="ti ti-download me-1"></i>Export Excel</button>
+                        </form>
+                    @endcan
+                </div>
             </div>
             <div class="card-body">
                 <div class="row mt-2">
@@ -135,6 +146,24 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text("Input Costratio");
             $("#modal").find("#loadmodal").load(`/costratio/create`);
+        });
+
+        $("#formCetak").submit(function(e) {
+            const dari = $("#dari_cetak").val();
+            const sampai = $("#sampai_cetak").val();
+            const kode_cabang = $("#kode_cabang_cetak").val();
+            if (dari == "" && sampai == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Silahkan Lakukan Pencarian Data Terlebih Dahulu !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#kode_cabang").focus();
+                    },
+                });
+                return false;
+            }
         });
 
     });

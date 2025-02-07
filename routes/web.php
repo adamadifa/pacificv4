@@ -1442,6 +1442,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/costratio/{id}/edit', 'edit')->name('costratio.edit')->can('costratio.edit');
         Route::put('/costratio/{id}/update', 'update')->name('costratio.update')->can('costratio.update');
         Route::delete('/costratio/{id}/delete', 'destroy')->name('costratio.delete')->can('costratio.delete');
+        Route::get('/costratio/cetak', 'cetak')->name('costratio.cetak')->can('costratio.index');
     });
 
     Route::controller(JurnalumumController::class)->group(function () {

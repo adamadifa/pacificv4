@@ -117,4 +117,52 @@ class CostratioController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function cetak(Request $request)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            if (lockreport($request->dari) == "error") {
+                return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+            }
+        }
+
+        $query = Costratio::query();
+        $query->select('accounting_costratio.*', 'sumber', 'nama_cabang', 'nama_akun');
+        $query->join('accounting_costratio_sumber', 'accounting_costratio.kode_sumber', '=', 'accounting_costratio_sumber.kode_sumber');
+        $query->join('cabang', 'accounting_costratio.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('coa', 'accounting_costratio.kode_akun', '=', 'coa.kode_akun');
+        $query->whereBetween('accounting_costratio.tanggal', [$request->dari, $request->sampai]);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('accounting_costratio.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
+        if (!empty($request->kode_cabang_search)) {
+            $query->where('accounting_costratio.kode_cabang', $request->kode_cabang_search);
+        }
+        if (!empty($request->kode_sumber_search)) {
+            $query->where('accounting_costratio.kode_sumber', $request->kode_sumber_search);
+        }
+
+
+        $query->orderBy('accounting_costratio.tanggal');
+        $data['costratio'] = $query->get();
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+
+
+        if (isset($_GET['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Ajuan Transfer Dana $request->dari-$request->sampai.xls");
+        }
+        return view('accounting.costratio.cetak', $data);
+    }
 }
