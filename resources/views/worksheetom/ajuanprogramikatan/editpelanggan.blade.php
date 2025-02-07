@@ -18,9 +18,9 @@
     </div>
     {{-- <x-input-with-icon-label label="Qty Rata - rata 3 Bulan Terakhir" name="qty_avg" icon="ti ti-file-description"
         placeholder="Qty Rata - rata 3 Bulan Terakhir" align="right" readonly value="{{ formatAngka($detail->qty_avg) }}" disabled /> --}}
-    <!--
+
     @if ($ajuanprogramikatan->status == 0)
-<x-input-with-icon-label label="Total Target" name="target" icon="ti ti-file-description" placeholder="Total Target" align="right"
+        <x-input-with-icon-label label="Total Target" name="target" icon="ti ti-file-description" placeholder="Total Target" align="right"
             value="{{ formatAngka($detail->qty_target) }}" />
 
         <table class="table table-bordered mb-2" id="targetperbulantable">
@@ -38,7 +38,7 @@
                     $current_date = $start_date;
                 @endphp
                 @while (strtotime($current_date) <= strtotime($end_date))
-<tr class="targetbulanan">
+                    <tr class="targetbulanan">
                         <td>
                             <input type="hidden" name="bulan[]" value="{{ date('m', strtotime($current_date)) }}" class="noborder-form">
                             {{ getMonthName(date('m', strtotime($current_date))) }}
@@ -59,7 +59,7 @@
                     @php
                         $current_date = date('Y-m-d', strtotime('+1 month', strtotime($current_date)));
                     @endphp
-@endwhile
+                @endwhile
             </tbody>
             <tfoot>
                 <tr>
@@ -94,8 +94,8 @@
 
         <x-input-with-icon-label label="Total Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
             value="{{ formatAngka($detail->reward) }}" />
-@else
-<x-input-with-icon-label label="Total Target" name="target" icon="ti ti-file-description" placeholder="Total Target" align="right"
+    @else
+        <x-input-with-icon-label label="Total Target" name="target" icon="ti ti-file-description" placeholder="Total Target" align="right"
             value="{{ formatAngka($detail->qty_target) }}" readonly />
 
         <table class="table table-bordered mb-2" id="targetperbulantable">
@@ -113,7 +113,7 @@
                     $current_date = $start_date;
                 @endphp
                 @while (strtotime($current_date) <= strtotime($end_date))
-<tr class="targetbulanan">
+                    <tr class="targetbulanan">
                         <td>
                             <input type="hidden" name="bulan[]" value="{{ date('m', strtotime($current_date)) }}" class="noborder-form">
                             {{ getMonthName(date('m', strtotime($current_date))) }}
@@ -135,7 +135,7 @@
                     @php
                         $current_date = date('Y-m-d', strtotime('+1 month', strtotime($current_date)));
                     @endphp
-@endwhile
+                @endwhile
             </tbody>
             <tfoot>
                 <tr>
@@ -170,9 +170,9 @@
 
         <x-input-with-icon-label label="Total Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
             value="{{ formatAngka($detail->reward) }}" readonly />
-@endif
-    -->
-    <x-input-with-icon-label label="Total Target" name="target" icon="ti ti-file-description" placeholder="Total Target" align="right"
+    @endif
+
+    {{-- <x-input-with-icon-label label="Total Target" name="target" icon="ti ti-file-description" placeholder="Total Target" align="right"
         value="{{ formatAngka($detail->qty_target) }}" />
 
     <table class="table table-bordered mb-2" id="targetperbulantable">
@@ -246,6 +246,7 @@
 
     <x-input-with-icon-label label="Total Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
         value="{{ formatAngka($detail->reward) }}" />
+        --}}
     <div class="form-group mb-3">
         <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
             <option value="">Pilih Metode Pembayaran</option>
