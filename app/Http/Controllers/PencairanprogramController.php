@@ -254,9 +254,9 @@ class PencairanprogramController extends Controller
         $detailpenjualan = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
             'nama_pelanggan',
-            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
-            DB::raw('(SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon'),
-            DB::raw('floor(jumlah/isi_pcs_dus) * (SELECT diskon FROM produk_diskon WHERE floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon_reguler'),
+            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as jml_dus'),
+            DB::raw('(SELECT diskon FROM produk_diskon WHERE SUM(floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus)) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon'),
+            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) * (SELECT diskon FROM produk_diskon WHERE SUM(floor(marketing_penjualan_detail.jumlah/produk.isi_pcs_dus)) BETWEEN produk_diskon.min_qty AND produk_diskon.max_qty AND kode_kategori_diskon="' . $kategori_diskon . '") as diskon_reguler'),
 
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
@@ -287,6 +287,7 @@ class PencairanprogramController extends Controller
                     ->join('marketing_program_kumulatif', 'marketing_program_kumulatif_detail.no_pengajuan', '=', 'marketing_program_kumulatif.no_pengajuan')
                     ->where('status', 1);
             })
+            ->groupBy('marketing_penjualan.no_faktur', 'marketing_penjualan.kode_pelanggan', 'nama_pelanggan')
             ->orderBy('nama_pelanggan')
             ->get();
 
