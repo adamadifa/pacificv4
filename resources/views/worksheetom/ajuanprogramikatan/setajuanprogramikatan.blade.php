@@ -99,12 +99,12 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $d->kode_pelanggan }}</td>
                                         <td>{{ $d->nama_pelanggan }}</td>
-                                        <td class="text-center">{{ formatAngka($d->qty_rata_rata) }} {{ $d->qty_rata_rata }}</td>
+                                        <td class="text-center">{{ formatAngka($d->qty_rata_rata) }} </td>
                                         <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                                         <td class="text-end">
                                             @php
-                                                $kenaikan = $d->qty_target - $d->qty_rata_rata;
-                                                $persentase = $d->qty_rata_rata == 0 ? 0 : ($kenaikan / $d->qty_rata_rata) * 100;
+                                                $kenaikan = $d->qty_target - ROUND($d->qty_rata_rata);
+                                                $persentase = $d->qty_rata_rata == 0 ? 0 : ($kenaikan / ROUND($d->qty_rata_rata)) * 100;
                                                 $persentase = formatAngkaDesimal($persentase);
                                             @endphp
                                             {{ $persentase }}%
