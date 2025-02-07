@@ -105,7 +105,7 @@
                                             @php
                                                 $kenaikan = $d->qty_target - $d->qty_rata_rata;
                                                 $persentase = $d->qty_rata_rata == 0 ? 0 : ($kenaikan / $d->qty_rata_rata) * 100;
-                                                $persentase = number_format($persentase, 2);
+                                                $persentase = formatRupiah($persentase);
                                             @endphp
                                             {{ $persentase }}%
                                         </td>
