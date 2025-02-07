@@ -97,7 +97,7 @@ class PencairanprogramController extends Controller
 
         $lastpencairan = Pencairanprogram::select('kode_pencairan')->orderBy('kode_pencairan', 'desc')
             ->whereRaw('YEAR(tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
-            ->where('kode_cabang', $request->kode_cabang)
+            ->where('kode_cabang', $kode_cabang)
             ->first();
         $last_kode_pencairan = $lastpencairan != null ? $lastpencairan->kode_pencairan : '';
         $kode_pencairan = buatkode($last_kode_pencairan, "PC" . $kode_cabang . date('y', strtotime($request->tanggal)), 4);
