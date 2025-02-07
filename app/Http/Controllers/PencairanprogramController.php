@@ -100,7 +100,7 @@ class PencairanprogramController extends Controller
             ->where('kode_cabang', $request->kode_cabang)
             ->first();
         $last_kode_pencairan = $lastpencairan != null ? $lastpencairan->kode_pencairan : '';
-        $kode_pencairan = buatkode($last_kode_pencairan, "PC" . $request->kode_cabang . date('y', strtotime($request->tanggal)), 4);
+        $kode_pencairan = buatkode($last_kode_pencairan, "PC" . $kode_cabang . date('y', strtotime($request->tanggal)), 4);
 
         try {
             //code...
