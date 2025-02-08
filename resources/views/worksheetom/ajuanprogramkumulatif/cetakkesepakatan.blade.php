@@ -144,42 +144,19 @@
             <p>
                 Adapun hak dan kewajiban antara Pihak Ke-1 dan Pihak Ke-2 yang harus disepakati bersama dalam surat kesepakatan ini antara lain :
             <ol>
-                <li>Pihak Ke-2 Memilih target penjualan sebanyak _____ Produk {{ $kesepakatan->nama_program }} atau
-                    {{ formatAngka($kesepakatan->qty_target) }}
-                    Ball/Dus per Bulan</li>
-                <li>Dengan hadiah berupa Cashback sebesar Rp.{{ $kesepakatan->reward }} / Ball/Dus</li>
-                <li>Periode Program dimulai dari {{ $namabulan[date('m', strtotime($kesepakatan->periode_dari)) * 1] }} s/d
-                    {{ $namabulan[date('m', strtotime($kesepakatan->periode_sampai)) * 1] }}
-                    {{ date('Y', strtotime($kesepakatan->periode_sampai)) }}
+                <li>Pihak ke-2 berhak mendapatkan tambahan cashback sesuai denagn selisih diskon pada saat transaksi reguler </li>
+                <li>Nilai cashback dihitung berdasarkan jumlah kumulatif transaksi dalam satu bulan kalender dikalikan dengan selisih diskon saat
+                    transaksi reguler</li>
+                <li>Pencapaian cashback dengan nominal kurang dari Rp 100.000,- perolehan berupa voucher
                 </li>
                 <li>
-                    Pihak Ke2 bersedia mengambil barang dengan kuantitas yang stabil sesuai dengan ksesepakatan target bulanan (diperbolehkan lebih
-                    tetapi tidak boleh <b>KURANG</b>)
-                </li>
-                <li>
-                    Pihak Ke-2 bersedia melampirkan fotocopy KTP
+                    Sebagai upaya mempercepat proses realisasi hadiah untuk pelanggan perusahan, Pihak Ke-2 bersedia Melunasi seluruh faktur yang
+                    ada (14 hari dari tgl faktur)
                 </li>
                 <li>
                     Pihak Ke-1 dan Pihak Ke-2 bersedia melengkapi seluruh data yang ada pada surat kesepakatan ini
                 </li>
-                <li>
-                    Sebagai upaya mempercepat proses realisasi hadiah untuk pelanggan perusahan, Pihak Ke-2 bersedia <b>Melunasi seluruh faktur yang
-                        ada</b> (Paling lambat 14 hari dari berakhirnya masa program)
-                </li>
-                <li>
-                    Pengembalian produk oleh Pihak Ke-2 tidak dapat dilakukan dengan cara potong faktur maupun diluangkan. Pengembalian produk hanya
-                    dapat dilakukan dengan cara tukar barang dengan produk sejenis.
-                </li>
-                <li>
-                    Pihak Ke-1 tidak menerima pengembalian barang yang diakibatkan expired masa produk.
-                </li>
-                <li>
-                    Apabila dalam realisasinya pihak Ke-2 mampu melebihi target yang telah disepakati maka Pihak Ke-2 berhak mendapatkan hadiah
-                    yang lebih besar sesuai grade yang tercapai
-                </li>
-                <li>
-                    Pihak Ke-2 tidak diperkenankan turun target dari target yang telah disepakati
-                </li>
+
             </ol>
             </p>
             <p>
