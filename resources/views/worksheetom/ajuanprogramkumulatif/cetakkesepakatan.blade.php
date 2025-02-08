@@ -149,10 +149,12 @@
                     transaksi reguler</li>
                 <li>Pencapaian cashback dengan nominal kurang dari Rp 100.000,- perolehan berupa voucher
                 </li>
+
                 <li>
                     Sebagai upaya mempercepat proses realisasi hadiah untuk pelanggan perusahan, Pihak Ke-2 bersedia Melunasi seluruh faktur yang
                     ada (14 hari dari tgl faktur)
                 </li>
+                <li>ika pihak ke-2 melakukan pelunasan melebihi dari 14 hari, maka pihak ke-2 tidak berhak mendapatkan cashback tambahan</li>
                 <li>
                     Pihak Ke-1 dan Pihak Ke-2 bersedia melengkapi seluruh data yang ada pada surat kesepakatan ini
                 </li>
