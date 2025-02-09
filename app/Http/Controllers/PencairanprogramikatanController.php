@@ -262,13 +262,21 @@ class PencairanprogramikatanController extends Controller
 
         // $listpelangganikatan = Detailajuanprogramikatan::where('no_pengajuan', $pencairanprogram->no_pengajuan);
 
-        $listpelangganikatan = Detailtargetikatan::join('marketing_program_ikatan', 'marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
-            ->where('marketing_program_ikatan_target.no_pengajuan', $pencairanprogram->no_pengajuan)
+        $listpelangganikatan = Detailtargetikatan::select(
+            'marketing_program_ikatan_target.kode_pelanggan',
+            'marketing_program_ikatan_detail.top'
+        )
+            ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_ikatan_detail', function ($join) {
+                $join->on('marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
+                    ->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
+            ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+            ->where('marketing_program_ikatan.status', 1)
+            ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
             ->where('marketing_program_ikatan_target.bulan', $pencairanprogram->bulan)
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
-            ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
-            ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang)
-            ->select('marketing_program_ikatan_target.kode_pelanggan', 'marketing_program_ikatan_target.top');
+            ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang);
 
         $start_date = $pencairanprogram->tahun . '-' . $pencairanprogram->bulan . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
