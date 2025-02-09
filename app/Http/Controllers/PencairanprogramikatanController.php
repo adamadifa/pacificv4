@@ -221,7 +221,8 @@ class PencairanprogramikatanController extends Controller
         $pelangganprogram = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
             'marketing_program_ikatan_detail.top',
-            'marketing_program_ikatan_detail.metode_pembayaran'
+            'marketing_program_ikatan_detail.metode_pembayaran',
+            'marketing_program_ikatan_target.target_perbulan as qty_target',
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
@@ -234,6 +235,8 @@ class PencairanprogramikatanController extends Controller
             ->where('marketing_program_ikatan_target.bulan', $pencairanprogramikatan->bulan)
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogramikatan->tahun)
             ->where('marketing_program_ikatan.kode_cabang', $pencairanprogramikatan->kode_cabang);
+
+
 
 
         $detail = Detailpencairanprogramikatan::join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
