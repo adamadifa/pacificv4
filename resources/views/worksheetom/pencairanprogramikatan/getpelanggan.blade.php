@@ -1,8 +1,10 @@
 @php
     $total_reward = 0;
+    $color_reward = '';
+    $status = 0;
 @endphp
 @foreach ($peserta as $d)
-    @php
+    {{-- @php
         $color_reward = $d->jml_dus >= $d->qty_target ? 'bg-success text-white' : 'bg-danger text-white';
         if ($d->jml_dus >= $d->qty_target) {
             $reward = $d->reward * $d->jml_dus;
@@ -11,7 +13,7 @@
         }
         $total_reward += $reward;
         $status = $reward == 0 ? 0 : 1;
-    @endphp
+    @endphp --}}
 
     <tr class=" {{ $color_reward }}">
         <td>{{ $loop->iteration }}</td>
@@ -21,20 +23,24 @@
             {{ $d->kode_pelanggan }}
         </td>
         <td>{{ $d->nama_pelanggan }}</td>
-        <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-        <td class="text-end">
-            <input type="hidden" name="jumlah[]" value="{{ $d->jml_dus }}">
-            {{ formatAngka($d->jml_dus) }}
+        <td class="text-center">
+            {{-- {{ formatAngka($d->qty_target) }} --}}
         </td>
-        <td class="text-end">{{ formatAngka($d->reward) }}</td>
         <td class="text-end">
-            {{ formatAngka($reward) }}
+            {{-- <input type="hidden" name="jumlah[]" value="{{ $d->jml_dus }}">
+            {{ formatAngka($d->jml_dus) }} --}}
+        </td>
+        <td class="text-end">
+            {{-- {{ formatAngka($d->reward) }} --}}
+        </td>
+        <td class="text-end">
+            {{-- {{ formatAngka($reward) }} --}}
         </td>
         <td></td>
     </tr>
 @endforeach
-<tr class="table-dark">
+{{-- <tr class="table-dark">
     <td colspan="6" class="text-end">TOTAL REWARD</td>
     <td class="text-end">{{ formatAngka($total_reward) }}</td>
     <td></td>
-</tr>
+</tr> --}}

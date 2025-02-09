@@ -340,7 +340,7 @@ class PencairanprogramikatanController extends Controller
             ->get();
 
 
-        dd($peserta);
+        // dd($peserta);
         // $data['detail'] = $detail;
         $data['kode_pencairan'] = $kode_pencairan;
         $data['peserta'] = $peserta;
