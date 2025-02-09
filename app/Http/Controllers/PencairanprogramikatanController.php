@@ -267,7 +267,8 @@ class PencairanprogramikatanController extends Controller
             ->where('marketing_program_ikatan_target.bulan', $pencairanprogram->bulan)
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
             ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
-            ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang);
+            ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang)
+            ->select('marketing_program_ikatan_target.kode_pelanggan', 'marketing_program_ikatan_target.top');
 
         $start_date = $pencairanprogram->tahun . '-' . $pencairanprogram->bulan . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
