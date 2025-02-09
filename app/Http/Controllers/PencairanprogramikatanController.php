@@ -220,7 +220,8 @@ class PencairanprogramikatanController extends Controller
 
         $pelangganprogram = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
-            'marketing_program_ikatan_detail.top'
+            'marketing_program_ikatan_detail.top',
+            'marketing_program_ikatan_detail.metode_pembayaran'
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
