@@ -157,7 +157,6 @@ class Globalprovider extends ServiceProvider
                         ->where('marketing_pencairan_ikatan.status', 0)
                         ->whereNotNull('marketing_pencairan_ikatan.om')
                         ->where('marketing_pencairan_ikatan.kode_cabang', auth()->user()->kode_cabang)
-
                         ->count();
 
                     $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('rsm')

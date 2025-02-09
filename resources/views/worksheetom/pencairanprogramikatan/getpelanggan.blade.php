@@ -24,7 +24,7 @@
         </td>
         <td>{{ $d->nama_pelanggan }}</td>
         <td class="text-center">
-            {{-- {{ formatAngka($d->qty_target) }} --}}
+            {{ formatAngka($d->qty_target) }}
         </td>
         <td class="text-end">
             {{-- <input type="hidden" name="jumlah[]" value="{{ $d->jml_dus }}">
