@@ -343,6 +343,7 @@ class PencairanprogramikatanController extends Controller
             'marketing_program_ikatan_target.kode_pelanggan',
             'nama_pelanggan',
             'target_perbulan as qty_target',
+            'reward',
             'jml_dus',
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
