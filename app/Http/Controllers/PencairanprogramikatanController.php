@@ -381,6 +381,7 @@ class PencairanprogramikatanController extends Controller
         $kode_pelanggan = $request->kode_pelanggan;
         $jumlah = $request->jumlah;
         $status = $request->status;
+        dd($kode_pelanggan);
         DB::beginTransaction();
         try {
             Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)->delete();
