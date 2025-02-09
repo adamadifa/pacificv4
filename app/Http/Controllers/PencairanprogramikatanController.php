@@ -266,7 +266,7 @@ class PencairanprogramikatanController extends Controller
         //     ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
         //     ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang);
 
-        $listpelangganikatan = Detailajuanprogramikatan::join('marketing_program_ikatan', 'marketing_program_ikatan.no_pengajuan', '=', 'marketing_program_ikatan_target.no_pengajuan')
+        $listpelangganikatan = Detailajuanprogramikatan::join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program);
 
 
