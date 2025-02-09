@@ -333,9 +333,6 @@ class PencairanprogramikatanController extends Controller
                 $join->on('marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
                     ->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
             })
-            ->leftJoinSub($targetbulan, 'targetbulan', function ($join) {
-                $join->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'targetbulan.kode_pelanggan');
-            })
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->where('marketing_program_ikatan.status', 1)
             ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
