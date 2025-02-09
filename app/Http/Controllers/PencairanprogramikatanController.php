@@ -260,7 +260,7 @@ class PencairanprogramikatanController extends Controller
         $query->where('kode_pencairan', $kode_pencairan);
         $pencairanprogram = $query->first();
 
-        $listpelangganikatan = Detailtargetikatan::join('marketing_program_ikatan', 'marketing_program_ikatan.no_pengajuan', '=', 'detailtargetikatan.no_pengajuan')
+        $listpelangganikatan = Detailtargetikatan::join('marketing_program_ikatan', 'marketing_program_ikatan.no_pengajuan', '=', 'marketing_program_ikatan_target.no_pengajuan')
             ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
             ->where('marketing_program_ikatan_target.bulan', $pencairanprogram->bulan)
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
