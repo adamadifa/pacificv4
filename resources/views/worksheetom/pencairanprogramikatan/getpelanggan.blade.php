@@ -4,7 +4,7 @@
     $status = 0;
 @endphp
 @foreach ($peserta as $d)
-    {{-- @php
+    @php
         $color_reward = $d->jml_dus >= $d->qty_target ? 'bg-success text-white' : 'bg-danger text-white';
         if ($d->jml_dus >= $d->qty_target) {
             $reward = $d->reward * $d->jml_dus;
@@ -13,7 +13,7 @@
         }
         $total_reward += $reward;
         $status = $reward == 0 ? 0 : 1;
-    @endphp --}}
+    @endphp
 
     <tr class=" {{ $color_reward }}">
         <td>{{ $loop->iteration }}</td>
@@ -27,14 +27,14 @@
             {{ formatAngka($d->qty_target) }}
         </td>
         <td class="text-end">
-            {{-- <input type="hidden" name="jumlah[]" value="{{ $d->jml_dus }}">
-            {{ formatAngka($d->jml_dus) }} --}}
+            <input type="hidden" name="jumlah[]" value="{{ $d->jml_dus }}">
+            {{ formatAngka($d->jml_dus) }}
         </td>
         <td class="text-end">
-            {{-- {{ formatAngka($d->reward) }} --}}
+            {{ formatAngka($d->reward) }}
         </td>
         <td class="text-end">
-            {{-- {{ formatAngka($reward) }} --}}
+            {{ formatAngka($reward) }}
         </td>
         <td></td>
     </tr>

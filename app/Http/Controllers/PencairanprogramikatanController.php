@@ -294,12 +294,12 @@ class PencairanprogramikatanController extends Controller
             // })
             ->groupBy('marketing_penjualan.kode_pelanggan');
 
-        $targetbulan = Detailtargetikatan::join('marketing_program_ikatan', 'marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
-            ->select('kode_pelanggan', 'target_perbulan')
-            ->where('bulan', $pencairanprogram->bulan)
-            ->where('tahun', $pencairanprogram->tahun)
-            ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
-            ->where('marketing_program_ikatan.status', 1);
+        // $targetbulan = Detailtargetikatan::join('marketing_program_ikatan', 'marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+        //     ->select('kode_pelanggan', 'target_perbulan')
+        //     ->where('bulan', $pencairanprogram->bulan)
+        //     ->where('tahun', $pencairanprogram->tahun)
+        //     ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
+        //     ->where('marketing_program_ikatan.status', 1);
 
         // $peserta = Detailajuanprogramikatan::select(
         //     'marketing_program_ikatan_detail.kode_pelanggan',
@@ -327,11 +327,15 @@ class PencairanprogramikatanController extends Controller
             'marketing_program_ikatan_target.kode_pelanggan',
             'nama_pelanggan',
             'target_perbulan as qty_target',
+            'jml_dus',
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
                 $join->on('marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
                     ->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
+            ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
+                $join->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'detailpenjualan.kode_pelanggan');
             })
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->where('marketing_program_ikatan.status', 1)
