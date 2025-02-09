@@ -65,7 +65,6 @@
                                             <th rowspan="2" valign="middle">Tanggal</th>
                                             <th rowspan="2" valign="middle">Bulan</th>
                                             <th rowspan="2" valign="middle">Tahun</th>
-                                            <th rowspan="2" valign="middle">No. Dok</th>
                                             <th rowspan="2" valign="middle">Program</th>
                                             <th rowspan="2" valign="middle">Cabang</th>
                                             {{-- <th rowspan="2" valign="middle">Periode</th> --}}
@@ -88,7 +87,6 @@
                                                 <td>{{ $d->tanggal }}</td>
                                                 <td>{{ $namabulan[$d->bulan] }}</td>
                                                 <td>{{ $d->tahun }}</td>
-                                                <td>{{ $d->no_pengajuan }}</td>
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
                                                 {{-- <td>{{ $namabulan[$d->bulan] }} {{ $d->tahun }}</td> --}}
@@ -166,7 +164,7 @@
                                                             </a>
                                                         @endcan
                                                         @can('pencairanprogramikt.delete')
-                                                            @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
+                                                            @if ($user->hasRole(['operation manager', 'sales marketing manager', 'super admin']) && $d->rsm == null)
                                                                 <form method="POST" name="deleteform" class="deleteform"
                                                                     action="{{ route('pencairanprogramikatan.delete', Crypt::encrypt($d->kode_pencairan)) }}">
                                                                     @csrf

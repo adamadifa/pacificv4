@@ -7,6 +7,7 @@ use App\Models\Cabang;
 use App\Models\Detailajuanprogramikatan;
 use App\Models\Detailpencairanprogramikatan;
 use App\Models\Detailpenjualan;
+use App\Models\Detailtargetikatan;
 use App\Models\Pencairanprogram;
 use App\Models\Pencairanprogramikatan;
 use App\Models\Programikatan;
@@ -30,13 +31,9 @@ class PencairanprogramikatanController extends Controller
             'marketing_pencairan_ikatan.*',
             'cabang.nama_cabang',
             'nama_program',
-            'nomor_dokumen',
-            'periode_dari',
-            'periode_sampai',
         );
-        $query->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan');
-        $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->join('cabang', 'marketing_pencairan_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
 
         if (!$user->hasRole($roles_access_all_cabang)) {
@@ -48,20 +45,18 @@ class PencairanprogramikatanController extends Controller
         }
 
         if (!empty($request->kode_cabang)) {
-            $query->where('marketing_program_ikatan.kode_cabang', $request->kode_cabang);
+            $query->where('marketing_pencairan_ikatan.kode_cabang', $request->kode_cabang);
         }
 
         if (!empty($request->kode_program)) {
-            $query->where('marketing_program_ikatan.kode_program', $request->kode_program);
+            $query->where('marketing_pencairan_ikatan.kode_program', $request->kode_program);
         }
 
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('marketing_pencairan_ikatan.tanggal', [$request->dari, $request->sampai]);
         }
 
-        if (!empty($request->nomor_dokumen)) {
-            $query->where('marketing_program_ikatan.nomor_dokumen', $request->nomor_dokumen);
-        }
+
 
         if ($user->hasRole('regional sales manager')) {
             $query->whereNotNull('marketing_program_ikatan.om');
@@ -95,86 +90,105 @@ class PencairanprogramikatanController extends Controller
     {
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
+        $cbg = new Cabang();
+        $cabang = $cbg->getCabang();
+        $data['cabang'] = $cabang;
+        $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         return view('worksheetom.pencairanprogramikatan.create', $data);
     }
 
 
     public function store(Request $request)
     {
+        $user = User::findorFail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $request->validate([
             'tanggal' => 'required',
-            'periodepencairan' => 'required',
-            'no_pengajuan' => 'required',
+            'kode_program' => 'required',
+            'kode_cabang' => 'required',
+            'bulan' => 'required',
+            'tahun' => 'required',
             'keterangan' => 'required'
         ]);
-        $ajuan = Ajuanprogramikatan::where('no_pengajuan', $request->no_pengajuan)->first();
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
 
-        $lastpencairan = Pencairanprogramikatan::join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
-            ->select('kode_pencairan')->orderBy('kode_pencairan', 'desc')
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+
+        $lastpencairan = Pencairanprogramikatan::select('kode_pencairan')->orderBy('kode_pencairan', 'desc')
             ->whereRaw('YEAR(marketing_pencairan_ikatan.tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
-            ->where('kode_cabang', $ajuan->kode_cabang)
+            ->where('kode_cabang', $kode_cabang)
             ->first();
         $last_kode_pencairan = $lastpencairan != null ? $lastpencairan->kode_pencairan : '';
 
         // dd($last_kode_pencairan);
-        $kode_pencairan = buatkode($last_kode_pencairan, "PI" . $ajuan->kode_cabang . date('y', strtotime($request->tanggal)), 4);
+        $kode_pencairan = buatkode($last_kode_pencairan, "PI" . $kode_cabang . date('y', strtotime($request->tanggal)), 4);
 
-        $periode_dari = $ajuan->periode_dari;
-        $periode_sampai = $ajuan->periode_sampai;
+        // $periode_dari = $ajuan->periode_dari;
+        // $periode_sampai = $ajuan->periode_sampai;
 
-        $bulan_dari = (int) date('m', strtotime($periode_dari));
-        $tahun_dari = (int) date('Y', strtotime($periode_dari));
-        $bulan_sampai = (int) date('m', strtotime($periode_sampai));
-        $tahun_sampai = (int) date('Y', strtotime($periode_sampai));
+        // $bulan_dari = (int) date('m', strtotime($periode_dari));
+        // $tahun_dari = (int) date('Y', strtotime($periode_dari));
+        // $bulan_sampai = (int) date('m', strtotime($periode_sampai));
+        // $tahun_sampai = (int) date('Y', strtotime($periode_sampai));
 
-        $array_bulan = [];
-        for ($tahun = $tahun_dari; $tahun <= $tahun_sampai; $tahun++) {
-            for ($bulan = $tahun == $tahun_dari ? $bulan_dari : 1; $tahun == $tahun_sampai ? $bulan <= $bulan_sampai : $bulan <= 12; $bulan++) {
-                $array_bulan[] = $bulan . '-' . $tahun;
-            }
-        }
+        // $array_bulan = [];
+        // for ($tahun = $tahun_dari; $tahun <= $tahun_sampai; $tahun++) {
+        //     for ($bulan = $tahun == $tahun_dari ? $bulan_dari : 1; $tahun == $tahun_sampai ? $bulan <= $bulan_sampai : $bulan <= 12; $bulan++) {
+        //         $array_bulan[] = $bulan . '-' . $tahun;
+        //     }
+        // }
 
 
         try {
-            $periodepencairan = explode('-', $request->periodepencairan);
-            $bulan = $periodepencairan[0];
-            $tahun = $periodepencairan[1];
-            $cekajuan = Pencairanprogramikatan::where('no_pengajuan', $request->no_pengajuan)
+            // $periodepencairan = explode('-', $request->periodepencairan);
+            // $bulan = $periodepencairan[0];
+            // $tahun = $periodepencairan[1];
+            $cekajuan = Pencairanprogramikatan::where('kode_program', $request->kode_program)
                 ->where('bulan', $bulan)
                 ->where('tahun', $tahun)
                 ->first();
             if (!empty($cekajuan)) {
                 return Redirect::back()->with(messageError('Periode Pencairan Sudah Ada'));
             }
-            $cek = Pencairanprogramikatan::where('no_pengajuan', $request->no_pengajuan)
-                ->first();
+            // $cek = Pencairanprogramikatan::where('no_pengajuan', $request->no_pengajuan)
+            //     ->first();
 
-            $bulan_sebelumnya = getbulandantahunlalu($bulan, $tahun, "bulan");
-            $tahun_sebelumnya = getbulandantahunlalu($bulan, $tahun, "tahun");
+            // $bulan_sebelumnya = getbulandantahunlalu($bulan, $tahun, "bulan");
+            // $tahun_sebelumnya = getbulandantahunlalu($bulan, $tahun, "tahun");
 
-            $periode_pertama = $array_bulan[0];
-            if (empty($cek) && $periode_pertama != $request->periodepencairan) {
-                $bulan_tahun_periode_pertama = explode('-', $periode_pertama);
-                $bulan_periode_pertama = $bulan_tahun_periode_pertama[0];
-                $tahun_periode_pertama = $bulan_tahun_periode_pertama[1];
-                return Redirect::back()->with(messageError('Periode Pencairan Harus Dimulai dari Periode ' . getMonthName($bulan_periode_pertama) . ' ' . $tahun_periode_pertama));
-            } else {
-                if ($request->periodepencairan != $periode_pertama) {
-                    $cek_bulan_sebelumnya = Pencairanprogramikatan::where('no_pengajuan', $request->no_pengajuan)
-                        ->where('bulan', $bulan_sebelumnya)
-                        ->where('tahun', $tahun_sebelumnya)
-                        ->first();
-                    if (empty($cek_bulan_sebelumnya)) {
-                        return Redirect::back()->with(messageError('Periode Bulan ' . getMonthName($bulan_sebelumnya) . ' Tahun ' . $tahun_sebelumnya . ' Belum Dicairkan'));
-                    }
-                }
-            }
+            //$periode_pertama = $array_bulan[0];
+            // if (empty($cek) && $periode_pertama != $request->periodepencairan) {
+            //     $bulan_tahun_periode_pertama = explode('-', $periode_pertama);
+            //     $bulan_periode_pertama = $bulan_tahun_periode_pertama[0];
+            //     $tahun_periode_pertama = $bulan_tahun_periode_pertama[1];
+            //     return Redirect::back()->with(messageError('Periode Pencairan Harus Dimulai dari Periode ' . getMonthName($bulan_periode_pertama) . ' ' . $tahun_periode_pertama));
+            // } else {
+            //     if ($request->periodepencairan != $periode_pertama) {
+            //         $cek_bulan_sebelumnya = Pencairanprogramikatan::where('no_pengajuan', $request->no_pengajuan)
+            //             ->where('bulan', $bulan_sebelumnya)
+            //             ->where('tahun', $tahun_sebelumnya)
+            //             ->first();
+            //         if (empty($cek_bulan_sebelumnya)) {
+            //             return Redirect::back()->with(messageError('Periode Bulan ' . getMonthName($bulan_sebelumnya) . ' Tahun ' . $tahun_sebelumnya . ' Belum Dicairkan'));
+            //         }
+            //     }
+            // }
 
             //code...
             Pencairanprogramikatan::create([
                 'kode_pencairan' => $kode_pencairan,
                 'tanggal' => $request->tanggal,
-                'no_pengajuan' => $request->no_pengajuan,
+                'kode_program' => $request->kode_program,
+                'kode_cabang' => $request->kode_cabang,
                 'bulan' => $bulan,
                 'tahun' => $tahun,
                 'keterangan' => $request->keterangan
@@ -196,13 +210,9 @@ class PencairanprogramikatanController extends Controller
             'marketing_pencairan_ikatan.*',
             'cabang.nama_cabang',
             'nama_program',
-            'nomor_dokumen',
-            'periode_dari',
-            'periode_sampai'
         );
-        $query->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan');
-        $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->join('cabang', 'marketing_pencairan_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
         $query->where('kode_pencairan', $kode_pencairan);
         $pencairanprogramikatan = $query->first();
@@ -219,6 +229,7 @@ class PencairanprogramikatanController extends Controller
             ->get();
         $data['pencairanprogram'] = $pencairanprogramikatan;
         $data['detail'] = $detail;
+        $data['user'] = User::find(auth()->user()->id);
         return view('worksheetom.pencairanprogramikatan.setpencairan', $data);
     }
 
@@ -237,18 +248,14 @@ class PencairanprogramikatanController extends Controller
         $query = Pencairanprogramikatan::query();
         $query->select(
             'marketing_pencairan_ikatan.*',
-            'marketing_program_ikatan.kode_cabang',
             'cabang.nama_cabang',
             'nama_program',
-            'nomor_dokumen',
-            'periode_dari',
-            'periode_sampai',
             'produk',
 
         );
-        $query->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan');
-        $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+
+        $query->join('cabang', 'marketing_pencairan_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
         $query->where('kode_pencairan', $kode_pencairan);
         $pencairanprogram = $query->first();
@@ -287,13 +294,18 @@ class PencairanprogramikatanController extends Controller
             // })
             ->groupBy('marketing_penjualan.kode_pelanggan');
 
-
+        $targetbulan = Detailtargetikatan::join('marketing_program_ikatan', 'marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+            ->select('kode_pelanggan', 'target_perbulan')
+            ->where('bulan', $pencairanprogram->bulan)
+            ->where('tahun', $pencairanprogram->tahun)
+            ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
+            ->where('marketing_program_ikatan.status', 1);
 
         $peserta = Detailajuanprogramikatan::select(
             'marketing_program_ikatan_detail.kode_pelanggan',
             'nama_pelanggan',
             'reward',
-            'qty_target',
+            'target_perbulan as qty_target',
             'jml_dus'
         )
             ->join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
@@ -301,8 +313,11 @@ class PencairanprogramikatanController extends Controller
             ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
                 $join->on('marketing_program_ikatan_detail.kode_pelanggan', '=', 'detailpenjualan.kode_pelanggan');
             })
+            ->leftJoinSub($targetbulan, 'targetbulan', function ($join) {
+                $join->on('marketing_program_ikatan_detail.kode_pelanggan', '=', 'targetbulan.kode_pelanggan');
+            })
             ->where('marketing_program_ikatan_detail.status', 1)
-            ->where('marketing_program_ikatan.no_pengajuan', $pencairanprogram->no_pengajuan)
+            ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
             ->get();
 
 
