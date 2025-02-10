@@ -501,6 +501,11 @@ class AjuanprogramikatanController extends Controller
         $tahun = date('Y', strtotime($tanggal_ajuan));
         $tahunlalu = $tahun - 1;
         $produk = json_decode($programikatan->produk, true) ?? [];
+
+        $dari = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_dari));
+        $sampai = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_sampai));
+
+
         $detailpenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
@@ -509,8 +514,9 @@ class AjuanprogramikatanController extends Controller
             ->whereIn('produk_harga.kode_produk', $produk)
             // ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
             // ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->whereIn('marketing_penjualan.kode_pelanggan', $list_pelanggan)
-            ->whereRaw('YEAR(marketing_penjualan.tanggal)="' . $tahunlalu . '"')
+            // ->whereRaw('YEAR(marketing_penjualan.tanggal)="' . $tahunlalu . '"')
             // ->where('salesman.kode_cabang', $programikatan->kode_cabang)
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
@@ -530,6 +536,7 @@ class AjuanprogramikatanController extends Controller
             ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
                 $join->on('detailpenjualan.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
             })
+            ->select('marketing_program_ikatan_detail.*', 'detailpenjualan.qty_rata_rata', 'pelanggan.nama_pelanggan')
             ->get();
         return view('worksheetom.ajuanprogramikatan.approve', $data);
     }
