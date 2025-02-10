@@ -64,7 +64,7 @@ class AjuanprogramikatanController extends Controller
                 }
             }
             $query->whereNotNull('marketing_program_ikatan.om');
-            $query->where('marketing_program_ikatan.status', '!=', 2);
+            // $query->where('marketing_program_ikatan.status', '!=', 2);
         }
 
         if ($user->hasRole('gm marketing')) {
@@ -80,7 +80,7 @@ class AjuanprogramikatanController extends Controller
                 }
             }
             $query->whereNotNull('marketing_program_ikatan.rsm');
-            $query->where('marketing_program_ikatan.status', '!=', 2);
+            // $query->where('marketing_program_ikatan.status', '!=', 2);
         }
 
         if ($user->hasRole('direktur')) {
@@ -97,7 +97,7 @@ class AjuanprogramikatanController extends Controller
                 }
             }
             $query->whereNotNull('marketing_program_ikatan.gm');
-            $query->where('marketing_program_ikatan.status', '!=', 2);
+            // $query->where('marketing_program_ikatan.status', '!=', 2);
         }
         $ajuanprogramikatan = $query->paginate(15);
         $ajuanprogramikatan->appends(request()->all());
