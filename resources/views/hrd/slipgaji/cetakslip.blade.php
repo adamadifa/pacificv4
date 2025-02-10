@@ -566,7 +566,7 @@
     @endphp
     <div class="row" style="margin-top: 70px">
         <div class="col">
-            <table class="datatable3" style="width: 100%">
+            <table class="datatable3" style="width: 60%">
                 <tr>
                     <th>NIK</th>
                     <td colspan="3">{{ $d['nik'] }}</td>
