@@ -37,8 +37,8 @@ class OmancabangController extends Controller
 
 
         if (!$user->hasRole($roles_show_cabang)) {
-            if ($user->hasRole('rsm')) {
-                $query->where('cabang.kode_regionald', auth()->user()->kode_regional);
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else {
                 $query->where('marketing_oman_cabang.kode_cabang', auth()->user()->kode_cabang);
             }
