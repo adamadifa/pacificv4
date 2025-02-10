@@ -1821,7 +1821,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/slipgaji/{kode_slip}/edit', 'edit')->name('slipgaji.edit')->can('slipgaji.edit');
         Route::put('/slipgaji/{kode_slip}/update', 'update')->name('slipgaji.update')->can('slipgaji.update');
         Route::delete('/slipgaji/{kode_slip}/delete', 'destroy')->name('slipgaji.delete')->can('slipgaji.delete');
-        Route::get('/slipgaji/{nik}/{bulan}/{tahun}/cetakslip', 'cetakslip')->name('slipgaji.cetakslipgaji')->can('slipgaji.show');
+        Route::get('/slipgaji/{nik}/{bulan}/{tahun}/cetakslip', 'cetakslip')->name('slipgaji.cetakslip')->can('slipgaji.show');
     });
 
     Route::controller(PenyesuaianupahController::class)->group(function () {
