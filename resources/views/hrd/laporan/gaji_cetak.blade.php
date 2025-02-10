@@ -230,7 +230,8 @@
                             @php
                                 $nik = $d['nik'];
                             @endphp
-                            <a href="{{ route('slipgaji.cetakslip', ['nik' => Crypt::encrypt($nik), 'bulan' => $bulan, 'tahun' => $tahun]) }}">
+                            <a href="{{ route('slipgaji.cetakslip', ['nik' => Crypt::encrypt($nik), 'bulan' => $bulan, 'tahun' => $tahun]) }}"
+                                target="_blank">
                                 '{{ $d['nik'] }}
                             </a>
                         </td>
