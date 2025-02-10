@@ -251,12 +251,10 @@
                         $potongan_jam_tidakhadir =
                             empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out']) ? $total_jam_jadwal : 0;
                         $potongan_jam_izin = 0;
-                        $potongan_jam_pulangcepat = $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['formatAngkaDesimal'];
+                        $potongan_jam_pulangcepat = $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
                         $potongan_jam_izinkeluar =
-                            $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['formatAngkaDesimal'] <= 1
-                                ? 0
-                                : $izin_keluar['formatAngkaDesimal'];
-                        $potongan_jam_terlambat = $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['formatAngkaDesimal'];
+                            $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['desimal'] <= 1 ? 0 : $izin_keluar['desimal'];
+                        $potongan_jam_terlambat = $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['desimal'];
 
                         //Total Potongan
                         $total_potongan_jam =
