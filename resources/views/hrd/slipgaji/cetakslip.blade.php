@@ -5,7 +5,7 @@
     }
 
     .text-left {
-        text-align: left;
+        text-align: left !important;
     }
 </style>
 @php
@@ -570,7 +570,7 @@
     @endphp
     <div class="row" style="margin-top: 70px">
         <div class="col">
-            <table class="datatable3" style="width: 40%">
+            <table class="datatable3" style="width: 30%">
                 <tr>
                     <th class="text-left">NIK</th>
                     <td colspan="3">{{ $d['nik'] }}</td>
