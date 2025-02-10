@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
 @php
     $total_jam_satubulan = 173;
     $grandtotal_all_gajipokok = 0;
@@ -560,7 +561,7 @@
     @endphp
     <div class="row" style="margin-top: 70px">
         <div class="col">
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th>NIK</th>
                     <td>{{ $d['nik'] }}</td>
@@ -582,7 +583,7 @@
                     <td>{{ $d['nama_jabatan'] }}</td>
                 </tr>
             </table>
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th>Gaji Pokok</th>
                     <td class="text-right">{{ formatRupiah($d['gaji_pokok']) }}</td>
@@ -618,7 +619,7 @@
 
             </table>
             <hr>
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th>∑ JAM KERJA BULAN INI</th>
                     <td style="font-weight: bold">{{ formatAngkaDesimal($total_jam_kerja) }} JAM</td>
@@ -630,7 +631,7 @@
             </table>
             <hr>
             <hr>
-            <table class="table">
+            <table class="datatable3">
                 @php
                     $upah_bulanini = $upah_perjam * $total_jam_kerja;
                 @endphp
@@ -640,7 +641,7 @@
                 </tr>
             </table>
             <hr>
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th>Overtime 1</th>
                     <td class="text-center">{{ formatAngkaDesimal($total_overtime_1) }}</td>
@@ -674,14 +675,14 @@
                 </tr>
             </table>
             <hr>
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th>TOTAL PENERIMAAN</th>
                     <td style="font-weight: bold; text-align:right">{{ formatRupiah($bruto) }}</td>
                 </tr>
             </table>
             <hr>
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th colspan="2" class="text-center">POTONGAN</th>
                 </tr>
@@ -727,20 +728,20 @@
                 </tr>
             </table>
             <hr>
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th>TOTAL POTONGAN</th>
                     <td style="font-weight: bold; text-align:right">{{ formatRupiah($jml_potongan_upah) }}</td>
                 </tr>
             </table>
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th style="font-size:18px">GAJI BERSIH</th>
                     <td style="font-weight: bold;font-size:18px; text-align:right">{{ formatRupiah($jmlbersih) }}</td>
                 </tr>
             </table>
             <hr>
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th colspan="2" class="text-center">INSENTIF</th>
                 </tr>
