@@ -1,4 +1,9 @@
 <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
+<style>
+    .text-right {
+        text-align: right;
+    }
+</style>
 @php
     $total_jam_satubulan = 173;
     $grandtotal_all_gajipokok = 0;
@@ -622,98 +627,98 @@
                     <td class="text-right">{{ formatAngkaDesimal($upah_perjam) }}</td>
                 </tr>
                 @php
-                $upah_bulanini = $upah_perjam * $total_jam_kerja;
-            @endphp
-            <tr>
-                <th>UPAH BULAN INI</th>
-                <td style="font-weight: bold; text-align:right">{{ formatRupiah($upah_bulanini) }}</td>
-            </tr>
-            <tr>
-                <th>Overtime 1</th>
-                <td class="text-center">{{ formatAngkaDesimal($total_overtime_1) }}</td>
-                <td>JAM</td>
-                <td class="text-right">{{ formatRupiah($upah_overtime_1) }}</td>
-            </tr>
-            <tr>
-                <th>Overtime 2</th>
-                <td class="text-center">{{ formatAngkaDesimal($total_overtime_2) }}</td>
-                <td>JAM</td>
-                <td class="text-right">{{ formatRupiah($upah_overtime_2) }}</td>
-            </tr>
-            <tr>
-                <th>Lembur Hari Libur</th>
-                <td class="text-center">{{ formatAngkaDesimal($total_overtime_libur) }}
-                </td>
-                <td>JAM</td>
-                <td class="text-right">{{ formatRupiah($upah_overtime_libur) }}</td>
-            </tr>
-            <tr>
-                <th>Premi Shift 2</th>
-                <td class="text-center">{{ $premis_shift2 }}</td>
-                <td>HARI</td>
-                <td class="text-right">{{ formatRupiah($upah_premi_shift2) }}</td>
-            </tr>
-            <tr>
-                <th>Premi Shift 3</th>
-                <td class="text-center">{{ $premis_shift3 }}</td>
-                <td>HARI</td>
-                <td class="text-right">{{ formatRupiah($upah_premi_shift3) }}</td>
-            </tr>
-            <tr>
-                <th>TOTAL PENERIMAAN</th>
-                <td style="font-weight: bold; text-align:right">{{ formatRupiah($bruto) }}</td>
-            </tr>
-            <tr>
-                <th colspan="2" class="text-center">POTONGAN</th>
-            </tr>
-            <tr>
-                <th>Absensi</th>
-                <td>{{ formatAngkaDesimal($grand_total_potongan_jam) }} JAM</td>
-            </tr>
-            <tr>
-                <th>Denda Keterlambatan</th>
-                <td class="text-right">{{ formatRupiah($total_denda) }}</td>
-            </tr>
-            <tr>
-                <th>Softloan</th>
-                <td class="text-right">{{ formatRupiah($cicilan_pjp) }}</td>
-            </tr>
-            <tr>
-                <th>Pinjaman Perusahaan</th>
-                <td class="text-right">{{ formatRupiah($cicilan_piutang) }}</td>
-            </tr>
-            <tr>
-                <th>Kasbon</th>
-                <td class="text-right">{{ formatRupiah($cicilan_kasbon) }}</td>
-            </tr>
-            <tr>
-                <th>BPJS KES</th>
-                <td class="text-right">{{ formatRupiah($iuran_bpjs_kesehatan) }}</td>
-            </tr>
-            <tr>
-                <th>BPJS TENAGA KERJA</th>
-                <td class="text-right">{{ formatRupiah($iuran_bpjs_tenagakerja) }}</td>
-            </tr>
-            <tr>
-                <th>SPIP</th>
-                <td class="text-right">{{ formatRupiah($spip) }}</td>
-            </tr>
-            <tr>
-                <th>Pengurang</th>
-                <td class="text-right">{{ formatRupiah($jml_pengurang) }}</td>
-            </tr>
-            <tr>
-                <th>Penambah</th>
-                <td class="text-right">{{ formatRupiah($jml_penambah) }}</td>
-            </tr>
-            <tr>
-                <th>TOTAL POTONGAN</th>
-                <td style="font-weight: bold; text-align:right">{{ formatRupiah($jml_potongan_upah) }}</td>
-            </tr>
-            <tr>
-                <th style="font-size:18px">GAJI BERSIH</th>
-                <td style="font-weight: bold;font-size:18px; text-align:right">{{ formatRupiah($jmlbersih) }}</td>
-            </tr>
+                    $upah_bulanini = $upah_perjam * $total_jam_kerja;
+                @endphp
+                <tr>
+                    <th>UPAH BULAN INI</th>
+                    <td style="font-weight: bold; text-align:right">{{ formatRupiah($upah_bulanini) }}</td>
+                </tr>
+                <tr>
+                    <th>Overtime 1</th>
+                    <td class="text-center">{{ formatAngkaDesimal($total_overtime_1) }}</td>
+                    <td>JAM</td>
+                    <td class="text-right">{{ formatRupiah($upah_overtime_1) }}</td>
+                </tr>
+                <tr>
+                    <th>Overtime 2</th>
+                    <td class="text-center">{{ formatAngkaDesimal($total_overtime_2) }}</td>
+                    <td>JAM</td>
+                    <td class="text-right">{{ formatRupiah($upah_overtime_2) }}</td>
+                </tr>
+                <tr>
+                    <th>Lembur Hari Libur</th>
+                    <td class="text-center">{{ formatAngkaDesimal($total_overtime_libur) }}
+                    </td>
+                    <td>JAM</td>
+                    <td class="text-right">{{ formatRupiah($upah_overtime_libur) }}</td>
+                </tr>
+                <tr>
+                    <th>Premi Shift 2</th>
+                    <td class="text-center">{{ $premis_shift2 }}</td>
+                    <td>HARI</td>
+                    <td class="text-right">{{ formatRupiah($upah_premi_shift2) }}</td>
+                </tr>
+                <tr>
+                    <th>Premi Shift 3</th>
+                    <td class="text-center">{{ $premis_shift3 }}</td>
+                    <td>HARI</td>
+                    <td class="text-right">{{ formatRupiah($upah_premi_shift3) }}</td>
+                </tr>
+                <tr>
+                    <th>TOTAL PENERIMAAN</th>
+                    <td style="font-weight: bold; text-align:right">{{ formatRupiah($bruto) }}</td>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">POTONGAN</th>
+                </tr>
+                <tr>
+                    <th>Absensi</th>
+                    <td>{{ formatAngkaDesimal($grand_total_potongan_jam) }} JAM</td>
+                </tr>
+                <tr>
+                    <th>Denda Keterlambatan</th>
+                    <td class="text-right">{{ formatRupiah($total_denda) }}</td>
+                </tr>
+                <tr>
+                    <th>Softloan</th>
+                    <td class="text-right">{{ formatRupiah($cicilan_pjp) }}</td>
+                </tr>
+                <tr>
+                    <th>Pinjaman Perusahaan</th>
+                    <td class="text-right">{{ formatRupiah($cicilan_piutang) }}</td>
+                </tr>
+                <tr>
+                    <th>Kasbon</th>
+                    <td class="text-right">{{ formatRupiah($cicilan_kasbon) }}</td>
+                </tr>
+                <tr>
+                    <th>BPJS KES</th>
+                    <td class="text-right">{{ formatRupiah($iuran_bpjs_kesehatan) }}</td>
+                </tr>
+                <tr>
+                    <th>BPJS TENAGA KERJA</th>
+                    <td class="text-right">{{ formatRupiah($iuran_bpjs_tenagakerja) }}</td>
+                </tr>
+                <tr>
+                    <th>SPIP</th>
+                    <td class="text-right">{{ formatRupiah($spip) }}</td>
+                </tr>
+                <tr>
+                    <th>Pengurang</th>
+                    <td class="text-right">{{ formatRupiah($jml_pengurang) }}</td>
+                </tr>
+                <tr>
+                    <th>Penambah</th>
+                    <td class="text-right">{{ formatRupiah($jml_penambah) }}</td>
+                </tr>
+                <tr>
+                    <th>TOTAL POTONGAN</th>
+                    <td style="font-weight: bold; text-align:right">{{ formatRupiah($jml_potongan_upah) }}</td>
+                </tr>
+                <tr>
+                    <th style="font-size:18px">GAJI BERSIH</th>
+                    <td style="font-weight: bold;font-size:18px; text-align:right">{{ formatRupiah($jmlbersih) }}</td>
+                </tr>
             </table>
 
 
