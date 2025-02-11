@@ -403,6 +403,7 @@ class PencairanprogramikatanController extends Controller
         $kode_pelanggan = $request->kode_pelanggan;
         $jumlah = $request->jumlah;
         $status = $request->status;
+        $status_pencairan = $request->status_pencairan;
         // dd($kode_pelanggan);
         DB::beginTransaction();
         try {
@@ -412,7 +413,8 @@ class PencairanprogramikatanController extends Controller
                     Detailpencairanprogramikatan::create([
                         'kode_pencairan' => $kode_pencairan,
                         'kode_pelanggan' => $kode_pelanggan[$i],
-                        'jumlah' => toNumber($jumlah[$i])
+                        'jumlah' => toNumber($jumlah[$i]),
+                        'status_pencairan' => $status_pencairan[$i]
                     ]);
                     Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$i])->update([
                         'status' => 1
