@@ -405,7 +405,7 @@ class PencairanprogramikatanController extends Controller
         $status = $request->status;
         $status_pencairan = $request->status_pencairan;
 
-        dd($status_pencairan);
+        // dd($status_pencairan);
         // dd($kode_pelanggan);
         DB::beginTransaction();
         try {
