@@ -1065,7 +1065,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/retur/{no_retur}/edit', 'edit')->name('retur.edit')->can('retur.edit');
         Route::put('/retur/{no_retur}/update', 'update')->name('retur.update')->can('retur.update');
         Route::get('/retur/{no_retur}/show', 'show')->name('retur.show')->can('penjualan.show');
-        Route::delete('/retur/{no_retur}/delete', 'destroy')->name('retur.delete')->can('penjualan.delete');
+        Route::delete('/retur/{no_retur}/delete', 'destroy')->name('retur.delete')->can('retur.delete');
 
         //AJAX REQUEST
         Route::post('/retur/editproduk', 'editproduk')->name('retur.editproduk');
