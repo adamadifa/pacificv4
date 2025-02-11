@@ -37,10 +37,15 @@
             {{ formatAngka($reward) }}
         </td>
         <td>
-            <select name="status_pencaiaran" id="status_pencairan" class="form-select">
-                <option value="1">Cairkan</option>
-                <option value="0">Pending</option>
-            </select>
+            @if ($d->jml_dus >= $d->qty_target)
+                <select name="status_pencaiaran[]" id="status_pencairan" class="form-select">
+                    <option value="1">Cairkan</option>
+                    <option value="0">Pending</option>
+                </select>
+            @else
+                <input type="hidden" name="status_pencaiaran[]" value="0">
+            @endif
+
         </td>
         <td></td>
     </tr>
