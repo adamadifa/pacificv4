@@ -94,11 +94,11 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
+                                                <a href="{{ route('ajuankumulatif.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
+                                                    target="_blank" class="me-1">
+                                                    <i class="ti ti-printer text-primary"></i>
+                                                </a>
                                                 @if ($programkumulatif->status == 1)
-                                                    <a href="{{ route('ajuankumulatif.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
-                                                        target="_blank" class="me-1">
-                                                        <i class="ti ti-printer text-primary"></i>
-                                                    </a>
                                                 @endif
                                                 @if ($programkumulatif->status == 0)
                                                     @can('ajuankumulatif.edit')
