@@ -1065,7 +1065,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/retur/{no_retur}/edit', 'edit')->name('retur.edit')->can('retur.edit');
         Route::put('/retur/{no_retur}/update', 'update')->name('retur.update')->can('retur.update');
         Route::get('/retur/{no_retur}/show', 'show')->name('retur.show')->can('penjualan.show');
-        Route::delete('/retur/{no_retur}/delete', 'destroy')->name('retur.delete')->can('penjualan.delete');
+        Route::delete('/retur/{no_retur}/delete', 'destroy')->name('retur.delete')->can('retur.delete');
 
         //AJAX REQUEST
         Route::post('/retur/editproduk', 'editproduk')->name('retur.editproduk');
@@ -1821,6 +1821,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/slipgaji/{kode_slip}/edit', 'edit')->name('slipgaji.edit')->can('slipgaji.edit');
         Route::put('/slipgaji/{kode_slip}/update', 'update')->name('slipgaji.update')->can('slipgaji.update');
         Route::delete('/slipgaji/{kode_slip}/delete', 'destroy')->name('slipgaji.delete')->can('slipgaji.delete');
+        Route::get('/slipgaji/{nik}/{bulan}/{tahun}/cetakslip', 'cetakslipgaji')->name('slipgaji.cetakslip')->can('slipgaji.show');
     });
 
     Route::controller(PenyesuaianupahController::class)->group(function () {

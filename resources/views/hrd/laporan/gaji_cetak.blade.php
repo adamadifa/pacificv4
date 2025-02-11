@@ -226,7 +226,15 @@
                     @endphp
                     <tr>
                         <td style="width:1%">{{ $loop->iteration }}</td>
-                        <td style="width:2%">'{{ $d['nik'] }}</td>
+                        <td style="width:2%">
+                            @php
+                                $nik = $d['nik'];
+                            @endphp
+                            <a href="{{ route('slipgaji.cetakslip', ['nik' => Crypt::encrypt($nik), 'bulan' => $bulan, 'tahun' => $tahun]) }}"
+                                target="_blank">
+                                '{{ $d['nik'] }}
+                            </a>
+                        </td>
                         <td style="width:4%">{{ $d['nama_karyawan'] }}</td>
                         @if ($format_laporan != 3)
                             <td style="width:2%">{{ $d['no_rekening'] }}</td>

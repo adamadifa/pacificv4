@@ -159,12 +159,12 @@
                                                                 <i class="ti ti-settings text-primary"></i>
                                                             </a>
                                                         @endcan
-                                                        @can('ajuankumulatif.show')
+                                                        {{-- @can('ajuankumulatif.show')
                                                             <a href="{{ route('ajuankumulatif.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
                                                                 target="_blank">
                                                                 <i class="ti ti-printer text-success"></i>
                                                             </a>
-                                                        @endcan
+                                                        @endcan --}}
 
                                                         @can('ajuankumulatif.delete')
                                                             @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)

@@ -630,6 +630,9 @@ class LaporanhrdController extends Controller
             '03.03.065',
             '23.12.337',
         ];
+
+        $data['bulan'] = $bulan;
+        $data['tahun'] = $request->tahun;
         $data['privillage_karyawan'] = $privillage_karyawan;
         if (request()->is('laporanhrd/cetakgaji')) {
 
