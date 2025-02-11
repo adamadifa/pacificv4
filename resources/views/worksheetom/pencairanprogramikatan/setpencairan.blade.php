@@ -76,7 +76,8 @@
                                     <th>Pemilik</th>
                                     <th>Bank</th>
                                     <th>Total</th>
-                                    <th>Bukti</th>
+                                    <th><i class="ti ti-file-description"></i></th>
+                                    <th><i class="ti ti-moneybag"></i></th>
                                     <th>#</th>
                                 </tr>
 
@@ -112,6 +113,13 @@
                                         <td>{{ $d->pemilik_rekening }}</td>
                                         <td>{{ $d->bank }}</td>
                                         <td class="text-end">{{ formatAngka($total_reward) }}</td>
+                                        <td>
+                                            @if ($d->status_pencairan == '1')
+                                                <i class="ti ti-checks"></i>
+                                            @else
+                                                <span class="badge bg-warning"><i class="ti ti-hourglass-empty me-1"></i>Pending</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if (!empty($d->bukti_transfer))
                                                 <a href="{{ url($d->bukti_transfer) }}" target="_blank">
