@@ -113,13 +113,7 @@
                                         <td>{{ $d->pemilik_rekening }}</td>
                                         <td>{{ $d->bank }}</td>
                                         <td class="text-end">{{ formatAngka($total_reward) }}</td>
-                                        <td>
-                                            @if ($d->status_pencairan == '1')
-                                                <i class="ti ti-checks text-success"></i>
-                                            @else
-                                                <span class="badge bg-warning"><i class="ti ti-hourglass-empty me-1"></i>Pending</span>
-                                            @endif
-                                        </td>
+
                                         <td>
                                             @if (!empty($d->bukti_transfer))
                                                 <a href="{{ url($d->bukti_transfer) }}" target="_blank">
@@ -127,6 +121,13 @@
                                                 </a>
                                             @else
                                                 <i class="ti ti-hourglass-empty text-warning"></i>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($d->status_pencairan == '1')
+                                                <i class="ti ti-checks text-success"></i>
+                                            @else
+                                                <span class="badge bg-warning"><i class="ti ti-hourglass-empty me-1"></i>Pending</span>
                                             @endif
                                         </td>
                                         <td>
