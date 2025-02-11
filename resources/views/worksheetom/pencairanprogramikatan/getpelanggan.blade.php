@@ -38,12 +38,12 @@
         </td>
         <td>
             @if ($d->jml_dus >= $d->qty_target)
-                <select name="status_pencaiaran[]" id="status_pencairan" class="form-select">
+                <select name="status_pencairan[]" id="status_pencairan" class="form-select">
                     <option value="1">Cairkan</option>
                     <option value="0">Pending</option>
                 </select>
             @else
-                <input type="hidden" name="status_pencaiaran[]" value="0">
+                <input type="hidden" name="status_pencairan[]" value="0">
             @endif
 
         </td>
