@@ -65,9 +65,7 @@ class AjuanprogramikatanController extends Controller
             }
             $query->whereNotNull('marketing_program_ikatan.om');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
-        }
-
-        if ($user->hasRole('gm marketing')) {
+        } else if ($user->hasRole('gm marketing')) {
             if (!empty($request->status)) {
                 if ($request->status == 'pending') {
                     $query->whereNotnull('marketing_program_ikatan.rsm');
@@ -81,9 +79,7 @@ class AjuanprogramikatanController extends Controller
             }
             $query->whereNotNull('marketing_program_ikatan.rsm');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
-        }
-
-        if ($user->hasRole('direktur')) {
+        } else if ($user->hasRole('direktur')) {
 
             if (!empty($request->status)) {
                 if ($request->status == 'pending') {
@@ -98,6 +94,14 @@ class AjuanprogramikatanController extends Controller
             }
             $query->whereNotNull('marketing_program_ikatan.gm');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
+        } else {
+            if ($request->status == 'pending') {
+                $query->where('status', 0);
+            } else if ($request->status == 'approved') {
+                $query->where('status', 1);
+            } else if ($request->status == 'rejected') {
+                $query->where('status', 2);
+            }
         }
         $ajuanprogramikatan = $query->paginate(15);
         $ajuanprogramikatan->appends(request()->all());
