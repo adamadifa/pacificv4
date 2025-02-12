@@ -235,7 +235,7 @@ class PencairanprogramikatanController extends Controller
             'marketing_program_ikatan_detail.metode_pembayaran',
             'marketing_program_ikatan_target.target_perbulan as qty_target',
             'reward',
-            'tipe_reward'
+            'tipe_reward',
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
@@ -583,7 +583,8 @@ class PencairanprogramikatanController extends Controller
             'marketing_program_ikatan_detail.top',
             'marketing_program_ikatan_detail.metode_pembayaran',
             'marketing_program_ikatan_target.target_perbulan as qty_target',
-            'reward'
+            'reward',
+            'tipe_reward',
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
