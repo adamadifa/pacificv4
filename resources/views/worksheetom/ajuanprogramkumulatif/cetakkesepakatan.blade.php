@@ -205,13 +205,13 @@
                 text-align: center;
             }
 
-            .tabeldiskon>th,
-            td {
+            .tabeldiskon th,
+            .tabeldiskon td {
                 border: 1px solid black;
                 padding: 8px;
             }
 
-            .tabeldiskon>th {
+            .tabeldiskon th {
                 background-color: #f2f2f2;
             }
         </style>
