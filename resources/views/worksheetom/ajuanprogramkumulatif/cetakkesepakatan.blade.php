@@ -199,24 +199,24 @@
             </p>
         </section>
         <style>
-            table {
+            .tabeldiskon {
                 width: 100%;
                 border-collapse: collapse;
                 text-align: center;
             }
 
-            th,
+            .tabeldiskon th,
             td {
                 border: 1px solid black;
                 padding: 8px;
             }
 
-            th {
+            .tabeldiskon th {
                 background-color: #f2f2f2;
             }
         </style>
         <section class="sheet padding-10mm">
-            <table>
+            <table class="tabeldiskon">
                 <thead>
                     <tr>
                         <th colspan="6">BB + DP ALL CABANG</th>
