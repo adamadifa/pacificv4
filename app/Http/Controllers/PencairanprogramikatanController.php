@@ -572,9 +572,8 @@ class PencairanprogramikatanController extends Controller
             'periode_dari',
             'periode_sampai'
         );
-        $query->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan');
-        $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->join('cabang', 'marketing_pencairan_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
         $query->where('kode_pencairan', $kode_pencairan);
         $pencairanprogramikatan = $query->first();
