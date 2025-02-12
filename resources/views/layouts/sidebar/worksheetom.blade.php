@@ -129,10 +129,18 @@
                     )
                         ? 'active'
                         : '' }}">
-                    <a href="{{ route('ajuanprogramikatan.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-box"></i>
-                        <div>Monitoring Program</div>
-                    </a>
+                    @if ($level_user == 'manager keuangan')
+                        <a href="{{ route('pencairanprogramikatan.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-box"></i>
+                            <div>Monitoring Program</div>
+                        </a>
+                    @else
+                        <a href="{{ route('ajuanprogramikatan.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-box"></i>
+                            <div>Monitoring Program</div>
+                        </a>
+                    @endif
+
                 </li>
             @endcan
 
