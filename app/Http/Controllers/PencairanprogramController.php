@@ -59,9 +59,7 @@ class PencairanprogramController extends Controller
             }
             $query->whereNotNull('marketing_program_pencairan.om');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
-        }
-
-        if ($user->hasRole('gm marketing')) {
+        } else if ($user->hasRole('gm marketing')) {
             if (!empty($request->status)) {
                 if ($request->status == 'pending') {
                     $query->whereNotnull('marketing_program_pencairan.rsm');
@@ -75,9 +73,7 @@ class PencairanprogramController extends Controller
             }
             $query->whereNotNull('marketing_program_pencairan.rsm');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
-        }
-
-        if ($user->hasRole('direktur')) {
+        } else if ($user->hasRole('direktur')) {
 
             if (!empty($request->status)) {
                 if ($request->status == 'pending') {
@@ -92,6 +88,16 @@ class PencairanprogramController extends Controller
             }
             $query->whereNotNull('marketing_program_pencairan.gm');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
+        } else {
+            if ($request->status == 'pending') {
+                $query->where('status', 0);
+            }
+            if ($request->status == 'approved') {
+                $query->where('status', 1);
+            }
+            if ($request->status == 'rejected') {
+                $query->where('status', 2);
+            }
         }
         $pencairanprogram = $query->paginate(15);
         $pencairanprogram->appends(request()->all());
