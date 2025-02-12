@@ -568,8 +568,6 @@ class PencairanprogramikatanController extends Controller
             'marketing_pencairan_ikatan.*',
             'cabang.nama_cabang',
             'nama_program',
-            'periode_dari',
-            'periode_sampai'
         );
         $query->join('cabang', 'marketing_pencairan_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program');
