@@ -44,6 +44,55 @@ class PencairanprogramController extends Controller
         if (!empty($request->kode_program)) {
             $query->where('kode_program', $request->kode_program);
         }
+
+        if ($user->hasRole('regional sales manager')) {
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->whereNotnull('marketing_program_pencairan.om');
+                    $query->whereNull('marketing_program_pencairan.rsm');
+                } else if ($request->status == 'approved') {
+                    $query->whereNotnull('marketing_program_pencairan.rsm');
+                    $query->where('status', 0);
+                } else if ($request->status == 'rejected') {
+                    $query->where('status', 2);
+                }
+            }
+            $query->whereNotNull('marketing_program_pencairan.om');
+            // $query->where('marketing_program_ikatan.status', '!=', 2);
+        }
+
+        if ($user->hasRole('gm marketing')) {
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->whereNotnull('marketing_program_pencairan.rsm');
+                    $query->whereNull('marketing_program_pencairan.gm');
+                } else if ($request->status == 'approved') {
+                    $query->whereNotnull('marketing_program_pencairan.gm');
+                    $query->where('status', 0);
+                } else if ($request->status == 'rejected') {
+                    $query->where('status', 2);
+                }
+            }
+            $query->whereNotNull('marketing_program_pencairan.rsm');
+            // $query->where('marketing_program_ikatan.status', '!=', 2);
+        }
+
+        if ($user->hasRole('direktur')) {
+
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->whereNotnull('marketing_program_pencairan.gm');
+                    $query->whereNull('marketing_program_pencairan.direktur');
+                    $query->where('status', 0);
+                } else if ($request->status == 'approved') {
+                    $query->where('status', 1);
+                } else if ($request->status == 'rejected') {
+                    $query->where('status', 2);
+                }
+            }
+            $query->whereNotNull('marketing_program_pencairan.gm');
+            // $query->where('marketing_program_ikatan.status', '!=', 2);
+        }
         $pencairanprogram = $query->paginate(15);
         $pencairanprogram->appends(request()->all());
 

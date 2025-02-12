@@ -28,8 +28,8 @@
                                         </select>
                                     </div>
                                 @endrole
-                                <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
-                                    icon="ti ti-barcode" />
+                                {{-- <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
+                                    icon="ti ti-barcode" /> --}}
                                 <div class="form-group mb-3">
                                     <select name="status" id="status" class="form-select">
                                         <option value="">Semua Status</option>

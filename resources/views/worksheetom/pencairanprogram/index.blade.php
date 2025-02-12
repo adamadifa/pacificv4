@@ -33,6 +33,14 @@
                                         <option value="PR002" {{ Request('kode_program') == 'PR002' ? 'selected' : '' }}>AIDA</option>
                                     </select>
                                 </div>
+                                <div class="form-group mb-3">
+                                    <select name="status" id="status" class="form-select">
+                                        <option value="">Semua Status</option>
+                                        <option value="pending" {{ Request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="approved" {{ Request('status') == 'approved' ? 'selected' : '' }}>Disetujui</option>
+                                        <option value="rejected" {{ Request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                                    </select>
+                                </div>
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
