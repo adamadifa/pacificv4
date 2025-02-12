@@ -54,7 +54,7 @@
 
 <body>
 
-    <body class="A4">
+    <body class="A4 landscape">
 
         <!-- Each sheet element should have the class "sheet" -->
         <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
