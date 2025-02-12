@@ -44,12 +44,16 @@
         h3 {
             margin: 5px;
         }
+
+        .sheet {
+            overflow: auto !important;
+        }
     </style>
 </head>
 
 <body>
 
-    <body class="A4">
+    <body class="A4 Landscape">
 
         <!-- Each sheet element should have the class "sheet" -->
         <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
