@@ -40,7 +40,7 @@ class PencairanprogramikatanController extends Controller
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else {
-                $query->where('marketing_program_ikatan.kode_cabang', auth()->user()->kode_cabang);
+                $query->where('marketing_pencairan_ikatan.kode_cabang', auth()->user()->kode_cabang);
             }
         }
 
@@ -59,17 +59,17 @@ class PencairanprogramikatanController extends Controller
 
 
         if ($user->hasRole('regional sales manager')) {
-            $query->whereNotNull('marketing_program_ikatan.om');
+            $query->whereNotNull('marketing_pencairan_ikatan.om');
             $query->where('marketing_pencairan_ikatan.status', '!=', 2);
         }
 
         if ($user->hasRole('gm marketing')) {
-            $query->whereNotNull('marketing_program_ikatan.rsm');
+            $query->whereNotNull('marketing_pencairan_ikatan.rsm');
             $query->where('marketing_pencairan_ikatan.status', '!=', 2);
         }
 
         if ($user->hasRole('direktur')) {
-            $query->whereNotNull('marketing_program_ikatan.gm');
+            $query->whereNotNull('marketing_pencairan_ikatan.gm');
             $query->where('marketing_pencairan_ikatan.status', '!=', 2);
         }
 
