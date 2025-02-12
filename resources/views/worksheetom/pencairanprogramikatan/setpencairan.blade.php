@@ -95,7 +95,7 @@
                                 @foreach ($detail as $key => $d)
                                     @php
                                         $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                                        $total_reward = $d->reward * $d->jumlah;
+                                        $total_reward = $d->tipe_reward == '1' ? $d->reward * $d->jumlah : $d->reward;
                                         $subtotal_reward += $total_reward;
                                         $grandtotal_reward += $total_reward;
                                     @endphp
