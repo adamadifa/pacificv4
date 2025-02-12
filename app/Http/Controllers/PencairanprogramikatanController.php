@@ -568,7 +568,6 @@ class PencairanprogramikatanController extends Controller
             'marketing_pencairan_ikatan.*',
             'cabang.nama_cabang',
             'nama_program',
-            'nomor_dokumen',
             'periode_dari',
             'periode_sampai'
         );
