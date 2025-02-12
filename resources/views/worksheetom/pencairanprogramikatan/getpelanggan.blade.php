@@ -47,7 +47,7 @@
             @endif
 
         </td>
-        <td></td>
+
     </tr>
 @endforeach
 {{-- <tr class="table-dark">
