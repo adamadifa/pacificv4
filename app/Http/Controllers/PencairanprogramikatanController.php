@@ -102,14 +102,25 @@ class PencairanprogramikatanController extends Controller
     {
         $user = User::findorFail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        $request->validate([
-            'tanggal' => 'required',
-            'kode_program' => 'required',
-            'kode_cabang' => 'required',
-            'bulan' => 'required',
-            'tahun' => 'required',
-            'keterangan' => 'required'
-        ]);
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $request->validate([
+                'tanggal' => 'required',
+                'kode_program' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required',
+                'keterangan' => 'required'
+            ]);
+        } else {
+            $request->validate([
+                'tanggal' => 'required',
+                'kode_program' => 'required',
+                'kode_cabang' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required',
+                'keterangan' => 'required'
+            ]);
+        }
+
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $kode_cabang = $request->kode_cabang;
@@ -188,7 +199,7 @@ class PencairanprogramikatanController extends Controller
                 'kode_pencairan' => $kode_pencairan,
                 'tanggal' => $request->tanggal,
                 'kode_program' => $request->kode_program,
-                'kode_cabang' => $request->kode_cabang,
+                'kode_cabang' => $kode_cabang,
                 'bulan' => $bulan,
                 'tahun' => $tahun,
                 'keterangan' => $request->keterangan
