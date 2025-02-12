@@ -32,8 +32,14 @@ class PencairanprogramController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
         $query = Pencairanprogram::query();
-        if (!empty($kode_cabang)) {
-            $query->where('kode_cabang', $kode_cabang);
+
+        $query->join('cabang', 'marketing_program_pencairan.kode_cabang', '=', 'cabang.kode_cabang');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
+            }
         }
 
         if (!empty($request->dari) && !empty($request->sampai)) {
@@ -44,6 +50,7 @@ class PencairanprogramController extends Controller
         if (!empty($request->kode_program)) {
             $query->where('kode_program', $request->kode_program);
         }
+
 
         if ($user->hasRole('regional sales manager')) {
             if (!empty($request->status)) {
