@@ -205,8 +205,7 @@ class Globalprovider extends ServiceProvider
                         ->where('status', 0)
                         ->count();
                     $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('direktur')
-
-                        ->whereNotNull('rsm')
+                        ->whereNotNull('gm')
                         ->where('status', 0)
                         ->count();
                 } else {
