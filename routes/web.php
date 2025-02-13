@@ -2090,6 +2090,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/pencairanprogramikatan/{kode_pencairan}/{kode_pelanggan}/storeupload', 'storeupload')->name('pencairanprogramikatan.storeupload')->can('pencairanprogramikt.upload');
         Route::get('/pencairanprogramikatan/{kode_pencairan}/cetak', 'cetak')->name('pencairanprogramikatan.cetak')->can('pencairanprogramikt.show');
         Route::get('/pencairanprogramikatan/{kode_pelanggan}/{kode_pencairan}/detailfaktur', 'detailfaktur')->name('pencairanprogramikatan.detailfaktur')->can('pencairanprogram.create');
+        Route::delete('/pencairanprogramikatan/{kode_pencairan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('pencairanprogramikatan.deletepelanggan')->can('pencairanprogram.create');
     });
 
 

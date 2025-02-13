@@ -678,4 +678,17 @@ class PencairanprogramikatanController extends Controller
         // dd($detailpenjualan);
         return view('worksheetom.pencairanprogramikatan.detailfaktur', compact('detailpenjualan'));
     }
+
+
+    public function deletepelanggan($kode_pencairan, $kode_pelanggan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        try {
+            Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)->where('kode_pelanggan', $kode_pelanggan)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
