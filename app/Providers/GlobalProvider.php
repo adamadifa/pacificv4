@@ -196,8 +196,6 @@ class Globalprovider extends ServiceProvider
                     $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.direktur')
                         ->where('marketing_pencairan_ikatan.status', 0)
                         ->whereNotNull('marketing_pencairan_ikatan.gm')
-
-
                         ->count();
 
                     $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('direktur')

@@ -467,19 +467,37 @@ class PencairanprogramikatanController extends Controller
             'marketing_pencairan_ikatan.*',
             'cabang.nama_cabang',
             'nama_program',
-            'nomor_dokumen',
-            'periode_dari',
-            'periode_sampai'
         );
-        $query->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan');
-        $query->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->join('cabang', 'marketing_pencairan_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
         $query->where('kode_pencairan', $kode_pencairan);
         $pencairanprogramikatan = $query->first();
 
 
-        $pelangganprogram = Detailajuanprogramikatan::where('no_pengajuan', $pencairanprogramikatan->no_pengajuan);
+        $pelangganprogram = Detailtargetikatan::select(
+            'marketing_program_ikatan_target.kode_pelanggan',
+            'marketing_program_ikatan_detail.top',
+            'marketing_program_ikatan_detail.metode_pembayaran',
+            'marketing_program_ikatan_target.target_perbulan as qty_target',
+            'reward',
+            'tipe_reward',
+        )
+            ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_ikatan_detail', function ($join) {
+                $join->on('marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
+                    ->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
+            ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+            ->where('marketing_program_ikatan.status', 1)
+            ->where('marketing_program_ikatan.kode_program', $pencairanprogramikatan->kode_program)
+            ->where('marketing_program_ikatan_target.bulan', $pencairanprogramikatan->bulan)
+            ->where('marketing_program_ikatan_target.tahun', $pencairanprogramikatan->tahun)
+            ->where('marketing_program_ikatan.kode_cabang', $pencairanprogramikatan->kode_cabang);
+
+
+
+
         $detail = Detailpencairanprogramikatan::join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan')
             ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
