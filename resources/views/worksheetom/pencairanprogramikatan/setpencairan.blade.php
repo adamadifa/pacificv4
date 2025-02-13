@@ -145,7 +145,7 @@
                                                 @can('pencairanprogramikt.delete')
                                                     @if ($pencairanprogram->status == '0')
                                                         <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('pencairanprogramikatan.deletepelanggan', [$pencairanprogram->kode_pencairan, Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                            action="{{ route('pencairanprogramikatan.deletepelanggan', [Crypt::encrypt($pencairanprogram->kode_pencairan), Crypt::encrypt($d->kode_pelanggan)]) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                             <a href="#" class="delete-confirm ml-1">
