@@ -166,6 +166,7 @@ class PencairanprogramikatanController extends Controller
             $cekajuan = Pencairanprogramikatan::where('kode_program', $request->kode_program)
                 ->where('bulan', $bulan)
                 ->where('tahun', $tahun)
+                ->where('kode_cabang', $kode_cabang)
                 ->first();
             if (!empty($cekajuan)) {
                 return Redirect::back()->with(messageError('Periode Pencairan Sudah Ada'));
