@@ -65,9 +65,7 @@ class AjuanprogramikatanController extends Controller
             }
             $query->whereNotNull('marketing_program_ikatan.om');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
-        }
-
-        if ($user->hasRole('gm marketing')) {
+        } else if ($user->hasRole('gm marketing')) {
             if (!empty($request->status)) {
                 if ($request->status == 'pending') {
                     $query->whereNotnull('marketing_program_ikatan.rsm');
@@ -81,9 +79,7 @@ class AjuanprogramikatanController extends Controller
             }
             $query->whereNotNull('marketing_program_ikatan.rsm');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
-        }
-
-        if ($user->hasRole('direktur')) {
+        } else if ($user->hasRole('direktur')) {
 
             if (!empty($request->status)) {
                 if ($request->status == 'pending') {
@@ -98,6 +94,14 @@ class AjuanprogramikatanController extends Controller
             }
             $query->whereNotNull('marketing_program_ikatan.gm');
             // $query->where('marketing_program_ikatan.status', '!=', 2);
+        } else {
+            if ($request->status == 'pending') {
+                $query->where('status', 0);
+            } else if ($request->status == 'approved') {
+                $query->where('status', 1);
+            } else if ($request->status == 'rejected') {
+                $query->where('status', 2);
+            }
         }
         $ajuanprogramikatan = $query->paginate(15);
         $ajuanprogramikatan->appends(request()->all());
@@ -598,6 +602,11 @@ class AjuanprogramikatanController extends Controller
         $tahun = date('Y', strtotime($tanggal_ajuan));
         $tahunlalu = $tahun - 1;
         $produk = json_decode($programikatan->produk, true) ?? [];
+        $dari = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_dari));
+        $sampai = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_sampai));
+
+
+
         $detailpenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
@@ -606,8 +615,9 @@ class AjuanprogramikatanController extends Controller
             ->whereIn('produk_harga.kode_produk', $produk)
             // ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
             // ->whereBetween('marketing_penjualan.tanggal', [$dari_lasttigabulan, $sampai_lastbulan])
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->whereIn('marketing_penjualan.kode_pelanggan', $list_pelanggan)
-            ->whereRaw('YEAR(marketing_penjualan.tanggal)="' . $tahunlalu . '"')
+            // ->whereRaw('YEAR(marketing_penjualan.tanggal)="' . $tahunlalu . '"')
             // ->where('salesman.kode_cabang', $programikatan->kode_cabang)
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
@@ -618,6 +628,7 @@ class AjuanprogramikatanController extends Controller
             )
             ->groupBy('marketing_penjualan.kode_pelanggan', 'nama_pelanggan');
         $data['programikatan'] = $programikatan;
+
 
 
 

@@ -76,7 +76,8 @@
                                     <th>Pemilik</th>
                                     <th>Bank</th>
                                     <th>Total</th>
-                                    <th>Bukti</th>
+                                    <th><i class="ti ti-file-description"></i></th>
+                                    <th><i class="ti ti-moneybag"></i></th>
                                     <th>#</th>
                                 </tr>
 
@@ -94,7 +95,8 @@
                                 @foreach ($detail as $key => $d)
                                     @php
                                         $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                                        $total_reward = $d->reward * $d->jumlah;
+                                        $total_reward = $d->tipe_reward == '1' ? $d->reward * $d->jumlah : $d->reward;
+                                        $total_reward = $total_reward > 1000000 ? 1000000 : $total_reward;
                                         $subtotal_reward += $total_reward;
                                         $grandtotal_reward += $total_reward;
                                     @endphp
@@ -112,11 +114,19 @@
                                         <td>{{ $d->pemilik_rekening }}</td>
                                         <td>{{ $d->bank }}</td>
                                         <td class="text-end">{{ formatAngka($total_reward) }}</td>
+
                                         <td>
                                             @if (!empty($d->bukti_transfer))
                                                 <a href="{{ url($d->bukti_transfer) }}" target="_blank">
                                                     <i class="ti ti-receipt text-success"></i>
                                                 </a>
+                                            @else
+                                                <i class="ti ti-hourglass-empty text-warning"></i>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($d->status_pencairan == '1')
+                                                <i class="ti ti-checks text-success"></i>
                                             @else
                                                 <i class="ti ti-hourglass-empty text-warning"></i>
                                             @endif

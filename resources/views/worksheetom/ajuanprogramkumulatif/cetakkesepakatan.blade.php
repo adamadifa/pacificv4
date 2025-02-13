@@ -198,7 +198,163 @@
             </table>
             </p>
         </section>
+        <style>
+            .tabeldiskon {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: center;
+            }
 
+            .tabeldiskon th,
+            .tabeldiskon td {
+                border: 1px solid black;
+                padding: 8px;
+            }
+
+            .tabeldiskon th {
+                background-color: #f2f2f2;
+            }
+        </style>
+        <section class="sheet padding-10mm">
+            <table class="tabeldiskon">
+                <thead>
+                    <tr>
+                        <th colspan="6">BB + DP ALL CABANG</th>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">No</th>
+                        <th colspan="2">Qty</th>
+                        <th rowspan="2">Reguler</th>
+                        <th colspan="2">Diskon</th>
+                    </tr>
+                    <tr>
+                        <th>Dari</th>
+                        <th>Sampai</th>
+                        <th>Cash</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>5</td>
+                        <td>29</td>
+                        <td>1.000</td>
+                        <td>500</td>
+                        <td>1.500</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>30</td>
+                        <td>49</td>
+                        <td>1.250</td>
+                        <td>500</td>
+                        <td>1.750</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>50</td>
+                        <td>99</td>
+                        <td>1.500</td>
+                        <td>500</td>
+                        <td>2.000</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>100</td>
+                        <td>299</td>
+                        <td>1.750</td>
+                        <td>1.000</td>
+                        <td>2.750</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>300</td>
+                        <td>499</td>
+                        <td>2.000</td>
+                        <td>1.000</td>
+                        <td>3.000</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>500</td>
+                        <td>&gt;</td>
+                        <td>2.250</td>
+                        <td>1.000</td>
+                        <td>3.250</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="tabeldiskon">
+                <thead>
+                    <tr>
+                        <th colspan="6">AR + AS + AB</th>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">No</th>
+                        <th colspan="2">Qty</th>
+                        <th rowspan="2">Reguler</th>
+                        <th colspan="2">Diskon</th>
+                    </tr>
+                    <tr>
+                        <th>Dari</th>
+                        <th>Sampai</th>
+                        <th>Cash</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>10</td>
+                        <td>29</td>
+                        <td>2.500</td>
+                        <td>1.000</td>
+                        <td>3.500</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>30</td>
+                        <td>49</td>
+                        <td>5.000</td>
+                        <td>1.000</td>
+                        <td>6.000</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>50</td>
+                        <td>99</td>
+                        <td>7.500</td>
+                        <td>1.000</td>
+                        <td>8.500</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>100</td>
+                        <td>299</td>
+                        <td>10.000</td>
+                        <td>1.000</td>
+                        <td>11.000</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>300</td>
+                        <td>499</td>
+                        <td>12.500</td>
+                        <td>1.000</td>
+                        <td>13.500</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>500</td>
+                        <td>&gt;</td>
+                        <td>15.000</td>
+                        <td>1.000</td>
+                        <td>16.000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
     </body>
 
 </html>

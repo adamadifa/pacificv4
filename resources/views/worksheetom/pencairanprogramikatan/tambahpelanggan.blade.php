@@ -11,7 +11,7 @@
                 <th>Realisasi</th>
                 <th>Reward</th>
                 <th>Total Reward</th>
-                <th>#</th>
+                <th><i class="ti ti-file-dollar"></i></th>
             </tr>
 
         </thead>

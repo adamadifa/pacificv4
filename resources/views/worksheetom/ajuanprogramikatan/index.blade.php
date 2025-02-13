@@ -109,21 +109,33 @@
                                                     @if (empty($d->rsm))
                                                         <i class="ti ti-hourglass-empty text-warning"></i>
                                                     @else
-                                                        <i class="ti ti-check text-success"></i>
+                                                        @if (empty($d->gm) && $d->status == '2')
+                                                            <i class="ti ti-square-x text-danger"></i>
+                                                        @else
+                                                            <i class="ti ti-check text-success"></i>
+                                                        @endif
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
                                                     @if (empty($d->gm))
                                                         <i class="ti ti-hourglass-empty text-warning"></i>
                                                     @else
-                                                        <i class="ti ti-check text-success"></i>
+                                                        @if (empty($d->direktur) && $d->status == '2')
+                                                            <i class="ti ti-square-x text-danger"></i>
+                                                        @else
+                                                            <i class="ti ti-check text-success"></i>
+                                                        @endif
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
                                                     @if (empty($d->direktur))
                                                         <i class="ti ti-hourglass-empty text-warning"></i>
                                                     @else
-                                                        <i class="ti ti-check text-success"></i>
+                                                        @if ($d->status == '2')
+                                                            <i class="ti ti-square-x text-danger"></i>
+                                                        @else
+                                                            <i class="ti ti-check text-success"></i>
+                                                        @endif
                                                     @endif
                                                 </td>
                                                 <td class="text-center">

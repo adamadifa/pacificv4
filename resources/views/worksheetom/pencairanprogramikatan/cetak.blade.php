@@ -44,12 +44,17 @@
         h3 {
             margin: 5px;
         }
+
+        .sheet {
+            overflow: auto !important;
+            height: auto !important;
+        }
     </style>
 </head>
 
 <body>
 
-    <body class="A4">
+    <body class="A4 landscape">
 
         <!-- Each sheet element should have the class "sheet" -->
         <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
@@ -115,7 +120,8 @@
                     @foreach ($detail as $key => $d)
                         @php
                             $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                            $total_reward = $d->reward * $d->jumlah;
+                            $total_reward = $d->tipe_reward == '1' ? $d->reward * $d->jumlah : $d->reward;
+                            $total_reward = $total_reward > 1000000 ? 1000000 : $total_reward;
                             $subtotal_reward += $total_reward;
                             $grandtotal_reward += $total_reward;
                         @endphp
