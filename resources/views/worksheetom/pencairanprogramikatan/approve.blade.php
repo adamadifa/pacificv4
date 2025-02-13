@@ -43,7 +43,7 @@
                         <th class="text-center">Realisasi</th>
                         <th>Reward</th>
                         <th>Budget</th>
-                        <th>Pembayaran</th>
+                        <th><i class="ti ti-moneybag"></i></th>
                         <th>No. Rekening</th>
                         <th>Pemilik</th>
                         <th>Bank</th>
@@ -55,9 +55,9 @@
                 <tbody id="loaddetailpencairan">
                     @php
                         $metode_pembayaran = [
-                            'TN' => 'Tunai',
-                            'TF' => 'Transfer',
-                            'VC' => 'Voucher',
+                            'TN' => 'TN',
+                            'TF' => 'TF',
+                            'VC' => 'VC',
                         ];
                         $subtotal_reward = 0;
                         $grandtotal_reward = 0;
@@ -65,7 +65,8 @@
                     @foreach ($detail as $key => $d)
                         @php
                             $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                            $total_reward = $d->reward * $d->jumlah;
+                            $total_reward = $d->tipe_reward == '1' ? $d->reward * $d->jumlah : $d->reward;
+                            $total_reward = $total_reward > 1000000 ? 1000000 : $total_reward;
                             $subtotal_reward += $total_reward;
                             $grandtotal_reward += $total_reward;
                         @endphp
