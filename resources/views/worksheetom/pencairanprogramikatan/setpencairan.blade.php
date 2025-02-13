@@ -142,6 +142,18 @@
                                                         <i class="ti ti-upload text-primary"></i>
                                                     </a>
                                                 @endcan
+                                                @can('pencairanprogramikt.delete')
+                                                    @if ($pencairanprogram->status == '0')
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('pencairanprogramikatan.delete', Crypt::encrypt($d->kode_pencairan)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm ml-1">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    @endif
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>
@@ -149,6 +161,7 @@
                                         <tr class="table-dark">
                                             <td colspan="10">TOTAL REWARD </td>
                                             <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
