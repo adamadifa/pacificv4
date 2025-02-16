@@ -680,14 +680,16 @@
                 </tr>
                 <tr>
                     <td class="text-left">TOTAL PENERIMAAN</td>
-                    <td colspan="3" style="font-weight: bold; text-align:right">{{ formatRupiah($bruto) }}</td>
+                    <td colspan="2">:</td>
+                    <td style="font-weight: bold; text-align:right">{{ formatRupiah($bruto) }}</td>
                 </tr>
                 <tr>
-                    <td class="text-left" style="font-size:18px">GAJI BERSIH</td>
-                    <td style="font-weight: bold;font-size:18px; text-align:right" colspan="3">{{ formatRupiah($jmlbersih) }}</td>
+                    <td class="text-left">GAJI BERSIH</td>
+                    <td>:</td>
+                    <td style="font-weight: bold;font-size:18px; text-align:right">{{ formatRupiah($jmlbersih) }}</td>
                 </tr>
                 <tr>
-                    <td class="text-left" style="font-size:18px">INSENTIF</td>
+                    <td class="text-left" colspan="4">INSENTIF</td>
                 </tr>
                 @if ($d['kategori_jabatan'] == 'MJ')
                     <tr>
