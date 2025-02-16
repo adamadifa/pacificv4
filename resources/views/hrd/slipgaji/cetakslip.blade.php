@@ -573,24 +573,23 @@
             <table class="datatable3" style="widtd: 30%">
                 <tr>
                     <td class="text-left">NIK</td>
+                    <td>:</td>
                     <td colspan="3">{{ $d['nik'] }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left">Nama Karyawan</td>
-                    <td colspan="3">{{ $d['nama_karyawan'] }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left">Departemen</td>
-                    <td colspan="3">{{ $d['kode_dept'] }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left">Kantor</td>
                     <td colspan="3">{{ $d['kode_cabang'] }}</td>
                 </tr>
                 <tr>
-                    <td class="text-left">Jabatan</td>
+                    <td class="text-left">Nama Karyawan</td>
+                    <td>:</td>
+                    <td colspan="3">{{ $d['nama_karyawan'] }}</td>
+                    <td colspan="3">{{ $d['kode_dept'] }}</td>
+                </tr>
+                <tr>
+                    <td class="text-left">Departemen</td>
+                    <td>:</td>
+                    <td colspan="3">{{ $d['kode_dept'] }}</td>
                     <td colspan="3">{{ $d['nama_jabatan'] }}</td>
                 </tr>
+
                 <tr>
                     <td class="text-left">Gaji Pokok</td>
                     <td colspan="3" class="text-right">{{ formatRupiah($d['gaji_pokok']) }}</td>
