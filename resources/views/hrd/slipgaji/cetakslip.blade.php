@@ -632,11 +632,13 @@
                 </tr>
                 <tr>
                     <td class="text-left">∑ JAM KERJA BULAN INI</td>
-                    <td colspan="3" style="font-weight: bold">{{ formatAngkaDesimal($total_jam_kerja) }} JAM</td>
+                    <td colspan="2">:</td>
+                    <td style="font-weight: bold; text-align:right">{{ formatAngkaDesimal($total_jam_kerja) }} JAM</td>
                 </tr>
                 <tr>
                     <td class="text-left">UPAH / JAM</td>
-                    <td colspan="3" class="text-right">{{ formatAngkaDesimal($upah_perjam) }}</td>
+                    <td colspan="2">:</td>
+                    <td class="text-right">{{ formatAngkaDesimal($upah_perjam) }}</td>
                 </tr>
                 @php
                     $upah_bulanini = $upah_perjam * $total_jam_kerja;
