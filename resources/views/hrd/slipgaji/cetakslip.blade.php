@@ -589,7 +589,10 @@
                     <td colspan="3">{{ $d['kode_dept'] }}</td>
                     <td colspan="3">{{ $d['nama_jabatan'] }}</td>
                 </tr>
-
+                <tr>
+                    <td colspan="3" style="text-align: center">PENERIMAAN</td>
+                    <td>173 Jam</td>
+                </tr>
                 <tr>
                     <td class="text-left">Gaji Pokok</td>
                     <td colspan="3" class="text-right">{{ formatRupiah($d['gaji_pokok']) }}</td>
