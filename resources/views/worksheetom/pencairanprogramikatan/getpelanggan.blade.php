@@ -47,7 +47,11 @@
             @endif
 
         </td>
-
+        <td>
+            <div class="form-check mt-3 mb-2">
+                <input class="form-check-input checkpelanggan" name="checkpelanggan[]" value="1" type="checkbox" id="checkpelanggan">
+            </div>
+        </td>
     </tr>
 @endforeach
 {{-- <tr class="table-dark">

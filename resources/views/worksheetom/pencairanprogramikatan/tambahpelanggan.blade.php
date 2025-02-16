@@ -12,6 +12,7 @@
                 <th>Reward</th>
                 <th>Total Reward</th>
                 <th><i class="ti ti-file-dollar"></i></th>
+                <th><i class="ti ti-square-check"></i></th>
             </tr>
 
         </thead>
