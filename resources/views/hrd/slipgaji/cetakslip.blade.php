@@ -685,8 +685,8 @@
                 </tr>
                 <tr>
                     <td class="text-left">GAJI BERSIH</td>
-                    <td>:</td>
-                    <td style="font-weight: bold;font-size:18px; text-align:right">{{ formatRupiah($jmlbersih) }}</td>
+                    <td colspan="2">:</td>
+                    <td style="font-weight: bold; text-align:right">{{ formatRupiah($jmlbersih) }}</td>
                 </tr>
                 <tr>
                     <td class="text-left" colspan="4">INSENTIF</td>
