@@ -574,20 +574,20 @@
                 <tr>
                     <td class="text-left">NIK</td>
                     <td>:</td>
-                    <td colspan="3">{{ $d['nik'] }}</td>
-                    <td colspan="3">{{ $d['kode_cabang'] }}</td>
+                    <td>{{ $d['nik'] }}</td>
+                    <td>{{ $d['kode_cabang'] }}</td>
                 </tr>
                 <tr>
                     <td class="text-left">Nama Karyawan</td>
                     <td>:</td>
-                    <td colspan="3">{{ $d['nama_karyawan'] }}</td>
-                    <td colspan="3">{{ $d['kode_dept'] }}</td>
+                    <td>{{ $d['nama_karyawan'] }}</td>
+                    <td>{{ $d['kode_dept'] }}</td>
                 </tr>
                 <tr>
                     <td class="text-left">Departemen</td>
                     <td>:</td>
-                    <td colspan="3">{{ $d['kode_dept'] }}</td>
-                    <td colspan="3">{{ $d['nama_jabatan'] }}</td>
+                    <td>{{ $d['kode_dept'] }}</td>
+                    <td>{{ $d['nama_jabatan'] }}</td>
                 </tr>
                 <tr>
                     <td colspan="3" style="text-align: center">PENERIMAAN</td>
