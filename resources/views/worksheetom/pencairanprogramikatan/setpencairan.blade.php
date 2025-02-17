@@ -20,7 +20,7 @@
         white-space: nowrap;
     }
 
-    thead {
+    thead th {
         background-color: #002e65 !important;
         color: white !important;
     }
