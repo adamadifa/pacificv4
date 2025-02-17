@@ -48,6 +48,7 @@
         .sheet {
             overflow: auto !important;
             height: auto !important;
+            width: auto !important;
         }
     </style>
 </head>
@@ -73,10 +74,7 @@
                     <td>Periode Penjualan</td>
                     <td class="right">{{ $namabulan[$pencairanprogram->bulan] }} {{ $pencairanprogram->tahun }}</td>
                 </tr>
-                <tr>
-                    <td>No. Dokumen</td>
-                    <td class="right">{{ $pencairanprogram->nomor_dokumen }}</td>
-                </tr>
+
                 <tr>
                     <td>Program</td>
                     <td class="right">{{ $pencairanprogram->nama_program }}</td>
@@ -147,12 +145,7 @@
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
-                            <td class="text-center">
-                                <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d->kode_pelanggan }}"
-                                    kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}">
-                                    {{ formatAngka($d->jumlah) }}
-                                </a>
-                            </td>
+                            <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
                             <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
                             <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
                             <td class="text-end">{{ formatAngka($total_reward) }}</td>
