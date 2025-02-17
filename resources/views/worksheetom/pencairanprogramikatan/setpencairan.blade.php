@@ -175,7 +175,7 @@
                                     </tr>
                                     @if ($d->metode_pembayaran != $next_metode_pembayaran)
                                         <tr class="table-dark">
-                                            <td colspan="9">TOTAL REWARD </td>
+                                            <td colspan="12">TOTAL REWARD </td>
                                             <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
                                             <td colspan="8"></td>
                                         </tr>
@@ -187,7 +187,7 @@
                             </tbody>
                             <tfoot class="table-dark">
                                 <tr>
-                                    <td colspan="9">GRAND TOTAL REWARD </td>
+                                    <td colspan="12">GRAND TOTAL REWARD </td>
                                     <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
                                     <td colspan="8"></td>
                                 </tr>
