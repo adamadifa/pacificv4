@@ -136,6 +136,8 @@
                         $grandtotal_reward_kredit = 0;
                         $subtotal_reward_tunai = 0;
                         $subtotal_reward_kredit = 0;
+                        $grandtotal_transfer = 0;
+                        $grandtotal_tunai = 0;
                     @endphp
                     @foreach ($detail as $key => $d)
                         @php
@@ -148,6 +150,8 @@
                             $grandtotal_reward_tunai += $d->reward_tunai;
                             $grandtotal_reward_kredit += $d->reward_kredit;
                             $bgcolor = $d->status_pencairan == 0 ? 'yellow' : '';
+                            $grandtotal_transfer += $d->metode_pembayaran == 'TF' ? $total_reward : 0;
+                            $grandtotal_tunai += $d->metode_pembayaran == 'TN' ? $total_reward : 0;
                         @endphp
                         <tr style="background-color: {{ $bgcolor }}">
                             <td>{{ $loop->iteration }}</td>
@@ -190,6 +194,102 @@
                         <td class="right">{{ formatAngka($grandtotal_reward_kredit) }}</td>
                         <td class="right">{{ formatAngka($grandtotal_reward) }}</td>
                         <td colspan="4"></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br>
+            <br>
+            <table class="datatable3" style="width: 100%">
+                <thead style="background-color: #ecb00a;">
+                    <tr>
+                        <th colspan="13">Pencairan Yang di tangguhkan dan disimpan sebagai Saldo</th>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">No.</th>
+                        <th rowspan="2">Kode</th>
+                        <th rowspan="2">Nama Pelanggan</th>
+                        <th colspan="3" class="text-center">Budget</th>
+                        <th rowspan="2" class="text-center">Target</th>
+                        <th class="text-center" colspan="3">Realisasi</th>
+                        <th colspan="3" class="text-center">Reward</th>
+                    </tr>
+                    <tr>
+                        <th>SMM</th>
+                        <th>RSM</th>
+                        <th>GM</th>
+                        <th>Tunai</th>
+                        <th>Kredit</th>
+                        <th>Total</th>
+                        <th>Tunai</th>
+                        <th>Kredit</th>
+                        <th>Total</th>
+                    </tr>
+
+                </thead>
+                <tbody id="loaddetailpencairan">
+                    @php
+                        $metode_pembayaran = [
+                            'TN' => 'Tunai',
+                            'TF' => 'Transfer',
+                            'VC' => 'Voucher',
+                        ];
+                        $subtotal_reward = 0;
+                        $grandtotal_reward = 0;
+                        $grandtotal_reward_tunai = 0;
+                        $grandtotal_reward_kredit = 0;
+                        $subtotal_reward_tunai = 0;
+                        $subtotal_reward_kredit = 0;
+                        $grandtotal_transfer = 0;
+                        $grandtotal_tunai = 0;
+                    @endphp
+                    @foreach ($detail_hold as $key => $d)
+                        @php
+                            $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
+                            $total_reward = $d->total_reward > 1000000 ? 1000000 : $d->total_reward;
+                            $subtotal_reward_tunai += $d->reward_tunai;
+                            $subtotal_reward_kredit += $d->reward_kredit;
+                            $subtotal_reward += $total_reward;
+                            $grandtotal_reward += $total_reward;
+                            $grandtotal_reward_tunai += $d->reward_tunai;
+                            $grandtotal_reward_kredit += $d->reward_kredit;
+                            $bgcolor = $d->status_pencairan == 0 ? 'yellow' : '';
+                            $grandtotal_transfer += $d->metode_pembayaran == 'TF' ? $total_reward : 0;
+                            $grandtotal_tunai += $d->metode_pembayaran == 'TN' ? $total_reward : 0;
+                        @endphp
+                        <tr style="background-color: {{ $bgcolor }}">
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $d->kode_pelanggan }}</td>
+                            <td>{{ $d->nama_pelanggan }}</td>
+                            <td class="right">{{ formatAngka($d->budget_smm) }}</td>
+                            <td class="right">{{ formatAngka($d->budget_rsm) }}</td>
+                            <td class="right">{{ formatAngka($d->budget_gm) }}</td>
+                            <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
+                            <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
+                            <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
+                            <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
+                            <td class="right">{{ formatAngka($d->reward_tunai) }}</td>
+                            <td class="right">{{ formatAngka($d->reward_kredit) }}</td>
+                            <td class="right">{{ formatAngka($total_reward) }}</td>
+                        </tr>
+                        @if ($d->metode_pembayaran != $next_metode_pembayaran)
+                            <tr class="table-dark"style="background-color: #ecb00a;">
+                                <td colspan="10">TOTAL REWARD </td>
+                                <td class="right">{{ formatAngka($subtotal_reward_tunai) }}</td>
+                                <td class="right">{{ formatAngka($subtotal_reward_kredit) }}</td>
+                                <td class="right">{{ formatAngka($subtotal_reward) }}</td>
+                            </tr>
+                            @php
+                                $subtotal_reward = 0;
+                            @endphp
+                        @endif
+                    @endforeach
+                </tbody>
+                <tfoot style="background-color: #ecb00a;">
+                    <tr>
+                        <td colspan="10">GRAND TOTAL REWARD </td>
+                        <td class="right">{{ formatAngka($grandtotal_reward_tunai) }}</td>
+                        <td class="right">{{ formatAngka($grandtotal_reward_kredit) }}</td>
+                        <td class="right">{{ formatAngka($grandtotal_reward) }}</td>
                     </tr>
                 </tfoot>
             </table>

@@ -662,10 +662,22 @@ class PencairanprogramikatanController extends Controller
                 $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
             })
             ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
+            ->where('status_pencairan', 1)
+            ->orderBy('pelangganprogram.metode_pembayaran')
+            ->get();
+
+        $detail_hold = Detailpencairanprogramikatan::join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan')
+            ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
+                $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
+            })
+            ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
+            ->where('status_pencairan', 0)
             ->orderBy('pelangganprogram.metode_pembayaran')
             ->get();
         $data['pencairanprogram'] = $pencairanprogramikatan;
         $data['detail'] = $detail;
+        $data['detail_hold'] = $detail_hold;
         return view('worksheetom.pencairanprogramikatan.cetak', $data);
     }
 
