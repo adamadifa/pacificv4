@@ -151,22 +151,19 @@ class GlobalProvider extends ServiceProvider
                 } else if ($level_user == 'regional sales manager') {
                     $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('rsm')
                         ->whereNotNull('om')
-                        ->where('status', 0)
                         ->count();
                     $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.rsm')
-                        ->where('marketing_pencairan_ikatan.status', 0)
                         ->whereNotNull('marketing_pencairan_ikatan.om')
-
                         ->count();
 
                     $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('rsm')
                         ->whereNotNull('om')
-                        ->where('status', 0)
+
                         ->count();
                     $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('rsm')
                         ->where('kode_cabang', auth()->user()->kode_cabang)
                         ->whereNotNull('om')
-                        ->where('status', 0)
+
                         ->count();
                 } else if ($level_user == 'gm marketing') {
                     $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('gm')
