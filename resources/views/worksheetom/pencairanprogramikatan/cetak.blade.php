@@ -291,10 +291,10 @@
                 </tbody>
                 <tfoot style="background-color: #ecb00a;">
                     <tr>
-                        <td colspan="10">GRAND TOTAL REWARD </td>
-                        <td class="right">{{ formatAngka($grandtotal_reward_tunai) }}</td>
-                        <td class="right">{{ formatAngka($grandtotal_reward_kredit) }}</td>
-                        <td class="right">{{ formatAngka($grandtotal_reward) }}</td>
+                        <th colspan="10">GRAND TOTAL REWARD </th>
+                        <th class="right">{{ formatAngka($grandtotal_reward_tunai) }}</th>
+                        <th class="right">{{ formatAngka($grandtotal_reward_kredit) }}</th>
+                        <th class="right">{{ formatAngka($grandtotal_reward) }}</th>
                     </tr>
                 </tfoot>
             </table>
