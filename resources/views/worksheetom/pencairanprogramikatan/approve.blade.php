@@ -92,7 +92,7 @@
                                 <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                                 <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                                 <td class="text-center">
-                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d->kode_pelanggan }}">
                                         {{ formatAngka($d->jumlah) }}
                                     </a>
                                 </td>
