@@ -64,21 +64,28 @@
                         <table class="table table-bordered table-striped">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>No.</th>
-                                    <th>Kode Pelanggan</th>
-                                    <th>Nama Pelanggan</th>
-                                    <th class="text-center">Target</th>
-                                    <th class="text-center">Realisasi</th>
-                                    <th>Reward</th>
+                                    <th rowspan="2">No.</th>
+                                    <th rowspan="2">Kode Pelanggan</th>
+                                    <th rowspan="2">Nama Pelanggan</th>
+                                    <th rowspan="2" class="text-center">Target</th>
+                                    <th class="text-center" colspan="3">Realisasi</th>
+                                    <th colspan="3" class="text-center">Reward</th>
 
-                                    <th>Pembayaran</th>
-                                    <th>No. Rekening</th>
-                                    <th>Pemilik</th>
-                                    <th>Bank</th>
+                                    <th rowspan="2">Pembayaran</th>
+                                    <th rowspan="2">No. Rekening</th>
+                                    <th rowspan="2">Pemilik</th>
+                                    <th rowspan="2">Bank</th>
+                                    <th rowspan="2"><i class="ti ti-file-description"></i></th>
+                                    <th rowspan="2"><i class="ti ti-moneybag"></i></th>
+                                    <th rowspan="2">#</th>
+                                </tr>
+                                <tr>
+                                    <th>Tunai</th>
+                                    <th>Kredit</th>
                                     <th>Total</th>
-                                    <th><i class="ti ti-file-description"></i></th>
-                                    <th><i class="ti ti-moneybag"></i></th>
-                                    <th>#</th>
+                                    <th>Tunai</th>
+                                    <th>Kredit</th>
+                                    <th>Total</th>
                                 </tr>
 
                             </thead>
@@ -95,8 +102,7 @@
                                 @foreach ($detail as $key => $d)
                                     @php
                                         $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                                        $total_reward = $d->tipe_reward == '1' ? $d->reward * $d->jumlah : $d->reward;
-                                        $total_reward = $total_reward > 1000000 ? 1000000 : $total_reward;
+                                        $total_reward = $d->total_reward > 1000000 ? 1000000 : $d->total_reward;
                                         $subtotal_reward += $total_reward;
                                         $grandtotal_reward += $total_reward;
                                     @endphp
@@ -105,15 +111,18 @@
                                         <td>{{ $d->kode_pelanggan }}</td>
                                         <td>{{ $d->nama_pelanggan }}</td>
                                         <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
+                                        <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
+                                        <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                                         <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
-                                        <td class="text-end">{{ formatAngka($d->reward) }}</td>
-
+                                        <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
+                                        <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
+                                        <td class="text-end">{{ formatAngka($total_reward) }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
 
                                         <td>{{ $d->no_rekening }}</td>
                                         <td>{{ $d->pemilik_rekening }}</td>
                                         <td>{{ $d->bank }}</td>
-                                        <td class="text-end">{{ formatAngka($total_reward) }}</td>
+
 
                                         <td>
                                             @if (!empty($d->bukti_transfer))
