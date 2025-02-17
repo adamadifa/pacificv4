@@ -31,85 +31,109 @@
             </table>
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-2">
         <div class="col">
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>No.</th>
-                        <th>Kode </th>
-                        <th> Pelanggan</th>
-                        <th class="text-center">Target</th>
-                        <th class="text-center">Realisasi</th>
-                        <th>Reward</th>
-                        <th>Budget</th>
-                        <th><i class="ti ti-moneybag"></i></th>
-                        <th>No. Rekening</th>
-                        <th>Pemilik</th>
-                        <th>Bank</th>
-                        <th>Total Reward</th>
-                        <th>#</th>
-                    </tr>
-
-                </thead>
-                <tbody id="loaddetailpencairan">
-                    @php
-                        $metode_pembayaran = [
-                            'TN' => 'TN',
-                            'TF' => 'TF',
-                            'VC' => 'VC',
-                        ];
-                        $subtotal_reward = 0;
-                        $grandtotal_reward = 0;
-                    @endphp
-                    @foreach ($detail as $key => $d)
-                        @php
-                            $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                            $total_reward = $d->tipe_reward == '1' ? $d->reward * $d->jumlah : $d->reward;
-                            $total_reward = $total_reward > 1000000 ? 1000000 : $total_reward;
-                            $subtotal_reward += $total_reward;
-                            $grandtotal_reward += $total_reward;
-                        @endphp
+            <div class="table-responsive">
+                <table id="example" class="display nowrap table table-striped table-bordered" style="width:100%">
+                    <thead class="table-dark">
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $d->kode_pelanggan }}</td>
-                            <td>{{ $d->nama_pelanggan }}</td>
-                            <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                            <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
-                            <td class="text-end">{{ formatAngka($d->reward) }}</td>
-                            <td class="text-center">{{ $d->budget }}</td>
-                            <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
-                            <td>{{ $d->no_rekening }}</td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-end">{{ formatAngka($total_reward) }}</td>
-                            <td>
-                                <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}"
-                                    kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}">
-                                    <i class="ti ti-file-description"></i>
-                                </a>
-                            </td>
+                            <th rowspan="2">No.</th>
+                            <th rowspan="2">Kode</th>
+                            <th rowspan="2">Nama Pelanggan</th>
+                            <th colspan="3" class="text-center">Budget</th>
+                            <th rowspan="2" class="text-center">Target</th>
+                            <th class="text-center" colspan="3">Realisasi</th>
+                            <th colspan="3" class="text-center">Reward</th>
+
+                            <th rowspan="2">Pembayaran</th>
+                            <th rowspan="2">No. Rekening</th>
+                            <th rowspan="2">Pemilik</th>
+                            <th rowspan="2">Bank</th>
+                            <th rowspan="2"><i class="ti ti-moneybag"></i></th>
                         </tr>
-                        @if ($d->metode_pembayaran != $next_metode_pembayaran)
-                            <tr class="table-dark">
-                                <td colspan="11">TOTAL REWARD </td>
-                                <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
-                                <td></td>
-                            </tr>
+                        <tr>
+                            <th>SMM</th>
+                            <th>RSM</th>
+                            <th>GM</th>
+                            <th>Tunai</th>
+                            <th>Kredit</th>
+                            <th>Total</th>
+                            <th>Tunai</th>
+                            <th>Kredit</th>
+                            <th>Total</th>
+                        </tr>
+
+                    </thead>
+                    <tbody id="loaddetailpencairan">
+                        @php
+                            $metode_pembayaran = [
+                                'TN' => 'Tunai',
+                                'TF' => 'Transfer',
+                                'VC' => 'Voucher',
+                            ];
+                            $subtotal_reward = 0;
+                            $grandtotal_reward = 0;
+                        @endphp
+                        @foreach ($detail as $key => $d)
                             @php
-                                $subtotal_reward = 0;
+                                $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
+                                $total_reward = $d->total_reward > 1000000 ? 1000000 : $d->total_reward;
+                                $subtotal_reward += $total_reward;
+                                $grandtotal_reward += $total_reward;
                             @endphp
-                        @endif
-                    @endforeach
-                </tbody>
-                <tfoot class="table-dark">
-                    <tr>
-                        <td colspan="11">GRAND TOTAL REWARD </td>
-                        <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $d->kode_pelanggan }}</td>
+                                <td>{{ $d->nama_pelanggan }}</td>
+                                <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
+                                <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
+                                <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
+                                <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
+                                <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
+                                <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
+                                <td class="text-center">
+                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                                        {{ formatAngka($d->jumlah) }}
+                                    </a>
+                                </td>
+                                <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
+                                <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
+                                <td class="text-end">{{ formatAngka($total_reward) }}</td>
+                                <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+
+                                <td>{{ $d->no_rekening }}</td>
+                                <td>{{ $d->pemilik_rekening }}</td>
+                                <td>{{ $d->bank }}</td>
+                                <td>
+                                    @if ($d->status_pencairan == '1')
+                                        <i class="ti ti-checks text-success"></i>
+                                    @else
+                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                    @endif
+                                </td>
+
+                            </tr>
+                            {{-- @if ($d->metode_pembayaran != $next_metode_pembayaran)
+                                <tr class="table-dark">
+                                    <td colspan="12">TOTAL REWARD </td>
+                                    <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
+                                    <td colspan="8"></td>
+                                </tr>
+                                @php
+                                    $subtotal_reward = 0;
+                                @endphp
+                            @endif --}}
+                        @endforeach
+                    </tbody>
+                    {{-- <tfoot class="table-dark">
+                        <tr>
+                            <td colspan="12">GRAND TOTAL REWARD </td>
+                            <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
+                            <td colspan="8"></td>
+                        </tr>
+                    </tfoot> --}}
+                </table>
+            </div>
         </div>
     </div>
     <div class="row mt-2">
