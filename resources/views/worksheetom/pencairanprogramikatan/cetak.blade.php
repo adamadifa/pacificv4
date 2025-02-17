@@ -59,6 +59,7 @@
 
         .tabelpending thead th {
             background-color: #ecb00a !important;
+            color: black !important;
         }
     </style>
 </head>
