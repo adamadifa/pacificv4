@@ -133,15 +133,15 @@
                         $grandtotal_reward = 0;
                         $total_reward_tunai = 0;
                         $total_reward_kredit = 0;
-                        $sub_total_reward_tunai = 0;
-                        $sub_total_reward_kredit = 0;
+                        $subtotal_reward_tunai = 0;
+                        $subtotal_reward_kredit = 0;
                     @endphp
                     @foreach ($detail as $key => $d)
                         @php
                             $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
                             $total_reward = $d->total_reward > 1000000 ? 1000000 : $d->total_reward;
-                            $sub_total_reward_tunai += $d->reward_tunai;
-                            $sub_total_reward_kredit += $d->reward_kredit;
+                            $subtotal_reward_tunai += $d->reward_tunai;
+                            $subtotal_reward_kredit += $d->reward_kredit;
                             $subtotal_reward += $total_reward;
                             $grandtotal_reward += $total_reward;
                         @endphp
