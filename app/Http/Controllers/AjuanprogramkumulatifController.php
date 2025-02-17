@@ -416,6 +416,7 @@ class AjuanprogramkumulatifController extends Controller
         $data['kesepakatan'] = Detailajuanprogramkumulatif::where('marketing_program_kumulatif_detail.no_pengajuan', $no_pengajuan)
             ->where('marketing_program_kumulatif_detail.kode_pelanggan', $kode_pelanggan)
             ->join('pelanggan', 'marketing_program_kumulatif_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('marketing_program_kumulatif', 'marketing_program_kumulatif_detail.no_pengajuan', '=', 'marketing_program_kumulatif.no_pengajuan')
             ->join('cabang', 'marketing_program_kumulatif.kode_cabang', '=', 'cabang.kode_cabang')
             ->first();

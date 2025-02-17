@@ -81,19 +81,15 @@
                 <tr>
                     <td style="width: 40%">Nama Lengkap</td>
                     <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
+                    <td style="border-bottom: 1px solid black">{{ $kesepakatan->nama_salesman }}</td>
                 </tr>
 
                 <tr>
                     <td style="width: 40%">Alamat Lengkap Tempat Tinggal</td>
                     <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
+                    <td style="border-bottom: 1px solid black">{{ $kesepakatan->alamat_cabang }}</td>
                 </tr>
-                <tr>
-                    <td style="width: 40%"></td>
-                    <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
-                </tr>
+
                 <tr>
                     <td style="width: 40%">NIK KTP</td>
                     <td style="width: 1%">:</td>
@@ -195,8 +191,8 @@
                 <tr>
                     <td style="text-align: center;">Pihak Ke -1</td>
                     <td style="text-align: center;">Pihak Ke -2</td>
-                    <td style="text-align: center;">Saksi</td>
-                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;" colspan="2" style="text-align: center">Saksi</td>
+                    {{-- <td style="text-align: center;">Saksi 2</td> --}}
                 </tr>
                 <tr>
                     <td style="height: 70px"></td>
@@ -211,10 +207,10 @@
                     <td style="text-align: center;">(___________)</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;">SMM</td>
-                    <td style="text-align: center;">Pelanggan</td>
-                    <td style="text-align: center;">RSM/GM</td>
                     <td style="text-align: center;">Salesman</td>
+                    <td style="text-align: center;">Pelanggan</td>
+                    <td style="text-align: center;">SMM</td>
+                    <td style="text-align: center;">OM</td>
                 </tr>
             </table>
             </p>

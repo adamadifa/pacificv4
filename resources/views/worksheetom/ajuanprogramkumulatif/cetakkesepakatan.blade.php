@@ -71,9 +71,9 @@
             </table>
 
             <h3 style="text-align: center">
-                SURAT KESEPAKATAN PROGRAM DISCOUNT KUMULATIF
+                SURAT PEMBERITAHUAN PROGRAM DISCOUNT KUMULATIF PEMBELIAN
                 <br>
-                PROGRAM {{ $kesepakatan->nama_program }}
+                {{-- PROGRAM {{ $kesepakatan->nama_program }} --}}
             </h3>
             <p>
                 Saya Yang Bertanda Tangan dibawah ini :
@@ -81,19 +81,15 @@
                 <tr>
                     <td style="width: 40%">Nama Lengkap</td>
                     <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
+                    <td style="border-bottom: 1px solid black">{{ $kesepakatan->nama_salesman }}</td>
                 </tr>
 
                 <tr>
                     <td style="width: 40%">Alamat Lengkap Tempat Tinggal</td>
                     <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
+                    <td style="border-bottom: 1px solid black">{{ $kesepakatan->alamat_cabang }}</td>
                 </tr>
-                <tr>
-                    <td style="width: 40%"></td>
-                    <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
-                </tr>
+
                 <tr>
                     <td style="width: 40%">NIK KTP</td>
                     <td style="width: 1%">:</td>
@@ -171,11 +167,14 @@
                 <br>
                 <br>
             <table style="width: 100%">
-                <tr>
+                {{-- <tr>
                     <td style="text-align: center;">Pihak Ke -1</td>
                     <td style="text-align: center;">Pihak Ke -2</td>
                     <td style="text-align: center;">Saksi</td>
                     <td style="text-align: center;"></td>
+                </tr> --}}
+                <tr>
+                    <td colspan="4" style="text-align: center">Mengetahui,</td>
                 </tr>
                 <tr>
                     <td style="height: 70px"></td>
@@ -184,16 +183,16 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;">(___________)</td>
-                    <td style="text-align: center;">(___________)</td>
+                    {{-- <td style="text-align: center;">(___________)</td>
+                    <td style="text-align: center;">(___________)</td> --}}
                     <td style="text-align: center;">(___________)</td>
                     <td style="text-align: center;">(___________)</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;">SMM</td>
                     <td style="text-align: center;">Pelanggan</td>
-                    <td style="text-align: center;">RSM/GM</td>
                     <td style="text-align: center;">Salesman</td>
+                    {{-- <td style="text-align: center;">RSM/GM</td>
+                    <td style="text-align: center;">Salesman</td> --}}
                 </tr>
             </table>
             </p>
@@ -215,7 +214,7 @@
                 background-color: #f2f2f2;
             }
         </style>
-        <section class="sheet padding-10mm">
+        {{-- <section class="sheet padding-10mm">
             <table class="tabeldiskon">
                 <thead>
                     <tr>
@@ -354,7 +353,7 @@
                     </tr>
                 </tbody>
             </table>
-        </section>
+        </section> --}}
     </body>
 
 </html>

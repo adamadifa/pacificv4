@@ -176,7 +176,7 @@
                                                             </form>
                                                         @endcan
                                                     @endif
-                                                @elseif($user->hasRole(['super admin', 'direktur']))
+                                                @elseif($user->hasRole(['super admin', 'direktur', 'regional sales manager', 'gm marketing']))
                                                     @if ($programikatan->status == 0)
                                                         @can('ajuanprogramikatan.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
