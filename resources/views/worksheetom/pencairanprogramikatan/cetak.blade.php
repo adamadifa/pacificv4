@@ -57,7 +57,7 @@
             text-align: center;
         }
 
-        thead th {
+        .tabelpending thead th {
             background-color: #ecb00a !important;
         }
     </style>
@@ -203,7 +203,7 @@
             </table>
             <br>
             <br>
-            <table class="datatable3" style="width: 100%">
+            <table class="datatable3 tabelpending" style="width: 100%">
                 <thead style="background-color: #ecb00a;">
                     <tr>
                         <th colspan="13">Pencairan Yang di tangguhkan dan disimpan sebagai Saldo</th>
