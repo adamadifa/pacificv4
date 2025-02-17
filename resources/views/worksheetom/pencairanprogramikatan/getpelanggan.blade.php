@@ -64,7 +64,7 @@
             <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $reward }}">
             {{ formatAngka($reward) }}
         </td>
-        <td class="p-0 m-0">
+        <td class="">
             @if ($d->jml_dus >= $d->qty_target)
                 <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select">
                     <option value="1">Cairkan</option>
