@@ -130,7 +130,7 @@
                         ];
                         $subtotal_reward = 0;
                         $grandtotal_reward = 0;
-                        $grantotal_reward_tunai = 0;
+                        $grandtotal_reward_tunai = 0;
                         $grandtotal_reward_kredit = 0;
                         $subtotal_reward_tunai = 0;
                         $subtotal_reward_kredit = 0;
@@ -143,7 +143,7 @@
                             $subtotal_reward_kredit += $d->reward_kredit;
                             $subtotal_reward += $total_reward;
                             $grandtotal_reward += $total_reward;
-                            $grantotal_reward_tunai += $d->reward_tunai;
+                            $grandtotal_reward_tunai += $d->reward_tunai;
                             $grandtotal_reward_kredit += $d->reward_kredit;
                         @endphp
                         <tr>
