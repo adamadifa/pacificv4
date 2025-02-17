@@ -295,7 +295,12 @@ class PencairanprogramikatanController extends Controller
         $pencairanprogram = $query->first();
 
         // $listpelangganikatan = Detailajuanprogramikatan::where('no_pengajuan', $pencairanprogram->no_pengajuan);
-
+        $pelanggansudahdicairkan = Detailpencairanprogramikatan::join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan')
+            ->select('kode_pelanggan')
+            ->where('marketing_pencairan_ikatan.bulan', $pencairanprogram->bulan)
+            ->where('marketing_pencairan_ikatan.tahun', $pencairanprogram->tahun)
+            ->where('marketing_pencairan_ikatan.kode_program', $pencairanprogram->kode_program)
+            ->where('marketing_pencairan_ikatan.kode_cabang', $pencairanprogram->kode_cabang);
         $listpelangganikatan = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
             'marketing_program_ikatan_detail.top'
@@ -330,6 +335,7 @@ class PencairanprogramikatanController extends Controller
                 $join->on('marketing_penjualan.kode_pelanggan', '=', 'listpelangganikatan.kode_pelanggan');
             })
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->whereNotIn('marketing_penjualan.kode_pelanggan', $pelanggansudahdicairkan->pluck('kode_pelanggan')->toArray())
             ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
             ->where('marketing_penjualan.status', 1)
             ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top")
