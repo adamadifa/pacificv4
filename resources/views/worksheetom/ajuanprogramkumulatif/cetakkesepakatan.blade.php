@@ -174,6 +174,9 @@
                     <td style="text-align: center;"></td>
                 </tr> --}}
                 <tr>
+                    <td colspan="4" style="text-align: center">Mengetahui,</td>
+                </tr>
+                <tr>
                     <td style="height: 70px"></td>
                     <td></td>
                     <td></td>
