@@ -188,7 +188,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        @if ($d->metode_pembayaran != $next_metode_pembayaran)
+                                        {{-- @if ($d->metode_pembayaran != $next_metode_pembayaran)
                                             <tr class="table-dark">
                                                 <td colspan="12">TOTAL REWARD </td>
                                                 <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
@@ -198,7 +198,7 @@
                                                 $subtotal_reward = 0;
                                             @endphp
                                         @endif
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                                 <tfoot class="table-dark">
                                     <tr>
