@@ -639,6 +639,9 @@ class PencairanprogramikatanController extends Controller
             'marketing_program_ikatan_target.target_perbulan as qty_target',
             'reward',
             'tipe_reward',
+            'budget_smm',
+            'budget_rsm',
+            'budget_gm'
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {

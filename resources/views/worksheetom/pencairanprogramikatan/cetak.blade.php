@@ -93,17 +93,30 @@
             <table class="datatable3" style="width: 100%">
                 <thead style="background-color: #055b90; color:white">
                     <tr>
-                        <td>No.</td>
-                        <td>Kode</td>
-                        <td>Pelanggan</td>
-                        <td class="text-center">Target</td>
-                        <td class="text-center">Realisasi</td>
-                        <td>Reward</td>
-                        <td>T/TF/V</td>
-                        <td>No. Rekening</td>
-                        <td>Pemilik</td>
-                        <td>Bank</td>
-                        <td>Total</td>
+                        <th rowspan="2">No.</th>
+                        <th rowspan="2">Kode</th>
+                        <th rowspan="2">Nama Pelanggan</th>
+                        <th colspan="3" class="text-center">Budget</th>
+                        <th rowspan="2" class="text-center">Target</th>
+                        <th class="text-center" colspan="3">Realisasi</th>
+                        <th colspan="3" class="text-center">Reward</th>
+
+                        <th rowspan="2">Pembayaran</th>
+                        <th rowspan="2">No. Rekening</th>
+                        <th rowspan="2">Pemilik</th>
+                        <th rowspan="2">Bank</th>
+                        <th rowspan="2"><i class="ti ti-moneybag"></i></th>
+                    </tr>
+                    <tr>
+                        <th>SMM</th>
+                        <th>RSM</th>
+                        <th>GM</th>
+                        <th>Tunai</th>
+                        <th>Kredit</th>
+                        <th>Total</th>
+                        <th>Tunai</th>
+                        <th>Kredit</th>
+                        <th>Total</th>
                     </tr>
 
                 </thead>
@@ -120,8 +133,7 @@
                     @foreach ($detail as $key => $d)
                         @php
                             $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                            $total_reward = $d->tipe_reward == '1' ? $d->reward * $d->jumlah : $d->reward;
-                            $total_reward = $total_reward > 1000000 ? 1000000 : $total_reward;
+                            $total_reward = $d->total_reward > 1000000 ? 1000000 : $d->total_reward;
                             $subtotal_reward += $total_reward;
                             $grandtotal_reward += $total_reward;
                         @endphp
@@ -129,16 +141,33 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
+                            <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
+                            <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
+                            <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                            <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
-                            <td class="right">{{ formatAngka($d->reward) }}</td>
-
+                            <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
+                            <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
+                            <td class="text-center">
+                                <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d->kode_pelanggan }}"
+                                    kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}">
+                                    {{ formatAngka($d->jumlah) }}
+                                </a>
+                            </td>
+                            <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
+                            <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
+                            <td class="text-end">{{ formatAngka($total_reward) }}</td>
                             <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+
                             <td>{{ $d->no_rekening }}</td>
                             <td>{{ $d->pemilik_rekening }}</td>
                             <td>{{ $d->bank }}</td>
-                            <td class="right">{{ formatAngka($total_reward) }}</td>
-
+                            <td>
+                                @if ($d->status_pencairan == '1')
+                                    <i class="ti ti-checks text-success"></i>
+                                @else
+                                    <i class="ti ti-hourglass-empty text-warning"></i>
+                                @endif
+                            </td>
                         </tr>
                         @if ($d->metode_pembayaran != $next_metode_pembayaran)
                             <tr class="table-dark" style="background-color: #055b90; color:white">
