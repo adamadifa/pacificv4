@@ -71,9 +71,9 @@
             </table>
 
             <h3 style="text-align: center">
-                SURAT PEMBERITAHUAN PROGRAM DISCOUNT KUMULATIF
+                SURAT PEMBERITAHUAN PROGRAM DISCOUNT KUMULATIF PEMBELIAN
                 <br>
-                PROGRAM {{ $kesepakatan->nama_program }}
+                {{-- PROGRAM {{ $kesepakatan->nama_program }} --}}
             </h3>
             <p>
                 Saya Yang Bertanda Tangan dibawah ini :
