@@ -92,7 +92,8 @@
                                 <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                                 <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                                 <td class="text-center">
-                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}">
+                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d->kode_pelanggan }}"
+                                        kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}">
                                         {{ formatAngka($d->jumlah) }}
                                     </a>
                                 </td>
