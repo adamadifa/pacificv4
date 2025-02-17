@@ -197,8 +197,8 @@
                                             @php
                                                 $subtotal_reward = 0;
                                             @endphp
-                                        @endif
-                                    @endforeach --}}
+                                        @endif --}}
+                                    @endforeach
                                 </tbody>
                                 <tfoot class="table-dark">
                                     <tr>
