@@ -40,7 +40,7 @@
             @if ($d->jml_dus >= $d->qty_target)
                 <select name="status_pencairan[]" id="status_pencairan" class="form-select">
                     <option value="1">Cairkan</option>
-                    <option value="0">Pending</option>
+                    <option value="0">Simpan</option>
                 </select>
             @else
                 <input type="hidden" name="status_pencairan[]" value="0">
@@ -48,9 +48,11 @@
 
         </td>
         <td>
-            <div class="form-check mt-3 mb-2">
-                <input class="form-check-input checkpelanggan" name="checkpelanggan[]" value="1" type="checkbox" id="checkpelanggan">
-            </div>
+            @if ($d->jml_dus >= $d->qty_target)
+                <div class="form-check mt-3 mb-2">
+                    <input class="form-check-input checkpelanggan" name="checkpelanggan[]" value="1" type="checkbox" id="checkpelanggan">
+                </div>
+            @endif
         </td>
     </tr>
 @endforeach
