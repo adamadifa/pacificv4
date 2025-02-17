@@ -106,7 +106,21 @@
                     <td class="right">{{ strtoupper($pencairanprogram->nama_cabang) }}</td>
                 </tr>
             </table>
-
+            <br>
+            <br>
+            <table class="datatable3">
+                <tr>
+                    <th colspan="2">REKAP PEMBAYARAN</th>
+                </tr>
+                <tr>
+                    <th>TRANSFER</th>
+                    <td class="right">{{ formatAngka($grandtotal_transfer) }}</td>
+                </tr>
+                <tr>
+                    <th>TUNAI</th>
+                    <td class="right">{{ formatAngka($grandtotal_tunai) }}</td>
+                </tr>
+            </table>
             <br>
             <br>
             <br>
