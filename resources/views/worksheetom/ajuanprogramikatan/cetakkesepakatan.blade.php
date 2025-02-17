@@ -89,11 +89,7 @@
                     <td style="width: 1%">:</td>
                     <td style="border-bottom: 1px solid black">{{ $kesepakatan->alamat_cabang }}</td>
                 </tr>
-                <tr>
-                    <td style="width: 40%"></td>
-                    <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
-                </tr>
+
                 <tr>
                     <td style="width: 40%">NIK KTP</td>
                     <td style="width: 1%">:</td>
