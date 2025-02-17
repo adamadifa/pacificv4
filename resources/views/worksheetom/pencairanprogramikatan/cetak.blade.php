@@ -56,6 +56,10 @@
         .text-center {
             text-align: center;
         }
+
+        thead th {
+            background-color: #ecb00a !important;
+        }
     </style>
 </head>
 
