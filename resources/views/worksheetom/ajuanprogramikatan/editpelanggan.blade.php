@@ -180,10 +180,10 @@
 
         }
 
-        $('#target').on('keyup keydown', function() {
-            calculateTargetPerBulan();
-            calculateTotalTarget();
-        });
+        // $('#target').on('keyup keydown', function() {
+        //     calculateTargetPerBulan();
+        //     calculateTotalTarget();
+        // });
 
 
 
