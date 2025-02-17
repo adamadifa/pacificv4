@@ -144,7 +144,11 @@
                                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                                             <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                                             <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
-                                            <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
+                                            <td class="text-center">
+                                                <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                                                    {{ formatAngka($d->jumlah) }}
+                                                </a>
+                                            </td>
                                             <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
                                             <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
                                             <td class="text-end">{{ formatAngka($total_reward) }}</td>
