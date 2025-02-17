@@ -200,13 +200,13 @@
                                         @endif --}}
                                     @endforeach
                                 </tbody>
-                                <tfoot class="table-dark">
+                                {{-- <tfoot class="table-dark">
                                     <tr>
                                         <td colspan="12">GRAND TOTAL REWARD </td>
                                         <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
                                         <td colspan="8"></td>
                                     </tr>
-                                </tfoot>
+                                </tfoot> --}}
                             </table>
                         </div>
                     </div>
