@@ -193,7 +193,7 @@
 </div>
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
-<x-modal-form id="modalApprove" size="modal-xxl" show="loadmodalapprove" title="" />
+<x-modal-form id="modalApprove" size="modal-fullscreen" show="loadmodalapprove" title="" />
 <x-modal-form id="modalajuanProgram" size="modal-xl" show="loadmodalajuanProgram" title="Ajuan Program Ikatan" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
