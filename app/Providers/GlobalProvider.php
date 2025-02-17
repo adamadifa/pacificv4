@@ -152,15 +152,17 @@ class GlobalProvider extends ServiceProvider
                     $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('rsm')
                         ->whereNotNull('om')
                         ->where('status', 0)
-                        ->count();
+                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
                     $notifikasi_pencairanprogramikatan = Pencairanprogramikatan::whereNull('marketing_pencairan_ikatan.rsm')
                         ->where('marketing_pencairan_ikatan.status', 0)
                         ->whereNotNull('marketing_pencairan_ikatan.om')
+                        ->where('marketing_pencairan_ikatan.kode_cabang', auth()->user()->kode_cabang)
                         ->count();
 
                     $notifikasi_ajuanprogramkumulatif = Ajuanprogramkumulatif::whereNull('rsm')
                         ->whereNotNull('om')
-                        ->where('status', 0);
+                        ->where('status', 0)
+                        ->where('kode_cabang', auth()->user()->kode_cabang)->count();
                     $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('rsm')
                         ->where('kode_cabang', auth()->user()->kode_cabang)
                         ->whereNotNull('om')
