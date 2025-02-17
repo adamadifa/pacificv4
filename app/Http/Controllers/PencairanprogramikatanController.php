@@ -461,6 +461,11 @@ class PencairanprogramikatanController extends Controller
                     'kode_pencairan' => $kode_pencairan,
                     'kode_pelanggan' => $kode_pelanggan[$index],
                     'jumlah' => toNumber($jumlah[$index]),
+                    'qty_tunai' => toNumber($request->qty_tunai[$index]),
+                    'qty_kredit' => toNumber($request->qty_kredit[$index]),
+                    'reward_tunai' => toNumber($request->reward_tunai[$index]),
+                    'reward_kredit' => toNumber($request->reward_kredit[$index]),
+                    'total_reward' => toNumber($request->total_reward[$index]),
                     'status_pencairan' => $status_pencairan[$index]
                 ]);
             }
