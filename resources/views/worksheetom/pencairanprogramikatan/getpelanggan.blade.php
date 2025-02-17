@@ -48,13 +48,14 @@
             <input type="hidden" name="qty_kredit[{{ $loop->index }}]" value="{{ $d->jml_kredit }}">
             {{ formatAngka($d->jml_kredit) }}
         </td>
+        <td class="text-end">{{ formatAngka($d->jml_dus) }}</td>
         <td class="text-end">
             {{ formatAngka($reward_tunai) }}
         </td>
         <td class="text-end">
             {{ formatAngka($reward_kredit) }}
         </td>
-        <td class="text-end">{{ formatAngka($reward) }}></td>
+        <td class="text-end">{{ formatAngka($reward) }}</td>
         <td>
             @if ($d->jml_dus >= $d->qty_target)
                 <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select">

@@ -8,10 +8,9 @@
                 <th rowspan="2">Kode Pelanggan</th>
                 <th rowspan="2">Nama Pelanggan</th>
                 <th class="text-center" rowspan="2">Target</th>
-                <th colspan="3">Budget</th>
-                <th colspan="2">Realisasi</th>
-                <th colspan="2">Reward</th>
-                <th rowspan="2">Total Reward</th>
+                <th colspan="3" class="text-center">Budget</th>
+                <th colspan="3" class="text-center">Realisasi</th>
+                <th colspan="3" class="text-center">Reward</th>
                 <th rowspan="2"><i class="ti ti-file-dollar"></i></th>
                 <th rowspan="2"><i class="ti ti-square-check"></i></th>
             </tr>
@@ -21,8 +20,10 @@
                 <th>GM</th>
                 <th>Tunai</th>
                 <th>Kredit</th>
+                <th>Total</th>
                 <th>Tunai</th>
                 <th>Kredit</th>
+                <th>Total</th>
             </tr>
 
         </thead>
