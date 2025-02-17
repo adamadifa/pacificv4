@@ -107,7 +107,6 @@
                         <th rowspan="2">No. Rekening</th>
                         <th rowspan="2">Pemilik</th>
                         <th rowspan="2">Bank</th>
-                        <th rowspan="2"><i class="ti ti-moneybag"></i></th>
                     </tr>
                     <tr>
                         <th>SMM</th>
@@ -131,8 +130,8 @@
                         ];
                         $subtotal_reward = 0;
                         $grandtotal_reward = 0;
-                        $total_reward_tunai = 0;
-                        $total_reward_kredit = 0;
+                        $grantotal_reward_tunai = 0;
+                        $grandtotal_reward_kredit = 0;
                         $subtotal_reward_tunai = 0;
                         $subtotal_reward_kredit = 0;
                     @endphp
@@ -144,6 +143,8 @@
                             $subtotal_reward_kredit += $d->reward_kredit;
                             $subtotal_reward += $total_reward;
                             $grandtotal_reward += $total_reward;
+                            $grantotal_reward_tunai += $d->reward_tunai;
+                            $grandtotal_reward_kredit += $d->reward_kredit;
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -164,13 +165,6 @@
                             <td>{{ $d->no_rekening }}</td>
                             <td>{{ $d->pemilik_rekening }}</td>
                             <td>{{ $d->bank }}</td>
-                            <td>
-                                @if ($d->status_pencairan == '1')
-                                    <i class="ti ti-checks text-success"></i>
-                                @else
-                                    <i class="ti ti-hourglass-empty text-warning"></i>
-                                @endif
-                            </td>
                         </tr>
                         @if ($d->metode_pembayaran != $next_metode_pembayaran)
                             <tr class="table-dark" style="background-color: #055b90; color:white">
@@ -178,6 +172,7 @@
                                 <td class="right">{{ formatAngka($subtotal_reward_tunai) }}</td>
                                 <td class="right">{{ formatAngka($subtotal_reward_kredit) }}</td>
                                 <td class="right">{{ formatAngka($subtotal_reward) }}</td>
+                                <td colspan="3"></td>
                             </tr>
                             @php
                                 $subtotal_reward = 0;
@@ -188,8 +183,10 @@
                 <tfoot class="table-dark" style="background-color: #055b90; color:white">
                     <tr>
                         <td colspan="10">GRAND TOTAL REWARD </td>
+                        <td class="right">{{ formatAngka($grandtotal_reward_kredit) }}</td>
                         <td class="right">{{ formatAngka($grandtotal_reward) }}</td>
-
+                        <td class="right">{{ formatAngka($grandtotal_reward) }}</td>
+                        <td colspan="3"></td>
                     </tr>
                 </tfoot>
             </table>
