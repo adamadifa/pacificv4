@@ -628,6 +628,7 @@ class PencairanprogramController extends Controller
                 'diskon_reguler',
                 'diskon_kumulatif'
             )
+            ->orderBy('metode_pembayaran')
             ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->get();
         $data['detailpencairan'] = $detailpencairan;

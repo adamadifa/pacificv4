@@ -106,6 +106,10 @@
                             'TF' => 'Transfer',
                             'VC' => 'Voucher',
                         ];
+                        $subtotal_cashback = 0;
+                        $subtotal_voucher = 0;
+                        $subtotal_transfer = 0;
+                        $subtotal_tunai = 0;
                     @endphp
                     @foreach ($detailpencairan as $d)
                         @php
