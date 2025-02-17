@@ -49,6 +49,8 @@
             overflow: auto !important;
             height: auto !important;
             width: auto !important;
+            margin-left: 10px;
+            margin-right: 10px;
         }
 
         .text-center {
@@ -186,7 +188,7 @@
                         <td class="right">{{ formatAngka($grandtotal_reward_tunai) }}</td>
                         <td class="right">{{ formatAngka($grandtotal_reward_kredit) }}</td>
                         <td class="right">{{ formatAngka($grandtotal_reward) }}</td>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                     </tr>
                 </tfoot>
             </table>
