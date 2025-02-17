@@ -65,8 +65,9 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th rowspan="2">No.</th>
-                                    <th rowspan="2">Kode Pelanggan</th>
+                                    <th rowspan="2">Kode</th>
                                     <th rowspan="2">Nama Pelanggan</th>
+                                    <th colspan="3" class="text-center">Budget</th>
                                     <th rowspan="2" class="text-center">Target</th>
                                     <th class="text-center" colspan="3">Realisasi</th>
                                     <th colspan="3" class="text-center">Reward</th>
@@ -80,6 +81,9 @@
                                     <th rowspan="2">#</th>
                                 </tr>
                                 <tr>
+                                    <th>SMM</th>
+                                    <th>RSM</th>
+                                    <th>GM</th>
                                     <th>Tunai</th>
                                     <th>Kredit</th>
                                     <th>Total</th>
@@ -110,6 +114,9 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $d->kode_pelanggan }}</td>
                                         <td>{{ $d->nama_pelanggan }}</td>
+                                        <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
+                                        <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
+                                        <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
                                         <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                                         <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                                         <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
