@@ -19,6 +19,11 @@
     table.dataTable td {
         white-space: nowrap;
     }
+
+    thead {
+        background-color: #002e65 !important;
+        color: white !important;
+    }
 </style>
 <div class="row">
     <div class="col-lg-12 col-sm-12 col-xs-12">
@@ -73,7 +78,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col">
                         <div class="table-responsive">
                             <table id="example" class="display nowrap table table-striped table-bordered" style="width:100%">
