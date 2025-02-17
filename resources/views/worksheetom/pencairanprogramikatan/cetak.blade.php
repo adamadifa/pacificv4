@@ -61,6 +61,11 @@
             background-color: #ecb00a !important;
             color: black !important;
         }
+
+        .tabelpending tfoot th {
+            background-color: #ecb00a !important;
+            color: black !important;
+        }
     </style>
 </head>
 
@@ -277,11 +282,11 @@
                             <td class="right">{{ formatAngka($total_reward) }}</td>
                         </tr>
                         @if ($d->metode_pembayaran != $next_metode_pembayaran)
-                            <tr class="table-dark"style="background-color: #ecb00a;">
-                                <td colspan="10">TOTAL REWARD </td>
-                                <td class="right">{{ formatAngka($subtotal_reward_tunai) }}</td>
-                                <td class="right">{{ formatAngka($subtotal_reward_kredit) }}</td>
-                                <td class="right">{{ formatAngka($subtotal_reward) }}</td>
+                            <tr class="table-dark" style="background-color: #ecb00a;">
+                                <th colspan="10">TOTAL REWARD </th>
+                                <th class="right">{{ formatAngka($subtotal_reward_tunai) }}</th>
+                                <th class="right">{{ formatAngka($subtotal_reward_kredit) }}</th>
+                                <th class="right">{{ formatAngka($subtotal_reward) }}</th>
                             </tr>
                             @php
                                 $subtotal_reward = 0;
