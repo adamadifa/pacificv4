@@ -147,8 +147,9 @@
                             $grandtotal_reward += $total_reward;
                             $grandtotal_reward_tunai += $d->reward_tunai;
                             $grandtotal_reward_kredit += $d->reward_kredit;
+                            $bgcolor = $d->status_pencairan == 0 ? 'yellow' : '';
                         @endphp
-                        <tr>
+                        <tr style="background-color: {{ $bgcolor }}">
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
@@ -174,7 +175,7 @@
                                 <td class="right">{{ formatAngka($subtotal_reward_tunai) }}</td>
                                 <td class="right">{{ formatAngka($subtotal_reward_kredit) }}</td>
                                 <td class="right">{{ formatAngka($subtotal_reward) }}</td>
-                                <td colspan="3"></td>
+                                <td colspan="4"></td>
                             </tr>
                             @php
                                 $subtotal_reward = 0;
