@@ -186,7 +186,7 @@
         </div>
     </div>
 </div>
-<x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
+<x-modal-form id="modal" size="modal-xxl" show="loadmodal" title="" />
 <x-modal-form id="modalUpload" size="" show="loadmodalupload" title="" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
