@@ -214,7 +214,7 @@
                 background-color: #f2f2f2;
             }
         </style>
-        <section class="sheet padding-10mm">
+        {{-- <section class="sheet padding-10mm">
             <table class="tabeldiskon">
                 <thead>
                     <tr>
@@ -353,7 +353,7 @@
                     </tr>
                 </tbody>
             </table>
-        </section>
+        </section> --}}
     </body>
 
 </html>
