@@ -570,146 +570,159 @@
     @endphp
     <div class="row" style="margin-top: 70px">
         <div class="col">
-            <table class="datatable3" style="width: 30%">
+            <table class="datatable3" style="widtd: 30%">
                 <tr>
-                    <th class="text-left">NIK</th>
-                    <td colspan="3">{{ $d['nik'] }}</td>
+                    <td class="text-left">NIK</td>
+                    <td>:</td>
+                    <td>{{ $d['nik'] }}</td>
+                    <td>{{ $d['kode_cabang'] }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Nama Karyawan</th>
-                    <td colspan="3">{{ $d['nama_karyawan'] }}</td>
+                    <td class="text-left">Nama Karyawan</td>
+                    <td>:</td>
+                    <td>{{ $d['nama_karyawan'] }}</td>
+                    <td>{{ $d['kode_dept'] }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Departemen</th>
-                    <td colspan="3">{{ $d['kode_dept'] }}</td>
+                    <td class="text-left">Departemen</td>
+                    <td>:</td>
+                    <td>{{ $d['kode_dept'] }}</td>
+                    <td>{{ $d['nama_jabatan'] }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Kantor</th>
-                    <td colspan="3">{{ $d['kode_cabang'] }}</td>
+                    <td colspan="3" style="text-align: center">PENERIMAAN</td>
+                    <td>173 Jam</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Jabatan</th>
-                    <td colspan="3">{{ $d['nama_jabatan'] }}</td>
+                    <td class="text-left">Gaji Pokok</td>
+                    <td colspan="2">:</td>
+                    <td class="text-right">{{ formatRupiah($d['gaji_pokok']) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Gaji Pokok</th>
-                    <td colspan="3" class="text-right">{{ formatRupiah($d['gaji_pokok']) }}</td>
+                    <td class="text-left">Tunj. Jabatan</td>
+                    <td colspan="2">:</td>
+                    <td class="text-right">{{ formatRupiah($d['t_jabatan']) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Tunj. Jabatan</th>
-                    <td colspan="3" class="text-right">{{ formatRupiah($d['t_jabatan']) }}</td>
+                    <td class="text-left">Tunj. Masa Kerja</td>
+                    <td colspan="2">:</td>
+                    <td class="text-right">{{ formatRupiah($d['t_masakerja']) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Tunj. Masa Kerja</th>
-                    <td colspan="3" class="text-right">{{ formatRupiah($d['t_masakerja']) }}</td>
+                    <td class="text-left">Tunj. Tanggung Jawab</td>
+                    <td colspan="2">:</td>
+                    <td class="text-right">{{ formatRupiah($d['t_tanggungjawab']) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Tunj. Tanggung Jawab</th>
-                    <td colspan="3" class="text-right">{{ formatRupiah($d['t_tanggungjawab']) }}</td>
-                </tr>
-                <tr>
-                    <th class="text-left">Tunj. Makan</th>
-                    <td colspan="3" class="text-right">{{ formatRupiah($d['t_makan']) }}</td>
+                    <td class="text-left">Tunj. Makan</td>
+                    <td colspan="2">:</td>
+                    <td class="text-right">{{ formatRupiah($d['t_makan']) }}</td>
                 </tr>
                 @if ($d['kategori_jabatan'] == 'MJ')
                     <tr>
-                        <th class="text-left">Tunj. Istri</th>
-                        <td colspan="3" class="text-right">{{ formatRupiah($d['t_istri']) }}</td>
+                        <td class="text-left">Tunj. Istri</td>
+                        <td colspan="2">:</td>
+                        <td class="text-right">{{ formatRupiah($d['t_istri']) }}</td>
                     </tr>
                 @endif
                 <tr>
-                    <th class="text-left">Tunj. Skill</th>
-                    <td colspan="3" class="text-right">{{ formatRupiah($d['t_skill']) }}</td>
+                    <td class="text-left">Tunj. Skill</td>
+                    <td colspan="2">:</td>
+                    <td class="text-right">{{ formatRupiah($d['t_skill']) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">∑ JAM KERJA BULAN INI</th>
-                    <td colspan="3" style="font-weight: bold">{{ formatAngkaDesimal($total_jam_kerja) }} JAM</td>
+                    <td class="text-left">∑ JAM KERJA BULAN INI</td>
+                    <td colspan="2">:</td>
+                    <td style="font-weight: bold; text-align:right">{{ formatAngkaDesimal($total_jam_kerja) }} JAM</td>
                 </tr>
                 <tr>
-                    <th class="text-left">UPAH / JAM</th>
-                    <td colspan="3" class="text-right">{{ formatAngkaDesimal($upah_perjam) }}</td>
+                    <td class="text-left">UPAH / JAM</td>
+                    <td colspan="2">:</td>
+                    <td class="text-right">{{ formatAngkaDesimal($upah_perjam) }}</td>
                 </tr>
                 @php
                     $upah_bulanini = $upah_perjam * $total_jam_kerja;
                 @endphp
                 <tr>
-                    <th class="text-left">UPAH BULAN INI</th>
+                    <td class="text-left">UPAH BULAN INI</td>
                     <td colspan="3" style="font-weight: bold; text-align:right">{{ formatRupiah($upah_bulanini) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Overtime 1</th>
+                    <td class="text-left">Overtime 1</td>
                     <td class="text-center">{{ formatAngkaDesimal($total_overtime_1) }}</td>
                     <td>JAM</td>
                     <td class="text-right">{{ formatRupiah($upah_overtime_1) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Overtime 2</th>
+                    <td class="text-left">Overtime 2</td>
                     <td class="text-center">{{ formatAngkaDesimal($total_overtime_2) }}</td>
                     <td>JAM</td>
                     <td class="text-right">{{ formatRupiah($upah_overtime_2) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Lembur Hari Libur</th>
+                    <td class="text-left">Lembur Hari Libur</td>
                     <td class="text-center">{{ formatAngkaDesimal($total_overtime_libur) }}
                     </td>
                     <td>JAM</td>
                     <td class="text-right">{{ formatRupiah($upah_overtime_libur) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Premi Shift 2</th>
+                    <td class="text-left">Premi Shift 2</td>
                     <td class="text-center">{{ $premis_shift2 }}</td>
                     <td>HARI</td>
                     <td class="text-right">{{ formatRupiah($upah_premi_shift2) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">Premi Shift 3</th>
+                    <td class="text-left">Premi Shift 3</td>
                     <td class="text-center">{{ $premis_shift3 }}</td>
                     <td>HARI</td>
                     <td class="text-right">{{ formatRupiah($upah_premi_shift3) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left">TOTAL PENERIMAAN</th>
-                    <td colspan="3" style="font-weight: bold; text-align:right">{{ formatRupiah($bruto) }}</td>
+                    <td class="text-left">TOTAL PENERIMAAN</td>
+                    <td colspan="2">:</td>
+                    <td style="font-weight: bold; text-align:right">{{ formatRupiah($bruto) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left" style="font-size:18px">GAJI BERSIH</th>
-                    <td style="font-weight: bold;font-size:18px; text-align:right" colspan="3">{{ formatRupiah($jmlbersih) }}</td>
+                    <td class="text-left">GAJI BERSIH</td>
+                    <td colspan="2">:</td>
+                    <td style="font-weight: bold; text-align:right">{{ formatRupiah($jmlbersih) }}</td>
                 </tr>
                 <tr>
-                    <th class="text-left" style="font-size:18px">INSENTIF</th>
+                    <td class="text-left" colspan="4">INSENTIF</td>
                 </tr>
                 @if ($d['kategori_jabatan'] == 'MJ')
                     <tr>
-                        <th class="text-left">RUANG LINGKUP</th>
+                        <td class="text-left">RUANG LINGKUP</td>
                         <td colspan="3" class="text-right">{{ formatRupiah($d['im_ruanglingkup']) }}</td>
                     </tr>
                     <tr>
-                        <th class="text-left">PENEMPATAN</th>
+                        <td class="text-left">PENEMPATAN</td>
                         <td colspan="3" class="text-right">{{ formatRupiah($d['im_penempatan']) }}</td>
                     </tr>
                     <tr>
-                        <th class="text-left">KINERJA</th>
+                        <td class="text-left">KINERJA</td>
                         <td colspan="3" class="text-right">{{ formatRupiah($d['im_kinerja']) }}</td>
                     </tr>
                     <tr>
-                        <th class="text-left">KENDARAAN</th>
+                        <td class="text-left">KENDARAAN</td>
                         <td colspan="3" class="text-right">{{ formatRupiah($d['im_kendaraan']) }}</td>
                     </tr>
                 @else
                     <tr>
-                        <th class="text-left">MASA KERJA</th>
+                        <td class="text-left">MASA KERJA</td>
                         <td colspan="3" class="text-right">{{ formatRupiah($d['iu_masakerja']) }}</td>
                     </tr>
                     <tr>
-                        <th class="text-left">LEMBUR</th>
+                        <td class="text-left">LEMBUR</td>
                         <td colspan="3" class="text-right">{{ formatRupiah($d['iu_lembur']) }}</td>
                     </tr>
                     <tr>
-                        <th class="text-left">PENEMPATAN</th>
+                        <td class="text-left">PENEMPATAN</td>
                         <td colspan="3" class="text-right">{{ formatRupiah($d['iu_penempatan']) }}</td>
                     </tr>
                     <tr>
-                        <th class="text-left">KPI</th>
+                        <td class="text-left">KPI</td>
                         <td colspan="3" class="text-right">{{ formatRupiah($d['iu_kpi']) }}</td>
                     </tr>
                 @endif

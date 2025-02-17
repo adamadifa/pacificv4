@@ -25,7 +25,7 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
-class Globalprovider extends ServiceProvider
+class GlobalProvider extends ServiceProvider
 {
     /**
      * Register services.
