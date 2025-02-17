@@ -4,15 +4,21 @@
     <table class="table table-bordered ">
         <thead class="table-dark">
             <tr>
-                <th>No</th>
-                <th>Kode Pelanggan</th>
-                <th>Nama Pelanggan</th>
-                <th class="text-center">Target</th>
-                <th>Realisasi</th>
-                <th>Reward</th>
-                <th>Total Reward</th>
-                <th><i class="ti ti-file-dollar"></i></th>
-                <th><i class="ti ti-square-check"></i></th>
+                <th rowspan="2">No</th>
+                <th rowspan="2">Kode Pelanggan</th>
+                <th rowspan="2">Nama Pelanggan</th>
+                <th class="text-center" rowspan="2">Target</th>
+                <th colspan="2">Realisasi</th>
+                <th colspan="2">Reward</th>
+                <th rowspan="2">Total Reward</th>
+                <th rowspan="2"><i class="ti ti-file-dollar"></i></th>
+                <th rowspan="2"><i class="ti ti-square-check"></i></th>
+            </tr>
+            <tr>
+                <th>Tunai</th>
+                <th>Kredit</th>
+                <th>Tunai</th>
+                <th>Kredit</th>
             </tr>
 
         </thead>

@@ -325,6 +325,8 @@ class PencairanprogramikatanController extends Controller
         $detailpenjualan = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
             DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as jml_dus'),
+            DB::raw('SUM(IF(jenis_transaksi = "T", floor(jumlah/isi_pcs_dus), 0)) as jml_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi = "K", floor(jumlah/isi_pcs_dus), 0)) as jml_kredit'),
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
@@ -382,8 +384,13 @@ class PencairanprogramikatanController extends Controller
             'marketing_program_ikatan_target.kode_pelanggan',
             'nama_pelanggan',
             'target_perbulan as qty_target',
+            'budget_rsm',
+            'budget_smm',
+            'budget_gm',
             'reward',
             'jml_dus',
+            'jml_tunai',
+            'jml_kredit'
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
