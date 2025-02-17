@@ -7,8 +7,13 @@
     @php
         $color_reward = $d->jml_dus >= $d->qty_target ? 'bg-success text-white' : 'bg-danger text-white';
         if ($d->jml_dus >= $d->qty_target) {
-            $reward = $d->reward * $d->jml_dus;
+            //$reward = $d->reward * $d->jml_dus;
+            $reward_tunai = ($d->budget_rsm + $d->budget_gm) * $d->jml_tunai;
+            $reward_kredit = $d->reward * $d->jml_kredit;
+            $reward = $reward_tunai + $reward_kredit;
         } else {
+            $reward_tunai = 0;
+            $reward_kredit = 0;
             $reward = 0;
         }
         $total_reward += $reward;
@@ -44,12 +49,12 @@
             {{ formatAngka($d->jml_kredit) }}
         </td>
         <td class="text-end">
-            {{ formatAngka($d->reward) }}
+            {{ formatAngka($reward_tunai) }}
         </td>
         <td class="text-end">
-
+            {{ formatAngka($reward_kredit) }}
         </td>
-        <td></td>
+        <td class="text-end">{{ formatAngka($reward) }}></td>
         <td>
             @if ($d->jml_dus >= $d->qty_target)
                 <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select">
