@@ -108,22 +108,7 @@
             </table>
             <br>
             <br>
-            <table class="datatable3">
-                <tr>
-                    <th colspan="2">REKAP PEMBAYARAN</th>
-                </tr>
-                <tr>
-                    <th>TRANSFER</th>
-                    <td class="right">{{ formatAngka($grandtotal_transfer) }}</td>
-                </tr>
-                <tr>
-                    <th>TUNAI</th>
-                    <td class="right">{{ formatAngka($grandtotal_tunai) }}</td>
-                </tr>
-            </table>
-            <br>
-            <br>
-            <br>
+
             <table class="datatable3" style="width: 100%">
                 <thead style="background-color: #055b90; color:white">
                     <tr>
@@ -227,6 +212,23 @@
                     </tr>
                 </tfoot>
             </table>
+            <br>
+            <br>
+            <table class="datatable3">
+                <tr>
+                    <th colspan="2">REKAP PEMBAYARAN</th>
+                </tr>
+                <tr>
+                    <th>TRANSFER</th>
+                    <td class="right">{{ formatAngka($grandtotal_transfer) }}</td>
+                </tr>
+                <tr>
+                    <th>TUNAI</th>
+                    <td class="right">{{ formatAngka($grandtotal_tunai) }}</td>
+                </tr>
+            </table>
+            <br>
+
             <br>
             <br>
             <table class="datatable3 tabelpending" style="width: 100%">
