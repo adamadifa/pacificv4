@@ -671,8 +671,7 @@ class PencairanprogramikatanController extends Controller
 
 
         $pencairanprogram = Pencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
-            ->join('marketing_program_ikatan', 'marketing_pencairan_ikatan.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
-            ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
+            ->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program')
             ->first();
         $bulan = $pencairanprogram->bulan;
         $tahun = $pencairanprogram->tahun;
