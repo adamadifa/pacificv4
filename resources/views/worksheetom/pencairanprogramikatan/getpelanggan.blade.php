@@ -26,6 +26,9 @@
         <td class="text-center">
             {{ formatAngka($d->qty_target) }}
         </td>
+        <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
+        <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
+        <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
         <td class="text-end">
             {{-- <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
             {{ formatAngka($d->jml_dus) }} --}}
