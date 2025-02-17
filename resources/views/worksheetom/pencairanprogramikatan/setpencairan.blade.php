@@ -149,9 +149,9 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
-                                                <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                                                {{-- <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
                                                     <i class="ti ti-file-description"></i>
-                                                </a>
+                                                </a> --}}
                                                 @can('pencairanprogramikt.upload')
                                                     <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
                                                         kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
