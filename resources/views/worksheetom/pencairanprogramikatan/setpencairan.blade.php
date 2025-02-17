@@ -24,6 +24,10 @@
         background-color: #002e65 !important;
         color: white !important;
     }
+
+    #example_filter {
+        margin-bottom: 5px;
+    }
 </style>
 <div class="row">
     <div class="col-lg-12 col-sm-12 col-xs-12">
