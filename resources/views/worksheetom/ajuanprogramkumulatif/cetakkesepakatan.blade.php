@@ -167,12 +167,12 @@
                 <br>
                 <br>
             <table style="width: 100%">
-                <tr>
+                {{-- <tr>
                     <td style="text-align: center;">Pihak Ke -1</td>
                     <td style="text-align: center;">Pihak Ke -2</td>
                     <td style="text-align: center;">Saksi</td>
                     <td style="text-align: center;"></td>
-                </tr>
+                </tr> --}}
                 <tr>
                     <td style="height: 70px"></td>
                     <td></td>
@@ -180,16 +180,16 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;">(___________)</td>
-                    <td style="text-align: center;">(___________)</td>
+                    {{-- <td style="text-align: center;">(___________)</td>
+                    <td style="text-align: center;">(___________)</td> --}}
                     <td style="text-align: center;">(___________)</td>
                     <td style="text-align: center;">(___________)</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;">SMM</td>
                     <td style="text-align: center;">Pelanggan</td>
-                    <td style="text-align: center;">RSM/GM</td>
                     <td style="text-align: center;">Salesman</td>
+                    {{-- <td style="text-align: center;">RSM/GM</td>
+                    <td style="text-align: center;">Salesman</td> --}}
                 </tr>
             </table>
             </p>
