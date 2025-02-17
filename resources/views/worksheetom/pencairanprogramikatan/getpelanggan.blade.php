@@ -66,7 +66,7 @@
         </td>
         <td>
             @if ($d->jml_dus >= $d->qty_target)
-                <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select">
+                <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select p-0 m-0">
                     <option value="1">Cairkan</option>
                     <option value="0">Simpan</option>
                 </select>
@@ -77,7 +77,7 @@
         </td>
         <td>
             @if ($d->jml_dus >= $d->qty_target)
-                <div class="form-check mt-3 mb-2 p-0 m-0">
+                <div class="form-check mt-3 mb-2 ">
                     <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
                         id="checkpelanggan">
                 </div>
