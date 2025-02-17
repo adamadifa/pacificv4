@@ -50,6 +50,10 @@
             height: auto !important;
             width: auto !important;
         }
+
+        .text-center {
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -139,16 +143,16 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
-                            <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
-                            <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
-                            <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
+                            <td class="right">{{ formatAngka($d->budget_smm) }}</td>
+                            <td class="right">{{ formatAngka($d->budget_rsm) }}</td>
+                            <td class="right">{{ formatAngka($d->budget_gm) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                             <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
-                            <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
-                            <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
-                            <td class="text-end">{{ formatAngka($total_reward) }}</td>
+                            <td class="right">{{ formatAngka($d->reward_tunai) }}</td>
+                            <td class="right">{{ formatAngka($d->reward_kredit) }}</td>
+                            <td class="right">{{ formatAngka($total_reward) }}</td>
                             <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
 
                             <td>{{ $d->no_rekening }}</td>
