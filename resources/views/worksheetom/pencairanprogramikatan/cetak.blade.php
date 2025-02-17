@@ -66,6 +66,12 @@
             background-color: #ecb00a !important;
             color: black !important;
         }
+
+        .tabelpending tbody th {
+            background-color: #ecb00a !important;
+            color: black !important;
+
+        }
     </style>
 </head>
 
@@ -185,11 +191,11 @@
                         </tr>
                         @if ($d->metode_pembayaran != $next_metode_pembayaran)
                             <tr class="table-dark" style="background-color: #055b90; color:white">
-                                <td colspan="10">TOTAL REWARD </td>
-                                <td class="right">{{ formatAngka($subtotal_reward_tunai) }}</td>
-                                <td class="right">{{ formatAngka($subtotal_reward_kredit) }}</td>
-                                <td class="right">{{ formatAngka($subtotal_reward) }}</td>
-                                <td colspan="4"></td>
+                                <th colspan="10">TOTAL REWARD </th>
+                                <th class="right">{{ formatAngka($subtotal_reward_tunai) }}</th>
+                                <th class="right">{{ formatAngka($subtotal_reward_kredit) }}</th>
+                                <th class="right">{{ formatAngka($subtotal_reward) }}</th>
+                                <th colspan="4"></th>
                             </tr>
                             @php
                                 $subtotal_reward = 0;
@@ -199,11 +205,11 @@
                 </tbody>
                 <tfoot class="table-dark" style="background-color: #055b90; color:white">
                     <tr>
-                        <td colspan="10">GRAND TOTAL REWARD </td>
-                        <td class="right">{{ formatAngka($grandtotal_reward_tunai) }}</td>
-                        <td class="right">{{ formatAngka($grandtotal_reward_kredit) }}</td>
-                        <td class="right">{{ formatAngka($grandtotal_reward) }}</td>
-                        <td colspan="4"></td>
+                        <th colspan="10">GRAND TOTAL REWARD </th>
+                        <th class="right">{{ formatAngka($grandtotal_reward_tunai) }}</th>
+                        <th class="right">{{ formatAngka($grandtotal_reward_kredit) }}</th>
+                        <th class="right">{{ formatAngka($grandtotal_reward) }}</th>
+                        <th colspan="4"></th>
                     </tr>
                 </tfoot>
             </table>
