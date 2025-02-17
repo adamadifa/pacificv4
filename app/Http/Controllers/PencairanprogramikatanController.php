@@ -335,7 +335,7 @@ class PencairanprogramikatanController extends Controller
                 $join->on('marketing_penjualan.kode_pelanggan', '=', 'listpelangganikatan.kode_pelanggan');
             })
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
-            ->whereNotIn('marketing_penjualan.kode_pelanggan', $pelanggansudahdicairkan->pluck('kode_pelanggan')->toArray())
+            ->whereNotIn('marketing_penjualan.kode_pelanggan', $pelanggansudahdicairkan)
             ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
             ->where('marketing_penjualan.status', 1)
             ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top")
