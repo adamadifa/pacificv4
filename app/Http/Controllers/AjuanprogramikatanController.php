@@ -650,6 +650,7 @@ class AjuanprogramikatanController extends Controller
         $data['kesepakatan'] = Detailajuanprogramikatan::where('marketing_program_ikatan_detail.no_pengajuan', $no_pengajuan)
             ->where('marketing_program_ikatan_detail.kode_pelanggan', $kode_pelanggan)
             ->join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->join('program_ikatan', 'marketing_program_ikatan.kode_program', '=', 'program_ikatan.kode_program')
             ->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang')

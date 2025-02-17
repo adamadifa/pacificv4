@@ -81,13 +81,13 @@
                 <tr>
                     <td style="width: 40%">Nama Lengkap</td>
                     <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
+                    <td style="border-bottom: 1px solid black">{{ $kesepakatan->nama_salesman }}</td>
                 </tr>
 
                 <tr>
                     <td style="width: 40%">Alamat Lengkap Tempat Tinggal</td>
                     <td style="width: 1%">:</td>
-                    <td style="border-bottom: 1px solid black"></td>
+                    <td style="border-bottom: 1px solid black">{{ $kesepakatan->alamat_cabang }}</td>
                 </tr>
                 <tr>
                     <td style="width: 40%"></td>
