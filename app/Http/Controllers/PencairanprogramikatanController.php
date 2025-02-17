@@ -422,23 +422,34 @@ class PencairanprogramikatanController extends Controller
         // dd($kode_pelanggan);
         DB::beginTransaction();
         try {
-            Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)->delete();
-            for ($i = 0; $i < count($kode_pelanggan); $i++) {
-                if ($status[$i] == 1) {
-                    Detailpencairanprogramikatan::create([
-                        'kode_pencairan' => $kode_pencairan,
-                        'kode_pelanggan' => $kode_pelanggan[$i],
-                        'jumlah' => toNumber($jumlah[$i]),
-                        'status_pencairan' => $status_pencairan[$i]
-                    ]);
-                    Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$i])->update([
-                        'status' => 1
-                    ]);
-                } else {
-                    Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$i])->update([
-                        'status' => 0
-                    ]);
-                }
+            //Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)->delete();
+            // for ($i = 0; $i < count($kode_pelanggan); $i++) {
+
+            //     if ($status[$i] == 1) {
+            //         Detailpencairanprogramikatan::create([
+            //             'kode_pencairan' => $kode_pencairan,
+            //             'kode_pelanggan' => $kode_pelanggan[$i],
+            //             'jumlah' => toNumber($jumlah[$i]),
+            //             'status_pencairan' => $status_pencairan[$i]
+            //         ]);
+            //         Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$i])->update([
+            //             'status' => 1
+            //         ]);
+            //     } else {
+            //         Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$i])->update([
+            //             'status' => 0
+            //         ]);
+            //     }
+            // }
+
+            $checkpelanggan = $request->input('checkpelanggan', []);
+            foreach ($checkpelanggan as $index => $value) {
+                Detailpencairanprogramikatan::create([
+                    'kode_pencairan' => $kode_pencairan,
+                    'kode_pelanggan' => $kode_pelanggan[$index],
+                    'jumlah' => toNumber($jumlah[$index]),
+                    'status_pencairan' => $status_pencairan[$index]
+                ]);
             }
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Pelanggan Berhasil Di Proses'));

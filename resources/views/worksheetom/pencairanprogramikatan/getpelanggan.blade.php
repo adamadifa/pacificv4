@@ -18,8 +18,8 @@
     <tr class=" {{ $color_reward }}">
         <td>{{ $loop->iteration }}</td>
         <td>
-            <input type="hidden" name="kode_pelanggan[]" value="{{ $d->kode_pelanggan }}">
-            <input type="hidden" name="status[]" value="{{ $status }}">
+            <input type="hidden" name="kode_pelanggan[{{ $loop->index }}]" value="{{ $d->kode_pelanggan }}">
+            <input type="hidden" name="status[{{ $loop->index }}]" value="{{ $status }}">
             {{ $d->kode_pelanggan }}
         </td>
         <td>{{ $d->nama_pelanggan }}</td>
@@ -27,7 +27,7 @@
             {{ formatAngka($d->qty_target) }}
         </td>
         <td class="text-end">
-            <input type="hidden" name="jumlah[]" value="{{ $d->jml_dus }}">
+            <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
             {{ formatAngka($d->jml_dus) }}
         </td>
         <td class="text-end">
@@ -38,19 +38,20 @@
         </td>
         <td>
             @if ($d->jml_dus >= $d->qty_target)
-                <select name="status_pencairan[]" id="status_pencairan" class="form-select">
+                <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select">
                     <option value="1">Cairkan</option>
                     <option value="0">Simpan</option>
                 </select>
             @else
-                <input type="hidden" name="status_pencairan[]" value="0">
+                <input type="hidden" name="status_pencairan[{{ $loop->index }}]" value="0">
             @endif
 
         </td>
         <td>
             @if ($d->jml_dus >= $d->qty_target)
                 <div class="form-check mt-3 mb-2">
-                    <input class="form-check-input checkpelanggan" name="checkpelanggan[]" value="1" type="checkbox" id="checkpelanggan">
+                    <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
+                        id="checkpelanggan">
                 </div>
             @endif
         </td>
