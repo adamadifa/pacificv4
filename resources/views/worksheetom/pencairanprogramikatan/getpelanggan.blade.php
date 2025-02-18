@@ -8,7 +8,7 @@
         $color_reward = $d->jml_dus >= $d->qty_target ? 'bg-success text-white' : 'bg-danger text-white';
         if ($d->jml_dus >= $d->qty_target) {
             //$reward = $d->reward * $d->jml_dus;
-            $reward_tunai = $d->kode_porgram == 'PRIK004' ? 1 : 0;
+            $reward_tunai = 1;
             $reward_kredit = $d->reward * $d->jml_kredit;
             $reward = $reward_tunai + $reward_kredit;
         } else {
