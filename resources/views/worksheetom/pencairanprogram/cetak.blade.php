@@ -135,7 +135,7 @@
                         </tr>
                         @if ($d->metode_bayar != $next_metode_pembayaran)
                             <tr>
-                                <th colspan="6">Total {{ $metode_pembayaran[$d->metode_pembayaran] }}</th>
+                                <th colspan="6">Total {{ $metode_pembayaran[$d->metode_bayar] }}</th>
                                 <td class="right">{{ formatAngka($subtotal_cashback) }}</td>
                                 <td colspan="3"></td>
                             </tr>
