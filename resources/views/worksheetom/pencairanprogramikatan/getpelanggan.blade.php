@@ -4,7 +4,6 @@
     $status = 0;
 @endphp
 @foreach ($peserta as $d)
-    {{ $d->kode_program }}
     @php
         $color_reward = $d->jml_dus >= $d->qty_target ? 'bg-success text-white' : 'bg-danger text-white';
         if ($d->jml_dus >= $d->qty_target) {
@@ -22,7 +21,7 @@
     @endphp
 
     <tr class=" {{ $color_reward }}">
-        <td>{{ $loop->iteration }}</td>
+        <td>{{ $loop->iteration }} {{ $d->kode_program }}</td>
         <td>
             <input type="hidden" name="kode_pelanggan[{{ $loop->index }}]" value="{{ $d->kode_pelanggan }}">
             <input type="hidden" name="status[{{ $loop->index }}]" value="{{ $status }}">
