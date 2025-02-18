@@ -115,9 +115,9 @@
                         @php
                             $next_metode_pembayaran = @$detailpencairan[$key + 1]->metode_bayar;
                             $cashback = $d->diskon_kumulatif - $d->diskon_reguler;
-                            $subtotal_voucher += $d->metode_pembayaran == 'VC' ? $cashback : 0;
-                            $subtotal_transfer += $d->metode_pembayaran == 'TF' ? $cashback : 0;
-                            $subtotal_tunai += $d->metode_pembayaran == 'TN' ? $cashback : 0;
+                            $subtotal_voucher += $d->metode_bayar == 'VC' ? $cashback : 0;
+                            $subtotal_transfer += $d->metode_bayar == 'TF' ? $cashback : 0;
+                            $subtotal_tunai += $d->metode_bayar == 'TN' ? $cashback : 0;
                             $subtotal_cashback += $cashback;
                         @endphp
                         <tr>
