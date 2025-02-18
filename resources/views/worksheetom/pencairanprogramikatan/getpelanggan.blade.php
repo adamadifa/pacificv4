@@ -76,7 +76,7 @@
 
         </td>
         <td>
-            @if ($d->jml_dus >= $d->qty_target && !empty($d->file_doc))
+            @if ($d->jml_dus >= $d->qty_target)
                 <div class="form-check mt-3 mb-2 ">
                     <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
                         id="checkpelanggan">
