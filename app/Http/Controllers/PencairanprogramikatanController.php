@@ -395,6 +395,7 @@ class PencairanprogramikatanController extends Controller
             'jml_tunai',
             'jml_kredit',
             'file_doc',
+            'marketing_program_ikatan.kode_program'
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
