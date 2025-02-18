@@ -167,7 +167,7 @@ class GlobalProvider extends ServiceProvider
 
                         ->count();
                     $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('rsm')
-                        ->join('cabang', 'marketing_pencairan_program.kode_cabang', '=', 'cabang.kode_cabang')
+                        ->join('cabang', 'marketing_program_pencairan.kode_cabang', '=', 'cabang.kode_cabang')
                         ->where('kode_regional', auth()->user()->kode_regional)
                         ->whereNotNull('om')
 
