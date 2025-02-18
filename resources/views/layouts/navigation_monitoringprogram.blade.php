@@ -39,6 +39,10 @@
             </li>
         @endcan
 
-
+        <li class="nav-item" role="presentation">
+            <a href="#" class="nav-link">
+                <i class="tf-icons ti ti-file-description ti-md me-1"></i> Monitoring Program
+            </a>
+        </li>
     </ul>
 @endif
