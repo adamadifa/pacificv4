@@ -82,7 +82,7 @@
                         id="checkpelanggan">
                 </div>
             @else
-                <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
+                <input class="form-check-input checkpelanggan pelangganna" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
                     id="checkpelanggan" checked>
             @endif
         </td>
@@ -93,3 +93,10 @@
     <td class="text-end">{{ formatAngka($total_reward) }}</td>
     <td></td>
 </tr> --}}
+<script>
+    $(document).ready(function() {
+        function hide() {
+            $(".pelangganna").hide();
+        }
+    });
+</script>
