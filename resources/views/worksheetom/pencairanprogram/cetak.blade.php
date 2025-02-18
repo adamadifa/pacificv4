@@ -144,6 +144,21 @@
 
                 </tbody>
             </table>
+            <br>
+            <table class="datatable3">
+                <tr>
+                    <th>Voucher</th>
+                    <td>{{ formatAngka($subtotal_voucher) }}</td>
+                </tr>
+                <tr></tr>
+                <th>Transfer</th>
+                <td>{{ formatAngka($subtotal_transfer) }}</td>
+                </tr>
+                <tr>
+                    <th>Tunai</th>
+                    <td>{{ formatAngka($subtotal_tunai) }}</td>
+                </tr>
+            </table>
         </section>
     </body>
 
