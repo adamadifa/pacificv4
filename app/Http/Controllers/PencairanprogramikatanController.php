@@ -460,17 +460,27 @@ class PencairanprogramikatanController extends Controller
 
             $checkpelanggan = $request->input('checkpelanggan', []);
             foreach ($checkpelanggan as $index => $value) {
-                Detailpencairanprogramikatan::create([
-                    'kode_pencairan' => $kode_pencairan,
-                    'kode_pelanggan' => $kode_pelanggan[$index],
-                    'jumlah' => toNumber($jumlah[$index]),
-                    'qty_tunai' => toNumber($request->qty_tunai[$index]),
-                    'qty_kredit' => toNumber($request->qty_kredit[$index]),
-                    'reward_tunai' => toNumber($request->reward_tunai[$index]),
-                    'reward_kredit' => toNumber($request->reward_kredit[$index]),
-                    'total_reward' => toNumber($request->total_reward[$index]),
-                    'status_pencairan' => $status_pencairan[$index]
-                ]);
+                if ($status[$index] == 1) {
+                    Detailpencairanprogramikatan::create([
+                        'kode_pencairan' => $kode_pencairan,
+                        'kode_pelanggan' => $kode_pelanggan[$index],
+                        'jumlah' => toNumber($jumlah[$index]),
+                        'qty_tunai' => toNumber($request->qty_tunai[$index]),
+                        'qty_kredit' => toNumber($request->qty_kredit[$index]),
+                        'reward_tunai' => toNumber($request->reward_tunai[$index]),
+                        'reward_kredit' => toNumber($request->reward_kredit[$index]),
+                        'total_reward' => toNumber($request->total_reward[$index]),
+                        'status_pencairan' => $status_pencairan[$index]
+                    ]);
+
+                    Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$index])->update([
+                        'status' => 1
+                    ]);
+                } else {
+                    Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$index])->update([
+                        'status' => 0
+                    ]);
+                }
             }
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Pelanggan Berhasil Di Proses'));

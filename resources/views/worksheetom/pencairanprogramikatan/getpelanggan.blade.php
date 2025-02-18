@@ -81,6 +81,9 @@
                     <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
                         id="checkpelanggan">
                 </div>
+            @else
+                <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
+                    id="checkpelanggan" checked>
             @endif
         </td>
     </tr>
