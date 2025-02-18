@@ -4,6 +4,7 @@
     $status = 0;
 @endphp
 @foreach ($peserta as $d)
+    {{ $d->kode_program }}
     @php
         $color_reward = $d->jml_dus >= $d->qty_target ? 'bg-success text-white' : 'bg-danger text-white';
         if ($d->jml_dus >= $d->qty_target) {
