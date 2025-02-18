@@ -9,6 +9,7 @@
         <td class="text-end">{{ formatAngka($d['cashback']) }}</td>
         <td>
             <div class="d-flex">
+
                 <a href="#" class="btnDetailfaktur me-2" kode_pelanggan="{{ $d['kode_pelanggan'] }}" top="{{ $top }}">
                     <i class="ti ti-file-description"></i>
                 </a>

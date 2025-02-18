@@ -25,6 +25,12 @@
         <td>{{ $d->bank }}</td>
         <td>
             <div class="d-flex">
+                @can('pencairanprogramikt.upload')
+                    <a href="#" kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}"
+                        class="btnUpload">
+                        <i class="ti ti-upload text-primary"></i>
+                    </a>
+                @endcan
                 <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}" top="{{ $d->top }}">
                     <i class="ti ti-file-description"></i>
                 </a>
