@@ -198,6 +198,8 @@
                             </tr>
                             @php
                                 $subtotal_reward = 0;
+                                $subtotal_reward_tunai = 0;
+                                $subtotal_reward_kredit = 0;
                             @endphp
                         @endif
                     @endforeach

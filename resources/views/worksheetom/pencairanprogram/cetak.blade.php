@@ -111,9 +111,14 @@
                         $subtotal_transfer = 0;
                         $subtotal_tunai = 0;
                     @endphp
-                    @foreach ($detailpencairan as $d)
+                    @foreach ($detailpencairan as $key => $d)
                         @php
+                            $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
                             $cashback = $d->diskon_kumulatif - $d->diskon_reguler;
+                            $subtotal_voucher += $d->metode_pembayaran == 'VC' ? $cashback : 0;
+                            $subtotal_transfer += $d->metode_pembayaran == 'TF' ? $cashback : 0;
+                            $subtotal_tunai += $d->metode_pembayaran == 'TN' ? $cashback : 0;
+                            $subtotal_cashback += $cashback;
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -128,6 +133,13 @@
                             <td>{{ $d->no_rekening }}</td>
                             <td>{{ $d->pemilik_rekening }}</td>
                         </tr>
+                        @if ($d->metode_pembayaran != $next_metode_pembayaran)
+                            <tr>
+                                <th colspan="6">Total {{ $metode_pembayaran[$d->metode_pembayaran] }}</th>
+                                <td class="right">{{ formatAngka($subtotal_cashback) }}</td>
+                                <td colspan="3"></td>
+                            </tr>
+                        @endif
                     @endforeach
 
                 </tbody>

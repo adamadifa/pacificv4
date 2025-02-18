@@ -75,7 +75,7 @@
                                             <th rowspan="2" valign="middle">Program</th>
                                             <th rowspan="2" valign="middle">Cabang</th>
                                             <th colspan="4" valign="middle" class="text-center">Persetujuan</th>
-                                            <th rowspan="2" valign="middle">Keuangan</th>
+                                            {{-- <th rowspan="2" valign="middle">Keuangan</th> --}}
                                             <th rowspan="2" valign="middle">Status</th>
                                             <th rowspan="2" valign="middle">#</th>
                                         </tr>
@@ -123,9 +123,9 @@
                                                         <i class="ti ti-check text-success"></i>
                                                     @endif
                                                 </td>
-                                                <td class="text-center">
+                                                {{-- <td class="text-center">
                                                     <i class="ti ti-hourglass-empty text-warning"></i>
-                                                </td>
+                                                </td> --}}
                                                 <td class="text-center">
                                                     @if ($d->status == '0')
                                                         <i class="ti ti-hourglass-empty text-warning"></i>
