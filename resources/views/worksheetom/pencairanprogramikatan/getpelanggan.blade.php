@@ -98,5 +98,7 @@
         function hide() {
             $(".pelangganna").hide();
         }
+
+        hide();
     });
 </script>
