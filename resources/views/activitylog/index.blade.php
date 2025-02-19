@@ -29,7 +29,7 @@
                                 <div class="form-group">
                                     <select name="id_user" id="id_user" class="form-select select2User">
                                         <option value="">Pilih User</option>
-                                        @foreach ($user as $d)
+                                        @foreach ($users as $d)
                                             <option value="{{ $d->id }}">{{ $d->name }}</option>
                                         @endforeach
                                     </select>
