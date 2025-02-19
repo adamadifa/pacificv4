@@ -75,9 +75,9 @@
          @include('layouts.sidebar.hrd')
          @include('layouts.sidebar.worksheetom')
 
-         @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index']) ||
+         @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index']) ||
                  auth()->user()->hasRole(['super admin', 'gm administrasi']))
-             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan']) ? 'open' : '' }} ">
+             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-settings"></i>
                      <div>Utilities</div>
