@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <form action="{{ route('visitpelanggan.index') }}">
+                        <form action="{{ route('activitylog.index') }}">
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
                                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
