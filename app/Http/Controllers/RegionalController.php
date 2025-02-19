@@ -6,6 +6,7 @@ use App\Models\Regional;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Log;
 
 class RegionalController extends Controller
 {
@@ -71,6 +72,7 @@ class RegionalController extends Controller
      */
     public function update(Request $request, $kode_regional)
     {
+        //Log::info('Spatie Log Activity dipanggil untuk Regional');
         $kode_regional = Crypt::decrypt($kode_regional);
         $request->validate([
             'kode_regional' => 'required|max:3',
@@ -78,10 +80,10 @@ class RegionalController extends Controller
         ]);
 
         try {
-            Regional::where('kode_regional', $kode_regional)
-                ->update([
-                    'nama_regional' => $request->nama_regional
-                ]);
+            $regional = Regional::find($kode_regional);
+            $regional->update([
+                'nama_regional' => $request->nama_regional
+            ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Update'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));

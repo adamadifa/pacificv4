@@ -4,16 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use \Illuminate\Support\Facades\Log;
 
 
 class Pelanggan extends Model
 {
     use HasFactory;
+    // use LogsActivity;
     protected $table = "pelanggan";
     protected $primaryKey = "kode_pelanggan";
     protected $guarded = [];
     public $incrementing = false;
 
+    // public function getActivitylogOptions(): LogOptions
+    // {
+    //     Log::info('Spatie Log Activity dipanggil untuk Pelanggan'); // Debugging
+    //     return LogOptions::defaults()
+    //         ->logAll();
+    //     // Chain fluent methods for configuration options
+    // }
 
     public function getJmlpelanggan($request, $status = '')
     {

@@ -75,7 +75,8 @@
          @include('layouts.sidebar.hrd')
          @include('layouts.sidebar.worksheetom')
 
-         @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index']))
+         @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index']) ||
+                 auth()->user()->hasRole(['super admin', 'gm administrasi']))
              <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-settings"></i>
@@ -97,6 +98,14 @@
                              <div>Tutup Laporan</div>
                          </a>
                      </li>
+                     @can('activitylog.index')
+                         <li class="menu-item {{ request()->is(['activitylog', 'activitylog/*']) ? 'active' : '' }}">
+                             <a href="{{ route('activitylog.index') }}" class="menu-link">
+                                 <div>Log Aktivitas</div>
+                             </a>
+                         </li>
+                     @endcan
+
                  </ul>
              </li>
          @endif

@@ -585,7 +585,7 @@ class PenjualanController extends Controller
 
 
             //Insert Penjualan
-            Penjualan::create([
+            $simpanpenjualan = Penjualan::create([
                 'no_faktur' => $no_faktur,
                 'tanggal' => $tanggal,
                 'kode_pelanggan' => $kode_pelanggan,
@@ -620,6 +620,16 @@ class PenjualanController extends Controller
 
 
             Detailpenjualan::insert($detail);
+
+            $logpenjualan = $simpanpenjualan->getAttributes();
+            //Simpan Log Activity
+            activity()
+                ->performedOn($simpanpenjualan)
+                ->withProperties([
+                    'penjualan' => $logpenjualan,
+                    'detail' => $detail, // Menyertakan detail produk ke dalam log
+                ])
+                ->log("Membuat Faktur Penjualan {$simpanpenjualan->no_faktur}  dengan " . count($detail) . " item.");
 
             //Pembayaran
 
@@ -872,6 +882,11 @@ class PenjualanController extends Controller
         $no_faktur = Crypt::decrypt($no_faktur);
         $pj = new Penjualan();
         $penjualan = $pj->getFaktur($no_faktur);
+        $penjualanold = Penjualan::where('no_faktur', $no_faktur)->firstorfail();
+        $oldpenjualan = $penjualanold->getOriginal();
+        $oldDetailPenjualan = DetailPenjualan::where('no_faktur', $no_faktur)->get()->toArray();
+
+
         $jenis_transaksi = $penjualan->jenis_transaksi;
         $jenis_bayar = $penjualan->jenis_bayar;
         $titipan = $jenis_transaksi == "T" ? 0 : toNumber($request->titipan);
@@ -941,6 +956,7 @@ class PenjualanController extends Controller
                 $harga_pcs = toNumber($hargapcs[$i]);
                 $subtotal = ($jml_dus * $harga_dus) + ($jml_pack * $harga_pack) + ($jml_pcs * $harga_pcs);
                 $total_bruto += $subtotal;
+
                 $detail[] = [
                     'no_faktur' => $request->no_faktur,
                     'kode_harga' => $kode_harga[$i],
@@ -951,8 +967,49 @@ class PenjualanController extends Controller
                     'subtotal' => $subtotal,
                     'status_promosi' => $status_promosi[$i]
                 ];
+
+                // if ($oldItem) {
+                //     $diff = array_diff_assoc($detail[$i], $oldItem);
+                //     if (!empty($diff)) {
+                //         $changedDetailPenjualan[] = [
+                //             'old' => $oldItem,
+                //             'new' => $detail
+                //         ];
+                //     }
+                // } else {
+                //     $changedDetailPenjualan[] = ['new' => $detail]; // Data baru ditambahkan
+                // }
             }
 
+            // $oldDetailPenjualan = Detailpenjualan::where('no_faktur', $request->no_faktur)->get()->toArray();
+            //$detail = $detail; // Detail yang baru dihitung di atas
+
+            // $changedDetailPenjualan = [];
+            // foreach ($detail as $key => $value) {
+            //     if (isset($oldDetailPenjualan[$key])) {
+            //         $changedDetailPenjualan[$key]['old'] = $oldDetailPenjualan[$key];
+            //         $changedDetailPenjualan[$key]['new'] = $value;
+            //     } else {
+            //         $changedDetailPenjualan[$key]['new'] = $value;
+            //     }
+            // }
+
+            $changedDetailPenjualan = [];
+            $dataTerhapus = [];
+            foreach ($detail as $key => $value) {
+                if (isset($oldDetailPenjualan[$key])) {
+                    $changedDetailPenjualan[$key]['old'] = $oldDetailPenjualan[$key];
+                    $changedDetailPenjualan[$key]['new'] = $value;
+                } else {
+                    $changedDetailPenjualan[$key]['new'] = $value;
+                    $dataTerhapus[$key]['new'] = $value;
+                }
+            }
+            foreach ($oldDetailPenjualan as $key => $value) {
+                if (!isset($detail[$key])) {
+                    $changedDetailPenjualan[$key]['old'] = $value;
+                }
+            }
             $sisa_piutang = $penjualan->getPiutangpelanggan($penjualan->kode_pelanggan) - $total_netto_penjualan;
 
             $faktur_kredit = $penjualan->getFakturkredit($penjualan->kode_pelanggan);
@@ -984,7 +1041,7 @@ class PenjualanController extends Controller
             $jb = isset($request->jenis_bayar) ? $request->jenis_bayar : $jenis_bayar;
             Detailpenjualan::where('no_faktur', $no_faktur)->delete();
 
-            Penjualan::where('no_faktur', $no_faktur)->update([
+            $penjualanold->update([
                 'no_faktur' => $request->no_faktur,
                 'tanggal' => $request->tanggal,
                 'keterangan' => $keterangan,
@@ -1098,6 +1155,30 @@ class PenjualanController extends Controller
                     }
                 }
             }
+
+            $newPenjualan = $penjualanold->getAttributes();
+
+            // Bandingkan hanya field yang berubah
+            // Bandingkan perubahan di data penjualan
+            $changedPenjualan = [];
+            foreach ($newPenjualan as $key => $value) {
+                if (isset($oldpenjualan[$key]) && $oldpenjualan[$key] != $value) {
+                    $changedPenjualan['old'][$key] = $oldpenjualan[$key];
+                    $changedPenjualan['new'][$key] = $value;
+                }
+            }
+            if (!empty($changedPenjualan) || !empty($changedDetailPenjualan)) {
+                activity()
+                    // ->logname('penjualan')
+                    // ->event('Update')
+                    ->performedOn($penjualanold)
+                    ->withProperties([
+                        'changed_penjualan' => $changedPenjualan,
+                        'changed_detail_penjualan' => $changedDetailPenjualan
+                    ])
+                    ->log("Penjualan {$penjualan->no_faktur} diperbarui.");
+            }
+
 
             DB::commit();
 

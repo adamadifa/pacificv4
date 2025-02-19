@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivitylogController;
 use App\Http\Controllers\AjuanfakturkreditController;
 use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AjuanprogramikatanController;
@@ -2137,6 +2138,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajuankumulatif/{no_pengajuan}/{kode_pelanggan}/cetakkesepakatan', 'cetakkesepakatan')->name('ajuankumulatif.cetakkesepakatan')->can('ajuankumulatif.show');
     });
 
+    Route::controller(ActivitylogController::class)->group(function () {
+        Route::get('/activitylog', 'index')->name('activitylog.index')->can('activitylog.index');
+    });
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');
     Route::get('/worksheetom/komisisalesman', [LaporanmarketingController::class, 'index'])->name('worksheetom.komisisalesman')->can('worksheetom.komisisalesman');
