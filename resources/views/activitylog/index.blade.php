@@ -14,18 +14,28 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        {{-- <form action="{{ route('visitpelanggan.index') }}">
-
+                        <form action="{{ route('visitpelanggan.index') }}">
                             <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
-                                            Data</button>
-                                    </div>
+                                <div class="col-lg-6 col-sm-12 col-md-12">
+                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                        datepicker="flatpickr-date" />
+                                </div>
+                                <div class="col-lg-6 col-sm-12 col-md-12">
+                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                        datepicker="flatpickr-date" />
                                 </div>
                             </div>
-
-                        </form> --}}
+                            <div class="row">
+                                <div class="form-group">
+                                    <select name="id_user" id="id_user" class="form-select select2User">
+                                        <option value="">Pilih User</option>
+                                        @foreach ($user as $d)
+                                            <option value="{{ $d->id }}">{{ $d->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div class="row">
