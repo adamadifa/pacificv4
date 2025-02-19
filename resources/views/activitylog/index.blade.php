@@ -3,7 +3,7 @@
 
 @section('content')
 @section('navigasi')
-    <span>Visit Pelanggan</span>
+    <span>Log Aktivitas</span>
 @endsection
 <div class="row">
     <div class="col-lg-12 col-sm-12 col-xs-12">
