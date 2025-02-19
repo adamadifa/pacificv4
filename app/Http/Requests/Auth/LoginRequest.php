@@ -75,9 +75,9 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        activity()
-            ->causedBy($user)
-            ->log('Login');
+        // activity()
+        //     ->causedBy($user)
+        //     ->log('Login');
         RateLimiter::clear($this->throttleKey());
     }
 
