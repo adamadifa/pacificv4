@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('titlepage', 'Visit Pelanggan')
+@section('titlepage', 'Log Aktivitas')
 
 @section('content')
 @section('navigasi')
@@ -30,7 +30,8 @@
                                     <select name="id_user" id="id_user" class="form-select select2User">
                                         <option value="">Pilih User</option>
                                         @foreach ($users as $d)
-                                            <option value="{{ $d->id }}">{{ $d->name }}</option>
+                                            <option value="{{ $d->id }}" {{ Request('id_user') == $d->id ? 'selected' : '' }}>
+                                                {{ $d->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -101,6 +102,19 @@
             $('#modal').modal('show');
             $('#modal').find('.modal-title').text('Detail Aktivitas');
             $('#modal').find('#loadmodal').html(`<pre>${properties}</pre>`);
+
+
+            const select2User = $('.select2User');
+            if (select2User.length) {
+                select2User.each(function() {
+                    var $this = $(this);
+                    $this.wrap('<div class="position-relative"></div>').select2({
+                        placeholder: 'Pilih Pengguna',
+                        allowClear: true,
+                        dropdownParent: $this.parent()
+                    });
+                });
+            }
         });
     });
 </script>
