@@ -624,6 +624,7 @@ class PenjualanController extends Controller
             $logpenjualan = $simpanpenjualan->getAttributes();
             //Simpan Log Activity
             activity()
+                ->event('create')
                 ->performedOn($simpanpenjualan)
                 ->withProperties([
                     'penjualan' => $logpenjualan,
@@ -1170,7 +1171,7 @@ class PenjualanController extends Controller
             if (!empty($changedPenjualan) || !empty($changedDetailPenjualan)) {
                 activity()
                     // ->logname('penjualan')
-                    // ->event('Update')
+                    ->event('update')
                     ->performedOn($penjualanold)
                     ->withProperties([
                         'changed_penjualan' => $changedPenjualan,
