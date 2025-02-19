@@ -1177,7 +1177,7 @@ class PenjualanController extends Controller
                         'changed_penjualan' => $changedPenjualan,
                         'changed_detail_penjualan' => $changedDetailPenjualan
                     ])
-                    ->log("Penjualan {$penjualan->no_faktur} diperbarui.");
+                    ->log("Melakukan Perubahan Faktur {$penjualan->no_faktur}");
             }
 
 
