@@ -36,17 +36,30 @@
                                     <tr>
                                         <th>Waktu</th>
                                         <th>User</th>
-                                        <th>Kategori</th>
+                                        <th>Aksi</th>
                                         <th>Aktivitas</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($activity as $d)
+                                        @php
+                                            if ($d->event == 'create') {
+                                                $color = 'success';
+                                            } elseif ($d->event == 'update') {
+                                                $color = 'info';
+                                            } else {
+                                                $color = 'danger';
+                                            }
+                                        @endphp
                                         <tr>
                                             <td>{{ date('d-m-Y H:i:s', strtotime($d->created_at)) }}</td>
                                             <td>{{ $d->name }}</td>
-                                            <td>{{ $d->log_name }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ $color }}">
+                                                    {{ textUpperCase($d->event) }}
+                                                </span>
+                                            </td>
                                             <td>{{ $d->description }}</td>
                                             <td>
                                                 <a href="#" class="showDetail"
