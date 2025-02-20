@@ -242,6 +242,7 @@ class PenjualanController extends Controller
     {
         $no_faktur = Crypt::decrypt($no_faktur);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
+        $detail = Detailpenjualan::where('no_faktur', $no_faktur)->get()->toArray();
         DB::beginTransaction();
         try {
             $cektutuplaporan = cektutupLaporan($penjualan->tanggal, "penjualan");
@@ -254,6 +255,17 @@ class PenjualanController extends Controller
                 'keterangan' => $request->keterangan,
             ]);
             Historibayarpenjualan::where('no_faktur', $no_faktur)->delete();
+
+            $logpenjualan = $penjualan->getAttributes();
+            //Simpan Log Activity
+            activity()
+                ->event('cancel')
+                ->performedOn($penjualan)
+                ->withProperties([
+                    'penjualan' => $logpenjualan,
+                    'detail' => $detail, // Menyertakan detail produk ke dalam log
+                ])
+                ->log("Membatalkan Faktur Penjualan {$penjualan->no_faktur}  dengan " . count($detail) . " item.");
             DB::commit();
             return Redirect::back()->with(messageSuccess('Faktur Berhasil Dibatalkan'));
         } catch (\Exception $e) {
