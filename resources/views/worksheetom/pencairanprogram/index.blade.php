@@ -77,6 +77,7 @@
                                             <th colspan="4" valign="middle" class="text-center">Persetujuan</th>
                                             {{-- <th rowspan="2" valign="middle">Keuangan</th> --}}
                                             <th rowspan="2" valign="middle">Status</th>
+                                            <th rowspan="2" valign="middle">Keuangan</th>
                                             <th rowspan="2" valign="middle">#</th>
                                         </tr>
                                         <tr>
@@ -136,6 +137,13 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    @if ($d->keuangan == null)
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td>
                                                     <div class="d-flex">
                                                         @can('pencairanprogram.approve')
                                                             @if ($user->hasRole('operation manager') && $d->rsm == null)
@@ -153,7 +161,7 @@
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif ($user->hasRole('manager keuangan') && $d->direktur != null)
+                                                            @elseif ($user->hasRole('manager keuangan') && $d->status == 1)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
