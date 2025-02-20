@@ -109,20 +109,19 @@
             $('#modal').modal('show');
             $('#modal').find('.modal-title').text('Detail Aktivitas');
             $('#modal').find('#loadmodal').html(`<pre>${properties}</pre>`);
-
-
-            const select2User = $('.select2User');
-            if (select2User.length) {
-                select2User.each(function() {
-                    var $this = $(this);
-                    $this.wrap('<div class="position-relative"></div>').select2({
-                        placeholder: 'Pilih Pengguna',
-                        allowClear: true,
-                        dropdownParent: $this.parent()
-                    });
-                });
-            }
         });
+
+        const select2User = $('.select2User');
+        if (select2User.length) {
+            select2User.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Pilih Pengguna',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
     });
 </script>
 @endpush
