@@ -233,6 +233,9 @@
 
             <br>
             <br>
+
+        </section>
+        <section class="sheet padding-10mm">
             <table class="datatable3 tabelpending" style="width: 100%">
                 <thead style="background-color: #ecb00a;">
                     <tr>
@@ -305,7 +308,7 @@
                             <td class="right">{{ formatAngka($d->reward_kredit) }}</td>
                             <td class="right">{{ formatAngka($total_reward) }}</td>
                         </tr>
-                        @if ($d->metode_pembayaran != $next_metode_pembayaran)
+                        {{-- @if ($d->metode_pembayaran != $next_metode_pembayaran)
                             <tr class="table-dark" style="background-color: #ecb00a;">
                                 <th colspan="10">TOTAL REWARD </th>
                                 <th class="right">{{ formatAngka($subtotal_reward_tunai) }}</th>
@@ -315,7 +318,7 @@
                             @php
                                 $subtotal_reward = 0;
                             @endphp
-                        @endif
+                        @endif --}}
                     @endforeach
                 </tbody>
                 <tfoot style="background-color: #ecb00a;">
