@@ -581,7 +581,7 @@ class PencairanprogramController extends Controller
         } else if ($user->hasRole('direktur')) {
             $field = 'direktur';
         } else if ($user->hasRole('manager keuangan')) {
-            $field = 'manager keuangan';
+            $field = 'keuangan';
         }
 
 
