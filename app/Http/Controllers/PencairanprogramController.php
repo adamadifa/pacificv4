@@ -590,7 +590,7 @@ class PencairanprogramController extends Controller
         if (isset($_POST['decline'])) {
             $status  = 2;
         } else {
-            $status = $user->hasRole('direktur') || $user->hasRole('super admin') || $user->hasRole('manager keuangan') ? 1 : 0;
+            $status = $user->hasRole('direktur') || $user->hasRole('super admin') || $user->hasRole('manager keuangan')  ? 1 : 0;
         }
 
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
@@ -606,6 +606,13 @@ class PencairanprogramController extends Controller
                         $field => auth()->user()->id,
                         'status' => $status
                     ]);
+
+                if (isset($_POST['cancel'])) {
+                    Pencairanprogram::where('kode_pencairan', $kode_pencairan)
+                        ->update([
+                            'keuangan' => 0
+                        ]);
+                }
             }
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));
