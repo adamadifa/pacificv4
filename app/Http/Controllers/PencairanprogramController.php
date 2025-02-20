@@ -581,7 +581,7 @@ class PencairanprogramController extends Controller
             $field = 'gm';
         } else if ($user->hasRole('direktur')) {
             $field = 'direktur';
-        } else if ($user->hasRole('manager keuangan')) {
+        } else if ($user->hasRole(['manager keuangan', 'staff keuangan'])) {
             $field = 'keuangan';
         }
 
@@ -590,7 +590,7 @@ class PencairanprogramController extends Controller
         if (isset($_POST['decline'])) {
             $status  = 2;
         } else {
-            $status = $user->hasRole('direktur') || $user->hasRole('super admin') || $user->hasRole('manager keuangan')  ? 1 : 0;
+            $status = $user->hasRole(['direktur', 'super admin', 'manager keuangan', 'staff keuangan'])  ? 1 : 0;
         }
 
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
