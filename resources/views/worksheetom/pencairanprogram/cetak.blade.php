@@ -143,6 +143,10 @@
                                 <th class="right">{{ formatAngka($subtotal_cashback) }}</th>
                                 <th colspan="4"></th>
                             </tr>
+                            @php
+                                $subtotal_cashback = 0;
+
+                            @endphp
                         @endif
                     @endforeach
 
