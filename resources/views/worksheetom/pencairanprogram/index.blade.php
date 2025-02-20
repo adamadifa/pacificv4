@@ -161,7 +161,7 @@
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
                                                                 </a>
-                                                            @elseif ($user->hasRole('manager keuangan') && $d->status == 1)
+                                                            @elseif ($user->hasRole(['manager keuangan', 'staff keuangan']) && $d->status == 1)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                     <i class="ti ti-external-link text-success"></i>
