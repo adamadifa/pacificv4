@@ -552,6 +552,7 @@ class PencairanprogramController extends Controller
 
     public function approve(Request $request)
     {
+
         $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
         $detailpencairan = Detailpencairan::where('kode_pencairan', $kode_pencairan)
             ->select(
@@ -589,7 +590,7 @@ class PencairanprogramController extends Controller
         if (isset($_POST['decline'])) {
             $status  = 2;
         } else {
-            $status = $user->hasRole('direktur') || $user->hasRole('super admin') ? 1 : 0;
+            $status = $user->hasRole('direktur') || $user->hasRole('super admin') || $user->hasRole('manager keuangan') ? 1 : 0;
         }
 
         $kode_pencairan = Crypt::decrypt($kode_pencairan);

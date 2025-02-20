@@ -136,11 +136,11 @@
                                                         <span class="badge bg-danger">Ditolak</span>
                                                     @endif
                                                 </td>
-                                                <td>
+                                                <td class="text-center">
                                                     @if ($d->keuangan == null)
                                                         <i class="ti ti-hourglass-empty text-warning"></i>
                                                     @else
-                                                        <i class="ti ti-check text-success"></i>
+                                                        <i class="ti ti-square-check text-success"></i>
                                                     @endif
                                                 </td>
                                                 <td>
