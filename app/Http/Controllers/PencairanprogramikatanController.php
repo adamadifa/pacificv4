@@ -701,9 +701,9 @@ class PencairanprogramikatanController extends Controller
         $data['detail_hold'] = $detail_hold;
 
         if ($request->export == 'true') {
-            header("Content-type: application/vnd-ms-excel");
-            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-            header("Content-Disposition: attachment; filename=$kode_pencairan.xls");
+            // header("Content-type: application/vnd-ms-excel");
+            // // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            // header("Content-Disposition: attachment; filename=$kode_pencairan.xls");
             return view('worksheetom.pencairanprogram.cetak_export', $data);
         }
         return view('worksheetom.pencairanprogramikatan.cetak', $data);
