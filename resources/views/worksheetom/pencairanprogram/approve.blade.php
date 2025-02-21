@@ -38,6 +38,7 @@
                         <th rowspan="2" class="text-center" valign="middle">Qty</th>
                         <th colspan="2" class="text-center" valign="middle">Diskon</th>
                         <th rowspan="2" class="text-center" valign="middle">Cashback</th>
+                        <th rowspan="2" class="text-center" valign="middle"><i class="ti ti-moneybag"></i></th>
                         <th rowspan="2" class="text-center" valign="middle">#</th>
                     </tr>
                     <tr>
@@ -48,6 +49,11 @@
                 <tbody id="loaddetailpencairan">
                     @php
                         $total_cashback = 0;
+                        $metode_pembayaran = [
+                            'TN' => 'Tunai',
+                            'TF' => 'Transfer',
+                            'VC' => 'Voucher',
+                        ];
                     @endphp
                     @foreach ($detailpencairan as $d)
                         @php
@@ -62,6 +68,7 @@
                             <td class="text-end">{{ formatAngka($d->diskon_reguler) }}</td>
                             <td class="text-end">{{ formatAngka($d->diskon_kumulatif) }}</td>
                             <td class="text-end">{{ formatAngka($cashback) }}</td>
+                            <td>{{ !empty($d->metode_bayar) ? $metode_pembayaran[$d->metode_bayar] : '-' }}</td>
                             <td>
                                 <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d->kode_pelanggan }}"
                                     kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}">
