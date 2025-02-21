@@ -1,3 +1,27 @@
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css" rel="stylesheet">
+
+<style>
+    /* Supaya tidak ada scroll horizontal berlebih */
+    div.dataTables_wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table.dataTable th,
+    table.dataTable td {
+        white-space: nowrap;
+    }
+
+    thead th {
+        background-color: #002e65 !important;
+        color: white !important;
+    }
+
+    #example_filter {
+        margin-bottom: 5px;
+    }
+</style>
 <form action="{{ route('pencairanprogramikatan.storeapprove', Crypt::encrypt($pencairanprogram->kode_pencairan)) }}" method="POST">
     @csrf
     <div class="row">
@@ -157,3 +181,19 @@
         </div>
     </div>
 </form>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            scrollX: true, // Aktifkan horizontal scroll
+            scrollCollapse: true,
+            paging: false, // Nonaktifkan pagination agar tabel bisa terlihat penuh
+            fixedColumns: {
+                left: 3, // Membekukan 3 kolom pertama
+                right: 3 // Membekukan 3 kolom terakhir
+            }
+        });
+    });
+</script>
