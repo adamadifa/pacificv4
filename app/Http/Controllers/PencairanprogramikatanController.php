@@ -569,6 +569,8 @@ class PencairanprogramikatanController extends Controller
             $field = 'gm';
         } else if ($user->hasRole('direktur')) {
             $field = 'direktur';
+        } else if ($user->hasRole(['manager keuangan', 'staff keuangan'])) {
+            $field = 'keuangan';
         }
 
 
@@ -576,7 +578,7 @@ class PencairanprogramikatanController extends Controller
         if (isset($_POST['decline'])) {
             $status  = 2;
         } else {
-            $status = $user->hasRole('direktur') || $user->hasRole('super admin') ? 1 : 0;
+            $status = $user->hasRole(['direktur', 'super admin', 'manager keuangan', 'staff keuangan'])  ? 1 : 0;
         }
 
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
@@ -592,6 +594,13 @@ class PencairanprogramikatanController extends Controller
                         $field => auth()->user()->id,
                         'status' => $status
                     ]);
+
+                if (isset($_POST['cancel'])) {
+                    Pencairanprogram::where('kode_pencairan', $kode_pencairan)
+                        ->update([
+                            'keuangan' => 0
+                        ]);
+                }
             }
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));

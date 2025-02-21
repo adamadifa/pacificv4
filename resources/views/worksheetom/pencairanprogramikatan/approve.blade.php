@@ -143,8 +143,17 @@
             <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-thumb-up me-1"></i>Approve</button></button>
         </div>
         <div class="col">
-            <button class="btn btn-danger w-100" id="btnSimpan" name="decline" value="1"><i
-                    class="ti ti-thumb-down me-1"></i>Tolak</button></button>
+            @if ($level_user == 'manager keuangan')
+                <div class="col">
+                    <button class="btn btn-danger w-100" id="btnSimpan" name="cancel" value="1"><i
+                            class="ti ti-thumb-down me-1"></i>Batalkan</button></button>
+                </div>
+            @else
+                <div class="col">
+                    <button class="btn btn-danger w-100" id="btnSimpan" name="decline" value="1"><i
+                            class="ti ti-thumb-down me-1"></i>Tolak</button></button>
+                </div>
+            @endif
         </div>
     </div>
 </form>
