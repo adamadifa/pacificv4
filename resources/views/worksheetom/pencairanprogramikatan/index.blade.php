@@ -178,6 +178,10 @@
                                                                 class="me-1" target="_blank">
                                                                 <i class="ti ti-printer text-success"></i>
                                                             </a>
+                                                            <a href="{{ route('pencairanprogram.cetak', Crypt::encrypt($d->kode_pencairan)) }}?export=true"
+                                                                class="me-1" target="_blank">
+                                                                <i class="ti ti-download text-success"></i>
+                                                            </a>
                                                         @endcan
                                                         @can('pencairanprogramikt.delete')
                                                             @if ($user->hasRole(['operation manager', 'sales marketing manager', 'super admin']) && $d->rsm == null)
