@@ -77,7 +77,7 @@
 
          @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index']) ||
                  auth()->user()->hasRole(['super admin', 'gm administrasi']))
-             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog']) ? 'open' : '' }} ">
+             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-settings"></i>
                      <div>Utilities</div>
@@ -105,7 +105,13 @@
                              </a>
                          </li>
                      @endcan
-
+                     @can('ticket.index')
+                         <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
+                             <a href="{{ route('ticket.index') }}" class="menu-link">
+                                 <div>Ticket</div>
+                             </a>
+                         </li>
+                     @endcan
                  </ul>
              </li>
          @endif

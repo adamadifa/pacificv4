@@ -150,6 +150,7 @@ use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
 use App\Http\Controllers\SuratperingatanController;
 use App\Http\Controllers\TargetkomisiController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TransitinController;
 use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
@@ -2140,6 +2141,17 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(ActivitylogController::class)->group(function () {
         Route::get('/activitylog', 'index')->name('activitylog.index')->can('activitylog.index');
+    });
+
+    Route::controller(TicketController::class)->group(function () {
+        Route::get('/ticket', 'index')->name('ticket.index')->can('ticket.index');
+        Route::get('/ticket/create', 'create')->name('ticket.create')->can('ticket.create');
+        Route::post('/ticket/store', 'store')->name('ticket.store')->can('ticket.store');
+        Route::get('/ticket/{id}/edit', 'edit')->name('ticket.edit')->can('ticket.edit');
+        Route::post('/ticket/{id}/update', 'update')->name('ticket.update')->can('ticket.update');
+        Route::delete('/ticket/{id}/destroy', 'destroy')->name('ticket.delete')->can('ticket.delete');
+        Route::get('/ticket/{no_pengajuan}/approve', 'approve')->name('ticket.approve')->can('ticket.approve');
+        Route::post('/ticket/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticket.storeapprove')->can('ticket.approve');
     });
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');
