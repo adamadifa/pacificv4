@@ -622,7 +622,7 @@ class PencairanprogramController extends Controller
     }
 
 
-    public function cetak($kode_pencairan)
+    public function cetak($kode_pencairan, Request $request)
     {
 
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
@@ -644,6 +644,13 @@ class PencairanprogramController extends Controller
         $data['detailpencairan'] = $detailpencairan;
         $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
         $data['pencairanprogram'] = $pencairanprogram;
+
+        if ($request->export == 'true') {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=$kode_pencairan.xls");
+            return view('worksheetom.pencairanprogram.cetak_export', $data);
+        }
         return view('worksheetom.pencairanprogram.cetak', $data);
     }
 }
