@@ -178,7 +178,7 @@
                                                                 class="me-1" target="_blank">
                                                                 <i class="ti ti-printer text-success"></i>
                                                             </a>
-                                                            <a href="{{ route('pencairanprogram.cetak', Crypt::encrypt($d->kode_pencairan)) }}?export=true"
+                                                            <a href="{{ route('pencairanprogramikatan.cetak', Crypt::encrypt($d->kode_pencairan)) }}?export=true"
                                                                 class="me-1" target="_blank">
                                                                 <i class="ti ti-download text-success"></i>
                                                             </a>
