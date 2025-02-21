@@ -558,10 +558,15 @@ class PencairanprogramController extends Controller
             ->select(
                 'marketing_program_pencairan_detail.kode_pelanggan',
                 'nama_pelanggan',
+                'no_rekening',
+                'pemilik_rekening',
+                'bank',
+                'metode_pembayaran as metode_bayar',
                 'jumlah',
                 'diskon_reguler',
                 'diskon_kumulatif'
             )
+            ->orderBy('metode_pembayaran')
             ->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->get();
         $data['detailpencairan'] = $detailpencairan;
