@@ -209,7 +209,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{-- {{ $barangmasuk->links() }} --}}
+                                {{ $pencairanprogram->links() }}
                             </div>
                         </div>
                     </div>
