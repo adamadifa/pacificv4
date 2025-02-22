@@ -100,13 +100,12 @@
                                                 </a>
                                                 @if ($programkumulatif->status == 1)
                                                 @endif
+                                                @can('ajuankumulatif.edit')
+                                                    <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit me-1">
+                                                        <i class="ti ti-edit text-success"></i>
+                                                    </a>
+                                                @endcan
                                                 @if ($programkumulatif->status == 0)
-                                                    @can('ajuankumulatif.edit')
-                                                        <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
-                                                            class="btnEdit me-1">
-                                                            <i class="ti ti-edit text-success"></i>
-                                                        </a>
-                                                    @endcan
                                                     @can('ajuankumulatif.delete')
                                                         @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
                                                             <form method="POST" name="deleteform" class="deleteform"
