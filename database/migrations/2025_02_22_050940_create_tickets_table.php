@@ -21,6 +21,7 @@ return new class extends Migration
             $table->bigInteger('id_user');
             $table->date('tanggal_selesai')->nullable();
             $table->bigInteger('id_admin')->nullable();
+            $table->timestamps();
         });
     }
 
