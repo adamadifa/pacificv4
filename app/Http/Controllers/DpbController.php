@@ -27,7 +27,7 @@ class DpbController extends Controller
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
 
-        if (!empty($request->dari) && !empty($request->sampai)) {
+        if (!empty($request->dari) && !empty($request->sampai) && !$user->hasRole(['manager audit', 'super admin'])) {
             if (lockreport($request->dari) == "error") {
                 return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
             }
