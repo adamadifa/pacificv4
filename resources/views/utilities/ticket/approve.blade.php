@@ -1,4 +1,4 @@
-<form action="#" method="POST" id="formApprove">
+<form action="{{ route('ticket.storeapprove', Crypt::encrypt($ticket->kode_pengajuan)) }}" method="POST" id="formApprove">
     @csrf
     <div class="row">
         <div class="col">

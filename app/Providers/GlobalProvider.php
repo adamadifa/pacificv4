@@ -20,6 +20,7 @@ use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Disposisitargetkomisi;
 use App\Models\Pencairanprogram;
 use App\Models\Pencairanprogramikatan;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\View;
@@ -101,6 +102,8 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_pengajuan_izin = $notifikasi_izinabsen + $notifikasi_izincuti + $notifikasi_izinterlambat + $notifikasi_izinsakit + $notifikasi_izinpulang + $notifikasi_izindinas + $notifikasi_izinkoreksi + $notifikasi_izinkeluar;
 
                 $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+
+
 
                 if ($level_user == "manager keuangan") {
                     $qajuantransferdana = Ajuantransferdana::query();
@@ -217,9 +220,20 @@ class GlobalProvider extends ServiceProvider
                     $notifikasi_pencairanprogramkumulatif = 0;
                 }
 
+
                 $notifikasi_ajuan_program = $notifikasi_ajuanprogramikatan + $notifikasi_pencairanprogramikatan + $notifikasi_ajuanprogramkumulatif + $notifikasi_pencairanprogramkumulatif;
                 $notifikasi_hrd = $notifikasi_penilaiankaryawan + $notifikasi_pengajuan_izin + $notifikasi_lembur;
                 $total_notifikasi = $notifikasi_marketing + $notifikasi_hrd + $notifikasiajuantransferdana;
+
+
+                //Notifikasi Ticket
+                if ($level_user == 'gm administrasi') {
+                    $notifikasi_ticket = Ticket::whereNull('gm')->where('status', 0)->count();
+                } else if ($level_user == 'super admin') {
+                    $notifikasi_ticket = Ticket::where('status', 0)->whereNotNull('gm')->count();
+                } else {
+                    $notifikasi_ticket = 0;
+                }
             } else {
                 $level_user = '';
                 $notifikasiajuantransferdana = 0;
@@ -249,6 +263,8 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_ajuanprogramkumulatif = 0;
                 $notifikasi_pencairanprogramkumulatif = 0;
                 $notifikasi_ajuan_program = 0;
+
+                $notifikasi_ticket = 0;
             }
 
             if ($level_user == "gm administrasi") {
@@ -658,6 +674,8 @@ class GlobalProvider extends ServiceProvider
                 'notifikasi_ajuanprogramkumulatif' => $notifikasi_ajuanprogramkumulatif,
                 'notifikasi_pencairanprogramkumulatif' => $notifikasi_pencairanprogramkumulatif,
                 'notifikasi_ajuan_program' => $notifikasi_ajuan_program,
+
+                'notifikasi_ticket' => $notifikasi_ticket,
 
                 'users' => $users
 

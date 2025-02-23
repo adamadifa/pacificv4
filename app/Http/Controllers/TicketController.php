@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
@@ -11,13 +13,33 @@ class TicketController extends Controller
 {
     public function index(Request $request)
     {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $query = Ticket::query();
         $query->select('tickets.*', 'users.name', 'admin.name as admin', 'users.kode_cabang');
         $query->join('users', 'tickets.id_user', '=', 'users.id');
         $query->leftJoin('users as admin', 'tickets.id_admin', '=', 'admin.id');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $query->where('users.kode_cabang', auth()->user()->kode_cabang);
+        }
+
+        if (!empty($request->kode_cabang_search)) {
+            $query->where('users.kode_cabang', $request->kode_cabang_search);
+        }
+
+        if (!empty($request->status_search)) {
+            if ($request->status_search == "pending") {
+                $query->where('tickets.status', 0);
+            } else {
+                $query->where('tickets.status', 1);
+            }
+        }
         $query->orderBy('status', 'desc');
         $query->orderBy('kode_pengajuan', 'asc');
         $ticket = $query->get();
+
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
         $data['ticket'] = $ticket;
         return view('utilities.ticket.index', $data);
     }
@@ -101,5 +123,45 @@ class TicketController extends Controller
             ->join('users', 'tickets.id_user', '=', 'users.id')
             ->first();
         return view('utilities.ticket.approve', compact('ticket'));
+    }
+
+    public function storeapprove($kode_pengajuan, Request $request)
+    {
+        $kode_pengajuan = Crypt::decrypt($kode_pengajuan);
+        $user = User::where('id', auth()->user()->id)->first();
+        $status = 0;
+        if ($user->hasRole('gm administrasi')) {
+            $field = 'gm';
+            if (isset($_POST['decline'])) {
+                $status = 2;
+            }
+        }
+
+        if ($user->hasRole('super admin')) {
+            if (isset($_POST['decline'])) {
+                $status = 2;
+            } else {
+                $status = 1;
+            }
+        }
+
+        try {
+            if ($user->hasRole('super admin')) {
+                Ticket::where('kode_pengajuan', $kode_pengajuan)->update([
+                    'status' => $status,
+                    'id_admin' => auth()->user()->id,
+                    'tanggal_selesai' => date('Y-m-d')
+                ]);
+            } else {
+                Ticket::where('kode_pengajuan', $kode_pengajuan)->update([
+                    'status' => $status,
+                    $field => auth()->user()->id
+                ]);
+            }
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Throwable $th) {
+            return Redirect::back()->with(messageError($th->getMessage()));
+        }
     }
 }
