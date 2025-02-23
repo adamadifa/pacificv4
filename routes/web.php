@@ -2147,9 +2147,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/ticket', 'index')->name('ticket.index')->can('ticket.index');
         Route::get('/ticket/create', 'create')->name('ticket.create')->can('ticket.create');
         Route::post('/ticket/store', 'store')->name('ticket.store')->can('ticket.store');
-        Route::get('/ticket/{id}/edit', 'edit')->name('ticket.edit')->can('ticket.edit');
-        Route::post('/ticket/{id}/update', 'update')->name('ticket.update')->can('ticket.update');
-        Route::delete('/ticket/{id}/destroy', 'destroy')->name('ticket.delete')->can('ticket.delete');
+        Route::get('/ticket/{kode_pengajuan}/edit', 'edit')->name('ticket.edit')->can('ticket.edit');
+        Route::put('/ticket/{kode_pengajuan}/update', 'update')->name('ticket.update')->can('ticket.update');
+        Route::delete('/ticket/{no_pengajuan}/destroy', 'destroy')->name('ticket.delete')->can('ticket.delete');
         Route::get('/ticket/{no_pengajuan}/approve', 'approve')->name('ticket.approve')->can('ticket.approve');
         Route::post('/ticket/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticket.storeapprove')->can('ticket.approve');
     });

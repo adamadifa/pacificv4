@@ -1,9 +1,10 @@
-<form action="{{ route('ticket.store') }}" method="POST" id="formTicket">
+<form action="{{ route('ticket.update', Crypt::encrypt($ticket->kode_pengajuan)) }}" method="POST" id="formTicket" autocomplete="off">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" value="{{ date('Y-m-d') }}" icon="ti ti-calendar" datepicker="flatpickr-date" readonly />
-    <x-textarea label="Keterangan" name="keterangan" />
+    @method('PUT')
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$ticket->tanggal" readonly />
+    <x-textarea label="Keterangan" name="keterangan" :value="$ticket->keterangan" />
     <div class="form-group mb-3">
-        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-ticket me-1"></i>Buat Ticket</button>
+        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-ticket me-1"></i>Update</button>
     </div>
 </form>
 <script>
