@@ -105,13 +105,13 @@
                              </a>
                          </li>
                      @endcan
-                     @can('ticket.index')
-                         <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
-                             <a href="{{ route('ticket.index') }}" class="menu-link">
-                                 <div>Ticket</div>
-                             </a>
-                         </li>
-                     @endcan
+
+                     <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
+                         <a href="{{ route('ticket.index') }}" class="menu-link">
+                             <div>Ticket</div>
+                         </a>
+                     </li>
+
                  </ul>
              </li>
          @endif

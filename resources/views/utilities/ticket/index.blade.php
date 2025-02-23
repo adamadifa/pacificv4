@@ -108,13 +108,13 @@
                                             </td>
                                             <td style="width: 5%">
                                                 <div class="d-flex">
-                                                    @can('ticket.edit')
-                                                        @if ($d->gm == null)
-                                                            <a href="#" class="btnEdit me-1" kode_pengajuan="{{ $d->kode_pengajuan }}"><i
-                                                                    class="ti ti-edit text-success"></i>
-                                                            </a>
-                                                        @endif
-                                                    @endcan
+
+                                                    @if ($d->gm == null)
+                                                        <a href="#" class="btnEdit me-1" kode_pengajuan="{{ $d->kode_pengajuan }}"><i
+                                                                class="ti ti-edit text-success"></i>
+                                                        </a>
+                                                    @endif
+
                                                     @can('ticket.approve')
                                                         @if ($level_user == 'gm administrasi' && $d->status == '0')
                                                             <a href="#" class="btnApprove me-1" kode_pengajuan="{{ $d->kode_pengajuan }}">
@@ -126,18 +126,18 @@
                                                             </a>
                                                         @endif
                                                     @endcan
-                                                    @can('ticket.delete')
-                                                        @if ($d->gm == null)
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('ticket.delete', Crypt::encrypt($d->kode_pengajuan)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        @endif
-                                                    @endcan
+
+                                                    @if ($d->gm == null)
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('ticket.delete', Crypt::encrypt($d->kode_pengajuan)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm ml-1">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    @endif
+
                                                 </div>
                                             </td>
                                         </tr>
