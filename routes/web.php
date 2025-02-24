@@ -2055,6 +2055,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/monitoringprogram/{kode_pelanggan}/{kode_program}/{bulan}/{tahun}/detailfaktur', 'detailfaktur')->name('monitoringprogram.detailfaktur');
         Route::get('/monitoringprogram/saldosimpanan', 'saldosimpanan')->name('monitoringprogram.saldosimpanan')->can('monitoringprogram.index');
+        Route::get('/monitoringprogram/saldovoucher', 'saldovoucher')->name('monitoringprogram.saldovoucher')->can('monitoringprogram.index');
     });
 
     Route::controller(PencairanprogramController::class)->group(function () {

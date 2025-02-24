@@ -203,4 +203,40 @@ class MonitoringprogramController extends Controller
         $data['start_year'] = config('global.start_year');
         return view('worksheetom.monitoringprogram.saldosimpanan', $data);
     }
+
+    public function saldosimpanan(Request $request)
+    {
+
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $query = Detailpencairanprogramikatan::query();
+        $query->select('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan', DB::raw('SUM(total_reward) as total_reward'));
+        $query->join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan');
+        $query->where('status_pencairan', 1);
+        $query->where('marketing_pencairan_ikatan.kode_cabang', $kode_cabang);
+        $query->where('marketing_pencairan_ikatan.status', 1);
+        $query->groupBy('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan');
+        $query->orderBy('nama_pelanggan');
+        $saldosimpanan = $query->paginate(20);
+        $saldosimpanan->appends(request()->query());
+
+        $data['saldosimpanan'] = $saldosimpanan;
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        return view('worksheetom.monitoringprogram.saldosimpanan', $data);
+    }
 }

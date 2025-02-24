@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('titlepage', 'Saldo Simpanan')
+@section('titlepage', 'Saldo Voucher')
 
 @section('content')
 @section('navigasi')
-    <span>Saldo Simpanan</span>
+    <span>Saldo Voucher</span>
 @endsection
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
