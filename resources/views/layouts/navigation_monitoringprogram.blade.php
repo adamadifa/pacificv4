@@ -40,7 +40,8 @@
         @endcan
 
         <li class="nav-item" role="presentation">
-            <a href="{{ route('monitoringprogram.index') }}" class="nav-link">
+            <a href="{{ route('monitoringprogram.index') }}"
+                class="nav-link {{ request()->is(['monitoringprogram', 'monitoringprogram/*']) ? 'active' : '' }}">
                 <i class="tf-icons ti ti-file-description ti-md me-1"></i> Monitoring Program
             </a>
         </li>
