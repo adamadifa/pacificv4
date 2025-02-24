@@ -26,31 +26,6 @@
                                     </div>
                                 @endrole
                                 <div class="row">
-                                    <div class="col-lg-8 col-md-12 col-sm-12">
-                                        <div class="form-group">
-                                            <select name="bulan" id="bulan" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                        value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <div class="form-group">
-                                            <select name="tahun" id="tahun" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option {{ Request('tahun') == $t ? 'selected' : '' }} value="{{ $t }}">
-                                                        {{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
                                             <button class="btn btn-primary w-100"><i class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
