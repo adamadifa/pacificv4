@@ -75,13 +75,6 @@
                                             <th rowspan="2" class="text-center">Target</th>
                                             <th class="text-center" colspan="3">Realisasi</th>
                                             <th colspan="3" class="text-center">Reward</th>
-
-                                            <th rowspan="2">Pembayaran</th>
-                                            <th rowspan="2">No. Rekening</th>
-                                            <th rowspan="2">Pemilik</th>
-                                            <th rowspan="2">Bank</th>
-                                            <th rowspan="2"><i class="ti ti-file-description"></i></th>
-                                            <th rowspan="2"><i class="ti ti-moneybag"></i></th>
                                             <th rowspan="2">#</th>
                                         </tr>
                                         <tr>
