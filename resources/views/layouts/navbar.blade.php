@@ -220,8 +220,7 @@
                 </li>
                 @if ($level_user == 'gm administrasi' || $level_user == 'super admin')
                     <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
-                        <a class="nav-link dropdown-toggle hide-arrow" href="{{ route('ticket.index') }}" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" aria-expanded="false">
+                        <a class="nav-link" href="{{ route('ticket.index') }}">
                             <i class="ti ti-tool ti-md"></i>
                             <span class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_ticket }}</span>
                         </a>
