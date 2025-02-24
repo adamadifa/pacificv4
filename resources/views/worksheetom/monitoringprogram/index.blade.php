@@ -66,7 +66,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive mb-2">
-                                <table id="example" class="display nowrap table table-striped table-bordered" style="width:100%">
+                                <table id="example" class="display nowrap table  table-bordered" style="width:100%">
                                     <thead class="table-dark">
                                         <tr>
                                             <th rowspan="2">No.</th>
