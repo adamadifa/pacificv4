@@ -78,7 +78,7 @@ class MonitoringprogramController extends Controller
 
 
         $peserta = Detailtargetikatan::select(
-            'marketing_program_ikatan_target.kode_pelanggand',
+            'marketing_program_ikatan_target.kode_pelanggan',
             'nama_pelanggan',
             'target_perbulan as qty_target',
             'budget_rsm',

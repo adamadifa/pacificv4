@@ -42,7 +42,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-12 col-sm-12">
                                         <div class="form-group">
-                                            <select name="tahun_dari" id="tahun_dari" class="form-select">
+                                            <select name="tahun" id="tahun" class="form-select">
                                                 <option value="">Tahun</option>
                                                 @for ($t = $start_year; $t <= date('Y'); $t++)
                                                     <option {{ Request('tahun') == $t ? 'selected' : '' }} value="{{ $t }}">
