@@ -155,6 +155,11 @@
                                                     <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $reward }}">
                                                     {{ formatAngka($reward) }}
                                                 </td>
+                                                <td>
+                                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d->kode_pelanggan }}">
+                                                        <i class="ti ti-file-description text-primary"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
