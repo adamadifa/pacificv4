@@ -45,7 +45,7 @@ class MonitoringprogramController extends Controller
             ->where('marketing_program_ikatan.kode_program', $request->kode_program)
             ->where('marketing_program_ikatan_target.bulan', $request->bulan)
             ->where('marketing_program_ikatan_target.tahun', $request->tahun)
-            ->where('marketing_program_ikatan.kode_cabangd', $kode_cabang);
+            ->where('marketing_program_ikatan.kode_cabang', $kode_cabang);
 
         $start_date = $request->tahun . '-' . $request->bulan . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
@@ -78,7 +78,7 @@ class MonitoringprogramController extends Controller
 
 
         $peserta = Detailtargetikatan::select(
-            'marketing_program_ikatan_target.kode_pelanggan',
+            'marketing_program_ikatan_target.kode_pelanggand',
             'nama_pelanggan',
             'target_perbulan as qty_target',
             'budget_rsm',
