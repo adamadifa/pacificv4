@@ -197,7 +197,10 @@ class MonitoringprogramController extends Controller
         $saldosimpanan->appends(request()->query());
 
         $data['saldosimpanan'] = $saldosimpanan;
-
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
         return view('worksheetom.monitoringprogram.saldosimpanan', $data);
     }
 }

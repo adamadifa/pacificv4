@@ -25,8 +25,6 @@
                                         </select>
                                     </div>
                                 @endrole
-                                <x-select label="Pilih Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
-                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
                                 <div class="row">
                                     <div class="col-lg-8 col-md-12 col-sm-12">
                                         <div class="form-group">
