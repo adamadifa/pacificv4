@@ -40,9 +40,15 @@
         @endcan
 
         <li class="nav-item" role="presentation">
-            <a href="{{ route('monitoringprogram.index') }}"
-                class="nav-link {{ request()->is(['monitoringprogram', 'monitoringprogram/*']) ? 'active' : '' }}">
+            <a href="{{ route('monitoringprogram.index') }}" class="nav-link {{ request()->is(['monitoringprogram']) ? 'active' : '' }}">
                 <i class="tf-icons ti ti-file-description ti-md me-1"></i> Monitoring Program
+            </a>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <a href="{{ route('monitoringprogram.saldosimpanan') }}"
+                class="nav-link {{ request()->is(['monitoringprogram/saldosimpanan']) ? 'active' : '' }}">
+                <i class="tf-icons ti ti-file-description ti-md me-1"></i> Simpanan
             </a>
         </li>
     </ul>

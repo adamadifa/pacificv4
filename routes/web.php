@@ -2054,6 +2054,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/monitoringprogram/{id}/destroy', 'destroy')->name('monitoringprogram.destroy')->can('monitoringprogram.delete');
 
         Route::get('/monitoringprogram/{kode_pelanggan}/{kode_program}/{bulan}/{tahun}/detailfaktur', 'detailfaktur')->name('monitoringprogram.detailfaktur');
+        Route::get('/monitoringprogram/saldosimpanan', 'saldosimpanan')->name('monitoringprogram.saldosimpanan')->can('monitoringprogram.index');
     });
 
     Route::controller(PencairanprogramController::class)->group(function () {
