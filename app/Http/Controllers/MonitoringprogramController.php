@@ -185,7 +185,7 @@ class MonitoringprogramController extends Controller
         }
 
         $query = Detailpencairanprogramikatan::query();
-        $query->select('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan', DB::raw('SUM(total_reward) as total_reward'));
+        $query->select('marketing_pencairan_ikatan_detail.kode_pelanggand', 'nama_pelanggan', DB::raw('SUM(total_reward) as total_reward'));
         $query->join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan');
         $query->where('status_pencairan', 1);
