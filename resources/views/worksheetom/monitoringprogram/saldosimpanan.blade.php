@@ -91,7 +91,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{-- {{ $barangmasuk->links() }} --}}
+                                {{ $saldosimpanan->links() }}
                             </div>
                         </div>
                     </div>

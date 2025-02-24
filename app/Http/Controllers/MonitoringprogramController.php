@@ -191,7 +191,8 @@ class MonitoringprogramController extends Controller
         $query->where('marketing_pencairan_ikatan_detail.kode_cabang', $kode_cabang);
         $query->groupBy('marketing_pencairan_detail.kode_pelanggan', 'nama_pelanggan');
         $query->orderBy('nama_pelanggan');
-        $saldosimpanan = $query->get();
+        $saldosimpanan = $query->paginate(20);
+        $saldosimpanan->appends(request()->query());
 
         $data['saldosimpanan'] = $saldosimpanan;
 
