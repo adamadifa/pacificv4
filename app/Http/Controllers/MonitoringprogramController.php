@@ -29,7 +29,7 @@ class MonitoringprogramController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
-        $programikatan = Programikatan::where('kode_program', $request->kode_program)->first();
+        $programikatan = !empty($request->kode_program) ? Programikatan::where('kode_program', $request->kode_program)->first() : [];
 
         $listpelangganikatan = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
@@ -50,7 +50,7 @@ class MonitoringprogramController extends Controller
         $start_date = $request->tahun . '-' . $request->bulan . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
 
-        $produk = json_decode($programikatan->produk, true) ?? [];
+        $produk = !empty($programikatan) ? json_decode($programikatan->produk, true) ?? [] : [];
 
         $detailpenjualan = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
