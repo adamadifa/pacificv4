@@ -9,6 +9,7 @@ use App\Models\Detailtargetikatan;
 use App\Models\Programikatan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class MonitoringprogramController extends Controller
@@ -123,5 +124,46 @@ class MonitoringprogramController extends Controller
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
         return view('worksheetom.monitoringprogram.index', $data);
+    }
+
+
+    public function detailfaktur($kode_pelanggan, $kode_program, $bulan, $tahun)
+    {
+
+
+
+        $programikatan = Programikatan::where('kode_program', $kode_program)->first();
+
+        $start_date = $tahun . '-' . $bulan . '-01';
+        $end_date = date('Y-m-t', strtotime($start_date));
+
+        $produk = json_decode($programikatan->produk, true) ?? [];
+
+        $detailpenjualan = Detailpenjualan::select(
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.tanggal_pelunasan',
+            'marketing_penjualan.jenis_transaksi',
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            // ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            // ->where('status', 1)
+            // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 14")
+            ->where('status_batal', 0)
+            ->whereIn('produk_harga.kode_produk', $produk)
+            // ->whereIn('produk_harga.kode_produk', $produk)
+            ->get();
+
+        // dd($detailpenjualan);
+        return view('worksheetom.pencairanprogramikatan.detailfaktur', compact('detailpenjualan'));
     }
 }

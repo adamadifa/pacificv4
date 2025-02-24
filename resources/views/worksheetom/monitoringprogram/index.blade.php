@@ -156,7 +156,9 @@
                                                     {{ formatAngka($reward) }}
                                                 </td>
                                                 <td>
-                                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d->kode_pelanggan }}">
+                                                    <a href="#" class="btnDetailfaktur"
+                                                        kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" bulan="{{ Request('bulan') }}"
+                                                        tahun="{{ Request('tahun') }}">
                                                         <i class="ti ti-file-description text-primary"></i>
                                                     </a>
                                                 </td>
@@ -177,4 +179,20 @@
 </div>
 
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
+<x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
+<script>
+    $(function() {
+        $(document).on('click', '.btnDetailfaktur', function(e) {
+            e.preventDefault();
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            let bulan = "{{ Request('bulan') }}";
+            let tahun = "{{ Request('tahun') }}";
+            let kode_program = "{{ Request('kode_program') }}"
+            $("#modalDetailfaktur").modal("show");
+            $("#modalDetailfaktur").find(".modal-title").text('Detail Faktur');
+            $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
+                `/monitoringprogram/${kode_pelanggan}/${kode_program}/${bulan}/${tahun}/detailfaktur`);
+        });
+    });
+</script>

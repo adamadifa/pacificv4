@@ -2052,6 +2052,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/monitoringprogram/{id}/edit', 'edit')->name('monitoringprogram.edit')->can('monitoringprogram.edit');
         Route::post('/monitoringprogram/{id}/update', 'update')->name('monitoringprogram.update')->can('monitoringprogram.update');
         Route::delete('/monitoringprogram/{id}/destroy', 'destroy')->name('monitoringprogram.destroy')->can('monitoringprogram.delete');
+
+        Route::get('/monitoringprogram/{kode_pelanggan}/{kode_program}/{bulan}/{tahun}/detailfaktur', 'detailfaktur')->name('monitoringprogram.detailfaktur');
     });
 
     Route::controller(PencairanprogramController::class)->group(function () {
