@@ -91,7 +91,7 @@
                             </table>
                         </div>
                         <div style="float: right;">
-                            {{ $activity_log->links() }}
+                            {{ $activity->links() }}
                         </div>
                     </div>
                 </div>
