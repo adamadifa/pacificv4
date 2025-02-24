@@ -108,8 +108,8 @@ class AjuanprogramikatanController extends Controller
         $data['ajuanprogramikatan'] = $ajuanprogramikatan;
 
         $cbg = new Cabang();
-        $data['cabang'] = $cbg->getCabang();
         $data['user'] = $user;
+        $data['cabang'] = $cbg->getCabang();
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         return view('worksheetom.ajuanprogramikatan.index', $data);
     }

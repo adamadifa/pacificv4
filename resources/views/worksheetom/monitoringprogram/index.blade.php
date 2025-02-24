@@ -6,32 +6,54 @@
     <span>Monitoring Program</span>
 @endsection
 <div class="row">
-    <div class="col-lg-7 col-md-12 col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
             @include('layouts.navigation_monitoringprogram')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('barangmasukgl.create')
-                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                            Tambah Data</a>
-                    @endcan
                     <div class="row mt-2">
                         <div class="col-12">
                             <form action="{{ route('monitoringprogram.index') }}">
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                @hasanyrole($roles_show_cabang)
+                                    <div class="form-group mb-3">
+                                        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
+                                            <option value="">Semua Cabang</option>
+                                            @foreach ($cabang as $d)
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                                                    {{ textUpperCase($d->nama_cabang) }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                @endrole
+                                <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
+                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-12 col-sm-12">
+                                        <div class="form-group">
+                                            <select name="bulan" id="bulan" class="form-select">
+                                                <option value="">Bulan</option>
+                                                @foreach ($list_bulan as $d)
+                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-4 col-md-12 col-sm-12">
+                                        <div class="form-group">
+                                            <select name="tahun_dari" id="tahun_dari" class="form-select">
+                                                <option value="">Tahun</option>
+                                                @for ($t = $start_year; $t <= date('Y'); $t++)
+                                                    <option value="{{ $t }}">{{ $t }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
+                                            <button class="btn btn-primary w-100"><i class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
                                                 Data</button>
                                         </div>
                                     </div>
