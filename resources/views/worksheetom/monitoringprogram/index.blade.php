@@ -181,6 +181,7 @@
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
+@push('myscript')
 <script>
     $(function() {
         $(document).on('click', '.btnDetailfaktur', function(e) {
@@ -196,3 +197,4 @@
         });
     });
 </script>
+@endpush
