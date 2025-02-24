@@ -13,7 +13,7 @@
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('monitoringprogram.index') }}">
+                            <form action="{{ URL::current() }}">
                                 @hasanyrole($roles_show_cabang)
                                     <div class="form-group mb-3">
                                         <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
