@@ -45,6 +45,8 @@
                                             <th>No.</th>
                                             <th>Kode</th>
                                             <th>Nama Pelanggan</th>
+                                            <th>Jumlah</th>
+                                            <th>Dicairkan</th>
                                             <th>Saldo</th>
                                             <th>#</th>
                                         </tr>
@@ -55,8 +57,19 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $d->kode_pelanggan }}</td>
                                                 <td>{{ $d->nama_pelanggan }}</td>
-                                                <td>{{ formatAngka($d->total_reward) }}</td>
-                                                <td></td>
+                                                <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
+                                                <th></th>
+                                                <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="me-1">
+                                                            <i class="ti ti-file-description text-primary"></i>
+                                                        </a>
+                                                        <a href="#" class="me-1">
+                                                            <i class="ti ti-external-link text-success"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
 
