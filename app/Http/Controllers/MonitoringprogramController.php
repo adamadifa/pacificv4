@@ -189,7 +189,7 @@ class MonitoringprogramController extends Controller
         $query->join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('marekting_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marekting_pencairan_ikatan.kode_pencairan');
         $query->where('status_pencairan', 0);
-        $query->where('marekting_pencairan_ikatan.kode_cabang', $kode_cabang);
+        $query->where('marketing_pencairan_ikatan.kode_cabang', $kode_cabang);
         $query->groupBy('marketing_pencairan_detail.kode_pelanggan', 'nama_pelanggan');
         $query->orderBy('nama_pelanggan');
         $saldosimpanan = $query->paginate(20);
