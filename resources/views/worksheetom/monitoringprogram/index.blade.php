@@ -33,7 +33,7 @@
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
                                                 @foreach ($list_bulan as $d)
-                                                    <option {{ Request('kode_bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                                    <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
                                                         value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
                                                 @endforeach
                                             </select>
@@ -131,6 +131,36 @@
                                                 <td>{{ $d->nama_pelanggan }}</td>
                                                 <td class="text-center">
                                                     {{ formatAngka($d->qty_target) }}
+                                                </td>
+                                                <td class="text-end">
+                                                    {{-- <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
+                                                    {{ formatAngka($d->jml_dus) }} --}}
+
+                                                    <input type="hidden" name="qty_tunai[{{ $loop->index }}]" value="{{ $d->jml_tunai }}">
+                                                    {{ formatAngka($d->jml_tunai) }}
+                                                </td>
+                                                <td class="text-end">
+                                                    {{-- <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
+                                                    {{ formatAngka($d->jml_dus) }} --}}
+
+                                                    <input type="hidden" name="qty_kredit[{{ $loop->index }}]" value="{{ $d->jml_kredit }}">
+                                                    {{ formatAngka($d->jml_kredit) }}
+                                                </td>
+                                                <td class="text-end">
+                                                    <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
+                                                    {{ formatAngka($d->jml_dus) }}
+                                                </td>
+                                                <td class="text-end">
+                                                    <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="{{ $reward_tunai }}">
+                                                    {{ formatAngka($reward_tunai) }}
+                                                </td>
+                                                <td class="text-end">
+                                                    <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="{{ $reward_kredit }}">
+                                                    {{ formatAngka($reward_kredit) }}
+                                                </td>
+                                                <td class="text-end">
+                                                    <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $reward }}">
+                                                    {{ formatAngka($reward) }}
                                                 </td>
                                             </tr>
                                         @endforeach
