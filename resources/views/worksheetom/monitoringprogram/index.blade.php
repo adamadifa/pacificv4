@@ -33,7 +33,8 @@
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
                                                 @foreach ($list_bulan as $d)
-                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                    <option {{ Request('kode_bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                                        value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -44,7 +45,8 @@
                                             <select name="tahun_dari" id="tahun_dari" class="form-select">
                                                 <option value="">Tahun</option>
                                                 @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option value="{{ $t }}">{{ $t }}</option>
+                                                    <option {{ Request('tahun') == $t ? 'selected' : '' }} value="{{ $t }}">
+                                                        {{ $t }}</option>
                                                 @endfor
                                             </select>
                                         </div>
@@ -93,7 +95,45 @@
 
                                     </thead>
                                     <tbody>
+                                        @php
+                                            $total_reward = 0;
+                                            $color_reward = '';
+                                            $status = 0;
+                                        @endphp
+                                        @foreach ($peserta as $d)
+                                            @php
+                                                $color_reward = $d->jml_dus >= $d->qty_target ? 'bg-success text-white' : 'bg-danger text-white';
+                                                if ($d->jml_dus >= $d->qty_target) {
+                                                    //$reward = $d->reward * $d->jml_dus;
+                                                    $bb_dep = ['PRIK004', 'PRIK001'];
+                                                    $reward_tunai = in_array($d->kode_program, $bb_dep)
+                                                        ? ($d->budget_rsm + $d->budget_gm) * $d->jml_tunai
+                                                        : $d->reward * $d->jml_tunai;
+                                                    $reward_kredit = $d->reward * $d->jml_kredit;
+                                                    $reward = $reward_tunai + $reward_kredit;
+                                                } else {
+                                                    $reward_tunai = 0;
+                                                    $reward_kredit = 0;
+                                                    $reward = 0;
+                                                }
+                                                $total_reward += $reward;
+                                                $status = $reward == 0 ? 0 : 1;
+                                            @endphp
 
+                                            <tr class=" {{ $color_reward }}">
+                                                <td>{{ $loop->iteration }} {{ $d->kode_program }}</td>
+                                                <td>
+                                                    <input type="hidden" name="kode_pelanggan[{{ $loop->index }}]"
+                                                        value="{{ $d->kode_pelanggan }}">
+                                                    <input type="hidden" name="status[{{ $loop->index }}]" value="{{ $status }}">
+                                                    {{ $d->kode_pelanggan }}
+                                                </td>
+                                                <td>{{ $d->nama_pelanggan }}</td>
+                                                <td class="text-center">
+                                                    {{ formatAngka($d->qty_target) }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
