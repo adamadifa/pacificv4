@@ -156,9 +156,8 @@
                                                     {{ formatAngka($reward) }}
                                                 </td>
                                                 <td>
-                                                    <a href="#" class="btnDetailfaktur"
-                                                        kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" bulan="{{ Request('bulan') }}"
-                                                        tahun="{{ Request('tahun') }}">
+                                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d->kode_pelanggan }}"
+                                                        bulan="{{ Request('bulan') }}" tahun="{{ Request('tahun') }}">
                                                         <i class="ti ti-file-description text-primary"></i>
                                                     </a>
                                                 </td>
