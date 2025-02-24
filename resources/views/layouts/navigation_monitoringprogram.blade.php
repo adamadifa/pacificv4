@@ -40,7 +40,7 @@
         @endcan
 
         <li class="nav-item" role="presentation">
-            <a href="#" class="nav-link">
+            <a href="{{ route('monitoringprogram.index') }}" class="nav-link">
                 <i class="tf-icons ti ti-file-description ti-md me-1"></i> Monitoring Program
             </a>
         </li>
