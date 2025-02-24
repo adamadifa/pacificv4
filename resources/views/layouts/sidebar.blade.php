@@ -106,11 +106,11 @@
                          </li>
                      @endcan
 
-                     <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
+                     {{-- <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
                          <a href="{{ route('ticket.index') }}" class="menu-link">
                              <div>Ticket</div>
                          </a>
-                     </li>
+                     </li> --}}
 
                  </ul>
              </li>
@@ -147,6 +147,12 @@
                      @endif
 
                  </ul>
+             </li>
+             <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
+                 <a href="{{ route('ticket.index') }}" class="menu-link">
+                     <i class="menu-icon tf-icons ti ti-ticket"></i>
+                     <div>Ticket</div>
+                 </a>
              </li>
          @endif
 
