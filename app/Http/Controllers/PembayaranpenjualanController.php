@@ -52,7 +52,7 @@ class PembayaranpenjualanController extends Controller
             ->where('metode_pembayaran', 'VC')
             ->where('status', '1')
             ->first();
-        $tanggal_mulai = date('Y-m-d', strtotime("2024-12-23"));
+        $tanggal_mulai = date('Y-m-d', strtotime("2025-01-01"));
         $diskonprogram = Historibayarpenjualan::join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->select(DB::raw("SUM(jumlah) as jml_voucher"))
             ->where('marketing_penjualan.kode_pelanggan', $penjualan->kode_pelanggan)
