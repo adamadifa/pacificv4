@@ -225,10 +225,9 @@ class MonitoringprogramController extends Controller
         $query->select('marketing_program_pencairan_detail.kode_pelanggan', 'nama_pelanggan', DB::raw('SUM(diskon_kumulatif-diskon_reguler) as total_reward'));
         $query->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan');
-
         $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
         $query->where('marketing_program_pencairan.status', 1);
-        $query->groupBy('marketing_program_pencairan.kode_pelanggan', 'nama_pelanggan');
+        $query->groupBy('marketing_program_pencairan_detail.kode_pelanggan', 'nama_pelanggan');
         $query->orderBy('nama_pelanggan');
         $saldovoucher = $query->paginate(20);
         $saldovoucher->appends(request()->query());
