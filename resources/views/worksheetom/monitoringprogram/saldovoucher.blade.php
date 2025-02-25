@@ -46,7 +46,7 @@
                                             <th>Kode</th>
                                             <th>Nama Pelanggan</th>
                                             <th>Jumlah</th>
-                                            <th>Dicairkan</th>
+                                            <th>Digunakan</th>
                                             <th>Saldo</th>
                                             <th>#</th>
                                         </tr>
