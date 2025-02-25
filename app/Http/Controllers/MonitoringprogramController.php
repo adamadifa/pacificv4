@@ -103,6 +103,10 @@ class MonitoringprogramController extends Controller
             ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
                 $join->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'detailpenjualan.kode_pelanggan');
             })
+
+            ->when($request->nama_pelanggan, function ($query, $nama_pelanggan) {
+                return $query->where('nama_pelanggan', 'like', '%' . $nama_pelanggan . '%');
+            })
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->where('marketing_program_ikatan.status', 1)
             ->where('marketing_program_ikatan.kode_program', $request->kode_program)
