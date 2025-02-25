@@ -238,8 +238,16 @@ class MonitoringprogramController extends Controller
         }
 
         $query = Detailpencairan::query();
-        $query->select('marketing_program_pencairan_detail.kode_pelanggan', 'nama_pelanggan', DB::raw('SUM(diskon_kumulatif-diskon_reguler) as total_reward'));
+        $query->select(
+            'marketing_program_pencairan_detail.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            DB::raw('SUM(diskon_kumulatif-diskon_reguler) as total_reward')
+        );
         $query->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan');
         $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
         $query->where('marketing_program_pencairan.status', 1);

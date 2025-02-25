@@ -45,6 +45,8 @@
                                             <th>No.</th>
                                             <th>Kode</th>
                                             <th>Nama Pelanggan</th>
+                                            <th>Salesman</th>
+                                            <th>Wilayah</th>
                                             <th>Jumlah</th>
                                             <th>Digunakan</th>
                                             <th>Saldo</th>
@@ -57,6 +59,8 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $d->kode_pelanggan }}</td>
                                                 <td>{{ $d->nama_pelanggan }}</td>
+                                                <td>{{ $d->nama_salesman }}</td>
+                                                <td>{{ $d->nama_wilayah }}</td>
                                                 <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
                                                 <th></th>
                                                 <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
