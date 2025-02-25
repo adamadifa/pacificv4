@@ -602,6 +602,7 @@ class AjuanprogramikatanController extends Controller
         $tahun = date('Y', strtotime($tanggal_ajuan));
         $tahunlalu = $tahun - 1;
         $produk = json_decode($programikatan->produk, true) ?? [];
+
         $dari = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_dari));
         $sampai = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_sampai));
 
@@ -632,12 +633,14 @@ class AjuanprogramikatanController extends Controller
 
 
 
+
         $data['detail'] = Detailajuanprogramikatan::join('pelanggan', 'marketing_program_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->where('marketing_program_ikatan_detail.no_pengajuan', $no_pengajuan)
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
                 $join->on('detailpenjualan.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
             })
+            ->select('marketing_program_ikatan_detail.*', 'detailpenjualan.qty_rata_rata', 'pelanggan.nama_pelanggan')
             ->get();
         return view('worksheetom.ajuanprogramikatan.cetak', $data);
     }
