@@ -95,7 +95,7 @@ class MonitoringprogramController extends Controller
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->join('wilayah', 'salesman.kode_wilayah', '=', 'wilayah.kode_wilayah')
+            ->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
             ->join('marketing_program_ikatan_detail', function ($join) {
                 $join->on('marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
                     ->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
