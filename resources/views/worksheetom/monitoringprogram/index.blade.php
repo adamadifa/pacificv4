@@ -72,6 +72,8 @@
                                             <th rowspan="2">No.</th>
                                             <th rowspan="2">Kode</th>
                                             <th rowspan="2">Nama Pelanggan</th>
+                                            <th rowspan="2">Salesman</th>
+                                            <th rowspan="2">Wilayah</th>
                                             <th rowspan="2" class="text-center">Target</th>
                                             <th class="text-center" colspan="3">Realisasi</th>
                                             <th colspan="3" class="text-center">Reward</th>
@@ -122,6 +124,8 @@
                                                     {{ $d->kode_pelanggan }}
                                                 </td>
                                                 <td>{{ $d->nama_pelanggan }}</td>
+                                                <td>{{ $d->nama_salesman }}</td>
+                                                <td>{{ $d->nama_wilayah }}</td>
                                                 <td class="text-center">
                                                     {{ formatAngka($d->qty_target) }}
                                                 </td>
