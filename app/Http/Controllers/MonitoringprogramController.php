@@ -91,6 +91,8 @@ class MonitoringprogramController extends Controller
             'jml_tunai',
             'jml_kredit',
             'file_doc',
+            'nama_salesman',
+            'nama_wilayah',
             'marketing_program_ikatan.kode_program'
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
