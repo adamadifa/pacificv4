@@ -34,8 +34,8 @@
                     'operation manager',
                     'sales marketing manager',
                     'regional sales manager',
-                    'manager keuangan',
-                ]) && !empty($notifikasi_ticket))
+                    'manager keu',
+                ]))
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
                         aria-expanded="false">
