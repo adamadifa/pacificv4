@@ -148,15 +148,14 @@
 
                  </ul>
              </li>
-             <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
-                 <a href="{{ route('ticket.index') }}" class="menu-link">
-                     <i class="menu-icon tf-icons ti ti-ticket"></i>
-                     <div>Ticket</div>
-                 </a>
-             </li>
          @endif
 
-
+         <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
+             <a href="{{ route('ticket.index') }}" class="menu-link">
+                 <i class="menu-icon tf-icons ti ti-ticket"></i>
+                 <div>Ticket</div>
+             </a>
+         </li>
 
      </ul>
  </aside>
