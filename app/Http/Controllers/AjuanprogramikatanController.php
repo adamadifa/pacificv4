@@ -304,11 +304,14 @@ class AjuanprogramikatanController extends Controller
         $bulan = $request->bulan;
         $tahun = $request->tahun;
         $target_perbulan = $request->target_perbulan;
+        $ajuan = Ajuanprogramikatan::where('no_pengajuan', $no_pengajuan)->first();
+
+
         DB::beginTransaction();
         try {
             //code...
-            $cek = Detailajuanprogramikatan::where('no_pengajuan', $no_pengajuan)
-                ->where('kode_pelanggan', $request->kode_pelanggan)
+            $cek = Detailajuanprogramikatan::join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+                ->where('marketing_program_ikatan.kode_program', $ajuan->kode_program)
                 ->first();
 
             if ($cek) {
