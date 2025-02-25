@@ -52,7 +52,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($saldosimpanan as $d)
+                                        @foreach ($saldovoucher as $d)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $d->kode_pelanggan }}</td>
@@ -77,7 +77,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{ $saldosimpanan->links() }}
+                                {{ $saldovoucher->links() }}
                             </div>
                         </div>
                     </div>

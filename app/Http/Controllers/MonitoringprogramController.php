@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detailpencairan;
 use App\Models\Detailpencairanprogramikatan;
 use App\Models\Detailpenjualan;
 use App\Models\Detailtargetikatan;
@@ -204,7 +205,7 @@ class MonitoringprogramController extends Controller
         return view('worksheetom.monitoringprogram.saldosimpanan', $data);
     }
 
-    public function saldosimpanan(Request $request)
+    public function saldovoucher(Request $request)
     {
 
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
@@ -220,23 +221,23 @@ class MonitoringprogramController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
-        $query = Detailpencairanprogramikatan::query();
-        $query->select('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan', DB::raw('SUM(total_reward) as total_reward'));
-        $query->join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $query->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan');
+        $query = Detailpencairan::query();
+        $query->select('marketing_program_pencairan_detail.kode_pelanggan', 'nama_pelanggan', DB::raw('SUM(diskon_kumulatif-diskon_reguler) as total_reward'));
+        $query->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan');
         $query->where('status_pencairan', 1);
-        $query->where('marketing_pencairan_ikatan.kode_cabang', $kode_cabang);
-        $query->where('marketing_pencairan_ikatan.status', 1);
-        $query->groupBy('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan');
+        $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
+        $query->where('marketing_program_pencairan.status', 1);
+        $query->groupBy('marketing_program_pencairan.kode_pelanggan', 'nama_pelanggan');
         $query->orderBy('nama_pelanggan');
-        $saldosimpanan = $query->paginate(20);
-        $saldosimpanan->appends(request()->query());
+        $saldovoucher = $query->paginate(20);
+        $saldovoucher->appends(request()->query());
 
-        $data['saldosimpanan'] = $saldosimpanan;
+        $data['saldovoucher'] = $saldovoucher;
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
-        return view('worksheetom.monitoringprogram.saldosimpanan', $data);
+        return view('worksheetom.monitoringprogram.saldovoucher', $data);
     }
 }
