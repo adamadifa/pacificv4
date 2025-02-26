@@ -609,23 +609,28 @@ class PencairanprogramikatanController extends Controller
         }
     }
 
-    public function upload($kode_pencairan, $kode_pelanggan)
+    public function upload($kode_pencairan)
     {
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
-        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        // $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
         $data['kode_pencairan'] = $kode_pencairan;
-        $data['kode_pelanggan'] = $kode_pelanggan;
-        return view('worksheetom.pencairanprogramikatan.upload', $data);
+        // $data['kode_pelanggan'] = $kode_pelanggan;
+        return view('worksheetom.pencairanprogram.upload', $data);
     }
 
-    public function storeupload(Request $request, $kode_pencairan, $kode_pelanggan)
+    public function storeupload(Request $request, $kode_pencairan)
     {
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
-        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        // $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
         try {
             //code...
-            Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
-                ->where('kode_pelanggan', $kode_pelanggan)
+            // Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
+            //     ->where('kode_pelanggan', $kode_pelanggan)
+            //     ->update([fstore
+            //         'bukti_transfer' => $request->bukti_transfer
+            //     ]);
+
+            Pencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
                 ->update([
                     'bukti_transfer' => $request->bukti_transfer
                 ]);

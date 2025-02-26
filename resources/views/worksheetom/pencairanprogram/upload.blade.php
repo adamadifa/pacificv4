@@ -1,5 +1,4 @@
-<form action="{{ route('pencairanprogramikatan.storeupload', Crypt::encrypt($kode_pencairan)) }}" method="POST" id="formUpload"
-    enctype="multipart/form-data">
+<form action="{{ route('pencairanprogram.storeupload', Crypt::encrypt($kode_pencairan)) }}" method="POST" id="formUpload" enctype="multipart/form-data">
     @csrf
     <x-textarea label="Link Bukti Transfer" name="bukti_transfer" />
     <div class="form-group">

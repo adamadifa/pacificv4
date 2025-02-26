@@ -72,6 +72,7 @@
 
                                             <th rowspan="2" valign="middle">Status</th>
                                             <th rowspan="2" valign="middle">Keuangan</th>
+                                            <th rowspan="2" valign="middle"><i class="ti ti-file-description"></i></th>
                                             <th rowspan="2">#</th>
                                         </tr>
                                         <tr>
@@ -138,6 +139,15 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    @if (!empty($d->bukti_transfer))
+                                                        <a href="{{ url($d->bukti_transfer) }}" target="_blank">
+                                                            <i class="ti ti-receipt text-success"></i>
+                                                        </a>
+                                                    @else
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @endif
+                                                </td>
+                                                <td>
                                                     <div class="d-flex">
                                                         @can('ajuanprogramikatan.approve')
                                                             @if ($user->hasRole('operation manager') && $d->rsm == null)
@@ -183,6 +193,12 @@
                                                                 <i class="ti ti-download text-success"></i>
                                                             </a>
                                                         @endcan
+                                                        @can('pencairanprogramikt.upload')
+                                                            <a href="#"
+                                                                kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}"class="btnUpload">
+                                                                <i class="ti ti-upload text-primary"></i>
+                                                            </a>
+                                                        @endcan
                                                         @can('pencairanprogramikt.delete')
                                                             @if ($user->hasRole(['operation manager', 'sales marketing manager', 'super admin']) && $d->rsm == null)
                                                                 <form method="POST" name="deleteform" class="deleteform"
@@ -218,6 +234,7 @@
 <x-modal-form id="modalApprove" size="modal-fullscreen" show="loadmodalapprove" title="" />
 <x-modal-form id="modalajuanProgram" size="modal-xl" show="loadmodalajuanProgram" title="Ajuan Program Ikatan" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
+<x-modal-form id="modalUpload" size="" show="loadmodalupload" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -227,7 +244,13 @@
             $("#modal").find(".modal-title").text("Buat Pencairan Program Ikatan");
             $("#loadmodal").load("/pencairanprogramikatan/create");
         });
-
+        $(".btnUpload").click(function(e) {
+            e.preventDefault();
+            let kode_pencairan = $(this).attr("kode_pencairan");
+            $("#modalUpload").modal("show");
+            $("#modalUpload").find(".modal-title").text("Upload Bukti Transfer");
+            $("#loadmodalupload").load("/pencairanprogramikatan/" + kode_pencairan + "/upload");
+        });
         const select2Kodecabang = $('.select2Kodecabang');
         if (select2Kodecabang.length) {
             select2Kodecabang.each(function() {

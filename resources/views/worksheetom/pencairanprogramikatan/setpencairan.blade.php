@@ -183,12 +183,12 @@
                                                     {{-- <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
                                                     <i class="ti ti-file-description"></i>
                                                 </a> --}}
-                                                    @can('pencairanprogramikt.upload')
+                                                    {{-- @can('pencairanprogramikt.upload')
                                                         <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
                                                             kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
                                                             <i class="ti ti-upload text-primary"></i>
                                                         </a>
-                                                    @endcan
+                                                    @endcan --}}
                                                     @can('pencairanprogramikt.delete')
                                                         @if ($pencairanprogram->status == '0')
                                                             <form method="POST" name="deleteform" class="deleteform"

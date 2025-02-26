@@ -658,4 +658,36 @@ class PencairanprogramController extends Controller
         }
         return view('worksheetom.pencairanprogram.cetak', $data);
     }
+
+    public function upload($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        // $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $data['kode_pencairan'] = $kode_pencairan;
+        // $data['kode_pelanggan'] = $kode_pelanggan;
+        return view('worksheetom.pencairanprogramikatan.upload', $data);
+    }
+
+
+    public function storeupload(Request $request, $kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        // $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        try {
+            //code...
+            // Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
+            //     ->where('kode_pelanggan', $kode_pelanggan)
+            //     ->update([fstore
+            //         'bukti_transfer' => $request->bukti_transfer
+            //     ]);
+
+            Pencairanprogram::where('kode_pencairan', $kode_pencairan)
+                ->update([
+                    'bukti_transfer' => $request->bukti_transfer
+                ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Upload'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
