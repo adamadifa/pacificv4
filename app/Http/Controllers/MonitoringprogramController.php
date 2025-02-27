@@ -244,6 +244,7 @@ class MonitoringprogramController extends Controller
         $voucherdigunakan->where('marketing_penjualan.status_batal', 0);
         $voucherdigunakan->where('voucher', 1);
         $voucherdigunakan->where('jenis_voucher', 2);
+        $voucherdigunakan->where('voucher_reward', 1);
         $voucherdigunakan->where('marketing_penjualan_historibayar.tanggal', '>=', '2025-01-01');
         $voucherdigunakan->groupBy('marketing_penjualan.kode_pelanggan');
 
