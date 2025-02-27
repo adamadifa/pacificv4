@@ -116,7 +116,7 @@
 
 
         form.submit(function(e) {
-            e.preventDefault();
+            //e.preventDefault();
             let sisabayar = $("#sisabayar").text();
             let sb = sisabayar == "" ? 0 : sisabayar;
             let sisa_bayar = sb == 0 ? 0 : parseInt(sb.replace(/\./g, ''));
