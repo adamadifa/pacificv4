@@ -621,6 +621,7 @@ class PencairanprogramikatanController extends Controller
     public function storeupload(Request $request, $kode_pencairan)
     {
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        dd($kode_pencairan);
         // $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
         try {
             //code...
