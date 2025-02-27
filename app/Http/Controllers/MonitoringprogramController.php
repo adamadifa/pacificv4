@@ -243,8 +243,11 @@ class MonitoringprogramController extends Controller
         $voucherdigunakan->join('marketing_penjualan', 'marketing_penjualan.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur');
         $voucherdigunakan->where('marketing_penjualan.status_batal', 0);
         $voucherdigunakan->where('voucher', 1);
-        $voucherdigunakan->where('jenis_voucher', 1);
+        $voucherdigunakan->where('jenis_voucher', 2);
+        $voucherdigunakan->where('marketing_penjualan_historibayar.tanggal', '>=', '2025-01-01');
         $voucherdigunakan->groupBy('marketing_penjualan.kode_pelanggan');
+
+        // dd($voucherdigunakan->get()->toArray());
 
         $query = Detailpencairan::query();
         $query->select(
@@ -252,16 +255,31 @@ class MonitoringprogramController extends Controller
             'nama_pelanggan',
             'nama_salesman',
             'nama_wilayah',
-            DB::raw('SUM(diskon_kumulatif-diskon_reguler) as total_reward')
+            DB::raw('SUM(diskon_kumulatif-diskon_reguler) as total_reward'),
+            'total_bayar_voucher'
         );
         $query->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+
         $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan');
+        $query->join('cabang', 'marketing_program_pencairan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftJoinSub($voucherdigunakan, 'voucherdigunakan', function ($join) {
             $join->on('marketing_program_pencairan_detail.kode_pelanggan', '=', 'voucherdigunakan.kode_pelanggan');
         });
-        $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
+            }
+        }
+
+        if (!empty($request->kode_cabang)) {
+            $query->where('marketing_program_pencairan.kode_cabang', $request->kode_cabang);
+        }
+
+        // $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
         $query->where('marketing_program_pencairan.status', 1);
         $query->where('metode_pembayaran', 'VC');
         $query->groupBy('marketing_program_pencairan_detail.kode_pelanggan', 'nama_pelanggan');

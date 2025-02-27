@@ -42,6 +42,10 @@ class PencairanprogramController extends Controller
             }
         }
 
+        if (!empty($request->kode_cabang)) {
+            $query->where('marketing_program_pencairan.kode_cabang', $request->kode_cabang);
+        }
+
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
         }

@@ -55,6 +55,9 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($saldovoucher as $d)
+                                            @php
+                                                $saldo = $d->total_reward - $d->total_bayar_voucher;
+                                            @endphp
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $d->kode_pelanggan }}</td>
@@ -62,8 +65,8 @@
                                                 <td>{{ $d->nama_salesman }}</td>
                                                 <td>{{ $d->nama_wilayah }}</td>
                                                 <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
-                                                <th></th>
-                                                <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
+                                                <td class="text-end">{{ formatAngka($d->total_bayar_voucher) }}</td>
+                                                <td class="text-end">{{ formatAngka($saldo) }}</td>
                                                 <td>
                                                     <div class="d-flex">
                                                         <a href="#" class="me-1">

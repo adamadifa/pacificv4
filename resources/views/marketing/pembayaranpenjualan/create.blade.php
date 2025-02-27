@@ -116,10 +116,10 @@
 
 
         form.submit(function(e) {
-
-            const sisabayar = $("#sisabayar").text();
+            e.preventDefault();
+            let sisabayar = $("#sisabayar").text();
             let sb = sisabayar == "" ? 0 : sisabayar;
-            let sisa_bayar = parseInt(sb.replace(/\./g, ''));
+            let sisa_bayar = sb == 0 ? 0 : parseInt(sb.replace(/\./g, ''));
             const tanggal = $(this).find("#tanggal").val();
             const jml = $(this).find("#jumlah").val();
             const jumlah = parseInt(jml.replace(/\./g, ''));
@@ -132,7 +132,6 @@
             } else {
                 sisa_bayar = sisa_bayar;
             }
-
 
             if (tanggal == "") {
                 Swal.fire({

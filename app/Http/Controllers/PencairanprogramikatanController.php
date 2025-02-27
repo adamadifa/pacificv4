@@ -632,7 +632,7 @@ class PencairanprogramikatanController extends Controller
 
             Pencairanprogramikatan::where('kode_pencairan', $kode_pencairan)
                 ->update([
-                    'bukti_transfer' => $request->bukti_transfer
+                    'bukti_transferd' => $request->bukti_transfer
                 ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Upload'));
         } catch (\Exception $e) {
