@@ -90,7 +90,7 @@
 </div>
 
 
-<x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
+<x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}

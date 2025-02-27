@@ -18,7 +18,7 @@
             </li> --}}
 
             <li class="nav-item" role="presentation">
-                <a href="{{ route('settingkomisidriverhelper.create') }}"
+                <a href="{{ route('settingkomisidriverhelper.index') }}"
                     class="nav-link {{ request()->is('settingkomisidriverhelper') ? 'active' : '' }}">
                     <i class="tf-icons ti ti-settings ti-md me-1"></i> Setting Komisi Driver Helper
                 </a>

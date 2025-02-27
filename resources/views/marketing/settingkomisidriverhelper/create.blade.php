@@ -1,15 +1,15 @@
-<form action="{{ route('ratiodriverhelper.store') }}" method="POST" id="formRatiodriverhelper">
+<form action="{{ route('ratiodriverhelper.store') }}" method="POST" id="formSettingkomisi">
     <div class="row">
         <div class="co-12">
             @csrf
             <div class="row">
                 @hasanyrole($roles_show_cabang)
-                    <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
                         <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
                             select2="select2Kodecabang" showKey="true" upperCase="true" />
                     </div>
-                @else
-                    <div class="col-lg-6 col-sm-12 col-md-12">
+
+                    <div class="col-lg-12 col-sm-12 col-md-12">
                         <div class="form-group mb-3">
                             <select name="bulan" id="bulan" class="form-select">
                                 <option value="">Bulan</option>
@@ -19,11 +19,18 @@
                             </select>
                         </div>
                     </div>
-                @endhasanyrole
-            </div>
-            <div class="row">
-                @hasanyrole($roles_show_cabang)
-                    <div class="col-lg-3 col-sm-12 col-md-12">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group mb-3">
+                            <select name="tahun" id="tahun" class="form-select">
+                                <option value="">Tahun</option>
+                                @for ($t = $start_year; $t <= date('Y'); $t++)
+                                    <option value="{{ $t }}">{{ $t }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+                @else
+                    <div class="col-lg-12 col-sm-12 col-md-12">
                         <div class="form-group mb-3">
                             <select name="bulan" id="bulan" class="form-select">
                                 <option value="">Bulan</option>
@@ -33,8 +40,7 @@
                             </select>
                         </div>
                     </div>
-                @else
-                    <div class="col-lg-6 col-sm-12 col-md-12">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
                         <div class="form-group mb-3">
                             <select name="tahun" id="tahun" class="form-select">
                                 <option value="">Tahun</option>
@@ -46,20 +52,11 @@
                     </div>
                 @endhasanyrole
             </div>
-            <div class="row">
-                @hasanyrole($roles_show_cabang)
-                    <div class="col-lg-3 col-sm-12 col-md-12">
-                        <div class="form-group mb-3">
-                            <select name="tahun" id="tahun" class="form-select">
-                                <option value="">Tahun</option>
-                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                    <option value="{{ $t }}">{{ $t }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-                @endhasanyrole
-            </div>
+            <x-input-with-icon-label icon="ti ti-moneybag" label="Komisi Salesman" name="komisi_salesman" align="right" money="true" />
+            <x-input-with-icon-label icon="ti ti-file-description" label="Qty Penjualan" name="komisi_salesman" align="right" money="true" />
+            <x-input-with-icon-label icon="ti ti-file-description" label="Qty Flat" name="qty_flat" align="right" />
+            <x-input-with-icon-label icon="ti ti-file-description" label="UMK" name="umk" align="right" />
+            <x-input-with-icon-label icon="ti ti-file-description" label="Persentase" name="persentase" align="right" />
         </div>
     </div>
 
@@ -70,19 +67,19 @@
         </button>
     </div>
 </form>
-{{-- <script>
+<script>
     $(function() {
-        const form = $("#formRatiodriverhelper");
+        const form = $("#formSettingkomisi");
+        $(".money").maskMoney();
+        // form.find("#saveButton").hide();
 
-        form.find("#saveButton").hide();
-
-        form.find('.agreement').change(function() {
-            if (this.checked) {
-                form.find("#saveButton").show();
-            } else {
-                form.find("#saveButton").hide();
-            }
-        });
+        // form.find('.agreement').change(function() {
+        //     if (this.checked) {
+        //         form.find("#saveButton").show();
+        //     } else {
+        //         form.find("#saveButton").hide();
+        //     }
+        // });
 
 
         const select2Kodecabang = $('.select2Kodecabang');
@@ -125,6 +122,10 @@
             const kode_cabang = form.find("#kode_cabang").val();
             const bulan = form.find("#bulan").val();
             const tahun = form.find("#tahun").val();
+            const komisi_salesman = form.find("#komisi_salesman").val();
+            const qty_flat = form.find("#qty_flat").val();
+            const umk = form.find("#umk").val();
+            const persentase = form.find("#persentase").val();
 
             if (kode_cabang == "") {
                 Swal.fire({
@@ -164,4 +165,4 @@
             }
         });
     });
-</script> --}}
+</script>
