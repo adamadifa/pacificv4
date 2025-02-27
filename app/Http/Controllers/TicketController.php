@@ -130,7 +130,7 @@ class TicketController extends Controller
         $kode_pengajuan = Crypt::decrypt($kode_pengajuan);
         $user = User::where('id', auth()->user()->id)->first();
         $status = 0;
-        if ($user->hasRole('gm administrasi')) {
+        if ($user->hasRole(['gm administrasi', 'regional operation manager'])) {
             $field = 'gm';
             if (isset($_POST['decline'])) {
                 $status = 2;

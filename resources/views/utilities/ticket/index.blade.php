@@ -49,7 +49,7 @@
                                         <th>Keterangan</th>
                                         <th>User</th>
                                         <th>Cabang</th>
-                                        <th class="text-center">GM</th>
+                                        <th class="text-center">GM/ROM</th>
                                         {{-- <th class="text-center">Direktur</th> --}}
                                         <th>Status</th>
                                         <th>Admin</th>
