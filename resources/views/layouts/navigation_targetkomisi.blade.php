@@ -11,9 +11,16 @@
             </li>
         @endcan
         @can('ratiodriverhelper.index')
-            <li class="nav-item" role="presentation">
+            {{-- <li class="nav-item" role="presentation">
                 <a href="{{ route('ratiodriverhelper.index') }}" class="nav-link {{ request()->is('ratiodriverhelper') ? 'active' : '' }}">
                     <i class="tf-icons ti ti-files ti-md me-1"></i> Ratio Driver Helper
+                </a>
+            </li> --}}
+
+            <li class="nav-item" role="presentation">
+                <a href="{{ route('settingkomisidriverhelper.create') }}"
+                    class="nav-link {{ request()->is('settingkomisidriverhelper') ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-settings ti-md me-1"></i> Setting Komisi Driver Helper
                 </a>
             </li>
         @endcan

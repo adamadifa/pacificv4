@@ -25,7 +25,7 @@ class Karyawan extends Model
         $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         //Direktur --> Tampilkan General Manger
-        if (!$user->hasRole('super admin')) {
+        if (!$user->hasRole(['super admin', 'asst. manager hrd'])) {
 
 
             if ($user->hasRole('direktur')) {

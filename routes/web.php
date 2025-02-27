@@ -142,6 +142,7 @@ use App\Http\Controllers\SetorangiroController;
 use App\Http\Controllers\SetoranpenjualanController;
 use App\Http\Controllers\SetoranpusatController;
 use App\Http\Controllers\SetorantransferController;
+use App\Http\Controllers\SettingkomisidriverhelperController;
 use App\Http\Controllers\SfaControler;
 
 use App\Http\Controllers\SlipgajiController;
@@ -163,6 +164,7 @@ use App\Models\Barangproduksi;
 use App\Models\Kontrabonpembelian;
 use App\Models\Permission_group;
 use App\Models\Servicekendaraan;
+use App\Models\Settingkomisidriverhelper;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
@@ -1032,6 +1034,16 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/ratiodriverhelper/getratiodriverhelper', 'getratiodriverhelper')->name('ratiodriverhelper.getratiodriverhelper');
         Route::post('/ratiodriverhelper/getratiodriverhelperedit', 'getratiodriverhelperedit')->name('ratiodriverhelper.getratiodriverhelperedit');
+    });
+
+
+    Route::controller(SettingkomisidriverhelperController::class)->group(function () {
+        Route::get('/settingkomisidriverhelper', 'index')->name('settingkomisidriverhelper.index');
+        Route::get('/settingkomisidriverhelper/create', 'create')->name('settingkomisidriverhelper.create');
+        Route::post('/settingkomisidriverhelper', 'store')->name('settingkomisidriverhelper.store');
+        Route::get('/settingkomisidriverhelper/{kode_komisi}/edit', 'edit')->name('settingkomisidriverhelper.edit');
+        Route::put('/settingkomisidriverhelper/{kode_komisi}', 'update')->name('settingkomisidriverhelper.update');
+        Route::delete('/settingkomisidriverhelper/{kode_komisi}', 'destroy')->name('settingkomisidriverhelper.delete');
     });
 
     Route::controller(PenjualanController::class)->group(function () {
