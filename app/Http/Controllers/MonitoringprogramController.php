@@ -7,6 +7,7 @@ use App\Models\Detailpencairan;
 use App\Models\Detailpencairanprogramikatan;
 use App\Models\Detailpenjualan;
 use App\Models\Detailtargetikatan;
+use App\Models\Historibayarpenjualan;
 use App\Models\Programikatan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -237,6 +238,14 @@ class MonitoringprogramController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
+        $voucherdigunakan = Historibayarpenjualan::query();
+        $voucherdigunakan->select('marketing_penjualan.kode_pelanggan', DB::raw('SUM(jumlah) as total_bayar_voucher'));
+        $voucherdigunakan->join('marketing_penjualan', 'marketing_penjualan.no_faktur', '=', 'marketing_penjualan_historibayar.no_faktur');
+        $voucherdigunakan->where('marketing_penjualan.status_batal', 0);
+        $voucherdigunakan->where('voucher', 1);
+        $voucherdigunakan->where('jenis_voucher', 1);
+        $voucherdigunakan->groupBy('marketing_penjualan.kode_pelanggan');
+
         $query = Detailpencairan::query();
         $query->select(
             'marketing_program_pencairan_detail.kode_pelanggan',
@@ -249,8 +258,12 @@ class MonitoringprogramController extends Controller
         $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan');
+        $query->leftJoinSub($voucherdigunakan, 'voucherdigunakan', function ($join) {
+            $join->on('marketing_program_pencairan_detail.kode_pelanggan', '=', 'voucherdigunakan.kode_pelanggan');
+        });
         $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
         $query->where('marketing_program_pencairan.status', 1);
+        $query->where('metode_pembayaran', 'VC');
         $query->groupBy('marketing_program_pencairan_detail.kode_pelanggan', 'nama_pelanggan');
         $query->orderBy('nama_pelanggan');
         $saldovoucher = $query->paginate(20);
