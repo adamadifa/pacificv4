@@ -17,7 +17,7 @@
             $reward_kredit = 0;
             $reward = 0;
         }
-        $reward = $reward > 1000000 && $d->kode_program != 'PRIK001' ? 1000000 : $reward;
+        $reward = $reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $reward;
         $total_reward += $reward;
         $status = $reward == 0 ? 0 : 1;
     @endphp
