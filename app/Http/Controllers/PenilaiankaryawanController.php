@@ -331,6 +331,7 @@ class PenilaiankaryawanController extends Controller
                 'nama_jabatan',
                 'nama_cabang',
                 'hrd_karyawan.jenis_kelamin',
+                'hrd_karyawan.foto'
             )
             ->join('hrd_karyawan', 'hrd_penilaian.nik', '=', 'hrd_karyawan.nik')
             ->join('hrd_departemen', 'hrd_penilaian.kode_dept', '=', 'hrd_departemen.kode_dept')
