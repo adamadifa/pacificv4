@@ -52,11 +52,10 @@
                     </div>
                 @endhasanyrole
             </div>
-            <x-input-with-icon-label icon="ti ti-moneybag" label="Komisi Salesman" name="komisi_salesman" align="right" money="true" />
-            <x-input-with-icon-label icon="ti ti-file-description" label="Qty Penjualan" name="komisi_salesman" align="right" money="true" />
-            <x-input-with-icon-label icon="ti ti-file-description" label="Qty Flat" name="qty_flat" align="right" />
-            <x-input-with-icon-label icon="ti ti-file-description" label="UMK" name="umk" align="right" />
-            <x-input-with-icon-label icon="ti ti-file-description" label="Persentase" name="persentase" align="right" />
+            <x-input-with-icon icon="ti ti-moneybag" label="Komisi Salesman" name="komisi_salesman" align="right" money="true" />
+            <x-input-with-icon icon="ti ti-file-description" label="Qty Flat" name="qty_flat" align="right" />
+            <x-input-with-icon icon="ti ti-file-description" label="UMK" name="umk" align="right" />
+            <x-input-with-icon icon="ti ti-file-description" label="Persentase" name="persentase" align="right" />
         </div>
     </div>
 
