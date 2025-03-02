@@ -7,6 +7,8 @@ use App\Models\Cabang;
 use App\Models\Settingkomisidriverhelper;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Redirect;
 
 class SettingkomisidriverhelperController extends Controller
 {
@@ -57,5 +59,66 @@ class SettingkomisidriverhelperController extends Controller
         $data['start_year'] = config('global.start_year');
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         return view('marketing.settingkomisidriverhelper.create', $data);
+    }
+
+    public function store(Request $request)
+    {
+        $bulan = $request->bulan;
+        $bln = $bulan < 10 ? "0" . $bulan : $bulan;
+        $tahun = $request->tahun;
+        $user = User::findorFail(auth()->user()->id);
+        $roles_show_cabang = config('global.roles_show_cabang');
+        if ($user->hasRole($roles_show_cabang)) {
+            $kode_cabang = $request->kode_cabang;
+            $request->validate([
+                'kode_cabang' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required',
+                'komisi_salesman' => 'required',
+                'qty_flat' => 'required',
+                'umk' => 'required',
+                'persentase' => 'required'
+            ]);
+        } else {
+            $kode_cabang = auth()->user()->kode_cabang;
+            $request->validate([
+                'bulan' => 'required',
+                'tahun' => 'required',
+                'komisi_salesman' => 'required',
+                'qty_flat' => 'required',
+                'umk' => 'required',
+                'persentase' => 'required'
+            ]);
+        }
+        $kode_komisi =  "K" . $kode_cabang . $bln . $tahun;
+        try {
+            //code...
+            Settingkomisidriverhelper::create([
+                'kode_komisi' => $kode_komisi,
+                'bulan' => $bulan,
+                'tahun' => $tahun,
+                'kode_cabang' => $kode_cabang,
+                'komisi_salesman' => toNumber($request->komisi_salesman),
+                'qty_flat' => toNumber($request->qty_flat),
+                'umk' => toNumber($request->umk),
+                'persentase' => $request->persentase
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function edit($kode_komisi)
+    {
+
+        $kode_komisi = Crypt::decrypt($kode_komisi);
+        $settingkomisidriverhelper = Settingkomisidriverhelper::findorFail($kode_komisi);
+        $data['settingkomisidriverhelper'] = $settingkomisidriverhelper;
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        return view('marketing.settingkomisidriverhelper.edit', $data);
     }
 }

@@ -75,7 +75,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($settingkomisidriverhelper as $d)
+                                        <tr>
+                                            <td>{{ $d->kode_komisi }}</td>
+                                            <td>{{ $namabulan[$d->bulan] }}</td>
+                                            <td>{{ $d->tahun }}</td>
+                                            <td>{{ $d->kode_cabang }}</td>
+                                            <td class="text-end">{{ formatAngka($d->komisi_salesman) }}</td>
+                                            <td class="text-end">{{ formatAngka($d->qty_flat) }}</td>
+                                            <td class="text-end">{{ formatAngka($d->umk) }}</td>
+                                            <td class="text-end">{{ formatAngka($d->persentase) }} %</td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a href="#" class="btnEdit" kode_komisi="{{ Crypt::encrypt($d->kode_komisi) }}">
+                                                        <i class="ti ti-edit text-primary"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -114,6 +132,14 @@
             $('#modal').modal("show");
             $("#loadmodal").load("{{ route('settingkomisidriverhelper.create') }}");
             $(".modal-title").text("Tambahkan Setting Komisi Driver Helper");
+        });
+
+        $(".btnEdit").click(function(e) {
+            e.preventDefault();
+            const kode_komisi = $(this).attr("kode_komisi");
+            $('#modal').modal("show");
+            $("#loadmodal").load(`/settingkomisidriverhelper/${kode_komisi}/edit`);
+            $(".modal-title").text("Edit Setting Komisi Driver Helper");
         });
 
         // $(".btnShow").click(function(e) {
