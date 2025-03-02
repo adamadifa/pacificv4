@@ -99,12 +99,17 @@
                     </table>
                 </div>
                 <div>
-                    @if ($penilaiankaryawan->jenis_kelamin == 'L')
-                        <img src="{{ asset('assets/img/avatars/male.jpg') }}" class="card-img"
+                    @if (Storage::disk('public')->exists('/karyawan/' . $penilaiankaryawan->foto))
+                        <img src="{{ getfotoKaryawan($penilaiankaryawan->foto) }}" class="card-img"
                             style="width: 120px; height:150px; object-fit:cover; border-radius:10px; position:absolute; right:70px; top:80px;">
                     @else
-                        <img src="{{ asset('assets/img/avatars/female.jpg') }}" class="card-img"
-                            style="width: 120px; height:150px; object-fit:cover; border-radius:10px; position:absolute; right:70px; top:80px;">
+                        @if ($penilaiankaryawan->jenis_kelamin == 'L')
+                            <img src="{{ asset('assets/img/avatars/male.jpg') }}" class="card-img"
+                                style="width: 120px; height:150px; object-fit:cover; border-radius:10px; position:absolute; right:70px; top:80px;">
+                        @else
+                            <img src="{{ asset('assets/img/avatars/female.jpg') }}" class="card-img"
+                                style="width: 120px; height:150px; object-fit:cover; border-radius:10px; position:absolute; right:70px; top:80px;">
+                        @endif
                     @endif
                 </div>
             </div>

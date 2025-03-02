@@ -15,8 +15,8 @@
             <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
                 <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
                     @if (Storage::disk('public')->exists('/karyawan/' . $karyawan->foto))
-                        <img src="{{ getfotoKaryawan($karyawan->foto) }}" alt="user image"
-                            class="d-block  ms-0 ms-sm-4 rounded user-profile-img" height="150">
+                        <img src="{{ getfotoKaryawan($karyawan->foto) }}" alt="user image" class="d-block  ms-0 ms-sm-4 rounded user-profile-img"
+                            height="150">
                     @else
                         <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
                             class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
@@ -28,8 +28,7 @@
                         class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
                         <div class="user-profile-info">
                             <h4>{{ textCamelCase($karyawan->nama_karyawan) }}</h4>
-                            <ul
-                                class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
+                            <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
                                 <li class="list-inline-item d-flex gap-1">
                                     <i class="ti ti-barcode"></i> {{ textCamelCase($karyawan->nik) }}
                                 </li>
@@ -182,12 +181,10 @@
             <div class="col-md-12">
                 <ul class="nav nav-pills flex-column flex-sm-row mb-4">
                     <li class="nav-item">
-                        <a class="nav-link active" href="javascript:void(0);"><i
-                                class="ti-xs ti ti-file-description me-1"></i> Histori Kontrak</a>
+                        <a class="nav-link active" href="javascript:void(0);"><i class="ti-xs ti ti-file-description me-1"></i> Histori Kontrak</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pages-profile-teams.html"><i
-                                class="ti-xs ti ti-home-move me-1"></i>
+                        <a class="nav-link" href="pages-profile-teams.html"><i class="ti-xs ti ti-home-move me-1"></i>
                             Mutasi/Promosi/Demosi</a>
                     </li>
                     <li class="nav-item">
@@ -195,8 +192,7 @@
                             Gaji</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pages-profile-connections.html"><i
-                                class="ti-xs ti ti-report-money me-1"></i> Tunjangan</a>
+                        <a class="nav-link" href="pages-profile-connections.html"><i class="ti-xs ti ti-report-money me-1"></i> Tunjangan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('karyawan.dokumen', Crypt::encrypt($karyawan->nik)) }}"><i
