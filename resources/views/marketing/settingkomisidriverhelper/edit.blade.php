@@ -1,12 +1,14 @@
-<form action="{{ route('settingkomisidriverhelper.store') }}" method="POST" id="formSettingkomisi">
+<form action="{{ route('settingkomisidriverhelper.update', ['kode_komisi' => Crypt::encrypt($settingkomisidriverhelper->kode_komisi)]) }}"
+    method="POST" id="formSettingkomisi">
     <div class="row">
         <div class="co-12">
             @csrf
+            @method('PUT')
             <div class="row">
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-12 col-md-12 col-sm-12">
                         <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                            select2="select2Kodecabang" showKey="true" upperCase="true" />
+                            select2="select2Kodecabang" showKey="true" upperCase="true" :selected="$settingkomisidriverhelper->kode_cabang" />
                     </div>
 
                     <div class="col-lg-12 col-sm-12 col-md-12">
@@ -14,7 +16,8 @@
                             <select name="bulan" id="bulan" class="form-select">
                                 <option value="">Bulan</option>
                                 @foreach ($list_bulan as $d)
-                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                    <option value="{{ $d['kode_bulan'] }}" {{ $settingkomisidriverhelper->bulan == $d['kode_bulan'] ? 'selected' : '' }}>
+                                        {{ $d['nama_bulan'] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -24,7 +27,8 @@
                             <select name="tahun" id="tahun" class="form-select">
                                 <option value="">Tahun</option>
                                 @for ($t = $start_year; $t <= date('Y'); $t++)
-                                    <option value="{{ $t }}">{{ $t }}</option>
+                                    <option value="{{ $t }}" {{ $settingkomisidriverhelper->tahun == $t ? 'selected' : '' }}>
+                                        {{ $t }}</option>
                                 @endfor
                             </select>
                         </div>
@@ -35,7 +39,8 @@
                             <select name="bulan" id="bulan" class="form-select">
                                 <option value="">Bulan</option>
                                 @foreach ($list_bulan as $d)
-                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                    <option value="{{ $d['kode_bulan'] }}" {{ $settingkomisidriverhelper->bulan == $d['kode_bulan'] ? 'selected' : '' }}>
+                                        {{ $d['nama_bulan'] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -45,24 +50,25 @@
                             <select name="tahun" id="tahun" class="form-select">
                                 <option value="">Tahun</option>
                                 @for ($t = $start_year; $t <= date('Y'); $t++)
-                                    <option value="{{ $t }}">{{ $t }}</option>
+                                    <option value="{{ $t }}" {{ $settingkomisidriverhelper->tahun == $t ? 'selected' : '' }}>
+                                        {{ $t }}</option>
                                 @endfor
                             </select>
                         </div>
                     </div>
                 @endhasanyrole
             </div>
-            <x-input-with-icon icon="ti ti-moneybag" label="Komisi Salesman" name="komisi_salesman" align="right" money="true" />
-            <x-input-with-icon icon="ti ti-file-description" label="Qty Flat" name="qty_flat" align="right" />
-            <x-input-with-icon icon="ti ti-file-description" label="UMK" name="umk" align="right" />
-            <x-input-with-icon icon="ti ti-file-description" label="Persentase" name="persentase" align="right" />
+            <x-input-with-icon icon="ti ti-moneybag" label="Komisi Salesman" name="komisi_salesman" align="right" money="true" :value="formatAngka($settingkomisidriverhelper->komisi_salesman)" />
+            <x-input-with-icon icon="ti ti-file-description" label="Qty Flat" name="qty_flat" align="right" :value="formatAngka($settingkomisidriverhelper->qty_flat)" />
+            <x-input-with-icon icon="ti ti-file-description" label="UMK" name="umk" align="right" :value="formatAngka($settingkomisidriverhelper->umk)" />
+            <x-input-with-icon icon="ti ti-percentage" label="Persentase" name="persentase" align="right" :value="formatAngka($settingkomisidriverhelper->persentase)" />
         </div>
     </div>
 
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
-            Submit
+            Simpan
         </button>
     </div>
 </form>

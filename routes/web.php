@@ -1044,6 +1044,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/settingkomisidriverhelper/{kode_komisi}/edit', 'edit')->name('settingkomisidriverhelper.edit');
         Route::put('/settingkomisidriverhelper/{kode_komisi}', 'update')->name('settingkomisidriverhelper.update');
         Route::delete('/settingkomisidriverhelper/{kode_komisi}', 'destroy')->name('settingkomisidriverhelper.delete');
+        Route::get('/settingkomisidriverhelper/{kode_komisi}/cetak', 'cetak')->name('settingkomisidriverhelper.cetak');
     });
 
     Route::controller(PenjualanController::class)->group(function () {

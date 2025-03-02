@@ -30,7 +30,8 @@
                                         <select name="bulan" id="bulan" class="form-select">
                                             <option value="">Bulan</option>
                                             @foreach ($list_bulan as $d)
-                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }} value="{{ $d['kode_bulan'] }}">
+                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                                    {{ date('m') == $d['kode_bulan'] ? 'selected' : '' }} value="{{ $d['kode_bulan'] }}">
                                                     {{ $d['nama_bulan'] }}</option>
                                             @endforeach
                                         </select>
@@ -68,6 +69,8 @@
                                         <th>Tahun</th>
                                         <th>Cabang</th>
                                         <th>Komisi Salesman</th>
+                                        <th>Qty Penj</th>
+                                        <th>Value/Unit</th>
                                         <th>Qty Flat</th>
                                         <th>UMK</th>
                                         <th>Persentase</th>
@@ -75,7 +78,32 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($settingkomisidriverhelper as $d)
+                                        @php
+                                            $valueperunit = ROUND($d->komisi_salesman / $d->qty_penjualan, 2);
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $d->kode_komisi }}</td>
+                                            <td>{{ $namabulan[$d->bulan] }}</td>
+                                            <td>{{ $d->tahun }}</td>
+                                            <td>{{ $d->kode_cabang }}</td>
+                                            <td class="text-end">{{ formatAngka($d->komisi_salesman) }}</td>
+                                            <td class="text-end">{{ formatAngka($d->qty_penjualan) }}</td>
+                                            <td class="text-end">{{ formatAngkaDesimal($valueperunit) }}</td>
+                                            <td class="text-end">{{ formatAngka($d->qty_flat) }}</td>
+                                            <td class="text-end">{{ formatAngka($d->umk) }}</td>
+                                            <td class="text-end">{{ formatAngka($d->persentase) }} %</td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a href="#" class="btnEdit" kode_komisi="{{ Crypt::encrypt($d->kode_komisi) }}">
+                                                        <i class="ti ti-edit text-success"></i>
+                                                    </a>
+                                                    <a href="{{ route('settingkomisidriverhelper.cetak', Crypt::encrypt($d->kode_komisi)) }}"><i
+                                                            class="ti ti-printer text-primary"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -114,6 +142,14 @@
             $('#modal').modal("show");
             $("#loadmodal").load("{{ route('settingkomisidriverhelper.create') }}");
             $(".modal-title").text("Tambahkan Setting Komisi Driver Helper");
+        });
+
+        $(".btnEdit").click(function(e) {
+            e.preventDefault();
+            const kode_komisi = $(this).attr("kode_komisi");
+            $('#modal').modal("show");
+            $("#loadmodal").load(`/settingkomisidriverhelper/${kode_komisi}/edit`);
+            $(".modal-title").text("Edit Setting Komisi Driver Helper");
         });
 
         // $(".btnShow").click(function(e) {
