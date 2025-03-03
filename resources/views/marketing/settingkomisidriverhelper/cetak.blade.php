@@ -185,7 +185,7 @@
         </div>
         <br>
 
-        <table class="datatable3">
+        {{-- <table class="datatable3">
             <tr>
                 <th rowspan="2">GUDANG</th>
                 <th>QTY</th>
@@ -206,7 +206,7 @@
                 <td>{{ formatAngka($komisi) }}</td>
                 <td>{{ formatAngka($komisi * 0.6) }}</td>
             </tr>
-        </table>
+        </table> --}}
     </div>
 </body>
 
