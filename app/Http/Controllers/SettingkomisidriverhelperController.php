@@ -224,8 +224,9 @@ class SettingkomisidriverhelperController extends Controller
             DB::raw('SUM(ROUND(gudang_cabang_dpb_detail.jml_penjualan / produk.isi_pcs_dus, 3)) as qty_gudang'),
         )
             ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_detail.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
+            ->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('produk', 'gudang_cabang_dpb_detail.kode_produk', '=', 'produk.kode_produk')
-            ->where('gudang_cabang_dpb.kode_cabang', $settingkomisidriverhelper->kode_cabang)
+            ->where('salesman.kode_cabang', $settingkomisidriverhelper->kode_cabang)
             ->whereBetween('gudang_cabang_dpb.tanggal', [$dari, $sampai])
             ->first();
         $data['komisi'] = Dpbdriverhelper::select(
