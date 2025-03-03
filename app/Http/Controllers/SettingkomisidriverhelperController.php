@@ -227,7 +227,7 @@ class SettingkomisidriverhelperController extends Controller
             ->join('salesman', 'gudang_cabang_dpb.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('produk', 'gudang_cabang_dpb_detail.kode_produk', '=', 'produk.kode_produk')
             ->where('salesman.kode_cabang', $settingkomisidriverhelper->kode_cabang)
-            ->whereBetween('gudang_cabang_dpb.tanggal', [$dari, $sampai])
+            ->whereBetween('gudang_cabang_dpb.tanggal_ambil', [$dari, $sampai])
             ->first();
         $data['komisi'] = Dpbdriverhelper::select(
             'gudang_cabang_dpb_driverhelper.kode_driver_helper',
