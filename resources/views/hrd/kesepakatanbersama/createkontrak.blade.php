@@ -52,12 +52,13 @@
         <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Makan" name="t_makan" money="true" align="right" :value="formatRupiah($gaji->t_makan)" />
         <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Istri" name="t_istri" money="true" align="right" :value="formatRupiah($gaji->t_istri)" />
         <x-input-inline-label icon="ti ti-moneybag" label="Tunj. Skill" name="t_skill" money="true" align="right" :value="formatRupiah($gaji->t_skill)" />
-        <div class="row">
-            <div class="form-group mb-3">
-                <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
-                    <i class="ti ti-send me-1"></i>Submit
-                </button>
-            </div>
+
+    </div>
+    <div class="row">
+        <div class="form-group mb-3">
+            <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
+                <i class="ti ti-send me-1"></i>Submit
+            </button>
         </div>
     </div>
 </form>
