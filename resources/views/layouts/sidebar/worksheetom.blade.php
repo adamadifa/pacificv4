@@ -42,6 +42,7 @@
             'pencairanprogram/*',
             'ajuankumulatif',
             'ajuankumulatif/*',
+            'settingkomisidriverhelper',
         ])
             ? 'open'
             : '' }}">
@@ -79,8 +80,8 @@
             @endcan
 
             @can('mkt.komisidriverhelper')
-                <li class="menu-item {{ request()->is('worksheetom/komisidriverhelper') ? 'active' : '' }}">
-                    <a href="{{ route('worksheetom.komisidriverhelper') }}" class="menu-link">
+                <li class="menu-item {{ request()->is('settingkomisidriverhelper') ? 'active' : '' }}">
+                    <a href="{{ route('settingkomisidriverhelper.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-box"></i>
                         <div>Komisi Driver Helper</div>
                     </a>
