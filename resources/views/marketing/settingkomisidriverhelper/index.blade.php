@@ -31,7 +31,8 @@
                                             <option value="">Bulan</option>
                                             @foreach ($list_bulan as $d)
                                                 <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                    {{ date('m') == $d['kode_bulan'] ? 'selected' : '' }} value="{{ $d['kode_bulan'] }}">
+                                                    {{ date('m') && empty(Request('bulan')) == $d['kode_bulan'] ? 'selected' : '' }}
+                                                    value="{{ $d['kode_bulan'] }}">
                                                     {{ $d['nama_bulan'] }}</option>
                                             @endforeach
                                         </select>
