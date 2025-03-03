@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cabang;
+use App\Models\Detaildpb;
 use App\Models\Detailpenjualan;
 use App\Models\Dpbdriverhelper;
 use App\Models\Settingkomisidriverhelper;
@@ -219,6 +220,14 @@ class SettingkomisidriverhelperController extends Controller
         $data['dari'] = $dari;
         $data['sampai'] = $sampai;
         $data['cabang'] = Cabang::where('kode_cabang', $settingkomisidriverhelper->kode_cabang)->first();
+        $data['komisi_gudang'] = Detaildpb::select(
+            DB::raw('SUM(ROUND(gudang_cabang_dpb_detail.jml_penjualan / produk.isi_pcs_dus, 3)'),
+        )
+            ->join('gudang_cabang_dpb', 'gudang_cabang_dpb_detail.no_dpb', '=', 'gudang_cabang_dpb.no_dpb')
+            ->join('produk', 'gudang_cabang_dpb_detail.kode_produk', '=', 'produk.kode_produk')
+            ->where('gudang_cabang_dpb.kode_cabang', $settingkomisidriverhelper->kode_cabang)
+            ->whereBetween('gudang_cabang_dpb.tanggal', [$dari, $sampai])
+            ->first();
         $data['komisi'] = Dpbdriverhelper::select(
             'gudang_cabang_dpb_driverhelper.kode_driver_helper',
             'posisi',
