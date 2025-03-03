@@ -95,11 +95,13 @@
                                             <td class="text-end">{{ formatAngka($d->persentase) }} %</td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a href="#" class="btnEdit" kode_komisi="{{ Crypt::encrypt($d->kode_komisi) }}">
+                                                    <a href="#" class="btnEdit me-1" kode_komisi="{{ Crypt::encrypt($d->kode_komisi) }}">
                                                         <i class="ti ti-edit text-success"></i>
                                                     </a>
-                                                    <a href="{{ route('settingkomisidriverhelper.cetak', Crypt::encrypt($d->kode_komisi)) }}"><i
-                                                            class="ti ti-printer text-primary"></i></a>
+                                                    <a href="{{ route('settingkomisidriverhelper.cetak', Crypt::encrypt($d->kode_komisi)) }}"
+                                                        target="_blank" class="me-1"><i class="ti ti-printer text-primary"></i></a>
+                                                    <a href="{{ route('settingkomisidriverhelper.cetak', Crypt::encrypt($d->kode_komisi)) }}?export=true"
+                                                        target="_blank" class="me-1"><i class="ti ti-download text-success"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
