@@ -185,12 +185,28 @@
         </div>
         <br>
 
-        {{-- <table class="datatable3">
+        <table class="datatable3">
             <tr>
-                <th>TOTAL KOMISI</th>
-                <th class="right">{{ formatAngkaDesimal($grandtotal_komisi + $total_komisi_gudang) }}</th>
+                <th rowspan="2">GUDANG</th>
+                <th>QTY</th>
+                <th>TOTAL</th>
+                <th>60%</th>
             </tr>
-        </table> --}}
+            <tr>
+                @php
+                    $total_qty = $komisi_gudang->qty_gudang;
+                    $komisi = ROUND(
+                        ($settingkomisidriverhelper->umk +
+                            $settingkomisidriverhelper->qty_flat +
+                            $value_unit * ($settingkomisidriverhelper->persentase / 100)) *
+                            $total_qty,
+                    );
+                @endphp
+                <td>{{ formatAngka($total_qty) }}</td>
+                <td>{{ formatAngka($komisi) }}</td>
+                <td>{{ formatAngka($komisi * 0.6) }}</td>
+            </tr>
+        </table>
     </div>
 </body>
 

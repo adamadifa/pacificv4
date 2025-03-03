@@ -246,7 +246,6 @@ class SettingkomisidriverhelperController extends Controller
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
             header("Content-Disposition: attachment; filename=$settingkomisidriverhelper->kode_komisi.xls");
-            return view('marketing.settingkomisidriverhelper.cetak', $data);
         }
         return view('marketing.settingkomisidriverhelper.cetak', $data);
     }
