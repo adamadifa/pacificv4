@@ -998,7 +998,7 @@
 
 
         function hitungdiskonProductBP500() {
-            let totalQuantity = calculateTotalQuantityByProduct('AB');
+            let totalQuantity = calculateTotalQuantityByProduct('BP500');
             let diskon = totalQuantity * 2000;
             return diskon;
 
