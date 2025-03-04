@@ -910,7 +910,7 @@
             hitungdiskonStick();
             hitungdiskonSC();
             hitungdiskonSP();
-            hitungdiskonProductBP500();
+            // hitungdiskonProductBP500();
 
             calculateGrandtotal();
         }
@@ -999,14 +999,18 @@
 
         function hitungdiskonProductBP500() {
             let totalQuantity = calculateTotalQuantityByProduct('AB');
-            console.log(totalQuantity);
+            let diskon = totalQuantity * 2000;
+            return diskon;
+
         }
 
 
         function hitungdiskonSwan() {
             let totalQuantity = calculateTotalQuantityByCategory('D001');
             let diskon = calculateDiscount(totalQuantity, 'D001');
-            $("#potongan_swan").val(convertToRupiah(diskon));
+            let diskonbp500 = hitungdiskonProductBP500();
+            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500);
+            $("#potongan_swan").val(convertToRupiah(totaldiskon));
             return diskon;
         }
 
