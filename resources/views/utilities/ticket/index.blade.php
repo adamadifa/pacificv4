@@ -116,7 +116,7 @@
                                                     @endif
 
                                                     @can('ticket.approve')
-                                                        @if ($level_user == 'gm administrasi' && $d->status == '0')
+                                                        @if (in_array($level_user, ['gm administrasi', 'regional operation manager']) && $d->status == '0')
                                                             <a href="#" class="btnApprove me-1" kode_pengajuan="{{ $d->kode_pengajuan }}">
                                                                 <i class="ti ti-external-link text-primary"></i>
                                                             </a>
