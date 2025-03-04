@@ -56,10 +56,16 @@
         </td>
         <td class="text-end">
             <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="{{ $reward_tunai }}">
+            @php
+                $reward_tunai = in_array($d->kode_program, $bb_dep) && $reward > 1000000 ? 0 : $reward_tunai;
+            @endphp
             {{ formatAngka($reward_tunai) }}
         </td>
         <td class="text-end">
             <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="{{ $reward_kredit }}">
+            @php
+                $reward_kredit = in_array($d->kode_program, $bb_dep) && $reward > 1000000 ? 0 : $reward_kredit;
+            @endphp
             {{ formatAngka($reward_kredit) }}
         </td>
         <td class="text-end">

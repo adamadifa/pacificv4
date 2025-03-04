@@ -734,6 +734,9 @@
             let isi_pcs_dus = $(this).find("#isi_pcs_dus").val();
             let isi_pcs_pack = $(this).find("#isi_pcs_pack").val();
             let kode_kategori_diskon = $(this).find("#kode_kategori_diskon").val();
+            let kode_produk = $(this).find("#kode_produk").val();
+            // alert(kode_produk);
+            // return false;
             let index_old = $(this).find("#index_old").val();
             let status_promosi;
             // if ($(this).find('#status_promosi_edit').is(":checked")) {
@@ -796,6 +799,7 @@
                             <input type="hidden" name="kode_harga_produk[]" value="${kode_harga}" class="kode_harga"/>
                             <input type="hidden" name="status_promosi_produk[]" class="status_promosi" value="${status_promosi}"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
+                            <input type="hidden" name="kode_produk[]" class="kode_produk" value="${kode_produk}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
                             <input type="hidden" name="jumlah_dus[]" class="jumlah_dus" value="${dus}"/>
                             <input type="hidden" name="isi_pcs_dus_produk[]" value="${isi_pcs_dus}"/>
@@ -906,6 +910,8 @@
             hitungdiskonStick();
             hitungdiskonSC();
             hitungdiskonSP();
+            hitungdiskonProductBP500();
+
             calculateGrandtotal();
         }
 
@@ -918,6 +924,23 @@
             $('#tabelproduk tbody tr').each(function() {
                 // Check if the category matches
                 if ($(this).find('.kode_kategori_diskon').val() === category) {
+                    // Add quantity to total if category matches
+                    if ($(this).find('.status_promosi').val() === '0') {
+                        totalQuantity += parseInt($(this).find('.jumlah_dus').val());
+                    }
+                }
+            });
+            // console.log(category + ': ' + totalQuantity);
+            return totalQuantity;
+        }
+
+
+        function calculateTotalQuantityByProduct(kode_produk) {
+            let totalQuantity = 0;
+            // Loop through each row in the table
+            $('#tabelproduk tbody tr').each(function() {
+                // Check if the category matches
+                if ($(this).find('.kode_produk').val() === kode_produk) {
                     // Add quantity to total if category matches
                     if ($(this).find('.status_promosi').val() === '0') {
                         totalQuantity += parseInt($(this).find('.jumlah_dus').val());
@@ -971,6 +994,12 @@
             let diskon = calculateDiscount(totalQuantity, 'D002');
             $("#potongan_aida").val(convertToRupiah(diskon));
             return diskon;
+        }
+
+
+        function hitungdiskonProductBP500() {
+            let totalQuantity = calculateTotalQuantityByProduct('AB');
+            console.log(totalQuantity);
         }
 
 
