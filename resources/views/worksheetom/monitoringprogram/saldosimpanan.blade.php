@@ -92,7 +92,7 @@
     </div>
 </div>
 
-<x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
+<x-modal-form id="modal" size="" show="loadmodal" title="" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
 @push('myscript')
