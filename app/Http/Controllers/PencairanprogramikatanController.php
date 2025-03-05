@@ -271,7 +271,8 @@ class PencairanprogramikatanController extends Controller
                 'tipe_reward',
                 'budget_smm',
                 'budget_rsm',
-                'budget_gm'
+                'budget_gm',
+                'kode_program'
             )
             ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
             ->orderBy('pelangganprogram.metode_pembayaran')
