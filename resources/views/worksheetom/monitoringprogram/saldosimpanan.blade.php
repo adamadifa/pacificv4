@@ -66,7 +66,8 @@
                                                 <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="#" class="me-1">
+                                                        <a href="#" class="me-1 btnShow"
+                                                            kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}">
                                                             <i class="ti ti-file-description text-primary"></i>
                                                         </a>
                                                         <a href="#" class="me-1">
@@ -91,22 +92,19 @@
     </div>
 </div>
 
-<x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
+<x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
 @endsection
 @push('myscript')
 <script>
     $(function() {
-        $(document).on('click', '.btnDetailfaktur', function(e) {
+        $(document).on('click', '.btnShow', function(e) {
             e.preventDefault();
             let kode_pelanggan = $(this).attr('kode_pelanggan');
-            let bulan = "{{ Request('bulan') }}";
-            let tahun = "{{ Request('tahun') }}";
-            let kode_program = "{{ Request('kode_program') }}"
-            $("#modalDetailfaktur").modal("show");
-            $("#modalDetailfaktur").find(".modal-title").text('Detail Faktur');
-            $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
-                `/monitoringprogram/${kode_pelanggan}/${kode_program}/${bulan}/${tahun}/detailfaktur`);
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text('Detail Simpanan');
+            $("#modal").find("#loadmodal").load(
+                `/monitoringprogram/${kode_pelanggan}/getdetailsimpana`);
         });
     });
 </script>
