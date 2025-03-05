@@ -104,7 +104,7 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text('Detail Simpanan');
             $("#modal").find("#loadmodal").load(
-                `/monitoringprogram/${kode_pelanggan}/getdetailsimpana`);
+                `/monitoringprogram/${kode_pelanggan}/getdetailsimpanan`);
         });
     });
 </script>
