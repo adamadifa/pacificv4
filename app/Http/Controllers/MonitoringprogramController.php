@@ -314,7 +314,7 @@ class MonitoringprogramController extends Controller
         $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan');
-        $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program_ikatan', '=', 'program_ikatan.kode_program_ikatan');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->where('status_pencairan', 0);
         $query->where('marketing_pencairan_ikatan_detail.kode_pelanggan', $kode_pelanggan);
         $query->where('marketing_pencairan_ikatan.status', 1);
