@@ -302,16 +302,19 @@ class MonitoringprogramController extends Controller
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
         $query = Detailpencairanprogramikatan::query();
         $query->select(
+            'marketing_pencairan_ikatan.tanggal',
             'marketing_pencairan_ikatan_detail.kode_pelanggan',
             'nama_pelanggan',
             'nama_salesman',
             'nama_wilayah',
-            DB::raw('SUM(total_reward) as total_reward')
+            'total_reward',
+            'nama_program',
         );
         $query->join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program_ikatan', '=', 'program_ikatan.kode_program_ikatan');
         $query->where('status_pencairan', 0);
         $query->where('marketing_pencairan_ikatan_detail.kode_pelanggan', $kode_pelanggan);
         $query->where('marketing_pencairan_ikatan.status', 1);
