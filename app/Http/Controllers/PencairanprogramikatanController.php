@@ -261,6 +261,18 @@ class PencairanprogramikatanController extends Controller
             ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
                 $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
             })
+            ->select(
+                'marketing_pencairan_ikatan_detail.*',
+                'pelanggan.nama_pelanggan',
+                'top',
+                'metode_pembayaran',
+                'qty_target',
+                'reward',
+                'tipe_reward',
+                'budget_smm',
+                'budget_rsm',
+                'budget_gm'
+            )
             ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
             ->orderBy('pelangganprogram.metode_pembayaran')
             ->get();
