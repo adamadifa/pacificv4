@@ -308,7 +308,7 @@
                             </td>
                             <td class="right">
                                 @php
-                                    $ratio_cashin = $cabang->kode_cabang == 'BDG' ? 0.15 : 0.1;
+                                    $ratio_cashin = 0.1;
                                     $reward_cashin = $d->status_komisi == 1 ? $d->realisasi_cashin * ($ratio_cashin / 100) : 0;
                                     $total_reward_cashin += $reward_cashin;
                                 @endphp

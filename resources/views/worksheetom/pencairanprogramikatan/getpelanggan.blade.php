@@ -55,11 +55,19 @@
             {{ formatAngka($d->jml_dus) }}
         </td>
         <td class="text-end">
+            @php
+                $reward_tunai = $reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $reward;
+            @endphp
             <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="{{ $reward_tunai }}">
+
             {{ formatAngka($reward_tunai) }}
         </td>
         <td class="text-end">
+            @php
+                $reward_kredit = $reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $reward;
+            @endphp
             <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="{{ $reward_kredit }}">
+
             {{ formatAngka($reward_kredit) }}
         </td>
         <td class="text-end">
