@@ -295,4 +295,29 @@ class MonitoringprogramController extends Controller
         $data['start_year'] = config('global.start_year');
         return view('worksheetom.monitoringprogram.saldovoucher', $data);
     }
+
+
+    public function getdetailsimpanan($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $query = Detailpencairanprogramikatan::query();
+        $query->select(
+            'marketing_pencairan_ikatan_detail.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            DB::raw('SUM(total_reward) as total_reward')
+        );
+        $query->join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan');
+        $query->where('status_pencairan', 0);
+        $query->where('marketing_pencairan_ikatan_detail.kode_pelanggan', $kode_pelanggan);
+        $query->where('marketing_pencairan_ikatan.status', 1);
+        $query->orderBy('nama_pelanggan');
+        $data['detailsimpanan'] = $query->get();
+
+        return view('worksheetom.monitoringprogram.getdetailsimpanan', $data);
+    }
 }
