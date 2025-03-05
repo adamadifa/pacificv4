@@ -185,28 +185,30 @@
         </div>
         <br>
 
-        {{-- <table class="datatable3">
+        <table class="datatable3">
             <tr>
                 <th rowspan="2">GUDANG</th>
-                <th>QTY</th>
-                <th>TOTAL</th>
-                <th>60%</th>
+                <th>KOMISI DRIVER HELPER</th>
+                <th>JML PERSONIL</th>
+                <th>KOMISI GUDANG</th>
             </tr>
             <tr>
                 @php
-                    $total_qty = $komisi_gudang->qty_gudang;
-                    $komisi = ROUND(
-                        ($settingkomisidriverhelper->umk +
-                            $settingkomisidriverhelper->qty_flat +
-                            $value_unit * ($settingkomisidriverhelper->persentase / 100)) *
-                            $total_qty,
-                    );
+                    // $total_qty = $komisi_gudang->qty_gudang;
+                    // $komisi = ROUND(
+                    //     ($settingkomisidriverhelper->umk +
+                    //         $settingkomisidriverhelper->qty_flat +
+                    //         $value_unit * ($settingkomisidriverhelper->persentase / 100)) *
+                    //         $total_qty,
+                    // );
+                    $jm_personil = count($komisi);
+                    $komisi_gudang = ($grandtotal_komisi / $jm_personil) * 0.6;
                 @endphp
-                <td>{{ formatAngka($total_qty) }}</td>
-                <td>{{ formatAngka($komisi) }}</td>
-                <td>{{ formatAngka($komisi * 0.6) }}</td>
+                <td>{{ formatAngka($grandtotal_komisi) }}</td>
+                <td>{{ formatAngka($jml_personil) }}</td>
+                <td>{{ formatAngka($komisi_gudang) }}</td>
             </tr>
-        </table> --}}
+        </table>
     </div>
 </body>
 
