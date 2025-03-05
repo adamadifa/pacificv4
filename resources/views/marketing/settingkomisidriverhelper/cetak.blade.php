@@ -151,7 +151,9 @@
                                 'G' => 'Gudang',
                             ];
                             $grandtotal_komisi = 0;
+                            $jml_personil = 0;
                         @endphp
+
                         @foreach ($komisi as $d)
                             @php
                                 $total_qty = ROUND($d->qty_driver + $d->qty_helper);
@@ -162,6 +164,7 @@
                                         $total_qty,
                                 );
                                 $grandtotal_komisi += $komisi;
+                                $jml_personil += 1;
                             @endphp
                             <tr>
                                 <td>{{ $d->kode_driver_helper }}</td>
@@ -201,7 +204,7 @@
                     //         $value_unit * ($settingkomisidriverhelper->persentase / 100)) *
                     //         $total_qty,
                     // );
-                    $jm_personil = count($komisi);
+
                     $komisi_gudang = ($grandtotal_komisi / $jm_personil) * 0.6;
                 @endphp
                 <td>{{ formatAngka($grandtotal_komisi) }}</td>
