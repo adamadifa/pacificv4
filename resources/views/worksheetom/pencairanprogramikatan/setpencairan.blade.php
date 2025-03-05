@@ -154,7 +154,7 @@
                                             <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
                                             <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
                                             <td class="text-end">{{ formatAngka($total_reward) }}</td>
-                                            <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+                                            <td>{{ $metode_pembayaran[$d->metode_pembayaran] || '-' }}</td>
 
                                             <td>{{ $d->no_rekening }}</td>
                                             <td>{{ $d->pemilik_rekening }}</td>
