@@ -205,7 +205,7 @@
                     //         $total_qty,
                     // );
 
-                    $komisi_gudang = ($grandtotal_komisi / $jm_personil) * 0.6;
+                    $komisi_gudang = ($grandtotal_komisi / $jml_personil) * 0.6;
                 @endphp
                 <td>{{ formatAngka($grandtotal_komisi) }}</td>
                 <td>{{ formatAngka($jml_personil) }}</td>
