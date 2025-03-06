@@ -103,6 +103,7 @@
                                 <div class="col-lg-4 col-md-12 col-sm12">
                                     <x-input-with-icon label="Produk" name="nama_produk" icon="ti ti-barcode" height="80px" readonly="true" />
                                     <input type="hidden" id="kode_harga" name="kode_harga">
+                                    <input type="hidden" id="kode_produk" name="kode_produk">
                                     <input type="hidden" id="isi_pcs_dus" name="isi_pcs_dus">
                                     <input type="hidden" id="isi_pcs_pack" name="isi_pcs_pack">
                                     <input type="hidden" id="kode_kategori_diskon" name="kode_kategori_diskon">
@@ -668,6 +669,7 @@
         $(document).on('click', '.pilihProduk', function(e) {
             e.preventDefault();
             let kode_harga = $(this).attr('kode_harga');
+            let kode_produk = $(this).attr('kode_produk');
             let nama_pelanggan = $("#nama_pelanggan").val();
             let nama_produk = $(this).attr('nama_produk');
             let harga_dus = $(this).attr('harga_dus');
@@ -688,6 +690,7 @@
                 harga_pcs = 0;
             }
             $("#kode_harga").val(kode_harga);
+            $("#kode_produk").val(kode_produk);
             $("#nama_produk").val(nama_produk);
             $("#harga_dus").val(harga_dus);
             $("#harga_pack").val(harga_pack);
@@ -755,6 +758,7 @@
 
         function addProduk() {
             var kode_harga = $("#kode_harga").val();
+            var kode_produk = $("#kode_produk").val();
             var nama_produk = $("#nama_produk").val();
             var jml_dus = $("#jml_dus").val();
             var jml_pack = $("#jml_pack").val();
@@ -842,6 +846,7 @@
                     <tr id="index_${index}" class="${bgcolor}">
                         <td>
                             <input type="hidden" name="kode_harga_produk[]" value="${kode_harga}" class="kode_harga"/>
+                            <input type="hidden" name="kode_produk[]" value="${kode_produk}" class="kode_produk"/>
                             <input type="hidden" name="status_promosi_produk[]" class="status_promosi" value="${status_promosi}"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
@@ -1192,6 +1197,22 @@
             return totalQuantity;
         }
 
+        function calculateTotalQuantityByProduct(kode_produk) {
+            let totalQuantity = 0;
+            // Loop through each row in the table
+            $('#tabelproduk tbody tr').each(function() {
+                // Check if the category matches
+                if ($(this).find('.kode_produk').val() === kode_produk) {
+                    // Add quantity to total if category matches
+                    if ($(this).find('.status_promosi').val() === '0') {
+                        totalQuantity += parseInt($(this).find('.jumlah_dus').val());
+                    }
+                }
+            });
+            // console.log(category + ': ' + totalQuantity);
+            return totalQuantity;
+        }
+
         function calculateDiscount(totalQuantity, category) {
             let discount = 0;
             let discount_tunai = 0;
@@ -1237,12 +1258,20 @@
             return diskon;
         }
 
+        function hitungdiskonProductBP500() {
+            let totalQuantity = calculateTotalQuantityByProduct('BP500');
+            let diskon = totalQuantity * 2000;
+            return diskon;
+
+        }
 
         function hitungdiskonSwan() {
             let totalQuantity = calculateTotalQuantityByCategory('D001');
             let diskon = calculateDiscount(totalQuantity, 'D001');
-            $("#potongan_swan").val(convertToRupiah(diskon));
-            return diskon;
+            let diskonbp500 = hitungdiskonProductBP500();
+            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500);
+            $("#potongan_swan").val(convertToRupiah(totaldiskon));
+            return totaldiskon;
         }
 
         function hitungdiskonStick() {
@@ -1250,6 +1279,8 @@
             let diskon = calculateDiscount(totalQuantity, 'D003');
             $("#potongan_stick").val(convertToRupiah(diskon));
         }
+
+
 
         function hitungdiskonSP() {
             let totalQuantity = calculateTotalQuantityByCategory('D004');

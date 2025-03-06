@@ -22,7 +22,7 @@
                 <td><a href="#" class="pilihProduk" kode_harga="{{ $d->kode_harga }}" nama_produk="{{ $d->nama_produk }}"
                         harga_dus = "{{ formatAngka($d->harga_dus) }}" harga_pack = "{{ formatAngka($d->harga_pack) }}"
                         harga_pcs = "{{ formatAngka($d->harga_pcs) }}" isi_pcs_dus="{{ $d->isi_pcs_dus }}" isi_pcs_pack = "{{ $d->isi_pcs_pack }}"
-                        kode_kategori_diskon = "{{ $d->kode_kategori_diskon }}">
+                        kode_kategori_diskon = "{{ $d->kode_kategori_diskon }}" kode_produk= "{{ $d->kode_produk }}">
                         <i class="ti ti-external-link"></i>
                     </a>
                 </td>
