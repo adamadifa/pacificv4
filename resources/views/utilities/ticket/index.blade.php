@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive mb-2">
-                            <table class="table">
+                            <table class="table table-bordered">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>No. Ticket</th>
