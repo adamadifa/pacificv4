@@ -2,6 +2,7 @@
     @csrf
     <x-input-with-icon label="Tanggal" name="tanggal" value="{{ date('Y-m-d') }}" icon="ti ti-calendar" datepicker="flatpickr-date" readonly />
     <x-textarea label="Keterangan" name="keterangan" />
+    <x-input-with-icon label="Link Lampiran Dokumen" name="link" icon="ti ti-link" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-ticket me-1"></i>Buat Ticket</button>
     </div>
