@@ -3,6 +3,7 @@
     <input type="hidden" name="isi_pcs_dus" id="isi_pcs_dus">
     <input type="hidden" name="isi_pcs_pack" id="isi_pcs_pack">
     <input type="hidden" name="kode_kategori_diskon" id="kode_kategori_diskon">
+    <input type="hidden" name="kode_produk" id="kode_produk">
     <input type="hidden" name="index_old" id="index_old" value="{{ $dataproduk['index_old'] }}">
     <div class="form-group mb-3">
         <select name="kode_harga" id="kode_harga" class="form-select" disabled>
@@ -11,7 +12,8 @@
                 <option data-isi_pcs_dus = "{{ $d->isi_pcs_dus }}" data-isi_pcs_pack = "{{ $d->isi_pcs_pack }}"
                     data-harga_dus = "{{ formatAngka($d->harga_dus) }}" data-harga_pack = "{{ formatAngka($d->harga_pack) }}"
                     data-harga_pcs = "{{ formatAngka($d->harga_pcs) }}" data-kode_kategori_diskon = "{{ $d->kode_kategori_diskon }}"
-                    {{ $dataproduk['kode_harga'] == $d->kode_harga ? 'selected' : '' }} value="{{ $d->kode_harga }}">
+                    data-kode_produk="{{ $d->kode_produk }}" {{ $dataproduk['kode_harga'] == $d->kode_harga ? 'selected' : '' }}
+                    value="{{ $d->kode_harga }}">
                     {{ $d->nama_produk }}</option>
             @endforeach
         </select>
@@ -123,6 +125,7 @@
             let isi_pcs_dus = selectedOption.data('isi_pcs_dus');
             let isi_pcs_pack = selectedOption.data('isi_pcs_pack');
             let kode_kategori_diskon = selectedOption.data('kode_kategori_diskon');
+            let kode_produk = selectedOption.data('kode_produk');
             console.log(isi_pcs_pack);
             if (isi_pcs_pack == "" || isi_pcs_pack === '0') {
                 form.find("#jml_pack").prop('disabled', true);

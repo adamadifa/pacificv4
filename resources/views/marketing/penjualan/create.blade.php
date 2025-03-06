@@ -967,6 +967,7 @@
 
             // Ambil data dari sel
             let kode_harga = currentRow.find('.kode_harga').val();
+            let kode_produk = currentRow.find('.kode_produk').val();
             let nama_produk = currentRow.find('td:eq(1)').text();
             let jml_dus = currentRow.find('td:eq(2)').text();
             let harga_dus = currentRow.find('td:eq(3)').text();
@@ -985,6 +986,7 @@
             let dataProduk = {
                 'kode_pelanggan': kode_pelanggan,
                 'kode_harga': kode_harga,
+                'kode_produk': kode_produk,
                 'nama_produk': nama_produk,
                 'jml_dus': jml_dus,
                 'harga_dus': harga_dus,
