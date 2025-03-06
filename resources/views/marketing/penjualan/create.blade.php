@@ -1205,11 +1205,11 @@
                 if ($(this).find('.kode_produk').val() === kode_produk) {
                     // Add quantity to total if category matches
                     if ($(this).find('.status_promosi').val() === '0') {
-                        totalQuantity += parseInt($(this).find('.jumlah_dus').val());
+                        totalQuantity += parseInt($(this).find('td:eq(2)').text());
                     }
                 }
             });
-            console.log(kode_produk);
+            console.log(kode_produk + ': ' + totalQuantity);
             // console.log(category + ': ' + totalQuantity);
             return totalQuantity;
         }
