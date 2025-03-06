@@ -3,6 +3,7 @@
     @method('PUT')
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$ticket->tanggal" readonly />
     <x-textarea label="Keterangan" name="keterangan" :value="$ticket->keterangan" />
+    <x-input-with-icon label="Link" name="link" icon="ti ti-link" :value="$ticket->link" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-ticket me-1"></i>Update</button>
     </div>

@@ -72,7 +72,8 @@ class TicketController extends Controller
                 'tanggal' => $request->tanggal,
                 'keterangan' => $request->keterangan,
                 'status' => 0,
-                'id_user' => auth()->user()->id
+                'id_user' => auth()->user()->id,
+                'link' => $request->link
             ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Throwable $th) {
@@ -92,12 +93,14 @@ class TicketController extends Controller
         $request->validate([
             'tanggal' => 'required',
             'keterangan' => 'required',
+
         ]);
 
         try {
             Ticket::where('kode_pengajuan', $kode_pengajuan)->update([
                 'tanggal' => $request->tanggal,
                 'keterangan' => $request->keterangan,
+                'link' => $request->link
             ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Throwable $th) {
