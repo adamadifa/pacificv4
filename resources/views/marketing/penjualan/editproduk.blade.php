@@ -136,6 +136,7 @@
             form.find("#isi_pcs_dus").val(isi_pcs_dus);
             form.find("#isi_pcs_pack").val(isi_pcs_pack);
             form.find("#kode_kategori_diskon").val(kode_kategori_diskon);
+            form.find("#kode_produk").val(kode_produk);
 
             if (nama_pelanggan.includes('KPBN') || nama_pelanggan.includes('RSB')) {
                 form.find("#harga_dus").prop('disabled', false);
