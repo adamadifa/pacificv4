@@ -196,6 +196,15 @@ class JurnalumumController extends Controller
                         ->first();
                     $last_kode_cr = $lastcostratio != null ? $lastcostratio->kode_cr : '';
                     $kode_cr =  buatkode($last_kode_cr, "CR" . date('my', strtotime($request->tanggal)), 4);
+                    Costratio::create([
+                        'kode_cr' => $kode_cr,
+                        'tanggal' => $request->tanggal,
+                        'kode_akun' => $request->kode_akun,
+                        'keterangan' => $request->keterangan,
+                        'kode_cabang' => $request->kode_cabang,
+                        'kode_sumber'   => 5,
+                        'jumlah' => toNumber($request->jumlah),
+                    ]);
                     Jurnalumumcostratio::create([
                         'kode_ju' => $jurnalumum->kode_ju,
                         'kode_cr' => $kode_cr,
