@@ -1269,11 +1269,10 @@
         function hitungdiskonSwan() {
             let totalQuantity = calculateTotalQuantityByCategory('D001');
             let diskon = calculateDiscount(totalQuantity, 'D001');
-            let diskonbp500 = calculateTotalQuantityByProduct('BP500');
-            console.log(diskonbp500 || 'Not found');
-            // let totaldiskon = parseInt(diskon) + parseInt(diskonbp500);
-            $("#potongan_swan").val(convertToRupiah(diskon));
-            return diskon;
+            let diskonbp500 = hitungdiskonProductBP500();
+            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500);
+            $("#potongan_swan").val(convertToRupiah(totaldiskon));
+            return totaldiskon;
         }
 
         function hitungdiskonStick() {
