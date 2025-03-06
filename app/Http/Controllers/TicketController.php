@@ -34,7 +34,7 @@ class TicketController extends Controller
                 $query->where('tickets.status', 1);
             }
         }
-        $query->orderBy('status', 'desc');
+        $query->orderBy('status');
         $query->orderBy('kode_pengajuan', 'asc');
         $ticket = $query->get();
 
