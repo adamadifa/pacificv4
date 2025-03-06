@@ -36,7 +36,8 @@ class TicketController extends Controller
         }
         $query->orderBy('status');
         $query->orderBy('kode_pengajuan', 'asc');
-        $ticket = $query->get();
+        $ticket = $query->paginate(10);
+        $ticket->appends($request->all());
 
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();

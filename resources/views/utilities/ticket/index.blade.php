@@ -145,6 +145,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="d-flex justify-content-between">
+                            {{ $ticket->links() }}
+                        </div>
                     </div>
                 </div>
             </div>
