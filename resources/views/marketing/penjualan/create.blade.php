@@ -1014,6 +1014,7 @@
         $(document).on('submit', '#formEditproduk', function(event) {
             event.preventDefault();
             let kode_harga = $(this).find("#kode_harga").val();
+            let kode_produk = $(this).find("#kode_produk").val();
             let nama_produk = $(this).find("#kode_harga").find(':selected').text();
             let jml_dus = $(this).find("#jml_dus").val();
             let jml_pack = $(this).find("#jml_pack").val();
@@ -1079,6 +1080,7 @@
                     <tr id="index_${index}" class="${bgcolor}">
                         <td>
                             <input type="hidden" name="kode_harga_produk[]" value="${kode_harga}" class="kode_harga"/>
+                            <input type="hidden" name="kode_produk[]" value="${kode_produk}" class="kode_produk"/>
                             <input type="hidden" name="status_promosi_produk[]" value="${status_promosi}" class="status_promosi"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
