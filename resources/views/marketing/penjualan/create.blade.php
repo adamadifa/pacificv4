@@ -1209,6 +1209,7 @@
                     }
                 }
             });
+            console.log(kode_produk);
             // console.log(category + ': ' + totalQuantity);
             return totalQuantity;
         }
@@ -1269,7 +1270,7 @@
             let totalQuantity = calculateTotalQuantityByCategory('D001');
             let diskon = calculateDiscount(totalQuantity, 'D001');
             let diskonbp500 = calculateTotalQuantityByProduct('BP500');
-            console.log(diskonbp500);
+            console.log(diskonbp500 || 'Not found');
             // let totaldiskon = parseInt(diskon) + parseInt(diskonbp500);
             $("#potongan_swan").val(convertToRupiah(diskon));
             return diskon;
