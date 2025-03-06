@@ -137,10 +137,12 @@
                                                             </a>
                                                         </form>
                                                     @endif
+                                                    @if (!empty($d->link))
+                                                        <a href="{{ url($d->link) }}" target="_blank">
+                                                            <i class="ti ti-paperclip text-primary"></i>
+                                                        </a>
+                                                    @endif
 
-                                                    <a href="{{ url($d->link) }}" target="_blank">
-                                                        <i class="ti ti-paperclip text-primary"></i>
-                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
