@@ -131,7 +131,7 @@
                         <td class="right">{{ formatAngka($cashback) }}</td>
                         <td>{{ !empty($d->metode_bayar) ? $metode_pembayaran[$d->metode_bayar] : '' }}</td>
                         <td>{{ $d->bank }}</td>
-                        <td>{{ $d->no_rekening }}</td>
+                        <td>'{{ $d->no_rekening }}</td>
                         <td>{{ $d->pemilik_rekening }}</td>
                     </tr>
                     @if ($d->metode_bayar != $next_metode_pembayaran)

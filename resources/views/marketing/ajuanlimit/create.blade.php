@@ -47,16 +47,16 @@
                 </select>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col text-center">
                     <div class="card h-100">
-                        <img class="card-img-top" src="../../assets/img/elements/2.jpg" alt="Card image cap" style="height:100px; object-fit:cover"
-                            id="foto">
+                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image" class="card-img-top"
+                            style="height:100px; object-fit:cover" id="foto">
                     </div>
                 </div>
                 <div class="col">
                     <div class="card h-100">
-                        <img class="card-img-top" src="../../assets/img/elements/2.jpg" alt="Card image cap" style="height:100px; object-fit:cover"
-                            id="foto">
+                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image" class="card-img-top"
+                            style="height:100px; object-fit:cover" id="foto_owner">
                     </div>
                 </div>
             </div>
@@ -254,6 +254,10 @@
                         form.find("#lama_langganan").val(response.data.lama_langganan);
                         form.find("#jaminan").val(response.data.jaminan);
                         form.find("#omset_toko").val(convertToRupiah(response.data.omset_toko));
+                        let fileFoto = response.data.foto;
+                        let fileFotoowner = response.data.foto_owner;
+                        checkFileExistence(fileFoto);
+                        checkFileExistenceOwner(fileFotoowner);
                         $('#modalPelanggan').modal('hide');
                         getlistFakturkredit(response.data.kode_pelanggan);
                         loadSkor();
@@ -261,6 +265,59 @@
 
                 }
             });
+        }
+
+        function checkFileExistence(fileFoto) {
+            var xhr = new XMLHttpRequest();
+            var filePath = '/pelanggan/' + fileFoto;
+            var foto = "{{ url(Storage::url('pelanggan')) }}/" + fileFoto;
+            var fotoDefault = "{{ asset('assets/img/elements/2.jpg') }}";
+            console.log(foto);
+            xhr.open('GET', '/pelanggan/cekfotopelanggan?file=' + filePath, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.exists) {
+                            console.log('File exists');
+                            $("#foto").attr("src", foto);
+                        } else {
+                            console.log('File does not exist');
+                            $("#foto").attr("src", fotoDefault);
+                        }
+                    } else {
+                        console.error('Error checking file existence:', xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+
+        function checkFileExistenceOwner(fileFoto) {
+            var xhr = new XMLHttpRequest();
+            var filePath = '/pelanggan/owner/' + fileFoto;
+            var foto = "{{ url(Storage::url('pelanggan/owner')) }}/" + fileFoto;
+            var fotoDefault = "{{ asset('assets/img/elements/2.jpg') }}";
+            console.log(foto);
+            xhr.open('GET', '/pelanggan/cekfotopelanggan?file=' + filePath, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.exists) {
+                            console.log('File exists');
+                            $("#foto_owner").attr("src", foto);
+                        } else {
+                            console.log('File does not exist');
+                            $("#foto_owner").attr("src", fotoDefault);
+                        }
+                    } else {
+                        console.error('Error checking file existence:', xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
         }
 
         function getlistFakturkredit(kode_pelanggan) {
