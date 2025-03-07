@@ -542,7 +542,7 @@ function pihakpertamacabang($cabang, $perusahaan)
         'BDG' => 'Oki Rahmat Effendy',
         'SKB' => 'Asep Yusuf',
         'TGL' => 'Imam Syafangat',
-        'SBY' => 'Stefanus Bayu',
+        'SBY' => 'Angga Wahyu',
         'SMR' => 'Muhammad Luthfi Amri',
         'KLT' => 'Alip Aswanto',
         'BGR' => 'Muhammad Nuarry Iqbal',
