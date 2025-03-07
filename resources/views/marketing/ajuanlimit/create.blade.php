@@ -46,6 +46,20 @@
                     <option value="45">45</option>
                 </select>
             </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="../../assets/img/elements/2.jpg" alt="Card image cap" style="height:100px; object-fit:cover"
+                            id="foto">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="../../assets/img/elements/2.jpg" alt="Card image cap" style="height:100px; object-fit:cover"
+                            id="foto">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-lg-1 col-md-12 col-sm-12">

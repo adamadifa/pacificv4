@@ -272,6 +272,8 @@
                             'TF' => 'Transfer',
                             'VC' => 'Voucher',
                         ];
+
+                        $bb_dep = ['PRIK004', 'PRIK001'];
                         $subtotal_reward = 0;
                         $grandtotal_reward = 0;
                         $grandtotal_reward_tunai = 0;
@@ -284,7 +286,7 @@
                     @foreach ($detail_hold as $key => $d)
                         @php
                             $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                            $total_reward = $d->total_reward > 1000000 ? 1000000 : $d->total_reward;
+                            $total_reward = $d->total_reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $d->total_reward;
                             $subtotal_reward_tunai += $d->reward_tunai;
                             $subtotal_reward_kredit += $d->reward_kredit;
                             $subtotal_reward += $total_reward;
