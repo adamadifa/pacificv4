@@ -56,6 +56,12 @@ function getfotoPelanggan($file)
     return $url;
 }
 
+function getfotoPelangganowner($file)
+{
+    $url = url('/storage/pelanggan/owner/' . $file);
+    return $url;
+}
+
 function getfotoAktifitias($file)
 {
     $url = url('/storage/uploads/aktifitas_smm/' . $file);

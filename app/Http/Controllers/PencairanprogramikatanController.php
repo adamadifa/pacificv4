@@ -565,7 +565,8 @@ class PencairanprogramikatanController extends Controller
             'tipe_reward',
             'budget_smm',
             'budget_rsm',
-            'budget_gm'
+            'budget_gm',
+            'kode_program'
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
@@ -705,7 +706,8 @@ class PencairanprogramikatanController extends Controller
             'tipe_reward',
             'budget_smm',
             'budget_rsm',
-            'budget_gm'
+            'budget_gm',
+            'kode_program'
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {

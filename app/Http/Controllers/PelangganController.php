@@ -270,12 +270,22 @@ class PelangganController extends Controller
 
 
         $data_foto = [];
+        $data_foto_owner = [];
         if ($request->hasfile('foto')) {
             $foto_name =  $kode_pelanggan . "." . $request->file('foto')->getClientOriginalExtension();
             $destination_foto_path = "/public/pelanggan";
             $foto = $foto_name;
             $data_foto = [
                 'foto' => $foto
+            ];
+        }
+
+        if ($request->hasfile('foto_owner')) {
+            $foto_owner_name =  $kode_pelanggan . "." . $request->file('foto_owner')->getClientOriginalExtension();
+            $destination_foto_owner_path = "/public/pelanggan/owner";
+            $foto_owner = $foto_owner_name;
+            $data_foto_owner = [
+                'foto_owner' => $foto_owner
             ];
         }
 
@@ -353,7 +363,7 @@ class PelangganController extends Controller
                 'metode_bayar' => $request->metode_bayar
             ];
         }
-        $data = array_merge($data_pelanggan, $data_foto);
+        $data = array_merge($data_pelanggan, $data_foto, $data_foto_owner);
         DB::beginTransaction();
         try {
             $simpan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->update($data);
@@ -363,6 +373,12 @@ class PelangganController extends Controller
 
                     Storage::delete($destination_foto_path . "/" . $pelanggan->foto);
                     $request->file('foto')->storeAs($destination_foto_path, $foto_name);
+                }
+
+                if ($request->hasfile('foto_owner')) {
+
+                    Storage::delete($destination_foto_owner_path . "/" . $pelanggan->foto_owner);
+                    $request->file('foto_owner')->storeAs($destination_foto_owner_path, $foto_owner_name);
                 }
             }
             DB::commit();

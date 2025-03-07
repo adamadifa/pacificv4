@@ -194,10 +194,26 @@
                 value="{{ $pelanggan->latitude }},{{ $pelanggan->longitude }}" />
             <x-input-with-icon icon="ti ti-moneybag" label="Omset Toko" name="omset_toko" align="right" money="true"
                 value="{{ formatRupiah($pelanggan->omset_toko) }}" />
+            <label for="foto" class="form-label">Foto Toko</label>
             <x-input-file name="foto" label="Foto" />
             @if (!empty($pelanggan->foto))
                 @if (Storage::disk('public')->exists('/pelanggan/' . $pelanggan->foto))
                     <img src="{{ getfotoPelanggan($pelanggan->foto) }}" alt="user image"
+                        class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
+                @else
+                    <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                        class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
+                @endif
+            @else
+                <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                    class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
+            @endif
+
+            <label for="foto" class="form-label">Foto Owner</label>
+            <x-input-file name="foto_owner" label="Foto Owner" />
+            @if (!empty($pelanggan->foto_owner))
+                @if (Storage::disk('public')->exists('/pelanggan/owner/' . $pelanggan->foto_owner))
+                    <img src="{{ getfotoPelangganowner($pelanggan->foto_owner) }}" alt="user image"
                         class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
                 @else
                     <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
