@@ -231,6 +231,7 @@
                         $jumlah_insentif = $insentif + $insentif_manager;
                         $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
                         $tahunkerja = $masakerja['tahun'];
+                        $bulankerja = $masakerja['bulan'];
                     @endphp
                     <tr>
                         <td style="width:1%">{{ $loop->iteration }}</td>
