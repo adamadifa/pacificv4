@@ -56,10 +56,10 @@
                         <th colspan="9">DATA KARYAWAN</th>
                         <th rowspan="2">Gaji Pokok</th>
                         <th colspan="6">Tunjangan</th>
-                        <th colspan="4">Insentif Umum</th>
-                        <th colspan="4">Insentif Manager</th>
+                        {{-- <th colspan="4">Insentif Umum</th>
+                        <th colspan="4">Insentif Manager</th> --}}
                         <th rowspan="2">Upah</th>
-                        <th rowspan="2">Insentif</th>
+                        {{-- <th rowspan="2">Insentif</th>
                         <th rowspan="2">Σ Jam</th>
                         <th rowspan="2">Upah / Jam</th>
                         <th colspan="2">Overtime 1</th>
@@ -69,23 +69,23 @@
                         <th colspan="2">Premi Shift 2</th>
                         <th colspan="2">Premi Shift 3</th>
                         <th rowspan="2" style="background-color: #df9d1b; color:white;">Bruto</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pot. Jam</th> --}}
                     @endif
 
-                    <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th>
+                    {{-- <th colspan="3" style="background-color: #df1b38; color:white;">BPJS</th> --}}
                     @if ($format_laporan != 3)
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
+                        {{-- <th rowspan="2" style="background-color: #df1b38; color:white;">Denda</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">PJP</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">Kasbon</th>
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pinjaman</th>
+                        <th rowspan="2" style="background-color: #df1b38; color:white;">Pinjaman</th> --}}
                     @endif
 
-                    <th rowspan="2" style="background-color: #df1b38; color:white;">SPIP</th>
+                    {{-- <th rowspan="2" style="background-color: #df1b38; color:white;">SPIP</th> --}}
                     @if ($format_laporan != 3)
-                        <th rowspan="2" style="background-color: #df1b38; color:white;">PENGURANG</th>
+                        {{-- <th rowspan="2" style="background-color: #df1b38; color:white;">PENGURANG</th>
                         <th rowspan="2" style="background-color: #df1b38; color:white;">TOTAL<br>POTONGAN</th>
                         <th rowspan="2" style="background-color: #007b21; color:white;">PENAMBAH</th>
-                        <th rowspan="2">JML BERSIH</th>
+                        <th rowspan="2">JML BERSIH</th> --}}
                     @endif
 
                 </tr>
@@ -110,7 +110,7 @@
                         <th>ISTRI</th>
                         <th>SKILL</th>
 
-                        <!-- INSENTIF UMUM -->
+                        {{-- <!-- INSENTIF UMUM -->
                         <th>MASA KERJA</th>
                         <th>LEMBUR</th>
                         <th>PENEMPATAN</th>
@@ -137,12 +137,12 @@
                         <th>JUMLAH</th>
 
                         <th>HARI</th>
-                        <th>JUMLAH</th>
+                        <th>JUMLAH</th> --}}
                     @endif
                     <!-- BPJS -->
-                    <th style="background-color: #df1b38; color:white;">KES</th>
+                    {{-- <th style="background-color: #df1b38; color:white;">KES</th>
                     <th style="background-color: #df1b38; color:white;">PERUSAHAAN</th>
-                    <th style="background-color: #df1b38; color:white;">TK</th>
+                    <th style="background-color: #df1b38; color:white;">TK</th> --}}
 
                 </tr>
             </thead>
@@ -263,18 +263,18 @@
                             <td style="width:2%; text-align: right">{{ formatAngka($d['t_skill']) }}</td>
 
                             <!-- INSENTIF UMUM -->
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['iu_masakerja']) }}</td>
+                            {{-- <td style="width:3%; text-align: right">{{ formatAngka($d['iu_masakerja']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['iu_lembur']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['iu_penempatan']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['iu_kpi']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['iu_kpi']) }}</td> --}}
 
                             <!-- INSENTIF MANAGER -->
-                            <td style="width:3%; text-align: right">{{ formatAngka($d['im_ruanglingkup']) }}</td>
+                            {{-- <td style="width:3%; text-align: right">{{ formatAngka($d['im_ruanglingkup']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_penempatan']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_kinerja']) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td>
+                            <td style="width:2%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td> --}}
                             <td style="width:2%; text-align: right">{{ formatAngka($upah) }}</td>
-                            <td style="width:2%; text-align: right">{{ formatAngka($jumlah_insentif) }}</td>
+                            {{-- <td style="width:2%; text-align: right">{{ formatAngka($jumlah_insentif) }}</td> --}}
                         @endif
                         @php
                             $tanggal_presensi = $start_date;
@@ -786,154 +786,92 @@
 
                             $jmlbersih = $bruto - $jml_potongan_upah + $jml_penambah;
                         @endphp
-                        @if ($format_laporan != 3)
-                            <td style="font-weight: bold; text-align:center; width:2%">
-                                {{-- @php
-                                    $total_jam_kerja = $total_jam_satubulan - $grand_total_potongan_jam;
-                                @endphp --}}
-                                {{ formatAngkaDesimal($total_jam_kerja) }}
-                            </td>
-                            <td style="font-weight: bold;  text-align:right; width:2%">
-                                {{ formatAngkaDesimal($upah_perjam) }}
-                            </td>
-                            <td style="font-weight: bold; text-align:center;width:2%">
-                                {{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:right;width:2%">
-                                {{ !empty($upah_overtime_1) ? formatAngka($upah_overtime_1) : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:center;width:2%">
-                                {{ !empty($total_overtime_2) ? $total_overtime_2 : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:right;width:2%">
-                                {{ !empty($upah_overtime_2) ? formatAngka($upah_overtime_2) : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:center;width:2%">
-                                {{ !empty($total_overtime_libur) ? $total_overtime_libur : '' }}</td>
-                            <td style="font-weight: bold; text-align:right;width:2%">
-                                {{ !empty($upah_overtime_libur) ? formatAngka($upah_overtime_libur) : '' }}
-                            </td>
-                            <td style="font-weight: bold; text-align:right;width:2%">
-                                {{ !empty($total_upah_overtime) ? formatAngka($total_upah_overtime) : '' }}
-                            </td>
-                            <td style="text-align: center; width:2%">{{ !empty($premis_shift2) ? $premis_shift2 : '' }}</td>
-                            <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift2) ? formatAngka($upah_premi_shift2) : '' }}</td>
-                            <td style="text-align: center; width:2%">{{ !empty($premis_shift3) ? $premis_shift3 : '' }}</td>
-                            <td style="text-align: right; width:2%">{{ !empty($upah_premi_shift3) ? formatAngka($upah_premi_shift3) : '' }}</td>
-                            <td style="text-align: right; font-weight:bold; width:2%">{{ !empty($bruto) ? formatAngka($bruto) : '' }}</td>
-                            <td style="text-align:center; width:2%">
-                                {{ !empty($grand_total_potongan_jam) ? formatAngkaDesimal($grand_total_potongan_jam) : '' }}
-                            </td>
-                        @endif
+                        @php
+                            $grandtotal_all_gajipokok += $d['gaji_pokok'];
+                            $grandtotal_all_t_jabatan += $d['t_jabatan'];
+                            $grandtotal_all_t_masakerja += $d['t_masakerja'];
+                            $grandtotal_all_t_tanggungjawab += $d['t_tanggungjawab'];
+                            $grandtotal_all_t_makan += $d['t_makan'];
+                            $grandtotal_all_t_istri += $d['t_istri'];
+                            $grandtotal_all_t_skill += $d['t_skill'];
 
-                        <td style="text-align:right; width:2%">{{ !empty($iuran_bpjs_kesehatan) ? formatAngka($iuran_bpjs_kesehatan) : '' }}
-                        </td>
-                        <td style="text-align: right; width:4%"></td>
-                        <td style="text-align:right; width:2%">
-                            {{ !empty($iuran_bpjs_tenagakerja) ? formatAngka($iuran_bpjs_tenagakerja) : '' }}
-                        </td>
-                        @if ($format_laporan != 3)
-                            <td style="text-align:right; width:2%">{{ !empty($total_denda) ? formatAngka($total_denda) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($cicilan_pjp) ? formatAngka($cicilan_pjp) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($cicilan_kasbon) ? formatAngka($cicilan_kasbon) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($cicilan_piutang) ? formatAngka($cicilan_piutang) : '' }}</td>
-                        @endif
+                            //Insentif Umum
+                            $grandtotal_all_iu_masakerja += $d['iu_masakerja'];
+                            $grandtotal_all_iu_lembur += $d['iu_lembur'];
+                            $grandtotal_all_iu_penempatan += $d['iu_penempatan'];
+                            $grandtotal_all_iu_kpi += $d['iu_kpi'];
 
-                        <td style="text-align:right; width:2%">{{ !empty($spip) ? formatAngka($spip) : '' }}</td>
-                        @if ($format_laporan != 3)
-                            <td style="text-align:right; width:2%">{{ !empty($jml_pengurang) ? formatAngka($jml_pengurang) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($jml_potongan_upah) ? formatAngka($jml_potongan_upah) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($jml_penambah) ? formatAngka($jml_penambah) : '' }}</td>
-                            <td style="text-align:right; width:2%">{{ !empty($jmlbersih) ? formatAngka($jmlbersih) : '' }}</td>
-                        @endif
-                    </tr>
+                            //Insentif Manager
+                            $grandtotal_all_im_ruanglingkup += $d['im_ruanglingkup'];
+                            $grandtotal_all_im_penempatan += $d['im_penempatan'];
+                            $grandtotal_all_im_kinerja += $d['im_kinerja'];
+                            $grandtotal_all_im_kendaraan += $d['im_kendaraan'];
 
-                    @php
-                        $grandtotal_all_gajipokok += $d['gaji_pokok'];
-                        $grandtotal_all_t_jabatan += $d['t_jabatan'];
-                        $grandtotal_all_t_masakerja += $d['t_masakerja'];
-                        $grandtotal_all_t_tanggungjawab += $d['t_tanggungjawab'];
-                        $grandtotal_all_t_makan += $d['t_makan'];
-                        $grandtotal_all_t_istri += $d['t_istri'];
-                        $grandtotal_all_t_skill += $d['t_skill'];
+                            //Upah
+                            $grandtotal_all_upah += $upah;
 
-                        //Insentif Umum
-                        $grandtotal_all_iu_masakerja += $d['iu_masakerja'];
-                        $grandtotal_all_iu_lembur += $d['iu_lembur'];
-                        $grandtotal_all_iu_penempatan += $d['iu_penempatan'];
-                        $grandtotal_all_iu_kpi += $d['iu_kpi'];
+                            //Insentif
+                            $grandtotal_all_insentif += $jumlah_insentif;
 
-                        //Insentif Manager
-                        $grandtotal_all_im_ruanglingkup += $d['im_ruanglingkup'];
-                        $grandtotal_all_im_penempatan += $d['im_penempatan'];
-                        $grandtotal_all_im_kinerja += $d['im_kinerja'];
-                        $grandtotal_all_im_kendaraan += $d['im_kendaraan'];
+                            //Jam Kerja
+                            $grandtotal_all_jamkerja += $total_jam_kerja;
+                            $grandtotal_all_upahperjam += $upah_perjam;
 
-                        //Upah
-                        $grandtotal_all_upah += $upah;
+                            //Overtime
+                            $grandtotal_all_overtime_1 += $total_overtime_1;
+                            $grandtotal_all_overtime_2 += $total_overtime_2;
+                            $grandtotal_all_overtime_libur += $total_overtime_libur;
+                            $grandtotal_all_upah_overtime_1 += $upah_overtime_1;
+                            $grandtotal_all_upah_overtime_2 += $upah_overtime_2;
+                            $grandtotal_all_upah_overtime_libur += $upah_overtime_libur;
+                            $grandtotal_all_upah_overtime += $total_upah_overtime;
 
-                        //Insentif
-                        $grandtotal_all_insentif += $jumlah_insentif;
+                            //Premi Shift
+                            $grandtotal_all_premi_shift2 += $premis_shift2;
+                            $grandtotal_all_upah_premi_shift2 += $upah_premi_shift2;
+                            $grandtotal_all_premi_shift3 += $premis_shift3;
+                            $grandtotal_all_upah_premi_shift3 += $upah_premi_shift3;
 
-                        //Jam Kerja
-                        $grandtotal_all_jamkerja += $total_jam_kerja;
-                        $grandtotal_all_upahperjam += $upah_perjam;
+                            //Bruto
+                            $grandtotal_all_bruto += $bruto;
 
-                        //Overtime
-                        $grandtotal_all_overtime_1 += $total_overtime_1;
-                        $grandtotal_all_overtime_2 += $total_overtime_2;
-                        $grandtotal_all_overtime_libur += $total_overtime_libur;
-                        $grandtotal_all_upah_overtime_1 += $upah_overtime_1;
-                        $grandtotal_all_upah_overtime_2 += $upah_overtime_2;
-                        $grandtotal_all_upah_overtime_libur += $upah_overtime_libur;
-                        $grandtotal_all_upah_overtime += $total_upah_overtime;
+                            //Potongan Jam
+                            $grandtotal_all_potongan_jam += $grand_total_potongan_jam;
 
-                        //Premi Shift
-                        $grandtotal_all_premi_shift2 += $premis_shift2;
-                        $grandtotal_all_upah_premi_shift2 += $upah_premi_shift2;
-                        $grandtotal_all_premi_shift3 += $premis_shift3;
-                        $grandtotal_all_upah_premi_shift3 += $upah_premi_shift3;
+                            //Iuran BPJS Kesehatan
+                            $grandtotal_all_iuran_bpjs_kesehatan += $iuran_bpjs_kesehatan;
 
-                        //Bruto
-                        $grandtotal_all_bruto += $bruto;
+                            //Iuran BPJS Tenagakerja
+                            $grandtotal_all_iuran_bpjs_tk += $iuran_bpjs_tenagakerja;
 
-                        //Potongan Jam
-                        $grandtotal_all_potongan_jam += $grand_total_potongan_jam;
+                            //Denda
+                            $grandtotal_all_denda += $total_denda;
 
-                        //Iuran BPJS Kesehatan
-                        $grandtotal_all_iuran_bpjs_kesehatan += $iuran_bpjs_kesehatan;
+                            //Cicilan PJP
+                            $grandtotal_all_cicilan_pjp += $cicilan_pjp;
 
-                        //Iuran BPJS Tenagakerja
-                        $grandtotal_all_iuran_bpjs_tk += $iuran_bpjs_tenagakerja;
+                            //Cicilan Kasbon
+                            $grandtotal_all_cicilan_kasbon += $cicilan_kasbon;
 
-                        //Denda
-                        $grandtotal_all_denda += $total_denda;
+                            //Cicilan Piutang
+                            $grandtotal_all_cicilan_piutang += $cicilan_piutang;
 
-                        //Cicilan PJP
-                        $grandtotal_all_cicilan_pjp += $cicilan_pjp;
+                            //SPIP
+                            $grandtotal_all_spip += $spip;
 
-                        //Cicilan Kasbon
-                        $grandtotal_all_cicilan_kasbon += $cicilan_kasbon;
+                            //Pengurang
+                            $grandtotal_all_pengurang += $jml_pengurang;
 
-                        //Cicilan Piutang
-                        $grandtotal_all_cicilan_piutang += $cicilan_piutang;
+                            //Potongan Upah
+                            $grandtotal_all_total_potongan += $jml_potongan_upah;
 
-                        //SPIP
-                        $grandtotal_all_spip += $spip;
+                            //Penambahan
+                            $grandtotal_all_penambahan += $jml_penambah;
 
-                        //Pengurang
-                        $grandtotal_all_pengurang += $jml_pengurang;
+                            //Jumlah Bersih
+                            $grandtotal_all_jmlbersih += $jmlbersih;
 
-                        //Potongan Upah
-                        $grandtotal_all_total_potongan += $jml_potongan_upah;
-
-                        //Penambahan
-                        $grandtotal_all_penambahan += $jml_penambah;
-
-                        //Jumlah Bersih
-                        $grandtotal_all_jmlbersih += $jmlbersih;
-
-                    @endphp
+                        @endphp
                 @endforeach
             </tbody>
             <tfoot>
@@ -947,16 +885,16 @@
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_makan) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_istri) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_t_skill) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_masakerja) }}</th>
+                        {{-- <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_masakerja) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_lembur) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_penempatan) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_iu_kpi) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_ruanglingkup) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_penempatan) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kinerja) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kendaraan) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kendaraan) }}</th> --}}
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_insentif) }}</th>
+                        {{-- <th style="text-align:right;">{{ formatAngka($grandtotal_all_insentif) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_jamkerja) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_upahperjam) }}</th>
                         <th style="text-align:center;">{{ formatAngka($grandtotal_all_overtime_1) }}</th>
@@ -983,15 +921,15 @@
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_pengurang) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_total_potongan) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_penambahan) }}</th>
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_jmlbersih) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_jmlbersih) }}</th> --}}
                     @else
-                        <th colspan="3">TOTAL</th>
+                        {{-- <th colspan="3">TOTAL</th>
 
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_iuran_bpjs_kesehatan) }}</th>
                         <th></th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_iuran_bpjs_tk) }}</th>
 
-                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_spip) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_spip) }}</th> --}}
                     @endif
 
                 </tr>
