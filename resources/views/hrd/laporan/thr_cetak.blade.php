@@ -59,6 +59,9 @@
                         {{-- <th colspan="4">Insentif Umum</th>
                         <th colspan="4">Insentif Manager</th> --}}
                         <th rowspan="2">Upah</th>
+                        <th rowspan="2">THR</th>
+                        <th rowspan="2">1/4 Upah</th>
+                        <th rowspan="2">1/2 Upah</th>
                         {{-- <th rowspan="2">Insentif</th>
                         <th rowspan="2">Σ Jam</th>
                         <th rowspan="2">Upah / Jam</th>
