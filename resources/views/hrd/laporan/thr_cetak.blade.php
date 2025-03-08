@@ -62,6 +62,7 @@
                         <th rowspan="2">THR</th>
                         <th rowspan="2">1/4 Upah</th>
                         <th rowspan="2">1/2 Upah</th>
+                        <th rowspan="2">TOTAL</th>
                         {{-- <th rowspan="2">Insentif</th>
                         <th rowspan="2">Σ Jam</th>
                         <th rowspan="2">Upah / Jam</th>
@@ -297,6 +298,42 @@
                                     $total_thr += $thr;
                                 @endphp
                                 {{ formatAngka($thr) }}
+                            </td>
+                            <td style="width:2%; text-align: right">
+                                @if ($tahunkerja >= 10 && $tahunkerja < 15 && $d['nama_jabatan'] != 'DIREKTUR')
+                                    @php
+                                        $thr_seperempat = 0.25 * $d['gaji_pokok'];
+                                    @endphp
+                                @else
+                                    @php
+                                        $thr_seperempat = 0;
+                                    @endphp
+                                @endif
+                                @php
+                                    $total_thr_seperempat += $thr_seperempat;
+                                @endphp
+                                {{ formatAngka($thr_seperempat) }}
+                            </td>
+                            <td style="width:2%; text-align: right">
+                                @if ($tahunkerja >= 15 && $d['nama_jabatan'] != 'DIREKTUR')
+                                    @php
+                                        $thr_setengah = 0.5 * $d['gaji_pokok'];
+                                    @endphp
+                                @else
+                                    @php
+                                        $thr_setengah = 0;
+                                    @endphp
+                                @endif
+                                @php
+                                    $total_thr_setengah += $thr_setengah;
+                                @endphp
+                                {{ formatAngka($thr_setengah) }}
+                            </td>
+                            <td style="width:2%; text-align: right">
+                                @php
+                                    $totalthr = $thr + $thr_seperempat + $thr_setengah;
+                                @endphp
+                                {{ formatAngka($totalthr) }}
                             </td>
 
                             {{-- <td style="width:2%; text-align: right">{{ formatAngka($jumlah_insentif) }}</td> --}}
