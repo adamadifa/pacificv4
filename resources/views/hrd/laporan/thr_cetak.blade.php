@@ -42,7 +42,7 @@
     </div>
     <div class="content">
         {{-- <div class="freeze-table"> --}}
-        <table class="datatable3" style="width: 150%">
+        <table class="datatable3" style="width: 180%">
             <thead>
                 <tr>
                     <th rowspan="2">No</th>
@@ -211,6 +211,10 @@
                     $grandtotal_all_penambahan = 0;
                     $grandtotal_all_jmlbersih = 0;
 
+                    $total_thr = 0;
+                    $total_thr_setengah = 0;
+                    $total_thr_seperempat = 0;
+
                 @endphp
                 @foreach ($presensi as $d)
                     @php
@@ -226,6 +230,7 @@
                         $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
                         $jumlah_insentif = $insentif + $insentif_manager;
                         $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
+                        $tahunkerja = $masakerja['tahun'];
                     @endphp
                     <tr>
                         <td style="width:1%">{{ $loop->iteration }}</td>
@@ -277,6 +282,22 @@
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_kinerja']) }}</td>
                             <td style="width:2%; text-align: right">{{ formatAngka($d['im_kendaraan']) }}</td> --}}
                             <td style="width:2%; text-align: right">{{ formatAngka($upah) }}</td>
+                            <td style="width:2%; text-align: right">
+                                @if ($tahunkerja >= 1)
+                                    @php
+                                        $thr = $upah;
+                                    @endphp
+                                @else
+                                    @php
+                                        $thr = ($bulankerja / 12) * $upah;
+                                    @endphp
+                                @endif
+                                @php
+                                    $total_thr += $thr;
+                                @endphp
+                                {{ formatAngka($thr) }}
+                            </td>
+
                             {{-- <td style="width:2%; text-align: right">{{ formatAngka($jumlah_insentif) }}</td> --}}
                         @endif
                         @php
