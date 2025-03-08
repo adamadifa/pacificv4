@@ -185,7 +185,6 @@
                     rowSelector: '.mb-3'
                 }),
                 submitButton: new FormValidation.plugins.SubmitButton(),
-
                 defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
                 autoFocus: new FormValidation.plugins.AutoFocus()
             },
@@ -194,6 +193,15 @@
                     if (e.element.parentElement.classList.contains('input-group')) {
                         e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
                     }
+                });
+                instance.on('core.form.valid', function () {
+                    // Disable the submit button
+                    formAjuanlimit.querySelector('input[type="submit"]').disabled = true;
+                    formAjuanlimit.submit();
+                });
+                instance.on('core.form.invalid', function () {
+                    // Enable the submit button
+                    formAjuanlimit.querySelector('input[type="submit"]').disabled = false;
                 });
             }
         });

@@ -16,8 +16,7 @@
     <input type="hidden" name="sisa_piutang" id="sisa_piutang">
     <input type="hidden" name="siklus_pembayaran" id="siklus_pembayaran">
     <input type="hidden" name="max_kredit" id="max_kredit">
-    <input type="hidden" name="cek_foto_toko" id="cek_foto_toko">
-    <input type="hidden" name="cek_foto_owner" id="cek_foto_owner">
+
     <div class="row">
         <div class="col-lg-3 col-sm-12 col-xs-12">
             <div class="row mb-3">

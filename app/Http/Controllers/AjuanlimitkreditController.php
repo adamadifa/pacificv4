@@ -291,7 +291,9 @@ class AjuanlimitkreditController extends Controller
             'cabang.nama_cabang',
             'pelanggan.hari',
             'pelanggan.latitude',
-            'pelanggan.longitude'
+            'pelanggan.longitude',
+            'pelanggan.foto',
+            'pelanggan.foto_owner',
 
         )
             ->join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')

@@ -28,6 +28,8 @@
             <option value="1" selected>Detail</option>
             <option value="2">Rekap</option>
             <option value="3">SPIP & BPJS</option>
+            <option value="4">THR</option>
+            <option value="5">REKAP THR</option>
         </select>
     </div>
     @hasanyrole($roles_access_all_pjp)

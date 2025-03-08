@@ -635,8 +635,6 @@ class LaporanhrdController extends Controller
         $data['tahun'] = $request->tahun;
         $data['privillage_karyawan'] = $privillage_karyawan;
         if (request()->is('laporanhrd/cetakgaji')) {
-
-
             if ($request->format_laporan == 1 || $request->format_laporan == 3) {
                 if (isset($_POST['exportButton'])) {
                     header("Content-type: application/vnd-ms-excel");
@@ -644,13 +642,20 @@ class LaporanhrdController extends Controller
                     header("Content-Disposition: attachment; filename=Laporan Gaji.xls");
                 }
                 return view('hrd.laporan.gaji_cetak', $data);
-            } else {
+            } else if ($request->format_laporan == 2) {
                 if (isset($_POST['exportButton'])) {
                     header("Content-type: application/vnd-ms-excel");
                     // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
                     header("Content-Disposition: attachment; filename=Rekap Gaji.xls");
                 }
                 return view('hrd.laporan.rekap_gaji_cetak', $data);
+            } else if ($request->format_laporan == 4) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                    header("Content-Disposition: attachment; filename=Laporan THR.xls");
+                }
+                return view('hrd.laporan.gaji_cetak', $data);
             }
         } else {
             if ($request->format_laporan == 1) {

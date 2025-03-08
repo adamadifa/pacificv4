@@ -1,5 +1,7 @@
 <form action="{{ route('ajuanlimit.store') }}" aria-autocomplete="false" id="formAjuanlimit" method="POST" enctype="multipart/form-data">
     @csrf
+    <input type="hidden" name="cek_foto_toko" id="cek_foto_toko">
+    <input type="hidden" name="cek_foto_owner" id="cek_foto_owner">
     <div class="row">
         <div class="col-lg-5 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_pengajuan" />
@@ -177,7 +179,7 @@
             <x-textarea label="Uraian Analisa" name="uraian_analisa" />
 
             <div class="form-group">
-                <button class="btn btn-primary w-100" type="submit">
+                <button class="btn btn-primary w-100" type="submit" id="submitAjuanlimit">
                     <ion-icon name="send-outline" class="me-1"></ion-icon>
                     Submit
                 </button>
@@ -191,7 +193,7 @@
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
-<script src="{{ asset('assets/js/pages/ajuanlimit.js') }}"></script>
+{{-- <script src="{{ asset('assets/js/pages/ajuanlimit.js') }}"></script> --}}
 <script>
     $(function() {
         const form = $("#formAjuanlimit");
@@ -256,6 +258,8 @@
                         form.find("#omset_toko").val(convertToRupiah(response.data.omset_toko));
                         let fileFoto = response.data.foto;
                         let fileFotoowner = response.data.foto_owner;
+                        form.find("#cek_foto_toko").val(response.data.foto);
+                        form.find("#cek_foto_owner").val(response.data.foto_owner);
                         checkFileExistence(fileFoto);
                         checkFileExistenceOwner(fileFotoowner);
                         $('#modalPelanggan').modal('hide');
@@ -574,5 +578,280 @@
             const jmlfaktur = $('#loadlistfakturkredit').find('tr').length;
             console.log(jmlfaktur);
         });
+
+        $("#formAjuanlimit").submit(function(e) {
+            let cek_foto_toko = $("#cek_foto_toko").val();
+            let cek_foto_owner = $("#cek_foto_owner").val();
+            let jumlah = $("#jumlah").val();
+            let jml = jumlah.replace(/\./g, '');
+            let kode_pelanggan = $("#kode_pelanggan").val();
+            let nik = $("#nik").val();
+            let nama_pelanggan = $("#nama_pelanggan").val();
+            let alamat_pelanggan = $("#alamat_pelanggan").val();
+            let no_hp_pelanggan = $("#no_hp_pelanggan").val();
+            let hari = $("#hari").val();
+            let lokasi = $("#lokasi").val();
+            let ljt = $("#ljt").val();
+            let uraian_analisa = $("#uraian_analisa").val();
+            let kepemilikan = $("#kepemilikan").val();
+            let lama_berjualan = $("#lama_berjualan").val();
+            let status_outlet = $("#status_outlet").val();
+            let type_outlet = $("#type_outlet").val();
+            let cara_pembayaran = $("#cara_pembayaran").val();
+            let lama_langganan = $("#lama_langganan").val();
+            let jaminan = $("#jaminan").val();
+            let histori_transaksi = $("#histori_transaksi").val();
+            let lama_topup = $("#lama_topup").val();
+            let tanggal = $("#tanggal").val();
+            let omset_toko = $("#omset_toko").val();
+            if (jml == "" || jml == 0) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Ajuan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#jumlah").focus();
+                    },
+                });
+            } else if (jml > 15000000 && cek_foto_toko == "" && cek_foto_owner == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Ajuan Lebih dari Rp. 15.000.000 Wajib Upload Foto Toko dan Foto Owner !, Silahkan Update di Data Master Pelanggan",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#cek_foto_toko").focus();
+                    },
+                });
+            } else if (kode_pelanggan == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Kode Pelanggan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#kode_pelanggan").focus();
+                    },
+                });
+            } else if (nik == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "NIK / No. KTP Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#nik").focus();
+                    },
+                });
+            } else if (nama_pelanggan == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Nama Pelanggan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#nama_pelanggan").focus();
+                    },
+                });
+            } else if (alamat_pelanggan == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Alamat Pelanggan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#alamat_pelanggan").focus();
+                    },
+                });
+            } else if (no_hp_pelanggan == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "No. HP Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#no_hp_pelanggan").focus();
+                    },
+                });
+            } else if (hari == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Hari Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#hari").focus();
+                    },
+                });
+            } else if (lokasi == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Lokasi Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#lokasi").focus();
+                    },
+                });
+            } else if (ljt == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "LJT Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#ljt").focus();
+                    },
+                });
+            } else if (uraian_analisa == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Uraian Analisa Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#uraian_analisa").focus();
+                    },
+                });
+            } else if (kepemilikan == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Kepemilikan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#kepemilikan").focus();
+                    },
+                });
+            } else if (lama_berjualan == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Lama Berjualan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#lama_berjualan").focus();
+                    },
+                });
+            } else if (status_outlet == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Status Outlet Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#status_outlet").focus();
+                    },
+                });
+            } else if (type_outlet == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Type Outlet Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#type_outlet").focus();
+                    },
+                });
+            } else if (cara_pembayaran == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Cara Pembayaran Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#cara_pembayaran").focus();
+                    },
+                });
+            } else if (lama_langganan == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Lama Langganan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#lama_langganan").focus();
+                    },
+                });
+            } else if (jaminan == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jaminan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#jaminan").focus();
+                    },
+                });
+            } else if (histori_transaksi == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Histori Transaksi Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#histori_transaksi").focus();
+                    },
+                });
+            } else if (lama_topup == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Lama Top Up Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#lama_topup").focus();
+                    },
+                });
+            } else if (tanggal == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Tanggal Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#tanggal").focus();
+                    },
+                });
+            } else if (omset_toko == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Omset Toko Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#omset_toko").focus();
+                    }
+                });
+            } else {
+                $("#submitAjuanLimit").attr("disabled", true);
+                $("#submitAjuanLimit").html(
+                    '<div class="spinner-border spinner-border-sm text-white me-2" role="status"><span class="visually-hidden">Loading...</span></div>Loading..'
+                )
+            }
+        })
     });
 </script>
