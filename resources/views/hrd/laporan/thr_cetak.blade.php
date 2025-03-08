@@ -215,6 +215,7 @@
                     $total_thr = 0;
                     $total_thr_setengah = 0;
                     $total_thr_seperempat = 0;
+                    $total_all_thr = 0;
 
                 @endphp
                 @foreach ($presensi as $d)
@@ -332,6 +333,7 @@
                             <td style="width:2%; text-align: right">
                                 @php
                                     $totalthr = $thr + $thr_seperempat + $thr_setengah;
+                                    $total_all_thr += $totalthr;
                                 @endphp
                                 {{ formatAngka($totalthr) }}
                             </td>
@@ -956,6 +958,10 @@
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kinerja) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_im_kendaraan) }}</th> --}}
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_upah) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($total_thr) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($total_thr_seperempat) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($total_thr_setengah) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($total_all_thr) }}</th>
                         {{-- <th style="text-align:right;">{{ formatAngka($grandtotal_all_insentif) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_jamkerja) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_upahperjam) }}</th>
