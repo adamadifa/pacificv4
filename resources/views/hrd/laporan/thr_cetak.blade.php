@@ -42,7 +42,7 @@
     </div>
     <div class="content">
         {{-- <div class="freeze-table"> --}}
-        <table class="datatable3" style="width: 100%">
+        <table class="datatable3" style="width: 150%">
             <thead>
                 <tr>
                     <th rowspan="2">No</th>
