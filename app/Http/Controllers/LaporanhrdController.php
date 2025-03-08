@@ -655,7 +655,7 @@ class LaporanhrdController extends Controller
                     // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
                     header("Content-Disposition: attachment; filename=Laporan THR.xls");
                 }
-                return view('hrd.laporan.gaji_cetak', $data);
+                return view('hrd.laporan.thr_cetak', $data);
             }
         } else {
             if ($request->format_laporan == 1) {
