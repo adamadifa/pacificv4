@@ -698,7 +698,7 @@ class LaporanhrdController extends Controller
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
         $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->leftJoin('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
-        $query->where('hrd_karyawan.status', '=', '1');
+        $query->where('hrd_karyawan.status_aktif_karyawan', '=', '1');
         if (!empty($request->kode_cabang)) {
             $query->where('hrd_karyawan.kode_cabang', '=', $request->kode_cabang);
         }
