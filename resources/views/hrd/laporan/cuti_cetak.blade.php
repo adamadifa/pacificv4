@@ -71,9 +71,11 @@
                         <td>{{ $d->nama_group }}</td>
                         <td>{{ $d->nama_jabatan }}</td>
                         @for ($i = 1; $i <= 12; $i++)
-                            <td>
-                                {{ $d->{'bulan_' . $i} }}
-                            </td>
+                            @if (!empty($d->{'bulan_' . $i}))
+                                <td style="background-color: green; color:white">{{ $d->{'bulan_' . $i} }}</td>
+                            @else
+                                <td style="background-color: red"></td>
+                            @endif
                         @endfor
                     </tr>
                 @endforeach
