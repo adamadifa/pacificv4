@@ -13,6 +13,7 @@ use App\Models\Historibayarpiutangkaryawan;
 use App\Models\Historibayarpjp;
 use App\Models\Karyawan;
 use App\Models\Presensi;
+use App\Models\Presensiizincuti;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -694,12 +695,32 @@ class LaporanhrdController extends Controller
     public function cetakcuti(Request $request)
     {
 
+
+        $selectColumnBulan = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $selectColumnBulan[] = DB::raw('SUM(IF(MONTH(hrd_presensi.tanggal)="' . $i . '",1,0)) as `bulan_' . $i . '`');
+        }
+
+
+        $rekapcuti = Presensiizincuti::query();
+        $rekapcuti->join('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti');
+        $rekapcuti->join('hrd_presensi', 'hrd_presensi_izincuti.id_presensi', '=', 'hrd_presensi.id');
+        $rekapcuti->select('hrd_presensi.nik');
+        $rekapcuti->where('kode_cuti', 'C01');
+        $rekapcuti->whereRaw('YEAR(hrd_presensi.tanggal)="' . $request->tahun . '"');
+        $rekapcuti->groupBy('hrd_presensi.nik');
+
+
+
         $query = Karyawan::query();
         $query->leftJoin('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftJoin('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
         $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->leftJoin('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
+        $query->leftJoinSub($rekapcuti, 'rekapcuti', function ($join) {
+            $join->on('hrd_karyawan.nik', '=', 'rekapcuti.nik');
+        });
         $query->where('hrd_karyawan.status_aktif_karyawan', '=', '1');
         if (!empty($request->kode_cabang)) {
             $query->where('hrd_karyawan.kode_cabang', '=', $request->kode_cabang);
