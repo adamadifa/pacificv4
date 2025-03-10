@@ -695,7 +695,9 @@ class LaporanhrdController extends Controller
     public function cetakcuti(Request $request)
     {
 
-
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
+        $dept_access = json_decode($user->dept_access, true) ?? [];
         $selectColumnBulan = [];
         $selectBulan = [];
         for ($i = 1; $i <= 12; $i++) {
@@ -736,6 +738,24 @@ class LaporanhrdController extends Controller
 
         if (!empty($request->kode_group)) {
             $query->where('hrd_karyawan.kode_group', '=', $request->kode_group);
+        }
+
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan'])) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                if (auth()->user()->kode_cabang != 'PST') {
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    if ($user->hasRole(['staff keuangan'])) {
+                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                    } else {
+                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
+                }
+            }
         }
 
         $data['cuti'] = $query->get();
