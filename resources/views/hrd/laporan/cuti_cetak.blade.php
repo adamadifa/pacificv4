@@ -72,9 +72,7 @@
                         <td>{{ $d->nama_jabatan }}</td>
                         @for ($i = 1; $i <= 12; $i++)
                             <td>
-                                @if ($d['bulan' . $i] != 0)
-                                    {{ $d['bulan' . $i] }}
-                                @endif
+                                {{ $d->{'bulan_' . $i} }}
                             </td>
                         @endfor
                     </tr>
