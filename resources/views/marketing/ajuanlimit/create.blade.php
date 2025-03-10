@@ -177,6 +177,7 @@
             </div>
 
             <x-textarea label="Uraian Analisa" name="uraian_analisa" />
+            <x-textarea label="Referensi" name="referensi" />
 
             <div class="form-group">
                 <button class="btn btn-primary w-100" type="submit" id="submitAjuanlimit">
@@ -604,6 +605,7 @@
             let lama_topup = $("#lama_topup").val();
             let tanggal = $("#tanggal").val();
             let omset_toko = $("#omset_toko").val();
+            let referensi = $("#referensi").val();
             if (jml == "" || jml == 0) {
                 e.preventDefault();
                 Swal.fire({
