@@ -53,7 +53,7 @@
         <!-- Each sheet element should have the class "sheet" -->
         <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
         <section class="sheet padding-10mm">
-            <table style="width:60%" class="datatable3">
+            <table style="width:100%" class="datatable3">
                 <tr>
                     <td>
 
