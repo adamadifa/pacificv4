@@ -188,10 +188,10 @@ class LaporanhrdController extends Controller
         $end_date = $sampai;
 
         $daribulangaji = $dari;
-        $berlakugaji = $sampai;
+        $berlakugaji =  $request->format_laporan == 4 ? date('Y-m-t', strtotime(date('Y-m', strtotime($dari)) . '-01')) : $sampai;
 
 
-
+        dd($berlakugaji);
 
         $gajiTerakhir = DB::table('hrd_gaji')
             ->select(
