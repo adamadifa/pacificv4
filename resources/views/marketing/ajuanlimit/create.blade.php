@@ -606,29 +606,7 @@
             let tanggal = $("#tanggal").val();
             let omset_toko = $("#omset_toko").val();
             let referensi = $("#referensi").val();
-            if (jml == "" || jml == 0) {
-                e.preventDefault();
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Jumlah Ajuan Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        $("#jumlah").focus();
-                    },
-                });
-            } else if (jml > 15000000 && cek_foto_toko == "" && cek_foto_owner == "") {
-                e.preventDefault();
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Ajuan Lebih dari Rp. 15.000.000 Wajib Upload Foto Toko dan Foto Owner !, Silahkan Update di Data Master Pelanggan",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        $("#cek_foto_toko").focus();
-                    },
-                });
-            } else if (kode_pelanggan == "") {
+            if (kode_pelanggan == "") {
                 e.preventDefault();
                 Swal.fire({
                     title: "Oops!",
@@ -703,6 +681,28 @@
                     showConfirmButton: true,
                     didClose: (e) => {
                         $("#lokasi").focus();
+                    },
+                });
+            } else if (jml == "" || jml == 0) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Jumlah Ajuan Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#jumlah").focus();
+                    },
+                });
+            } else if (jml > 15000000 && cek_foto_toko == "" && cek_foto_owner == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Ajuan Lebih dari Rp. 15.000.000 Wajib Upload Foto Toko dan Foto Owner !, Silahkan Update di Data Master Pelanggan",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#cek_foto_toko").focus();
                     },
                 });
             } else if (ljt == "") {
