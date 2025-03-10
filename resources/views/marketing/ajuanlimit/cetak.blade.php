@@ -67,6 +67,34 @@
                         </div>
                         <br>
                     </td>
+                    <td class="text-center">
+                        @if (!empty($ajuanlimit->foto))
+                            @if (Storage::disk('public')->exists('/pelanggan/' . $ajuanlimit->foto))
+                                <img src="{{ getfotoPelanggan($ajuanlimit->foto) }}" alt="user image"
+                                    class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                            @else
+                                <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                                    class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                            @endif
+                        @else
+                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                                class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        @if (!empty($ajuanlimit->foto_owner))
+                            @if (Storage::disk('public')->exists('/pelanggan/owner/' . $ajuanlimit->foto_owner))
+                                <img src="{{ getfotoPelangganowner($ajuanlimit->foto_owner) }}" alt="user image"
+                                    class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                            @else
+                                <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                                    class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                            @endif
+                        @else
+                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                                class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                        @endif
+                    </td>
                 </tr>
             </table>
             <h3 class="judul2">ANALISA AJUAN KREDIT</h3>
