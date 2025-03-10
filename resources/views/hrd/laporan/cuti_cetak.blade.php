@@ -55,7 +55,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data as $d)
+                @foreach ($cuti as $d)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $d->nik }}</td>
