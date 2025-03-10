@@ -1945,6 +1945,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanhrd/cetakpresensi', 'cetakpresensi')->name('laporanhrd.cetakpresensi')->can('hrd.presensi');
         Route::post('/laporanhrd/cetakgaji', 'cetakpresensi')->name('laporanhrd.cetakgaji')->can('hrd.gaji');
         Route::post('/laporanhrd/cetakslipegaji', 'cetakslipegaji')->name('laporanhrd.cetakslipegaji')->can('hrd.slipgaji');
+        Route::post('/laporanhrd/cetakcuti', 'cetakcuti')->name('laporanhrd.cetakcuti')->can('hrd.presensi');
 
 
         Route::post('/laporanhrd/getdepartemen', 'getdepartemen')->name('laporanhrd.getdepartemen')->can('hrd.presensi');

@@ -689,4 +689,30 @@ class LaporanhrdController extends Controller
             }
         }
     }
+
+
+    public function cetakcuti(Request $request)
+    {
+
+        $query = Karyawan::query();
+        $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->leftJoin('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
+        $query->where('hrd_karyawan.status', '=', '1');
+        if (!empty($request->kode_cabang)) {
+            $query->where('hrd_karyawan.kode_cabang', '=', $request->kode_cabang);
+        }
+
+        if (!empty($request->kode_dept)) {
+            $query->where('hrd_karyawan.kode_dept', '=', $request->kode_dept);
+        }
+
+        if (!empty($request->kode_group)) {
+            $query->where('hrd_karyawan.kode_group', '=', $request->kode_group);
+        }
+
+        $data['cuti'] = $query->get();
+        $data['tahun'] = $request->tahun;
+        return view('hrd.laporan.cuti_cetak', $data);
+    }
 }
