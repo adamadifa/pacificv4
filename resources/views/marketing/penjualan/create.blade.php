@@ -1216,7 +1216,7 @@
             });
             console.log(kode_produk + ': ' + totalQuantity);
             // console.log(category + ': ' + totalQuantity);
-            return totalQuantity;
+            return totalQuantity || 0;
         }
 
         function calculateDiscount(totalQuantity, category) {
