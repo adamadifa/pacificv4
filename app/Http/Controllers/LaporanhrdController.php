@@ -697,8 +697,10 @@ class LaporanhrdController extends Controller
 
 
         $selectColumnBulan = [];
+        $selectBulan = [];
         for ($i = 1; $i <= 12; $i++) {
             $selectColumnBulan[] = DB::raw('SUM(IF(MONTH(hrd_presensi.tanggal)="' . $i . '",1,0)) as `bulan_' . $i . '`');
+            $selectBulan[] = 'bulan_' . $i;
         }
 
 
@@ -713,6 +715,7 @@ class LaporanhrdController extends Controller
 
 
         $query = Karyawan::query();
+        $query->select('hrd_karyawan.*', 'nama_cabang', 'nama_dept', 'nama_group', 'nama_jabatan', ...$selectBulan);
         $query->leftJoin('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftJoin('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
