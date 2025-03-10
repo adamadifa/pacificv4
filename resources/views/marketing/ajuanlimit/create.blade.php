@@ -694,7 +694,7 @@
                         $("#jumlah").focus();
                     },
                 });
-            } else if (jml > 15000000 && cek_foto_toko == "" && cek_foto_owner == "") {
+            } else if (jml > 15000000 && cek_foto_toko == "" || jml > 15000000 && cek_foto_owner == "") {
                 e.preventDefault();
                 Swal.fire({
                     title: "Oops!",
