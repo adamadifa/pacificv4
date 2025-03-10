@@ -55,9 +55,7 @@
         <section class="sheet padding-10mm">
             <table style="width:100%" class="datatable3">
                 <tr>
-                    <td>
 
-                    </td>
                     <td>
                         <b style="font-size:18px">CV PACIFIC</b><br>
                         <div style="font-size:14px; font-family:Tahoma">
