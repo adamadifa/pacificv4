@@ -1,4 +1,42 @@
 <div class="row">
+    <table class="table">
+        <tr>
+            <th class="text-center">Foto Toko</th>
+            <th class="text-center">Foto Owner</th>
+        </tr>
+        <tr>
+            <td class="text-center">
+                @if (!empty($ajuanlimit->foto))
+                    @if (Storage::disk('public')->exists('/pelanggan/' . $ajuanlimit->foto))
+                        <img src="{{ getfotoPelanggan($ajuanlimit->foto) }}" alt="user image" class="d-block h-auto mx-auto rounded user-profile-img"
+                            width="150">
+                    @else
+                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                            class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                    @endif
+                @else
+                    <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                        class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                @endif
+            </td>
+            <td class="text-center">
+                @if (!empty($ajuanlimit->foto_owner))
+                    @if (Storage::disk('public')->exists('/pelanggan/owner/' . $ajuanlimit->foto_owner))
+                        <img src="{{ getfotoPelangganowner($ajuanlimit->foto_owner) }}" alt="user image"
+                            class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                    @else
+                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                            class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                    @endif
+                @else
+                    <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
+                        class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                @endif
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="row">
     <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="row">
             <div class="col">
