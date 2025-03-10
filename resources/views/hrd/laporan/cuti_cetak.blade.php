@@ -52,6 +52,12 @@
                     <th rowspan="2">Departemen</th>
                     <th rowspan="2">Grup</th>
                     <th rowspan="2">Jabatan</th>
+                    <th colspan="12">Bulan</th>
+                </tr>
+                <tr>
+                    @for ($i = 1; $i <= 12; $i++)
+                        <th>{{ $i }}</th>
+                    @endfor
                 </tr>
             </thead>
             <tbody>
