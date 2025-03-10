@@ -469,6 +469,7 @@ class LaporanhrdController extends Controller
         $query->where('status_aktif_karyawan', 1);
         $query->where('tanggal_masuk', '<=', $end_date);
         if ($request->format_laporan == 4) {
+            $query->where('hrd_karyawan.status_karyawan', '!=', 'O');
             $query->whereNotIn('hrd_karyawan.nik', $karyawan_phk_maret);
         }
         $query->orWhere('status_aktif_karyawan', 0);
@@ -476,6 +477,7 @@ class LaporanhrdController extends Controller
         $query->where('tanggal_masuk', '<=', $end_date);
 
         if ($request->format_laporan == 4) {
+            $query->where('hrd_karyawan.status_karyawan', '!=', 'O');
             $query->whereNotIn('hrd_karyawan.nik', $karyawan_phk_maret);
         }
 
