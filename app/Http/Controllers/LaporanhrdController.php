@@ -191,7 +191,13 @@ class LaporanhrdController extends Controller
         $berlakugaji =  $request->format_laporan == 4 ? date('Y-m-t', strtotime(date('Y-m', strtotime($dari)) . '-01')) : $sampai;
 
 
-        dd($berlakugaji);
+        $karyawan_phk_maret = [
+            '15.03.371',
+            '15.05.373',
+            '19.07.419',
+            '22.01.450',
+            '24.07.315'
+        ];
 
         $gajiTerakhir = DB::table('hrd_gaji')
             ->select(
@@ -462,10 +468,16 @@ class LaporanhrdController extends Controller
         // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
         $query->where('status_aktif_karyawan', 1);
         $query->where('tanggal_masuk', '<=', $end_date);
+        if ($request->format_laporan == 4) {
+            $query->whereNotIn('hrd_karyawan.nik', $karyawan_phk_maret);
+        }
         $query->orWhere('status_aktif_karyawan', 0);
         $query->where('tanggal_off_gaji', '>=', $start_date);
         $query->where('tanggal_masuk', '<=', $end_date);
 
+        if ($request->format_laporan == 4) {
+            $query->whereNotIn('hrd_karyawan.nik', $karyawan_phk_maret);
+        }
 
         if (!empty($kode_cabang)) {
             $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
