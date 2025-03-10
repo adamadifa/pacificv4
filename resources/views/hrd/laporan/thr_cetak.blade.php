@@ -231,12 +231,13 @@
                         $insentif = $d['iu_masakerja'] + $d['iu_lembur'] + $d['iu_penempatan'] + $d['iu_kpi'];
                         $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
                         $jumlah_insentif = $insentif + $insentif_manager;
+                        $end_date = date('Y-m-t', $end_date);
                         $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
                         $tahunkerja = $masakerja['tahun'];
                         $bulankerja = $masakerja['bulan'];
                     @endphp
                     <tr>
-                        <td style="width:1%">{{ $loop->iteration }}</td>
+                        <td style="width:1%">{{ $loop->iteration }} {{ $end_date }}</td>
                         <td style="width:2%">
                             @php
                                 $nik = $d['nik'];
