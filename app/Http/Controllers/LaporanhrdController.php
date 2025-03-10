@@ -709,8 +709,9 @@ class LaporanhrdController extends Controller
         $rekapcuti->join('hrd_presensi', 'hrd_presensi_izincuti.id_presensi', '=', 'hrd_presensi.id');
         $rekapcuti->select('hrd_presensi.nik', ...$selectColumnBulan);
         $rekapcuti->where('kode_cuti', 'C01');
-        $rekapcuti->whereRaw('YEAR(hrd_presensi.tanggal)="' . $request->tahun . '"');
+        $rekapcuti->whereRaw('YEAR(hrd_presensi.tanggald)="' . $request->tahun . '"');
         $rekapcuti->groupBy('hrd_presensi.nik');
+        $rekapcuti->get();
 
 
 
