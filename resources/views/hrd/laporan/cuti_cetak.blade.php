@@ -53,6 +53,9 @@
                     <th rowspan="2">Grup</th>
                     <th rowspan="2">Jabatan</th>
                     <th colspan="12">Bulan</th>
+                    <th rowspan="2">Kuota</th>
+                    <th rowspan="2">Digunakan</th>
+                    <th rowspan="2">Sisa</th>
                 </tr>
                 <tr>
                     @for ($i = 1; $i <= 12; $i++)
@@ -61,6 +64,9 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $kuotacuti = 12;
+                @endphp
                 @foreach ($cuti as $d)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
@@ -70,13 +76,22 @@
                         <td>{{ $d->nama_dept }}</td>
                         <td>{{ $d->nama_group }}</td>
                         <td>{{ $d->nama_jabatan }}</td>
+                        @php
+                            $total_cuti = 0;
+                        @endphp
                         @for ($i = 1; $i <= 12; $i++)
+                            @php
+                                $total_cuti += $d->{'bulan_' . $i};
+                            @endphp
                             @if (!empty($d->{'bulan_' . $i}))
                                 <td style="background-color: green; color:white">{{ $d->{'bulan_' . $i} }}</td>
                             @else
                                 <td style="background-color: red"></td>
                             @endif
                         @endfor
+                        <td>{{ $kuotacuti }}</td>
+                        <td>{{ $total_cuti }}</td>
+                        <td>{{ $kuotacuti - $total_cuti }}</td>
                     </tr>
                 @endforeach
             </tbody>
