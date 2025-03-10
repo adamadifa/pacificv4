@@ -70,6 +70,13 @@
                         <td>{{ $d->nama_dept }}</td>
                         <td>{{ $d->nama_group }}</td>
                         <td>{{ $d->nama_jabatan }}</td>
+                        @for ($i = 1; $i <= 12; $i++)
+                            <td>
+                                @if ($d['bulan' . $i] != 0)
+                                    {{ $d['bulan' . $i] }}
+                                @endif
+                            </td>
+                        @endfor
                     </tr>
                 @endforeach
             </tbody>
