@@ -105,6 +105,7 @@
                                 <div class="col-lg-4 col-md-12 col-sm12">
                                     <x-input-with-icon label="Produk" name="nama_produk" icon="ti ti-barcode" height="80px" readonly="true" />
                                     <input type="hidden" id="kode_harga" name="kode_harga">
+                                    <input type="hidden" id="kode_produk" name="kode_produk">
                                     <input type="hidden" id="isi_pcs_dus" name="isi_pcs_dus">
                                     <input type="hidden" id="isi_pcs_pack" name="isi_pcs_pack">
                                     <input type="hidden" id="kode_kategori_diskon" name="kode_kategori_diskon">
@@ -210,6 +211,8 @@
                                                         <td>
                                                             <input type="hidden" name="kode_harga_produk[]" value="{{ $d->kode_harga }}"
                                                                 class="kode_harga" />
+                                                            <input type="hidden" name="kode_produk_produk[]" value="{{ $d->kode_produk }}"
+                                                                class="kode_produk" />
                                                             <input type="hidden" name="status_promosi_produk[]" class="status_promosi"
                                                                 value="{{ $d->status_promosi }}" />
                                                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon"
@@ -753,6 +756,7 @@
         $(document).on('click', '.pilihProduk', function(e) {
             e.preventDefault();
             let kode_harga = $(this).attr('kode_harga');
+            let kode_produk = $(this).attr('kode_produk');
             let nama_pelanggan = $("#nama_pelanggan").val();
             let nama_produk = $(this).attr('nama_produk');
             let harga_dus = $(this).attr('harga_dus');
@@ -773,6 +777,7 @@
                 harga_pcs = 0;
             }
             $("#kode_harga").val(kode_harga);
+            $("#kode_produk").val(kode_produk);
             $("#nama_produk").val(nama_produk);
             $("#harga_dus").val(harga_dus);
             $("#harga_pack").val(harga_pack);
@@ -840,6 +845,7 @@
 
         function addProduk() {
             var kode_harga = $("#kode_harga").val();
+            var kode_produk = $("#kode_produk").val();
             var nama_produk = $("#nama_produk").val();
             var jml_dus = $("#jml_dus").val();
             var jml_pack = $("#jml_pack").val();
@@ -927,6 +933,7 @@
                     <tr id="index_${index}" class="${bgcolor}">
                         <td>
                             <input type="hidden" name="kode_harga_produk[]" value="${kode_harga}" class="kode_harga"/>
+                            <input type="hidden" name="kode_produk_produk[]" value="${kode_produk}" class="kode_produk"/>
                             <input type="hidden" name="status_promosi_produk[]" class="status_promosi" value="${status_promosi}"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
@@ -973,6 +980,7 @@
                 //append to table
                 $('#loadproduk').append(produk);
                 $("#kode_harga").val("");
+                $("#kode_produk").val("");
                 $("#nama_produk").val("");
                 $("#jml_dus").val("");
                 $("#jml_pack").val("");
@@ -1047,6 +1055,7 @@
 
             // Ambil data dari sel
             let kode_harga = currentRow.find('.kode_harga').val();
+            let kode_produk = currentRow.find('.kode_produk').val();
             let nama_produk = currentRow.find('td:eq(1)').text();
             let jml_dus = currentRow.find('td:eq(2)').text();
             let harga_dus = currentRow.find('td:eq(3)').text();
@@ -1065,6 +1074,7 @@
             let dataProduk = {
                 'kode_pelanggan': kode_pelanggan,
                 'kode_harga': kode_harga,
+                'kode_produk': kode_produk,
                 'nama_produk': nama_produk,
                 'jml_dus': jml_dus,
                 'harga_dus': harga_dus,
@@ -1094,6 +1104,7 @@
         $(document).on('submit', '#formEditproduk', function(event) {
             event.preventDefault();
             let kode_harga = $(this).find("#kode_harga").val();
+            let kode_produk = $(this).find("#kode_produk").val();
             let nama_produk = $(this).find("#kode_harga").find(':selected').text();
             let jml_dus = $(this).find("#jml_dus").val();
             let jml_pack = $(this).find("#jml_pack").val();
@@ -1159,6 +1170,7 @@
                     <tr id="index_${index}" class="${bgcolor}">
                         <td>
                             <input type="hidden" name="kode_harga_produk[]" value="${kode_harga}" class="kode_harga"/>
+                            <input type="hidden" name="kode_produk_produk[]" value="${kode_produk}" class="kode_produk"/>
                             <input type="hidden" name="status_promosi_produk[]" value="${status_promosi}" class="status_promosi"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
@@ -1277,6 +1289,24 @@
             return totalQuantity;
         }
 
+        function calculateTotalQuantityByProduct(kode_produk) {
+            let totalQuantity = 0;
+            // Loop through each row in the table
+            $('#tabelproduk tbody tr').each(function() {
+                // Check if the category matches
+                if ($(this).find('.kode_produk').val() === kode_produk) {
+                    // Add quantity to total if category matches
+                    if ($(this).find('.status_promosi').val() === '0') {
+                        totalQuantity += parseInt($(this).find('td:eq(2)').text());
+                    }
+                }
+            });
+            console.log(kode_produk + ': ' + totalQuantity);
+            // console.log(category + ': ' + totalQuantity);
+            return totalQuantity || 0;
+        }
+
+
         function calculateDiscount(totalQuantity, category) {
             let discount = 0;
             let discount_tunai = 0;
@@ -1323,12 +1353,27 @@
         }
 
 
+        function hitungdiskonProductBP500() {
+            let totalQuantity = calculateTotalQuantityByProduct('BP500');
+            let diskon = totalQuantity * 2000;
+            return diskon;
+
+        }
+
         function hitungdiskonSwan() {
             let totalQuantity = calculateTotalQuantityByCategory('D001');
             let diskon = calculateDiscount(totalQuantity, 'D001');
-            $("#potongan_swan").val(convertToRupiah(diskon));
-            return diskon;
+            let diskonbp500 = hitungdiskonProductBP500();
+            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500);
+            $("#potongan_swan").val(convertToRupiah(totaldiskon));
+            return totaldiskon;
         }
+        // function hitungdiskonSwan() {
+        //     let totalQuantity = calculateTotalQuantityByCategory('D001');
+        //     let diskon = calculateDiscount(totalQuantity, 'D001');
+        //     $("#potongan_swan").val(convertToRupiah(diskon));
+        //     return diskon;
+        // }
 
         function hitungdiskonStick() {
             let totalQuantity = calculateTotalQuantityByCategory('D003');

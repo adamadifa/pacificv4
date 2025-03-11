@@ -744,7 +744,7 @@ class PenjualanController extends Controller
         $data['penjualan'] = $penjualan;
         $total_netto = $penjualan->total_bruto - $penjualan->total_retur - $penjualan->potongan - $penjualan->potongan_istimewa - $penjualan->penyesuaian + $penjualan->ppn;
         $data['total_netto'] = $total_netto;
-        $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_diskon')
+        $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_diskon')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->where('no_faktur', $no_faktur)
