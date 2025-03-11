@@ -57,7 +57,7 @@
                 <tr>
 
                     <td>
-                        <b style="font-size:18px">CV PACIFIC</b><br>
+                        <b style="font-size:18px">{{ $ajuanlimit->nama_pt }}</b><br>
                         <div style="font-size:14px; font-family:Tahoma">
                             Jln Perintis Kemerdekaan No. 106 Tasikmalaya
                             Tlp. (0265) 330794, 337694. Fax (0265) 332329
@@ -226,7 +226,7 @@
                             @else
                                 <ul style="list-style: none; display:flex; justify-content: space-between">
                                     @foreach ($referensi as $item)
-                                        <li><i class="ti ti-check me-1"></i> &#10004; {{ textUpperCase($item) }}
+                                        <li style="margin-right:10px"><i class="ti ti-check me-1"></i> &#9745; {{ textUpperCase($item) }}
                                             {{ $item == 'external' ? '(' . $ajuanlimit->ket_referensi . ')' : '' }}</li>
                                     @endforeach
                                 </ul>
