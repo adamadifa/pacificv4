@@ -203,16 +203,38 @@
                     </table>
                 </div>
             </div>
-            <table class="datatable3" style="margin-top:30px; width:40%">
-                <tr>
-                    <td>Limit Kredit Sebelumnya</td>
-                    <td style="text-align: right">{{ formatRupiah($ajuanlimit->limit_sebelumnya) }}</td>
-                </tr>
-                <tr>
-                    <td>Pengajuan Tambahan</td>
-                    <td style="text-align: right">{{ formatRupiah($ajuanlimit->jumlah - $ajuanlimit->limit_sebelumnya) }}</td>
-                </tr>
-            </table>
+            <div style="margin-top:30px; display:flex; justify-content: space-between">
+                <table class="datatable3">
+                    <tr>
+                        <td>Limit Kredit Sebelumnya</td>
+                        <td style="text-align: right">{{ formatRupiah($ajuanlimit->limit_sebelumnya) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Pengajuan Tambahan</td>
+                        <td style="text-align: right">{{ formatRupiah($ajuanlimit->jumlah - $ajuanlimit->limit_sebelumnya) }}</td>
+                    </tr>
+                </table>
+                <table class="datatable3">
+                    <tr>
+                        <td>Referensi</td>
+                        <td>
+                            @php
+                                $referensi = explode(',', $ajuanlimit->referensi);
+                            @endphp
+                            @if (empty($referensi))
+                                <b>Tidak Ada Referensi</b>
+                            @else
+                                <ul style="list-style: none; display:flex; justify-content: space-between">
+                                    @foreach ($referensi as $item)
+                                        <li><i class="ti ti-check me-1"></i> &#10004; {{ textUpperCase($item) }}
+                                            {{ $item == 'external' ? '(' . $ajuanlimit->ket_referensi . ')' : '' }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <table class="datatable3" style="margin-top:30px; width:100%">
                 <tr>
                     <td>Total Limit</td>

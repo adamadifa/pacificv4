@@ -177,7 +177,34 @@
             </div>
 
             <x-textarea label="Uraian Analisa" name="uraian_analisa" />
-            <x-textarea label="Referensi" name="referensi" />
+            <div class="form-group mb-3">
+                <label>Referensi</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input smm" name="referensi[]" value="smm" type="checkbox" id="smm">
+                    <label class="form-check-label" for="smm"> SMM </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input rsm" name="referensi[]" value="rsm" type="checkbox" id="rsm">
+                    <label class="form-check-label" for="rsm"> RSM </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input gm" name="referensi[]" value="gm" type="checkbox" id="gm">
+                    <label class="form-check-label" for="gm"> GM </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input direktur" name="referensi[]" value="direktur" type="checkbox" id="direktur">
+                    <label class="form-check-label" for="direktur"> DIREKTUR </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input external" name="referensi[]" value="external" type="checkbox" id="external">
+                    <label class="form-check-label" for="external"> External </label>
+                </div>
+            </div>
+            <div class="row" id="ket_ref">
+                <div class="col">
+                    <x-input-with-icon icon="ti ti-user" label="Keterangan Referensi" name="ket_referensi" />
+                </div>
+            </div>
 
             <div class="form-group">
                 <button class="btn btn-primary w-100" type="submit" id="submitAjuanlimit">
@@ -200,6 +227,17 @@
         const form = $("#formAjuanlimit");
         $(".flatpickr-date").flatpickr();
         $(".money").maskMoney();
+
+        function toggleKeteranganReferensi() {
+            if ($("#external").is(':checked')) {
+                $("#ket_ref").show();
+            } else {
+                $("#ket_ref").hide();
+            }
+        }
+
+        toggleKeteranganReferensi();
+        $("#external").change(toggleKeteranganReferensi);
 
         function convertToRupiah(number) {
             if (number) {
@@ -605,8 +643,26 @@
             let lama_topup = $("#lama_topup").val();
             let tanggal = $("#tanggal").val();
             let omset_toko = $("#omset_toko").val();
-            let referensi = $("#referensi").val();
-            if (kode_pelanggan == "") {
+
+            let referensiChecked = [];
+            $('input[name="referensi[]"]:checked').each(function() {
+                referensiChecked.push($(this).val());
+            });
+            let referensi = referensiChecked.join(',');
+            let ket_referensi = $("#ket_referensi").val();
+
+            if (referensi.includes("external") && ket_referensi == "") {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Keterangan Referensi Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $("#ket_referensi").focus();
+                    },
+                });
+            } else if (kode_pelanggan == "") {
                 e.preventDefault();
                 Swal.fire({
                     title: "Oops!",
@@ -849,8 +905,8 @@
                     }
                 });
             } else {
-                $("#submitAjuanLimit").attr("disabled", true);
-                $("#submitAjuanLimit").html(
+                $("#submitAjuanlimit").attr("disabled", true);
+                $("#submitAjuanlimit").html(
                     '<div class="spinner-border spinner-border-sm text-white me-2" role="status"><span class="visually-hidden">Loading...</span></div>Loading..'
                 )
             }

@@ -264,6 +264,24 @@
 
                             </td>
                         </tr>
+                        <tr>
+                            <th>Referensi</th>
+                            <td>
+                                @php
+                                    $referensi = explode(',', $ajuanlimit->referensi);
+                                @endphp
+                                @if (empty($referensi))
+                                    <b>Tidak Ada Referensi</b>
+                                @else
+                                    <ul class="list-unstyled">
+                                        @foreach ($referensi as $item)
+                                            <li><i class="ti ti-check me-1"></i>{{ textUpperCase($item) }}
+                                                {{ $item == 'external' ? $ajuanlimit->ket_referensi : '' }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
