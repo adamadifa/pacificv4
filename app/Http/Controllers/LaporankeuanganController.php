@@ -146,6 +146,28 @@ class LaporankeuanganController extends Controller
         }
     }
 
+    public function cetakrekapledger(Request $request)
+    {
+        $query = Ledger::query();
+        $query->select(
+            'keuangan_ledger.kode_bank',
+            'nama_bank',
+            DB::raw('SUM(IF(debet_kredit="D",jumlah,0)) as jmldebet'),
+            DB::raw('SUM(IF(debet_kredit="K",jumlah,0)) as jmlkredit')
+        );
+
+        $query->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
+        $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
+
+        $query->groupBy('keuangan_ledger.kode_bank', 'nama_bank');
+        $data['ledger'] = $query->get();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap Ledger $request->dari-$request->sampai.xls");
+        }
+        return view('keuangan.laporan.rekapledger_all_cetak', $data);
+    }
     public function cetaksaldokasbesar(Request $request)
     {
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
