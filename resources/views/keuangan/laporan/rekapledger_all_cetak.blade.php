@@ -45,7 +45,7 @@
                         @endphp
                         <tr>
                             <td>'{{ $d->kode_bank }}</td>
-                            <td>{{ $d->nama_bank }}</td>
+                            <td>{{ $d->nama_bank }} {{ $d->no_rekening }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->jmldebet) }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->jmlkredit) }}</td>
                         </tr>

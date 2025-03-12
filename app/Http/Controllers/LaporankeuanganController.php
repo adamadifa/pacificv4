@@ -152,6 +152,7 @@ class LaporankeuanganController extends Controller
         $query->select(
             'keuangan_ledger.kode_bank',
             'nama_bank',
+            'no_rekening',
             DB::raw('SUM(IF(debet_kredit="D",jumlah,0)) as jmldebet'),
             DB::raw('SUM(IF(debet_kredit="K",jumlah,0)) as jmlkredit')
         );
