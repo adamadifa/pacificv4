@@ -328,7 +328,8 @@ class PelangganController extends Controller
                 'no_rekening' => $request->no_rekening,
                 'bank' => $request->bank,
                 'pemilik_rekening' => $request->pemilik_rekening,
-                'metode_bayar' => $request->metode_bayar
+                'metode_bayar' => $request->metode_bayar,
+                'kode_cabang_pkp' => $request->kode_cabang_pkp,
             ];
         } else {
             $data_pelanggan = [
@@ -360,7 +361,8 @@ class PelangganController extends Controller
                 'no_rekening' => $request->no_rekening,
                 'bank' => $request->bank,
                 'pemilik_rekening' => $request->pemilik_rekening,
-                'metode_bayar' => $request->metode_bayar
+                'metode_bayar' => $request->metode_bayar,
+                'kode_cabang_pkp' => $request->kode_cabang_pkp,
             ];
         }
         $data = array_merge($data_pelanggan, $data_foto, $data_foto_owner);

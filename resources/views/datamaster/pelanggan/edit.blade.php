@@ -28,7 +28,8 @@
                 <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
                     selected="{{ $pelanggan->kode_cabang }}" />
             @endhasanyrole
-
+            <x-select label="Cabang PKP" name="kode_cabang_pkp" :data="$cabang" key="kode_cabang" textShow="nama_pt"
+                selected="{{ $pelanggan->kode_cabang_pkp }}" />
             <div class="form-group mb-3">
                 <select name="kode_salesman" id="kode_salesman" class="select2Kodesalesman form-select">
                 </select>
