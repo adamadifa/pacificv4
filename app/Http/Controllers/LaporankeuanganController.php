@@ -166,6 +166,8 @@ class LaporankeuanganController extends Controller
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
             header("Content-Disposition: attachment; filename=Rekap Ledger $request->dari-$request->sampai.xls");
         }
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
         return view('keuangan.laporan.rekapledger_all_cetak', $data);
     }
     public function cetaksaldokasbesar(Request $request)
