@@ -224,8 +224,9 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
+        $cabang_pkp = Cabang::orderBy('kode_cabang')->get();
         $klasifikasi_outlet = Klasifikasioutlet::orderBy('kode_klasifikasi')->get();
-        return view('datamaster.pelanggan.edit', compact('cabang', 'pelanggan', 'klasifikasi_outlet'));
+        return view('datamaster.pelanggan.edit', compact('cabang', 'pelanggan', 'klasifikasi_outlet', 'cabang_pkp'));
     }
 
     public function update(Request $request, $kode_pelanggan)
