@@ -149,8 +149,8 @@
                     </div>
                 @endcan
                 @hasanyrole(['super admin', 'gm administrasi', 'manager keuangan', 'direktur'])
-                    <div class="tab-pane fade" id="ledger" role="tabpanel">
-                        @include('keuangan.laporan.ledger')
+                    <div class="tab-pane fade" id="rekapledger" role="tabpanel">
+                        @include('keuangan.laporan.rekapledger')
                     </div>
                 @endhasanyrole
                 @can('keu.saldokasbesar')
