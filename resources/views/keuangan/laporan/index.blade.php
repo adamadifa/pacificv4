@@ -31,6 +31,14 @@
                         </button>
                     </li>
                 @endcan
+                @hasanyrole(['super admin', 'gm administrasi', 'manager keuangan', 'direktur'])
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapledger"
+                            aria-controls="saldokasbesar" aria-selected="false" tabindex="-1">
+                            Rekap Ledger
+                        </button>
+                    </li>
+                @endhasanyrole
                 @can('keu.saldokasbesar')
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#saldokasbesar"
@@ -140,6 +148,11 @@
                         @include('keuangan.laporan.ledger')
                     </div>
                 @endcan
+                @hasanyrole(['super admin', 'gm administrasi', 'manager keuangan', 'direktur'])
+                    <div class="tab-pane fade" id="ledger" role="tabpanel">
+                        @include('keuangan.laporan.ledger')
+                    </div>
+                @endhasanyrole
                 @can('keu.saldokasbesar')
                     <div class="tab-pane fade" id="saldokasbesar" role="tabpanel">
                         @include('keuangan.laporan.saldokasbesar')

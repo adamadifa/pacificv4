@@ -1883,6 +1883,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporankeuangan', 'index')->name('laporankeuangan.index');
         Route::post('/laporankeuangan/cetakkaskecil', 'cetakkaskecil')->name('laporankeuangan.cetakkaskecil')->can('keu.kaskecil');
         Route::post('/laporankeuangan/cetakledger', 'cetakledger')->name('laporankeuangan.cetakledger')->can('keu.ledger');
+        Route::post('/laporankeuangan/cetakrekapledger', 'cetakrekapledger')->name('laporankeuangan.cetakrekapledger')->can('keu.ledger');
         Route::post('/laporankeuangan/cetaksaldokasbesar', 'cetaksaldokasbesar')->name('laporankeuangan.cetaksaldokasbesar')->can('keu.saldokasbesar');
         Route::post('/laporankeuangan/cetaklpu', 'cetaklpu')->name('laporankeuangan.cetaklpu')->can('keu.lpu');
         Route::post('/laporankeuangan/cetakpenjualan', 'cetakpenjualan')->name('laporankeuangan.cetakpenjualan')->can('keu.penjualan');
