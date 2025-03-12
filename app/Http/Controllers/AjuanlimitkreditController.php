@@ -220,7 +220,7 @@ class AjuanlimitkreditController extends Controller
                 'skor' => $request->skor,
                 'kode_salesman' => $pelanggan->kode_salesman,
                 'id_user' => auth()->user()->id,
-                'referensi' => implode(",", $request->referensi),
+                'referensi' => !empty($request->referensi) ? implode(",", $request->referensi) : '',
                 'ket_referensi' => $request->ket_referensi
             ]);
 
