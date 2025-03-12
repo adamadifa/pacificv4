@@ -158,7 +158,7 @@ class LaporankeuanganController extends Controller
 
         $query->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
         $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
-
+        $query->orderBy('nama_bank');
         $query->groupBy('keuangan_ledger.kode_bank', 'nama_bank');
         $data['ledger'] = $query->get();
         if (isset($_POST['exportButton'])) {
