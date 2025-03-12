@@ -83,7 +83,7 @@ class Penilaiankaryawan extends Model
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->whereIn('hrd_karyawan.kode_dept', ['MKT']);
             } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
-                $query->where('hrd_penilaian.kode_deptd', 'MKT');
+                $query->where('hrd_karyawan.kode_dept', 'MKT');
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->where('hrd_karyawan.kode_dept', 'AKT');
@@ -102,13 +102,13 @@ class Penilaiankaryawan extends Model
                 $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan_search . '%');
             }
 
-            // if (!empty($request->status)) {
-            //     if ($request->status == 'pending') {
-            //         $query->where('hrd_penilaian.status', '0');
-            //     } else if ($request->status == "disetujui") {
-            //         $query->where('hrd_penilaian.status', '1');
-            //     }
-            // }
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->where('hrd_penilaian.status', '0');
+                } else if ($request->status == "disetujui") {
+                    $query->where('hrd_penilaian.status', '1');
+                }
+            }
 
             if (!empty($request->posisi_ajuan)) {
                 $query->where('roles.name', $request->posisi_ajuan);
@@ -125,7 +125,7 @@ class Penilaiankaryawan extends Model
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->orwhereIn('hrd_karyawan.kode_dept', ['MKT']);
             } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
-                $query->orwhere('hrd_penilaian.kode_dept', 'MKT');
+                $query->orwhere('hrd_karyawan.kode_dept', 'MKT');
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->orwhere('hrd_karyawan.kode_dept', 'AKT');
