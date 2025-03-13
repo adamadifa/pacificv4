@@ -4833,7 +4833,7 @@ class LaporanmarketingController extends Controller
 
         $queryaup = $querysaldoawal->unionAll($querypenjualan)->get();
 
-        $data['aup'] = $queryaup->groupBy('kode_salesman_Baru')
+        $data['aup'] = $queryaup->groupBy('kode_salesman_baru')
             ->map(function ($item) {
                 return [
                     'kode_salesman' => $item->first()->kode_salesman_baru,
