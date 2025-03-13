@@ -807,7 +807,7 @@ class PresensiController extends Controller
         }
 
         if (auth()->user()->id == '86') {
-            $qkaryawan->whereIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
+            $qkaryawan->whereIn('hrd_karyawan.kode_group', ['G19', 'G20', 'G21', 'G22', 'G23']);
         } else if (auth()->user()->id == '87') {
             $qkaryawan->whereNotIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
         }
