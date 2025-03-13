@@ -57,7 +57,7 @@ class PembayaranpenjualanController extends Controller
             ->select(DB::raw("SUM(jumlah) as jml_voucher"))
             ->where('marketing_penjualan.kode_pelanggan', $penjualan->kode_pelanggan)
             ->where('jenis_voucher', 2)
-            ->where('voucher_reward', 0)
+            ->where('voucher_reward', 1)
             ->where('marketing_penjualan_historibayar.tanggal', '>=', $tanggal_mulai)
             ->first();
         $saldo_voucher = $saldo_voucher_program->jml_voucher - $diskonprogram->jml_voucher;
