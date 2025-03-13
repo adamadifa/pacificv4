@@ -671,6 +671,13 @@ class LaporanhrdController extends Controller
                     header("Content-Disposition: attachment; filename=Laporan THR.xls");
                 }
                 return view('hrd.laporan.thr_cetak', $data);
+            } else if ($request->format_laporan == 5) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                    header("Content-Disposition: attachment; filename=Rekap THR.xls");
+                }
+                return view('hrd.laporan.rekap_thr_cetak', $data);
             }
         } else {
             if ($request->format_laporan == 1) {
