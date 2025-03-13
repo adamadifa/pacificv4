@@ -4635,7 +4635,7 @@ class LaporanmarketingController extends Controller
 
         $querysaldoawal = Detailsaldoawalpiutangpelanggan::query();
         $querysaldoawal->select(
-            'marketing_penjualan.kode_salesman',
+            'kode_salesman_baru',
             'salesman.nama_salesman',
             'salesman.kode_cabang',
             DB::raw("SUM(IF(datediff('$request->tanggal',marketing_penjualan.tanggal) between 0 and 15,
@@ -4729,7 +4729,7 @@ class LaporanmarketingController extends Controller
 
 
         $querysaldoawal->groupBy(
-            'marketing_penjualan.kode_salesman',
+            'kode_salesman_baru',
             'salesman.nama_salesman',
             'salesman.kode_cabang',
         );
@@ -4738,7 +4738,7 @@ class LaporanmarketingController extends Controller
 
         $querypenjualan = Penjualan::query();
         $querypenjualan->select(
-            'marketing_penjualan.kode_salesman',
+            'kode_salesman_baru',
             'salesman.nama_salesman',
             'salesman.kode_cabang',
 
@@ -4825,7 +4825,7 @@ class LaporanmarketingController extends Controller
 
 
         $querypenjualan->groupBy(
-            'marketing_penjualan.kode_salesman',
+            'kode_salesman_baru',
             'salesman.nama_salesman',
             'salesman.kode_cabang',
         );
@@ -4833,7 +4833,7 @@ class LaporanmarketingController extends Controller
 
         $queryaup = $querysaldoawal->unionAll($querypenjualan)->get();
 
-        $data['aup'] = $queryaup->groupBy('kode_salesman_baru')
+        $data['aup'] = $queryaup->groupBy('kode_salesman_Baru')
             ->map(function ($item) {
                 return [
                     'kode_salesman' => $item->first()->kode_salesman_baru,
