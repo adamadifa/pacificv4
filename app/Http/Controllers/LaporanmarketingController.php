@@ -4823,7 +4823,7 @@ class LaporanmarketingController extends Controller
             $querypenjualan->where('kode_salesman_baru', $request->kode_salesman);
         }
 
-
+        $querypenjualan->orderBy('kode_salesman_baru', 'asc');
         $querypenjualan->groupBy(
             'marketing_penjualan.kode_salesman',
             'salesman.nama_salesman',
