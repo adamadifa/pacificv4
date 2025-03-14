@@ -189,7 +189,7 @@ class LaporanhrdController extends Controller
         $end_date = $sampai;
 
         $daribulangaji = $dari;
-        $berlakugaji =  $request->format_laporan == 4 ? date('Y-m-t', strtotime(date('Y-m', strtotime($dari)) . '-01')) : $sampai;
+        $berlakugaji =  in_array($request->format_laporan, [4, 5]) ? date('Y-m-t', strtotime(date('Y-m', strtotime($dari)) . '-01')) : $sampai;
 
 
         $karyawan_phk_maret = [
@@ -469,7 +469,7 @@ class LaporanhrdController extends Controller
         // $qpresensi->where('hrd_karyawan.nik', '15.08.376');
         $query->where('status_aktif_karyawan', 1);
         $query->where('tanggal_masuk', '<=', $end_date);
-        if ($request->format_laporan == 4) {
+        if (in_array($request->format_laporan, [4, 5])) {
             $query->where('hrd_karyawan.status_karyawan', '!=', 'O');
             $query->whereNotIn('hrd_karyawan.nik', $karyawan_phk_maret);
         }
@@ -477,7 +477,7 @@ class LaporanhrdController extends Controller
         $query->where('tanggal_off_gaji', '>=', $start_date);
         $query->where('tanggal_masuk', '<=', $end_date);
 
-        if ($request->format_laporan == 4) {
+        if (in_array($request->format_laporan, [4, 5])) {
             $query->where('hrd_karyawan.status_karyawan', '!=', 'O');
             $query->whereNotIn('hrd_karyawan.nik', $karyawan_phk_maret);
         }
