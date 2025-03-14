@@ -178,6 +178,11 @@
 
                 //Upah
                 $total_upah = 0;
+                $grandtotal_thr = 0;
+                $grandtotal_thr_seperempat = 0;
+                $grandtotal_thr_setengah = 0;
+                $grandtotal_all_thr = 0;
+
                 $total_upah_administrasi = 0;
                 $total_upah_penjualan = 0;
                 $total_upah_tkl = 0;
@@ -1020,6 +1025,12 @@
                     //UPAH
                     $total_upah += $upah;
 
+                    //THR
+                    $grandtotal_thr += $thr;
+                    $grandtotal_thr_seperempat += $thr_seperempat;
+                    $grandtotal_thr_setengah += $thr_setengah;
+                    $grandtotal_all_thr += $total_all_thr;
+
                     //INSENTIF
                     $total_insentif += $jumlah_insentif;
 
@@ -1694,6 +1705,11 @@
 
 
                     <th style="text-align: right">{{ formatAngka($total_upah) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr_seperempat) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr_setengah) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_all_thr) }}</th>
                 </tr>
 
 
