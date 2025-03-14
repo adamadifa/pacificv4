@@ -1512,6 +1512,11 @@
 
                         $total_upah_pcf += $upah;
 
+                        $total_thr_pcf += $thr;
+                        $total_thr_seperempat_pcf += $thr_seperempat;
+                        $total_thr_setengah_pcf += $thr_setengah;
+                        $total_thr_all_pcf += $total_all_thr;
+
                         $total_insentif_pcf += $jumlah_insentif;
 
                         //Jam Kerja
@@ -1775,6 +1780,11 @@
 
                     <td style="text-align: right">{{ formatAngka($total_upah_pcf) }}</td>
 
+                    <td style="text-align: right">{{ formatAngka($total_thr_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_seperempat_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_setengah_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_all_pcf) }}</td>
+
 
                 </tr>
                 <tr>
@@ -1789,6 +1799,11 @@
 
 
                     <th style="text-align: right">{{ formatAngka($total_upah) }}</th>
+
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr_seperempat) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr_setengah) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_all_thr) }}</th>
 
 
                 </tr>
