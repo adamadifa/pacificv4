@@ -1492,6 +1492,10 @@
                         <th rowspan="2">Gaji Pokok</th>
                         <th colspan="6">Tunjangan</th>
                         <th rowspan="2">Upah</th>
+                        <th rowspan="2">THR</th>
+                        <th rowspan="2">1/4 Upah</th>
+                        <th rowspan="2">1/2 Upah</th>
+                        <th rowspan="2">TOTAL</th>
 
                     </tr>
                     <tr>
@@ -1598,6 +1602,10 @@
                     <th rowspan="2">Gaji Pokok</th>
                     <th colspan="6">Tunjangan</th>
                     <th rowspan="2">Upah</th>
+                    <th rowspan="2">THR</th>
+                    <th rowspan="2">1/4 Upah</th>
+                    <th rowspan="2">1/2 Upah</th>
+                    <th rowspan="2">TOTAL</th>
 
 
                 </tr>
