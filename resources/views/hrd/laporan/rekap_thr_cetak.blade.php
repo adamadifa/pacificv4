@@ -1431,6 +1431,10 @@
                         $total_im_kendaraan_mp += $d['im_kendaraan'];
 
                         $total_upah_mp += $upah;
+                        $total_thr_mp += $thr;
+                        $total_thr_seperempat_mp += $thr_seperempat;
+                        $total_thr_setengah_mp += $thr_setengah;
+                        $total_thr_all_mp += $total_all_thr;
 
                         $total_insentif_mp += $jumlah_insentif;
 
