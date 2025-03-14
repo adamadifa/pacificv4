@@ -1095,6 +1095,10 @@
                         $total_im_kendaraan_administrasi += $d['im_kendaraan'];
 
                         $total_upah_administrasi += $upah;
+                        $total_thr_administrasi += $thr;
+                        $total_thr_seperempat_administrasi += $thr_seperempat;
+                        $total_thr_setengah_administrasi += $thr_setengah;
+                        $total_thr_all_administrasi += $total_all_thr;
 
                         $total_insentif_administrasi += $jumlah_insentif;
 
@@ -1592,6 +1596,10 @@
 
                         <td style="text-align: right">{{ formatAngka($total_upah_administrasi) }}</td>
 
+                        <td style="text-align: right">{{ formatAngka($total_thr_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_seperempat_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_setengah_administrasi) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_all_administrasi) }}</td>
 
 
 
@@ -1611,7 +1619,12 @@
 
 
                         <td style="text-align: right">{{ formatAngka($total_upah_penjualan) }}</td>
+
                         <td style="text-align: right">{{ formatAngka($total_thr_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_seperempat_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_setengah_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_all_penjualan) }}</td>
+
 
 
                     </tr>
