@@ -1258,6 +1258,11 @@
 
                         $total_upah_tkl += $upah;
 
+                        $total_thr_tkl += $thr;
+                        $total_thr_seperempat_tkl += $thr_seperempat;
+                        $total_thr_setengah_tkl += $thr_setengah;
+                        $total_thr_all_tkl += $total_all_thr;
+
                         $total_insentif_tkl += $jumlah_insentif;
 
                         //Jam Kerja
@@ -1334,6 +1339,11 @@
                         $total_im_kendaraan_tktl += $d['im_kendaraan'];
 
                         $total_upah_tktl += $upah;
+
+                        $total_thr_tkl += $thr;
+                        $total_thr_seperempat_tkl += $thr_seperempat;
+                        $total_thr_setengah_tkl += $thr_setengah;
+                        $total_thr_all_tkl += $total_all_thr;
 
                         $total_insentif_tktl += $jumlah_insentif;
 
@@ -1642,6 +1652,11 @@
 
                         <td style="text-align: right">{{ formatAngka($total_upah_tkl) }}</td>
 
+                        <td style="text-align: right">{{ formatAngka($total_thr_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_seperempat_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_setengah_tkl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_all_tkl) }}</td>
+
 
                     </tr>
                     <tr>
@@ -1657,6 +1672,10 @@
 
 
                         <td style="text-align: right">{{ formatAngka($total_upah_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_seperempat_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_setengah_tktl) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_all_tktl) }}</td>
 
 
                     </tr>
