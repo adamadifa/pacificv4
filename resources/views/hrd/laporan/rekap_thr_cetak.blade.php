@@ -1757,7 +1757,7 @@
                     <td style="text-align: right">{{ formatAngka($total_thr_mp) }}</td>
                     <td style="text-align: right">{{ formatAngka($total_thr_seperempat_mp) }}</td>
                     <td style="text-align: right">{{ formatAngka($total_thr_setengah_mp) }}</td>
-                    <td style="text-align: right">{{ formatAngka($total_all_thr_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_all_mp) }}</td>
 
 
                 </tr>
