@@ -403,6 +403,34 @@
                 $total_jmlbersih_mp = 0;
                 $total_jmlbersih_pcf = 0;
 
+                $total_thr_administrasi = 0;
+                $total_thr_penjualan = 0;
+                $total_thr_tkl = 0;
+                $total_thr_tktl = 0;
+                $total_thr_mp = 0;
+                $total_thr_pcf = 0;
+
+                $total_thr_seperempat_administrasi = 0;
+                $total_thr_seperempat_penjualan = 0;
+                $total_thr_seperempat_tkl = 0;
+                $total_thr_seperempat_tktl = 0;
+                $total_thr_seperempat_mp = 0;
+                $total_thr_seperempat_pcf = 0;
+
+                $total_thr_setengah_administrasi = 0;
+                $total_thr_setengah_penjualan = 0;
+                $total_thr_setengah_tkl = 0;
+                $total_thr_setengah_tktl = 0;
+                $total_thr_setengah_mp = 0;
+                $total_thr_setengah_pcf = 0;
+
+                $total_thr_all_administrasi = 0;
+                $total_thr_all_penjualan = 0;
+                $total_thr_all_tkl = 0;
+                $total_thr_all_tktl = 0;
+                $total_thr_all_mp = 0;
+                $total_thr_all_pcf = 0;
+
             @endphp
             @foreach ($presensi as $d)
                 @php
@@ -417,7 +445,41 @@
                     $insentif = $d['iu_masakerja'] + $d['iu_lembur'] + $d['iu_penempatan'] + $d['iu_kpi'];
                     $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
                     $jumlah_insentif = $insentif + $insentif_manager;
-                    $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
+                    $startdate = date('Y-m', strtotime($end_date)) . '-01';
+                    $enddate = date('Y-m-t', strtotime($end_date));
+                    $masakerja = hitungMasakerja($d['tanggal_masuk'], $enddate);
+                    $tahunkerja = $masakerja['tahun'];
+                    $bulankerja = $masakerja['bulan'];
+                @endphp
+                @if ($tahunkerja >= 1)
+                    @php
+                        $thr = $upah;
+                    @endphp
+                @else
+                    @php
+                        $thr = ($bulankerja / 12) * $upah;
+                    @endphp
+                @endif
+                @if ($tahunkerja >= 10 && $tahunkerja < 15 && $d['nama_jabatan'] != 'DIREKTUR')
+                    @php
+                        $thr_seperempat = 0.25 * $d['gaji_pokok'];
+                    @endphp
+                @else
+                    @php
+                        $thr_seperempat = 0;
+                    @endphp
+                @endif
+                @if ($tahunkerja >= 15 && $d['nama_jabatan'] != 'DIREKTUR')
+                    @php
+                        $thr_setengah = 0.5 * $d['gaji_pokok'];
+                    @endphp
+                @else
+                    @php
+                        $thr_setengah = 0;
+                    @endphp
+                @endif
+                @php
+                    $total_all_thr = $thr + $thr_seperempat + $thr_setengah;
                 @endphp
                 <tr>
 
@@ -1110,6 +1172,11 @@
 
                         $total_upah_penjualan += $upah;
 
+                        $total_thr_penjualan += $thr;
+                        $total_thr_seperempat_penjualan += $thr_seperempat;
+                        $total_thr_setengah_penjualan += $thr_setengah;
+                        $total_thr_all_penjualan += $total_all_thr;
+
                         $total_insentif_penjualan += $jumlah_insentif;
 
                         //Jam Kerja
@@ -1544,6 +1611,7 @@
 
 
                         <td style="text-align: right">{{ formatAngka($total_upah_penjualan) }}</td>
+                        <td style="text-align: right">{{ formatAngka($total_thr_penjualan) }}</td>
 
 
                     </tr>
