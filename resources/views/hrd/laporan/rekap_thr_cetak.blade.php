@@ -1431,6 +1431,10 @@
                         $total_im_kendaraan_mp += $d['im_kendaraan'];
 
                         $total_upah_mp += $upah;
+                        $total_thr_mp += $thr;
+                        $total_thr_seperempat_mp += $thr_seperempat;
+                        $total_thr_setengah_mp += $thr_setengah;
+                        $total_thr_all_mp += $total_all_thr;
 
                         $total_insentif_mp += $jumlah_insentif;
 
@@ -1507,6 +1511,11 @@
                         $total_im_kendaraan_pcf += $d['im_kendaraan'];
 
                         $total_upah_pcf += $upah;
+
+                        $total_thr_pcf += $thr;
+                        $total_thr_seperempat_pcf += $thr_seperempat;
+                        $total_thr_setengah_pcf += $thr_setengah;
+                        $total_thr_all_pcf += $total_all_thr;
 
                         $total_insentif_pcf += $jumlah_insentif;
 
@@ -1750,6 +1759,11 @@
 
                     <td style="text-align: right">{{ formatAngka($total_upah_mp) }}</td>
 
+                    <td style="text-align: right">{{ formatAngka($total_thr_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_seperempat_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_setengah_mp) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_all_mp) }}</td>
+
 
                 </tr>
                 <tr>
@@ -1766,6 +1780,11 @@
 
                     <td style="text-align: right">{{ formatAngka($total_upah_pcf) }}</td>
 
+                    <td style="text-align: right">{{ formatAngka($total_thr_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_seperempat_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_setengah_pcf) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_thr_all_pcf) }}</td>
+
 
                 </tr>
                 <tr>
@@ -1780,10 +1799,14 @@
 
 
                     <th style="text-align: right">{{ formatAngka($total_upah) }}</th>
+
+
+
                     <th style="text-align: right">{{ formatAngka($grandtotal_thr) }}</th>
                     <th style="text-align: right">{{ formatAngka($grandtotal_thr_seperempat) }}</th>
                     <th style="text-align: right">{{ formatAngka($grandtotal_thr_setengah) }}</th>
                     <th style="text-align: right">{{ formatAngka($grandtotal_all_thr) }}</th>
+
 
                 </tr>
             </table>

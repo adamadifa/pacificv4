@@ -59,9 +59,7 @@
                     <td>
                         <b style="font-size:18px">{{ $ajuanlimit->nama_pt }}</b><br>
                         <div style="font-size:14px; font-family:Tahoma">
-                            Jln Perintis Kemerdekaan No. 106 Tasikmalaya
-                            Tlp. (0265) 330794, 337694. Fax (0265) 332329
-                            Emai: pacific.tasikmalaya@gmail.com
+                            {{ $ajuanlimit->alamat_cabang }}
                         </div>
                         <br>
                     </td>
