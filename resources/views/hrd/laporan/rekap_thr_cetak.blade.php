@@ -1780,7 +1780,10 @@
 
 
                     <th style="text-align: right">{{ formatAngka($total_upah) }}</th>
-
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr_seperempat) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_thr_setengah) }}</th>
+                    <th style="text-align: right">{{ formatAngka($grandtotal_all_thr) }}</th>
 
                 </tr>
             </table>
