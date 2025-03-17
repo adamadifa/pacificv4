@@ -81,7 +81,7 @@ class PenilaiankaryawanController extends Controller
             DB::raw("SUM(IF(status='a',1,0)) as alpa"),
             DB::raw("SUM(IF(status='c',1,0)) as cuti")
         )
-            ->where('nik', $request->nik)
+            ->where('nikd', $request->nik)
             ->whereBetween('tanggal', [$data['kontrak']->kontrak_dari, $data['kontrak']->kontrak_sampai])
             ->first();
 
