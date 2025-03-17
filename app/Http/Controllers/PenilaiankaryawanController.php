@@ -84,6 +84,8 @@ class PenilaiankaryawanController extends Controller
             ->where('nik', $request->nik)
             ->whereBetween('tanggal', [$data['kontrak']->kontrak_dari, $data['kontrak']->kontrak_sampai])
             ->first();
+
+        dd($data['rekappresensi']);
         if ($doc == 1) {
             return view('hrd.penilaiankaryawan.create_penilaian_1', $data);
         } else {
