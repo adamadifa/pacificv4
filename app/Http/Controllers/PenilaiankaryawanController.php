@@ -85,6 +85,7 @@ class PenilaiankaryawanController extends Controller
             ->whereBetween('tanggal', [$data['kontrak']->kontrak_dari, $data['kontrak']->kontrak_sampai])
             ->first();
 
+        dd($data['kontrak']->kontrak_dari);
         dd($data['rekappresensi']);
         if ($doc == 1) {
             return view('hrd.penilaiankaryawan.create_penilaian_1', $data);
