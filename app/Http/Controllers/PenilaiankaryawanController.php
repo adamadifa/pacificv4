@@ -61,7 +61,6 @@ class PenilaiankaryawanController extends Controller
         // dd($karyawan->kode_jabatan);
         // dd($doc);
         $cekpenilaian = Penilaiankaryawan::where('no_kontrak', $request->no_kontrak)
-            ->orWhere('kontrak_dari', $data['kontrak']->dari)
             ->count();
 
         if ($cekpenilaian > 0) {
