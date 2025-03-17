@@ -266,6 +266,7 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_ajuan_program = 0;
 
                 $notifikasi_ticket = 0;
+                $notifikasi_log = 0;
             }
 
             if ($level_user == "gm administrasi") {
