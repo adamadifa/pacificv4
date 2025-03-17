@@ -83,7 +83,7 @@ class PenilaiankaryawanController extends Controller
             DB::raw("SUM(IF(doc_sid IS NOT NULL,1,0)) as sid"),
         )
             ->where('hrd_presensi.nik', $request->nik)
-            ->whereBetween('tanggal', [$data['kontrak']->dari, $data['kontrak']->sampai])
+            ->whereBetween('hrd_presensi.tanggal', [$data['kontrak']->dari, $data['kontrak']->sampai])
             ->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi')
             ->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit')
             ->first();
