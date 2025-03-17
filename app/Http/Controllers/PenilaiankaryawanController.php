@@ -75,14 +75,14 @@ class PenilaiankaryawanController extends Controller
             ->get();
 
         $data['rekappresensi'] = Presensi::select(
-            DB::raw("SUM(IF(status='h',1,0)) as hadir"),
-            DB::raw("SUM(IF(status='i',1,0)) as izin"),
-            DB::raw("SUM(IF(status='s',1,0)) as sakit"),
-            DB::raw("SUM(IF(status='a',1,0)) as alpa"),
-            DB::raw("SUM(IF(status='c',1,0)) as cuti"),
+            DB::raw("SUM(IF(hrd_presensi.status='h',1,0)) as hadir"),
+            DB::raw("SUM(IF(hrd_presensi.status='i',1,0)) as izin"),
+            DB::raw("SUM(IF(hrd_presensi.status='s',1,0)) as sakit"),
+            DB::raw("SUM(IF(hrd_presensi.status='a',1,0)) as alpa"),
+            DB::raw("SUM(IF(hrd_presensi.status='c',1,0)) as cuti"),
             DB::raw("SUM(IF(doc_sid IS NOT NULL,1,0)) as sid"),
         )
-            ->where('nikd', $request->nik)
+            ->where('nik', $request->nik)
             ->whereBetween('tanggal', [$data['kontrak']->dari, $data['kontrak']->sampai])
             ->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi')
             ->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit')
