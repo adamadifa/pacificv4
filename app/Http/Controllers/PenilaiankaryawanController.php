@@ -73,6 +73,7 @@ class PenilaiankaryawanController extends Controller
             ->orderBy('hrd_penilaian_item.kode_kategori')
             ->orderBy('hrd_penilaian_item.kode_item')
             ->get();
+        dd($data['kontrak']);
         dd($data['kontrak']->kontrak_dari . " - " . $data['kontrak']->kontrak_sampai);
         $data['rekappresensi'] = Presensi::select(
             DB::raw("SUM(IF(status='h',1,0)) as hadir"),
