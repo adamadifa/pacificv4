@@ -94,7 +94,7 @@
                                         <th colspan="3" class="text-center">Budget</th>
                                         <th rowspan="2" class="text-center">Target</th>
                                         <th class="text-center" colspan="3">Realisasi</th>
-                                        <th colspan="3" class="text-center">Reward</th>
+                                        <th class="text-center">Reward</th>
 
                                         <th rowspan="2">Pembayaran</th>
                                         <th rowspan="2">No. Rekening</th>
@@ -151,8 +151,8 @@
                                                     {{ formatAngka($d->jumlah) }}
                                                 </a>
                                             </td>
-                                            <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
-                                            <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
+                                            {{-- <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
+                                            <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td> --}}
                                             <td class="text-end">{{ formatAngka($total_reward) }}</td>
                                             <td>{{ $d->metode_pembayaran }}</td>
 
