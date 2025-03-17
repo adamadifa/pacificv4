@@ -56,7 +56,7 @@
         </td>
         <td class="text-end">
             @php
-                $reward_tunai = $reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $reward;
+                $reward_tunai = $reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $reward_tunai;
             @endphp
             <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="{{ $reward_tunai }}">
 
@@ -64,7 +64,7 @@
         </td>
         <td class="text-end">
             @php
-                $reward_kredit = $reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $reward;
+                $reward_kredit = $reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $reward_kredit;
             @endphp
             <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="{{ $reward_kredit }}">
 
