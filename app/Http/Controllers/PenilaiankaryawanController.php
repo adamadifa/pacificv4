@@ -61,7 +61,7 @@ class PenilaiankaryawanController extends Controller
         // dd($karyawan->kode_jabatan);
         // dd($doc);
         $cekpenilaian = Penilaiankaryawan::where('no_kontrak', $request->no_kontrak)
-            ->orWhere('kontrak_dari', $data['kontrak']->kontrak_dari)
+            ->orWhere('kontrak_dari', $data['kontrak']->dari)
             ->count();
 
         if ($cekpenilaian > 0) {
@@ -73,8 +73,7 @@ class PenilaiankaryawanController extends Controller
             ->orderBy('hrd_penilaian_item.kode_kategori')
             ->orderBy('hrd_penilaian_item.kode_item')
             ->get();
-        dd($data['kontrak']);
-        dd($data['kontrak']->kontrak_dari . " - " . $data['kontrak']->kontrak_sampai);
+
         $data['rekappresensi'] = Presensi::select(
             DB::raw("SUM(IF(status='h',1,0)) as hadir"),
             DB::raw("SUM(IF(status='i',1,0)) as izin"),
@@ -83,7 +82,7 @@ class PenilaiankaryawanController extends Controller
             DB::raw("SUM(IF(status='c',1,0)) as cuti")
         )
             ->where('nikd', $request->nik)
-            ->whereBetween('tanggal', [$data['kontrak']->kontrak_dari, $data['kontrak']->kontrak_sampai])
+            ->whereBetween('tanggal', [$data['kontrak']->dari, $data['kontrak']->sampai])
             ->first();
 
 
