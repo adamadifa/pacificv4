@@ -117,13 +117,14 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <x-input-with-icon-label label="Sakit" name="sakit" icon="ti ti-heart-broken" />
+                            <x-input-with-icon-label label="Sakit" name="sakit" icon="ti ti-heart-broken" value="{{ $rekappresensi->sakit }}" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <x-input-with-icon-label label="Izin" name="izin" icon="ti ti-file-description" />
+                            <x-input-with-icon-label label="Izin" name="izin" icon="ti ti-file-description"
+                                value="{{ $rekappresensi->izin }}" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <x-input-with-icon-label label="Alfa" name="alfa" icon="ti ti-clock-cancel" />
+                            <x-input-with-icon-label label="Alfa" name="alfa" icon="ti ti-clock-cancel" value="{{ $rekappresensi->alpa }}" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <x-input-with-icon-label label="SID" name="sid" icon="ti ti-receipt" />

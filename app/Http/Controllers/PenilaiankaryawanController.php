@@ -9,6 +9,7 @@ use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
 use App\Models\Kontrakkaryawan;
 use App\Models\Penilaiankaryawan;
+use App\Models\Presensi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -72,6 +73,17 @@ class PenilaiankaryawanController extends Controller
             ->orderBy('hrd_penilaian_item.kode_kategori')
             ->orderBy('hrd_penilaian_item.kode_item')
             ->get();
+
+        $data['rekappresensi'] = Presensi::select(
+            DB::raw("SUM(IF(status='h',1,0)) as hadir"),
+            DB::raw("SUM(IF(status='i',1,0)) as izin"),
+            DB::raw("SUM(IF(status='s',1,0)) as sakit"),
+            DB::raw("SUM(IF(status='a',1,0)) as alpa"),
+            DB::raw("SUM(IF(status='c',1,0)) as cuti")
+        )
+            ->where('nik', $request->nik)
+            ->whereBetween('tanggal', [$data['kontrak']->kontrak_dari, $data['kontrak']->kontrak_sampai])
+            ->first();
         if ($doc == 1) {
             return view('hrd.penilaiankaryawan.create_penilaian_1', $data);
         } else {
