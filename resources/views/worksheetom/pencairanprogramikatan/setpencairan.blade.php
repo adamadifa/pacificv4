@@ -111,8 +111,8 @@
                                         <th>Tunai</th>
                                         <th>Kredit</th>
                                         <th>Total</th>
-                                        <th>Tunai</th>
-                                        <th>Kredit</th>
+                                        {{-- <th>Tunai</th>
+                                        <th>Kredit</th> --}}
                                         <th>Total</th>
                                     </tr>
 
