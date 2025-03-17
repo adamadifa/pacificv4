@@ -118,19 +118,19 @@
                     <div class="row mt-2">
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <x-input-with-icon-label label="Sakit" name="sakit" icon="ti ti-heart-broken"
-                                value="{{ $rekappresensi->sakit != null ? $rekappresensi->sakit : 0 }}" />
+                                value="{{ $rekappresensi->sakit != null ? $rekappresensi->sakit : 0 }}" readonly />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <x-input-with-icon-label label="Izin" name="izin" icon="ti ti-file-description"
-                                value="{{ $rekappresensi->izin != null ? $rekappresensi->izin : 0 }}" />
+                                value="{{ $rekappresensi->izin != null ? $rekappresensi->izin : 0 }}" readonly />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <x-input-with-icon-label label="Alfa" name="alfa" icon="ti ti-clock-cancel"
-                                value="{{ $rekappresensi->alpa != null ? $rekappresensi->alpa : 0 }}" />
+                                value="{{ $rekappresensi->alpa != null ? $rekappresensi->alpa : 0 }}" readonly />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <x-input-with-icon-label label="SID" name="sid" icon="ti ti-receipt"
-                                value="{{ $rekappresensi->sid != null ? $rekappresensi->sid : 0 }}" />
+                                value="{{ $rekappresensi->sid != null ? $rekappresensi->sid : 0 }}" readonly />
                         </div>
                     </div>
                     <div class="row mt-3">
