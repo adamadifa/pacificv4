@@ -103,6 +103,7 @@ class ReturController extends Controller
         $hargapcs = $request->harga_pcs_produk;
         $jumlah = $request->jumlah_produk;
         $faktur = Penjualan::where('no_faktur', $request->no_faktur)->first();
+        $historibayar_log = [];
         DB::beginTransaction();
         try {
 
@@ -121,7 +122,7 @@ class ReturController extends Controller
             $last_no_retur = $lastretur != null ? $lastretur->no_retur : '';
             $no_retur = buatkode($last_no_retur, 'R' . $tanggal_retur, 3);
 
-            Retur::create([
+            $simpanretur = Retur::create([
                 'no_retur' => $no_retur,
                 'tanggal' => $request->tanggal,
                 'no_faktur' => $request->no_faktur,
@@ -160,17 +161,32 @@ class ReturController extends Controller
                         ->where('tanggal', $faktur->tanggal)
                         ->orderBy('no_bukti')
                         ->first();
+                    $jumlah = $cekbayar->jumlah - $total;
 
-
+                    $oldbayar = $cekbayar->getAttributes();
                     if ($cekbayar != null) {
-                        Historibayarpenjualan::where('no_bukti', $cekbayar->no_bukti)
-                            ->update([
-                                'jumlah' => DB::raw('jumlah-' . $total)
-                            ]);
+                        $cekbayar->update([
+                            'jumlah' => $jumlah
+                        ]);
+                        $historibayar_log = [
+                            'old' => $oldbayar,
+                            'new' => $cekbayar->getAttributes(),
+                        ];
                     }
                 }
             }
             Detailretur::insert($detail);
+
+            activity('retur')
+                ->event('create')
+                ->performedOn($simpanretur)
+                ->withProperties([
+                    'penjualan' => $simpanretur->getAttributes(),
+                    'detail' => $detail, // Menyertakan detail produk ke dalam log
+                    'historibayar' => $historibayar_log
+                ])
+                ->log("Membuat Retur {$simpanretur->no_faktur}  dengan " . count($detail) . " item.");
+
             DB::commit();
             if ($user->hasRole('salesman')) {
                 return redirect(route('sfa.showpelanggan', Crypt::encrypt($faktur->kode_pelanggan)))->with(messageSuccess('Data Berhasil Disimpan'));
@@ -204,13 +220,16 @@ class ReturController extends Controller
         $no_retur = Crypt::decrypt($no_retur);
 
         $retur = Retur::where('no_retur', $no_retur)
-            ->select('marketing_retur.no_faktur', 'marketing_retur.tanggal', 'kode_pelanggan')
+            ->select('no_retur', 'marketing_retur.no_faktur', 'marketing_retur.tanggal', 'kode_pelanggan', 'jenis_retur')
             ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')->first();
-        $detailretur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))->where('no_retur', $retur->no_retur)->first();
+        $detail = Detailretur::where('no_retur', $no_retur)->get()->toArray();
+
+        $detailretur = Detailretur::select(DB::raw("SUM(subtotal) as total_retur"))->where('no_retur', $no_retur)->first();
+
         $user = User::findorfail(auth()->user()->id);
+        $historibayar_log = [];
         DB::beginTransaction();
         try {
-            //dd($retur->tanggal);
             $cektutuplaporan = cektutupLaporan($retur->tanggal, "penjualan");
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
@@ -224,16 +243,37 @@ class ReturController extends Controller
                         ->where('tanggal', $faktur->tanggal)
                         ->orderBy('no_bukti')
                         ->first();
+
+                    $jumlah = $cekbayar->jumlah + $detailretur->total_retur;
+                    $oldbayar = $cekbayar->getAttributes();
+
                     if ($cekbayar != null) {
-                        Historibayarpenjualan::where('no_bukti', $cekbayar->no_bukti)
-                            ->update([
-                                'jumlah' => DB::raw('jumlah +' . $detailretur->total_retur)
-                            ]);
+                        $cekbayar->update([
+                            'jumlah' => $jumlah
+                        ]);
+
+
+
+                        $historibayar_log = [
+                            'old' => $oldbayar,
+                            'new' => $cekbayar->getAttributes(),
+                        ];
                     }
                 }
             }
             //Hapus Surat Jalan
             Retur::where('no_retur', $no_retur)->delete();
+
+            //Catat Activity
+            activity('retur')
+                ->event('delete')
+                ->performedOn($retur)
+                ->withProperties([
+                    'retur' => $retur->getAttributes(),
+                    'detail' => $detail,
+                    'historibayar' => $historibayar_log,
+                ])
+                ->log("Menghapus  Retur {$retur->no_retur}" . "No Faktur {$retur->no_faktur}  dengan " . count($detail) . " item.");
             DB::commit();
             if ($user->hasRole('salesman')) {
                 return redirect('/sfa/pelanggan/' . Crypt::encrypt($retur->kode_pelanggan) . '/show')->with(messageSuccess('Data Berhasil Dihapus'));

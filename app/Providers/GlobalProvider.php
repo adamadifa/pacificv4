@@ -25,6 +25,7 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Activitylog\Models\Activity;
 
 class GlobalProvider extends ServiceProvider
 {
@@ -104,7 +105,7 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
 
 
-
+                $notifikasi_log = Activity::where('status_log', 0)->whereIn('event', ['update', 'cancel', 'delete'])->count();
                 if ($level_user == "manager keuangan") {
                     $qajuantransferdana = Ajuantransferdana::query();
                     $qajuantransferdana->select(
@@ -676,6 +677,7 @@ class GlobalProvider extends ServiceProvider
                 'notifikasi_ajuan_program' => $notifikasi_ajuan_program,
 
                 'notifikasi_ticket' => $notifikasi_ticket,
+                'notifikasi_log' => $notifikasi_log,
 
                 'users' => $users
 

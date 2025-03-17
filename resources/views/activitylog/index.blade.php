@@ -26,6 +26,33 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <select name="log_name" id="log_name" class="form-select select2LogName">
+                                            <option value="">Pilih Kategori</option>
+                                            @foreach ($kategori as $d)
+                                                <option value="{{ $d->log_name }}" {{ Request('log_name') == $d->log_name ? 'selected' : '' }}>
+                                                    {{ textCamelCase($d->log_name) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <select name="event" id="event" class="form-select select2Event">
+                                            <option value="">Pilih Aktivitas</option>
+                                            <option value="create" {{ Request('event') == 'create' ? 'selected' : '' }}>Created</option>
+                                            <option value="update" {{ Request('event') == 'update' ? 'selected' : '' }}>Updated</option>
+                                            <option value="cancel" {{ Request('event') == 'cancel' ? 'selected' : '' }}>Cancel</option>
+                                            <option value="delete" {{ Request('event') == 'delete' ? 'selected' : '' }}>Delete</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="form-group">
                                     <select name="id_user" id="id_user" class="form-select select2User">
                                         <option value="">Pilih User</option>
@@ -53,6 +80,7 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Waktu</th>
+                                        <th>Kategori</th>
                                         <th>User</th>
                                         <th>Aksi</th>
                                         <th>Aktivitas</th>
@@ -72,6 +100,7 @@
                                         @endphp
                                         <tr>
                                             <td>{{ date('d-m-Y H:i:s', strtotime($d->created_at)) }}</td>
+                                            <td>{{ textCamelCase($d->log_name) }}</td>
                                             <td>{{ $d->name }}</td>
                                             <td>
                                                 <span class="badge bg-{{ $color }}">

@@ -17,6 +17,7 @@ use App\Models\Retur;
 use App\Models\Salesman;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -258,7 +259,7 @@ class PenjualanController extends Controller
 
             $logpenjualan = $penjualan->getAttributes();
             //Simpan Log Activity
-            activity()
+            activity('penjualan')
                 ->event('cancel')
                 ->performedOn($penjualan)
                 ->withProperties([
@@ -635,7 +636,7 @@ class PenjualanController extends Controller
 
             $logpenjualan = $simpanpenjualan->getAttributes();
             //Simpan Log Activity
-            activity()
+            activity('penjualan')
                 ->event('create')
                 ->performedOn($simpanpenjualan)
                 ->withProperties([
@@ -899,7 +900,13 @@ class PenjualanController extends Controller
         $oldpenjualan = $penjualanold->getOriginal();
         $oldDetailPenjualan = DetailPenjualan::where('no_faktur', $no_faktur)->get()->toArray();
 
+        $today = Carbon::now();
+        $penjualanDate = Carbon::parse($penjualan->created_at);
+        $diffInDays = $today->diffInDays($penjualanDate);
 
+        if ($diffInDays > 3) {
+            return redirect()->back()->with('error', 'Data penjualan tidak bisa diupdate karena sudah lebih dari 3 hari dari tanggal transaksi.');
+        }
         $jenis_transaksi = $penjualan->jenis_transaksi;
         $jenis_bayar = $penjualan->jenis_bayar;
         $titipan = $jenis_transaksi == "T" ? 0 : toNumber($request->titipan);
@@ -1181,7 +1188,7 @@ class PenjualanController extends Controller
                 }
             }
             if (!empty($changedPenjualan) || !empty($changedDetailPenjualan)) {
-                activity()
+                activity('penjualan')
                     // ->logname('penjualan')
                     ->event('update')
                     ->performedOn($penjualanold)
@@ -1237,6 +1244,7 @@ class PenjualanController extends Controller
     {
         $no_faktur = Crypt::decrypt($no_faktur);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
+        $detail = Detailpenjualan::where('no_faktur', $no_faktur)->get()->toArray();
         DB::beginTransaction();
         try {
             $cektutuplaporan = cektutupLaporan($penjualan->tanggal, "penjualan");
@@ -1245,6 +1253,15 @@ class PenjualanController extends Controller
             }
             //Hapus Surat Jalan
             Penjualan::where('no_faktur', $no_faktur)->delete();
+            //Catat Activity
+            activity('penjualan')
+                ->event('delete')
+                ->performedOn($penjualan)
+                ->withProperties([
+                    'detail' => $detail,
+                    'penjualan' => $penjualan->getAttributes(),
+                ])
+                ->log("Menghapus Faktur Penjualan {$penjualan->no_faktur}");
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
         } catch (\Exception $e) {

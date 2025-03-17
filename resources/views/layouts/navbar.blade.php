@@ -235,6 +235,12 @@
                             <span class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_ticket }}</span>
                         </a>
                     </li>
+                    <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
+                        <a class="nav-link" href="{{ route('activitylog.index') }}?status=pending">
+                            <i class="ti ti-recycle ti-md"></i>
+                            <span class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_log }}</span>
+                        </a>
+                    </li>
                 @endif
 
             @endif

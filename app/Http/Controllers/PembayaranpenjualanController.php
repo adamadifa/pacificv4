@@ -10,6 +10,7 @@ use App\Models\Jenisvoucher;
 use App\Models\Penjualan;
 use App\Models\Salesman;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -202,8 +203,17 @@ class PembayaranpenjualanController extends Controller
         DB::beginTransaction();
         try {
             $historibayar = Historibayarpenjualan::where('marketing_penjualan_historibayar.no_bukti', $no_bukti)
+                ->select('marketing_penjualan_historibayar.*', 'kode_giro', 'giro_to_cash')
                 ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
                 ->first();
+
+
+            $today = Carbon::now();
+            $historiBayarDate = Carbon::parse($historibayar->created_at);
+            $diffInDays = $today->diffInDays($historiBayarDate);
+            if ($diffInDays > 3) {
+                return Redirect::back()->with(messageError('Data tidak dapat di edit karena telah lebih dari 3 hari.'));
+            }
 
             $cektutuplaporanpembayaran = cektutupLaporan($historibayar->tanggal, "penjualan");
             if ($cektutuplaporanpembayaran > 0) {
