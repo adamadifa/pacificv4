@@ -87,7 +87,11 @@ class PembayaranpenjualanController extends Controller
         if (isset($request->agreementvoucher)) {
             $voucher = $request->agreementvoucher;
             $jenis_voucher = $request->jenis_voucher;
-            $voucher_reward = 1;
+            if ($jenis_voucher == '2') {
+                $voucher_reward = 1;
+            } else {
+                $voucher_reward = 0;
+            }
         } else {
             $voucher = 0;
             $jenis_voucher = 0;
