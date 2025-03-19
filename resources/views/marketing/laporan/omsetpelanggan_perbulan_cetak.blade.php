@@ -76,8 +76,15 @@
                         @endforeach
                     </tr>
                     <tr>
-                        <th>TUNAI</th>
-                        <th>KREDIT</th>
+                        @foreach ($period as $date)
+                            @php
+                                $bulan = $date->format('m');
+                                $tahun = $date->format('Y');
+                            @endphp
+                            <th>TUNAI</th>
+                            <th>KREDIT</th>
+                        @endforeach
+
                     </tr>
                 </thead>
                 <tbody>
