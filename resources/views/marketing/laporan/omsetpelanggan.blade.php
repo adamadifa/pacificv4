@@ -11,6 +11,13 @@
         </div>
     @endrole
     <div class="form-group mb-3">
+        <select name="format_laporan" id="format_laporan" class="form-select">
+            <option value="">Pilih Format Laporan</option>
+            <option value="1">Rekap</option>
+            <option value="2">Tampilkan per Bulan</option>
+        </select>
+    </div>
+    <div class="form-group mb-3">
         <select name="kode_salesman" id="kode_salesman_omsetpelanggan" class="select2Kodesalesmanomsetpelanggan form-select">
         </select>
     </div>
