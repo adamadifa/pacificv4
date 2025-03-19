@@ -91,13 +91,13 @@
                             <td class="text-center">
                                 @if ($d->status == 1)
                                     @if (!empty($d->tglbayar))
-                                        <span class="badge bg-success">Selesai</span>
+                                        <span class="badge bg-success">Selesai ({{ $d->nam_bank }})</span>
                                     @else
                                         <span class="badge bg-primary">Approved</span>
                                     @endif
                                 @else
                                     @if (!empty($d->tglbayar))
-                                        <span class="badge bg-success">Selesai {{ $d->nama_bank }}</span>
+                                        <span class="badge bg-success">Selesai ({{ $d->nam_bank }})</span>
                                     @else
                                         <i class="ti ti-hourglass-empty text-warning"></i>
                                     @endif

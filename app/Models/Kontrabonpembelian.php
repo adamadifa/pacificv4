@@ -21,7 +21,7 @@ class Kontrabonpembelian extends Model
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
         $query = Kontrabonpembelian::query();
-        $query->select('pembelian_kontrabon.*', 'nama_supplier', 'detailkontrabon.jumlah', 'pembelian_historibayar.tanggal as tglbayar', 'nama_bank');
+        $query->select('pembelian_kontrabon.*', 'nama_supplier', 'detailkontrabon.jumlah', 'pembelian_historibayar.tanggal as tglbayar', 'keuangan_ledger.kode_bank', 'nama_bank');
         $query->leftJoin('pembelian_historibayar', 'pembelian_kontrabon.no_kontrabon', '=', 'pembelian_historibayar.no_kontrabon');
         $query->join('supplier', 'pembelian_kontrabon.kode_supplier', '=', 'supplier.kode_supplier');
         $query->leftJoin('keuangan_ledger_kontrabon', 'pembelian_kontrabon.no_kontrabon', '=', 'keuangan_ledger_kontrabon.no_kontrabon');
