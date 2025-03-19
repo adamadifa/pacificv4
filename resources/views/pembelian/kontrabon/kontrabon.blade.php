@@ -97,7 +97,7 @@
                                     @endif
                                 @else
                                     @if (!empty($d->tglbayar))
-                                        <span class="badge bg-success">Selesai</span>
+                                        <span class="badge bg-success">Selesai {{ $d->nama_bank }}</span>
                                     @else
                                         <i class="ti ti-hourglass-empty text-warning"></i>
                                     @endif
