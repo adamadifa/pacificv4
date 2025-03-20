@@ -77,7 +77,7 @@
                 </div>
             </div>
             @hasanyrole($roles_show_cabang)
-                <x-input-with-icon icon="ti ti-moneybag" label="Limit Pelanggan" name="limit_pelanggan" align="right" money="true"
+                <x-input-with-icon-label icon="ti ti-moneybag" label="Limit Pelanggan" name="limit_pelanggan" align="right" money="true"
                     value="{{ formatRupiah($pelanggan->limit_pelanggan) }}" />
             @endhasanyrole
             <div class="form-group mb-3">
