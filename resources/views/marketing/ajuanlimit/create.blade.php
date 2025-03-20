@@ -750,7 +750,7 @@
                         $("#jumlah").focus();
                     },
                 });
-            } else if (cek_foto_toko == "" || cek_foto_owner == "") {
+            } else if (cek_foto_toko == "" || cek_foto_owner == "" && jml > 15000000) {
                 e.preventDefault();
                 Swal.fire({
                     title: "Oops!",

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Ajuanprogramikatan;
 use App\Models\Cabang;
+use App\Models\Detailpencairan;
 use App\Models\Detailpenjualan;
 use App\Models\Detailsaldoawalpiutangpelanggan;
+use App\Models\Historibayarpenjualan;
 use App\Models\Klasifikasioutlet;
 use App\Models\Pelanggan;
 use App\Models\Pengajuanfaktur;
@@ -445,10 +447,30 @@ class PelangganController extends Controller
             ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
             ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('kode_pelanggan', Crypt::decrypt($kode_pelanggan))->first();
+
+        $saldo_voucher_program = Detailpencairan::where('kode_pelanggan', Crypt::decrypt($kode_pelanggan))
+            ->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan')
+            ->select(DB::raw("SUM(diskon_kumulatif - diskon_reguler) as jml_voucher"))
+            ->where('metode_pembayaran', 'VC')
+            ->where('status', '1')
+            ->first();
+        $tanggal_mulai = date('Y-m-d', strtotime("2025-01-01"));
+        $diskonprogram = Historibayarpenjualan::join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select(DB::raw("SUM(jumlah) as jml_voucher"))
+            ->where('marketing_penjualan.kode_pelanggan', Crypt::decrypt($kode_pelanggan))
+            ->where('jenis_voucher', 2)
+            ->where('voucher_reward', 1)
+            ->where('marketing_penjualan_historibayar.tanggal', '>=', $tanggal_mulai)
+            ->first();
+        $saldo_voucher = $saldo_voucher_program->jml_voucher - $diskonprogram->jml_voucher;
+
+
+
         return response()->json([
             'success' => true,
             'message' => 'Detail Pelanggan',
-            'data'    => $pelanggan
+            'data'    => $pelanggan,
+            'saldo_voucher' => $saldo_voucher
         ]);
     }
 

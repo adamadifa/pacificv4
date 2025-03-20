@@ -63,14 +63,20 @@
                                                 <td>{{ $d->nama_wilayah }}</td>
                                                 <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
                                                 <th></th>
-                                                <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
+                                                <td class="text-end">
+                                                    @php
+                                                        $saldo = $d->total_reward;
+                                                    @endphp
+                                                    {{ formatAngka($saldo) }}
+                                                </td>
                                                 <td>
                                                     <div class="d-flex">
                                                         <a href="#" class="me-1 btnShow"
                                                             kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}">
                                                             <i class="ti ti-file-description text-primary"></i>
                                                         </a>
-                                                        <a href="#" class="me-1">
+                                                        <a href="#" class="me-1 btnCairkan"
+                                                            kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}">
                                                             <i class="ti ti-external-link text-success"></i>
                                                         </a>
                                                     </div>
@@ -105,6 +111,15 @@
             $("#modal").find(".modal-title").text('Detail Simpanan');
             $("#modal").find("#loadmodal").load(
                 `/monitoringprogram/${kode_pelanggan}/getdetailsimpanan`);
+        });
+
+        $(document).on('click', '.btnCairkan', function(e) {
+            e.preventDefault();
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text('Cairkan Simpanan');
+            $("#modal").find("#loadmodal").load(
+                `/monitoringprogram/${kode_pelanggan}/pencairansimpanan`);
         });
     });
 </script>

@@ -1243,6 +1243,7 @@ class SfaControler extends Controller
 
         $data['kode_pelanggan'] = Crypt::decrypt($kodepelanggan);
         $diskon = Diskon::orderBy('kode_kategori_diskon')->get();
+
         $diskon_json = json_encode($diskon);
         $data['diskon'] = $diskon_json;
         return view('sfa.penjualan_create', $data);

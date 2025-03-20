@@ -289,6 +289,16 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
+                                            <table class="table">
+                                                <tr>
+                                                    <th>Saldo Voucher</th>
+                                                    <td id="saldo_voucher_text"></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
                                             <div class="form-group mb-3">
                                                 <select name="jenis_transaksi" id="jenis_transaksi" class="form-select">
                                                     <option value="">Jenis Transaksi</option>
@@ -350,6 +360,7 @@
         let kode_wilayah = 0;
         let jmlfakturbelumlunas = 0;
         let jmlmaxfaktur = 0;
+        let saldo_voucher = 0;
 
         function convertToRupiah(number) {
             if (number) {
@@ -526,6 +537,8 @@
                         $('#kode_salesman').val(response.data.kode_salesman);
                         $('#nama_salesman').val(response.data.nama_salesman);
                         $("#kode_wilayah").val(response.data.kode_wilayah);
+                        $("#saldo_voucher_text").text(response.saldo_voucher);
+                        saldo_voucher = response.saldo_voucher
                         console.log(kode_wilayah);
                         //Get Piutang
                         getPiutang(kode_pelanggan);
@@ -1132,6 +1145,7 @@
             const jenis_transaksi = $("#jenis_transaksi").val();
             const jenis_bayar = $("#jenis_bayar").val();
             const keterangan = $("#keterangan").val();
+            const voucher = $("#voucher").val().replace(/\./g, '');
             if (no_faktur == '') {
                 SwalWarning('no_faktur', 'No. Faktur Tidak Boleh Kosong');
                 return false;
@@ -1166,6 +1180,9 @@
                 return false;
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
+                return false;
+            } else if (voucher > saldo_voucher) {
+                SwalWarning('voucher', 'Melebihi Saldo Voucher !');
                 return false;
             } else {
                 //return false;
