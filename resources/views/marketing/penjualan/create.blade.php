@@ -70,6 +70,10 @@
                                     <th>Faktur Kredit</th>
                                     <td id="jmlfaktur_kredit"></td>
                                 </tr>
+                                <tr>
+                                    <th>Saldo Voucher</th>
+                                    <td id="saldo_voucher_text"></td>
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -366,6 +370,7 @@
         // alert(kode_cabang_user);
         let jmlfakturbelumlunas = 0;
         let jmlfakturmax = 0;
+        let saldo_voucher = 0;
 
         function convertToRupiah(number) {
             if (number) {
@@ -603,7 +608,8 @@
                         //Data Salesman
                         $('#kode_salesman').val(response.data.kode_salesman);
                         $('#nama_salesman').val(response.data.nama_salesman);
-
+                        $("#saldo_voucher_text").text(response.saldo_voucher);
+                        saldo_voucher = response.saldo_voucher
                         //Get Piutang
                         getPiutang(kode_pelanggan);
                         //Get FaktuR Kredit
@@ -1401,6 +1407,7 @@
             const jenis_transaksi = $("#jenis_transaksi").val();
             const jenis_bayar = $("#jenis_bayar").val();
             const keterangan = $("#keterangan").val();
+            const voucher = $("#voucher").val().replace(/\./g, '');
             if (no_faktur == '') {
                 SwalWarning('no_faktur', 'No. Faktur Tidak Boleh Kosong');
                 return false;
@@ -1432,6 +1439,9 @@
                 return false;
             } else if (jenis_transaksi == "K" && jmlfakturbelumlunas >= jmlfakturmax) {
                 SwalWarning('keterangan', 'Melebihi Batas Jumlah Faktur Kredit !');
+                return false;
+            } else if (voucher > saldo_voucher) {
+                SwalWarning('voucher', 'Melebihi Saldo Voucher !');
                 return false;
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');

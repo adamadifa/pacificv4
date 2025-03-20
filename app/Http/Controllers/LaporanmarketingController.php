@@ -2119,6 +2119,11 @@ class LaporanmarketingController extends Controller
             $data['sampai'] = $request->sampai;
             $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
             $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Rekap Omset Pelanggan $request->dari-$request->sampai.xls");
+            }
             return view('marketing.laporan.omsetpelanggan_perbulan_cetak', $data);
         }
     }

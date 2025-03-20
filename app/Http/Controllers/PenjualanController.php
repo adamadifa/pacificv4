@@ -163,6 +163,8 @@ class PenjualanController extends Controller
         $diskon = Diskon::orderBy('kode_kategori_diskon')->get();
         $diskon_json = json_encode($diskon);
         $data['diskon'] = $diskon_json;
+
+
         return view('marketing.penjualan.create', $data);
     }
 
@@ -673,6 +675,7 @@ class PenjualanController extends Controller
                         'jumlah' => $voucher,
                         'voucher' => 1,
                         'jenis_voucher' => 2,
+                        'voucher_reward' => 1,
                         'kode_salesman' => $kode_salesman,
                         'id_user' => auth()->user()->id
                     ]);
