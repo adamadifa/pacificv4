@@ -301,7 +301,7 @@ class PelangganController extends Controller
             $longitude = NULL;
         }
 
-        if ($user->hasRole('super admin')) {
+        if ($user->hasRole(['super admin', 'direktur'])) {
             $data_pelanggan = [
                 'nik' => $request->nik,
                 'no_kk' => $request->no_kk,
