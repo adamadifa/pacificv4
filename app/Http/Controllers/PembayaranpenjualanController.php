@@ -7,6 +7,7 @@ use App\Models\Detailpencairan;
 use App\Models\Historibayarpenjualan;
 use App\Models\Historibayarpenjualangiro;
 use App\Models\Jenisvoucher;
+use App\Models\Pelanggan;
 use App\Models\Penjualan;
 use App\Models\Salesman;
 use Illuminate\Http\Request;
@@ -80,9 +81,11 @@ class PembayaranpenjualanController extends Controller
         $penjualan = Penjualan::where('no_faktur', $no_faktur)
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->first();
+
+        $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
         $jenis_transaksi = $penjualan->jenis_transaksi;
         $jenis_bayar = $jenis_transaksi == 'T' ? 'TN' : 'TP';
-        $kode_cabang = $penjualan->kode_cabang;
+        $kode_cabang = $pelanggan->kode_cabang;
         $tahun = date('y', strtotime($request->tanggal));
         if (isset($request->agreementvoucher)) {
             $voucher = $request->agreementvoucher;
