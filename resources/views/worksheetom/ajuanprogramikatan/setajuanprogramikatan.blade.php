@@ -133,9 +133,12 @@
                                                     <i class="ti ti-printer text-primary"></i>
                                                 </a>
                                                 @can('ajuanprogramikatan.edit')
-                                                    <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit me-1">
-                                                        <i class="ti ti-edit text-success"></i>
-                                                    </a>
+                                                    @if ($programikatan->status == 0)
+                                                        <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
+                                                            class="btnEdit me-1">
+                                                            <i class="ti ti-edit text-success"></i>
+                                                        </a>
+                                                    @endif
                                                 @endcan
                                                 @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
                                                     @if ($programikatan->status == 0)
