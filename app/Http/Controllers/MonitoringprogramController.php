@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Cabang;
 use App\Models\Detailpencairan;
 use App\Models\Detailpencairanprogramikatan;
 use App\Models\Detailpenjualan;
 use App\Models\Detailtargetikatan;
 use App\Models\Historibayarpenjualan;
+use App\Models\Pelanggan;
+use App\Models\Pencairansimpanan;
 use App\Models\Programikatan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class MonitoringprogramController extends Controller
 {
@@ -210,6 +214,9 @@ class MonitoringprogramController extends Controller
         $query->where('marketing_pencairan_ikatan.kode_cabang', $kode_cabang);
         $query->where('marketing_pencairan_ikatan.status', 1);
         $query->groupBy('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan');
+        if (!empty($request->nama_pelanggan)) {
+            $query->where('pelanggan.nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
+        }
         $query->orderBy('nama_pelanggan');
         $saldosimpanan = $query->paginate(20);
         $saldosimpanan->appends(request()->query());
@@ -280,6 +287,9 @@ class MonitoringprogramController extends Controller
             $query->where('marketing_program_pencairan.kode_cabang', $request->kode_cabang);
         }
 
+        if (!empty($request->nama_pelanggan)) {
+            $query->where('pelanggan.nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
+        }
         // $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
         $query->where('marketing_program_pencairan.status', 1);
         $query->where('metode_pembayaran', 'VC');
@@ -324,7 +334,7 @@ class MonitoringprogramController extends Controller
         return view('worksheetom.monitoringprogram.getdetailsimpanan', $data);
     }
 
-    public function pencairansimpanan($kode_pelanggan)
+    public function createpencairansimpanan($kode_pelanggan)
     {
         $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
         $query = Detailpencairanprogramikatan::query();
@@ -346,6 +356,63 @@ class MonitoringprogramController extends Controller
         $simpanan = $query->first();
 
         $data['simpanan'] = $simpanan;
+        return view('worksheetom.monitoringprogram.createpencairansimpanan', $data);
+    }
+
+
+    public function storepencairansimpanan(Request $request, $kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+        $kode_cabang = $pelanggan->kode_cabang;
+        $lastpencairan = Pencairansimpanan::select('kode_pencairan')->orderBy('kode_pencairan', 'desc')
+            ->whereRaw('YEAR(marketing_pencairan_simpanan.tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
+            ->where('kode_cabang', $kode_cabang)
+            ->first();
+        $last_kode_pencairan = $lastpencairan != null ? $lastpencairan->kode_pencairan : '';
+
+        // dd($last_kode_pencairan);
+        $kode_pencairan = buatkode($last_kode_pencairan, "PS" . $kode_cabang . date('y', strtotime($request->tanggal)), 4);
+
+        DB::beginTransaction();
+        try {
+            //code...
+            Pencairansimpanan::create([
+                'kode_pencairan' => $kode_pencairan,
+                'tanggal' => date('Y-m-d'),
+                'kode_pelanggan' => $kode_pelanggan,
+                'jumlah' => toNumber($request->jumlah),
+                'status' => 0,
+                'kode_cabang' => $kode_cabang
+            ]);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            //throw $th;
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function pencairansimpanan(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
         return view('worksheetom.monitoringprogram.pencairansimpanan', $data);
     }
 }

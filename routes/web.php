@@ -2072,7 +2072,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/monitoringprogram/saldosimpanan', 'saldosimpanan')->name('monitoringprogram.saldosimpanan')->can('monitoringprogram.index');
         Route::get('/monitoringprogram/saldovoucher', 'saldovoucher')->name('monitoringprogram.saldovoucher')->can('monitoringprogram.index');
         Route::get('/monitoringprogram/{kode_pelanggan}/getdetailsimpanan', 'getdetailsimpanan')->name('monitoringprogram.getdetailsimpanan');
-        Route::get('/monitoringprogram/{kode_pelanggan}/pencairansimpanan', 'pencairansimpanan')->name('monitoringprogram.pencairansimpanan');
+        Route::get('/monitoringprogram/{kode_pelanggan}/createpencairansimpanan', 'createpencairansimpanan')->name('monitoringprogram.createpencairansimpanan');
+        Route::post('/monitoringprogram/{kode_pelanggan}/storepencairansimpanan', 'storepencairansimpanan')->name('monitoringprogram.storepencairansimpanan');
+        Route::get('/monitoringprogram/pencairansimpanan', 'pencairansimpanan')->name('monitoringprogram.pencairansimpanan')->can('monitoringprogram.index');
     });
 
     Route::controller(PencairanprogramController::class)->group(function () {

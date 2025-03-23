@@ -9,6 +9,7 @@
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
             @include('layouts.navigation_monitoringprogram')
+            @include('layouts.navigation_simpanan')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     <div class="row mt-2">
@@ -25,6 +26,8 @@
                                         </select>
                                     </div>
                                 @endrole
+                                <x-input-with-icon icon="ti ti-user" label="Nama Pelanggan" name="nama_pelanggan"
+                                    value="{{ Request('nama_pelanggan') }}" />
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
@@ -119,7 +122,7 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text('Cairkan Simpanan');
             $("#modal").find("#loadmodal").load(
-                `/monitoringprogram/${kode_pelanggan}/pencairansimpanan`);
+                `/monitoringprogram/${kode_pelanggan}/createpencairansimpanan`);
         });
     });
 </script>

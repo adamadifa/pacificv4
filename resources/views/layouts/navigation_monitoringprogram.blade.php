@@ -9,35 +9,35 @@
         @can('ajuanprogramikatan.index')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('ajuanprogramikatan.index') }}"
-                    class="nav-link {{ request()->is(['ajuanprogramikatan', 'ajuanprogramikatan/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Program Ikatan
+                    class="nav-link {{ request()->is(['ajuanprogramikatan', 'ajuanprogramikatan/*', 'pencairanprogramikatan']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i>Program Ikatan
                 </a>
             </li>
         @endcan
-        @can('pencairanprogramikt.index')
+        {{-- @can('pencairanprogramikt.index')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('pencairanprogramikatan.index') }}"
                     class="nav-link {{ request()->is(['pencairanprogramikatan', 'pencairanprogramikatan/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Pencairan Program Ikatan
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pencairan Program Ikatan
                 </a>
             </li>
-        @endcan
+        @endcan --}}
         @can('ajuankumulatif.index')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('ajuankumulatif.index') }}"
-                    class="nav-link {{ request()->is(['ajuankumulatif', 'ajuankumulatif/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Program Kumulatif
+                    class="nav-link {{ request()->is(['ajuankumulatif', 'ajuankumulatif/*', 'pencairanprogram']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Program Kumulatif
                 </a>
             </li>
         @endcan
-        @can('pencairanprogram.index')
+        {{-- @can('pencairanprogram.index')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('pencairanprogram.index') }}"
                     class="nav-link {{ request()->is(['pencairanprogram', 'pencairanprogram/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ajuan Pencairan Program Kumulatif
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pencairan Program Kumulatif
                 </a>
             </li>
-        @endcan
+        @endcan --}}
 
         <li class="nav-item" role="presentation">
             <a href="{{ route('monitoringprogram.index') }}" class="nav-link {{ request()->is(['monitoringprogram']) ? 'active' : '' }}">
@@ -51,7 +51,12 @@
                 <i class="tf-icons ti ti-file-description ti-md me-1"></i> Simpanan
             </a>
         </li>
-
+        {{-- <li class="nav-item" role="presentation">
+            <a href="{{ route('monitoringprogram.pencairansimpanan') }}"
+                class="nav-link {{ request()->is(['monitoringprogram/pencairansimpanan']) ? 'active' : '' }}">
+                <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pencairan Simpanan
+            </a>
+        </li> --}}
         <li class="nav-item" role="presentation">
             <a href="{{ route('monitoringprogram.saldovoucher') }}"
                 class="nav-link {{ request()->is(['monitoringprogram/saldovoucher']) ? 'active' : '' }}">

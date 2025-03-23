@@ -25,6 +25,8 @@
                                         </select>
                                     </div>
                                 @endrole
+                                <x-input-with-icon icon="ti ti-user" label="Nama Pelanggan" name="nama_pelanggan"
+                                    value="{{ Request('nama_pelanggan') }}" />
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
@@ -71,9 +73,6 @@
                                                     <div class="d-flex">
                                                         <a href="#" class="me-1">
                                                             <i class="ti ti-file-description text-primary"></i>
-                                                        </a>
-                                                        <a href="#" class="me-1">
-                                                            <i class="ti ti-external-link text-success"></i>
                                                         </a>
                                                     </div>
                                                 </td>
