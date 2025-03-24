@@ -43,18 +43,54 @@
                                 <table id="example" class="display nowrap table  table-bordered" style="width:100%">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th>No.</th>
+                                            <th>No. Ajuan</th>
                                             <th>Kode</th>
                                             <th>Nama Pelanggan</th>
                                             <th>Salesman</th>
                                             <th>Jumlah</th>
-                                            <th>Status</th>
-                                            <th>Bukti</th>
-                                            <th>#</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Bukti</th>
+                                            <th class="text-center">#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
+                                        @foreach ($pencairan as $d)
+                                            <tr>
+                                                <td>{{ $d->kode_pencairan }}</td>
+                                                <td>{{ $d->kode_pelanggan }}</td>
+                                                <td>{{ $d->nama_pelanggan }}</td>
+                                                <td>{{ $d->nama_salesman }}</td>
+                                                <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
+                                                <td class="text-center">
+                                                    @if ($d->status == 0)
+                                                        <i class="ti ti-hourglass-low text-warning"></i>
+                                                    @elseif ($d->status == 1)
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (!empty($d->bukti))
+                                                        <a href="{{ url($d->bukti) }}" target="_blank">
+                                                            <i class="ti ti-receipt text-success"></i>
+                                                        </a>
+                                                    @else
+                                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($d->status == 0)
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('monitoringprogram.deletepencairansimpanan', Crypt::encrypt($d->kode_pencairan)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm ml-1">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
 
                                     </tbody>
                                 </table>

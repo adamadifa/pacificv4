@@ -238,6 +238,7 @@ class PembayaranpenjualanController extends Controller
                 'jumlah' => toNumber($request->jumlah),
                 'voucher' => $voucher,
                 'jenis_voucher' => $jenis_voucher,
+                'voucher_reward' => $jenis_voucher == '2' ? 1 : 0,
                 'kode_salesman' => $request->kode_salesman,
                 'id_user' => auth()->user()->id
             ]);

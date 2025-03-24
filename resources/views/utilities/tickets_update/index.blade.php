@@ -3,14 +3,14 @@
 
 @section('content')
 @section('navigasi')
-    <span>Ticket</span>
+    <span>Ticket Perubahan Data</span>
 @endsection
 @extends('layouts.app')
-@section('titlepage', 'Ticket')
+@section('titlepage', 'Ticket Perubahan Data')
 
 @section('content')
 @section('navigasi')
-    <span>Ticket</span>
+    <span>Perubahan Data</span>
 @endsection
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
@@ -18,9 +18,7 @@
             @include('layouts.navigation_ticket')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                        Tambah Data</a>
-                    <div class="row mt-2">
+                    <div class="row">
                         <div class="col-12">
                             <form action="{{ route('ticket.index') }}">
                                 @hasanyrole($roles_show_cabang)
@@ -57,11 +55,11 @@
                                             <th>Keterangan</th>
                                             <th>User</th>
                                             <th>Cabang</th>
+                                            <th>Kategori</th>
+                                            <th>No. Bukti</th>
                                             <th class="text-center">GM/ROM</th>
                                             {{-- <th class="text-center">Direktur</th> --}}
                                             <th>Status</th>
-                                            <th>Admin</th>
-                                            <th class="text-center">Selesai</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
@@ -82,77 +80,7 @@
                                                         <i class="ti ti-check text-success"></i>
                                                     @endif
                                                 </td>
-                                                {{-- <td class="text-center">
-                                                        @if ($d->direktur == null)
-                                                            <i class="ti ti-hourglass-low  text-warning"></i>
-                                                        @elseif($d->direktur != null && $d->status == '2')
-                                                            <i class="ti ti-square-x  text-danger"></i>
-                                                        @elseif($d->direktur != null)
-                                                            <i class="ti ti-check text-success"></i>
-                                                        @endif
-                                                    </td> --}}
-                                                <td class="text-center" style="width: 3%">
-                                                    @if ($d->status == '2')
-                                                        <i class="ti ti-square-x  text-danger"></i>
-                                                    @elseif($d->status == '1')
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @elseif($d->status == '0')
-                                                        <i class="ti ti-hourglass-low  text-warning"></i>
-                                                    @endif
-                                                </td>
-                                                <td style="width: 10%">
-                                                    @if ($d->admin == null)
-                                                        <i class="ti ti-hourglass-low  text-warning"></i>
-                                                    @else
-                                                        {{ formatName2($d->admin) }}
-                                                    @endif
-                                                </td>
-                                                <td style="width: 10%" class="text-center">
-                                                    @if (!empty($d->tanggal_selesai))
-                                                        {{ date('d-m-Y', strtotime($d->tanggal_selesai)) }}
-                                                    @else
-                                                        <i class="ti ti-hourglass-low  text-warning"></i>
-                                                    @endif
-                                                </td>
-                                                <td style="width: 5%">
-                                                    <div class="d-flex">
 
-                                                        @if ($d->gm == null)
-                                                            <a href="#" class="btnEdit me-1" kode_pengajuan="{{ $d->kode_pengajuan }}"><i
-                                                                    class="ti ti-edit text-success"></i>
-                                                            </a>
-                                                        @endif
-
-                                                        @can('ticket.approve')
-                                                            @if (in_array($level_user, ['gm administrasi', 'regional operation manager']) && $d->status == '0')
-                                                                <a href="#" class="btnApprove me-1" kode_pengajuan="{{ $d->kode_pengajuan }}">
-                                                                    <i class="ti ti-external-link text-primary"></i>
-                                                                </a>
-                                                            @elseif($level_user == 'super admin')
-                                                                <a href="#" class="btnApprove me-1" kode_pengajuan="{{ $d->kode_pengajuan }}">
-                                                                    <i class="ti ti-external-link text-primary"></i>
-                                                                </a>
-                                                            @endif
-                                                        @endcan
-
-                                                        @if ($d->gm == null)
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('ticket.delete', Crypt::encrypt($d->kode_pengajuan)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        @endif
-                                                        @if (!empty($d->link))
-                                                            <a href="{{ url($d->link) }}" target="_blank">
-                                                                <i class="ti ti-paperclip text-primary"></i>
-                                                            </a>
-                                                        @endif
-
-                                                    </div>
-                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -173,6 +101,7 @@
 
 
 @push('myscript')
+{{-- <script src="{{ asset('assets/js/pages/kirimlhp/create.js') }}"></script> --}}
 <script>
     $(function() {
         $("#btnCreate").click(function(e) {

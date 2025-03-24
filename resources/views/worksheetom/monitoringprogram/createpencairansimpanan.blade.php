@@ -30,7 +30,7 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Pencairan" align="right" name="jml_pencairan" money="true" />
+            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Pencairan" align="right" name="jumlah" money="true" />
             <div class="form-group">
                 <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
             </div>

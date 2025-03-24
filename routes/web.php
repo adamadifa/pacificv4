@@ -152,6 +152,7 @@ use App\Http\Controllers\SuratjalanController;
 use App\Http\Controllers\SuratperingatanController;
 use App\Http\Controllers\TargetkomisiController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TicketupdateController;
 use App\Http\Controllers\TransitinController;
 use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
@@ -2075,6 +2076,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/monitoringprogram/{kode_pelanggan}/createpencairansimpanan', 'createpencairansimpanan')->name('monitoringprogram.createpencairansimpanan');
         Route::post('/monitoringprogram/{kode_pelanggan}/storepencairansimpanan', 'storepencairansimpanan')->name('monitoringprogram.storepencairansimpanan');
         Route::get('/monitoringprogram/pencairansimpanan', 'pencairansimpanan')->name('monitoringprogram.pencairansimpanan')->can('monitoringprogram.index');
+        Route::delete('/monitoringprogram/{kode_pencairan}/deletepencairansimpanan', 'deletepencairansimpanan')->name('monitoringprogram.deletepencairansimpanan ');
     });
 
     Route::controller(PencairanprogramController::class)->group(function () {
@@ -2179,6 +2181,17 @@ Route::middleware('auth')->group(function () {
         Route::delete('/ticket/{no_pengajuan}/destroy', 'destroy')->name('ticket.delete');
         Route::get('/ticket/{no_pengajuan}/approve', 'approve')->name('ticket.approve')->can('ticket.approve');
         Route::post('/ticket/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticket.storeapprove')->can('ticket.approve');
+    });
+
+    Route::controller(TicketupdateController::class)->group(function () {
+        Route::get('/ticketupdate', 'index')->name('ticketupdate.index');
+        Route::get('/ticketupdate/create', 'create')->name('ticketupdate.create');
+        Route::post('/ticketupdate/store', 'store')->name('ticketupdate.store');
+        Route::get('/ticketupdate/{kode_pengajuan}/edit', 'edit')->name('ticketupdate.edit');
+        Route::put('/ticketupdate/{kode_pengajuan}/update', 'update')->name('ticketupdate.update');
+        Route::delete('/ticketupdate/{no_pengajuan}/destroy', 'destroy')->name('ticketupdate.delete');
+        Route::get('/ticketupdate/{no_pengajuan}/approve', 'approve')->name('ticketupdate.approve')->can('ticketupdate.approve');
+        Route::post('/ticketupdate/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticketupdate.storeapprove')->can('ticketupdate.approve');
     });
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');

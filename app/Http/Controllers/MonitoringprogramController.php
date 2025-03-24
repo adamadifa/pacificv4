@@ -410,9 +410,37 @@ class MonitoringprogramController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
         $cbg = new Cabang();
+        $query = Pencairansimpanan::query();
+        $query->select(
+            'marketing_pencairan_simpanan.*',
+            'nama_pelanggan',
+            'nama_salesman'
+        );
+
+        if (!empty($kode_cabang)) {
+            $query->where('marketing_pencairan_simpanan.kode_cabang', $kode_cabang);
+        }
+        $query->join('pelanggan', 'marketing_pencairan_simpanan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->orderBy('marketing_pencairan_simpanan.kode_pencairan', 'desc');
+        $pencairan = $query->paginate(15);
+        $pencairan->appends($request->all());
+        $data['pencairan'] = $pencairan;
         $data['cabang'] = $cbg->getCabang();
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
         return view('worksheetom.monitoringprogram.pencairansimpanan', $data);
+    }
+
+    public function deletepencairansimpanan($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        try {
+            $pencairanprogram = Pencairansimpanan::where('kode_pencairan', $kode_pencairan)->firstorFail();
+            $pencairanprogram->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }
