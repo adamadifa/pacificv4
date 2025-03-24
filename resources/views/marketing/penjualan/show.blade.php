@@ -499,7 +499,11 @@
                                             <td>
 
                                                 @if ($d->voucher == '1')
-                                                    <span class="badge bg-success">{{ $d->nama_voucher }}</span>
+                                                    <span class="badge bg-success">{{ $d->nama_voucher }}
+                                                        @if ($d->voucher_reward == '1')
+                                                            Voucher Reward
+                                                        @endif
+                                                    </span>
                                                 @elseif ($d->giro_to_cash == '1')
                                                     <span class="badge bg-success">Ganti Giro Ke Cash
                                                         {{ $d->no_giro }}</span>
