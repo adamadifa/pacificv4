@@ -5,13 +5,6 @@
 @section('navigasi')
     <span>Ticket</span>
 @endsection
-@extends('layouts.app')
-@section('titlepage', 'Ticket')
-
-@section('content')
-@section('navigasi')
-    <span>Ticket</span>
-@endsection
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">

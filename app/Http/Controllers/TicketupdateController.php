@@ -3,10 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Dpb;
+use App\Models\Historibayarpenjualan;
+use App\Models\Mutasigudangcabang;
+use App\Models\Penjualan;
+use App\Models\Retur;
 use App\Models\Ticket;
 use App\Models\Ticketupdatedata;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class TicketupdateController extends Controller
 {
@@ -15,7 +21,7 @@ class TicketupdateController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $query = Ticketupdatedata::query();
-        $query->select('tickest_update_data.*', 'users.name', 'approval.name as approval', 'users.kode_cabang');
+        $query->select('tickets_update_data.*', 'users.name', 'approval.name as approval', 'users.kode_cabang');
         $query->join('users', 'tickets_update_data.id_user', '=', 'users.id');
         $query->leftJoin('users as approval', 'tickets_update_data.id_approval', '=', 'approval.id');
         if (!$user->hasRole($roles_access_all_cabang)) {
@@ -28,9 +34,9 @@ class TicketupdateController extends Controller
 
         if (!empty($request->status_search)) {
             if ($request->status_search == "pending") {
-                $query->where('tickest_update_data.status', 0);
+                $query->where('tickets_update_data.status', 0);
             } else {
-                $query->where('tickest_update_data.status', 1);
+                $query->where('tickets_update_data.status', 1);
             }
         }
         $query->orderBy('status');
@@ -42,5 +48,69 @@ class TicketupdateController extends Controller
         $data['cabang'] = $cbg->getCabang();
         $data['ticket'] = $ticket;
         return view('utilities.tickets_update.index', $data);
+    }
+
+    public function create()
+    {
+        return view('utilities.tickets_update.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'tanggal' => 'required',
+            'keterangan' => 'required',
+            'kategori' => 'required',
+            'no_bukti' => 'required',
+        ]);
+
+        $bulan = date("m", strtotime($request->tanggal));
+        $tahun = substr(date("Y", strtotime($request->tanggal)), 2, 2);
+        $dari = $tahun . "-" . $bulan . "-01";
+        $sampai = date("Y-m-t", strtotime($dari));
+        $status = 0;
+        $ticket = Ticket::whereBetween('tanggal', [$dari, $sampai])->orderBy('kode_pengajuan', 'desc')->first();
+        $lastkode_pengajuan = $ticket != null ? $ticket->kode_pengajuan : '';
+        $kode_pengajuan = buatkode($lastkode_pengajuan, "PD" . $bulan . $tahun, 4);
+
+
+        $kategoriOptions = [
+            '1' => 'Penjualan',
+            '2' => 'Pembayaran',
+            '3' => 'Retur',
+            '4' => 'DPB',
+            '5' => 'Mutasi Persediaan',
+        ];
+
+        if ($request->kategori == 1) {
+            $cek = Penjualan::where('no_faktur', $request->no_bukti)->count();
+        } else if ($request->kategori == 2) {
+            $cek = Historibayarpenjualan::where('no_bukti', $request->no_bukti)->count();
+        } else if ($request->kategori == 3) {
+            $cek = Retur::where('no_retur', $request->no_bukti)->count();
+        } else if ($request->kategori == 4) {
+            $cek = Dpb::where('no_dpb', $request->no_bukti)->count();
+        } else if ($request->kategori == 5) {
+            $cek = Mutasigudangcabang::where('no_mutasi', $request->no_bukti)->count();
+        }
+
+        if ($cek == 0) {
+            return Redirect::back()->with(messageError('No Bukti Tidak Ditemukan'));
+        }
+        try {
+            Ticketupdatedata::create([
+                'kode_pengajuan' => $kode_pengajuan,
+                'tanggal' => $request->tanggal,
+                'kategori' => $request->kategori,
+                'no_bukti' => $request->no_bukti,
+                'keterangan' => $request->keterangan,
+                'status' => 0,
+                'id_user' => auth()->user()->id,
+                'link' => $request->link
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Throwable $th) {
+            return Redirect::back()->with(messageError($th->getMessage()));
+        }
     }
 }

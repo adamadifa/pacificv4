@@ -20,7 +20,8 @@ return new class extends Migration
             $table->smallInteger('gm')->nullable();
             $table->char('status');
             $table->bigInteger('id_user');
-            $table->bigInteger('id_approval');
+            $table->bigInteger('id_approval')->nullable();
+            $table->text('link')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ticketupdatedatas');
+        Schema::dropIfExists('tickets_update_data');
     }
 };

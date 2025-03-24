@@ -5,20 +5,16 @@
 @section('navigasi')
     <span>Ticket Perubahan Data</span>
 @endsection
-@extends('layouts.app')
-@section('titlepage', 'Ticket Perubahan Data')
 
-@section('content')
-@section('navigasi')
-    <span>Perubahan Data</span>
-@endsection
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
             @include('layouts.navigation_ticket')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    <div class="row">
+                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
+                        Tambah Data</a>
+                    <div class="row mt-2">
                         <div class="col-12">
                             <form action="{{ route('ticket.index') }}">
                                 @hasanyrole($roles_show_cabang)
@@ -106,7 +102,7 @@
     $(function() {
         $("#btnCreate").click(function(e) {
             $('#mdlCreate').modal("show");
-            $("#loadCreate").load('/ticket/create');
+            $("#loadCreate").load('/ticketupdate/create');
         });
 
         $(".btnEdit").click(function(e) {
