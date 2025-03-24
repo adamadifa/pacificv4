@@ -513,7 +513,7 @@
                                             <td>{{ $d->nama_salesman }}</td>
                                             <td>
                                                 <div class="d-flex">
-                                                    @if (in_array($d->jenis_bayar, ['TN', 'TP']))
+                                                    @if (in_array($d->jenis_bayar, ['TN', 'TP']) || $d->voucher == 0)
                                                         @can('pembayaranpenjualan.edit')
                                                             <div>
                                                                 <a href="#" class="me-2 btnEditBayar"
