@@ -2190,8 +2190,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/ticketupdate/{kode_pengajuan}/edit', 'edit')->name('ticketupdate.edit');
         Route::put('/ticketupdate/{kode_pengajuan}/update', 'update')->name('ticketupdate.update');
         Route::delete('/ticketupdate/{no_pengajuan}/destroy', 'destroy')->name('ticketupdate.delete');
-        Route::get('/ticketupdate/{no_pengajuan}/approve', 'approve')->name('ticketupdate.approve')->can('ticketupdate.approve');
-        Route::post('/ticketupdate/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticketupdate.storeapprove')->can('ticketupdate.approve');
+        Route::get('/ticketupdate/{no_pengajuan}/approve', 'approve')->name('ticketupdate.approve')->can('ticket.approve');
+        Route::delete('/ticketupdate/{no_pengajuan}/cancel', 'cancel')->name('ticketupdate.cancel')->can('ticket.approve');
+        Route::post('/ticketupdate/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticketupdate.storeapprove')->can('ticket.approve');
     });
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');

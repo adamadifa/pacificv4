@@ -12,6 +12,7 @@ use App\Models\Ticket;
 use App\Models\Ticketupdatedata;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
 
 class TicketupdateController extends Controller
@@ -109,6 +110,99 @@ class TicketupdateController extends Controller
                 'link' => $request->link
             ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Throwable $th) {
+            return Redirect::back()->with(messageError($th->getMessage()));
+        }
+    }
+
+    public function edit($kode_pengajuan)
+    {
+        $ticket = Ticketupdatedata::where('kode_pengajuan', $kode_pengajuan)->first();
+        return view('utilities.tickets_update.edit', compact('ticket'));
+    }
+
+    public function update($kode_pengajuan, Request $request)
+    {
+        $kode_pengajuan = Crypt::decrypt($kode_pengajuan);
+        $request->validate([
+            'tanggal' => 'required',
+            'keterangan' => 'required',
+            'no_bukti' => 'required',
+            'kategori' => 'required',
+
+        ]);
+
+        try {
+            Ticketupdatedata::where('kode_pengajuan', $kode_pengajuan)->update([
+                'tanggal' => $request->tanggal,
+                'keterangan' => $request->keterangan,
+                'kategori' => $request->kategori,
+                'no_bukti' => $request->no_bukti,
+                'link' => $request->link
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Throwable $th) {
+            return Redirect::back()->with(messageError($th->getMessage()));
+        }
+    }
+
+    public function destroy($kode_pengajuan)
+    {
+        $kode_pengajuan = Crypt::decrypt($kode_pengajuan);
+        try {
+            Ticketupdatedata::where('kode_pengajuan', $kode_pengajuan)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Throwable $th) {
+            return Redirect::back()->with(messageError($th->getMessage()));
+        }
+    }
+
+    public function approve($kode_pengajuan)
+    {
+        $ticket = Ticketupdatedata::where('kode_pengajuan', $kode_pengajuan)
+            ->select('tickets_update_data.*', 'users.name')
+            ->join('users', 'tickets_update_data.id_user', '=', 'users.id')
+            ->first();
+        return view('utilities.tickets_update.approve', compact('ticket'));
+    }
+
+    public function storeapprove($kode_pengajuan, Request $request)
+    {
+        $kode_pengajuan = Crypt::decrypt($kode_pengajuan);
+        $user = User::where('id', auth()->user()->id)->first();
+        $status = 1;
+        if ($user->hasRole(['gm administrasi', 'regional operation manager', 'super admin'])) {
+            $field = 'gm';
+            if (isset($_POST['decline'])) {
+                $status = 2;
+            }
+        }
+
+
+
+        try {
+            Ticketupdatedata::where('kode_pengajuan', $kode_pengajuan)->update([
+                'status' => $status,
+                'gm' => auth()->user()->id,
+                'id_approval' => auth()->user()->id
+            ]);
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Throwable $th) {
+            return Redirect::back()->with(messageError($th->getMessage()));
+        }
+    }
+
+    public function cancel($kode_pengajuan)
+    {
+        $kode_pengajuan = Crypt::decrypt($kode_pengajuan);
+        try {
+            Ticketupdatedata::where('kode_pengajuan', $kode_pengajuan)->update([
+                'status' => 0,
+                'gm' => null,
+                'id_approval' => null
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
         } catch (\Throwable $th) {
             return Redirect::back()->with(messageError($th->getMessage()));
         }

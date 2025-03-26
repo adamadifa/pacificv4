@@ -5220,6 +5220,7 @@ class LaporanmarketingController extends Controller
             $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
         $query->where('status_promosi', 0);
+        $query->where('status_batal', 0);
         $query->groupBy('produk_harga.kode_produk', 'produk.nama_produk', 'produk.isi_pcs_dus');
         $data['rekappenjualan'] = $query->get();
         $data['cbg'] = $cabang;

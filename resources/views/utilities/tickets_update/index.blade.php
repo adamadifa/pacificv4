@@ -53,13 +53,22 @@
                                             <th>Cabang</th>
                                             <th>Kategori</th>
                                             <th>No. Bukti</th>
-                                            <th class="text-center">GM/ROM</th>
+                                            <th>Approval</th>
                                             {{-- <th class="text-center">Direktur</th> --}}
                                             <th>Status</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php
+                                            $kategori = [
+                                                '1' => 'Penjualan',
+                                                '2' => 'Pembayaran',
+                                                '3' => 'Retur',
+                                                '4' => 'DPB',
+                                                '5' => 'Mutasi Persediaan',
+                                            ];
+                                        @endphp
                                         @foreach ($ticket as $d)
                                             <tr>
                                                 <td style="width: 5%">{{ $d->kode_pengajuan }}</td>
@@ -67,16 +76,73 @@
                                                 <td>{{ $d->keterangan }}</td>
                                                 <td style="width: 10%">{{ formatName2($d->name) }}</td>
                                                 <td style="width: 5%">{{ $d->kode_cabang }}</td>
-                                                <td class="text-center" style="width: 3%">
+                                                <td>{{ $kategori[$d->kategori] }}</td>
+                                                <td>{{ $d->no_bukti }}</td>
+
+                                                <td>
                                                     @if ($d->gm == null)
                                                         <i class="ti ti-hourglass-low  text-warning"></i>
-                                                    @elseif($d->gm != null && $d->direktur == null && $d->status == '2')
-                                                        <i class="ti ti-square-x  text-danger"></i>
-                                                    @elseif($d->gm != null && $d->status != '2')
-                                                        <i class="ti ti-check text-success"></i>
+                                                    @else
+                                                        <span class="badge bg-info">
+                                                            {{ $d->approval }}
+                                                        </span>
                                                     @endif
                                                 </td>
+                                                <td class="text-center" style="width: 3%">
+                                                    @if ($d->status == '2')
+                                                        <i class="ti ti-square-x  text-danger"></i>
+                                                    @elseif($d->status == '1')
+                                                        <i class="ti ti-check text-success"></i>
+                                                    @elseif($d->status == '0')
+                                                        <i class="ti ti-hourglass-low  text-warning"></i>
+                                                    @endif
+                                                </td>
+                                                <td style="width: 5%">
+                                                    <div class="d-flex">
 
+                                                        @if ($d->gm == null)
+                                                            <a href="#" class="btnEdit me-1" kode_pengajuan="{{ $d->kode_pengajuan }}"><i
+                                                                    class="ti ti-edit text-success"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        @can('ticket.approve')
+                                                            @if (in_array($level_user, ['gm administrasi', 'regional operation manager', 'super admin']))
+                                                                @if ($d->status == '0')
+                                                                    <a href="#" class="btnApprove me-1" kode_pengajuan="{{ $d->kode_pengajuan }}">
+                                                                        <i class="ti ti-external-link text-primary"></i>
+                                                                    </a>
+                                                                @else
+                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                        action="{{ route('ticketupdate.cancel', Crypt::encrypt($d->kode_pengajuan)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="cancel-confirm ml-1">
+                                                                            <i class="ti ti-square-x text-danger"></i>
+                                                                        </a>
+                                                                    </form>
+                                                                @endif
+                                                            @endif
+                                                        @endcan
+
+                                                        @if ($d->gm == null)
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('ticketupdate.delete', Crypt::encrypt($d->kode_pengajuan)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endif
+                                                        @if (!empty($d->link))
+                                                            <a href="{{ url($d->link) }}" target="_blank">
+                                                                <i class="ti ti-paperclip text-primary"></i>
+                                                            </a>
+                                                        @endif
+
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -110,7 +176,7 @@
             e.preventDefault();
             $('#mdlCreate').modal("show");
             $('#mdlCreate').find('.modal-title').text('Edit Ticket');
-            $("#loadCreate").load(`/ticket/${kode_pengajuan}/edit`);
+            $("#loadCreate").load(`/ticketupdate/${kode_pengajuan}/edit`);
         });
 
         $(".btnApprove").click(function(e) {
@@ -118,7 +184,7 @@
             e.preventDefault();
             $('#mdlCreate').modal("show");
             $('#mdlCreate').find('.modal-title').text('Approve Ticket');
-            $("#loadCreate").load(`/ticket/${kode_pengajuan}/approve`);
+            $("#loadCreate").load(`/ticketupdate/${kode_pengajuan}/approve`);
         });
 
 
