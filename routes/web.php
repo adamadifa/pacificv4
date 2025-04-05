@@ -90,6 +90,7 @@ use App\Http\Controllers\MonitoringreturController;
 use App\Http\Controllers\MutasibankController;
 use App\Http\Controllers\MutasidpbController;
 use App\Http\Controllers\MutasikendaraanController;
+use App\Http\Controllers\MutasikeuanganController;
 use App\Http\Controllers\OmancabangController;
 use App\Http\Controllers\OmanController;
 use App\Http\Controllers\OpnamegudangbahanController;
@@ -2193,6 +2194,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/ticketupdate/{no_pengajuan}/approve', 'approve')->name('ticketupdate.approve')->can('ticket.approve');
         Route::delete('/ticketupdate/{no_pengajuan}/cancel', 'cancel')->name('ticketupdate.cancel')->can('ticket.approve');
         Route::post('/ticketupdate/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticketupdate.storeapprove')->can('ticket.approve');
+    });
+
+    Route::controller(MutasikeuanganController::class)->group(function () {
+        Route::get('/mutasikeuangan', 'index')->name('mutasikeuangan.index')->can('mutasikeuangan.index');
+        Route::get('/mutasikeuangan/create', 'create')->name('mutasikeuangan.create')->can('mutasikeuangan.create');
+        Route::post('/mutasikeuangan/store', 'store')->name('mutasikeuangan.store')->can('mutasikeuangan.store');
+        Route::get('/mutasikeuangan/{id}/edit', 'edit')->name('mutasikeuangan.edit')->can('mutasikeuangan.edit');
+        Route::put('/mutasikeuangan/{id}/update', 'update')->name('mutasikeuangan.update')->can('mutasikeuangan.update');
+        Route::delete('/mutasikeuangan/{id}/destroy', 'destroy')->name('mutasikeuangan.delete')->can('mutasikeuangan.delete');
     });
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');

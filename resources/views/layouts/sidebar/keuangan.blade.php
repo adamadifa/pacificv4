@@ -29,6 +29,7 @@
             'keu.piutangkaryawan',
             'keu.kartupiutangkaryawan',
             'keu.rekapkartupiutang',
+            'mutasikeuangan.index',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -55,6 +56,7 @@
             'kontrabonkeuangan/*',
             'laporankeuangan',
             'klaimkaskecil',
+            'mutasikeuangan',
         ])
             ? 'open'
             : '' }}">
@@ -142,6 +144,13 @@
                 <li class="menu-item {{ request()->is(['piutangkaryawan']) ? 'active' : '' }}">
                     <a href="{{ route('piutangkaryawan.index') }}" class="menu-link">
                         <div>Piutang Karyawan</div>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission(['mutasikeuangan.index']))
+                <li class="menu-item {{ request()->is(['mutasikeuangan']) ? 'active' : '' }}">
+                    <a href="{{ route('mutasikeuangan.index') }}" class="menu-link">
+                        <div>Mutasi Keuangan</div>
                     </a>
                 </li>
             @endif

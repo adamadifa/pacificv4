@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('keterangan');
             $table->bigInteger('jumlah');
             $table->char('debet_kredit');
+            $table->timestamps();
         });
     }
 
