@@ -21,6 +21,7 @@ use App\Models\Disposisitargetkomisi;
 use App\Models\Pencairanprogram;
 use App\Models\Pencairanprogramikatan;
 use App\Models\Ticket;
+use App\Models\Ticketupdatedata;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\View;
@@ -105,7 +106,8 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
 
 
-                $notifikasi_log = Activity::where('status_log', 0)->whereIn('event', ['update', 'cancel', 'delete'])->count();
+                // $notifikasi_log = Activity::where('status_log', 0)->whereIn('event', ['update', 'cancel', 'delete'])->count();
+                $notifikasi_update_data = Ticketupdatedata::where('status', 0)->count();
                 if ($level_user == "manager keuangan") {
                     $qajuantransferdana = Ajuantransferdana::query();
                     $qajuantransferdana->select(
@@ -266,7 +268,8 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_ajuan_program = 0;
 
                 $notifikasi_ticket = 0;
-                $notifikasi_log = 0;
+                //$notifikasi_log = 0;
+                $notifikasi_update_data = 0;
             }
 
             if ($level_user == "gm administrasi") {
@@ -678,7 +681,8 @@ class GlobalProvider extends ServiceProvider
                 'notifikasi_ajuan_program' => $notifikasi_ajuan_program,
 
                 'notifikasi_ticket' => $notifikasi_ticket,
-                'notifikasi_log' => $notifikasi_log,
+                'notifikasi_update_data' => $notifikasi_update_data,
+
 
                 'users' => $users
 
