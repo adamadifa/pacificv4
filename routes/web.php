@@ -136,6 +136,7 @@ use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalkasbesarController;
 use App\Http\Controllers\SaldoawalledgerController;
+use App\Http\Controllers\SaldoawalmutasikeuanganController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\ServicekendaraanController;
@@ -165,6 +166,7 @@ use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
 use App\Models\Kontrabonpembelian;
 use App\Models\Permission_group;
+use App\Models\Saldoawalmutasikeungan;
 use App\Models\Servicekendaraan;
 use App\Models\Settingkomisidriverhelper;
 use App\Models\User;
@@ -1285,6 +1287,17 @@ Route::middleware('auth')->group(function () {
         Route::delete('/saledger/{no_bukti}/delete', 'destroy')->name('saledger.delete')->can('saledger.delete');
 
         Route::post('/saledger/getsaldo', 'getsaldo')->name('saledger.getsaldo');
+    });
+
+    Route::controller(SaldoawalmutasikeuanganController::class)->group(function () {
+        Route::get('/samutasikeuangan', 'index')->name('samutasikeuangan.index')->can('samutasikeuangan.index');
+        Route::get('/samutasikeuangan/create', 'create')->name('samutasikeuangan.create')->can('samutasikeuangan.create');
+        Route::post('/samutasikeuangan/store', 'store')->name('samutasikeuangan.store')->can('samutasikeuangan.store');
+        Route::get('/samutasikeuangan/{no_bukti}/edit', 'edit')->name('samutasikeuangan.edit')->can('samutasikeuangan.edit');
+        Route::put('/samutasikeuangan/{no_bukti}/update', 'update')->name('samutasikeuangan.update')->can('samutasikeuangan.update');
+        Route::delete('/samutasikeuangan/{no_bukti}/delete', 'destroy')->name('samutasikeuangan.delete')->can('samutasikeuangan.delete');
+
+        Route::post('/samutasikeuangan/getsaldo', 'getsaldo')->name('samutasikeuangan.getsaldo');
     });
 
 

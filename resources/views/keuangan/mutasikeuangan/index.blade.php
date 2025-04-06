@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('titlepage', 'Ledger')
+@section('titlepage', 'Mutasi Keuangan')
 
 @section('content')
 @section('navigasi')
-    <span>Ledger</span>
+    <span>Mutasi Keuangan</span>
 @endsection
 <div class="row">
     <div class="col-lg-12">
@@ -103,13 +103,13 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('ledger.edit')
-                                                            <a href="#" class="btnEdit me-1" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
+                                                            <a href="#" class="btnEdit me-1" id="{{ Crypt::encrypt($d->id) }}">
                                                                 <i class="ti ti-edit text-success"></i>
                                                             </a>
                                                         @endcan
                                                         @can('ledger.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('ledger.delete', Crypt::encrypt($d->no_bukti)) }}">
+                                                                action="{{ route('mutasikeuangan.delete', Crypt::encrypt($d->id)) }}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <a href="#" class="cancel-confirm me-1">
@@ -141,7 +141,7 @@
         </div>
     </div>
 </div>
-<x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
+<x-modal-form id="modal" show="loadmodal" title="" />
 <x-modal-form id="modalEdit" show="loadmodalEdit" title="" />
 
 @endsection
@@ -182,10 +182,10 @@
         $(".btnEdit").click(function(e) {
             e.preventDefault();
             loading();
-            const no_bukti = $(this).attr('no_bukti');
+            const id = $(this).attr('id');
             $("#modalEdit").modal("show");
-            $("#modalEdit").find(".modal-title").text('Edit Ledger');
-            $("#modalEdit").find("#loadmodalEdit").load(`/ledger/${no_bukti}/edit`);
+            $("#modalEdit").find(".modal-title").text('Edit Mutasi Keuangan');
+            $("#modalEdit").find("#loadmodalEdit").load(`/mutasikeuangan/${id}/edit`);
         });
 
     });

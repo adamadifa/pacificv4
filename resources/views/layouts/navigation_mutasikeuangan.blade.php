@@ -3,7 +3,7 @@
 
         @can('samutasikeuangan.index')
             <li class="nav-item" role="presentation">
-                <a href="{{ route('saledger.index') }}" class="nav-link {{ request()->is(['samutasikeuangan']) ? 'active' : '' }}">
+                <a href="{{ route('samutasikeuangan.index') }}" class="nav-link {{ request()->is(['samutasikeuangan']) ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Saldo Awal
                 </a>
             </li>

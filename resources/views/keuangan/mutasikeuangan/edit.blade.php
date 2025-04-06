@@ -1,11 +1,13 @@
-<form action="{{ route('mutasikeuangan.store') }}" method="POST" id="formLedger">
-    <input type="hidden" id="cektutuplaporan">
+<form action="{{ route('mutasikeuangan.update', ['id' => Crypt::encrypt($mutasikeuangan->id)]) }}" method="POST" id="formLedger">
+
     @csrf
+    @method('PUT')
     <div class="form-group mb-4">
         <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
             <option value="">Pilih Bank</option>
             @foreach ($bank as $d)
-                <option value="{{ $d->kode_bank }}">{{ $d->nama_bank }} {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}</option>
+                <option value="{{ $d->kode_bank }}" {{ $mutasikeuangan->kode_bank == $d->kode_bank ? 'selected' : '' }}>{{ $d->nama_bank }}
+                    {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}</option>
             @endforeach
         </select>
     </div>
@@ -14,22 +16,22 @@
             <i class="ti ti-file-description me-2"></i>
         </div>
     </div>
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$mutasikeuangan->tanggal" />
 
-    <x-textarea label="Keterangan" name="keterangan" />
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
+    <x-textarea label="Keterangan" name="keterangan" :value="$mutasikeuangan->keterangan" />
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" :value="formatAngka($mutasikeuangan->jumlah)" />
 
     <div class="form-group mb-3">
         <select name="debet_kredit" id="debet_kredit" class="form-select">
             <option value="">Debet / Kredit</option>
-            <option value="D">Debet</option>
-            <option value="K">Kredit</option>
+            <option value="D" {{ $mutasikeuangan->debet_kredit == 'D' ? 'selected' : '' }}>Debet</option>
+            <option value="K" {{ $mutasikeuangan->debet_kredit == 'K' ? 'selected' : '' }}>Kredit</option>
         </select>
     </div>
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
-            Submit
+            Simpan
         </button>
     </div>
 </form>
@@ -47,12 +49,6 @@
             </div>
             Loading..`);
         }
-
-
-
-
-
-
 
         const select2Kodebank = $('.select2Kodebank');
         if (select2Kodebank.length) {

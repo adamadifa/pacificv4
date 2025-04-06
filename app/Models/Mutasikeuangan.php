@@ -10,6 +10,7 @@ class Mutasikeuangan extends Model
 {
     use HasFactory;
     protected $table = 'keuangan_mutasi';
+    protected $guarded = ['id'];
 
     function getMutasi($no_bukti = '', Request $request = null)
     {

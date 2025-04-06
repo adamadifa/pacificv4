@@ -9,7 +9,9 @@ use App\Models\Mutasikeuangan;
 use App\Models\Saldoawalmutasikeungan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class MutasikeuanganController extends Controller
 {
@@ -49,5 +51,69 @@ class MutasikeuanganController extends Controller
         $data['coa'] = Coa::orderby('kode_akun')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         return view('keuangan.mutasikeuangan.create', $data);
+    }
+
+
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            Mutasikeuangan::create([
+                'tanggal' => $request->tanggal,
+                'kode_bank' => $request->kode_bank,
+                'keterangan' => $request->keterangan,
+                'jumlah' => toNumber($request->jumlah),
+                'debet_kredit' => $request->debet_kredit,
+            ]);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            //dd($e);
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function destroy($id)
+    {
+        $id = Crypt::decrypt($id);
+        try {
+            $mutasikeuangan = Mutasikeuangan::findorfail($id);
+            $mutasikeuangan->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function edit($id)
+    {
+        $id = Crypt::decrypt($id);
+        $mutasi = Mutasikeuangan::findorfail($id);
+        $data['mutasikeuangan'] = $mutasi;
+        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        $data['coa'] = Coa::orderby('kode_akun')->get();
+        $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+
+        return view('keuangan.mutasikeuangan.edit', $data);
+    }
+
+    public function update($id, Request $request)
+    {
+        $id = Crypt::decrypt($id);
+        try {
+            $mutasi = Mutasikeuangan::findorfail($id);
+            $mutasi->tanggal = $request->tanggal;
+            $mutasi->keterangan = $request->keterangan;
+            $mutasi->jumlah = toNumber($request->jumlah);
+            $mutasi->debet_kredit = $request->debet_kredit;
+            $mutasi->save();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

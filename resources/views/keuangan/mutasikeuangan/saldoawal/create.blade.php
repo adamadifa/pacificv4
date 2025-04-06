@@ -1,4 +1,4 @@
-<form action="{{ route('saledger.store') }}" id="formSaldoawalledger" method="POST">
+<form action="{{ route('samutasikeuangan.store') }}" id="formSaldoawalledger" method="POST">
     @csrf
     <input type="hidden" name="cekgetsaldo" id="cekgetsaldo" value="0">
     <div class="form-group mb-3">
@@ -128,7 +128,7 @@
             } else {
                 $.ajax({
                     type: 'POST',
-                    url: '/saledger/getsaldo',
+                    url: '/samutasikeuangan/getsaldo',
                     data: {
                         _token: "{{ csrf_token() }}",
                         bulan: bulan,
