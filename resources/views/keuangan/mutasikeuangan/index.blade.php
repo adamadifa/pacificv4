@@ -19,7 +19,7 @@
 
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form action="{{ route('ledger.index') }}">
+                            <form action="{{ route('mutasikeuangan.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
@@ -70,13 +70,13 @@
                                         <tr>
                                             <th colspan="4">SALDO AWAL</th>
                                             <td class="text-end {{ $saldo_awal == null ? 'bg-danger text-white' : '' }}">
-                                                {{-- @if ($saldo_awal != null)
+                                                @if ($saldo_awal != null)
                                                     {{ formatAngka($saldo_awal->jumlah - $mutasi->debet + $mutasi->kredit) }}
                                                 @else
                                                     BELUM DI SET
-                                                @endif --}}
+                                                @endif
                                             </td>
-                                            <th></th>
+                                            <td></td>
                                         </tr>
                                     </thead>
                                     <tbody>

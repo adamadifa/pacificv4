@@ -116,4 +116,29 @@ class MutasikeuanganController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function show($kode_bank, Request $request)
+    {
+        $bulan = date('m', strtotime(date('Y-m-d')));
+        $tahun = date('Y', strtotime(date('Y-m-d')));
+        $kode_bank = Crypt::decrypt($kode_bank);
+        $data['bank'] = Bank::where('kode_bank', $kode_bank)->first();
+        $data['saldo_awal']  = Saldoawalmutasikeungan::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $kode_bank)->first();
+
+        $start_date = $tahun . "-" . $bulan . "-01";
+        $data['mutasi']  = Mutasikeuangan::where('kode_bank', $kode_bank)
+            ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
+                $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
+            })
+
+            ->when($request->dari, function ($query) use ($request) {
+                $query->where('tanggal', '>=', $request->dari);
+            })
+            ->when($request->sampai, function ($query) use ($request) {
+                $query->where('tanggal', '<=', $request->sampai);
+            })
+            ->get();
+
+        return view('keuangan.mutasikeuangan.show', $data);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Charts\HasilproduksiChart;
+use App\Models\Bank;
 use App\Models\Cabang;
 use App\Models\Checkinpenjualan;
 use App\Models\Detaildpb;
@@ -19,10 +20,12 @@ use App\Models\Historibayarpenjualan;
 use App\Models\Karyawan;
 use App\Models\Kendaraan;
 use App\Models\Mutasigudangjadi;
+use App\Models\Mutasikeuangan;
 use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
 use App\Models\Saldoawalgudangjadi;
+use App\Models\Saldoawalmutasikeungan;
 use App\Models\Salesman;
 use App\Models\User;
 use Carbon\Carbon;
@@ -58,6 +61,8 @@ class DashboardController extends Controller
             return $this->operasional();
         } else if ($user->hasAnyRole(['asst. manager hrd', 'spv presensi', 'spv recruitment'])) {
             return $this->hrd();
+        } else if ($user->hasAnyRole(['owner'])) {
+            return $this->owner();
         } else {
             return $this->dashboarddefault();
         }
@@ -67,6 +72,41 @@ class DashboardController extends Controller
     function dashboarddefault()
     {
         return view('dashboard.default');
+    }
+
+    function owner()
+    {
+
+        $bulan = date('m', strtotime(date('Y-m-d')));
+        $tahun = date('Y', strtotime(date('Y-m-d')));
+
+        $saldoawal = Saldoawalmutasikeungan::where('bulan', $bulan)->where('tahun', $tahun);
+
+        $start_date = $tahun . "-" . $bulan . "-01";
+        $mutasi  = Mutasikeuangan::select(
+            'kode_bank',
+            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+        )
+            ->where('tanggal', '>=', $start_date)
+            ->where('tanggal', '<=', date('Y-m-d'))
+            ->groupBy('kode_bank');
+        $data['bank'] = Bank::leftJoinSub($mutasi, 'mutasi', function ($join) {
+            $join->on('bank.kode_bank', '=', 'mutasi.kode_bank');
+        })
+            ->leftJoinSub($saldoawal, 'saldoawal', function ($join) {
+                $join->on('bank.kode_bank', '=', 'saldoawal.kode_bank');
+            })
+            ->select(
+                'bank.*',
+                'saldoawal.jumlah as saldoawal',
+                DB::raw("(IFNULL(saldoawal.jumlah,0) + IFNULL(mutasi.kredit,0) - IFNULL(mutasi.debet,0)) as saldo"),
+
+            )
+            ->orderBy('bank.nama_bank')
+            ->get();
+
+        return view('dashboard.owner', $data);
     }
 
     public function mobilemarketing()

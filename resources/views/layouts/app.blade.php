@@ -45,7 +45,10 @@
                 <div class="content-wrapper">
                     <!-- Content -->
                     <div class="container-fluid flex-grow-1 container-p-y">
-                        <h4 class="py-3 mb-2">@yield('navigasi')</h4>
+                        @php
+                            $agent = new Jenssegers\Agent\Agent();
+                        @endphp
+                        <h4 class="{{ !$agent->isMobile() ? 'py-3 mb-2' : '' }}">@yield('navigasi')</h4>
                         @yield('content')
                     </div>
                     <!-- / Content -->
