@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('keuangan_mutasi_saldoawal', function (Blueprint $table) {
-            $table->char('kode_saldo_awal', 8)->primary();
+            $table->char('kode_saldo_awal', 11)->primary();
             $table->date('tanggal');
             $table->smallInteger('bulan');
             $table->char('tahun', 4);

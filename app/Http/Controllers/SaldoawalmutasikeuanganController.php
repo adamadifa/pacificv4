@@ -137,6 +137,7 @@ class SaldoawalmutasikeuanganController extends Controller
         try {
             $bulan = $request->bulan < 10 ? "0" . $request->bulan : $request->bulan;
             $kode_saldo_awal = "SA" . $bulan . substr($request->tahun, 2, 2) . $request->kode_bank;
+            // dd($kode_saldo_awal);
             $tanggal = $request->tahun . "-" . $request->bulan . "-01";
             $cektutuplaporan = cektutupLaporan($tanggal, "ledger");
             if ($cektutuplaporan > 0) {
