@@ -17,10 +17,12 @@ use App\Models\Kuranglebihsetor;
 use App\Models\Ledger;
 use App\Models\Ledgersetoranpusat;
 use App\Models\Logamtokertas;
+use App\Models\Mutasikeuangan;
 use App\Models\Piutangkaryawan;
 use App\Models\Pjp;
 use App\Models\Saldoawalkasbesar;
 use App\Models\Saldoawalledger;
+use App\Models\Saldoawalmutasikeungan;
 use App\Models\Setoranpenjualan;
 use App\Models\Setoranpusat;
 use App\Models\Setoranpusatgiro;
@@ -1935,6 +1937,72 @@ class LaporankeuanganController extends Controller
                 header("Content-Disposition: attachment; filename=Kas Kecil $request->dari-$request->sampai.xls");
             }
             return view('keuangan.laporan.kaskecil_rekap_cetak', $data);
+        }
+    }
+
+    public function cetakmutasikeuangan(Request $request)
+    {
+
+        $user = User::findorfail(auth()->user()->id);
+        if (lockreport($request->dari) == "error" && !$user->hasRole('admin pajak')) {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        $data['bank'] = Bank::where('kode_bank', $request->kode_bank_ledger)->first();
+        if ($request->formatlaporan == '1') {
+            $query = Mutasikeuangan::query();
+            $query->select(
+                'keuangan_mutasi.*',
+                'nama_bank',
+                'bank.no_rekening',
+            );
+            $query->join('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank');
+            $query->orderBy('keuangan_mutasi.tanggal');
+            $query->orderBy('keuangan_mutasi.created_at');
+            $query->whereBetween('keuangan_mutasi.tanggal', [$request->dari, $request->sampai]);
+            if ($request->kode_bank_ledger != "") {
+                $query->where('keuangan_mutasi.kode_bank', $request->kode_bank_ledger);
+            }
+
+
+            $data['ledger'] = $query->get();
+
+            $data['saldo_awal'] = Saldoawalmutasikeungan::where('bulan', date('m', strtotime($request->dari)))
+                ->where('tahun', date('Y', strtotime($request->dari)))
+                ->where('kode_bank', $request->kode_bank_ledger)
+                ->first();
+
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Ledger $request->dari-$request->sampai.xls");
+            }
+            return view('keuangan.laporan.mutasikeuangan_cetak', $data);
+        } else {
+            $query = Mutasikeuangan::query();
+            $query->select(
+                'keuangan_mutasi.kode_bank',
+                'nama_bank',
+                DB::raw('SUM(IF(debet_kredit="D",jumlah,0)) as jmldebet'),
+                DB::raw('SUM(IF(debet_kredit="K",jumlah,0)) as jmlkredit')
+            );
+
+            $query->join('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank');
+            $query->orderBy('keuangan_mutasi.kode_bank');
+            $query->whereBetween('keuangan_mutasi.tanggal', [$request->dari, $request->sampai]);
+            if (!empty($request->kode_bank_ledger)) {
+                $query->where('keuangan_mutasi.kode_bank', $request->kode_bank_ledger);
+            }
+
+            $query->groupBy('keuangan_mutasi.kode_bank', 'nama_bank');
+            $data['ledger'] = $query->get();
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Rekap Ledger $request->dari-$request->sampai.xls");
+            }
+            return view('keuangan.laporan.rekapmutasikeuangan_cetak', $data);
         }
     }
 }

@@ -31,6 +31,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('keu.mutasikeuangan')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#mutasikeuangan"
+                            aria-controls="kaskecil" aria-selected="false" tabindex="-1">
+                            Mutasi Keuangan
+                        </button>
+                    </li>
+                @endcan
                 @hasanyrole(['super admin', 'gm administrasi', 'manager keuangan', 'direktur'])
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapledger"
@@ -146,6 +154,11 @@
                 @can('keu.ledger')
                     <div class="tab-pane fade" id="ledger" role="tabpanel">
                         @include('keuangan.laporan.ledger')
+                    </div>
+                @endcan
+                @can('keu.mutasikeuangan')
+                    <div class="tab-pane fade" id="mutasikeuangan" role="tabpanel">
+                        @include('keuangan.laporan.mutasikeuangan')
                     </div>
                 @endcan
                 @hasanyrole(['super admin', 'gm administrasi', 'manager keuangan', 'direktur'])
