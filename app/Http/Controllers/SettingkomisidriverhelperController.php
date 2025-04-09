@@ -34,18 +34,7 @@ class SettingkomisidriverhelperController extends Controller
         $sampai = date('Y-m-t', strtotime($dari));
 
 
-        $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
-            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
-            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
-            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
-            ->where('salesman.kode_cabang', $kode_cabang)
-            ->orderBy('produk_harga.kode_produk')
-            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
-            ->get();
-
-            dd($produk);
+        
         $detailpenjualan = Detailpenjualan::select(
             'salesman.kode_cabang',
             DB::raw('SUM(FLOOR(jumlah/isi_pcs_dus)) as jml_dus'),
@@ -218,6 +207,20 @@ class SettingkomisidriverhelperController extends Controller
         $data['settingkomisidriverhelper'] = $settingkomisidriverhelper;
         $dari = $settingkomisidriverhelper->tahun . '-' . $settingkomisidriverhelper->bulan . '-01';
         $sampai = date('Y-m-t', strtotime($dari));
+
+
+        $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->where('salesman.kode_cabang', $settingkomisidriverhelper->kode_cabang)
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->get();
+
+            dd($produk);
         $data['detailpenjualan'] = Detailpenjualan::select(
             'salesman.kode_cabang',
             DB::raw('SUM(ROUND(jumlah/isi_pcs_dus)) as qty_penjualan'),
