@@ -206,7 +206,7 @@ class SettingkomisidriverhelperController extends Controller
         $sampai = date('Y-m-t', strtotime($dari));
         $data['detailpenjualan'] = Detailpenjualan::select(
             'salesman.kode_cabang',
-            DB::raw('SUM(FLOOR(jumlah/isi_pcs_dus)) as qty_penjualan'),
+            DB::raw('SUM(ROUND(jumlah/isi_pcs_dus)) as qty_penjualan'),
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
