@@ -11,7 +11,8 @@
         <div class="tab-content">
             <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                 @can('ratiodriverhelper.create')
-                    <a href="#" class="btn btn-primary btnCreate"><i class="ti ti-settings-2 me-2"></i> Setting Komisi Driver Helper </a>
+                    <a href="#" class="btn btn-primary btnCreate"><i class="ti ti-settings-2 me-2"></i> Setting Komisi
+                        Driver Helper </a>
                 @endcan
                 <div class="row mt-2">
                     <div class="col-12">
@@ -19,8 +20,9 @@
                             <div class="row">
                                 @hasanyrole($roles_show_cabang)
                                     <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
+                                            key="kode_cabang" textShow="nama_cabang" upperCase="true"
+                                            selected="{{ Request('kode_cabang_search') }}"
                                             select2="select2Kodecabangsearch" />
                                     </div>
 
@@ -81,7 +83,15 @@
                                 <tbody>
                                     @foreach ($settingkomisidriverhelper as $d)
                                         @php
-                                            $valueperunit = ROUND($d->komisi_salesman / $d->qty_penjualan, 2);
+                                            $qty_penjualan = 0;
+                                        @endphp
+                                        @foreach ($produk as $p)
+                                            @php
+                                                $qty_penjualan += FLOOR($d->{"qty_kendaraan_$p->kode_produk"});
+                                            @endphp
+                                        @endforeach
+                                        @php
+                                            $valueperunit = ROUND($d->komisi_salesman / $qty_penjualan, 2);
                                         @endphp
                                         <tr>
                                             <td>{{ $d->kode_komisi }}</td>
@@ -96,13 +106,16 @@
                                             <td class="text-end">{{ formatAngka($d->persentase) }} %</td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a href="#" class="btnEdit me-1" kode_komisi="{{ Crypt::encrypt($d->kode_komisi) }}">
+                                                    <a href="#" class="btnEdit me-1"
+                                                        kode_komisi="{{ Crypt::encrypt($d->kode_komisi) }}">
                                                         <i class="ti ti-edit text-success"></i>
                                                     </a>
                                                     <a href="{{ route('settingkomisidriverhelper.cetak', Crypt::encrypt($d->kode_komisi)) }}"
-                                                        target="_blank" class="me-1"><i class="ti ti-printer text-primary"></i></a>
+                                                        target="_blank" class="me-1"><i
+                                                            class="ti ti-printer text-primary"></i></a>
                                                     <a href="{{ route('settingkomisidriverhelper.cetak', Crypt::encrypt($d->kode_komisi)) }}?export=true"
-                                                        target="_blank" class="me-1"><i class="ti ti-download text-success"></i></a>
+                                                        target="_blank" class="me-1"><i
+                                                            class="ti ti-download text-success"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
