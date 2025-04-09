@@ -60,8 +60,7 @@ class SettingkomisidriverhelperController extends Controller
             ->where('status_batal', 0)
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->select('salesman.kode_cabang', ...$selectColumnRealisasikendaraan)
-            ->groupBy('salesman.kode_cabang')
-            ->first();
+            ->groupBy('salesman.kode_cabang');
         $data['produk'] = $produk;
 
         // $detailpenjualan = Detailpenjualan::select(
