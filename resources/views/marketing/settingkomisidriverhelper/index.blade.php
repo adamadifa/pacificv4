@@ -99,7 +99,7 @@
                                             <td>{{ $d->tahun }}</td>
                                             <td>{{ $d->kode_cabang }}</td>
                                             <td class="text-end">{{ formatAngka($d->komisi_salesman) }}</td>
-                                            <td class="text-end">{{ formatAngka($d->qty_penjualan) }}</td>
+                                            <td class="text-end">{{ formatAngka($qty_penjualan) }}</td>
                                             <td class="text-end">{{ formatAngkaDesimal($valueperunit) }}</td>
                                             <td class="text-end">{{ formatAngka($d->qty_flat) }}</td>
                                             <td class="text-end">{{ formatAngka($d->umk) }}</td>
