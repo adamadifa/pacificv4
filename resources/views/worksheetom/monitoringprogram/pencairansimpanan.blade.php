@@ -20,7 +20,8 @@
                                         <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
                                             <option value="">Semua Cabang</option>
                                             @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                    value="{{ $d->kode_cabang }}">
                                                     {{ textUpperCase($d->nama_cabang) }}</option>
                                             @endforeach
                                         </select>
@@ -29,7 +30,8 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
+                                            <button class="btn btn-primary w-100"><i
+                                                    class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
                                                 Data</button>
                                         </div>
                                     </div>
