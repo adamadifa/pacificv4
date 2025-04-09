@@ -100,13 +100,23 @@
                     </tr>
                     <tr>
                         <th style="text-align: left;">Qty Penjualan</th>
-                        <td class="right">{{ formatAngkaDesimal($detailpenjualan->qty_penjualan) }}</td>
+                        <td class="right">
+                            @php
+                                $qty_penjualan = 0;
+                            @endphp
+                            @foreach ($produk as $p)
+                                @php
+                                    $qty_penjualan += FLOOR($detailpenjualan->{"qty_kendaraan_$p->kode_produk"});
+                                @endphp
+                            @endforeach
+                            {{ formatAngkaDesimal($qty_penjualan) }}
+                        </td>
                     </tr>
                     <tr>
                         <th style="text-align: left;">Value/Unit</th>
                         <td class="right">
                             @php
-                                $value_unit = ROUND($settingkomisidriverhelper->komisi_salesman / $detailpenjualan->qty_penjualan, 2);
+                                $value_unit = ROUND($settingkomisidriverhelper->komisi_salesman / $qty_penjualan, 2);
                             @endphp
                             {{ formatAngkaDesimal($value_unit) }}
                         </td>
