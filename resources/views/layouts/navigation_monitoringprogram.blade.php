@@ -14,14 +14,17 @@
                 </a>
             </li>
         @endcan
-        {{-- @can('pencairanprogramikt.index')
-            <li class="nav-item" role="presentation">
-                <a href="{{ route('pencairanprogramikatan.index') }}"
-                    class="nav-link {{ request()->is(['pencairanprogramikatan', 'pencairanprogramikatan/*']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pencairan Program Ikatan
-                </a>
-            </li>
-        @endcan --}}
+        @if (auth()->user()->hasAnyRole(['staff keuangan', 'manager keuangan']))
+            @can('pencairanprogramikt.index')
+                <li class="nav-item" role="presentation">
+                    <a href="{{ route('pencairanprogramikatan.index') }}"
+                        class="nav-link {{ request()->is(['pencairanprogramikatan', 'pencairanprogramikatan/*']) ? 'active' : '' }}">
+                        <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pencairan Program Ikatan
+                    </a>
+                </li>
+            @endcan
+        @endif
+
         @can('ajuankumulatif.index')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('ajuankumulatif.index') }}"
