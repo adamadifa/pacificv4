@@ -2217,7 +2217,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/mutasikeuangan/{id}/edit', 'edit')->name('mutasikeuangan.edit')->can('mutasikeuangan.edit');
         Route::put('/mutasikeuangan/{id}/update', 'update')->name('mutasikeuangan.update')->can('mutasikeuangan.update');
         Route::delete('/mutasikeuangan/{id}/destroy', 'destroy')->name('mutasikeuangan.delete')->can('mutasikeuangan.delete');
-        Route::get('/mutasikeuangan/{kode_bank}/show', 'show')->name('mutasikeuangan.show');
+        Route::get('/mutasikeuangan/{kode_bank}/{dari}/{sampai}/show', 'show')->name('mutasikeuangan.show');
     });
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');

@@ -36,7 +36,7 @@ use Jenssegers\Agent\Agent;
 class DashboardController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         // dd(session('screen_width'), session('screen_height'));
         // $ip = request()->ip(); // dapatkan IP pengguna
@@ -62,7 +62,7 @@ class DashboardController extends Controller
         } else if ($user->hasAnyRole(['asst. manager hrd', 'spv presensi', 'spv recruitment'])) {
             return $this->hrd();
         } else if ($user->hasAnyRole(['owner'])) {
-            return $this->owner();
+            return $this->owner($request);
         } else {
             return $this->dashboarddefault();
         }
@@ -74,7 +74,7 @@ class DashboardController extends Controller
         return view('dashboard.default');
     }
 
-    function owner()
+    function owner($request)
     {
 
         $bulan = date('m', strtotime(date('Y-m-d')));
@@ -91,16 +91,36 @@ class DashboardController extends Controller
             ->where('tanggal', '>=', $start_date)
             ->where('tanggal', '<=', date('Y-m-d'))
             ->groupBy('kode_bank');
+
+        $rekapdebetkreditbytanggal  = Mutasikeuangan::select(
+            'kode_bank',
+            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as rekap_kredit"),
+            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as rekap_debet"),
+        )
+            ->when($request->dari && $request->sampai, function ($query) use ($request) {
+                $query->where('tanggal', '>=', $request->dari)
+                    ->where('tanggal', '<=', $request->sampai);
+            }, function ($query) {
+                $query->where('tanggal', date('Y-m-d'));
+            })
+            ->groupBy('kode_bank');
+
+
         $data['bank'] = Bank::leftJoinSub($mutasi, 'mutasi', function ($join) {
             $join->on('bank.kode_bank', '=', 'mutasi.kode_bank');
         })
             ->leftJoinSub($saldoawal, 'saldoawal', function ($join) {
                 $join->on('bank.kode_bank', '=', 'saldoawal.kode_bank');
             })
+            ->leftJoinSub($rekapdebetkreditbytanggal, 'rekapdebetkreditbytanggal', function ($join) {
+                $join->on('bank.kode_bank', '=', 'rekapdebetkreditbytanggal.kode_bank');
+            })
             ->select(
                 'bank.*',
                 'saldoawal.jumlah as saldoawal',
                 DB::raw("(IFNULL(saldoawal.jumlah,0) + IFNULL(mutasi.kredit,0) - IFNULL(mutasi.debet,0)) as saldo"),
+                'rekapdebetkreditbytanggal.rekap_kredit',
+                'rekapdebetkreditbytanggal.rekap_debet'
 
             )
             ->orderBy('bank.nama_bank')

@@ -117,7 +117,7 @@ class MutasikeuanganController extends Controller
         }
     }
 
-    public function show($kode_bank, Request $request)
+    public function show($kode_bank, $dari, $sampai)
     {
         $bulan = date('m', strtotime(date('Y-m-d')));
         $tahun = date('Y', strtotime(date('Y-m-d')));
@@ -126,19 +126,36 @@ class MutasikeuanganController extends Controller
         $data['saldo_awal']  = Saldoawalmutasikeungan::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $kode_bank)->first();
 
         $start_date = $tahun . "-" . $bulan . "-01";
+        $data['rekap']  = Mutasikeuangan::select(
+            'kode_bank',
+            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as rekap_kredit"),
+            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as rekap_debet"),
+        )
+
+            ->whereBetween('tanggal', [$dari, $sampai])
+            // ->when($request->dari && $request->sampai, function ($query) use ($request) {
+            //     $query->where('tanggal', '>=', $request->dari)
+            //         ->where('tanggal', '<=', $request->sampai);
+            // }, function ($query) {
+            //     $query->where('tanggal', date('Y-m-d'));
+            // })
+            ->groupBy('kode_bank')
+            ->first();
         $data['mutasi']  = Mutasikeuangan::where('kode_bank', $kode_bank)
             ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
                 $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
             })
-
-            ->when($request->dari, function ($query) use ($request) {
-                $query->where('tanggal', '>=', $request->dari);
-            })
-            ->when($request->sampai, function ($query) use ($request) {
-                $query->where('tanggal', '<=', $request->sampai);
-            })
+            ->whereBetween('tanggal', [$dari, $sampai])
+            // ->when($dari, function ($query) use ($dari) {
+            //     $query->where('tanggal', '>=', $dari);
+            // })
+            // ->when($sampai, function ($query) use ($sampai) {
+            //     $query->where('tanggal', '<=', $sampai);
+            // })
             ->get();
 
+        $data['dari'] = $dari;
+        $data['sampai'] = $sampai;
         return view('keuangan.mutasikeuangan.show', $data);
     }
 }
