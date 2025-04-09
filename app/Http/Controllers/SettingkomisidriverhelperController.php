@@ -42,6 +42,7 @@ class SettingkomisidriverhelperController extends Controller
             ->join('marketing_penjualan', 'marketing_penjualan.no_faktur', '=', 'marketing_penjualan_detail.no_faktur')
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('status_batal', 0)
+            ->where('status_promosi',0)
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->groupBy('salesman.kode_cabang');
         $query = Settingkomisidriverhelper::query();
