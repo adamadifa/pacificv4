@@ -20,8 +20,7 @@
                                         <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
                                             <option value="">Semua Cabang</option>
                                             @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
-                                                    value="{{ $d->kode_cabang }}">
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
                                                     {{ textUpperCase($d->nama_cabang) }}</option>
                                             @endforeach
                                         </select>
@@ -30,8 +29,7 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i
-                                                    class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
+                                            <button class="btn btn-primary w-100"><i class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
                                                 Data</button>
                                         </div>
                                     </div>
@@ -80,16 +78,28 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($d->status == 0)
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('monitoringprogram.deletepencairansimpanan', Crypt::encrypt($d->kode_pencairan)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm ml-1">
-                                                                <i class="ti ti-trash text-danger"></i>
+                                                    <div class="d-flex">
+                                                        @if (
+                                                            $d->status == 0 &&
+                                                                auth()->user()->hasRole(['kepala admin', 'super admin']))
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('monitoringprogram.deletepencairansimpanan', Crypt::encrypt($d->kode_pencairan)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        @endif
+
+                                                        @if (auth()->user()->hasRole(['manager keuangan', 'staff keuangan']))
+                                                            <a href="#" class="btnApprove me-1"
+                                                                kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
+                                                                <i class="ti ti-external-link text-success"></i>
                                                             </a>
-                                                        </form>
-                                                    @endif
+                                                        @endif
+
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -110,4 +120,23 @@
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
+<x-modal-form id="modalApprove" size="" show="loadmodalapprove" title="" />
 @endsection
+@push('myscript')
+<script>
+    $(".btnApprove").click(function(e) {
+        const kode_pencairan = $(this).attr('kode_pencairan');
+        e.preventDefault();
+        $('#modalApprove').modal("show");
+        $("#modalApprove").find(".modal-title").text("Approve Pencairan Simpanan");
+        $("#loadmodalapprove").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+        $("#loadmodalapprove").load('/monitoringprogram/' + kode_pencairan + '/approvepencairansimpanan');
+    });
+</script>
+@endpush

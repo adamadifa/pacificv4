@@ -2091,6 +2091,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/monitoringprogram/{kode_pelanggan}/createpencairansimpanan', 'createpencairansimpanan')->name('monitoringprogram.createpencairansimpanan');
         Route::post('/monitoringprogram/{kode_pelanggan}/storepencairansimpanan', 'storepencairansimpanan')->name('monitoringprogram.storepencairansimpanan');
         Route::get('/monitoringprogram/pencairansimpanan', 'pencairansimpanan')->name('monitoringprogram.pencairansimpanan')->can('monitoringprogram.index');
+        Route::get('/monitoringprogram/{kode_pencairan}/approvepencairansimpanan', 'approvepencairansimpanan')->name('monitoringprogram.approvepencairansimpanan')->can('monitoringprogram.index');
+        Route::post('/monitoringprogram/{kode_pencairan}/storeapprovepencairansimpanan', 'storeapprovepencairansimpanan')->name('monitoringprogram.storeapprovepencairansimpanan')->can('monitoringprogram.index');
         Route::delete('/monitoringprogram/{kode_pencairan}/deletepencairansimpanan', 'deletepencairansimpanan')->name('monitoringprogram.deletepencairansimpanan');
     });
 

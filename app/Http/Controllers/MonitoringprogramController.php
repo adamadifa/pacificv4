@@ -443,4 +443,33 @@ class MonitoringprogramController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function approvepencairansimpanan($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $pencairansimpanan = Pencairansimpanan::where('kode_pencairan', $kode_pencairan)
+            ->join('pelanggan', 'marketing_pencairan_simpanan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->firstorFail();
+        return view('worksheetom.monitoringprogram.approvepencairansimpanan', compact('pencairansimpanan'));
+    }
+
+    public function storeapprovepencairansimpanan(Request $request)
+    {
+        $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
+
+        if (isset($_POST['cancel'])) {
+            Pencairansimpanan::where('kode_pencairan', $kode_pencairan)
+                ->update([
+                    'status' => 0
+                ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        }
+
+
+        $pencairansimpanan = Pencairansimpanan::where('kode_pencairan', $kode_pencairan)->firstorFail();
+        $pencairansimpanan->status = 1;
+        $pencairansimpanan->save();
+        return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+    }
 }
