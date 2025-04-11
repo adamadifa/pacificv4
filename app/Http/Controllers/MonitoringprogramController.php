@@ -366,13 +366,13 @@ class MonitoringprogramController extends Controller
         $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
         $kode_cabang = $pelanggan->kode_cabang;
         $lastpencairan = Pencairansimpanan::select('kode_pencairan')->orderBy('kode_pencairan', 'desc')
-            ->whereRaw('YEAR(marketing_pencairan_simpanan.tanggal)="' . date('Y', strtotime($request->tanggal)) . '"')
+            ->whereRaw('YEAR(marketing_pencairan_simpanan.tanggal)="' . date('Y', strtotime(date('Y-m-d'))) . '"')
             ->where('kode_cabang', $kode_cabang)
             ->first();
         $last_kode_pencairan = $lastpencairan != null ? $lastpencairan->kode_pencairan : '';
 
         // dd($last_kode_pencairan);
-        $kode_pencairan = buatkode($last_kode_pencairan, "PS" . $kode_cabang . date('y', strtotime($request->tanggal)), 4);
+        $kode_pencairan = buatkode($last_kode_pencairan, "PS" . $kode_cabang . date('y', strtotime(date('Y-m-d'))), 4);
 
         DB::beginTransaction();
         try {
