@@ -47,10 +47,13 @@
                 <tbody>
                     @php
                         $kode_akun = '';
+                        $total_debet = 0;
+                        $total_kredit = 0;
                     @endphp
                     @foreach ($bukubesar as $key => $d)
                         @php
                             $saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['saldo'] ?? null;
+                            $akun = $bukubesar[$key + 1]['kode_akun'];
                         @endphp
                         @if ($kode_akun != $d->kode_akun)
                             @php
@@ -71,6 +74,8 @@
                         @endif
                         @php
                             $saldo += $d->jml_debet - $d->jml_kredit;
+                            $total_debet = $total_debet + $d->jml_debet;
+                            $total_kredit = $total_kredit + $d->jml_kredit;
                         @endphp
                         <tr>
                             <td>{{ formatIndo($d->tanggal) }}</td>
@@ -81,6 +86,18 @@
                             <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_kredit) }}</td>
                             <td style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</td>
                         </tr>
+                        @if ($akun != $d->kode_akun)
+                            <tr>
+                                <th colspan="4">TOTAL</th>
+                                <th style="text-align: right;">{{ formatAngkaDesimal($total_debet) }}</th>
+                                <th style="text-align: right;">{{ formatAngkaDesimal($total_kredit) }}</th>
+                                <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</th>
+                            </tr>
+                            @php
+                                $total_debet = 0;
+                                $total_kredit = 0;
+                            @endphp
+                        @endif
                         @php
                             $kode_akun = $d->kode_akun;
                         @endphp
