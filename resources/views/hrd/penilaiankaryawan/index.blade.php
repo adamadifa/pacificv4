@@ -21,17 +21,18 @@
                         <form action="{{ route('penilaiankaryawan.index') }}">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
                                 <div class="col-lg-6 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <x-input-with-icon label="Nama Karyawan" value="{{ Request('nama_karyawan_search') }}" name="nama_karyawan_search"
+                                    <x-input-with-icon label="Nama Karyawan"
+                                        value="{{ Request('nama_karyawan_search') }}" name="nama_karyawan_search"
                                         icon="ti ti-user" />
                                 </div>
                             </div>
@@ -42,7 +43,8 @@
                                             <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
                                                 <option value="">Poisi Ajuan</option>
                                                 @foreach ($listApprovepenilaian as $d)
-                                                    <option value="{{ $d }}" {{ Request('posisi_ajuan') == $d ? 'selected' : '' }}>
+                                                    <option value="{{ $d }}"
+                                                        {{ Request('posisi_ajuan') == $d ? 'selected' : '' }}>
                                                         {{ textUpperCase($d) }}</option>
                                                 @endforeach
                                             </select>
@@ -52,9 +54,11 @@
                                         <div class="form-group mb-3">
                                             <select name="status" id="status" class="form-select">
                                                 <option value="">Status</option>
-                                                <option value="pending" {{ Request('status') === 'pending' ? 'selected' : '' }}>
+                                                <option value="pending"
+                                                    {{ Request('status') === 'pending' ? 'selected' : '' }}>
                                                     Pending</option>
-                                                <option value="disetujui" {{ Request('status') === 'disetujui' ? 'selected' : '' }}>
+                                                <option value="disetujui"
+                                                    {{ Request('status') === 'disetujui' ? 'selected' : '' }}>
                                                     Disetujui</option>
 
                                             </select>
@@ -67,9 +71,11 @@
                                         <div class="form-group mb-3">
                                             <select name="status" id="status" class="form-select">
                                                 <option value="">Status</option>
-                                                <option value="pending" {{ Request('status') === 'pending' ? 'selected' : '' }}>
+                                                <option value="pending"
+                                                    {{ Request('status') === 'pending' ? 'selected' : '' }}>
                                                     Pending</option>
-                                                <option value="disetujui" {{ Request('status') === 'disetujui' ? 'selected' : '' }}>
+                                                <option value="disetujui"
+                                                    {{ Request('status') === 'disetujui' ? 'selected' : '' }}>
                                                     Disetujui</option>
 
                                             </select>
@@ -81,7 +87,8 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group mb-3">
-                                        <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari Data</button>
+                                        <button type="submit" class="btn btn-primary w-100"><i
+                                                class="ti ti-search me-1"></i>Cari Data</button>
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +118,12 @@
                                 <tbody>
                                     @foreach ($penilaiankaryawan as $d)
                                         @php
-                                            $roles_approve = cekRoleapprove($d->kode_dept, $d->kode_cabang, $d->kategori_jabatan, $d->kode_jabatan);
+                                            $roles_approve = cekRoleapprove(
+                                                $d->kode_dept,
+                                                $d->kode_cabang,
+                                                $d->kategori_jabatan,
+                                                $d->kode_jabatan,
+                                            );
                                             $end_role = end($roles_approve);
                                             if ($level_user != $end_role) {
                                                 $index_role = array_search($role, $roles_approve);
@@ -136,14 +148,17 @@
                                             </td>
                                             <td>{{ $d->kode_dept }}</td>
                                             <td>{{ $d->kode_cabang }}</td>
-                                            <td>{{ formatIndo($d->kontrak_dari) }} - {{ formatIndo($d->kontrak_sampai) }}</td>
+                                            <td>{{ formatIndo($d->kontrak_dari) }} -
+                                                {{ formatIndo($d->kontrak_sampai) }}</td>
                                             <td class="text-center">
                                                 {{-- {{ $d->no_kb }} --}}
                                                 @if ($d->status == 1)
                                                     @if ($d->status_pemutihan == 1 && empty($d->no_kb))
                                                         @can('kb.create')
-                                                            <a href="#" kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}"
-                                                                class="btnCreatekb me-1"><i class="ti ti-file-plus text-warning"></i>
+                                                            <a href="#"
+                                                                kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}"
+                                                                class="btnCreatekb me-1"><i
+                                                                    class="ti ti-file-plus text-warning"></i>
                                                             </a>
                                                         @else
                                                             <i class="ti ti-checks text-success"></i>
@@ -179,7 +194,10 @@
                                                     @can('penilaiankaryawan.edit')
                                                         @if (
                                                             ($d->status === '0' && $d->id_penerima === $d->id_user) ||
-                                                                ($d->status === '0' && $d->id_pengirim === $d->id_user && $d->posisi_ajuan === $next_role && $level_user != 'direktur') ||
+                                                                ($d->status === '0' &&
+                                                                    $d->id_pengirim === $d->id_user &&
+                                                                    $d->posisi_ajuan === $next_role &&
+                                                                    $level_user != 'direktur') ||
                                                                 ($level_user == 'asst. manager hrd' && $d->status === '0') ||
                                                                 ($level_user == 'spv presensi' && $d->status === '0') ||
                                                                 ($level_user == 'direktur' && $d->status === '0') ||
@@ -245,7 +263,10 @@
                                                     @can('penilaiankaryawan.delete')
                                                         @if (
                                                             ($d->status === '0' && $d->id_penerima === $d->id_user) ||
-                                                                ($d->status === '0' && $d->id_pengirim === $d->id_user && $d->posisi_ajuan === $next_role && $level_user != 'direktur'))
+                                                                ($d->status === '0' &&
+                                                                    $d->id_pengirim === $d->id_user &&
+                                                                    $d->posisi_ajuan === $next_role &&
+                                                                    $level_user != 'direktur'))
                                                             <form method="POST" name="deleteform" class="deleteform"
                                                                 action="{{ route('penilaiankaryawan.delete', Crypt::encrypt($d->kode_penilaian)) }}">
                                                                 @csrf
@@ -284,7 +305,7 @@
         </div>
     </div>
 </div>
-<x-modal-form id="modal" size="" show="loadmodal" title="" />
+<x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 <script>

@@ -907,9 +907,9 @@ class PenjualanController extends Controller
         $penjualanDate = Carbon::parse($penjualan->created_at);
         $diffInDays = $today->diffInDays($penjualanDate);
 
-        // if ($diffInDays > 3) {
-        //     return redirect()->back()->with('error', 'Data penjualan tidak bisa diupdate karena sudah lebih dari 3 hari dari tanggal transaksi.');
-        // }
+        if ($diffInDays > 3) {
+            return redirect()->back()->with('error', 'Data penjualan tidak bisa diupdate karena sudah lebih dari 3 hari dari tanggal transaksi.');
+        }
         $jenis_transaksi = $penjualan->jenis_transaksi;
         $jenis_bayar = $penjualan->jenis_bayar;
         $titipan = $jenis_transaksi == "T" ? 0 : toNumber($request->titipan);
