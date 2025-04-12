@@ -2,7 +2,7 @@
     method="POST" id="formApprove">
     @csrf
     <div class="row">
-        <div class="col-lg-3 col-md-12 col-sm-12">
+        <div class="col-lg-2 col-md-12 col-sm-12">
             @if (Storage::disk('public')->exists('/karyawan/' . $penilaiankaryawan->foto))
                 <img src="{{ getfotoKaryawan($penilaiankaryawan->foto) }}" class="card-img"
                     style="width: 120px; height:150px; object-fit:cover; border-radius:10px;">
@@ -16,7 +16,7 @@
                 @endif
             @endif
         </div>
-        <div class="col-lg-5 col-md-12 col-sm-12 ">
+        <div class="col-lg-6 col-md-12 col-sm-12 ">
             <div class="row">
                 <div class="col">
                     <table class="table">
