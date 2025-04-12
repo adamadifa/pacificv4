@@ -48,37 +48,6 @@
                     </table>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col">
-                    <div class="d-flex justify-content-between">
-                        <div class="">
-                            {!! $penilaiankaryawan->masa_kontrak == 'TP'
-                                ? '<i class="ti ti-square-check me-1"></i>'
-                                : '<i class="ti ti-square me-1"></i>' !!}
-                            Tidak Di Perpanjang
-                        </div>
-                        <div class="">
-                            {!! $penilaiankaryawan->masa_kontrak == 'K3'
-                                ? '<i class="ti ti-square-check me-1"></i>'
-                                : '<i class="ti ti-square me-1"></i>' !!}
-                            3 Bulan
-                        </div>
-                        <div class="">
-                            {!! $penilaiankaryawan->masa_kontrak == 'K6'
-                                ? '<i class="ti ti-square-check me-1"></i>'
-                                : '<i class="ti ti-square me-1"></i>' !!}
-                            6 Bulan
-                        </div>
-                        <div class="">
-                            {!! $penilaiankaryawan->masa_kontrak == 'KT'
-                                ? '<i class="ti ti-square-check me-1"></i>'
-                                : '<i class="ti ti-square me-1"></i>' !!}
-                            Karyawan Tetap
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 m-auto text-center">
             <div class="row">
@@ -93,6 +62,36 @@
                         class="btn btn-primary w-100" target="_blank">
                         <i class="ti ti-external-link me-1"></i> Lihat Detail Penilaian
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <div class="d-flex justify-content-between">
+                <div class="">
+                    {!! $penilaiankaryawan->masa_kontrak == 'TP'
+                        ? '<i class="ti ti-square-check me-1"></i>'
+                        : '<i class="ti ti-square me-1"></i>' !!}
+                    Tidak Di Perpanjang
+                </div>
+                <div class="">
+                    {!! $penilaiankaryawan->masa_kontrak == 'K3'
+                        ? '<i class="ti ti-square-check me-1"></i>'
+                        : '<i class="ti ti-square me-1"></i>' !!}
+                    3 Bulan
+                </div>
+                <div class="">
+                    {!! $penilaiankaryawan->masa_kontrak == 'K6'
+                        ? '<i class="ti ti-square-check me-1"></i>'
+                        : '<i class="ti ti-square me-1"></i>' !!}
+                    6 Bulan
+                </div>
+                <div class="">
+                    {!! $penilaiankaryawan->masa_kontrak == 'KT'
+                        ? '<i class="ti ti-square-check me-1"></i>'
+                        : '<i class="ti ti-square me-1"></i>' !!}
+                    Karyawan Tetap
                 </div>
             </div>
         </div>
