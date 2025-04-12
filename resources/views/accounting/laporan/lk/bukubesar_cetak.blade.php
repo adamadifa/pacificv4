@@ -57,16 +57,20 @@
                                 $saldo = 0;
                             @endphp
                             <tr style="background-color:rgba(116, 170, 227, 0.465);">
-                                <th style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} - {{ $d->nama_akun }}
+                                <th style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} -
+                                    {{ $d->nama_akun }}
                                 </th>
                             </tr>
                             <tr style="background-color:rgba(116, 170, 227, 0.465);">
                                 <th style="text-align: left" colspan="6">SALDO AWAL</th>
                                 <th style="text-align: right">{{ formatAngkaDesimal($saldo_awal) }}</th>
                             </tr>
+                            @php
+                                $saldo = $saldo_awal;
+                            @endphp
                         @endif
                         @php
-                            $saldo += $saldo_awal + $d->jml_debet - $d->jml_kredit;
+                            $saldo += $d->jml_debet - $d->jml_kredit;
                         @endphp
                         <tr>
                             <td>{{ formatIndo($d->tanggal) }}</td>
