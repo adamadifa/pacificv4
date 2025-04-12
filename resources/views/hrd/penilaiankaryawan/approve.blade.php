@@ -98,6 +98,28 @@
     </div>
     <div class="row mt-3">
         <div class="col">
+            <table style="font-size:14px" class="table">
+                <tr>
+                    <td>SID</td>
+                    <td>:</td>
+                    <td>{{ $penilaiankaryawan->sid }}</td>
+                    <td>Izin</td>
+                    <td>:</td>
+                    <td>{{ $penilaiankaryawan->izin }}</td>
+                </tr>
+                <tr>
+                    <td>Sakit</td>
+                    <td>:</td>
+                    <td>{{ $penilaiankaryawan->sakit }}</td>
+                    <td>Alfa</td>
+                    <td>:</td>
+                    <td>{{ $penilaiankaryawan->alfa }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
             <table class="table table-bordered">
                 <thead class="table-dark">
                     <tr>
