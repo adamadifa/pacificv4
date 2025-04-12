@@ -16,7 +16,7 @@
                 @endif
             @endif
         </div>
-        <div class="col-lg-6 col-md-12 col-sm-12 ">
+        <div class="col-lg-7 col-md-12 col-sm-12 ">
             <div class="row">
                 <div class="col">
                     <table class="table">
@@ -80,7 +80,7 @@
             </div>
 
         </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 m-auto text-center">
+        <div class="col-lg-3 col-md-12 col-sm-12 m-auto text-center">
             <div class="row">
                 <div class="col">
                     <span class="mb-3">Total Score</span>
