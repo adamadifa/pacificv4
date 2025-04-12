@@ -254,15 +254,16 @@
                         $satuan = $d->kode_barang == 'BB-15' ? 'KG' : $d->satuan;
                         $bm_qty_pembelian = $satuan != 'KG' ? $d->bm_qty_unit_pembelian : $d->bm_qty_berat_pembelian;
                         $bm_qty_lainnya = $satuan != 'KG' ? $d->bm_qty_unit_lainnya : $d->bm_qty_berat_lainnya;
-                        $bm_qty_returpengganti = $satuan != 'KG' ? $d->bm_qty_unit_returpengganti : $d->bm_qty_berat_returpengganti;
+                        $bm_qty_returpengganti =
+                            $satuan != 'KG' ? $d->bm_qty_unit_returpengganti : $d->bm_qty_berat_returpengganti;
                         $bk_qty_produksi = $satuan != 'KG' ? $d->bk_qty_unit_produksi : $d->bk_qty_berat_produksi;
                         $bk_qty_seasoning = $satuan != 'KG' ? $d->bk_qty_unit_seasoning : $d->bk_qty_berat_seasoning;
                         $bk_qty_pdqc = $satuan != 'KG' ? $d->bk_qty_unit_pdqc : $d->bk_qty_berat_pdqc;
                         $bk_qty_susut = $satuan != 'KG' ? $d->bk_qty_unit_susut : $d->bk_qty_berat_susut;
                         $bk_qty_cabang = $satuan != 'KG' ? $d->bk_qty_unit_cabang : $d->bk_qty_berat_cabang;
                         $bk_qty_lainnya = $satuan != 'KG' ? $d->bk_qty_unit_lainnya : $d->bk_qty_berat_lainnya;
-                        $selisih_unit = ROUND($d->saldo_akhir_unit, 2) - ROUND($d->opname_qty_unit, 2);
-                        $selisih_berat = ROUND($d->saldo_akhir_berat, 2) - ROUND($d->opname_qty_berat, 2);
+                        $selisih_unit = ROUND($d->opname_qty_unit, 2) - ROUND($d->saldo_akhir_unit, 2);
+                        $selisih_berat = ROUND($d->opname_qty_berat, 2) - ROUND($d->saldo_akhir_berat, 2);
 
                         $total_saldo_awal_qty_unit += $d->saldo_awal_qty_unit;
                         $total_saldo_awal_qty_berat += $d->saldo_awal_qty_berat;
