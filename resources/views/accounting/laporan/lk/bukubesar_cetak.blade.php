@@ -87,7 +87,7 @@
                             <td style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</td>
                         </tr>
                         @if ($akun != $d->kode_akun)
-                            <tr>
+                            <tr class="thead-dark">
                                 <th colspan="4">TOTAL</th>
                                 <th style="text-align: right;">{{ formatAngkaDesimal($total_debet) }}</th>
                                 <th style="text-align: right;">{{ formatAngkaDesimal($total_kredit) }}</th>
