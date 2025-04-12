@@ -5,14 +5,14 @@
         <div class="col-lg-3 col-md-12 col-sm-12">
             @if (Storage::disk('public')->exists('/karyawan/' . $penilaiankaryawan->foto))
                 <img src="{{ getfotoKaryawan($penilaiankaryawan->foto) }}" class="card-img"
-                    style="width: 120px; height:150px; object-fit:cover; border-radius:10px; position:absolute; right:70px; top:80px;">
+                    style="width: 120px; height:150px; object-fit:cover; border-radius:10px;">
             @else
                 @if ($penilaiankaryawan->jenis_kelamin == 'L')
                     <img src="{{ asset('assets/img/avatars/male.jpg') }}" class="card-img"
-                        style="width: 120px; height:150px; object-fit:cover; border-radius:10px; position:absolute; right:70px; top:80px;">
+                        style="width: 120px; height:150px; object-fit:cover; border-radius:10px; ">
                 @else
                     <img src="{{ asset('assets/img/avatars/female.jpg') }}" class="card-img"
-                        style="width: 120px; height:150px; object-fit:cover; border-radius:10px; position:absolute; right:70px; top:80px;">
+                        style="width: 120px; height:150px; object-fit:cover; border-radius:10px; ">
                 @endif
             @endif
         </div>
