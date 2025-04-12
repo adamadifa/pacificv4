@@ -960,6 +960,7 @@ class LaporanaccountingController extends Controller
         }
         $ledger->orderBy('bank.kode_akun');
         $ledger->orderBy('tanggal');
+        $ledger->orderBy('keuangan_ledger.no_bukti');
         // dd($ledger->first());
 
         $bukubesar = $ledger->get();
