@@ -68,7 +68,7 @@
     </div>
     <div class="row mt-3">
         <div class="col">
-            <div class="d-flex justify-content-between">
+            <div class="d-flex gap-4">
                 <div class="">
                     {!! $penilaiankaryawan->masa_kontrak == 'TP'
                         ? '<i class="ti ti-square-check me-1"></i>'
