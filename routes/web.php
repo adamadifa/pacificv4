@@ -1955,6 +1955,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanaccounting/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporanaccounting.cetakrekappersediaan')->can('akt.rekappersediaan');
         Route::post('/laporanaccounting/cetakcostratio', 'cetakcostratio')->name('laporanaccounting.cetakcostratio')->can('akt.costratio');
         Route::post('/laporanaccounting/cetakjurnalumum', 'cetakjurnalumum')->name('laporanaccounting.cetakjurnalumum')->can('akt.jurnalumum');
+
+        //Laporan Keuangan
+        Route::post('/laporanaccounting/cetakbukubesar', 'cetakbukubesar')->name('laporanaccounting.cetakbukubesar')->can('lk.bukubesar');
     });
 
     Route::controller(LaporanhrdController::class)->group(function () {

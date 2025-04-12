@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Coa;
 use App\Models\Costratio;
 use App\Models\Detailbarangkeluargudangbahan;
 use App\Models\Detailbarangkeluargudanglogistik;
@@ -18,9 +19,11 @@ use App\Models\Detailsaldoawalgudangjadi;
 use App\Models\Detailsaldoawalmutasiproduksi;
 use App\Models\Detailsaldoawalpiutangpelanggan;
 use App\Models\Jurnalumum;
+use App\Models\Ledger;
 use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
+use App\Models\Saldoawalledger;
 use App\Models\Saldoawalpiutangpelanggan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -34,6 +37,7 @@ class LaporanaccountingController extends Controller
         $data['start_year'] = config('global.start_year');
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
+        $data['coa'] = Coa::orderby('kode_akun')->get();
         return view('accounting.laporan.index', $data);
     }
 
@@ -895,5 +899,73 @@ class LaporanaccountingController extends Controller
             header("Content-Disposition: attachment; filename=Jurnal Umum.xls");
         }
         return view('accounting.laporan.jurnalumum_cetak', $data);
+    }
+
+    public function cetakbukubesar(Request $request)
+    {
+        //Saldo Awal
+        $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
+        $tahun = !empty($request->dari) ? date('Y', strtotime($request->dari)) : '';
+        $start_date = $tahun . "-" . $bulan . "-01";
+
+
+
+
+        //Mutasi
+        $mutasi_ledger  = Ledger::select(
+            'kode_bank',
+            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+        )
+            ->where('tanggal', '>=', $start_date)
+            ->where('tanggal', '<', $request->dari)
+            ->where('kode_bank', $request->kode_bank_search)
+            ->groupBy('kode_bank');
+
+
+        $saldo_awal_ledger  = Saldoawalledger::select('bank.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
+            ->join('bank', 'bank.kode_bank', '=', 'keuangan_ledger_saldoawal.kode_bank')
+            ->leftJoinSub($mutasi_ledger, 'mutasi_ledger', function ($join) {
+                $join->on('keuangan_ledger_saldoawal.kode_bank', '=', 'mutasi_ledger.kode_bank');
+            })
+            ->where('bulan', $bulan)->where('tahun', $tahun)->get()->toArray();
+        $saldoawalCollection = collect($saldo_awal_ledger);
+
+
+        // $saldo = $akunCollection->firstWhere('kode_akun', '1-1244')['saldo'] ?? null;
+
+        // echo "Saldo akun 1-1244: " . number_format($saldo);
+
+
+        $data['saldoawalCollection'] = $saldoawalCollection;
+        //Ledger
+        $ledger = Ledger::query();
+        $ledger->select(
+            'bank.kode_akun',
+            'nama_akun',
+            'keuangan_ledger.tanggal',
+            'keuangan_ledger.no_bukti',
+            DB::raw('CONCAT_WS(" - ", bank.nama_bank, bank.no_rekening) AS sumber'),
+            'keuangan_ledger.keterangan',
+            DB::raw('IF(debet_kredit="D",jumlah,0) as jml_kredit'),
+            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet')
+        );
+        $ledger->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
+        $ledger->join('coa', 'bank.kode_akun', '=', 'coa.kode_akun');
+
+
+        $ledger->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $ledger->whereBetween('bank.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $ledger->orderBy('bank.kode_akun');
+        $ledger->orderBy('tanggal');
+        // dd($ledger->first());
+
+        $bukubesar = $ledger->get();
+        $data['bukubesar'] = $bukubesar;
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+        return view('accounting.laporan.lk.bukubesar_cetak', $data);
     }
 }

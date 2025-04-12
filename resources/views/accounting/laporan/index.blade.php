@@ -68,6 +68,30 @@
             </div>
         </div>
     </div>
+    @if (auth()->user()->hasAnyPermission(['lk.bukubesar']))
+        <div class="col-xl-6 col-md-12 col-sm-12">
+            <div class="nav-align-left nav-tabs-shadow mb-4">
+                <ul class="nav nav-tabs" role="tablist">
+                    @can('lk.bukubesar')
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#rekkappersediaan"
+                                aria-controls="rekappersediaan" aria-selected="false" tabindex="-1">
+                                Buku Besar
+                            </button>
+                        </li>
+                    @endcan
 
+                </ul>
+                <div class="tab-content">
+                    <!-- Laporan Persediaan-->
+                    @can('lk.bukubesar')
+                        <div class="tab-pane fade active show" id="rekkappersediaan" role="tabpanel">
+                            @include('accounting.laporan.lk.bukubesar')
+                        </div>
+                    @endcan
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 @endsection
