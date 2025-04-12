@@ -44,7 +44,8 @@ class Penilaiankaryawan extends Model
             'hrd_gaji.t_tanggungjawab',
             'hrd_gaji.t_makan',
             'hrd_gaji.t_skill',
-            'hrd_kesepakatanbersama.no_kb'
+            'hrd_kesepakatanbersama.no_kb',
+            'foto'
 
         );
 
