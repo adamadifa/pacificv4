@@ -4713,7 +4713,7 @@ class LaporanmarketingController extends Controller
             header("Content-Disposition: attachment; filename=Komisi Salesman.xls");
         }
 
-        return view('marketing.laporan.komisi_salesman_cetak', $data);
+        return view('marketing.laporan.komisi_salesman_april_cetak', $data);
     }
 
     public function cetakkomisidriverhelper(Request $request)

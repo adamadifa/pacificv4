@@ -25,6 +25,7 @@ use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
 use App\Models\Saldoawalgudangjadi;
+use App\Models\Saldoawalledger;
 use App\Models\Saldoawalmutasikeungan;
 use App\Models\Salesman;
 use App\Models\User;
@@ -80,7 +81,7 @@ class DashboardController extends Controller
         $bulan = date('m', strtotime(date('Y-m-d')));
         $tahun = date('Y', strtotime(date('Y-m-d')));
 
-        $saldoawal = Saldoawalmutasikeungan::where('bulan', $bulan)->where('tahun', $tahun);
+        $saldoawal = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun);
 
         $start_date = $tahun . "-" . $bulan . "-01";
         $mutasi  = Mutasikeuangan::select(
@@ -125,6 +126,24 @@ class DashboardController extends Controller
             )
             ->orderBy('bank.nama_bank')
             ->get();
+
+
+        $data['rekap'] = Bank::leftJoinSub($mutasi, 'mutasi', function ($join) {
+            $join->on('bank.kode_bank', '=', 'mutasi.kode_bank');
+        })
+            ->leftJoinSub($saldoawal, 'saldoawal', function ($join) {
+                $join->on('bank.kode_bank', '=', 'saldoawal.kode_bank');
+            })
+            ->leftJoinSub($rekapdebetkreditbytanggal, 'rekapdebetkreditbytanggal', function ($join) {
+                $join->on('bank.kode_bank', '=', 'rekapdebetkreditbytanggal.kode_bank');
+            })
+            ->select(
+                DB::raw("SUM((IFNULL(saldoawal.jumlah,0) + IFNULL(mutasi.kredit,0) - IFNULL(mutasi.debet,0))) as total_saldo"),
+                DB::raw("SUM(rekapdebetkreditbytanggal.rekap_kredit) as total_rekap_kredit"),
+                DB::raw("SUM(rekapdebetkreditbytanggal.rekap_debet) as total_rekap_debet")
+
+            )
+            ->first();
 
         return view('dashboard.owner', $data);
     }

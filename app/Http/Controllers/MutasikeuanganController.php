@@ -6,7 +6,7 @@ use App\Models\Bank;
 use App\Models\Cabang;
 use App\Models\Coa;
 use App\Models\Mutasikeuangan;
-use App\Models\Saldoawalmutasikeungan;
+use App\Models\SaldoawalLedger;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -25,7 +25,7 @@ class MutasikeuanganController extends Controller
         $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
         $tahun = !empty($request->dari) ? date('Y', strtotime($request->dari)) : '';
 
-        $data['saldo_awal']  = Saldoawalmutasikeungan::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $request->kode_bank_search)->first();
+        $data['saldo_awal']  = SaldoawalLedger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $request->kode_bank_search)->first();
         $start_date = $tahun . "-" . $bulan . "-01";
         if (!empty($request->dari && !empty($request->sampai))) {
             $data['mutasi']  = Mutasikeuangan::select(
@@ -123,7 +123,7 @@ class MutasikeuanganController extends Controller
         $tahun = date('Y', strtotime(date('Y-m-d')));
         $kode_bank = Crypt::decrypt($kode_bank);
         $data['bank'] = Bank::where('kode_bank', $kode_bank)->first();
-        $data['saldo_awal']  = Saldoawalmutasikeungan::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $kode_bank)->first();
+        $data['saldo_awal']  = SaldoawalLedger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $kode_bank)->first();
 
         $start_date = $tahun . "-" . $bulan . "-01";
         $data['rekap']  = Mutasikeuangan::select(
