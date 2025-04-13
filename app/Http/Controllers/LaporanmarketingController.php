@@ -4266,7 +4266,7 @@ class LaporanmarketingController extends Controller
             ->groupBy('keuangan_belumsetor_detail.kode_salesman');
 
 
-        $kategori_komisi = Kategorikomisi::orderBy('kode_kategori')->get();
+        $kategori_komisi = Kategorikomisi::orderBy('kode_kategori')->where('status', 1)->get();
         $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
