@@ -135,6 +135,7 @@ class MutasikeuanganController extends Controller
         )
 
             ->whereBetween('tanggal', [$dari, $sampai])
+            ->where('kode_bank', $kode_bank)
             // ->when($request->dari && $request->sampai, function ($query) use ($request) {
             //     $query->where('tanggal', '>=', $request->dari)
             //         ->where('tanggal', '<=', $request->sampai);

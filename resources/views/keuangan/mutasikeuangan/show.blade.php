@@ -28,6 +28,8 @@
             </div>
         </div>
     </div>
+</div>
+<div class="row">
     <div class="col">
         <div class="card  border-1  border-success">
             <div class="card-body d-flex justify-content-between align-items-center p-3">
@@ -45,8 +47,7 @@
 </div>
 <div class="row mt-2">
     <div class="col">
-        <form action="{{ route('mutasikeuangan.show', [Crypt::encrypt($bank->kode_bank), $dari, $sampai]) }}"
-            method="GET">
+        <form action="{{ route('mutasikeuangan.show', [Crypt::encrypt($bank->kode_bank), $dari, $sampai]) }}" method="GET">
             <div class="form-group">
                 <select name="debet_kredit" id="debet_kredit" class="form-select">
                     <option value="">Debet / Kredit</option>
@@ -55,8 +56,7 @@
                 </select>
             </div>
             <div class="form-group mt-3">
-                <button type="submit" class="btn btn-primary w-100" id="showButton"><i
-                        class="ti ti-heart-rate-monitor me-1"></i>Tampilkan</button>
+                <button type="submit" class="btn btn-primary w-100" id="showButton"><i class="ti ti-heart-rate-monitor me-1"></i>Tampilkan</button>
             </div>
         </form>
     </div>
@@ -86,8 +86,7 @@
                                     <small class="fw-semibold text-sm-center">{{ DateToIndo($d->tanggal) }}</small>
                                 </div>
                                 <div class="card-icon">
-                                    <span
-                                        class="badge {{ $d->debet_kredit == 'D' ? 'bg-label-danger' : 'bg-label-success' }} rounded-pill p-2">
+                                    <span class="badge {{ $d->debet_kredit == 'D' ? 'bg-label-danger' : 'bg-label-success' }} rounded-pill p-2">
                                         @if ($d->debet_kredit == 'D')
                                             <i class="ti ti-arrow-up ti-sm"></i>
                                         @else
