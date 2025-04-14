@@ -315,6 +315,9 @@ class MonitoringprogramController extends Controller
             'marketing_pencairan_ikatan.tanggal',
             'marketing_pencairan_ikatan_detail.kode_pelanggan',
             'nama_pelanggan',
+            'no_rekening',
+            'bank',
+            'pemilik_rekening',
             'nama_salesman',
             'nama_wilayah',
             'total_reward',
@@ -383,7 +386,8 @@ class MonitoringprogramController extends Controller
                 'kode_pelanggan' => $kode_pelanggan,
                 'jumlah' => toNumber($request->jumlah),
                 'status' => 0,
-                'kode_cabang' => $kode_cabang
+                'kode_cabang' => $kode_cabang,
+                'metode_pembayaran' => $request->metode_pembayaran
             ]);
 
             DB::commit();
@@ -414,6 +418,9 @@ class MonitoringprogramController extends Controller
         $query->select(
             'marketing_pencairan_simpanan.*',
             'nama_pelanggan',
+            'no_rekening',
+            'bank',
+            'pemilik_rekening',
             'nama_salesman'
         );
 
