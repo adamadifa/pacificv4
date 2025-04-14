@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
-            {{-- @include('layouts.navigation_mutasikeuangan') --}}
+            @include('layouts.navigation_mutasikeuangan')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     @can('ledger.create')

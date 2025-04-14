@@ -1,10 +1,10 @@
 @if (auth()->user()->hasAnyPermission(['mutasikeuangan.index', 'samutasikeuangan.index']))
     <ul class="nav nav-tabs" role="tablist">
 
-        @can('samutasikeuangan.index')
+        @can('sakasbesarkeuangan.index')
             <li class="nav-item" role="presentation">
-                <a href="{{ route('samutasikeuangan.index') }}" class="nav-link {{ request()->is(['samutasikeuangan']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Saldo Awal
+                <a href="{{ route('sakasbesarkeuangan.index') }}" class="nav-link {{ request()->is(['sakasbesarkeuangan']) ? 'active' : '' }}">
+                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Saldo Kas Besar
                 </a>
             </li>
         @endcan

@@ -20,7 +20,8 @@ class MutasikeuanganController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $mk = new Mutasikeuangan();
         $data['mutasikeuangan'] = $mk->getMutasi(request: $request)->get();
-        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        $bnk = new Bank();
+        $data['bank'] = $bnk->getBank()->get();
 
         $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
         $tahun = !empty($request->dari) ? date('Y', strtotime($request->dari)) : '';
@@ -47,7 +48,8 @@ class MutasikeuanganController extends Controller
 
     public function create()
     {
-        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        $bnk = new Bank();
+        $data['bank'] = $bnk->getBank()->get();
         $data['coa'] = Coa::orderby('kode_akun')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         return view('keuangan.mutasikeuangan.create', $data);

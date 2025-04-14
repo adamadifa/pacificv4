@@ -138,6 +138,7 @@ use App\Http\Controllers\SaldoawalkasbesarController;
 use App\Http\Controllers\SaldoawalledgerController;
 use App\Http\Controllers\SaldoawalmutasikeuanganController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
+use App\Http\Controllers\SaldokasbesarkeuanganController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\ServicekendaraanController;
 use App\Http\Controllers\SetorangiroController;
@@ -1298,6 +1299,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('/samutasikeuangan/{no_bukti}/delete', 'destroy')->name('samutasikeuangan.delete')->can('samutasikeuangan.delete');
 
         Route::post('/samutasikeuangan/getsaldo', 'getsaldo')->name('samutasikeuangan.getsaldo');
+    });
+
+    Route::controller(SaldokasbesarkeuanganController::class)->group(function () {
+        Route::get('/sakasbesarkeuangan', 'index')->name('sakasbesarkeuangan.index')->can('sakasbesarkeuangan.index');
+        Route::get('/sakasbesarkeuangan/create', 'create')->name('sakasbesarkeuangan.create')->can('sakasbesarkeuangan.create');
+        Route::post('/sakasbesarkeuangan/store', 'store')->name('sakasbesarkeuangan.store')->can('sakasbesarkeuangan.store');
+        Route::get('/sakasbesarkeuangan/{id}/edit', 'edit')->name('sakasbesarkeuangan.edit')->can('sakasbesarkeuangan.edit');
+        Route::put('/sakasbesarkeuangan/{id}/update', 'update')->name('sakasbesarkeuangan.update')->can('sakasbesarkeuangan.update');
+        Route::delete('/sakasbesarkeuangan/{id}/delete', 'destroy')->name('sakasbesarkeuangan.delete')->can('sakasbesarkeuangan.delete');
     });
 
 
