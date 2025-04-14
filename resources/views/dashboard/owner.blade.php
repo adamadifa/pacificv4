@@ -37,6 +37,8 @@
                     <div class="col-lg-3 col-sm-6 mb-2">
                         @php
                             $kode_bank = '';
+                            $dari = !empty(Request('dari')) ? Request('dari') : date('Y-m-d');
+                            $sampai = !empty(Request('sampai')) ? Request('sampai') : date('Y-m-d');
                         @endphp
                         <a href="{{ route('mutasikeuangan.show', [$kode_bank, $dari, $sampai]) }}">
                             <div class="card h-100 border-1 ">
@@ -68,10 +70,7 @@
                     </div>
                     @foreach ($bank as $d)
                         <div class="col-lg-3 col-sm-6 mb-2">
-                            @php
-                                $dari = !empty(Request('dari')) ? Request('dari') : date('Y-m-d');
-                                $sampai = !empty(Request('sampai')) ? Request('sampai') : date('Y-m-d');
-                            @endphp
+
                             <a href="{{ route('mutasikeuangan.show', [Crypt::encrypt($d->kode_bank), $dari, $sampai]) }}">
                                 <div class="card h-100 border-1 ">
                                     <div class="card-body d-flex justify-content-between align-items-center">
