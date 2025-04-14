@@ -61,40 +61,40 @@
         <section class="sheet padding-10mm">
             <table class="datatable3">
                 <tr>
-                    <td>Kode Pencairan</td>
+                    <th style="text-align:left">Kode Pencairan</th>
                     <td class="right">{{ $pencairansimpanan->kode_pencairan }}</td>
                 </tr>
                 <tr>
-                    <th>Pelanggan</th>
+                    <th style="text-align:left">Pelanggan</th>
                     <td class="right">{{ $pencairansimpanan->kode_pelanggan }} -
                         {{ $pencairansimpanan->nama_pelanggan }}
                 </tr>
                 <tr>
-                    <td>Tanggal</td>
+                    <th style="text-align:left">Tanggal</th>
                     <td class="right">{{ DateToIndo($pencairansimpanan->tanggal) }}</td>
                 </tr>
                 <tr>
-                    <td>Cabang</td>
+                    <th style="text-align:left">Cabang</th>
                     <td class="right">{{ $pencairansimpanan->kode_cabang }}</td>
                 </tr>
                 <tr>
-                    <td>Jumlah</td>
+                    <th style="text-align:left">Jumlah</td>
                     <td class="right">{{ formatAngka($pencairansimpanan->jumlah) }}</td>
                 </tr>
                 <tr>
-                    <th>Metode Pembayaran</th>
+                    <th style="text-align:left">Metode Pembayaran</th>
                     <td class="right">{{ $pencairansimpanan->metode_pembayaran == 'TF' ? 'Transfer' : 'Tunai' }}</td>
                 </tr>
                 <tr>
-                    <th>No. Rekening</th>
+                    <th style="text-align:left">No. Rekening</th>
                     <td class="right">{{ $pencairansimpanan->no_rekening }}</td>
                 </tr>
                 <tr>
-                    <th>Nama Bank</th>
+                    <th style="text-align:left">Nama Bank</th>
                     <td class="right">{{ $pencairansimpanan->bank }}</td>
                 </tr>
                 <tr>
-                    <th>Pemilik Rekening</th>
+                    <th style="text-align:left">Pemilik Rekening</th>
                     <td class="right">{{ $pencairansimpanan->pemilik_rekening }}</td>
                 </tr>
             </table>
