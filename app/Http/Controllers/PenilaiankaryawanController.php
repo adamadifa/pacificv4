@@ -76,7 +76,7 @@ class PenilaiankaryawanController extends Controller
         $data['rekappresensi'] = Presensi::select(
             DB::raw("SUM(IF(hrd_presensi.status='h',1,0)) as hadir"),
             DB::raw("SUM(IF(hrd_presensi.status='i',1,0)) as izin"),
-            DB::raw("SUM(IF(hrd_presensi.status='s',1,0)) as sakit"),
+            DB::raw("SUM(IF(hrd_presensi.status='s' AND doc_sid IS NULL,1,0)) as sakit"),
             DB::raw("SUM(IF(hrd_presensi.status='a',1,0)) as alpa"),
             DB::raw("SUM(IF(hrd_presensi.status='c',1,0)) as cuti"),
             DB::raw("SUM(IF(doc_sid IS NOT NULL,1,0)) as sid"),
