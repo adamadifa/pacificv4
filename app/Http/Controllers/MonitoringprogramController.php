@@ -473,6 +473,8 @@ class MonitoringprogramController extends Controller
         return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
     }
 
+
+
     public function cetakpencairansimpanan($kode_pencairan)
     {
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
@@ -481,6 +483,6 @@ class MonitoringprogramController extends Controller
             ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
             ->firstorFail();
         $data['pencairansimpanan'] = $pencairansimpanan;
-        return view('worksheetom.monitoringprogram.cetakpencairansimpanan', $data);
+        return view('worksheetom.monitoringprogram.pencairansimpanan_cetak', $data);
     }
 }
