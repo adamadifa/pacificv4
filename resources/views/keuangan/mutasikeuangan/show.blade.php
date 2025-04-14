@@ -53,7 +53,7 @@
 </div>
 <div class="row mt-2">
     <div class="col">
-        <form action="{{ route('mutasikeuangan.show', [Crypt::encrypt($bank->kode_bank), $dari, $sampai]) }}" method="GET">
+        <form action="{{ route('mutasikeuangan.show', [$bank != null ? Crypt::encrypt($bank->kode_bank) : 'all', $dari, $sampai]) }}" method="GET">
             <div class="form-group">
                 <select name="debet_kredit" id="debet_kredit" class="form-select">
                     <option value="">Debet / Kredit</option>
