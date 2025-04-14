@@ -123,7 +123,7 @@ class MutasikeuanganController extends Controller
     {
         $bulan = date('m', strtotime(date('Y-m-d')));
         $tahun = date('Y', strtotime(date('Y-m-d')));
-        $kode_bank = Crypt::decrypt($kode_bank);
+        $kode_bank = $kode_bank != "all" ? Crypt::decrypt($kode_bank) : '';
         $data['bank'] = Bank::where('kode_bank', $kode_bank)->first();
         $data['saldo_awal']  = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $kode_bank)->first();
 
