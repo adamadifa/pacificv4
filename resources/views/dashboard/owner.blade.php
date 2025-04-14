@@ -36,7 +36,7 @@
                 <div class="row">
                     <div class="col-lg-3 col-sm-6 mb-2">
                         @php
-                            $kode_bank = '';
+                            $kode_bank = 'all';
                             $dari = !empty(Request('dari')) ? Request('dari') : date('Y-m-d');
                             $sampai = !empty(Request('sampai')) ? Request('sampai') : date('Y-m-d');
                         @endphp
