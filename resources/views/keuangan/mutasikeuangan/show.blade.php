@@ -8,8 +8,14 @@
         }
     </style>
 @section('navigasi')
+
     <div class="alert alert-info">
-        <h5 class="mb-0 me-2">{{ textUpperCase($bank->nama_bank) }} {{ $bank->no_rekening }}</h5>
+        @if ($bank != null)
+            <h5 class="mb-0 me-2">{{ textUpperCase($bank->nama_bank) }} {{ $bank->no_rekening }}</h5>
+        @else
+            <h5 class="mb-0 me-2">Semua Rekening</h5>
+        @endif
+
         <span style="font-size: 14px">Periode {{ formatIndo($dari) }} s/d {{ formatIndo($sampai) }}</span>
     </div>
 @endsection
