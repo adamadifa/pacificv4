@@ -135,7 +135,9 @@ class MutasikeuanganController extends Controller
         )
 
             ->whereBetween('tanggal', [$dari, $sampai])
-            ->where('kode_bank', $kode_bank)
+            ->when(!empty($kode_bank), function ($query) use ($kode_bank) {
+                $query->where('kode_bank', $kode_bank);
+            })
             // ->when($request->dari && $request->sampai, function ($query) use ($request) {
             //     $query->where('tanggal', '>=', $request->dari)
             //         ->where('tanggal', '<=', $request->sampai);
@@ -144,11 +146,13 @@ class MutasikeuanganController extends Controller
             // })
             ->groupBy('kode_bank')
             ->first();
-        $data['mutasi']  = Mutasikeuangan::where('kode_bank', $kode_bank)
+        $data['mutasi']  = Mutasikeuangan::whereBetween('tanggal', [$dari, $sampai])
             ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
                 $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
             })
-            ->whereBetween('tanggal', [$dari, $sampai])
+            ->when(!empty($kode_bank), function ($query) use ($kode_bank) {
+                $query->where('kode_bank', $kode_bank);
+            })
             // ->when($dari, function ($query) use ($dari) {
             //     $query->where('tanggal', '>=', $dari);
             // })

@@ -35,7 +35,10 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-3 col-sm-6 mb-2">
-                        <a href="#">
+                        @php
+                            $kode_bank = '';
+                        @endphp
+                        <a href="{{ route('mutasikeuangan.show', [$kode_bank, $dari, $sampai]) }}">
                             <div class="card h-100 border-1 ">
                                 <div class="card-body d-flex justify-content-between align-items-center">
                                     <div class="card-title mb-0">
