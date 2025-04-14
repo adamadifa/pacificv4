@@ -66,7 +66,8 @@
                 </tr>
                 <tr>
                     <th>Pelanggan</th>
-                    <td class="right">{{ $pencairansimpanan->kode_pelanggan }} - {{ $pencairansimpanan->nama_pelanggan }}
+                    <td class="right">{{ $pencairansimpanan->kode_pelanggan }} -
+                        {{ $pencairansimpanan->nama_pelanggan }}
                 </tr>
                 <tr>
                     <td>Tanggal</td>
@@ -79,6 +80,22 @@
                 <tr>
                     <td>Jumlah</td>
                     <td class="right">{{ formatAngka($pencairansimpanan->jumlah) }}</td>
+                </tr>
+                <tr>
+                    <th>Metode Pembayaran</th>
+                    <td class="right">{{ $pencairansimpanan->metode_pembayaran == 'TF' ? 'Transfer' : 'Tunai' }}</td>
+                </tr>
+                <tr>
+                    <th>No. Rekening</th>
+                    <td class="right">{{ $pencairansimpanan->no_rekening }}</td>
+                </tr>
+                <tr>
+                    <th>Nama Bank</th>
+                    <td class="right">{{ $pencairansimpanan->bank }}</td>
+                </tr>
+                <tr>
+                    <th>Pemilik Rekening</th>
+                    <td class="right">{{ $pencairansimpanan->pemilik_rekening }}</td>
                 </tr>
             </table>
 
