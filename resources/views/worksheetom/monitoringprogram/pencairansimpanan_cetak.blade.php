@@ -62,7 +62,7 @@
             <table class="datatable3">
                 <tr>
                     <td>Kode Pencairan</td>
-                    <td class="right">{{ $pencairansimpanan->no_pengajuan }}</td>
+                    <td class="right">{{ $pencairansimpanan->kode_pencairan }}</td>
                 </tr>
                 <tr>
                     <th>Pelanggan</th>
@@ -76,7 +76,10 @@
                     <td>Cabang</td>
                     <td class="right">{{ $pencairansimpanan->kode_cabang }}</td>
                 </tr>
-
+                <tr>
+                    <td>Jumlah</td>
+                    <td class="right">{{ formatAngka($pencairansimpanan->jumlah) }}</td>
+                </tr>
             </table>
 
         </section>
