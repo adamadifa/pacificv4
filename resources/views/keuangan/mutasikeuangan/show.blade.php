@@ -29,9 +29,9 @@
         </div>
     </div>
 </div>
-<div class="row">
+<div class="row mt-2">
     <div class="col">
-        <div class="card  border-1  border-success">
+        <div class="card  border-1  border-danger">
             <div class="card-body d-flex justify-content-between align-items-center p-3">
                 <div class="card-title mb-0">
                     <h5 class="mb-0 me-2">{{ $rekap ? formatRupiah($rekap->rekap_debet) : 0 }}</h5>
