@@ -51,6 +51,7 @@
 
         $("#formPencairansimpanan").submit(function(e) {
             const jumlah = $(this).find("#jumlah").val();
+            const jml = jumlah.replace(/\./g, '');
             const metode_pembayaran = $(this).find("#metode_pembayaran").val();
             if (jumlah == "" || metode_pembayaran == "") {
                 e.preventDefault();
@@ -58,6 +59,13 @@
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Data belum lengkap',
+                })
+            } else if (jml < 100000) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Pencairan minimal Rp. 100.000',
                 })
             } else {
                 $("#btnSimpan").attr("disabled", true);
