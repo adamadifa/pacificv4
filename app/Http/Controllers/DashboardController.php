@@ -124,6 +124,7 @@ class DashboardController extends Controller
                 'rekapdebetkreditbytanggal.rekap_debet'
 
             )
+            ->where('bank.kode_bank', '!=', 'BK071')
             ->orderBy('bank.nama_bank')
             ->get();
 
@@ -143,6 +144,7 @@ class DashboardController extends Controller
                 DB::raw("SUM(rekapdebetkreditbytanggal.rekap_debet) as total_rekap_debet")
 
             )
+            ->where('bank.kode_bank', '!=', 'BK071')
             ->first();
 
         return view('dashboard.owner', $data);
