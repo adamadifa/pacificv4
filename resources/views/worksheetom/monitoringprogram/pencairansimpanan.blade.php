@@ -93,6 +93,8 @@
                                                         @endif
 
                                                         @if (auth()->user()->hasRole(['manager keuangan', 'staff keuangan']))
+                                                            <a href="{{ route('monitoringprogram.cetakpencairansimpanan', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                                class="btnCetak me-1"><i class="ti ti-printer text-primary"></i></a>
                                                             <a href="#" class="btnApprove me-1"
                                                                 kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                 <i class="ti ti-external-link text-success"></i>
