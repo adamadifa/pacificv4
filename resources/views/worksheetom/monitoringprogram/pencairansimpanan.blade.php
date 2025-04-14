@@ -65,7 +65,7 @@
                                                 <td>{{ $d->nama_salesman }}</td>
                                                 <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
                                                 <td>
-                                                    {{ $d->metode_bayar }}
+                                                    {{ $d->metode_pembayaran }}
                                                 </td>
                                                 <td class="text-center">
                                                     @if ($d->status == 0)
