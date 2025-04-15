@@ -102,12 +102,12 @@
                                                 <td class="text-end">{{ formatAngka($saldo) }}</td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        @can('ledger.edit')
+                                                        @can('mutasikeuangan.edit')
                                                             <a href="#" class="btnEdit me-1" id="{{ Crypt::encrypt($d->id) }}">
                                                                 <i class="ti ti-edit text-success"></i>
                                                             </a>
                                                         @endcan
-                                                        @can('ledger.delete')
+                                                        @can('mutasikeuangan.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
                                                                 action="{{ route('mutasikeuangan.delete', Crypt::encrypt($d->id)) }}">
                                                                 @csrf
