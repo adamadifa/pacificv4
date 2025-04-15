@@ -11,7 +11,7 @@
             @include('layouts.navigation_mutasikeuangan')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('ledger.create')
+                    @can('sakasbesarkeuangan.create')
                         <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
                             Input Saldo Kas Besar
                         </a>
