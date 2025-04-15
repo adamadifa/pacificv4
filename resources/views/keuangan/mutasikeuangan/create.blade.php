@@ -1,15 +1,19 @@
 <form action="{{ route('mutasikeuangan.store') }}" method="POST" id="formLedger">
     <input type="hidden" id="cektutuplaporan">
     @csrf
-    <div class="form-group mb-4">
-        <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
-            <option value="">Pilih Bank</option>
-            @foreach ($bank as $d)
-                <option value="{{ $d->kode_bank }}">{{ $d->nama_bank }}
-                    {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}</option>
-            @endforeach
-        </select>
-    </div>
+    @if ($level_user == 'staff keuangan 2')
+        <input type="hidden" name="kode_bank" id="kode_bank" value="BK070">
+    @else
+        <div class="form-group mb-4">
+            <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
+                <option value="">Pilih Bank</option>
+                @foreach ($bank as $d)
+                    <option value="{{ $d->kode_bank }}">{{ $d->nama_bank }}
+                        {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}</option>
+                @endforeach
+            </select>
+        </div>
+    @endif
     <div class="divider text-start">
         <div class="divider-text">
             <i class="ti ti-file-description me-2"></i>

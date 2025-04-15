@@ -22,27 +22,33 @@
                             <form action="{{ route('mutasikeuangan.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <div class="form-group mb-3">
-                                            <select name="kode_bank_search" id="kode_bank_search" class="form-select select2Kodebanksearch">
-                                                <option value="">Pilih Bank</option>
-                                                @foreach ($bank as $d)
-                                                    <option {{ Request('kode_bank_search') == $d->kode_bank ? 'selected' : '' }}
-                                                        value="{{ $d->kode_bank }}">{{ $d->nama_bank }} ({{ $d->no_rekening }})</option>
-                                                @endforeach
-                                            </select>
+                                @if ($level_user != 'staff keuangan 2')
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="form-group mb-3">
+                                                <select name="kode_bank_search" id="kode_bank_search"
+                                                    class="form-select select2Kodebanksearch">
+                                                    <option value="">Pilih Bank</option>
+                                                    @foreach ($bank as $d)
+                                                        <option
+                                                            {{ Request('kode_bank_search') == $d->kode_bank ? 'selected' : '' }}
+                                                            value="{{ $d->kode_bank }}">{{ $d->nama_bank }}
+                                                            ({{ $d->no_rekening }})</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group mb-3">
@@ -69,7 +75,8 @@
                                         </tr>
                                         <tr>
                                             <th colspan="4">SALDO AWAL</th>
-                                            <td class="text-end {{ $saldo_awal == null ? 'bg-danger text-white' : '' }}">
+                                            <td
+                                                class="text-end {{ $saldo_awal == null ? 'bg-danger text-white' : '' }}">
                                                 @if ($saldo_awal != null)
                                                     {{ formatAngka($saldo_awal->jumlah - $mutasi->debet + $mutasi->kredit) }}
                                                 @else
@@ -81,7 +88,10 @@
                                     </thead>
                                     <tbody>
                                         @php
-                                            $saldo = $saldo_awal != null ? $saldo_awal->jumlah - $mutasi->debet + $mutasi->kredit : 0;
+                                            $saldo =
+                                                $saldo_awal != null
+                                                    ? $saldo_awal->jumlah - $mutasi->debet + $mutasi->kredit
+                                                    : 0;
                                             $total_debet = 0;
                                             $total_kredit = 0;
                                         @endphp
@@ -97,13 +107,16 @@
                                             <tr>
                                                 <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
                                                 <td>{{ textCamelCase($d->keterangan) }}</td>
-                                                <td class="text-end">{{ $d->debet_kredit == 'D' ? formatAngka($d->jumlah) : '' }} </td>
-                                                <td class="text-end">{{ $d->debet_kredit == 'K' ? formatAngka($d->jumlah) : '' }} </td>
+                                                <td class="text-end">
+                                                    {{ $d->debet_kredit == 'D' ? formatAngka($d->jumlah) : '' }} </td>
+                                                <td class="text-end">
+                                                    {{ $d->debet_kredit == 'K' ? formatAngka($d->jumlah) : '' }} </td>
                                                 <td class="text-end">{{ formatAngka($saldo) }}</td>
                                                 <td>
                                                     <div class="d-flex">
                                                         @can('mutasikeuangan.edit')
-                                                            <a href="#" class="btnEdit me-1" id="{{ Crypt::encrypt($d->id) }}">
+                                                            <a href="#" class="btnEdit me-1"
+                                                                id="{{ Crypt::encrypt($d->id) }}">
                                                                 <i class="ti ti-edit text-success"></i>
                                                             </a>
                                                         @endcan
