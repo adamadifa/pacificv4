@@ -5,7 +5,8 @@
         <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
             <option value="">Pilih Bank</option>
             @foreach ($bank as $d)
-                <option value="{{ $d->kode_bank }}">{{ $d->nama_bank }} {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}</option>
+                <option value="{{ $d->kode_bank }}">{{ $d->nama_bank }}
+                    {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}</option>
             @endforeach
         </select>
     </div>
@@ -15,7 +16,7 @@
         </div>
     </div>
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-
+    <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" />
     <x-textarea label="Keterangan" name="keterangan" />
     <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
 

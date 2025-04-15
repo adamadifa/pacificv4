@@ -20,7 +20,8 @@
                                         <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
                                             <option value="">Semua Cabang</option>
                                             @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                    value="{{ $d->kode_cabang }}">
                                                     {{ textUpperCase($d->nama_cabang) }}</option>
                                             @endforeach
                                         </select>
@@ -29,7 +30,8 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
+                                            <button class="btn btn-primary w-100"><i
+                                                    class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
                                                 Data</button>
                                         </div>
                                     </div>
@@ -48,6 +50,7 @@
                                             <th>Nama Pelanggan</th>
                                             <th>Salesman</th>
                                             <th>Jumlah</th>
+                                            <th>Metode Bayar</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Bukti</th>
                                             <th class="text-center">#</th>
@@ -61,6 +64,9 @@
                                                 <td>{{ $d->nama_pelanggan }}</td>
                                                 <td>{{ $d->nama_salesman }}</td>
                                                 <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
+                                                <td>
+                                                    {{ $d->metode_pembayaran }}
+                                                </td>
                                                 <td class="text-center">
                                                     @if ($d->status == 0)
                                                         <i class="ti ti-hourglass-low text-warning"></i>
@@ -94,7 +100,8 @@
 
                                                         @if (auth()->user()->hasRole(['manager keuangan', 'staff keuangan']))
                                                             <a href="{{ route('monitoringprogram.cetakpencairansimpanan', Crypt::encrypt($d->kode_pencairan)) }}"
-                                                                class="btnCetak me-1"><i class="ti ti-printer text-primary"></i></a>
+                                                                class="btnCetak me-1"><i
+                                                                    class="ti ti-printer text-primary"></i></a>
                                                             <a href="#" class="btnApprove me-1"
                                                                 kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
                                                                 <i class="ti ti-external-link text-success"></i>
