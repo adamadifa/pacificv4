@@ -25,6 +25,7 @@
             <div class="card-body d-flex justify-content-between align-items-center p-3">
                 <div class="card-title mb-0">
                     <h5 class="mb-0 me-2">{{ $rekap ? formatRupiah($rekap->rekap_kredit) : 0 }}</h5>
+                    <small>Total Kredit</small>
                 </div>
                 <div class="card-icon">
                     <span class="badge bg-label-success rounded-pill p-2">
@@ -41,6 +42,7 @@
             <div class="card-body d-flex justify-content-between align-items-center p-3">
                 <div class="card-title mb-0">
                     <h5 class="mb-0 me-2">{{ $rekap ? formatRupiah($rekap->rekap_debet) : 0 }}</h5>
+                    <small>Total Debet</small>
                 </div>
                 <div class="card-icon">
                     <span class="badge bg-label-danger rounded-pill p-2">
