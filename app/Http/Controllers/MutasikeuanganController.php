@@ -148,7 +148,6 @@ class MutasikeuanganController extends Controller
 
         $start_date = $tahun . "-" . $bulan . "-01";
         $data['rekap']  = Mutasikeuangan::select(
-            'kode_bank',
             DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as rekap_kredit"),
             DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as rekap_debet"),
         )
@@ -163,7 +162,7 @@ class MutasikeuanganController extends Controller
             // }, function ($query) {
             //     $query->where('tanggal', date('Y-m-d'));
             // })
-            ->groupBy('kode_bank')
+            // ->groupBy('kode_bank')
             ->first();
         $data['mutasi']  = Mutasikeuangan::whereBetween('tanggal', [$dari, $sampai])
             ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
