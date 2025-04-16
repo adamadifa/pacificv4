@@ -114,8 +114,8 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
-                                                <td>{{ $no_btk }}</td>
-                                                <td>{{ $no_bkk }}</td>
+                                                <td>{{ !empty($no_btk) ? 'BTK' . $no_btk : '' }}</td>
+                                                <td>{{ !empty($no_bkk) ? 'BKK' . $no_bkk : '' }}</td>
                                                 <td>{{ textCamelCase($d->keterangan) }}</td>
                                                 <td class="text-end">
                                                     {{ $d->debet_kredit == 'D' ? formatAngka($d->jumlah) : '' }} </td>
