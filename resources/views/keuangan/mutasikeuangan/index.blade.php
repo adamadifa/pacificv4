@@ -41,7 +41,8 @@
                                                         <option
                                                             {{ Request('kode_bank_search') == $d->kode_bank ? 'selected' : '' }}
                                                             value="{{ $d->kode_bank }}">{{ $d->nama_bank }}
-                                                            ({{ $d->no_rekening }})</option>
+                                                            ({{ $d->no_rekening }})
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -66,15 +67,20 @@
                                 <table class="table  table-bordered">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th style="width: 10%">Tanggal</th>
-                                            <th style="width: 15%">Keterangan</th>
-                                            <th style="width: 5%">Debet</th>
-                                            <th style="width: 5%">Kredit</th>
-                                            <th style="width: 10%">Saldo</th>
-                                            <th style="width: 5%">#</th>
+                                            <th rowspan="2" style="width: 10%">Tanggal</th>
+                                            <th colspan="2">No. Bukti</th>
+                                            <th rowspan="2" style="width: 15%">Keterangan</th>
+                                            <th rowspan="2" style="width: 5%">Debet</th>
+                                            <th rowspan="2" style="width: 5%">Kredit</th>
+                                            <th rowspan="2" style="width: 10%">Saldo</th>
+                                            <th rowspan="2" style="width: 5%">#</th>
                                         </tr>
                                         <tr>
-                                            <th colspan="4">SALDO AWAL</th>
+                                            <th>No. BTK</th>
+                                            <th>No. BKK</th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="6">SALDO AWAL</th>
                                             <td
                                                 class="text-end {{ $saldo_awal == null ? 'bg-danger text-white' : '' }}">
                                                 @if ($saldo_awal != null)
@@ -99,6 +105,8 @@
                                             @php
                                                 $debet = $d->debet_kredit == 'D' ? $d->jumlah : 0;
                                                 $kredit = $d->debet_kredit == 'K' ? $d->jumlah : 0;
+                                                $no_btk = $d->debet_kredit == 'K' ? $d->no_bukti : '';
+                                                $no_bkk = $d->debet_kredit == 'D' ? $d->no_bukti : '';
                                                 $saldo = $saldo - $debet + $kredit;
 
                                                 $total_debet += $debet;
@@ -106,6 +114,8 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
+                                                <td>{{ $no_btk }}</td>
+                                                <td>{{ $no_bkk }}</td>
                                                 <td>{{ textCamelCase($d->keterangan) }}</td>
                                                 <td class="text-end">
                                                     {{ $d->debet_kredit == 'D' ? formatAngka($d->jumlah) : '' }} </td>
@@ -138,7 +148,7 @@
                                     </tbody>
                                     <tfoot class="table-dark">
                                         <tr>
-                                            <td colspan="2">TOTAL</td>
+                                            <td colspan="4">TOTAL</td>
                                             <td class="text-end">{{ formatAngka($total_debet) }}</td>
                                             <td class="text-end">{{ formatAngka($total_kredit) }}</td>
                                             <td class="text-end">{{ formatAngka($saldo) }}</td>
