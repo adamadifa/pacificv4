@@ -68,6 +68,7 @@ class MutasikeuanganController extends Controller
 
             Mutasikeuangan::create([
                 'tanggal' => $request->tanggal,
+                'no_bukti' => $request->no_bukti,
                 'kode_bank' => $request->kode_bank,
                 'keterangan' => $request->keterangan,
                 'jumlah' => toNumber($request->jumlah),
