@@ -34,14 +34,26 @@ class MutasikeuanganController extends Controller
         }
         $start_date = $tahun . "-" . $bulan . "-01";
         if (!empty($request->dari && !empty($request->sampai))) {
-            $data['mutasi']  = Mutasikeuangan::select(
-                DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-                DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
-            )
-                ->where('tanggal', '>=', $start_date)
-                ->where('tanggal', '<', $request->dari)
-                ->where('kode_bank', $request->kode_bank_search)
-                ->first();
+
+            if ($user->hasRole('staff keuangan 2')) {
+                $data['mutasi']  = Mutasikeuangan::select(
+                    DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+                    DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+                )
+                    ->where('tanggal', '>=', $start_date)
+                    ->where('tanggal', '<', $request->dari)
+                    ->where('kode_bank', 'BK070')
+                    ->first();
+            } else {
+                $data['mutasi']  = Mutasikeuangan::select(
+                    DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+                    DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+                )
+                    ->where('tanggal', '>=', $start_date)
+                    ->where('tanggal', '<', $request->dari)
+                    ->where('kode_bank', $request->kode_bank_search)
+                    ->first();
+            }
         } else {
             $data['mutasi'] = null;
         }
