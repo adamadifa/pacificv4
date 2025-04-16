@@ -25,6 +25,14 @@
                  <div>Dashboard</div>
              </a>
          </li>
+         @if(in_array($level_user['manager keuangan','gm administrasi','super admin']))
+         <li class="menu-item {{ request()->is(['dashboard/owner']) ? 'active' : '' }}">
+            <a href="{{ route('dashboard.owner') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-home"></i>
+                <div>Dashboard Owner</div>
+            </a>
+        </li>
+         @endif
          @if (auth()->user()->hasAnyPermission(['dashboard.sfa']))
              <li class="menu-item {{ request()->is(['sfa/dashboard', 'sfa/dashboard/*']) ? 'active' : '' }}">
                  <a href="{{ route('dashboard.sfa') }}" class="menu-link">
