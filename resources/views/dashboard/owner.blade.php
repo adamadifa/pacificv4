@@ -13,7 +13,7 @@
             <div class="nav-align-top mb-4">
                 <div class="row">
                     <div class="col">
-                        <form action="#" method="GET">
+                        <form action="{{ URL::current() }}" method="GET">
                             <div class="row">
                                 <div class="col-md-12">
                                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"

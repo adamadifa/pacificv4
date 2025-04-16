@@ -75,6 +75,12 @@ class DashboardController extends Controller
         return view('dashboard.default');
     }
 
+
+
+    public function dashboardowner(Request $request)
+    {
+        return $this->owner($request);
+    }
     function owner($request)
     {
 
