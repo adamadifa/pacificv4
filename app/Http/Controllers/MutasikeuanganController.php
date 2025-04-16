@@ -115,6 +115,7 @@ class MutasikeuanganController extends Controller
         try {
             $mutasi = Mutasikeuangan::findorfail($id);
             $mutasi->tanggal = $request->tanggal;
+            $mutasi->no_bukti = $request->no_bukti;
             $mutasi->keterangan = $request->keterangan;
             $mutasi->jumlah = toNumber($request->jumlah);
             $mutasi->debet_kredit = $request->debet_kredit;

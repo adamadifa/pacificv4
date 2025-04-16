@@ -1,4 +1,5 @@
-<form action="{{ route('mutasikeuangan.update', ['id' => Crypt::encrypt($mutasikeuangan->id)]) }}" method="POST" id="formLedger">
+<form action="{{ route('mutasikeuangan.update', ['id' => Crypt::encrypt($mutasikeuangan->id)]) }}" method="POST"
+    id="formLedger">
 
     @csrf
     @method('PUT')
@@ -6,7 +7,8 @@
         <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
             <option value="">Pilih Bank</option>
             @foreach ($bank as $d)
-                <option value="{{ $d->kode_bank }}" {{ $mutasikeuangan->kode_bank == $d->kode_bank ? 'selected' : '' }}>{{ $d->nama_bank }}
+                <option value="{{ $d->kode_bank }}" {{ $mutasikeuangan->kode_bank == $d->kode_bank ? 'selected' : '' }}>
+                    {{ $d->nama_bank }}
                     {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}</option>
             @endforeach
         </select>
@@ -16,10 +18,13 @@
             <i class="ti ti-file-description me-2"></i>
         </div>
     </div>
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$mutasikeuangan->tanggal" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date"
+        :value="$mutasikeuangan->tanggal" />
+    <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" :value="$mutasikeuangan->no_bukti" />
 
     <x-textarea label="Keterangan" name="keterangan" :value="$mutasikeuangan->keterangan" />
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" :value="formatAngka($mutasikeuangan->jumlah)" />
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true"
+        :value="formatAngka($mutasikeuangan->jumlah)" />
 
     <div class="form-group mb-3">
         <select name="debet_kredit" id="debet_kredit" class="form-select">

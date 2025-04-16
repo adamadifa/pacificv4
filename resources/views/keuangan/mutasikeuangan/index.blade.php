@@ -68,7 +68,7 @@
                                     <thead class="table-dark">
                                         <tr>
                                             <th rowspan="2" style="width: 10%">Tanggal</th>
-                                            <th colspan="2">No. Bukti</th>
+                                            <th colspan="2" style="width: 10%">No. Bukti</th>
                                             <th rowspan="2" style="width: 15%">Keterangan</th>
                                             <th rowspan="2" style="width: 5%">Debet</th>
                                             <th rowspan="2" style="width: 5%">Kredit</th>
