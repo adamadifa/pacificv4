@@ -105,8 +105,8 @@
                                             @php
                                                 $debet = $d->debet_kredit == 'D' ? $d->jumlah : 0;
                                                 $kredit = $d->debet_kredit == 'K' ? $d->jumlah : 0;
-                                                $no_btk = $d->debet_kredit == 'K' ? $d->no_bukti : '';
-                                                $no_bkk = $d->debet_kredit == 'D' ? $d->no_bukti : '';
+                                                $no_btk = $d->debet_kredit == 'K' ? 'BTK' . $d->no_bukti : '';
+                                                $no_bkk = $d->debet_kredit == 'D' ? 'BKK' . $d->no_bukti : '';
                                                 $saldo = $saldo - $debet + $kredit;
 
                                                 $total_debet += $debet;
