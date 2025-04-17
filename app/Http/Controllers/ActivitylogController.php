@@ -37,6 +37,10 @@ class ActivitylogController extends Controller
                 $query->whereNot('event', 'create');
             }
         }
+
+        if (!empty($request->no_bukti)) {
+            $query->where('activity_log.subject_id', $request->no_bukti);
+        }
         $query->orderBy('activity_log.id', 'desc');
         $activity = $query->paginate(20);
         $activity->appends($request->all());

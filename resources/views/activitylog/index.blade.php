@@ -64,6 +64,11 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col">
+                                    <x-input-with-icon label="No. Bukti" value="{{ Request('no_bukti') }}" name="no_bukti" icon="ti ti-search" />
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-lg-12 col-sm-12 col-md-12">
                                     <div class="form-group mb-3">
                                         <button class="btn btn-primary w-100" id="btnSearch"><i class="ti ti-search me-1"></i>Cari</button>
