@@ -39,7 +39,7 @@ class ActivitylogController extends Controller
         }
 
         if (!empty($request->no_bukti)) {
-            $query->where('activity_log.subject_id', $request->no_bukti);
+            $query->where('activity_log.description', 'like', '%' . $request->no_bukti . '%');
         }
         $query->orderBy('activity_log.id', 'desc');
         $activity = $query->paginate(20);
