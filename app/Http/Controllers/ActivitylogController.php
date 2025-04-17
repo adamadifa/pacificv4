@@ -28,7 +28,7 @@ class ActivitylogController extends Controller
         }
 
         if (!empty($request->event)) {
-            $query->where('activity_log.event', $request->event());
+            $query->where('activity_log.event', $request->event);
         }
 
         if (!empty($request->status)) {
