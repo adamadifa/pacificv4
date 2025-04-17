@@ -510,6 +510,7 @@ class DashboardController extends Controller
             $query->where('cabang.kode_regional', auth()->user()->kode_regional);
         }
 
+        $query->where('cabang.status', 1);
         $query->get();
         $results = $query->get();
 

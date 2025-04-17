@@ -17,7 +17,8 @@
                     <tr class="bg-success text-white">
                         <td>GUDANG</td>
                         @foreach ($products as $product)
-                            <td class="text-center">{{ formatAngka($rekapgudang->{"saldoakhir_$product->kode_produk"}) }}</td>
+                            <td class="text-center">
+                                {{ formatAngka($rekapgudang->{"saldoakhir_$product->kode_produk"}) }}</td>
                         @endforeach
                     </tr>
                 </tbody>
@@ -35,18 +36,26 @@
                                         $product->isi_pcs_dus;
 
                                     ${"saldo_akhir_$product->kode_produk"} =
-                                        ${"saldo_akhir_$product->kode_produk"} < 0 ? 0 : ${"saldo_akhir_$product->kode_produk"};
+                                        ${"saldo_akhir_$product->kode_produk"} < 0
+                                            ? 0
+                                            : ${"saldo_akhir_$product->kode_produk"};
 
                                     //Jika Saldo Akhir <= Buffer Stok
-                                    if (${"saldo_akhir_$product->kode_produk"} <= $data->{"buffer_$product->kode_produk"}) {
+                                    if (
+                                        ${"saldo_akhir_$product->kode_produk"} <=
+                                        $data->{"buffer_$product->kode_produk"}
+                                    ) {
                                         $color = 'bg-danger text-white opacity-60';
-                                    } elseif (${"saldo_akhir_$product->kode_produk"} >= $data->{"max_$product->kode_produk"}) {
+                                    } elseif (
+                                        ${"saldo_akhir_$product->kode_produk"} >= $data->{"max_$product->kode_produk"}
+                                    ) {
                                         $color = 'bg-info text-white';
                                     } else {
                                         $color = '';
                                     }
                                 @endphp
-                                <td class="text-center {{ $color }}">{{ formatAngka(floor(${"saldo_akhir_$product->kode_produk"})) }}</td>
+                                <td class="text-center {{ $color }}">
+                                    {{ formatAngka(floor(${"saldo_akhir_$product->kode_produk"})) }}</td>
                             @endforeach
                         </tr>
                         <tr class="bg-warning text-white">
@@ -65,7 +74,8 @@
                         <tr class="bg-warning text-white">
                             <td>SELL OUT</td>
                             @foreach ($products as $product)
-                                <td class="text-center">{{ formatAngka(floor($data->{"penjualan_$product->kode_produk"} / $product->isi_pcs_dus)) }}
+                                <td class="text-center">
+                                    {{ formatAngka(floor($data->{"penjualan_$product->kode_produk"} / $product->isi_pcs_dus)) }}
                                 </td>
                             @endforeach
                         </tr>
