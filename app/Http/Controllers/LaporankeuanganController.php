@@ -2000,7 +2000,7 @@ class LaporankeuanganController extends Controller
             if (isset($_POST['exportButton'])) {
                 header("Content-type: application/vnd-ms-excel");
                 // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-                header("Content-Disposition: attachment; filename=Rekap Ledger $request->dari-$request->sampai.xls");
+                header("Content-Disposition: attachment; filename=Rekap Mutasi Keuangan $request->dari-$request->sampai.xls");
             }
             return view('keuangan.laporan.rekapmutasikeuangan_cetak', $data);
         }
