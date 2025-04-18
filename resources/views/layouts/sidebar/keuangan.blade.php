@@ -169,6 +169,7 @@
                         'keu.piutangkaryawan',
                         'keu.kartupiutangkaryawan',
                         'keu.rekapkartupiutang',
+                        'keu.mutasikeuangan',
                     ]))
                 <li class="menu-item {{ request()->is(['laporankeuangan']) ? 'active' : '' }}">
                     <a href="{{ route('laporankeuangan.index') }}" class="menu-link">
