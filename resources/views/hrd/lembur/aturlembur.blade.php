@@ -11,7 +11,8 @@
         <div class="card">
             <div class="card-header">
                 @can('lembur.setlembur')
-                    <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Karyawan</a>
+                    <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah
+                        Karyawan</a>
                 @endcan
             </div>
             <div class="card-body">
@@ -52,6 +53,7 @@
                                         $jmljam = hitungjamdesimal($lembur->tanggal_dari, $lembur->tanggal_sampai);
                                         $jmljam = $jmljam > 7 ? 7 : $jmljam - $istirahat;
                                     @endphp
+                                    {{ hitungjamdesimal($lembur->tanggal_dari, $lembur->tanggal_sampai) }}
                                     {{ $jmljam }} Jam
                                 </td>
                             </tr>
