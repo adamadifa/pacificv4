@@ -81,7 +81,7 @@
                                         <tbody>
                                             @foreach ($bank as $d)
                                                 <tr>
-                                                    <th>{{ $d->nama_bank_alias || $d->nama_bank }} {{ $d->no_rekening }}
+                                                    <th>{{ $d->nama_bank_alias }} {{ $d->no_rekening }}
                                                     </th>
                                                     <td class="text-end">{{ formatRupiah($d->saldo) }}</td>
                                                 </tr>
