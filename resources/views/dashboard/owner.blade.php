@@ -16,14 +16,14 @@
                         <form action="{{ URL::current() }}" method="GET">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
+                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
                                 </div>
                             </div>
                             <div class="form-group mt-3">
@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-3 col-sm-6 mb-2">
+                    <div class="col-lg-12 col-sm-12 mb-2">
                         @php
                             $kode_bank = 'all';
                             $dari = !empty(Request('dari')) ? Request('dari') : date('Y-m-d');
@@ -51,11 +51,13 @@
                                         <div class="d-flex align-items-center" style="font-size: 14px">
                                             <div class="d-flex flex-row align-items-center me-2">
                                                 <i class="ti ti-arrow-down class text-success me-1"></i>
-                                                <span class="text-success">{{ formatRupiah($rekap->total_rekap_kredit) }}</span>
+                                                <span
+                                                    class="text-success">{{ formatRupiah($rekap->total_rekap_kredit) }}</span>
                                             </div>
                                             <div class="d-flex flex-row align-items-center">
                                                 <i class="ti ti-arrow-up class text-danger me-1"></i>
-                                                <span class="text-danger">{{ formatRupiah($rekap->total_rekap_debet) }}</span>
+                                                <span
+                                                    class="text-danger">{{ formatRupiah($rekap->total_rekap_debet) }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -64,11 +66,27 @@
                                             <i class="ti ti-moneybag ti-sm"></i>
                                         </span>
                                     </div>
+                                    @foreach ($bank as $d)
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rekening</th>
+                                                    <th>Saldo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th>{{ $d->nama_bank }} {{ $d->no_rekening }}</th>
+                                                    <td class="text-end">{{ formatRupiah($d->saldo) }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    @endforeach
                                 </div>
                             </div>
                         </a>
                     </div>
-                    @foreach ($bank as $d)
+                    {{-- @foreach ($bank as $d)
                         <div class="col-lg-3 col-sm-6 mb-2">
 
                             <a href="{{ route('mutasikeuangan.show', [Crypt::encrypt($d->kode_bank), $dari, $sampai]) }}">
@@ -99,7 +117,7 @@
                                 </div>
                             </a>
                         </div>
-                    @endforeach
+                    @endforeach --}}
                 </div>
             </div>
         </div>
