@@ -78,7 +78,7 @@
                                                 <th>Saldo</th>
                                             </tr>
                                         </thead>
-                                        <tbody style="font-size: 11px !important">
+                                        <tbody style="font-size: 12px !important">
                                             @foreach ($bank as $d)
                                                 <tr>
                                                     <td>{{ $d->nama_bank_alias ? $d->nama_bank_alias : $d->nama_bank }}
