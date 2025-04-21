@@ -10,6 +10,7 @@ use App\Models\Jenisvoucher;
 use App\Models\Pelanggan;
 use App\Models\Penjualan;
 use App\Models\Salesman;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
@@ -193,7 +194,7 @@ class PembayaranpenjualanController extends Controller
         ]);
 
         $no_bukti = Crypt::decrypt($no_bukti);
-
+        $user = User::findorFail(auth()->user()->id);
 
         // $penjualan = Penjualan::where('no_faktur', $historibayar->no_faktur)
         //     ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
@@ -218,7 +219,7 @@ class PembayaranpenjualanController extends Controller
             $today = Carbon::now();
             $historiBayarDate = Carbon::parse($historibayar->created_at);
             $diffInDays = $today->diffInDays($historiBayarDate);
-            if ($diffInDays > 3) {
+            if ($diffInDays > 3 && !$user->hasRole('super admin')) {
                 return Redirect::back()->with(messageError('Data tidak dapat di edit karena telah lebih dari 3 hari.'));
             }
 
