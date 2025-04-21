@@ -54,7 +54,12 @@
                             $color_saldoawal = $saldo_awal != null ? '' : 'text-red';
                         @endphp
                         <th colspan='5'>SALDO AWAL</th>
-                        <th style="text-align:right" class="{{ $color_saldoawal }}">{{ $saldo_awal != null ? formatAngkaDesimal($saldoawal) : 0 }}
+                        <th style="text-align:right" class="{{ $color_saldoawal }}">
+                            @if ($saldo_awal != null)
+                                {{ formatAngka($saldo_awal->jumlah - $mutasi->debet + $mutasi->kredit) }}
+                            @else
+                                BELUM DI SET
+                            @endif
                         </th>
 
 

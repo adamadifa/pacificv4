@@ -1950,6 +1950,9 @@ class LaporankeuanganController extends Controller
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
         $data['bank'] = Bank::where('kode_bank', $request->kode_bank_ledger)->first();
+
+        $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
+        $tahun = !empty($request->dari) ? date('Y', strtotime($request->dari)) : '';
         if ($request->formatlaporan == '1') {
             $query = Mutasikeuangan::query();
             $query->select(
@@ -1968,10 +1971,38 @@ class LaporankeuanganController extends Controller
 
             $data['ledger'] = $query->get();
 
-            $data['saldo_awal'] = Saldoawalmutasikeungan::where('bulan', date('m', strtotime($request->dari)))
-                ->where('tahun', date('Y', strtotime($request->dari)))
-                ->where('kode_bank', $request->kode_bank_ledger)
-                ->first();
+            if ($user->hasRole('staff keuangan 2')) {
+                $data['saldo_awal']  = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', 'BK070')->first();
+            } else {
+
+                $data['saldo_awal']  = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $request->kode_bank_search)->first();
+            }
+
+            $start_date = $tahun . "-" . $bulan . "-01";
+            if (!empty($request->dari && !empty($request->sampai))) {
+
+                if ($user->hasRole('staff keuangan 2')) {
+                    $data['mutasi']  = Mutasikeuangan::select(
+                        DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+                        DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+                    )
+                        ->where('tanggal', '>=', $start_date)
+                        ->where('tanggal', '<', $request->dari)
+                        ->where('kode_bank', 'BK070')
+                        ->first();
+                } else {
+                    $data['mutasi']  = Mutasikeuangan::select(
+                        DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+                        DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+                    )
+                        ->where('tanggal', '>=', $start_date)
+                        ->where('tanggal', '<', $request->dari)
+                        ->where('kode_bank', $request->kode_bank_search)
+                        ->first();
+                }
+            } else {
+                $data['mutasi'] = null;
+            }
 
             if (isset($_POST['exportButton'])) {
                 header("Content-type: application/vnd-ms-excel");
