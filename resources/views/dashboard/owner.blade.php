@@ -67,6 +67,10 @@
                                         </span>
                                     </div>
 
+
+
+                                </div>
+                                <div class="card-body">
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -83,7 +87,6 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-
                                 </div>
                             </div>
                         </a>
