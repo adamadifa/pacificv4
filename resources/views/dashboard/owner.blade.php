@@ -66,22 +66,24 @@
                                             <i class="ti ti-moneybag ti-sm"></i>
                                         </span>
                                     </div>
-                                    @foreach ($bank as $d)
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Rekening</th>
-                                                    <th>Saldo</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Rekening</th>
+                                                <th>Saldo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($bank as $d)
                                                 <tr>
                                                     <th>{{ $d->nama_bank }} {{ $d->no_rekening }}</th>
                                                     <td class="text-end">{{ formatRupiah($d->saldo) }}</td>
                                                 </tr>
-                                            </tbody>
-                                        </table>
-                                    @endforeach
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
                                 </div>
                             </div>
                         </a>
