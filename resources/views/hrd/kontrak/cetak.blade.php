@@ -193,7 +193,7 @@
                     Dalam hal berakhir perjanjian kerja karena sebab apapun maka, Pihak Kedua yang menerima jabatan
                     sebagai Salesman bersedia tidak meminta sisa upah apabila nama Faktur Pelanggan belum berpindah
                     kepada Salesman yang baru dan / atau atasannya.
-                    Terimakasihs
+
                 </li>
                 <li>
                     @if ($kontrak->kategori_jabatan == 'MJ')
