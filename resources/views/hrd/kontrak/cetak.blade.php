@@ -58,7 +58,8 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt=""
+                                style="width: 80px; height:80px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -116,7 +117,8 @@
             </table>
             <p>
                 Bertindak untuk dan atas nama <b>{{ $kontrak->nama_pt }}</b>
-                berkedudukan di {{ $kontrak->kode_cabang != 'PST' ? $kontrak->nama_cabang : 'Tasikmalaya' }} selanjutnya disebut <b>PIHAK SATU.</b>
+                berkedudukan di {{ $kontrak->kode_cabang != 'PST' ? $kontrak->nama_cabang : 'Tasikmalaya' }}
+                selanjutnya disebut <b>PIHAK SATU.</b>
             </p>
             <p>
             <table>
@@ -148,7 +150,8 @@
                 Bertindak atas nama diri sendiri selanjutnya disebut <b>PIHAK KEDUA.</b><br>
             </p>
             <p>
-                <b>PIHAK SATU</b> dan <b>PIHAK DUA</b> telah mengadakan kesepakatan Perjanjian Kerja Waktu Tertentu dengan ketentuan
+                <b>PIHAK SATU</b> dan <b>PIHAK DUA</b> telah mengadakan kesepakatan Perjanjian Kerja Waktu Tertentu
+                dengan ketentuan
                 sebagai berikut:
             </p>
             <h4 style="text-align: center; line-height: 1.5rem">
@@ -161,12 +164,14 @@
                     @php
                         $jmlbulan = calculateMonthsKontrak($kontrak->dari, $kontrak->sampai);
                     @endphp
-                    Perjanjian kerja ini berlaku <b>{{ $jmlbulan }} Bulan</b>, terhitung dari tanggal <b>{{ DateToIndo($kontrak->dari) }}</b>
+                    Perjanjian kerja ini berlaku <b>{{ $jmlbulan }} Bulan</b>, terhitung dari tanggal
+                    <b>{{ DateToIndo($kontrak->dari) }}</b>
                     sampai dengan
                     tanggal <b>{{ DateToIndo($kontrak->sampai) }}</b>
                 </li>
                 <li>
-                    Perjanjian ini dapat diperpanjang untuk waktu yang disepakati dan untuk perpanjangan perjanjian kerja
+                    Perjanjian ini dapat diperpanjang untuk waktu yang disepakati dan untuk perpanjangan perjanjian
+                    kerja
                     waktu tertentu ini pihak kesatu akan memberitahukan terlebih dahulu kepada pihak kedua dalam waktu 1
                     (satu) minggu sebelum perjanjian kerja waktu tertentu ini berakhir.
                 </li>
@@ -179,22 +184,36 @@
             <p>
             <ol>
                 <li>
-                    Pihak Kedua menerima pekerjaan yang diberikan pihak Perusahaan dengan Jabatan sebagai <b>{{ $kontrak->nama_jabatan }}</b>
+                    Pihak Kedua menerima pekerjaan yang diberikan pihak Perusahaan dengan Jabatan sebagai
+                    <b>{{ $kontrak->nama_jabatan }}</b>
                     yang berlokasi di {{ $kontrak->kode_cabang != 'PST' ? $kontrak->nama_cabang : 'Tasikmalaya' }}
                     serta bersedia ditempatkan diluar lokasi dan departemen tersebut bila Perusahaan memerlukan.
+                </li>
+                <li>
+                    Dalam hal berakhir perjanjian kerja karena sebab apapun maka, Pihak Kedua yang menerima jabatan
+                    sebagai Salesman bersedia tidak meminta sisa upah apabila nama Faktur Pelanggan belum berpindah
+                    kepada Salesman yang baru dan / atau atasannya.
+                    Terimakasihs
                 </li>
                 <li>
                     @if ($kontrak->kategori_jabatan == 'MJ')
                         Pihak kedua setuju menerima upah dengan rincian terlampir:
                     @else
                         @php
-                            $totalupah = $gaji->gaji_pokok + $gaji->t_jabatan + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill;
+                            $totalupah =
+                                $gaji->gaji_pokok +
+                                $gaji->t_jabatan +
+                                $gaji->t_tanggungjawab +
+                                $gaji->t_makan +
+                                $gaji->t_skill;
                         @endphp
                         @if ($kontrak->kode_jabatan == 'J19')
-                            Pihak kedua setuju menerima upah berdasarkan satuan hasil dengan dasar perhitungan Rp. {{ formatRupiah($totalupah) }}
+                            Pihak kedua setuju menerima upah berdasarkan satuan hasil dengan dasar perhitungan Rp.
+                            {{ formatRupiah($totalupah) }}
                             dengan Rincian sebagai berikut :
                         @else
-                            Pihak kedua setuju menerima upah Sebesar <b>{{ formatRupiah($totalupah) }},-</b> dengan rincian berikut:
+                            Pihak kedua setuju menerima upah Sebesar <b>{{ formatRupiah($totalupah) }},-</b> dengan
+                            rincian berikut:
                         @endif
                         <table>
                             <tr>
@@ -245,7 +264,8 @@
                     jadwal yang telah disepakati bersama.
                 </li>
                 <li>
-                    Untuk lokasi cabang, hari dan jam kerja akan dilaksanakan dengan ketentuan yang telah disepakati oleh
+                    Untuk lokasi cabang, hari dan jam kerja akan dilaksanakan dengan ketentuan yang telah disepakati
+                    oleh
                     masing-masing cabang.
                 </li>
             </ol>
@@ -262,7 +282,8 @@
                         <ol type="a">
                             <li>Hasil Evaluasi Pekerja dinilai tidak mampu dan tidak cakap melaksanakan tugasnya</li>
                             <li>
-                                Pekerja tidak hadir selama 5 (lima) hari secara berurutan dalam 1 (satu) bulan, tanpa izin
+                                Pekerja tidak hadir selama 5 (lima) hari secara berurutan dalam 1 (satu) bulan, tanpa
+                                izin
                                 atau tanpa alasan yang bisa dipertanggungjawabkan.
                             </li>
                             <li>
@@ -272,19 +293,23 @@
                         </ol>
                     </li>
                     <li>
-                        Dalam hal pekerja diberhentikan karena kesalahan pekerja atau pengunduran diri maka Pekerja hanya
+                        Dalam hal pekerja diberhentikan karena kesalahan pekerja atau pengunduran diri maka Pekerja
+                        hanya
                         akan menerima pendapatan atau upah sampai saat tanggal pemutusan perjanjian kerja tersebut.
                     </li>
                     <li>
-                        Dalam hal pihak kesatu atau pihak kedua melakukan pemutusan perjanjian kerja sebagaimana dimaksud
+                        Dalam hal pihak kesatu atau pihak kedua melakukan pemutusan perjanjian kerja sebagaimana
+                        dimaksud
                         diatas maka pihak kedua tidak berhak menuntut ganti rugi.
                     </li>
                     <li>
-                        Apabila pihak kedua habis kontrak dan tidak diperpanjang, maka pihak kesatu tidak wajib memberikan
+                        Apabila pihak kedua habis kontrak dan tidak diperpanjang, maka pihak kesatu tidak wajib
+                        memberikan
                         alasan tentang tidak diperpanjangnya.
                     </li>
                     <li>
-                        Untuk hal-hal yang belum tercantum dalam syarat-syarat kerja ini berlaku ketentuan-ketentuan umum
+                        Untuk hal-hal yang belum tercantum dalam syarat-syarat kerja ini berlaku ketentuan-ketentuan
+                        umum
                         pada PKB.
                     </li>
                     <li>
@@ -305,7 +330,8 @@
                         <ol type="a">
                             <li>Hasil Evaluasi Pekerja dinilai tidak mampu dan tidak cakap melaksanakan tugasnya</li>
                             <li>
-                                Pekerja tidak hadir selama 5 (lima) hari secara berurutan dalam 1 (satu) bulan, tanpa izin
+                                Pekerja tidak hadir selama 5 (lima) hari secara berurutan dalam 1 (satu) bulan, tanpa
+                                izin
                                 atau tanpa alasan yang bisa dipertanggungjawabkan.
                             </li>
                             <li>
@@ -314,7 +340,8 @@
                         </ol>
                     </li>
                     <li>
-                        Dalam hal pekerja diberhentikan karena kesalahan pekerja atau pengunduran diri maka Pekerja hanya
+                        Dalam hal pekerja diberhentikan karena kesalahan pekerja atau pengunduran diri maka Pekerja
+                        hanya
                         akan menerima pendapatan atau upah sampai saat tanggal pemutusan perjanjian kerja tersebut.
                     </li>
 
@@ -326,15 +353,18 @@
             @if ($kontrak->kategori_jabatan != 'MJ')
                 <ol start="3">
                     <li>
-                        Dalam hal pihak kesatu atau pihak kedua melakukan pemutusan perjanjian kerja sebagaimana dimaksud
+                        Dalam hal pihak kesatu atau pihak kedua melakukan pemutusan perjanjian kerja sebagaimana
+                        dimaksud
                         diatas maka pihak kedua tidak berhak menuntut ganti rugi.
                     </li>
                     <li>
-                        Apabila pihak kedua habis kontrak dan tidak diperpanjang, maka pihak kesatu tidak wajib memberikan
+                        Apabila pihak kedua habis kontrak dan tidak diperpanjang, maka pihak kesatu tidak wajib
+                        memberikan
                         alasan tentang tidak diperpanjangnya.
                     </li>
                     <li>
-                        Untuk hal-hal yang belum tercantum dalam syarat-syarat kerja ini berlaku ketentuan-ketentuan umum
+                        Untuk hal-hal yang belum tercantum dalam syarat-syarat kerja ini berlaku ketentuan-ketentuan
+                        umum
                         pada PKB.
                     </li>
                     <li>
@@ -355,8 +385,10 @@
                     (Perjanjian Kerja Bersama)
                 </li>
                 <li>
-                    Pelanggaran tata tertib PKB (Perjanjian Kerja Bersama) oleh pihak kedua dapat diberikan peringatan baik
-                    lisan maupun tulisan dan bila terpaksa berlaku scorsing sampai pemutusan hubungan kerja dengan landasan
+                    Pelanggaran tata tertib PKB (Perjanjian Kerja Bersama) oleh pihak kedua dapat diberikan peringatan
+                    baik
+                    lisan maupun tulisan dan bila terpaksa berlaku scorsing sampai pemutusan hubungan kerja dengan
+                    landasan
                     hukum yang dipergunakan oleh pihak kesatu adalah PKB (Perjanjian Kerja Bersama) dan peraturan
                     ketenagakerjaan yang berlaku.
                 </li>
@@ -364,12 +396,14 @@
                     Izin tidak masuk kerja terlebih dahulu meminta izin tertulis kepada pimpinan.
                 </li>
                 <li>
-                    Pihak kesatu berhak memindahkan / menempatkan pihak kedua dari pekerjaan yang dianggap perlu oleh pihak
+                    Pihak kesatu berhak memindahkan / menempatkan pihak kedua dari pekerjaan yang dianggap perlu oleh
+                    pihak
                     kesatu dan pihak kedua wajib mematuhi dan melaksanakannya dengan penuh tanggung jawab.
                 </li>
                 <li>
                     Dalam hal pekerja yang mendapatkan kesempatan promosi jabatan atas hasil seleksi yang ditempuh, maka
-                    pekerja wajib menandatangani surat pernyataan bersedia mengabdi sekurang-kurangnya 2 tahun untuk promosi
+                    pekerja wajib menandatangani surat pernyataan bersedia mengabdi sekurang-kurangnya 2 tahun untuk
+                    promosi
                     ke level supervisor dan 3 tahun untuk promosi ke level manajemen pusat/cabang.
                 </li>
             </ol>
@@ -382,16 +416,19 @@
             <ol>
                 <li>Pihak kedua wajib bertanggungjawab terhadap tugas yang diberikan oleh pimpinan.</li>
                 <li>Pihak kedua wajib mengganti kerugian apabila pihak kedua merusak barang atau peralatan lainnya baik
-                    disengaja ataupun tidak disengaja milik perusahaan sehingga menyebabkan kerugian bagi perusahaan.</li>
+                    disengaja ataupun tidak disengaja milik perusahaan sehingga menyebabkan kerugian bagi perusahaan.
+                </li>
                 <li>Pihak kedua akan di scorsing sesuai dengan peraturan perusahaan yang berlaku, yaitu PKB (Perjanjian
                     Kerja Bersama) apabila pihak kedua mangkir dari tugas dan tanggungjawabnya.</li>
                 <li>Pihak kedua akan dituntut secara hukum apabila pihak kedua melakukan pencurian milik perusahaan baik
                     dilakukan secara individu atau bekerjasama dengan pihak lain atau pihak ketiga.
                 </li>
-                <li>Pihak kedua akan dituntut secara hukum apabila menyalin dan / atau mengambil database yang menjadi rahasia perusahaan apabila
+                <li>Pihak kedua akan dituntut secara hukum apabila menyalin dan / atau mengambil database yang menjadi
+                    rahasia perusahaan apabila
                     hubungan kerja dengan perusahaan berakhir dengan sebab apapun
                 </li>
-                <li>Pihak kedua bersedia tidak bekerja di perusahaan sejenis dan / atau kompetitior produk perusahaan dalam hal hubungan kerjanya
+                <li>Pihak kedua bersedia tidak bekerja di perusahaan sejenis dan / atau kompetitior produk perusahaan
+                    dalam hal hubungan kerjanya
                     berakhir dengan sebab apapun
                 </li>
             </ol>
@@ -403,8 +440,10 @@
             </h4>
             <ol>
                 <li>Seragam diatur di Peraturan Perusahaan.</li>
-                <li>Cuti diberikan setelah masa kerja satu tahun dan pengambilan cutinya jatuh pada bulan ketiga belas.</li>
-                <li>Cuti dalam kasus meninggalnya istri, ayah/ibu kandung, dan anak kandung diberikan cuti selama dua hari
+                <li>Cuti diberikan setelah masa kerja satu tahun dan pengambilan cutinya jatuh pada bulan ketiga belas.
+                </li>
+                <li>Cuti dalam kasus meninggalnya istri, ayah/ibu kandung, dan anak kandung diberikan cuti selama dua
+                    hari
                     berturut turut.</li>
 
             </ol>
@@ -421,7 +460,8 @@
             <table style="width: 100%;">
                 <tr>
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
-                        <td colspan="3" style="text-align: center; padding:1rem">{{ textCamelCase($kontrak->nama_cabang) }},
+                        <td colspan="3" style="text-align: center; padding:1rem">
+                            {{ textCamelCase($kontrak->nama_cabang) }},
                             {{ DateToIndo($kontrak->tanggal) }}</td>
                     @else
                         <td colspan="2" style="text-align: center; padding:1rem">
