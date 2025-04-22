@@ -339,11 +339,7 @@
                             </li>
                         </ol>
                     </li>
-                    <li>
-                        Dalam hal pekerja diberhentikan karena kesalahan pekerja atau pengunduran diri maka Pekerja
-                        hanya
-                        akan menerima pendapatan atau upah sampai saat tanggal pemutusan perjanjian kerja tersebut.
-                    </li>
+
 
                 </ol>
                 </p>
@@ -351,7 +347,12 @@
         </section>
         <section class="sheet padding-10mm">
             @if ($kontrak->kategori_jabatan != 'MJ')
-                <ol start="3">
+                <ol start="2">
+                    <li>
+                        Dalam hal pekerja diberhentikan karena kesalahan pekerja atau pengunduran diri maka Pekerja
+                        hanya
+                        akan menerima pendapatan atau upah sampai saat tanggal pemutusan perjanjian kerja tersebut.
+                    </li>
                     <li>
                         Dalam hal pihak kesatu atau pihak kedua melakukan pemutusan perjanjian kerja sebagaimana
                         dimaksud
