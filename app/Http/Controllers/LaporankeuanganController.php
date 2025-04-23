@@ -1997,7 +1997,7 @@ class LaporankeuanganController extends Controller
                     )
                         ->where('tanggal', '>=', $start_date)
                         ->where('tanggal', '<', $request->dari)
-                        ->where('kode_bank', $request->kode_bank_search)
+                        ->where('kode_bank', $request->kode_bank_ledger)
                         ->first();
                 }
             } else {
