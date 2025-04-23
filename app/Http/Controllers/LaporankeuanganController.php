@@ -1975,7 +1975,7 @@ class LaporankeuanganController extends Controller
                 $data['saldo_awal']  = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', 'BK070')->first();
             } else {
 
-                $data['saldo_awal']  = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $request->kode_bank_search)->first();
+                $data['saldo_awal']  = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $request->kode_bank_ledger)->first();
             }
 
             $start_date = $tahun . "-" . $bulan . "-01";
