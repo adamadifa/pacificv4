@@ -52,10 +52,11 @@
                         @php
                             $saldoawal = $saldo_awal != null ? $saldo_awal->jumlah : 'BELUM DI SET';
                             $color_saldoawal = $saldo_awal != null ? '' : 'text-red';
+                            $saldo = $saldo_awal != null ? $saldo_awal->jumlah - $mutasi->debet + $mutasi->kredit : 0;
                         @endphp
                         <th colspan='5'>SALDO AWAL</th>
                         <th style="text-align:right" class="{{ $color_saldoawal }}">
-                            {{ formatAngkaDesimal($saldoawal) }}
+                            {{ formatAngkaDesimal($saldo) }}
                         </th>
 
 
@@ -65,7 +66,7 @@
                     @php
                         $totaldebet = 0;
                         $totalkredit = 0;
-                        $saldo = $saldo_awal != null ? $saldoawal : 0;
+
                     @endphp
                     @foreach ($ledger as $d)
                         @php
