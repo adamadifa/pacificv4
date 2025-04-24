@@ -9,7 +9,9 @@
         if ($d->jml_dus >= $d->qty_target) {
             //$reward = $d->reward * $d->jml_dus;
             $bb_dep = ['PRIK004', 'PRIK001'];
-            $reward_tunai = in_array($d->kode_program, $bb_dep) ? ($d->budget_rsm + $d->budget_gm) * $d->jml_tunai : $d->reward * $d->jml_tunai;
+            $reward_tunai = in_array($d->kode_program, $bb_dep)
+                ? ($d->budget_rsm + $d->budget_gm) * $d->jml_tunai
+                : $d->reward * $d->jml_tunai;
             $reward_kredit = $d->reward * $d->jml_kredit;
             $reward = $reward_tunai + $reward_kredit;
         } else {
@@ -77,7 +79,9 @@
         <td class="">
             @if ($d->jml_dus >= $d->qty_target)
                 <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select">
-                    <option value="1">Cairkan</option>
+                    @if ($reward > 1000000)
+                        <option value="1">Cairkan</option>
+                    @endif
                     <option value="0">Simpan</option>
                 </select>
             @else
@@ -88,12 +92,12 @@
         <td>
             @if ($d->jml_dus >= $d->qty_target)
                 <div class="form-check mt-3 mb-2 ">
-                    <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
-                        id="checkpelanggan">
+                    <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]"
+                        value="1" type="checkbox" id="checkpelanggan">
                 </div>
             @else
-                <input class="form-check-input checkpelanggan pelangganna" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
-                    id="checkpelanggan" checked>
+                <input class="form-check-input checkpelanggan pelangganna" name="checkpelanggan[{{ $loop->index }}]"
+                    value="1" type="checkbox" id="checkpelanggan" checked>
             @endif
         </td>
     </tr>

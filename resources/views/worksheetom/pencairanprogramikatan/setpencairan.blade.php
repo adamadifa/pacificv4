@@ -40,11 +40,13 @@
                     @can('pencairanprogramikt.create')
                         @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $pencairanprogram->rsm == null)
                             @if ($pencairanprogram->status == 0)
-                                <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                                <a href="#" id="btnCreate" class="btn btn-primary"><i
+                                        class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
                             @endif
                         @endif
                         @if ($user->hasRole('super admin'))
-                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i>
+                                Tambah Pelanggan</a>
                         @endif
                     @endcan
                 </div>
@@ -64,7 +66,8 @@
                             </tr>
                             <tr>
                                 <th>Periode Penjualan</th>
-                                <td class="text-end">{{ $namabulan[$pencairanprogram->bulan] }} {{ $pencairanprogram->tahun }}</td>
+                                <td class="text-end">{{ $namabulan[$pencairanprogram->bulan] }}
+                                    {{ $pencairanprogram->tahun }}</td>
                             </tr>
                             <tr>
                                 <th>No. Dokumen</th>
@@ -85,7 +88,8 @@
                 <div class="row mt-2">
                     <div class="col">
                         <div class="table-responsive">
-                            <table id="example" class="display nowrap table table-striped table-bordered" style="width:100%">
+                            <table id="example" class="display nowrap table table-striped table-bordered"
+                                style="width:100%">
                                 <thead class="table-dark">
                                     <tr>
                                         <th rowspan="2">No.</th>
@@ -132,7 +136,9 @@
                                         @php
                                             $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
                                             $total_reward =
-                                                $d->total_reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $d->total_reward;
+                                                $d->total_reward > 1000000 && !in_array($d->kode_program, $bb_dep)
+                                                    ? 1000000
+                                                    : $d->total_reward;
                                             $subtotal_reward += $total_reward;
                                             $grandtotal_reward += $total_reward;
                                         @endphp
@@ -147,7 +153,8 @@
                                             <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                                             <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                                             <td class="text-center">
-                                                <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                                                <a href="#" class="btnDetailfaktur"
+                                                    kode_pelanggan="{{ $d['kode_pelanggan'] }}">
                                                     {{ formatAngka($d->jumlah) }}
                                                 </a>
                                             </td>
@@ -266,7 +273,8 @@
             let kode_pelanggan = $(this).attr("kode_pelanggan");
             $("#modalUpload").modal("show");
             $("#modalUpload").find(".modal-title").text("Upload Bukti Transfer");
-            $("#loadmodalupload").load("/pencairanprogramikatan/" + kode_pencairan + "/" + kode_pelanggan + "/upload");
+            $("#loadmodalupload").load("/pencairanprogramikatan/" + kode_pencairan + "/" +
+                kode_pelanggan + "/upload");
         });
 
         $(document).on('click', '.btnDetailfaktur', function(e) {
