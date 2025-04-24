@@ -12,7 +12,8 @@
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     <div class="d-flex justify-content-end">
-                        <form action="#" method="GET" id="formCetak" target="_blank">
+                        <form action="{{ route('monitoringprogram.cetak') }}" method="GET" id="formCetak"
+                            target="_blank">
                             <input type="hidden" name="tahun" id='tahun_cetak' value="{{ Request('tahun') }}" />
                             <input type="hidden" name="bulan" id="bulan_cetak" value="{{ Request('bulan') }}" />
                             <input type="hidden" name="kode_cabang" id="kode_cabang_cetak"
@@ -48,7 +49,8 @@
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
                                                 @foreach ($list_bulan as $d)
-                                                    <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                                    <option
+                                                        {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
                                                         value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
                                                 @endforeach
                                             </select>
