@@ -12,13 +12,13 @@
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     <div class="d-flex justify-content-end">
-                        <form action="/setoranpenjualan/cetak" method="GET" id="formCetak" target="_blank">
-                            <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
-                            <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
-                            <input type="hidden" name="kode_cabang_search" id="kode_cabang_cetak"
-                                value="{{ Request('kode_cabang_search') }}" />
-                            <input type="hidden" name="kode_salesman_search" id="kode_salesman_cetak"
-                                value="{{ Request('kode_salesman_search') }}" />
+                        <form action="#" method="GET" id="formCetak" target="_blank">
+                            <input type="hidden" name="tahun" id='tahun_cetak' value="{{ Request('tahun') }}" />
+                            <input type="hidden" name="bulan" id="bulan_cetak" value="{{ Request('bulan') }}" />
+                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak"
+                                value="{{ Request('kode_cabang') }}" />
+                            <input type="hidden" name="kode_program" id="kode_program_cetak"
+                                value="{{ Request('kode_program') }}" />
                             <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
                             <button class="btn btn-success" name="exportButton"><i
                                     class="ti ti-download me-1"></i>Export Excel</button>
@@ -229,6 +229,26 @@
             $("#modalDetailfaktur").find("#loadmodaldetailfaktur").load(
                 `/monitoringprogram/${kode_pelanggan}/${kode_program}/${bulan}/${tahun}/detailfaktur`
             );
+        });
+
+        $("#formCetak").submit(function(e) {
+            var tahun = $("#tahun_cetak").val();
+            var bulan = $("#bulan_cetak").val();
+            var kode_cabang = $("#kode_cabang_cetak").val();
+            var kode_program = $("#kode_program_cetak").val();
+
+            if (tahun == "" || bulan == "" || kode_program == "" || kode_cabang == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Silahkan Pilih Periode, Program dan Cabang Terlebih Dahulu!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#kode_program").focus();
+                    },
+                });
+                return false;
+            }
         });
     });
 </script>
