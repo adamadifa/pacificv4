@@ -602,6 +602,11 @@ class MonitoringprogramController extends Controller
 
         $data['peserta'] = $peserta;
 
-        dd($data['peserta']);
+        if (isset($_GET['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "hasil-export.xls"
+            header("Content-Disposition: attachment; filename=Monitoring Program.xls");
+        }
+        return view('worksheetom.monitoringprogram.cetak', $data);
     }
 }
