@@ -601,7 +601,10 @@ class MonitoringprogramController extends Controller
         // $data['detail'] = $detail;
 
         $data['peserta'] = $peserta;
-
+        $data['programikatan'] = $programikatan;
+        $data['kode_cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
         if (isset($_GET['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "hasil-export.xls"

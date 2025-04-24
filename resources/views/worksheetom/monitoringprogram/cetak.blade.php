@@ -12,8 +12,8 @@
 <body>
     <div class="header">
         <h4>MONITORING PROGRAM</h4>
-        {{-- <h4>{{ $cabang != null ? textUpperCase($cabang->nama_pt) : '' }}</h4>
-        <h4>PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4> --}}
+        <h4>{{ $cabang != null ? textUpperCase($cabang->nama_cabang) : '' }}</h4>
+        <h4>PERIODE BULAN {{ $namabulan[$bulan] }} TAHUN {{ $tahun }}</h4>
     </div>
     <div class="body">
         <table class="datatable3" border="1">
