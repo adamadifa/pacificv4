@@ -602,7 +602,7 @@ class MonitoringprogramController extends Controller
 
         $data['peserta'] = $peserta;
         $data['programikatan'] = $programikatan;
-        $data['kode_cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;
         if (isset($_GET['exportButton'])) {
