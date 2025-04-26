@@ -14,35 +14,39 @@
                 <div class="row">
                     <div class="col-12">
                         <form action="{{ route('presensi.index') }}">
-                            <x-input-with-icon label="Tanggal" value="{{ Request('tanggal') }}" name="tanggal" icon="ti ti-calendar"
-                                datepicker="flatpickr-date" />
+                            <x-input-with-icon label="Tanggal" value="{{ Request('tanggal') }}" name="tanggal"
+                                icon="ti ti-calendar" datepicker="flatpickr-date" />
                             @hasanyrole($roles_access_all_karyawan)
                                 <div class="row">
                                     <div class="col-lg-12 col-sm-12 col-md-12">
-                                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                            selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" />
+                                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang"
+                                            key="kode_cabang" textShow="nama_cabang"
+                                            selected="{{ Request('kode_cabang_search') }}" upperCase="true"
+                                            select2="select2Kodecabangsearch" />
                                     </div>
                                 </div>
                             @endhasanyrole
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan"
-                                        icon="ti ti-search" />
+                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}"
+                                        name="nama_karyawan" icon="ti ti-search" />
                                 </div>
 
                                 <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                                        selected="{{ Request('kode_dept') }}" upperCase="true" select2="select2Kodedeptsearch" />
+                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept"
+                                        textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true"
+                                        select2="select2Kodedeptsearch" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
-                                        selected="{{ Request('kode_group') }}" upperCase="true" />
+                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group"
+                                        textShow="nama_group" selected="{{ Request('kode_group') }}" upperCase="true" />
                                 </div>
 
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <button class="btn btn-primary w-100"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
+                                    <button class="btn btn-primary w-100"><i
+                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
                                 </div>
                             </div>
                         </form>
@@ -100,20 +104,33 @@
                                             $cekminggumasuk = ceklibur($dataminggumasuk, $search_minggumasuk);
                                             //Tanggal Selesai Jam Kerja Jika Lintas Hari Maka Tanggal Presensi + 1 Hari
                                             $tanggal_selesai =
-                                                $d->lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($d->tanggal))) : $d->tanggal;
+                                                $d->lintashari == '1'
+                                                    ? date('Y-m-d', strtotime('+1 day', strtotime($d->tanggal)))
+                                                    : $d->tanggal;
 
                                             //Jam Absen Masuk dan Pulang
-                                            $jam_in = !empty($d->jam_in) ? date('Y-m-d H:i', strtotime($d->jam_in)) : '';
-                                            $jam_out = !empty($d->jam_out) ? date('Y-m-d H:i', strtotime($d->jam_out)) : '';
+                                            $jam_in = !empty($d->jam_in)
+                                                ? date('Y-m-d H:i', strtotime($d->jam_in))
+                                                : '';
+                                            $jam_out = !empty($d->jam_out)
+                                                ? date('Y-m-d H:i', strtotime($d->jam_out))
+                                                : '';
 
                                             //Jadwal Jam Kerja
                                             $j_mulai = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_mulai));
-                                            $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
+                                            $j_selesai = date(
+                                                'Y-m-d H:i',
+                                                strtotime($tanggal_selesai . ' ' . $d->jam_selesai),
+                                            );
 
                                             //Jadwal SPG
                                             //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
-                                            $jam_mulai = in_array($d->kode_jabatan, ['J22', 'J23']) ? $jam_in : $j_mulai;
-                                            $jam_selesai = in_array($d->kode_jabatan, ['J22', 'J23']) ? $jam_out : $j_selesai;
+                                            $jam_mulai = in_array($d->kode_jabatan, ['J22', 'J23'])
+                                                ? $jam_in
+                                                : $j_mulai;
+                                            $jam_selesai = in_array($d->kode_jabatan, ['J22', 'J23'])
+                                                ? $jam_out
+                                                : $j_selesai;
 
                                             if (getNamahari($tanggal) == 'Minggu') {
                                                 if ($d->kode_jabatan != 'J20') {
@@ -125,8 +142,14 @@
                                             // Jam Istirahat
                                             if ($d->istirahat == '1') {
                                                 if ($d->lintashari == '0') {
-                                                    $jam_awal_istirahat = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_awal_istirahat));
-                                                    $jam_akhir_istirahat = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_akhir_istirahat));
+                                                    $jam_awal_istirahat = date(
+                                                        'Y-m-d H:i',
+                                                        strtotime($d->tanggal . ' ' . $d->jam_awal_istirahat),
+                                                    );
+                                                    $jam_akhir_istirahat = date(
+                                                        'Y-m-d H:i',
+                                                        strtotime($d->tanggal . ' ' . $d->jam_akhir_istirahat),
+                                                    );
                                                 } else {
                                                     $jam_awal_istirahat = date(
                                                         'Y-m-d H:i',
@@ -156,7 +179,8 @@
                                                         $total_jam_libur = 0;
                                                     @endphp
                                                     {{ $d->nama_jadwal }}
-                                                    ({{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }})
+                                                    ({{ date('H:i', strtotime($jam_mulai)) }} -
+                                                    {{ date('H:i', strtotime($jam_selesai)) }})
                                                 @else
                                                     <!-- Jika Jadwal Kosong Maka Cek Apakah tanggal Tersebut Libur-->
                                                     @if (!empty($cekliburnasional))
@@ -181,7 +205,8 @@
                                                                 }
                                                             }
                                                         @endphp
-                                                        <span class="badge bg-info">Dirumahkan {{ $total_jam_libur }}</span>
+                                                        <span class="badge bg-info">Dirumahkan
+                                                            {{ $total_jam_libur }}</span>
                                                     @elseif(!empty($cekliburpengganti))
                                                         @php
                                                             //Jika Hari ini Libur , menggantikan Libur hari Minggu Maka Total Jam adalah 0
@@ -200,7 +225,8 @@
                                             </td>
                                             <td class="text-center">
                                                 @if (!empty($d->kode_jadwal) && $d->status_kehadiran == 'h' && !empty($d->jam_in))
-                                                    <a href="#" class="btnShowpresensi_in" id="{{ $d->id }}" status="in">
+                                                    <a href="#" class="btnShowpresensi_in"
+                                                        id="{{ $d->id }}" status="in">
                                                         {{ date('H:i', strtotime($d->jam_in)) }}
                                                     </a>
                                                 @else
@@ -209,7 +235,8 @@
                                             </td>
                                             <td class="text-center">
                                                 @if (!empty($d->kode_jadwal) && $d->status_kehadiran == 'h' && !empty($d->jam_out))
-                                                    <a href="#" class="btnShowpresensi_out" id="{{ $d->id }}" status="out">
+                                                    <a href="#" class="btnShowpresensi_out"
+                                                        id="{{ $d->id }}" status="out">
                                                         {{ date('H:i', strtotime($d->jam_out)) }}
                                                     </a>
                                                 @else
@@ -218,18 +245,25 @@
 
                                                 @if (!empty($jam_out) && $jam_out < $jam_selesai)
                                                     @php
-                                                        $pc = hitungpulangcepat($jam_out, $jam_selesai, $jam_awal_istirahat, $jam_akhir_istirahat);
+                                                        $pc = hitungpulangcepat(
+                                                            $jam_out,
+                                                            $jam_selesai,
+                                                            $jam_awal_istirahat,
+                                                            $jam_akhir_istirahat,
+                                                        );
                                                     @endphp
                                                     @if (!empty($d->kode_izin_pulang) && $d->izin_pulang_direktur == '1')
                                                         @php
                                                             $potongan_pc = 0;
                                                         @endphp
-                                                        <span class="text-success">(PC : {{ $pc['desimal_pulangcepat'] }})</span>
+                                                        <span class="text-success">(PC :
+                                                            {{ $pc['desimal_pulangcepat'] }})</span>
                                                     @else
                                                         @php
                                                             $potongan_pc = $pc['desimal_pulangcepat'];
                                                         @endphp
-                                                        <span class="text-danger">(PC : {{ $pc['desimal_pulangcepat'] }})</span>
+                                                        <span class="text-danger">(PC :
+                                                            {{ $pc['desimal_pulangcepat'] }})</span>
                                                     @endif
                                                 @endif
                                             </td>
@@ -278,7 +312,9 @@
                                                 @if (!empty($d->kode_izin_keluar))
                                                     @php
                                                         $jam_keluar = date('Y-m-d H:i', strtotime($d->jam_keluar));
-                                                        $jam_kembali = !empty($d->jam_kembali) ? date('Y-m-d H:i', strtotime($d->jam_kembali)) : '';
+                                                        $jam_kembali = !empty($d->jam_kembali)
+                                                            ? date('Y-m-d H:i', strtotime($d->jam_kembali))
+                                                            : '';
 
                                                         $keluarkantor = hitungjamkeluarkantor(
                                                             $jam_keluar,
@@ -293,7 +329,8 @@
                                                     @endphp
                                                     @if ($d->izin_keluar_direktur == '1')
                                                         <span class="text-success">
-                                                            {{ $keluarkantor['totaljamkeluar'] }} ({{ $keluarkantor['desimaljamkeluar'] }})
+                                                            {{ $keluarkantor['totaljamkeluar'] }}
+                                                            ({{ $keluarkantor['desimaljamkeluar'] }})
                                                         </span>
                                                         @php
                                                             $potongan_jamkeluar = 0;
@@ -301,7 +338,8 @@
                                                     @else
                                                         @if ($d->keperluan == 'K')
                                                             <span class="text-success">
-                                                                {{ $keluarkantor['totaljamkeluar'] }} ({{ $keluarkantor['desimaljamkeluar'] }})
+                                                                {{ $keluarkantor['totaljamkeluar'] }}
+                                                                ({{ $keluarkantor['desimaljamkeluar'] }})
                                                             </span>
                                                             @php
                                                                 $potongan_jamkeluar = 0;
@@ -312,7 +350,8 @@
                                                             @endphp
                                                             {{-- {{ $jam_kembali }} --}}
                                                             <span class="{{ $keluarkantor['color'] }}">
-                                                                {{ $keluarkantor['totaljamkeluar'] }} ({{ $keluarkantor['desimaljamkeluar'] }})
+                                                                {{ $keluarkantor['totaljamkeluar'] }}
+                                                                ({{ $keluarkantor['desimaljamkeluar'] }})
                                                             </span>
                                                         @endif
                                                     @endif
@@ -320,7 +359,11 @@
                                             </td>
                                             <td class="text-center">
                                                 @php
-                                                    $terlambat = hitungjamterlambat($jam_in, $jam_mulai, $d->kode_izin_terlambat);
+                                                    $terlambat = hitungjamterlambat(
+                                                        $jam_in,
+                                                        $jam_mulai,
+                                                        $d->kode_izin_terlambat,
+                                                    );
                                                 @endphp
                                                 @if (!empty($d->jam_in))
                                                     @if (!empty($terlambat))
@@ -374,7 +417,6 @@
                                                     ) {
                                                         $total_jam = 0;
                                                     }
-
                                                 @endphp
                                                 {{ $total_jam }}
                                             </td>
@@ -388,7 +430,8 @@
                                                     @endif
 
 
-                                                    <a href="#" class="btngetDatamesin" pin="{{ $d->pin }}"
+                                                    <a href="#" class="btngetDatamesin"
+                                                        pin="{{ $d->pin }}"
                                                         tanggal="{{ !empty(Request('tanggal')) ? Request('tanggal') : date('Y-m-d') }}"
                                                         kode_jadwal="{{ $d->kode_jadwal }}">
                                                         <i class="ti ti-device-desktop text-primary"></i>
