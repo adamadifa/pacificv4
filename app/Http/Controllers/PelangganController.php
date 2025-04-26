@@ -751,7 +751,7 @@ class PelangganController extends Controller
         $pelanggan = $query->get();
         echo "<option value=''>Semua Pelanggan</option>";
         foreach ($pelanggan as $d) {
-            echo "<option value='$d->kode_pelanggan'>" . textUpperCase($d->nama_pelanggan) . "</option>";
+            echo "<option value='$d->kode_pelanggan'>" . $d->kode_pelanggan . " - " . textUpperCase($d->nama_pelanggan) . "</option>";
         }
     }
 
