@@ -44,14 +44,16 @@
                         <select name="tahun" id="tahun" class="form-select">
                             <option value="">Tahun</option>
                             @for ($t = $start_year; $t <= date('Y'); $t++)
-                                <option value="{{ $t }}" {{ date('Y') == $t && empty(Request('tahun')) ? 'selected' : '' }}
+                                <option value="{{ $t }}"
+                                    {{ date('Y') == $t && empty(Request('tahun')) ? 'selected' : '' }}
                                     {{ Request('tahun') == $t ? 'selected' : '' }}>{{ $t }}</option>
                             @endfor
                         </select>
                     </div>
                 </div>
                 <div class="col">
-                    <button type="submit" name="submit" class="btn btn-primary"><i class="ti ti-search me-1"></i></button>
+                    <button type="submit" name="submit" class="btn btn-primary"><i
+                            class="ti ti-search me-1"></i></button>
                 </div>
             </div>
 
@@ -66,7 +68,8 @@
                     <tr>
                         <th rowspan="2">Nama</th>
                         <th rowspan="2">Cabang</th>
-                        <th colspan="{{ $jmlhari }}" class="text-center">Bulan {{ $namabulan[$bulan] }} {{ $tahun }}</th>
+                        <th colspan="{{ $jmlhari }}" class="text-center">Bulan {{ $namabulan[$bulan * 1] }}
+                            {{ $tahun }}</th>
                     </tr>
                     <tr>
                         @php
@@ -93,7 +96,8 @@
                                 @php
                                     $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
                                 @endphp
-                                <td class="{{ $bgcolor }} detail text-center" id_user="{{ $d->id }}" tanggal="{{ $start }}">
+                                <td class="{{ $bgcolor }} detail text-center" id_user="{{ $d->id }}"
+                                    tanggal="{{ $start }}">
                                     {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
                                 @php
                                     $i++;
@@ -117,7 +121,8 @@
                                 @php
                                     $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
                                 @endphp
-                                <td class="{{ $bgcolor }} detail text-center" tanggal="{{ $start }}" id_user="{{ $d->id }}">
+                                <td class="{{ $bgcolor }} detail text-center" tanggal="{{ $start }}"
+                                    id_user="{{ $d->id }}">
                                     {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
                                 @php
                                     $i++;
@@ -141,7 +146,8 @@
                                 @php
                                     $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
                                 @endphp
-                                <td class="{{ $bgcolor }} detail text-center" id_user="{{ $d->id }}" tanggal="{{ $start }}">
+                                <td class="{{ $bgcolor }} detail text-center" id_user="{{ $d->id }}"
+                                    tanggal="{{ $start }}">
                                     {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
                                 @php
                                     $i++;
