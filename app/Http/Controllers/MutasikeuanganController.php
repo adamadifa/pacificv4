@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bank;
 use App\Models\Cabang;
 use App\Models\Coa;
+use App\Models\Kategoritransaksimutasikeuangan;
 use App\Models\Mutasikeuangan;
 use App\Models\Saldoawalledger;
 use App\Models\User;
@@ -38,8 +39,9 @@ class MutasikeuanganController extends Controller
             if ($user->hasRole('staff keuangan 2')) {
                 $data['mutasi']  = Mutasikeuangan::select(
                     DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-                    DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+                    DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet")
                 )
+
                     ->where('tanggal', '>=', $start_date)
                     ->where('tanggal', '<', $request->dari)
                     ->where('kode_bank', 'BK070')
@@ -47,8 +49,9 @@ class MutasikeuanganController extends Controller
             } else {
                 $data['mutasi']  = Mutasikeuangan::select(
                     DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-                    DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+                    DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet")
                 )
+
                     ->where('tanggal', '>=', $start_date)
                     ->where('tanggal', '<', $request->dari)
                     ->where('kode_bank', $request->kode_bank_search)
@@ -69,6 +72,7 @@ class MutasikeuanganController extends Controller
         $data['bank'] = $bnk->getBank()->get();
         $data['coa'] = Coa::orderby('kode_akun')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        $data['kategori'] = Kategoritransaksimutasikeuangan::orderBy('kode_kategori')->get();
         return view('keuangan.mutasikeuangan.create', $data);
     }
 
@@ -85,6 +89,7 @@ class MutasikeuanganController extends Controller
                 'keterangan' => $request->keterangan,
                 'jumlah' => toNumber($request->jumlah),
                 'debet_kredit' => $request->debet_kredit,
+                'kode_kategori' => $request->kode_kategori,
             ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
@@ -117,7 +122,7 @@ class MutasikeuanganController extends Controller
         $data['bank'] = Bank::orderBy('nama_bank')->get();
         $data['coa'] = Coa::orderby('kode_akun')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
-
+        $data['kategori'] = Kategoritransaksimutasikeuangan::orderBy('kode_kategori')->get();
         return view('keuangan.mutasikeuangan.edit', $data);
     }
 
@@ -131,6 +136,7 @@ class MutasikeuanganController extends Controller
             $mutasi->keterangan = $request->keterangan;
             $mutasi->jumlah = toNumber($request->jumlah);
             $mutasi->debet_kredit = $request->debet_kredit;
+            $mutasi->kode_kategori = $request->kode_kategori;
             $mutasi->save();
             return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
         } catch (\Exception $e) {

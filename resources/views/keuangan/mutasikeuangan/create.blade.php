@@ -31,6 +31,15 @@
             <option value="K">Kredit</option>
         </select>
     </div>
+    <div class="form-group mb-3">
+        <select name="kode_kategori" id="kode_kategori" class="form-select">
+            <option value="">Kategori</option>
+            @foreach ($kategori as $d)
+                <option value="{{ $d->kode_kategori }}">{{ $d->nama_kategori }}</option>
+            @endforeach
+        </select>
+    </div>
+
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
@@ -77,6 +86,7 @@
             const keterangan = form.find("#keterangan").val();
             const jumlah = form.find("#jumlah").val();
             const debet_kredit = form.find("#debet_kredit").val();
+            const kode_kategori = form.find("#kode_kategori").val();
             if (!kode_bank) {
                 Swal.fire({
                     title: "Oops!",
@@ -129,6 +139,17 @@
                     showConfirmButton: true,
                     didClose: (e) => {
                         form.find("#debet_kredit").focus();
+                    },
+                });
+                return false;
+            } else if (kode_kategori == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Kategori Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#kode_kategori").focus();
                     },
                 });
                 return false;

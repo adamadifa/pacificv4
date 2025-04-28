@@ -18,9 +18,10 @@ class Mutasikeuangan extends Model
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
 
         $query = Mutasikeuangan::query();
-        $query->select('keuangan_mutasi.*');
+        $query->select('keuangan_mutasi.*', 'keuangan_mutasi_kategori.nama_kategori');
         $query->join('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank');
         $query->join('cabang', 'bank.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('keuangan_mutasi_kategori', 'keuangan_mutasi.kode_kategori', '=', 'keuangan_mutasi_kategori.kode_kategori');
 
 
         // if (!$user->hasRole($roles_access_all_cabang)) {

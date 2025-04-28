@@ -33,6 +33,17 @@
             <option value="K" {{ $mutasikeuangan->debet_kredit == 'K' ? 'selected' : '' }}>Kredit</option>
         </select>
     </div>
+    <div class="form-group mb-3">
+        <select name="kode_kategori" id="kode_kategori" class="form-select">
+            <option value="">Kategori</option>
+            @foreach ($kategori as $d)
+                <option value="{{ $d->kode_kategori }}"
+                    {{ $mutasikeuangan->kode_kategori == $d->kode_kategori ? 'selected' : '' }}>{{ $d->nama_kategori }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
