@@ -81,8 +81,12 @@
                                         <tbody style="font-size: 12px !important">
                                             @foreach ($bank as $d)
                                                 <tr>
-                                                    <td>{{ $d->nama_bank_alias ? $d->nama_bank_alias : $d->nama_bank }}
-                                                        {{ $d->no_rekening }}
+                                                    <td>
+                                                        <a
+                                                            href="{{ route('mutasikeuangan.show', [Crypt::encrypt($d->kode_bank), $dari, $sampai]) }}">
+                                                            {{ $d->nama_bank_alias ? $d->nama_bank_alias : $d->nama_bank }}
+                                                            {{ $d->no_rekening }}
+                                                        </a>
                                                     </td>
                                                     <td class="text-end">{{ formatRupiah($d->saldo) }}</td>
                                                 </tr>
