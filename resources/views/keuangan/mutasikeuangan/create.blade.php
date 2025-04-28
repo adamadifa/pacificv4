@@ -142,17 +142,6 @@
                     },
                 });
                 return false;
-            } else if (kode_kategori == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Kategori Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        form.find("#kode_kategori").focus();
-                    },
-                });
-                return false;
             } else {
                 buttonDisable();
             }
