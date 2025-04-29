@@ -125,7 +125,7 @@ class MonitoringprogramController extends Controller
             // })
             ->groupBy('marketing_penjualan.kode_pelanggan', DB::raw('MONTH(marketing_penjualan.tanggal)'));
 
-
+        dd($request->bulan);
         $peserta_gagal = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
 
