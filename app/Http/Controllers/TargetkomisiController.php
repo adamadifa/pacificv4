@@ -89,7 +89,7 @@ class TargetkomisiController extends Controller
 
 
         if ($user->hasRole('regional sales manager')) {
-            $query->where('marketing_komisi_target.kode_regional', auth()->user()->kode_regional);
+            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
         }
         if (!empty($request->bulan)) {
             $query->where('bulan', $request->bulan);
