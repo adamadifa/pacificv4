@@ -302,20 +302,7 @@
                         dimaksud
                         diatas maka pihak kedua tidak berhak menuntut ganti rugi.
                     </li>
-                    <li>
-                        Apabila pihak kedua habis kontrak dan tidak diperpanjang, maka pihak kesatu tidak wajib
-                        memberikan
-                        alasan tentang tidak diperpanjangnya.
-                    </li>
-                    <li>
-                        Untuk hal-hal yang belum tercantum dalam syarat-syarat kerja ini berlaku ketentuan-ketentuan
-                        umum
-                        pada PKB.
-                    </li>
-                    <li>
-                        Apabila dikemudian hari terdapat kekeliruan pada surat perjanjian kerja bersama ini maka akan
-                        ditinjau kembali dan diperbaiki sebagaimana mestinya.
-                    </li>
+
                 </ol>
                 </p>
             @else
@@ -340,7 +327,6 @@
                         </ol>
                     </li>
 
-
                 </ol>
                 </p>
             @endif
@@ -358,6 +344,23 @@
                         dimaksud
                         diatas maka pihak kedua tidak berhak menuntut ganti rugi.
                     </li>
+                    <li>
+                        Apabila pihak kedua habis kontrak dan tidak diperpanjang, maka pihak kesatu tidak wajib
+                        memberikan
+                        alasan tentang tidak diperpanjangnya.
+                    </li>
+                    <li>
+                        Untuk hal-hal yang belum tercantum dalam syarat-syarat kerja ini berlaku ketentuan-ketentuan
+                        umum
+                        pada PKB.
+                    </li>
+                    <li>
+                        Apabila dikemudian hari terdapat kekeliruan pada surat perjanjian kerja bersama ini maka akan
+                        ditinjau kembali dan diperbaiki sebagaimana mestinya.
+                    </li>
+                </ol>
+            @else
+                <ol start="4">
                     <li>
                         Apabila pihak kedua habis kontrak dan tidak diperpanjang, maka pihak kesatu tidak wajib
                         memberikan
