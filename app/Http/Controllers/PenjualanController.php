@@ -326,6 +326,7 @@ class PenjualanController extends Controller
                     ->whereRaw('MID(no_faktur,4,2) != "PR"')
                     ->orderBy('no_faktur', 'desc')
                     ->first();
+                $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
             }
         }
 
