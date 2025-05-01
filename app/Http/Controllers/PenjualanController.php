@@ -315,7 +315,18 @@ class PenjualanController extends Controller
                 ->whereRaw('MID(no_faktur,4,2) != "PR"')
                 ->orderBy('no_faktur', 'desc')
                 ->first();
-            $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
+            if ($cekpenjualan != null) {
+
+                $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
+            } else {
+                $cekpenjualan = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                    ->where('kode_sales', $salesman->kode_sales)
+                    ->where('salesman.kode_cabang', $salesman->kode_cabang)
+                    ->where('tanggal', '<=', $penjualan->tanggal)
+                    ->whereRaw('MID(no_faktur,4,2) != "PR"')
+                    ->orderBy('no_faktur', 'desc')
+                    ->first();
+            }
         }
 
 
