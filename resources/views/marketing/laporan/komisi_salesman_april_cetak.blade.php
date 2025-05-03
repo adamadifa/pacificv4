@@ -288,7 +288,9 @@
                             </td>
                             <td class="center">
                                 @php
-                                    $persentaserouting = !empty($d->jmlkunjungan) ? ($d->jmlsesuaijadwal / $d->jmlkunjungan) * 100 : 0;
+                                    $persentaserouting = !empty($d->jmlkunjungan)
+                                        ? ($d->jmlsesuaijadwal / $d->jmlkunjungan) * 100
+                                        : 0;
                                 @endphp
                                 {{ formatAngkaDesimal($persentaserouting, 2) }}
                             </td>
@@ -315,7 +317,8 @@
                             <td class="right">
                                 @php
                                     $ratio_cashin = 0.1;
-                                    $reward_cashin = $d->status_komisi == 1 ? $d->realisasi_cashin * ($ratio_cashin / 100) : 0;
+                                    $reward_cashin =
+                                        $d->status_komisi == 1 ? $d->realisasi_cashin * ($ratio_cashin / 100) : 0;
                                     $total_reward_cashin += $reward_cashin;
                                 @endphp
                                 {{ formatAngka($reward_cashin) }}
@@ -323,7 +326,9 @@
                             <td class="right">{{ formatAngka($d->saldo_akhir_piutang) }}</td>
                             <td class="center">
                                 @php
-                                    $ratioljt = !empty($d->realisasi_cashin) ? ($d->saldo_akhir_piutang / $d->realisasi_cashin) * 100 : 0;
+                                    $ratioljt = !empty($d->realisasi_cashin)
+                                        ? ($d->saldo_akhir_piutang / $d->realisasi_cashin) * 100
+                                        : 0;
                                     if ($ratioljt > 0) {
                                         $ratioljt = $ratioljt;
                                     } else {
@@ -384,7 +389,10 @@
                                 <th class="right">{{ formatAngka(${"total_realisasi_$k->kode_kategori"}) }}</th>
                                 <th>
                                     @php
-                                        $poinspv = (${"total_realisasi_$k->kode_kategori"} / ${"total_target_$k->kode_kategori"}) * $k->poin;
+                                        $poinspv =
+                                            (${"total_realisasi_$k->kode_kategori"} /
+                                                ${"total_target_$k->kode_kategori"}) *
+                                            $k->poin;
                                         $total_poin_spv += $poinspv;
                                     @endphp
                                     {{ formatAngkaDesimal($poinspv) }}
@@ -470,7 +478,13 @@
                             <th class="right">{{ formatAngka(${"total_realisasi_$k->kode_kategori"}) }}</th>
                             <th>
                                 @php
-                                    $poinsmm = (${"total_realisasi_$k->kode_kategori"} / ${"total_target_$k->kode_kategori"}) * $k->poin;
+                                    $ratiopoinsmm =
+                                        ${"total_realisasi_$k->kode_kategori"} / ${"total_target_$k->kode_kategori"};
+                                    if ($ratiopoinsmm > 1) {
+                                        $poinsmm = $k->poin;
+                                    } else {
+                                        $poinsmm = $ratiopoinsmm * $k->poin;
+                                    }
                                     $total_poin_smm += $poinsmm;
                                 @endphp
                                 {{ formatAngkaDesimal($poinsmm) }}
