@@ -686,7 +686,7 @@ class GlobalProvider extends ServiceProvider
 
                 'datamaster_request' => $datamaster_request,
                 'datamaster_permission' => $datamaster_permission,
-                'level_user' => $level_user == 'spv presensi' ? 'asst. manager hrd' : $level_user,
+                'level_user' => $level_user,
                 'produksi_request' => $produksi_request,
                 'produksi_permission' => $produksi_permission,
                 'produksi_mutasi_produk_request' => $produksi_mutasi_produk_request,
