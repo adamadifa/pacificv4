@@ -106,61 +106,70 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
 
                 //Notifikasi SPV Presensi
+                if ($level_user == 'spv presensi') {
+                    $notifikasi_izinabsen_presensi = Disposisiizinabsen::where('hrd_izinabsen_disposisi.status', 0)
+                        ->leftJoin('users', 'hrd_izinabsen_disposisi.id_penerima', '=', 'users.id')
+                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('roles.name', 'asst. manager hrd')
+                        ->count();
+                    $notifikasi_izincuti_presensi = Disposisiizincuti::where('hrd_izincuti_disposisi.status', 0)
+                        ->leftJoin('users', 'hrd_izincuti_disposisi.id_penerima', '=', 'users.id')
+                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('roles.name', 'asst. manager hrd')
+                        ->count();
+                    $notifikasi_izinterlambat_presensi = Disposisiizinterlambat::where('hrd_izinterlambat_disposisi.status', 0)
+                        ->leftJoin('users', 'hrd_izinterlambat_disposisi.id_penerima', '=', 'users.id')
+                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('roles.name', 'asst. manager hrd')
+                        ->count();
+                    $notifikasi_izinsakit_presensi = Disposisiizinsakit::where('hrd_izinsakit_disposisi.status', 0)
+                        ->leftJoin('users', 'hrd_izinsakit_disposisi.id_penerima', '=', 'users.id')
+                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('roles.name', 'asst. manager hrd')
+                        ->count();
+                    $notifikasi_izinpulang_presensi = Disposisiizinpulang::where('hrd_izinpulang_disposisi.status', 0)
+                        ->leftJoin('users', 'hrd_izinpulang_disposisi.id_penerima', '=', 'users.id')
+                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('roles.name', 'asst. manager hrd')
+                        ->count();
+                    $notifikasi_izindinas_presensi = Disposisiizindinas::where('hrd_izindinas_disposisi.status', 0)
+                        ->leftJoin('users', 'hrd_izindinas_disposisi.id_penerima', '=', 'users.id')
+                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('roles.name', 'asst. manager hrd')
+                        ->count();
+                    $notifikasi_izinkoreksi_presensi = Disposisiizinkoreksi::where('hrd_izinkoreksi_disposisi.status', 0)
+                        ->leftJoin('users', 'hrd_izinkoreksi_disposisi.id_penerima', '=', 'users.id')
+                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('roles.name', 'asst. manager hrd')
+                        ->count();
+                    $notifikasi_izinkeluar_presensi = Disposisiizinkeluar::where('hrd_izinkeluar_disposisi.status', 0)
+                        ->leftJoin('users', 'hrd_izinkeluar_disposisi.id_penerima', '=', 'users.id')
+                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('roles.name', 'asst. manager hrd')
+                        ->count();
 
-                $notifikasi_izinabsen_presensi = Disposisiizinabsen::where('hrd_izinabsen_disposisi.status', 0)
-                    ->leftJoin('users', 'hrd_izinabsen_disposisi.id_penerima', '=', 'users.id')
-                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->where('roles.name', 'asst. manager hrd')
-                    ->count();
-                $notifikasi_izincuti_presensi = Disposisiizincuti::where('hrd_izincuti_disposisi.status', 0)
-                    ->leftJoin('users', 'hrd_izincuti_disposisi.id_penerima', '=', 'users.id')
-                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->where('roles.name', 'asst. manager hrd')
-                    ->count();
-                $notifikasi_izinterlambat_presensi = Disposisiizinterlambat::where('hrd_izinterlambat_disposisi.status', 0)
-                    ->leftJoin('users', 'hrd_izinterlambat_disposisi.id_penerima', '=', 'users.id')
-                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->where('roles.name', 'asst. manager hrd')
-                    ->count();
-                $notifikasi_izinsakit_presensi = Disposisiizinsakit::where('hrd_izinsakit_disposisi.status', 0)
-                    ->leftJoin('users', 'hrd_izinsakit_disposisi.id_penerima', '=', 'users.id')
-                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->where('roles.name', 'asst. manager hrd')
-                    ->count();
-                $notifikasi_izinpulang_presensi = Disposisiizinpulang::where('hrd_izinpulang_disposisi.status', 0)
-                    ->leftJoin('users', 'hrd_izinpulang_disposisi.id_penerima', '=', 'users.id')
-                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->where('roles.name', 'asst. manager hrd')
-                    ->count();
-                $notifikasi_izindinas_presensi = Disposisiizindinas::where('hrd_izindinas_disposisi.status', 0)
-                    ->leftJoin('users', 'hrd_izindinas_disposisi.id_penerima', '=', 'users.id')
-                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->where('roles.name', 'asst. manager hrd')
-                    ->count();
-                $notifikasi_izinkoreksi_presensi = Disposisiizinkoreksi::where('hrd_izinkoreksi_disposisi.status', 0)
-                    ->leftJoin('users', 'hrd_izinkoreksi_disposisi.id_penerima', '=', 'users.id')
-                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->where('roles.name', 'asst. manager hrd')
-                    ->count();
-                $notifikasi_izinkeluar_presensi = Disposisiizinkeluar::where('hrd_izinkeluar_disposisi.status', 0)
-                    ->leftJoin('users', 'hrd_izinkeluar_disposisi.id_penerima', '=', 'users.id')
-                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->where('roles.name', 'asst. manager hrd')
-                    ->count();
-
-                $total_notifikasi_izin_spvpresensi = $notifikasi_izinabsen_presensi + $notifikasi_izincuti_presensi +
-                    $notifikasi_izinterlambat_presensi + $notifikasi_izinsakit_presensi + $notifikasi_izinpulang_presensi +
-                    $notifikasi_izindinas_presensi + $notifikasi_izinkoreksi_presensi + $notifikasi_izinkeluar_presensi;
-
-
+                    $total_notifikasi_izin_spvpresensi = $notifikasi_izinabsen_presensi + $notifikasi_izincuti_presensi +
+                        $notifikasi_izinterlambat_presensi + $notifikasi_izinsakit_presensi + $notifikasi_izinpulang_presensi +
+                        $notifikasi_izindinas_presensi + $notifikasi_izinkoreksi_presensi + $notifikasi_izinkeluar_presensi;
+                } else {
+                    $notifikasi_izinabsen_presensi = 0;
+                    $notifikasi_izincuti_presensi = 0;
+                    $notifikasi_izinterlambat_presensi = 0;
+                    $notifikasi_izinsakit_presensi = 0;
+                    $notifikasi_izinpulang_presensi = 0;
+                    $notifikasi_izindinas_presensi = 0;
+                    $notifikasi_izinkoreksi_presensi = 0;
+                    $notifikasi_izinkeluar_presensi = 0;
+                    $total_notifikasi_izin_spvpresensi = 0;
+                }
                 // $notifikasi_log = Activity::where('status_log', 0)->whereIn('event', ['update', 'cancel', 'delete'])->count();
                 $notifikasi_update_data = Ticketupdatedata::where('status', 0)->count();
                 if ($level_user == "manager keuangan") {
@@ -321,6 +330,16 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_ajuanprogramkumulatif = 0;
                 $notifikasi_pencairanprogramkumulatif = 0;
                 $notifikasi_ajuan_program = 0;
+
+                $notifikasi_izinabsen_presensi = 0;
+                $notifikasi_izincuti_presensi = 0;
+                $notifikasi_izinterlambat_presensi = 0;
+                $notifikasi_izinsakit_presensi = 0;
+                $notifikasi_izinpulang_presensi = 0;
+                $notifikasi_izindinas_presensi = 0;
+                $notifikasi_izinkoreksi_presensi = 0;
+                $notifikasi_izinkeluar_presensi = 0;
+                $total_notifikasi_izin_spvpresensi = 0;
 
                 $notifikasi_ticket = 0;
                 //$notifikasi_log = 0;
