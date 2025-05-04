@@ -4,6 +4,9 @@
 @section('content')
 @section('navigasi')
     <span>Izin Absen</span>
+    @php
+        $level_user = $level_user == 'spv presensi' ? 'asst. manager hrd' : $level_user;
+    @endphp
 @endsection
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">

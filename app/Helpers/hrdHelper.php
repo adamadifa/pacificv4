@@ -212,6 +212,7 @@ function listApprovepresensi($kode_dept = "", $kode_cabang = "", $level = "")
             'gm marketing',
             'gm operasional',
             'asst. manager hrd',
+            'spv presensi',
             'direktur'
         ];
     }
