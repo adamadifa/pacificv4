@@ -53,6 +53,9 @@
             @if (!empty($notifikasi_hrd))
                 <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_hrd }}</div>
             @endif
+            @if ($level_user == 'spv presensi')
+                <div class="badge bg-danger rounded-pill ms-auto">{{ $total_notifikasi_izin_spvpresensi }}</div>
+            @endif
         </a>
         <ul class="menu-sub">
             @if (auth()->user()->hasAnyPermission(['penilaiankaryawan.index']))
@@ -142,6 +145,9 @@
                         <div>Pengajuan Izin</div>
                         @if (!empty($notifikasi_pengajuan_izin))
                             <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_pengajuan_izin }}</div>
+                        @endif
+                        @if ($level_user == 'spv presensi')
+                            <div class="badge bg-danger rounded-pill ms-auto">{{ $total_notifikasi_izin_spvpresensi }}</div>
                         @endif
                     </a>
                 </li>

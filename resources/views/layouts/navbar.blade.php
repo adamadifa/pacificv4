@@ -251,8 +251,7 @@
 
             @if (in_array($level_user, ['spv presensi']))
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
-                    <a class="nav-link dropdown-toggle hide-arrow" href="{{ route('izinabsen.index') }}" data-bs-toggle="dropdown"
-                        data-bs-auto-close="outside" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="{{ route('izinabsen.index') }}">
                         <i class="ti ti-layout-grid-add ti-md"></i>
                         <span class="badge bg-danger rounded-pill badge-notifications">{{ $total_notifikasi_izin_spvpresensi }}</span>
                     </a>
