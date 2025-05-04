@@ -9,6 +9,7 @@
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinabsen }}</span>
                     @endif
                     @if (!empty($notifikasi_izinabsen_presensi) && $level_user == 'spv presensi')
+                        {{ $level_user }}
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinabsen_presensi }}</span>
                     @endif
                 </a>
