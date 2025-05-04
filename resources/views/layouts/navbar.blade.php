@@ -38,7 +38,7 @@
                     'operation manager',
                     'sales marketing manager',
                     'regional sales manager',
-                    'manager keu',
+                    'manager keuangan',
                 ]))
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
@@ -247,6 +247,16 @@
                     </li>
                 @endif
 
+            @endif
+
+            @if (in_array($level_user, ['spv presensi']))
+                <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false">
+                        <i class="ti ti-layout-grid-add ti-md"></i>
+                        <span class="badge bg-danger rounded-pill badge-notifications">{{ $total_notifikasi }}</span>
+                    </a>
+                </li>
             @endif
             <!-- Quick links  -->
 

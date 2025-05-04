@@ -35,7 +35,7 @@
                                         </select>
                                     </div>
                                 @else
-                                    <input type="hidden" name="kode_cabang" value="{{ Auth::user()->kode_cabang }}" id="kode_cabang">
+                                    <input type="hidden" name="kode_cabang" value="{{ Auth::user()->kode_cabang }}" id="kode_cabang_search">
                                 @endrole
                                 <x-select label="Pilih Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
                                     select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
