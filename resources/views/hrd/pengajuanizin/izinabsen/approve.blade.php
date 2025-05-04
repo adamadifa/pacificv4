@@ -47,9 +47,6 @@
         </div>
     </div>
     <div class="row mt-3">
-        @php
-            $level_user == 'spv presensi' ? 'asst. manager hrd' : $level_user;
-        @endphp
         @if ($level_user != 'direktur')
             @if ($level_user != $end_role)
                 <div class="col">

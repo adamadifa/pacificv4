@@ -209,6 +209,7 @@ class IzinabsenController extends Controller
         $role = $user->getRoleNames()->first();
         $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
         $end_role = end($roles_approve);
+        $role = $role == "spv presensi" ? "asst. manager hrd" : $role;
         if ($role != $end_role && in_array($role, $roles_approve)) {
             $cek_index = array_search($role, $roles_approve) + 1;
         } else {
