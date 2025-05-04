@@ -217,6 +217,7 @@ class IzinabsenController extends Controller
         }
 
         $nextrole = $roles_approve[$cek_index];
+        return $nextrole;
         if ($nextrole == "regional sales manager") {
             $userrole = User::role($nextrole)
                 ->where('kode_regional', $izinabsen->kode_regional)
