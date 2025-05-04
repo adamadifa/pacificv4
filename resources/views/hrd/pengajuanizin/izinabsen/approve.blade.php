@@ -48,7 +48,7 @@
     </div>
     <div class="row mt-3">
         @if ($level_user != 'direktur')
-            @if ($level_user != $end_role)
+            @if ($level_user != $end_role && $level_user != 'spv presensi')
                 <div class="col">
                     <button class="btn btn-primary w-100" id="btnSimpan">
                         <i class="ti ti-thumb-up me-1"></i> Setuju,

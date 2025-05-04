@@ -212,12 +212,13 @@ class IzinabsenController extends Controller
         $role = $role == "spv presensi" ? "asst. manager hrd" : $role;
         if ($role != $end_role && in_array($role, $roles_approve)) {
             $cek_index = array_search($role, $roles_approve) + 1;
+            //return 1;
         } else {
             $cek_index = count($roles_approve) - 1;
+            //return 2;
         }
 
         $nextrole = $roles_approve[$cek_index];
-        return $nextrole;
         if ($nextrole == "regional sales manager") {
             $userrole = User::role($nextrole)
                 ->where('kode_regional', $izinabsen->kode_regional)
@@ -319,7 +320,7 @@ class IzinabsenController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $i_absen = new Izinabsen();
         $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
-        $role = $user->getRoleNames()->first();
+        $role = $user->getRoleNames()->first() == 'spv presensi' ? 'asst. manager hrd' : $user->getRoleNames()->first();
         $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
         $end_role = end($roles_approve);
 

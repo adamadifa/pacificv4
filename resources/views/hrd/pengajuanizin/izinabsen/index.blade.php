@@ -208,6 +208,7 @@
                                                             @endif
                                                         @endcan
                                                         @can('izinabsen.approve')
+                                                            {{-- {{ $level_user }} | {{ $d->posisi_ajuan }} | {{ $d->status }} --}}
                                                             @if ($level_user != 'direktur')
                                                                 @if (
                                                                     ($level_user == $d->posisi_ajuan && $d->status === '0') ||
