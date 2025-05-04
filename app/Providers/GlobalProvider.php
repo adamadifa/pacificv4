@@ -107,7 +107,7 @@ class GlobalProvider extends ServiceProvider
 
                 //Notifikasi SPV Presensi
 
-                $notifikasi_izinabsen_presensi = Disposisiizinabsen::where('id_penerima', auth()->user()->id)->where('status', 0)
+                $notifikasi_izinabsen_presensi = Disposisiizinabsen::where('id_penerima', auth()->user()->id)->where('hrd_izinabsen_disposisi.status', 0)
                     ->leftJoin('users', 'hrd_izinabsen_disposisi.id_penerima', '=', 'users.id')
                     ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
                     ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
