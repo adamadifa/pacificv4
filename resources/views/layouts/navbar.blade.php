@@ -254,8 +254,7 @@
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
                         data-bs-auto-close="outside" aria-expanded="false">
                         <i class="ti ti-layout-grid-add ti-md"></i>
-                        <span class="badge bg-danger rounded-pill badge-notifications"
-                            style="position: absolute; right: 50px; top:20px">{{ $total_notifikasi_izin_spvpresensi }}</span>
+                        <span class="badge bg-danger rounded-pill badge-notifications">{{ $total_notifikasi_izin_spvpresensi }}</span>
                     </a>
                 </li>
             @endif
