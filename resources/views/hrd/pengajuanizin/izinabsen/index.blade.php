@@ -153,8 +153,8 @@
                                                             </span>
                                                         @endif
                                                     @else
-                                                        @if ($level_user == $d->posisi_ajuan)
-                                                            @if ($level_user == 'asst. manager hrd' && $d->status == '1')
+                                                        @if ($level_user == $d->posisi_ajuan || ($level_user == 'spv presensi' && $d->posisi_ajuan == 'asst. manager hrd'))
+                                                            @if (in_array($level_user, ['spv presensi', 'asst. manager hrd']) && $d->status == '1')
                                                                 <span class="badge bg-primary">
                                                                     {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
                                                                 </span>
