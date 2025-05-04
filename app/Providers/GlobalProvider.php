@@ -758,6 +758,14 @@ class GlobalProvider extends ServiceProvider
                 'notifikasi_update_data' => $notifikasi_update_data,
 
                 'total_notifikasi_izin_spvpresensi' => $total_notifikasi_izin_spvpresensi,
+                'notifikasi_izinabsen_presensi' => $notifikasi_izinabsen_presensi,
+                'notifikasi_izinpulang_presensi' => $notifikasi_izinpulang_presensi,
+                'notifikasi_izinterlambat_presensi' => $notifikasi_izinterlambat_presensi,
+                'notifikasi_izinkeluar_presensi' => $notifikasi_izinkeluar_presensi,
+                'notifikasi_izincuti_presensi' => $notifikasi_izincuti_presensi,
+                'notifikasi_izinsakit_presensi' => $notifikasi_izinsakit_presensi,
+                'notifikasi_izinkoreksi_presensi' => $notifikasi_izinkoreksi_presensi,
+                'notifikasi_izindinas_presensi' => $notifikasi_izindinas_presensi,
 
 
                 'users' => $users
