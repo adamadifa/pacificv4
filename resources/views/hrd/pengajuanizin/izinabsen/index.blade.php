@@ -209,7 +209,9 @@
                                                         @endcan
                                                         @can('izinabsen.approve')
                                                             @if ($level_user != 'direktur')
-                                                                @if ($level_user == $d->posisi_ajuan && $d->status === '0')
+                                                                @if (
+                                                                    ($level_user == $d->posisi_ajuan && $d->status === '0') ||
+                                                                        ($level_user == 'spv presensi' && $d->posisi_ajuan == 'asst. manager hrd' && $d->status === '0'))
                                                                     <a href="#" class="btnApprove me-1"
                                                                         kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
                                                                         <i class="ti ti-external-link text-success"></i>
