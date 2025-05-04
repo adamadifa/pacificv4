@@ -197,7 +197,7 @@ function listApprovepresensi($kode_dept = "", $kode_cabang = "", $level = "")
         $list_approve =  ['gm marketing', 'asst. manager hrd', 'direktur'];
     } else if ($level == "gm operasional") {
         $list_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if (in_array($level, ['super admin', 'asst. manager hrd'])) {
+    } else if (in_array($level, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
         $list_approve =  [
             'operation manager',
             'sales marketing manager',
@@ -212,7 +212,6 @@ function listApprovepresensi($kode_dept = "", $kode_cabang = "", $level = "")
             'gm marketing',
             'gm operasional',
             'asst. manager hrd',
-            'spv presensi',
             'direktur'
         ];
     }
