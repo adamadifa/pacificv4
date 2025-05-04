@@ -48,8 +48,6 @@
                                             select2="select2Kodecabangsearch" />
                                     </div>
                                 </div>
-                            @else
-                                <input type="hidden" name="kode_cabang_search" value="{{ Auth::user()->kode_cabang }}" id="kode_cabang_search">
                             @endrole
 
                             <div class="row">

@@ -12,17 +12,13 @@
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     <div class="d-flex justify-content-end">
-                        <form action="{{ route('monitoringprogram.cetak') }}" method="GET" id="formCetak"
-                            target="_blank">
+                        <form action="{{ route('monitoringprogram.cetak') }}" method="GET" id="formCetak" target="_blank">
                             <input type="hidden" name="tahun" id='tahun_cetak' value="{{ Request('tahun') }}" />
                             <input type="hidden" name="bulan" id="bulan_cetak" value="{{ Request('bulan') }}" />
-                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak"
-                                value="{{ Request('kode_cabang') }}" />
-                            <input type="hidden" name="kode_program" id="kode_program_cetak"
-                                value="{{ Request('kode_program') }}" />
+                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang') }}" />
+                            <input type="hidden" name="kode_program" id="kode_program_cetak" value="{{ Request('kode_program') }}" />
                             <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
-                            <button class="btn btn-success" name="exportButton"><i
-                                    class="ti ti-download me-1"></i>Export Excel</button>
+                            <button class="btn btn-success" name="exportButton"><i class="ti ti-download me-1"></i>Export Excel</button>
                         </form>
                     </div>
                     <div class="row mt-2">
@@ -33,24 +29,23 @@
                                         <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
                                             <option value="">Semua Cabang</option>
                                             @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
-                                                    value="{{ $d->kode_cabang }}">
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
                                                     {{ textUpperCase($d->nama_cabang) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
+                                @else
+                                    <input type="hidden" name="kode_cabang" value="{{ Auth::user()->kode_cabang }}" id="kode_cabang">
                                 @endrole
-                                <x-select label="Pilih Program" name="kode_program" :data="$programikatan" key="kode_program"
-                                    textShow="nama_program" select2="select2Kodeprogram" upperCase="true"
-                                    selected="{{ Request('kode_program') }}" />
+                                <x-select label="Pilih Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
+                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
                                 <div class="row">
                                     <div class="col-lg-8 col-md-12 col-sm-12">
                                         <div class="form-group">
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
                                                 @foreach ($list_bulan as $d)
-                                                    <option
-                                                        {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                                    <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
                                                         value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
                                                 @endforeach
                                             </select>
@@ -62,8 +57,7 @@
                                             <select name="tahun" id="tahun" class="form-select">
                                                 <option value="">Tahun</option>
                                                 @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option {{ Request('tahun') == $t ? 'selected' : '' }}
-                                                        value="{{ $t }}">
+                                                    <option {{ Request('tahun') == $t ? 'selected' : '' }} value="{{ $t }}">
                                                         {{ $t }}</option>
                                                 @endfor
                                             </select>
@@ -75,8 +69,7 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i
-                                                    class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
+                                            <button class="btn btn-primary w-100"><i class="ti ti-heart-rate-monitor me-1"></i>Tampilkan
                                                 Data</button>
                                         </div>
                                     </div>
@@ -118,10 +111,7 @@
                                         @endphp
                                         @foreach ($peserta as $d)
                                             @php
-                                                $color_reward =
-                                                    $d->jml_dus >= $d->qty_target
-                                                        ? 'bg-success text-white'
-                                                        : 'bg-danger text-white';
+                                                $color_reward = $d->jml_dus >= $d->qty_target ? 'bg-success text-white' : 'bg-danger text-white';
                                                 if ($d->jml_dus >= $d->qty_target) {
                                                     //$reward = $d->reward * $d->jml_dus;
                                                     $bb_dep = ['PRIK004', 'PRIK001'];
@@ -144,8 +134,7 @@
                                                 <td>
                                                     <input type="hidden" name="kode_pelanggan[{{ $loop->index }}]"
                                                         value="{{ $d->kode_pelanggan }}">
-                                                    <input type="hidden" name="status[{{ $loop->index }}]"
-                                                        value="{{ $status }}">
+                                                    <input type="hidden" name="status[{{ $loop->index }}]" value="{{ $status }}">
                                                     {{ $d->kode_pelanggan }}
                                                 </td>
                                                 <td>{{ $d->nama_pelanggan }}</td>
@@ -158,43 +147,35 @@
                                                     {{-- <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
                                                     {{ formatAngka($d->jml_dus) }} --}}
 
-                                                    <input type="hidden" name="qty_tunai[{{ $loop->index }}]"
-                                                        value="{{ $d->jml_tunai }}">
+                                                    <input type="hidden" name="qty_tunai[{{ $loop->index }}]" value="{{ $d->jml_tunai }}">
                                                     {{ formatAngka($d->jml_tunai) }}
                                                 </td>
                                                 <td class="text-end">
                                                     {{-- <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
                                                     {{ formatAngka($d->jml_dus) }} --}}
 
-                                                    <input type="hidden" name="qty_kredit[{{ $loop->index }}]"
-                                                        value="{{ $d->jml_kredit }}">
+                                                    <input type="hidden" name="qty_kredit[{{ $loop->index }}]" value="{{ $d->jml_kredit }}">
                                                     {{ formatAngka($d->jml_kredit) }}
                                                 </td>
                                                 <td class="text-end">
-                                                    <input type="hidden" name="jumlah[{{ $loop->index }}]"
-                                                        value="{{ $d->jml_dus }}">
+                                                    <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
                                                     {{ formatAngka($d->jml_dus) }}
                                                 </td>
                                                 <td class="text-end">
-                                                    <input type="hidden" name="reward_tunai[{{ $loop->index }}]"
-                                                        value="{{ $reward_tunai }}">
+                                                    <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="{{ $reward_tunai }}">
                                                     {{ formatAngka($reward_tunai) }}
                                                 </td>
                                                 <td class="text-end">
-                                                    <input type="hidden" name="reward_kredit[{{ $loop->index }}]"
-                                                        value="{{ $reward_kredit }}">
+                                                    <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="{{ $reward_kredit }}">
                                                     {{ formatAngka($reward_kredit) }}
                                                 </td>
                                                 <td class="text-end">
-                                                    <input type="hidden" name="total_reward[{{ $loop->index }}]"
-                                                        value="{{ $reward }}">
+                                                    <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $reward }}">
                                                     {{ formatAngka($reward) }}
                                                 </td>
                                                 <td>
-                                                    <a href="#" class="btnDetailfaktur"
-                                                        kode_pelanggan="{{ $d->kode_pelanggan }}"
-                                                        bulan="{{ Request('bulan') }}"
-                                                        tahun="{{ Request('tahun') }}">
+                                                    <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d->kode_pelanggan }}"
+                                                        bulan="{{ Request('bulan') }}" tahun="{{ Request('tahun') }}">
                                                         <i class="ti ti-file-description text-primary"></i>
                                                     </a>
                                                 </td>
