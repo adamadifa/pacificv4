@@ -4,14 +4,15 @@
 @section('content')
 @section('navigasi')
     <span>Izin Absen</span>
-    @php
-        $level_user = $level_user == 'spv presensi' ? 'asst. manager hrd' : $level_user;
-    @endphp
+
 @endsection
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
             @include('layouts.navigation_pengajuanizin')
+            @php
+                $level_user = $level_user == 'spv presensi' ? 'asst. manager hrd' : $level_user;
+            @endphp
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     @can('izinabsen.create')
