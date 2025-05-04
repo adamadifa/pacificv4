@@ -254,7 +254,10 @@
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
                         data-bs-auto-close="outside" aria-expanded="false">
                         <i class="ti ti-layout-grid-add ti-md"></i>
-                        <span class="badge bg-danger rounded-pill badge-notifications">{{ $total_notifikasi }}</span>
+                        @if (!empty($notifikasi_pengajuan_izin))
+                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pengajuan_izin }}</span>
+                        @endif
                     </a>
                 </li>
             @endif
