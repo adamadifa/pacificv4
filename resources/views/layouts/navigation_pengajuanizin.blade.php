@@ -8,6 +8,9 @@
                     @if (!empty($notifikasi_izinabsen))
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinabsen }}</span>
                     @endif
+                    @if (!empty($notifikasi_izinabsen_presensi) && $level_user == 'spv presensi')
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinabsen_presensi }}</span>
+                    @endif
                 </a>
             </li>
         @endcan
@@ -19,6 +22,9 @@
                     @if (!empty($notifikasi_izinkeluar))
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinkeluar }}</span>
                     @endif
+                    @if (!empty($notifikasi_izinkeluar_presensi) && $level_user == 'spv presensi')
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinkeluar_presensi }}</span>
+                    @endif
                 </a>
             </li>
         @endcan
@@ -28,6 +34,9 @@
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Izin Pulang
                     @if (!empty($notifikasi_izinpulang))
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinpulang }}</span>
+                    @endif
+                    @if (!empty($notifikasi_izinpulang_presensi) && $level_user == 'spv presensi')
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinpulang_presensi }}</span>
                     @endif
                 </a>
             </li>
@@ -40,6 +49,9 @@
                     @if (!empty($notifikasi_izinterlambat))
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinterlambat }}</span>
                     @endif
+                    @if (!empty($notifikasi_izinterlambat_presensi) && $level_user == 'spv presensi')
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinterlambat_presensi }}</span>
+                    @endif
                 </a>
             </li>
         @endcan
@@ -50,6 +62,10 @@
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Izin Sakit
                     @if (!empty($notifikasi_izinsakit))
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinsakit }}</span>
+                    @endif
+
+                    @if (!empty($notifikasi_izinsakit_presensi) && $level_user == 'spv presensi')
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinsakit_presensi }}</span>
                     @endif
                 </a>
             </li>
@@ -62,6 +78,9 @@
                     @if (!empty($notifikasi_izincuti))
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izincuti }}</span>
                     @endif
+                    @if (!empty($notifikasi_izincuti_presensi) && $level_user == 'spv presensi')
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izincuti_presensi }}</span>
+                    @endif
                 </a>
             </li>
         @endcan
@@ -73,6 +92,9 @@
                     @if (!empty($notifikasi_izindinas))
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izindinas }}</span>
                     @endif
+                    @if (!empty($notifikasi_izindinas_presensi) && $level_user == 'spv presensi')
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izindinas_presensi }}</span>
+                    @endif
                 </a>
             </li>
         @endcan
@@ -83,6 +105,9 @@
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Izin Koreksi
                     @if (!empty($notifikasi_izinkoreksi))
                         <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinkoreksi }}</span>
+                    @endif
+                    @if (!empty($notifikasi_izinkoreksi_presensi) && $level_user == 'spv presensi')
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $notifikasi_izinkoreksi_presensi }}</span>
                     @endif
                 </a>
             </li>
