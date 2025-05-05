@@ -54,7 +54,7 @@
                         <tr>
                             <td>'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
-                            <td class="right">{{ formatAngkaDesimal($debet) }} ({{ }})</td>
+                            <td class="right">{{ formatAngkaDesimal($debet) }}</td>
                             <td class="right">{{ formatAngkaDesimal($kredit) }}</td>
                         </tr>
                     @endforeach
