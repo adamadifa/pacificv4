@@ -460,7 +460,7 @@
             Demikian perjanjian kerja bersama waktu tertentu ini dibuat dan ditandatangani oleh kedua belah pihak dalam
             keadaan sehat walafiat, sadar, mengerti tanpa ada paksaan dari siapapun atau pihak manapun.
             </p>
-            <p style="margin-top:2rem !important">
+            <p>
             <table style="width: 100%;">
                 <tr>
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
