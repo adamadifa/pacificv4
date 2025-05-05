@@ -599,7 +599,7 @@ class LaporanpembelianController extends Controller
             'jk.jurnalkredit',
             'coa.nama_akun',
             'kode_transaksi',
-            DB::raw('SUM((jumlah * harga) + penyesuaian) as total')
+            DB::raw('SUM((ROUND(jumlah,2) * ROUND(harga,2)) + ROUND(penyesuaian,2)) as total')
         );
         $query->join('pembelian', 'pembelian_detail.no_bukti', '=', 'pembelian.no_bukti');
         $query->leftJoin('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun');
