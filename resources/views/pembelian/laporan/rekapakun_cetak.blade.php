@@ -48,14 +48,13 @@
                                 $debet = $d->total + $d->jurnaldebet;
                                 $kredit = $d->jurnalkredit;
                             }
-                            $totaldebet += ROUND($debet, 2);
-                            $totalkredit += ROUND($kredit, 2);
+
                         @endphp
                         <tr>
                             <td>'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
-                            <td class="right">{{ formatAngkaDesimal($debet) }}</td>
-                            <td class="right">{{ formatAngkaDesimal($kredit) }}</td>
+                            <td class="right">{{ formatAngkaDesimal($debet) }} ({{ $debet }})</td>
+                            <td class="right">{{ formatAngkaDesimal($kredit) }} ({{ $kredit }})</td>
                         </tr>
                     @endforeach
                     @php
