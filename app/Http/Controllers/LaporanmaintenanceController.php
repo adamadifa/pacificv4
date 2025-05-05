@@ -44,7 +44,7 @@ class LaporanmaintenanceController extends Controller
             DB::raw("SUM(IF(maintenance_barang_masuk.status = '1' , maintenance_barang_masuk_detail.jumlah ,0 )) AS qty_pembelian"),
             DB::raw("SUM(IF(maintenance_barang_masuk.status = '2' , maintenance_barang_masuk_detail.jumlah ,0 )) AS qty_lainnya"),
             DB::raw("SUM(IF(maintenance_barang_masuk.status = '2' , maintenance_barang_masuk_detail.harga ,0 )) AS harga_lainnya"),
-            DB::raw("SUM(pembelian.harga) as harga_pembelian"),
+            DB::raw("SUM(pembelian.harga) / COUNT(no_bukti) as harga_pembelian"),
             DB::raw("SUM(pembelian.penyesuaian) as penyesuaian"),
             DB::raw("SUM(0) as qty_keluar"),
             DB::raw("SUM(0) as qty_keluar_lainnya")
