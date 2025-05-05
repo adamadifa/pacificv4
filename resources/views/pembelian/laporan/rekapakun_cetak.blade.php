@@ -42,11 +42,11 @@
                     @foreach ($pmb as $key => $d)
                         @php
                             if ($d->kode_transaksi == 'PNJ') {
-                                $debet = ROUND($d->jurnaldebet, 2);
-                                $kredit = ROUND($d->total, 2) + ROUND($d->jurnaldebet, 2);
+                                $debet = $d->jurnaldebet;
+                                $kredit = $d->total + $d->jurnalkredit;
                             } else {
-                                $debet = ROUND($d->total, 2) + ROUND($d->jurnaldebet, 2);
-                                $kredit = ROUND($d->jurnalkredit, 2);
+                                $debet = $d->total + $d->jurnaldebet;
+                                $kredit = $d->jurnalkredit;
                             }
                             $totaldebet += $debet;
                             $totalkredit += $kredit;
@@ -96,7 +96,13 @@
                 <tfoot>
                     <tr>
                         <th colspan="2">TOTAL</th>
-                        <th class="right">{{ formatAngkaDesimal($totaldebet + $totalhd + $totaljurnaldebet) }}</th>
+                        <th class="right">
+                            @php
+                                $grandtotaldebet =
+                                    ROUND($totaldebet, 2) + ROUND($totalhd, 2) + ROUND($totaljurnaldebet);
+                            @endphp
+                            {{ formatAngkaDesimal($grandtotaldebet) }}
+                        </th>
                         <th class="right">{{ formatAngkaDesimal($totalkredit + $totalhk + $totaljurnalkredit) }}</th>
                     </tr>
                 </tfoot>
