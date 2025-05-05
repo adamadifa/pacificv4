@@ -101,6 +101,8 @@
                                 $grandtotaldebet =
                                     ROUND($totaldebet, 2) + ROUND($totalhd, 2) + ROUND($totaljurnaldebet);
                             @endphp
+                            {{ $totaldebet . '+' . $totalhd . '+' . $totaljurnaldebet }}
+                            <br>
                             {{ formatAngkaDesimal($grandtotaldebet) }}
                         </th>
                         <th class="right">{{ formatAngkaDesimal($totalkredit + $totalhk + $totaljurnalkredit) }}</th>
