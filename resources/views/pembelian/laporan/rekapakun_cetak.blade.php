@@ -42,19 +42,20 @@
                     @foreach ($pmb as $key => $d)
                         @php
                             if ($d->kode_transaksi == 'PNJ') {
-                                $debet = $d->jurnaldebet;
-                                $kredit = $d->total + $d->jurnalkredit;
+                                $debet = ROUND($d->jurnaldebet, 2);
+                                $kredit = ROUND($d->total, 2) + ROUND($d->jurnaldebet, 2);
                             } else {
-                                $debet = $d->total + $d->jurnaldebet;
-                                $kredit = $d->jurnalkredit;
+                                $debet = ROUND($d->total, 2) + ROUND($d->jurnaldebet, 2);
+                                $kredit = ROUND($d->jurnalkredit, 2);
                             }
-
+                            $totaldebet += $debet;
+                            $totalkredit += $kredit;
                         @endphp
                         <tr>
                             <td>'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
-                            <td class="right">{{ formatAngkaDesimal($debet) }} ({{ $debet }})</td>
-                            <td class="right">{{ formatAngkaDesimal($kredit) }} ({{ $kredit }})</td>
+                            <td class="right">{{ formatAngkaDesimal($debet) }} ({{ }})</td>
+                            <td class="right">{{ formatAngkaDesimal($kredit) }}</td>
                         </tr>
                     @endforeach
                     @php
