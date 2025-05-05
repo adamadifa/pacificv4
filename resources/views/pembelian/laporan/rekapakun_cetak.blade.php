@@ -48,8 +48,8 @@
                                 $debet = $d->total + $d->jurnaldebet;
                                 $kredit = $d->jurnalkredit;
                             }
-                            $totaldebet += $debet;
-                            $totalkredit += $kredit;
+                            $totaldebet += ROUND($debet, 2);
+                            $totalkredit += ROUND($kredit, 2);
                         @endphp
                         <tr>
                             <td>'{{ $d->kode_akun }}</td>
