@@ -198,7 +198,7 @@
                                                                     <i class="ti ti-edit text-success"></i>
                                                                 </a>
                                                             </div>
-                                                        @elseif ({{ var_dump(in_array($level_user, $roles_approve_targetkomisi)) }}(in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0') ||
+                                                        @elseif ({{ in_array($level_user, $roles_approve_targetkomisi) }}(in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0') ||
                                                                 (in_array($level_user, $roles_approve_targetkomisi) &&
                                                                     $d->id_pengirim == auth()->user()->id &&
                                                                     $d->status_ajuan == '0'))
