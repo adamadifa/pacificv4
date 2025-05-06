@@ -462,7 +462,7 @@ class LaporangudangbahanController extends Controller
             //Pembelian
             ->leftJoin(
                 DB::raw("(
-                SELECT kode_barang,SUM(ROUND(jumlah*harga,2))+ROUND(penyesuaian,2)) as total_harga
+                SELECT kode_barang,SUM((ROUND(jumlah*harga,2))+penyesuaian) as total_harga
                 FROM pembelian_detail
                 INNER JOIN pembelian ON pembelian_detail.no_bukti = pembelian.no_bukti
                 WHERE tanggal BETWEEN '$dari' AND '$sampai'
