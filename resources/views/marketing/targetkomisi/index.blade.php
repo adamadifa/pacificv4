@@ -208,6 +208,7 @@
                                                             </div>
                                                         @endif
                                                     @endcan
+                                                    {{ $d->status_disposisi }}
                                                     {{ $d->status_disposisi == '0' ? 'true' : 'false' }}
                                                     @can('targetkomisi.show')
                                                         <div>
