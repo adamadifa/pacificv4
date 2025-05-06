@@ -262,6 +262,9 @@
                                 @endphp
                                 {{ formatAngka($persentase_ro) }} %
                             </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td class="center">{{ formatAngka($d->realisasi_penjvsavg) }}</td>
                             <td class="right">
                                 @php
