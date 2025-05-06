@@ -28,7 +28,7 @@ class TargetkomisiController extends Controller
         $data['start_year'] = config('global.start_year');
 
         // dd($user->roles->pluck('name'));
-        if ($user->hasRole($roles_approve_targetkomisi) && !$user->hasRole('regional sales manager')) {
+        if ($user->hasRole($roles_approve_targetkomisi)) {
             $query = Disposisitargetkomisi::select(
                 'marketing_komisi_target_disposisi.kode_target',
                 'bulan',
