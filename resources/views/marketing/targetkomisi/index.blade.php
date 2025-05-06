@@ -20,8 +20,9 @@
                             @hasanyrole($roles_show_cabang)
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
+                                            key="kode_cabang" textShow="nama_cabang" upperCase="true"
+                                            selected="{{ Request('kode_cabang_search') }}"
                                             select2="select2Kodecabangsearch" />
                                     </div>
                                 </div>
@@ -33,7 +34,8 @@
                                         <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
                                             <option value="">Poisi Ajuan</option>
                                             @foreach ($roles_approve_targetkomisi as $role)
-                                                <option value="{{ $role }}" {{ Request('posisi_ajuan') == $role ? 'selected' : '' }}>
+                                                <option value="{{ $role }}"
+                                                    {{ Request('posisi_ajuan') == $role ? 'selected' : '' }}>
                                                     {{ textUpperCase($role) }}</option>
                                             @endforeach
                                         </select>
@@ -44,7 +46,8 @@
                                         <select name="bulan" id="bulan" class="form-select">
                                             <option value="">Bulan</option>
                                             @foreach ($list_bulan as $d)
-                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }} value="{{ $d['kode_bulan'] }}">
+                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                                    value="{{ $d['kode_bulan'] }}">
                                                     {{ $d['nama_bulan'] }}</option>
                                             @endforeach
                                         </select>
@@ -130,7 +133,8 @@
                                                     @endphp
                                                 @endif
 
-                                                <span class="badge {{ $color }}">{{ textCamelCase($d->role) }}</span>
+                                                <span
+                                                    class="badge {{ $color }}">{{ textCamelCase($d->role) }}</span>
                                             </td>
                                             <td class="text-center">
                                                 @if ($d->status == '0')
@@ -139,7 +143,8 @@
                                                     <i class="ti ti-checks text-success"></i>
                                                 @endif
                                             </td>
-                                            <td>{{ !empty($d->created_at) ? date('d-m-Y H:i:s', strtotime($d->created_at)) : '' }}</td>
+                                            <td>{{ !empty($d->created_at) ? date('d-m-Y H:i:s', strtotime($d->created_at)) : '' }}
+                                            </td>
                                             <td>
                                                 <div class="d-flex">
                                                     @can('targetkomisi.approve')
@@ -152,23 +157,27 @@
                                                             @else
                                                                 @if ($level_user == 'direktur')
                                                                     @if ($d->status_disposisi == '1')
-                                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                                        <form method="POST" name="deleteform"
+                                                                            class="deleteform"
                                                                             action="{{ route('targetkomisi.cancel', Crypt::encrypt($d->kode_target)) }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <a href="#" class="cancel-confirm me-1">
-                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                                <i
+                                                                                    class="ti ti-square-rounded-x text-danger"></i>
                                                                             </a>
                                                                         </form>
                                                                     @endif
                                                                 @else
                                                                     @if ($d->status_ajuan == '0' && $d->role == $nextlevel)
-                                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                                        <form method="POST" name="deleteform"
+                                                                            class="deleteform"
                                                                             action="{{ route('targetkomisi.cancel', Crypt::encrypt($d->kode_target)) }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <a href="#" class="cancel-confirm me-1">
-                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                                <i
+                                                                                    class="ti ti-square-rounded-x text-danger"></i>
                                                                             </a>
                                                                         </form>
                                                                     @endif
@@ -180,16 +189,19 @@
                                                         {{-- {{ var_dump(in_array($level_user, $roles_approve_targetkomisi) && $d->id_pengirim == auth()->user()->id && $d->status_ajuan == '0') }}
                                           {{ var_dump(in_array($level_user, $roles_approve_targetkomisi) && $d->id_pengirim == auth()->user()->id && $d->status_ajuan == '0') }}
                                           {{ $d->status_ajuan }} {{ $d->status_disposisi }} --}}
-                                                        @if (($d->id_pengirim == auth()->user()->id && !in_array($level_user, $roles_approve_targetkomisi)) || $level_user == 'super admin')
+                                                        @if (
+                                                            ($d->id_pengirim == auth()->user()->id && !in_array($level_user, $roles_approve_targetkomisi)) ||
+                                                                $level_user == 'super admin')
                                                             <div>
                                                                 <a href="#" class="me-2 btnEdit"
                                                                     kode_target="{{ Crypt::encrypt($d->kode_target) }}">
                                                                     <i class="ti ti-edit text-success"></i>
                                                                 </a>
                                                             </div>
-                                                        @elseif (
-                                                            (in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0') ||
-                                                                (in_array($level_user, $roles_approve_targetkomisi) && $d->id_pengirim == auth()->user()->id && $d->status_ajuan == '0'))
+                                                        @elseif ({{ var_dump(in_array($level_user, $roles_approve_targetkomisi)) }}(in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0') ||
+                                                                (in_array($level_user, $roles_approve_targetkomisi) &&
+                                                                    $d->id_pengirim == auth()->user()->id &&
+                                                                    $d->status_ajuan == '0'))
                                                             <div>
                                                                 <a href="#" class="me-2 btnEdit"
                                                                     kode_target="{{ Crypt::encrypt($d->kode_target) }}">
@@ -200,7 +212,8 @@
                                                     @endcan
                                                     @can('targetkomisi.show')
                                                         <div>
-                                                            <a href="#" class="me-2 btnShow" kode_target="{{ Crypt::encrypt($d->kode_target) }}">
+                                                            <a href="#" class="me-2 btnShow"
+                                                                kode_target="{{ Crypt::encrypt($d->kode_target) }}">
                                                                 <i class="ti ti-file-description text-info"></i>
                                                             </a>
                                                         </div>
