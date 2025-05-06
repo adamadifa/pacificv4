@@ -186,9 +186,6 @@
                                                         </div>
                                                     @endcan
                                                     @can('targetkomisi.edit')
-                                                        {{-- {{ var_dump(in_array($level_user, $roles_approve_targetkomisi) && $d->id_pengirim == auth()->user()->id && $d->status_ajuan == '0') }}
-                                          {{ var_dump(in_array($level_user, $roles_approve_targetkomisi) && $d->id_pengirim == auth()->user()->id && $d->status_ajuan == '0') }}
-                                          {{ $d->status_ajuan }} {{ $d->status_disposisi }} --}}
                                                         @if (
                                                             ($d->id_pengirim == auth()->user()->id && !in_array($level_user, $roles_approve_targetkomisi)) ||
                                                                 $level_user == 'super admin')
@@ -198,12 +195,11 @@
                                                                     <i class="ti ti-edit text-success"></i>
                                                                 </a>
                                                             </div>
-                                                            @elseif
-                                                            (
-                                                                (in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0') ||
-                                                                    (in_array($level_user, $roles_approve_targetkomisi) &&
-                                                                        $d->id_pengirim == auth()->user()->id &&
-                                                                        $d->status_ajuan == '0'))
+                                                        @elseif (
+                                                            (in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0') ||
+                                                                (in_array($level_user, $roles_approve_targetkomisi) &&
+                                                                    $d->id_pengirim == auth()->user()->id &&
+                                                                    $d->status_ajuan == '0'))
                                                             <div>
                                                                 <a href="#" class="me-2 btnEdit"
                                                                     kode_target="{{ Crypt::encrypt($d->kode_target) }}">
