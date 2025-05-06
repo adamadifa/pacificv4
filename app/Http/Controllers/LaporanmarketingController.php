@@ -4067,6 +4067,7 @@ class LaporanmarketingController extends Controller
         $duabulantahunlalu = getbulandantahunlalu($bulanlalu, $tahunlalu, 'tahun');
 
         $tigabulanlalu = getbulandantahunlalu($duabulanlalu, $duabulantahunlalu, 'bulan');
+        $tigabulanlalu = str_pad($tigabulanlalu, 2, '0', STR_PAD_LEFT);
         $tigabulantahunlalu = getbulandantahunlalu($duabulanlalu, $duabulantahunlalu, 'tahun');
 
 
