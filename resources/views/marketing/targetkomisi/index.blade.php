@@ -208,6 +208,7 @@
                                                             </div>
                                                         @endif
                                                     @endcan
+                                                    {{ in_array($level_user, $roles_approve_targetkomisi) }}
                                                     @can('targetkomisi.show')
                                                         <div>
                                                             <a href="#" class="me-2 btnShow"
