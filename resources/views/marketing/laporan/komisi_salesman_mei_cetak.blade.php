@@ -95,7 +95,7 @@
                             <th colspan="3" class="green">{{ $d->deskripsi }}</th>
                         @endforeach
                         <th rowspan="2" colspan="2" class="orange">Total Poin</th>
-                        <th rowspan="2" colspan="2" class="biru1">OMSET RO VS BULAN LALU</th>
+                        <th rowspan="2" colspan="5" class="biru1">OMSET RO VS BULAN LALU</th>
                         <th rowspan="2" colspan="2" class="bg-warna-campuran2">CASHIN</th>
                         <th rowspan="2" colspan="3" class="bg-warna-campuran3">LJT</th>
                         <th rowspan="3">TOTAL REWARD</th>
@@ -116,9 +116,11 @@
 
 
 
-                        <th class="bg-warna-campuran2">REALISASI</th>
+                        <th class="bg-warna-campuran2">OA</th>
+                        <th class="bg-warna-campuran2">RO</th>
+                        <th class="bg-warna-campuran2">%</th>
+                        <th class="bg-warna-campuran2">>= PENJUALAN BULAN LALU</th>
                         <th class="bg-warna-campuran2">REWARD</th>
-
 
                         <th class="bg-warna-campuran2">REALISASI</th>
                         <th class="bg-warna-campuran2">REWARD</th>
@@ -252,10 +254,18 @@
                                 @endphp
                                 {{ formatAngka($reward_qty) }}
                             </td>
+                            <td class="center">{{ formatAngka($d->realisasi_oa3bulan) }}</td>
+                            <td class="center">{{ formatAngka($d->realisasi_oa) }}</td>
+                            <td class="center">
+                                @php
+                                    $persentase_ro = !empty($d->realisasi_oa3bulan) ? ($d->realisasi_oa / $d->realisasi_oa3bulan) * 100 : 0;
+                                @endphp
+                                {{ formatAngka($persentase_ro) }} %
+                            </td>
                             <td class="center">{{ formatAngka($d->realisasi_penjvsavg) }}</td>
                             <td class="right">
                                 @php
-                                    $reward_penjvsavg = $d->status_komisi == 1 ? $d->realisasi_penjvsavg * 2000 : 0;
+                                    $reward_penjvsavg = $d->status_komisi == 1 && $persentase_ro >= 80 ? $d->realisasi_penjvsavg * 2000 : 0;
                                     $total_reward_penjvsavg += $reward_penjvsavg;
                                 @endphp
                                 {{ formatAngka($reward_penjvsavg) }}

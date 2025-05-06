@@ -4073,7 +4073,6 @@ class LaporanmarketingController extends Controller
 
         $start_tigabulanlalu = $tigabulantahunlalu . "-" . $tigabulanlalu . "-01";
 
-        dd($start_tigabulanlalu);
         if ($bulanlalu == 1) {
             $blnlast1 = 12;
             $thnlast1 = $request->tahun - 1;
@@ -4376,10 +4375,10 @@ class LaporanmarketingController extends Controller
             ->where('status_batal', 0)
             ->groupBy('marketing_penjualan.kode_salesman');
 
-        $subqueryOA3bulan = Penjualan::select('marketing_penjualan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa'))
+        $subqueryOA3bulan = Penjualan::select('marketing_penjualan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa3bulan'))
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
-            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->whereBetween('marketing_penjualan.tanggal', [$start_tigabulanlalu, $end_date_bulanlalu])
             ->where('status_batal', 0)
             ->groupBy('marketing_penjualan.kode_salesman');
 
@@ -4560,6 +4559,7 @@ class LaporanmarketingController extends Controller
             'salesman.nama_salesman',
             'status_komisi_salesman as status_komisi',
             'realisasi_oa',
+            'realisasi_oa3bulan',
             'realisasi_penjvsavg',
             'jmlkunjungan',
             'jmlsesuaijadwal',
@@ -4582,6 +4582,10 @@ class LaporanmarketingController extends Controller
 
             ->leftjoinSub($subqueryOA, 'oa', function ($join) {
                 $join->on('salesman.kode_salesman', '=', 'oa.kode_salesman');
+            })
+
+            ->leftjoinSub($subqueryOA3bulan, 'oatigabulan', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'oatigabulan.kode_salesman');
             })
 
             ->leftjoinSub($subqueryPenjvsavg, 'penjvsavg', function ($join) {
