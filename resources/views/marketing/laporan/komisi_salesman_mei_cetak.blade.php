@@ -262,9 +262,7 @@
                                 @endphp
                                 {{ formatAngka($persentase_ro) }} %
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+
                             <td class="center">{{ formatAngka($d->realisasi_penjvsavg) }}</td>
                             <td class="right">
                                 @php
@@ -355,7 +353,9 @@
                                 @endphp
                                 {{ formatAngka($reward_qty_spv) }}
                             </th>
-
+                            <th></th>
+                            <th></th>
+                            <th></th>
                             <th class="center">{{ $total_realisasi_penjvsavg }}</th>
                             <th class="right">
                                 @php
@@ -420,7 +420,9 @@
                             @endphp
                             {{ formatAngka($reward_qty_smm) }}
                         </th>
-
+                        <th></th>
+                        <th></th>
+                        <th></th>
                         <th class="center">{{ $total_realisasi_penjvsavg }}</th>
                         <th class="right">
                             @php
