@@ -208,7 +208,7 @@
                                                             </div>
                                                         @endif
                                                     @endcan
-                                                    {{ in_array($level_user, $roles_approve_targetkomisi) }}
+                                                    {{ in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0' ? 'true' : 'false' }}
                                                     @can('targetkomisi.show')
                                                         <div>
                                                             <a href="#" class="me-2 btnShow"
