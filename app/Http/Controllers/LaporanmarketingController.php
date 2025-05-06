@@ -4062,6 +4062,17 @@ class LaporanmarketingController extends Controller
         $bulanlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'bulan');
         $tahunlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'tahun');
 
+
+        $duabulanlalu = getbulandantahunlalu($bulanlalu, $tahunlalu, 'bulan');
+        $duabulantahunlalu = getbulandantahunlalu($bulanlalu, $tahunlalu, 'tahun');
+
+        $tigabulanlalu = getbulandantahunlalu($duabulanlalu, $duabulantahunlalu, 'bulan');
+        $tigabulantahunlalu = getbulandantahunlalu($duabulanlalu, $duabulantahunlalu, 'tahun');
+
+
+        $start_tigabulanlalu = $tigabulantahunlalu . "-" . $tigabulanlalu . "-01";
+
+        dd($start_tigabulanlalu);
         if ($bulanlalu == 1) {
             $blnlast1 = 12;
             $thnlast1 = $request->tahun - 1;
@@ -4358,6 +4369,13 @@ class LaporanmarketingController extends Controller
         // dd($subqueryRealisasi->get());
 
         $subqueryOA = Penjualan::select('marketing_penjualan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa'))
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->where('status_batal', 0)
+            ->groupBy('marketing_penjualan.kode_salesman');
+
+        $subqueryOA3bulan = Penjualan::select('marketing_penjualan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa'))
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
@@ -4712,8 +4730,9 @@ class LaporanmarketingController extends Controller
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
             header("Content-Disposition: attachment; filename=Komisi Salesman.xls");
         }
-
-        if ($request->bulan == 4 && $request->tahun == 2025) {
+        if ($request->bulan <= 3 && $request->tahun <= 2025) {
+            return view('marketing.laporan.komisi_salesman_cetak', $data);
+        } else if ($request->bulan == 4 && $request->tahun == 2025) {
             return view('marketing.laporan.komisi_salesman_april_cetak', $data);
         } else {
             return view('marketing.laporan.komisi_salesman_mei_cetak', $data);
