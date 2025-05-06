@@ -308,14 +308,7 @@
                             </td>
                             <td class="right">
                                 @php
-                                    $total_reward =
-                                        $reward_qty +
-                                        $reward_kendaraan +
-                                        $reward_oa +
-                                        $reward_penjvsavg +
-                                        $reward_routing +
-                                        $reward_cashin +
-                                        $rewardljt;
+                                    $total_reward = $reward_qty + $reward_penjvsavg + $reward_cashin + $rewardljt;
                                 @endphp
                                 {{ formatAngka($total_reward) }}
                             </td>
@@ -386,14 +379,7 @@
                             </th>
                             <th class="right">
                                 @php
-                                    $total_reward_spv =
-                                        $reward_qty_spv +
-                                        $reward_kendaraan_spv +
-                                        $reward_oa_spv +
-                                        $reward_penjvsavg_spv +
-                                        $reward_routing_spv +
-                                        $reward_cashin_spv +
-                                        $reward_ljt_spv;
+                                    $total_reward_spv = $reward_qty_spv + $reward_penjvsavg_spv + $reward_cashin_spv + $reward_ljt_spv;
                                 @endphp
                                 {{ formatAngka($total_reward_spv) }}
                             </th>
@@ -459,14 +445,7 @@
                         </th>
                         <th class="right">
                             @php
-                                $total_reward_smm =
-                                    $reward_qty_smm +
-                                    $reward_kendaraan_smm +
-                                    $reward_oa_smm +
-                                    $reward_penjvsavg_smm +
-                                    $reward_routing_smm +
-                                    $reward_cashin_smm +
-                                    $reward_ljt_smm;
+                                $total_reward_smm = $reward_qty_smm + $reward_penjvsavg_smm + $reward_cashin_smm + $reward_ljt_smm;
                             @endphp
                             {{ formatAngka($total_reward_smm) }}
                         </th>
