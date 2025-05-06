@@ -350,13 +350,7 @@
                                 @endphp
                                 {{ formatAngka($reward_penjvsavg_spv) }}
                             </th>
-                            <th></th>
-                            <th class="right">
-                                @php
-                                    $reward_routing_spv = $total_reward_routing / count($komisi);
-                                @endphp
-                                {{ formatAngka($reward_routing_spv) }}
-                            </th>
+
                             <th class="right">
                                 {{ formatAngka($total_realisasi_cashin) }}
                             </th>
