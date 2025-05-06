@@ -83,7 +83,7 @@ class MonitoringprogramController extends Controller
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
             ->where('salesman.kode_cabang', $kode_cabang)
             ->where('marketing_penjualan.status', 1)
-            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top")
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3")
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
             ->groupBy('marketing_penjualan.kode_pelanggan');
