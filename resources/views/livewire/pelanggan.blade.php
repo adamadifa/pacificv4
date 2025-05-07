@@ -11,23 +11,21 @@
     </div>
     @foreach ($datapelanggan as $key => $d)
         <a href="{{ route('sfa.showpelanggan', Crypt::encrypt($d->kode_pelanggan)) }}">
-            <div class="card mb-2">
-                <div class="card-body d-flex" style="padding: 10px; !important">
-
+            <div class="card mb-2"
+                @if ($d->status_aktif_pelanggan == 0) style="background: linear-gradient(90deg, #ff0000, #ff6666);" @endif>
+                <div class="card-body d-flex" style="padding: 10px !important;">
                     <div>
-                        <img class="card-img  " src="../../assets/img/elements/9.jpg" alt="Card image"
+                        <img class="card-img" src="../../assets/img/elements/9.jpg" alt="Card image"
                             style="width: 60px; height: auto;">
                     </div>
                     <div class="ms-2">
-                        <h6 class="m-0">{{ $d->kode_pelanggan }}</h6>
+                        <h6 class="m-0">{{ $d->kode_pelanggan }} {{ $d->status_aktif_pelanggan }}</h6>
                         <h7>{{ textUpperCase($d->nama_pelanggan) }}</h7>
                         {{-- <br>
-                    <span>Limit : {{ formatAngka($d->limit_pelanggan) }}</span> --}}
+                        <span>Limit : {{ formatAngka($d->limit_pelanggan) }}</span> --}}
                         <br>
                         <span class="badge bg-primary">{{ $d->nama_wilayah }}</span>
                     </div>
-
-
                 </div>
             </div>
         </a>
