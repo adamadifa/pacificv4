@@ -20,7 +20,22 @@
         <div class="row">
             <div class="col">
                 <div class="alert alert-danger">
-                    <h5>Piutang</h5>
+                    <h5><i class="ti ti-info-circle"></i> Piutang</h5>
+                    <p>Pelanggan ini memiliki Faktur Belum Lunas sebanyak {{ $piutang->count() }} Faktur</p>
+                    <table class="table">
+                        <tr>
+                            <th>No. Faktur</th>
+                            <th>Tanggal</th>
+                            <th>Total Piutang</th>
+                        </tr>
+                        @foreach ($piutang as $d)
+                            <tr>
+                                <td>{{ $d->no_faktur }}</td>
+                                <td>{{ $d->tanggal }}</td>
+                                <td>{{ $d->total_piutang }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
                 </div>
             </div>
         </div>
