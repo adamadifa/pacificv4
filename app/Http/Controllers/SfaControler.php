@@ -1246,6 +1246,24 @@ class SfaControler extends Controller
 
         $diskon_json = json_encode($diskon);
         $data['diskon'] = $diskon_json;
+
+        $hariini = date('Y-m-d');
+        $querypenjualan = Penjualan::query();
+        $querypenjualan->select(
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            DB::raw("IFNULL((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur),0) - potongan - potongan_istimewa - penyesuaian + ppn -  IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
+            INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF'),0)
+            as total_piutang")
+        );
+
+
+        $querypenjualan->where('marketing_penjualan.status', 0);
+        $querypenjualan->where('jenis_transaksi', 'K');
+        $querypenjualan->where('status_batal', 0);
+        $querypenjualan->where('marketing_penjualan.kode_pelanggan', $data['kode_pelanggan']);
+
+        $data['piutang'] = $querypenjualan->get();
         return view('sfa.penjualan_create', $data);
     }
 
