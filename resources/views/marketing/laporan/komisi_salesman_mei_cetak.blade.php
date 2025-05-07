@@ -415,9 +415,38 @@
                         @endforeach
                         <th class="right">{{ formatAngkaDesimal($total_poin_smm) }}</th>
                         <th>
-                            @php
+                            @if ($total_poin_smm > 70 && $total_poin_smm <= 75)
+                                @php
+                                    $reward_qty_smm = 2000000;
+                                @endphp
+                            @elseif ($total_poin_smm > 75 && $total_poin_smm <= 80)
+                                @php
+                                    $reward_qty_smm = 3000000;
+                                @endphp
+                            @elseif ($total_poin_smm > 80 && $total_poin_smm <= 85)
+                                @php
+                                    $reward_qty_smm = 4000000;
+                                @endphp
+                            @elseif ($total_poin_smm > 85 && $total_poin_smm <= 90)
+                                @php
+                                    $reward_qty_smm = 5000000;
+                                @endphp
+                            @elseif ($total_poin_smm > 90 && $total_poin_smm <= 95)
+                                @php
+                                    $reward_qty_smm = 6000000;
+                                @endphp
+                            @elseif ($total_poin_smm > 95)
+                                @php
+                                    $reward_qty_smm = 7000000;
+                                @endphp
+                            @else
+                                @php
+                                    $reward_qty_smm = 0;
+                                @endphp
+                            @endif
+                            {{-- @php
                                 $reward_qty_smm = ($total_reward_qty / count($komisi)) * 2;
-                            @endphp
+                            @endphp --}}
                             {{ formatAngka($reward_qty_smm) }}
                         </th>
                         <th></th>
