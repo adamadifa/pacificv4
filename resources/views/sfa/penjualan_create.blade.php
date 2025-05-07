@@ -29,10 +29,13 @@
                             <th>Total Piutang</th>
                         </tr>
                         @foreach ($piutang as $d)
+                            @php
+                                $saldo_piutang = $d->total_piutang - $d->jmlbayar;
+                            @endphp
                             <tr>
                                 <td>{{ $d->no_faktur }}</td>
                                 <td>{{ $d->tanggal }}</td>
-                                <td class="text-end">{{ formatAngka($d->total_piutang) }}</td>
+                                <td class="text-end">{{ formatAngka($saldo_piutang) }}</td>
                             </tr>
                         @endforeach
                     </table>
