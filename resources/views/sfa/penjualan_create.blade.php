@@ -32,7 +32,7 @@
                             <tr>
                                 <td>{{ $d->no_faktur }}</td>
                                 <td>{{ $d->tanggal }}</td>
-                                <td>{{ $d->total_piutang }}</td>
+                                <td class="text-end">{{ formatAngka($d->total_piutang) }}</td>
                             </tr>
                         @endforeach
                     </table>
