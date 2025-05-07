@@ -137,7 +137,7 @@ class PenjualanController extends Controller
             $query->select(
                 'pelanggan.*',
                 'wilayah.nama_wilayah',
-                'salesman.nama_salesman',
+                'salesman.nama_salesman as nama_salesman',
                 DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan")
             );
             $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
@@ -150,12 +150,25 @@ class PenjualanController extends Controller
                     $query->where('pelanggan.kode_cabang', auth()->user()->kode_cabang);
                 }
             }
+
+            // Handle filtering by salesman name
+            if (request()->has('search') && !empty(request('search')['value'])) {
+                $searchValue = request('search')['value'];
+                $query->where(function ($q) use ($searchValue) {
+                    $q->where('pelanggan.nama_pelanggan', 'like', '%' . $searchValue . '%')
+                        ->orWhere('salesman.nama_salesman', 'like', '%' . $searchValue . '%');
+                });
+            }
+
             $pelanggan = $query;
             return DataTables::of($pelanggan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($item) {
-                    $button =   '<a href="#" kode_pelanggan="' . Crypt::encrypt($item->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    $button = '<a href="#" kode_pelanggan="' . Crypt::encrypt($item->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
                     return $button;
+                })
+                ->filterColumn('nama_salesman', function ($query, $keyword) {
+                    $query->where('salesman.nama_salesman', 'like', "%{$keyword}%");
                 })
                 ->make();
         }
