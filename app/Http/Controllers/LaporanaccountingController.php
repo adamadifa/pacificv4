@@ -24,6 +24,7 @@ use App\Models\Ledger;
 use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
+use App\Models\Saldoawalkaskecil;
 use App\Models\Saldoawalledger;
 use App\Models\Saldoawalpiutangpelanggan;
 use App\Models\User;
@@ -924,15 +925,32 @@ class LaporanaccountingController extends Controller
             ->where('kode_bank', $request->kode_bank_search)
             ->groupBy('kode_bank');
 
+        $mutasi_kaskecil = Kaskecil::select(
+            'kode_cabang',
+            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+        )
+            ->where('tanggal', '>=', $start_date)
+            ->where('tanggal', '<', $request->dari)
+            ->groupBy('kode_cabang');
 
         $saldo_awal_ledger  = Saldoawalledger::select('bank.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
             ->join('bank', 'bank.kode_bank', '=', 'keuangan_ledger_saldoawal.kode_bank')
             ->leftJoinSub($mutasi_ledger, 'mutasi_ledger', function ($join) {
                 $join->on('keuangan_ledger_saldoawal.kode_bank', '=', 'mutasi_ledger.kode_bank');
             })
-            ->where('bulan', $bulan)->where('tahun', $tahun)->get()->toArray();
+            ->where('bulan', $bulan)->where('tahun', $tahun);
+
+        $saldo_awal_kaskecil = Saldoawalkaskecil::select('coa_kas_kecil.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
+            ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
+            ->leftJoinSub($mutasi_kaskecil, 'mutasi_kaskecil', function ($join) {
+                $join->on('keuangan_kaskecil_saldoawal.kode_cabang', '=', 'mutasi_kaskecil.kode_cabang');
+            })
+            ->where('bulan', $bulan)->where('tahun', $tahun);
+
+        $saldoawal = $saldo_awal_ledger->union($saldo_awal_kaskecil)->get()->toArray();
         // Mengubah $saldo_awal_ledger menjadi koleksi
-        $saldoawalCollection = collect($saldo_awal_ledger);
+        $saldoawalCollection = collect($saldoawal);
 
 
         // $saldo = $akunCollection->firstWhere('kode_akun', '1-1244')['saldo'] ?? null;
@@ -951,7 +969,8 @@ class LaporanaccountingController extends Controller
             DB::raw('CONCAT_WS(" - ", bank.nama_bank, bank.no_rekening) AS sumber'),
             'keuangan_ledger.keterangan',
             DB::raw('IF(debet_kredit="D",jumlah,0) as jml_kredit'),
-            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet')
+            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet'),
+            DB::raw('IF(debet_kredit="D",2,1) as urutan')
         );
         $ledger->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
         $ledger->join('coa', 'bank.kode_akun', '=', 'coa.kode_akun');
@@ -978,7 +997,8 @@ class LaporanaccountingController extends Controller
             DB::raw("'KAS KECIL' AS sumber"),
             'keuangan_kaskecil.keterangan',
             DB::raw('IF(debet_kredit="D",jumlah,0) as jml_kredit'),
-            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet')
+            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet'),
+            DB::raw('IF(debet_kredit="D",2,1) as urutan')
         );
         $kaskecil->join('coa_kas_kecil', 'keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang');
         $kaskecil->join('coa', 'coa_kas_kecil.kode_akun', '=', 'coa.kode_akun');
@@ -990,8 +1010,9 @@ class LaporanaccountingController extends Controller
         $kaskecil->orderBy('coa_kas_kecil.kode_akun');
         $kaskecil->orderBy('keuangan_kaskecil.tanggal');
         $kaskecil->orderBy('keuangan_kaskecil.no_bukti');
+        // dd($kaskecil->get());
 
-        $bukubesar = $ledger->union($kaskecil)->get();
+        $bukubesar = $ledger->unionAll($kaskecil)->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
 
         $data['bukubesar'] = $bukubesar;

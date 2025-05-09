@@ -21,10 +21,12 @@
                                 <div class="row">
                                     <div class="col-lg-5 col-sm-12 col-md-12">
                                         <div class="form-group mb-3">
-                                            <select name="kode_cabang_search" id="kode_cabang_search" class="form-select select2Kodecabangsearch">
+                                            <select name="kode_cabang_search" id="kode_cabang_search"
+                                                class="form-select select2Kodecabangsearch">
                                                 <option value="">Pilih Cabang</option>
                                                 @foreach ($cabang as $d)
-                                                    <option {{ Request('kode_cabang_search') == $d->kode_cabang ? 'selected' : '' }}
+                                                    <option
+                                                        {{ Request('kode_cabang_search') == $d->kode_cabang ? 'selected' : '' }}
                                                         value="{{ $d->kode_cabang }}">{{ $d->nama_cabang }}</option>
                                                 @endforeach
                                             </select>
@@ -56,7 +58,8 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-sm-12 col-md-12">
-                                        <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i></button>
+                                        <button class="btn btn-primary"><i
+                                                class="ti ti-icons ti-search me-1"></i></button>
                                     </div>
                                 </div>
                             </form>
@@ -89,9 +92,9 @@
                                                 <td>{{ $d->nama_cabang }}</td>
                                                 <td class="text-end fw-bold">{{ formatAngka($d->jumlah) }}</td>
                                                 <td>
-                                                    @can('saledger.delete')
+                                                    @can('sakaskecil.delete')
                                                         <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('saledger.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
+                                                            action="{{ route('sakaskecil.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                             <a href="#" class="cancel-confirm me-1">

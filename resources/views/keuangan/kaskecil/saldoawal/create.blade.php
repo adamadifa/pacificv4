@@ -71,19 +71,19 @@
             Loading..`);
         }
 
-        const select2Kodebank = $('.select2Kodebank');
-        if (select2Kodebank.length) {
-            select2Kodebank.each(function() {
+        const select2Kodecabang = $('.select2Kodecabang');
+        if (select2Kodecabang.length) {
+            select2Kodecabang.each(function() {
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
-                    placeholder: 'Pilih  Bank',
+                    placeholder: 'Pilih Cabang',
                     allowClear: true,
                     dropdownParent: $this.parent()
                 });
             });
         }
 
-        form.find("#kode_bank,#bulan,#tahun").change(function() {
+        form.find("#kode_cabang,#bulan,#tahun").change(function() {
             form.find("#cekgetsaldo").val(0);
         });
 
@@ -142,7 +142,8 @@
                             form.find("#jumlah").maskMoney();
                             form.find("#jumlah").focus();
                             form.find("#cekgetsaldo").val(1);
-                        } else if (response.data.ceksaldobulanlalu == 0 && response.data.ceksaldobulanini == 0) {
+                        } else if (response.data.ceksaldobulanlalu == 0 && response.data
+                            .ceksaldobulanini == 0) {
                             Swal.fire({
                                 title: "Oops!",
                                 text: "Saldo Bulan Sebelumnya Belum Di Set !",
