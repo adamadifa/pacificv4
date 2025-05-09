@@ -1,5 +1,5 @@
-<form action="{{ route('monitoringprogram.storepencairansimpanan', Crypt::encrypt($simpanan->kode_pelanggan)) }}"
-    method="POST" id="formPencairansimpanan">
+<form action="{{ route('monitoringprogram.storepencairansimpanan', Crypt::encrypt($simpanan->kode_pelanggan)) }}" method="POST"
+    id="formPencairansimpanan">
     @csrf
     <div class="row">
         <div class="col">
@@ -20,7 +20,7 @@
                     <th>Saldo</th>
                     <td class="text-end">
                         @php
-                            $saldo = $simpanan->total_reward;
+                            $saldo = $simpanan->total_reward - $simpanan->total_pencairan;
                         @endphp
                         {{ formatAngka($saldo) }}
                     </td>
@@ -30,8 +30,7 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Pencairan" align="right" name="jumlah"
-                money="true" />
+            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Pencairan" align="right" name="jumlah" money="true" />
             <div class="form-group">
                 <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
                     <option value="">Metode Pembayaran</option>
@@ -53,6 +52,7 @@
             const jumlah = $(this).find("#jumlah").val();
             const jml = jumlah.replace(/\./g, '');
             const metode_pembayaran = $(this).find("#metode_pembayaran").val();
+            const saldo = "{{ $saldo }}";
             if (jumlah == "" || metode_pembayaran == "") {
                 e.preventDefault();
                 Swal.fire({
@@ -66,6 +66,13 @@
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Pencairan minimal Rp. 100.000',
+                })
+            } else if (jml > saldo) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Jumlah pencairan melebihi saldo',
                 })
             } else {
                 $("#btnSimpan").attr("disabled", true);
