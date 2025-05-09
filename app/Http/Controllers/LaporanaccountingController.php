@@ -19,6 +19,7 @@ use App\Models\Detailsaldoawalgudangjadi;
 use App\Models\Detailsaldoawalmutasiproduksi;
 use App\Models\Detailsaldoawalpiutangpelanggan;
 use App\Models\Jurnalumum;
+use App\Models\Kaskecil;
 use App\Models\Ledger;
 use App\Models\Penjualan;
 use App\Models\Produk;
@@ -37,7 +38,8 @@ class LaporanaccountingController extends Controller
         $data['start_year'] = config('global.start_year');
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
-        $data['coa'] = Coa::orderby('kode_akun')->get();
+        $data['coa'] = Coa::orderby('kode_akun')
+            ->whereNotIn('kode_akun', ['0-0000', '1'])->get();
         return view('accounting.laporan.index', $data);
     }
 
@@ -929,6 +931,7 @@ class LaporanaccountingController extends Controller
                 $join->on('keuangan_ledger_saldoawal.kode_bank', '=', 'mutasi_ledger.kode_bank');
             })
             ->where('bulan', $bulan)->where('tahun', $tahun)->get()->toArray();
+        // Mengubah $saldo_awal_ledger menjadi koleksi
         $saldoawalCollection = collect($saldo_awal_ledger);
 
 
@@ -963,7 +966,34 @@ class LaporanaccountingController extends Controller
         $ledger->orderBy('keuangan_ledger.no_bukti');
         // dd($ledger->first());
 
-        $bukubesar = $ledger->get();
+
+
+        //Kas Kecil
+        $kaskecil = Kaskecil::query();
+        $kaskecil->select(
+            'coa_kas_kecil.kode_akun',
+            'nama_akun',
+            'keuangan_kaskecil.tanggal',
+            'keuangan_kaskecil.no_bukti',
+            DB::raw("'KAS KECIL' AS sumber"),
+            'keuangan_kaskecil.keterangan',
+            DB::raw('IF(debet_kredit="D",jumlah,0) as jml_kredit'),
+            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet')
+        );
+        $kaskecil->join('coa_kas_kecil', 'keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang');
+        $kaskecil->join('coa', 'coa_kas_kecil.kode_akun', '=', 'coa.kode_akun');
+
+        $kaskecil->whereBetween('keuangan_kaskecil.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $kaskecil->whereBetween('coa_kas_kecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $kaskecil->orderBy('coa_kas_kecil.kode_akun');
+        $kaskecil->orderBy('keuangan_kaskecil.tanggal');
+        $kaskecil->orderBy('keuangan_kaskecil.no_bukti');
+
+        $bukubesar = $ledger->union($kaskecil)->get();
+
+
         $data['bukubesar'] = $bukubesar;
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;

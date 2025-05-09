@@ -266,13 +266,19 @@ class MonitoringprogramController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
+        $qpencairansimpanan = Pencairansimpanan::query();
+        $qpencairansimpanan->select('kode_pelanggan', DB::raw('SUM(jumlah) as total_pencairan'));
+        $qpencairansimpanan->where('kode_cabang', $kode_cabang);
+        $qpencairansimpanan->groupBy('kode_pelanggan');
+
         $query = Detailpencairanprogramikatan::query();
         $query->select(
             'marketing_pencairan_ikatan_detail.kode_pelanggan',
             'nama_pelanggan',
             'nama_salesman',
             'nama_wilayah',
-            DB::raw('SUM(total_reward) as total_reward')
+            DB::raw('SUM(total_reward) as total_reward'),
+            'total_pencairan'
         );
         $query->join('pelanggan', 'marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
@@ -281,7 +287,10 @@ class MonitoringprogramController extends Controller
         $query->where('status_pencairan', 0);
         $query->where('marketing_pencairan_ikatan.kode_cabang', $kode_cabang);
         $query->where('marketing_pencairan_ikatan.status', 1);
-        $query->groupBy('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan');
+        $query->leftJoinSub($qpencairansimpanan, 'pencairansimpanan', function ($join) {
+            $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pencairansimpanan.kode_pelanggan');
+        });
+        $query->groupBy('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan', 'total_pencairan');
         if (!empty($request->nama_pelanggan)) {
             $query->where('pelanggan.nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
         }

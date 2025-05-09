@@ -65,10 +65,10 @@
                                                 <td>{{ $d->nama_salesman }}</td>
                                                 <td>{{ $d->nama_wilayah }}</td>
                                                 <td class="text-end">{{ formatAngka($d->total_reward) }}</td>
-                                                <th></th>
+                                                <td class="text-end">{{ formatAngka($d->total_pencairan) }}</td>
                                                 <td class="text-end">
                                                     @php
-                                                        $saldo = $d->total_reward;
+                                                        $saldo = $d->total_reward - $d->total_pencairan;
                                                     @endphp
                                                     {{ formatAngka($saldo) }}
                                                 </td>

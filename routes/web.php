@@ -135,6 +135,7 @@ use App\Http\Controllers\SaldoawalgudangjadiController;
 use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalkasbesarController;
+use App\Http\Controllers\SaldoawalkaskecilController;
 use App\Http\Controllers\SaldoawalledgerController;
 use App\Http\Controllers\SaldoawalmutasikeuanganController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
@@ -2238,6 +2239,18 @@ Route::middleware('auth')->group(function () {
         Route::put('/mutasikeuangan/{id}/update', 'update')->name('mutasikeuangan.update')->can('mutasikeuangan.update');
         Route::delete('/mutasikeuangan/{id}/destroy', 'destroy')->name('mutasikeuangan.delete')->can('mutasikeuangan.delete');
         Route::get('/mutasikeuangan/{kode_bank}/{dari}/{sampai}/show', 'show')->name('mutasikeuangan.show');
+    });
+
+
+    Route::controller(SaldoawalkaskecilController::class)->group(function () {
+        Route::get('/sakaskecil', 'index')->name('sakaskecil.index')->can('sakaskecil.index');
+        Route::get('/sakaskecil/create', 'create')->name('sakaskecil.create')->can('sakaskecil.create');
+        Route::post('/sakaskecil/store', 'store')->name('sakaskecil.store')->can('sakaskecil.store');
+        Route::get('/sakaskecil/{no_bukti}/edit', 'edit')->name('sakaskecil.edit')->can('sakaskecil.edit');
+        Route::put('/sakaskecil/{no_bukti}/update', 'update')->name('sakaskecil.update')->can('sakaskecil.update');
+        Route::delete('/sakaskecil/{no_bukti}/delete', 'destroy')->name('sakaskecil.delete')->can('sakaskecil.delete');
+
+        Route::post('/sakaskecil/getsaldo', 'getsaldo')->name('sakaskecil.getsaldo');
     });
 
     Route::get('/worksheetom/oman', [OmancabangController::class, 'index'])->name('worksheetom.oman')->can('worksheetom.oman');
