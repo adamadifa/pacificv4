@@ -1036,7 +1036,7 @@ class LaporanaccountingController extends Controller
         // dd($kaskecil->get());
 
         $bukubesar = $ledger->unionAll($kaskecil)->unionAll($ledger_transaksi)->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
-        dd($bukubesar);
+
         // dd($bukubesar->get());
 
         $data['bukubesar'] = $bukubesar;
