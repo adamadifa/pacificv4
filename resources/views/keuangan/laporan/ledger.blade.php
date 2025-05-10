@@ -1,7 +1,7 @@
 <form action="{{ route('laporankeuangan.cetakledger') }}" id="formLedger" target="_blank" method="POST">
     @csrf
     <div class="form-group mb-3">
-        <select name="kode_bank_ledger" id="kode_bank_ledger" class="form-select select2Kodebankledgers">
+        <select name="kode_bank_ledger" id="kode_bank_ledgers" class="form-select select2Kodebankledgers">
             <option value="">Ledger</option>
             @foreach ($bank as $d)
                 <option {{ Request('kode_bank_search') == $d->kode_bank ? 'selected' : '' }} value="{{ $d->kode_bank }}">
