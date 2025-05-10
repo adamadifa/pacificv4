@@ -35,14 +35,14 @@ class SaldokasbesarkeuanganController extends Controller
         }
 
         if ($request->has('dari') && $request->has('sampai')) {
-            $qsaldokasbesar->where('tanggal', '>=', $request->dari);
-            $qsaldokasbesar->where('tanggal', '<=', $request->sampai);
+            $qsaldokasbesar->where('keuangan_saldokasbesar.tanggal', '>=', $request->dari);
+            $qsaldokasbesar->where('keuangan_saldokasbesar.tanggal', '<=', $request->sampai);
         }
         $qsaldokasbesar->join('cabang', 'keuangan_saldokasbesar.kode_cabang', '=', 'cabang.kode_cabang');
         if (!empty($kode_cabang)) {
             $qsaldokasbesar->where('keuangan_saldokasbesar.kode_cabang', $kode_cabang);
         }
-        $qsaldokasbesar->orderBy('tanggal');
+        $qsaldokasbesar->orderBy('keuangan_saldokasbesar.tanggal');
         $saldokasbesar = $qsaldokasbesar->get();
 
         $cbg = new Cabang();
