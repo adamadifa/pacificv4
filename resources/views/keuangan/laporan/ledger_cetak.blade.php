@@ -61,7 +61,8 @@
                             $color_saldoawal = $saldo_awal != null ? '' : 'text-red';
                         @endphp
                         <th colspan='11'>SALDO AWAL</th>
-                        <th style="text-align:right" class="{{ $color_saldoawal }}">{{ $saldo_awal != null ? formatAngkaDesimal($saldoawal) : 0 }}
+                        <th style="text-align:right" class="{{ $color_saldoawal }}">
+                            {{ $saldo_awal != null ? formatAngkaDesimal($saldoawal) : 0 }}
                         </th>
                     </tr>
                 </thead>
@@ -92,7 +93,8 @@
                             <td>{{ formatIndo($d->tanggal_penerimaan) }}</td>
                             <td>{{ $d->pelanggan }}</td>
                             <td>{{ $d->keterangan }}</td>
-                            <td class="center">{{ $d->kode_peruntukan }} {{ $d->keterangan_peruntukan }}</td>
+                            <td class="center">{{ $d->kode_peruntukan }}
+                                {{ $d->kode_peruntukan != 'MP' ? $d->keterangan_peruntukan : '' }}</td>
                             <td class="center">'{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
                             <td class="right">{{ formatAngkaDesimal($debet) }}</td>
