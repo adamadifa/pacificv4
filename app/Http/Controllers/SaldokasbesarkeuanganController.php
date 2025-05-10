@@ -31,7 +31,7 @@ class SaldokasbesarkeuanganController extends Controller
         $qsaldokasbesar = Saldokasbesarkeuangan::query();
 
         if ($request->has('kode_cabang')) {
-            $qsaldokasbesar->where('kode_cabang', $request->kode_cabang);
+            $qsaldokasbesar->where('keuangan_saldokasbesar.kode_cabang', $request->kode_cabang);
         }
 
         if ($request->has('dari') && $request->has('sampai')) {
