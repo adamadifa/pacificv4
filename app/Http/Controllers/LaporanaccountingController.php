@@ -985,6 +985,28 @@ class LaporanaccountingController extends Controller
         $ledger->orderBy('keuangan_ledger.no_bukti');
         // dd($ledger->first());
 
+        $ledger_transaksi = Ledger::query();
+        $ledger_transaksi->select(
+            'keuangan_ledger.kode_akun',
+            'nama_akun',
+            'keuangan_ledger.tanggal',
+            'keuangan_ledger.no_bukti',
+            DB::raw("'LEDGER' AS sumber"),
+            'keuangan_ledger.keterangan',
+            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet'),
+            DB::raw('IF(debet_kredit="D",jumlah,0) as jml_kredit'),
+            DB::raw('IF(debet_kredit="D",2,1) as urutan')
+        );
+        $ledger_transaksi->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $ledger_transaksi->whereBetween('keuangan_ledger.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $ledger_transaksi->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
+        $ledger_transaksi->orderBy('keuangan_ledger.kode_akun');
+        $ledger_transaksi->orderBy('keuangan_ledger.tanggal');
+        $ledger_transaksi->orderBy('keuangan_ledger.no_bukti');
+
+        // dd($ledger_transaksi->first());
 
 
         //Kas Kecil
@@ -1002,7 +1024,7 @@ class LaporanaccountingController extends Controller
         );
         $kaskecil->join('coa_kas_kecil', 'keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang');
         $kaskecil->join('coa', 'coa_kas_kecil.kode_akun', '=', 'coa.kode_akun');
-
+        $kaskecil->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil');
         $kaskecil->whereBetween('keuangan_kaskecil.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $kaskecil->whereBetween('coa_kas_kecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
@@ -1012,7 +1034,7 @@ class LaporanaccountingController extends Controller
         $kaskecil->orderBy('keuangan_kaskecil.no_bukti');
         // dd($kaskecil->get());
 
-        $bukubesar = $ledger->unionAll($kaskecil)->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
+        $bukubesar = $ledger->unionAll($kaskecil)->unionAll($ledger_transaksi)->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
 
         $data['bukubesar'] = $bukubesar;
