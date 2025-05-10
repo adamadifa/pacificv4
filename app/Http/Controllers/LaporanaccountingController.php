@@ -993,8 +993,8 @@ class LaporanaccountingController extends Controller
             'keuangan_ledger.no_bukti',
             DB::raw("'LEDGER' AS sumber"),
             'keuangan_ledger.keterangan',
-            DB::raw('IF(debet_kredit="D",jumlah,0) as jml_debet'),
             DB::raw('IF(debet_kredit="K",jumlah,0) as jml_kredit'),
+            DB::raw('IF(debet_kredit="D",jumlah,0) as jml_debet'),
             DB::raw('IF(debet_kredit="D",2,1) as urutan')
         );
         $ledger_transaksi->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
