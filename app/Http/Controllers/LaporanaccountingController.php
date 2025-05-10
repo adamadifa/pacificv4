@@ -1006,7 +1006,7 @@ class LaporanaccountingController extends Controller
         $ledger_transaksi->orderBy('keuangan_ledger.tanggal');
         $ledger_transaksi->orderBy('keuangan_ledger.no_bukti');
 
-        dd($ledger_transaksi->get());
+        // dd($ledger_transaksi->get());
         // dd($ledger_transaksi->first());
 
 
@@ -1036,7 +1036,8 @@ class LaporanaccountingController extends Controller
         // dd($kaskecil->get());
 
         $bukubesar = $ledger->unionAll($kaskecil)->unionAll($ledger_transaksi)->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
-
+        dd($bukubesar);
+        // dd($bukubesar->get());
 
         $data['bukubesar'] = $bukubesar;
         $data['dari'] = $request->dari;
