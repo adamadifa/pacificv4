@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivitylogController;
 use App\Http\Controllers\AjuanfakturkreditController;
 use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AjuanprogramikatanController;
+use App\Http\Controllers\AjuanprogramikatanenambulanController;
 use App\Http\Controllers\AjuanprogramkumulatifController;
 use App\Http\Controllers\AjuantransferdanaController;
 use App\Http\Controllers\AktifitassmmController;
@@ -2181,6 +2182,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajuanprogramikatan/{no_pengajuan}/cetak', 'cetak')->name('ajuanprogramikatan.cetak')->can('ajuanprogramikatan.show');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/cetakkesepakatan', 'cetakkesepakatan')->name('ajuanprogramikatan.cetakkesepakatan')->can('ajuanprogramikatan.show');
         Route::get('/ajuanprogramikatan/{no_pengajuan}/{kode_pelanggan}/detailtarget', 'detailtarget')->name('ajuanprogramikatan.detailtarget')->can('ajuanprogramikatan.show');
+    });
+
+    Route::controller(AjuanprogramikatanenambulanController::class)->group(function () {
+        Route::get('/ajuanprogramenambulan', 'index')->name('ajuanprogramenambulan.index')->can('ajuanprogramenambulan.index');
+        Route::get('/ajuanprogramenambulan/create', 'create')->name('ajuanprogramenambulan.create')->can('ajuanprogramenambulan.create');
+        Route::post('/ajuanprogramenambulan/store', 'store')->name('ajuanprogramenambulan.store')->can('ajuanprogramenambulan.store');
     });
 
     Route::controller(AjuanprogramkumulatifController::class)->group(function () {
