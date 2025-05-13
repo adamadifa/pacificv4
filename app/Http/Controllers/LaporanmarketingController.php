@@ -2178,7 +2178,7 @@ class LaporanmarketingController extends Controller
         $query->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
         $query->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->leftjoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
@@ -2196,7 +2196,7 @@ class LaporanmarketingController extends Controller
             }
         }
         if (!empty($request->kode_salesman)) {
-            $query->where('pelanggan.kode_salesman', $request->kode_salesman);
+            $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
 
         if (!empty($request->kode_pelanggan)) {
