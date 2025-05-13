@@ -106,7 +106,7 @@
                             @endwhile
                         </tr>
                     @endforeach
-                    @if ($users->hasRole(['super admin', 'direktur', 'gm marketing', 'gm administrasi']))
+                    @if ($user->hasRole(['super admin', 'direktur', 'gm marketing', 'gm administrasi']))
 
 
                         <tr class="table-dark">

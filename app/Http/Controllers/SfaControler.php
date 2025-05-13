@@ -136,6 +136,7 @@ class SfaControler extends Controller
             ->get();
 
         $data['users']  = $users;
+        $data['user']  = $user;
         $data['rsm']  = $rsm;
         $data['gm']  = $gm;
         $data['start_date'] = $start_date;
