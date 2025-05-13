@@ -106,56 +106,60 @@
                             @endwhile
                         </tr>
                     @endforeach
-                    <tr class="table-dark">
-                        <th colspan="{{ $jmlhari + 2 }}">RSM</th>
-                    </tr>
-                    @foreach ($rsm as $d)
-                        <tr>
-                            <td>{{ $d->name }}</td>
-                            <td>{{ $d->nama_regional }}</td>
-                            @php
-                                $start = $start_date;
-                                $i = 1;
-                            @endphp
-                            @while (strtotime($start) <= strtotime($end_date))
-                                @php
-                                    $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
-                                @endphp
-                                <td class="{{ $bgcolor }} detail text-center" tanggal="{{ $start }}"
-                                    id_user="{{ $d->id }}">
-                                    {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
-                                @php
-                                    $i++;
-                                    $start = date('Y-m-d', strtotime('+1 day', strtotime($start)));
-                                @endphp
-                            @endwhile
+                    @if ($user->hasRole(['super admin', 'direktur', 'gm marketing', 'gm administrasi']))
+
+
+                        <tr class="table-dark">
+                            <th colspan="{{ $jmlhari + 2 }}">RSM</th>
                         </tr>
-                    @endforeach
-                    <tr class="table-dark">
-                        <th colspan="{{ $jmlhari + 2 }}">GM MARKETING</th>
-                    </tr>
-                    @foreach ($gm as $d)
-                        <tr>
-                            <td>{{ $d->name }}</td>
-                            <td>{{ $d->kode_cabang }}</td>
-                            @php
-                                $start = $start_date;
-                                $i = 1;
-                            @endphp
-                            @while (strtotime($start) <= strtotime($end_date))
+                        @foreach ($rsm as $d)
+                            <tr>
+                                <td>{{ $d->name }}</td>
+                                <td>{{ $d->nama_regional }}</td>
                                 @php
-                                    $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
+                                    $start = $start_date;
+                                    $i = 1;
                                 @endphp
-                                <td class="{{ $bgcolor }} detail text-center" id_user="{{ $d->id }}"
-                                    tanggal="{{ $start }}">
-                                    {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
-                                @php
-                                    $i++;
-                                    $start = date('Y-m-d', strtotime('+1 day', strtotime($start)));
-                                @endphp
-                            @endwhile
+                                @while (strtotime($start) <= strtotime($end_date))
+                                    @php
+                                        $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
+                                    @endphp
+                                    <td class="{{ $bgcolor }} detail text-center" tanggal="{{ $start }}"
+                                        id_user="{{ $d->id }}">
+                                        {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
+                                    @php
+                                        $i++;
+                                        $start = date('Y-m-d', strtotime('+1 day', strtotime($start)));
+                                    @endphp
+                                @endwhile
+                            </tr>
+                        @endforeach
+                        <tr class="table-dark">
+                            <th colspan="{{ $jmlhari + 2 }}">GM MARKETING</th>
                         </tr>
-                    @endforeach
+                        @foreach ($gm as $d)
+                            <tr>
+                                <td>{{ $d->name }}</td>
+                                <td>{{ $d->kode_cabang }}</td>
+                                @php
+                                    $start = $start_date;
+                                    $i = 1;
+                                @endphp
+                                @while (strtotime($start) <= strtotime($end_date))
+                                    @php
+                                        $bgcolor = !empty($d->{"tgl_$i"}) ? 'bg-success text-white' : '';
+                                    @endphp
+                                    <td class="{{ $bgcolor }} detail text-center" id_user="{{ $d->id }}"
+                                        tanggal="{{ $start }}">
+                                        {{ !empty($d->{"tgl_$i"}) ? $d->{"tgl_$i"} : '' }}</td>
+                                    @php
+                                        $i++;
+                                        $start = date('Y-m-d', strtotime('+1 day', strtotime($start)));
+                                    @endphp
+                                @endwhile
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
