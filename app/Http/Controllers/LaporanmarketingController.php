@@ -2196,7 +2196,7 @@ class LaporanmarketingController extends Controller
             }
         }
         if (!empty($request->kode_salesman)) {
-            $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+            $query->where('pelanggan.kode_salesman', $request->kode_salesman);
         }
 
         if (!empty($request->kode_pelanggan)) {
