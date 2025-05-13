@@ -4368,19 +4368,20 @@ class LaporanmarketingController extends Controller
             ->groupBy('marketing_penjualan.kode_salesman');
         // dd($subqueryRealisasi->get());
 
-        $subqueryOA = Penjualan::select('marketing_penjualan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa'))
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+        $subqueryOA = Penjualan::select('pelanggan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa'))
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->where('status_batal', 0)
-            ->groupBy('marketing_penjualan.kode_salesman');
+            ->groupBy('pelanggan.kode_salesman');
 
-        $subqueryOA3bulan = Penjualan::select('marketing_penjualan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa3bulan'))
-            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+        $subqueryOA3bulan = Penjualan::select('pelanggan.kode_salesman', DB::raw('COUNT(DISTINCT(kode_pelanggan)) as realisasi_oa3bulan'))
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$start_tigabulanlalu, $end_date_bulanlalu])
             ->where('status_batal', 0)
-            ->groupBy('marketing_penjualan.kode_salesman');
+            ->groupBy('pelanggan.kode_salesman');
 
         //Penjualan vs AVG
         $subqueryPenjvsavgdata = DB::table('marketing_penjualan')->select(
