@@ -88,26 +88,23 @@ class SfaControler extends Controller
             $i++;
             $dari = date("Y-m-d", strtotime("+1 day", strtotime($dari)));
         }
-
-
-
         $activity = AktifitasSMM::select('id_user', ...$select_date_activity)
             ->whereBetween('tanggal', [$start_date, $sampai])
             ->groupBy('id_user');
 
 
-        $users = User::select('id', 'name', 'kode_cabang', ...$field_date_activity)
+        $users = User::select('id', 'name', 'users.kode_cabang', ...$field_date_activity)
             ->whereHas('roles', function ($query) {
                 $query->where('name', 'sales marketing manager');
+            })
+            ->join('cabang', 'users.kode_cabang', '=', 'cabang.kode_cabang')
+            ->when($user->hasRole('regional sales manager'), function ($query) use ($user) {
+                return $query->where('cabang.kode_regional', $user->kode_regional);
             })
             ->leftjoinSub($activity, 'activity', function ($join) {
                 $join->on('users.id', '=', 'activity.id_user');
             })
-            ->join('cabang', 'users.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('users.status', 1)
-            ->when($user->hasRole('regional sales manager'), function ($query) use ($user) {
-                return $query->where('cabang.kode_regional', $user->kode_regional);
-            })
             ->orderBy('name')
             ->get();
 
@@ -119,10 +116,7 @@ class SfaControler extends Controller
             ->leftjoinSub($activity, 'activity', function ($join) {
                 $join->on('users.id', '=', 'activity.id_user');
             })
-            ->join('cabang', 'users.kode_cabang', '=', 'cabang.kode_cabang')
-            ->when($user->hasRole('regional sales manager'), function ($query) use ($user) {
-                return $query->where('cabang.kode_regional', $user->kode_regional);
-            })
+
             ->join('regional', 'users.kode_regional', '=', 'regional.kode_regional')
             ->where('users.status', 1)
             ->orderBy('name')
@@ -135,10 +129,7 @@ class SfaControler extends Controller
             ->leftjoinSub($activity, 'activity', function ($join) {
                 $join->on('users.id', '=', 'activity.id_user');
             })
-            ->join('cabang', 'users.kode_cabang', '=', 'cabang.kode_cabang')
-            ->when($user->hasRole('regional sales manager'), function ($query) use ($user) {
-                return $query->where('cabang.kode_regional', $user->kode_regional);
-            })
+
             ->join('regional', 'users.kode_regional', '=', 'regional.kode_regional')
             ->where('users.status', 1)
             ->orderBy('name')
