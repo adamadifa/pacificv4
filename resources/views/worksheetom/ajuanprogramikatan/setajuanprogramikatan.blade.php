@@ -378,7 +378,6 @@
             e.preventDefault();
             let kode_pelanggan = $(this).attr('kode_pelanggan');
             let kode_program = "{{ Crypt::encrypt($programikatan->kode_program) }}";
-
             let nama_pelanggan = $(this).attr('nama_pelanggan');
 
             getavgPelanggan(kode_pelanggan, kode_program);

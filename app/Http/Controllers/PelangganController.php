@@ -848,7 +848,7 @@ class PelangganController extends Controller
             ->where('kode_pelanggan', $kode_pelanggan)
             ->first();
 
-        $no_pengajuan = $programikatan->no_pengajuan;
+        $no_pengajuan = $programikatan->no_pengajuan ?? '';
         $target = Detailtargetikatan::where('no_pengajuan', $no_pengajuan)
             ->where('kode_pelanggan', $kode_pelanggan)
             ->whereIn('bulan', $list_bulan)
