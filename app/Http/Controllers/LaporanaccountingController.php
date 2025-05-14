@@ -18,6 +18,7 @@ use App\Models\Detailsaldoawalgudangcabang;
 use App\Models\Detailsaldoawalgudangjadi;
 use App\Models\Detailsaldoawalmutasiproduksi;
 use App\Models\Detailsaldoawalpiutangpelanggan;
+use App\Models\Historibayarpenjualan;
 use App\Models\Jurnalumum;
 use App\Models\Kaskecil;
 use App\Models\Ledger;
@@ -1009,6 +1010,8 @@ class LaporanaccountingController extends Controller
         // dd($ledger_transaksi->get());
         // dd($ledger_transaksi->first());
 
+        $coa_kas_kecil = Coa::where('kode_transaksi', 'KKL');
+        $coa_piutangcabang = Coa::where('kode_transaksi', 'PCB');
 
         //Kas Kecil
         $kaskecil = Kaskecil::query();
@@ -1023,8 +1026,9 @@ class LaporanaccountingController extends Controller
             DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet'),
             DB::raw('IF(debet_kredit="D",2,1) as urutan')
         );
-        $kaskecil->join('coa_kas_kecil', 'keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang');
-        $kaskecil->join('coa', 'coa_kas_kecil.kode_akun', '=', 'coa.kode_akun');
+        $kaskecil->leftJoinSub($coa_kas_kecil, 'coa_kas_kecil', function ($join) {
+            $join->on('keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang');
+        });
         $kaskecil->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil');
         $kaskecil->whereBetween('keuangan_kaskecil.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
@@ -1033,9 +1037,40 @@ class LaporanaccountingController extends Controller
         $kaskecil->orderBy('coa_kas_kecil.kode_akun');
         $kaskecil->orderBy('keuangan_kaskecil.tanggal');
         $kaskecil->orderBy('keuangan_kaskecil.no_bukti');
-        // dd($kaskecil->get());
 
-        $bukubesar = $ledger->unionAll($kaskecil)->unionAll($ledger_transaksi)->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
+
+
+        //Piutang dari Kas Besar Penjualan
+        $piutangcabang = Historibayarpenjualan::query();
+        $piutangcabang->select(
+            'coa_piutangcabang.kode_akun',
+            'nama_akun',
+            'marketing_penjualan_historibayar.tanggal',
+            'marketing_penjualan_historibayar.no_bukti',
+            DB::raw("'KAS BESAR PENJUALAN' AS sumber"),
+            DB::raw("CONCAT(marketing_penjualan_historibayar.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
+            DB::raw('0 as jml_kredit'),
+            'marketing_penjualan_historibayar.jumlah as jml_debet',
+            DB::raw('1 as urutan')
+        );
+        $piutangcabang->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $piutangcabang->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $piutangcabang->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $piutangcabang->leftJoinSub($coa_piutangcabang, 'coa_piutangcabang', function ($join) {
+            $join->on('salesman.kode_cabang', '=', 'coa_piutangcabang.kode_cabang');
+        });
+        $piutangcabang->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $piutangcabang->whereBetween('coa_piutangcabang.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $piutangcabang->where('marketing_penjualan_historibayar.voucher', 0);
+        $piutangcabang->where('marketing_penjualan.status_batal', 0);
+        $piutangcabang->orderBy('coa_piutangcabang.kode_akun');
+        $piutangcabang->orderBy('marketing_penjualan_historibayar.tanggal');
+        $piutangcabang->orderBy('marketing_penjualan_historibayar.no_bukti');
+
+
+        $bukubesar = $ledger->unionAll($kaskecil)->unionAll($ledger_transaksi)->unionAll($piutangcabang)->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
         // dd($bukubesar->get());
 
