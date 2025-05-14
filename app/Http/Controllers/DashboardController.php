@@ -18,6 +18,7 @@ use App\Models\Detailtargetkomisi;
 use App\Models\Dpb;
 use App\Models\Historibayarpenjualan;
 use App\Models\Karyawan;
+use App\Models\Kategoritransaksimutasikeuangan;
 use App\Models\Kendaraan;
 use App\Models\Mutasigudangjadi;
 use App\Models\Mutasikeuangan;
@@ -99,6 +100,16 @@ class DashboardController extends Controller
             ->where('tanggal', '<=', date('Y-m-d'))
             ->groupBy('kode_bank');
 
+
+        $mutasi_kategori  = Mutasikeuangan::select(
+            'keuangan_mutasi.kode_kategori',
+            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+        )
+            ->where('tanggal', '>=', $start_date)
+            ->where('tanggal', '<=', date('Y-m-d'))
+            ->groupBy('keuangan_mutasi.kode_kategori');
+
         $rekapdebetkreditbytanggal  = Mutasikeuangan::select(
             'kode_bank',
             DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as rekap_kredit"),
@@ -135,6 +146,19 @@ class DashboardController extends Controller
             ->get();
 
 
+        $data['kategori'] = Kategoritransaksimutasikeuangan::leftJoinSub($mutasi_kategori, 'mutasi_kategori', function ($join) {
+            $join->on('keuangan_mutasi_kategori.kode_kategori', '=', 'mutasi_kategori.kode_kategori');
+        })
+
+            ->select(
+                'keuangan_mutasi_kategori.*',
+                'mutasi_kategori.kredit',
+                'mutasi_kategori.debet'
+            )
+            ->orderBy('keuangan_mutasi_kategori.nama_kategori')
+            ->get();
+
+
         $data['rekap'] = Bank::leftJoinSub($mutasi, 'mutasi', function ($join) {
             $join->on('bank.kode_bank', '=', 'mutasi.kode_bank');
         })
@@ -152,6 +176,7 @@ class DashboardController extends Controller
             )
             ->where('bank.kode_bank', '!=', 'BK071')
             ->first();
+
 
         return view('dashboard.owner', $data);
     }
