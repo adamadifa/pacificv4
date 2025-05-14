@@ -24,7 +24,8 @@
                                         <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
                                             <option value="">Semua Cabang</option>
                                             @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                    value="{{ $d->kode_cabang }}">
                                                     {{ textUpperCase($d->nama_cabang) }}</option>
                                             @endforeach
                                         </select>
@@ -32,24 +33,28 @@
                                 @endrole
                                 {{-- <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
                                     icon="ti ti-barcode" /> --}}
-                                <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
-                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
+                                <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program"
+                                    textShow="nama_program" select2="select2Kodeprogram" upperCase="true"
+                                    selected="{{ Request('kode_program') }}" />
                                 <div class="form-group mb-3">
                                     <select name="status" id="status" class="form-select">
                                         <option value="">Semua Status</option>
-                                        <option value="pending" {{ Request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="approved" {{ Request('status') == 'approved' ? 'selected' : '' }}>Disetujui</option>
-                                        <option value="rejected" {{ Request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                                        <option value="pending" {{ Request('status') == 'pending' ? 'selected' : '' }}>
+                                            Pending</option>
+                                        <option value="approved"
+                                            {{ Request('status') == 'approved' ? 'selected' : '' }}>Disetujui</option>
+                                        <option value="rejected"
+                                            {{ Request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
                                     </select>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                 </div>
                                 <div class="row">
@@ -96,7 +101,8 @@
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->nama_program }}</td>
                                                 <td>{{ strtoUpper($d->nama_cabang) }}</td>
-                                                <td>{{ date('m', strtotime($d->periode_dari)) }}/{{ date('y', strtotime($d->periode_dari)) }} -
+                                                <td>{{ date('m', strtotime($d->periode_dari)) }}/{{ date('y', strtotime($d->periode_dari)) }}
+                                                    -
                                                     {{ date('m', strtotime($d->periode_sampai)) }}/{{ date('y', strtotime($d->periode_sampai)) }}
                                                 </td>
                                                 <td class="text-center">
@@ -181,8 +187,8 @@
                                                                 <i class="ti ti-printer text-success"></i>
                                                             </a>
                                                         @endcan
-                                                        @can('ajuanprogramikatan.edit')
-                                                            <a href="{{ route('ajuanprogramikatan.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"
+                                                        @can('ajuanprogramenambulan.edit')
+                                                            <a href="{{ route('ajuanprogramenambulan.setajuanprogramenambulan', Crypt::encrypt($d->no_pengajuan)) }}"
                                                                 class="me-1">
                                                                 <i class="ti ti-settings text-primary"></i>
                                                             </a>
@@ -238,7 +244,7 @@
             <div class="sk-wave-rect"></div>
             <div class="sk-wave-rect"></div>
             </div>`);
-            $("#loadmodal").load("/ajuanprogramikatan/create");
+            $("#loadmodal").load("/ajuanprogramenambulan/create");
         });
 
         const select2Kodecabang = $(".select2Kodecabang");

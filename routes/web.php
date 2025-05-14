@@ -2188,6 +2188,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajuanprogramenambulan', 'index')->name('ajuanprogramenambulan.index')->can('ajuanprogramenambulan.index');
         Route::get('/ajuanprogramenambulan/create', 'create')->name('ajuanprogramenambulan.create')->can('ajuanprogramenambulan.create');
         Route::post('/ajuanprogramenambulan/store', 'store')->name('ajuanprogramenambulan.store')->can('ajuanprogramenambulan.store');
+
+        Route::get('/ajuanprogramenambulan/{no_pengajuan}/setajuanprogramenambulan', 'setajuanprogramenambulan')->name('ajuanprogramenambulan.setajuanprogramenambulan')->can('ajuanprogramenambulan.create');
+        Route::get('/ajuanprogramenambulan/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('ajuanprogramenambulan.tambahpelanggan')->can('ajuanprogramenambulan.create');
     });
 
     Route::controller(AjuanprogramkumulatifController::class)->group(function () {
