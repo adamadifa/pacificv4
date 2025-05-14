@@ -318,4 +318,16 @@ class AjuanprogramikatanenambulanController extends Controller
 
         return view('worksheetom.ajuanprogramikatanenambulan.tambahpelanggan', $data);
     }
+
+    public function destroy($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+
+        try {
+            Ajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

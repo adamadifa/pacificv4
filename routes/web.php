@@ -2190,6 +2190,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajuanprogramenambulan/create', 'create')->name('ajuanprogramenambulan.create')->can('ajuanprogramenambulan.create');
         Route::post('/ajuanprogramenambulan/store', 'store')->name('ajuanprogramenambulan.store')->can('ajuanprogramenambulan.store');
 
+        Route::delete('/ajuanprogramenambulan/{no_pengajuan}/destroy', 'destroy')->name('ajuanprogramenambulan.delete')->can('ajuanprogramenambulan.delete');
         Route::get('/ajuanprogramenambulan/{no_pengajuan}/setajuanprogramenambulan', 'setajuanprogramenambulan')->name('ajuanprogramenambulan.setajuanprogramenambulan')->can('ajuanprogramenambulan.create');
         Route::get('/ajuanprogramenambulan/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('ajuanprogramenambulan.tambahpelanggan')->can('ajuanprogramenambulan.create');
     });

@@ -196,9 +196,9 @@
 
 
                                                         @can('ajuanprogramikatan.delete')
-                                                            @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
+                                                            @if ($user->hasRole(['operation manager', 'sales marketing manager', 'super admin']) && $d->rsm == null)
                                                                 <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('ajuanprogramikatan.delete', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                    action="{{ route('ajuanprogramenambulan.delete', Crypt::encrypt($d->no_pengajuan)) }}">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     <a href="#" class="delete-confirm ml-1">
