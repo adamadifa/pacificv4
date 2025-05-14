@@ -239,8 +239,8 @@ class AjuanprogramikatanenambulanController extends Controller
 
         $start_date = $ajuanprogramikatan->periode_dari;
         $end_date = $ajuanprogramikatan->periode_sampai;
-        $bulan = date('m', strtotime($start_date));
-        $tahun = date('Y', strtotime($start_date));
+        $bulan = date('m') != '01' ? date('m') - 1 : 1;
+        $tahun = date('Y');
 
 
         $listpelangganikatan = Detailtargetikatan::select(
