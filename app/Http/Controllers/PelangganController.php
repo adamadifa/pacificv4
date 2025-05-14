@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ajuanprogramikatan;
+use App\Models\Ajuanprogramikatanenambulan;
 use App\Models\Cabang;
+use App\Models\Detailajuanprogramikatan;
 use App\Models\Detailpencairan;
 use App\Models\Detailpenjualan;
 use App\Models\Detailsaldoawalpiutangpelanggan;
+use App\Models\Detailtargetikatan;
 use App\Models\Historibayarpenjualan;
 use App\Models\Klasifikasioutlet;
 use App\Models\Pelanggan;
@@ -820,5 +823,37 @@ class PelangganController extends Controller
 
             'cabang'
         ));
+    }
+
+
+    public function gettargetpelanggan($kode_pelanggan, $kode_program, $no_pengajuan_enambulan)
+    {
+        $no_pengajuan_enambulan = Crypt::decrypt($no_pengajuan_enambulan);
+        $kode_program = Crypt::decrypt($kode_program);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+
+        $programikatanenambulan = Ajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan_enambulan)->first();
+        $periode_dari = $programikatanenambulan->periode_dari;
+        $periode_sampai = $programikatanenambulan->periode_sampai;
+        $list_bulan = [];
+        $list_tahun = [];
+        $current_date = $periode_dari;
+        while ($current_date <= $periode_sampai) {
+            $list_bulan[] = date('m', strtotime($current_date));
+            $list_tahun[] = date('Y', strtotime($current_date));
+            $current_date = date('Y-m-d', strtotime('+1 month', strtotime($current_date)));
+        }
+        $programikatan = Detailajuanprogramikatan::join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+            ->where('kode_program', $kode_program)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->first();
+
+        $no_pengajuan = $programikatan->no_pengajuan;
+        $target = Detailtargetikatan::where('no_pengajuan', $no_pengajuan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->whereIn('bulan', $list_bulan)
+            ->get();
+
+        return view('datamaster.pelanggan.gettargetpelanggan', compact('target'));
     }
 }

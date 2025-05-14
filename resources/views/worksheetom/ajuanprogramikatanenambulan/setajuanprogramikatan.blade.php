@@ -336,51 +336,27 @@
         });
 
 
-        //Get Pelanggan
-        function getavgPelanggan(kode_pelanggan, kode_program) {
+        function gettargetpelanggan(kode_pelanggan, kode_program, no_pengajuan) {
 
             $.ajax({
-                url: `/pelanggan/${kode_pelanggan}/${kode_program}/getavgpelanggan`,
+                url: `/pelanggan/${kode_pelanggan}/${kode_program}/${no_pengajuan}/gettargetpelanggan`,
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    if (response.type === 2) {
-                        $("#modalPelanggan").modal("hide");
-                        $(document).find("input[name='qty_avg']").val(0);
-                        $(document).find("input[name='nama_pelanggan']").val(response.data
-                            .nama_pelanggan);
-                        $(document).find("input[name='kode_pelanggan']").val(response.data
-                            .kode_pelanggan);
-                        return;
-                    }
-                    $("#modalPelanggan").modal("hide");
-                    $(document).find("input[name='qty_avg']").val(Math.round(response.data.qty));
-                    $(document).find("input[name='nama_pelanggan']").val(response.data
-                        .nama_pelanggan);
-                    $(document).find("input[name='kode_pelanggan']").val(response.data
-                        .kode_pelanggan);
-                }
-            });
-        }
-
-        function gethistoripelangganprogram(kode_pelanggan, kode_program) {
-
-            $.ajax({
-                url: `/pelanggan/${kode_pelanggan}/${kode_program}/gethistoripelangganprogram`,
-                type: "GET",
-                cache: false,
-                success: function(response) {
-                    $("#gethistoripelangganprogram").html(response);
+                    $("#gettargetpelanggan").html(response);
                 }
             });
         }
         $('#tabelpelanggan tbody').on('click', '.pilihpelanggan', function(e) {
             e.preventDefault();
             let kode_pelanggan = $(this).attr('kode_pelanggan');
+            let nama_pelanggan = $(this).attr('nama_pelanggan');
             let kode_program = "{{ Crypt::encrypt($programikatan->kode_program) }}";
-            getavgPelanggan(kode_pelanggan, kode_program);
-            gethistoripelangganprogram(kode_pelanggan, kode_program);
-
+            let no_pengajuan = "{{ Crypt::encrypt($programikatan->no_pengajuan) }}";
+            gettargetpelanggan(kode_pelanggan, kode_program, no_pengajuan);
+            $(document).find("input[name='nama_pelanggan']").val(nama_pelanggan);
+            $(document).find("input[name='kode_pelanggan']").val(kode_pelanggan);
+            $("#modalPelanggan").modal("hide");
         });
 
 

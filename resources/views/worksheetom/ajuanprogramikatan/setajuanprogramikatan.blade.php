@@ -17,12 +17,14 @@
                     @can('ajuanprogramikatan.create')
                         @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $programikatan->rsm == null)
                             @if ($programikatan->status == 0)
-                                <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                                <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i>
+                                    Tambah Pelanggan</a>
                             @endif
                         @endif
 
                         @if ($user->hasRole('super admin'))
-                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
+                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i>
+                                Tambah Pelanggan</a>
                         @endif
                     @endcan
                 </div>
@@ -104,7 +106,10 @@
                                         <td class="text-end">
                                             @php
                                                 $kenaikan = $d->qty_target - ROUND($d->qty_rata_rata);
-                                                $persentase = $d->qty_rata_rata == 0 ? 0 : ($kenaikan / ROUND($d->qty_rata_rata)) * 100;
+                                                $persentase =
+                                                    $d->qty_rata_rata == 0
+                                                        ? 0
+                                                        : ($kenaikan / ROUND($d->qty_rata_rata)) * 100;
                                                 $persentase = formatAngkaDesimal($persentase);
                                             @endphp
                                             {{ $persentase }}%
@@ -121,7 +126,8 @@
                                         <td>{{ $d->bank }}</td> --}}
                                         <td>
                                             @if ($d->file_doc != null)
-                                                <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}" target="_blank">
+                                                <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}"
+                                                    target="_blank">
                                                     <i class="ti ti-file-text" class="me-1"></i>
                                                 </a>
                                             @endif
@@ -134,7 +140,8 @@
                                                 </a>
                                                 @can('ajuanprogramikatan.edit')
                                                     @if ($programikatan->status == 0)
-                                                        <a href="#" kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
+                                                        <a href="#"
+                                                            kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
                                                             class="btnEdit me-1">
                                                             <i class="ti ti-edit text-success"></i>
                                                         </a>
@@ -208,7 +215,8 @@
 </div>
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 <x-modal-form id="modalDetailfaktur" size="modal-xl" show="loadmodaldetailfaktur" title="" />
-<div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+<div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -339,14 +347,18 @@
                     if (response.type === 2) {
                         $("#modalPelanggan").modal("hide");
                         $(document).find("input[name='qty_avg']").val(0);
-                        $(document).find("input[name='nama_pelanggan']").val(response.data.nama_pelanggan);
-                        $(document).find("input[name='kode_pelanggan']").val(response.data.kode_pelanggan);
+                        $(document).find("input[name='nama_pelanggan']").val(response.data
+                            .nama_pelanggan);
+                        $(document).find("input[name='kode_pelanggan']").val(response.data
+                            .kode_pelanggan);
                         return;
                     }
                     $("#modalPelanggan").modal("hide");
                     $(document).find("input[name='qty_avg']").val(Math.round(response.data.qty));
-                    $(document).find("input[name='nama_pelanggan']").val(response.data.nama_pelanggan);
-                    $(document).find("input[name='kode_pelanggan']").val(response.data.kode_pelanggan);
+                    $(document).find("input[name='nama_pelanggan']").val(response.data
+                        .nama_pelanggan);
+                    $(document).find("input[name='kode_pelanggan']").val(response.data
+                        .kode_pelanggan);
                 }
             });
         }
@@ -366,8 +378,14 @@
             e.preventDefault();
             let kode_pelanggan = $(this).attr('kode_pelanggan');
             let kode_program = "{{ Crypt::encrypt($programikatan->kode_program) }}";
+
+            let nama_pelanggan = $(this).attr('nama_pelanggan');
+
             getavgPelanggan(kode_pelanggan, kode_program);
             gethistoripelangganprogram(kode_pelanggan, kode_program);
+            $(document).find("input[name='nama_pelanggan']").val(nama_pelanggan);
+            $(document).find("input[name='kode_pelanggan']").val(kode_pelanggan);
+            $("#modalPelanggan").modal("hide");
 
         });
 
@@ -551,7 +569,8 @@
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 </div>`);
-            $("#loadmodal").load("/ajuanprogramikatan/" + no_pengajuan + "/" + kode_pelanggan + "/edit");
+            $("#loadmodal").load("/ajuanprogramikatan/" + no_pengajuan + "/" + kode_pelanggan +
+                "/edit");
 
         });
     });

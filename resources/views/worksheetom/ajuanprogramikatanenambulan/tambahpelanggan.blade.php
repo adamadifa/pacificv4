@@ -6,7 +6,8 @@
             placeholder="Cari Pelanggan" aria-label="Cari Pelanggan" aria-describedby="nama_pelanggan">
         <a class="btn btn-primary waves-effect" id="kode_pelanggan_search"><i class="ti ti-search text-white"></i></a>
     </div>
-    <div class="col" id="gettargetpelanggan"></div>
+    <div class="row mb-3">
+        <div class="col" id="gettargetpelanggan"></div>
     </div>
 
     <div class="form-group mb-3">

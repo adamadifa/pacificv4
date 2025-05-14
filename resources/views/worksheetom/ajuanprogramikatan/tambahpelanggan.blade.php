@@ -1,5 +1,5 @@
-<form action="{{ route('ajuanprogramikatan.storepelanggan', Crypt::encrypt($ajuanprogramikatan->no_pengajuan)) }}" method="POST" id="formEditpelanggan"
-    enctype="multipart/form-data">
+<form action="{{ route('ajuanprogramikatan.storepelanggan', Crypt::encrypt($ajuanprogramikatan->no_pengajuan)) }}"
+    method="POST" id="formEditpelanggan" enctype="multipart/form-data">
     @csrf
     {{-- <div class="form-group">
         <select name="kode_pelanggan" id="kode_pelanggan" class="form-select select2Kodepelanggan">
@@ -11,8 +11,8 @@
     </div> --}}
     <div class="input-group mb-3">
         <input type="hidden" name="kode_pelanggan" id="kode_pelanggan" readonly>
-        <input type="text" class="form-control" name="nama_pelanggan" id="nama_pelanggan" readonly placeholder="Cari Pelanggan"
-            aria-label="Cari Pelanggan" aria-describedby="nama_pelanggan">
+        <input type="text" class="form-control" name="nama_pelanggan" id="nama_pelanggan" readonly
+            placeholder="Cari Pelanggan" aria-label="Cari Pelanggan" aria-describedby="nama_pelanggan">
         <a class="btn btn-primary waves-effect" id="kode_pelanggan_search"><i class="ti ti-search text-white"></i></a>
     </div>
     <x-input-with-icon label="Qty Rata - rata 3 Bulan Terakhir" name="qty_avg" icon="ti ti-file-description"
@@ -20,7 +20,8 @@
     <div class="row">
         <div class="col" id="gethistoripelangganprogram"></div>
     </div>
-    <x-input-with-icon label="Total Target" name="target" icon="ti ti-file-description" placeholder="Target / Bulan" align="right" />
+    <x-input-with-icon label="Total Target" name="target" icon="ti ti-file-description" placeholder="Target / Bulan"
+        align="right" />
     <table class="table table-bordered mb-2" id="targetperbulantable">
         <thead>
             <tr>
@@ -38,11 +39,13 @@
             @while (strtotime($current_date) <= strtotime($end_date))
                 <tr class="targetbulanan">
                     <td>
-                        <input type="hidden" name="bulan[]" value="{{ date('m', strtotime($current_date)) }}" class="noborder-form">
+                        <input type="hidden" name="bulan[]" value="{{ date('m', strtotime($current_date)) }}"
+                            class="noborder-form">
                         {{ getMonthName(date('m', strtotime($current_date))) }}
                     </td>
                     <td>
-                        <input type="hidden" name="tahun[]" value="{{ date('Y', strtotime($current_date)) }}" class="noborder-form">
+                        <input type="hidden" name="tahun[]" value="{{ date('Y', strtotime($current_date)) }}"
+                            class="noborder-form">
                         {{ date('Y', strtotime($current_date)) }}
                     </td>
                     <td>
@@ -90,10 +93,14 @@
             <option value="2">Flat</option>
         </select>
     </div>
-    <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right" />
-    <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right" />
-    <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right" />
-    <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right" readonly />
+    <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM"
+        align="right" />
+    <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM"
+        align="right" />
+    <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM"
+        align="right" />
+    <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
+        readonly />
     <div class="form-group mb-3">
         <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
             <option value="">Metode Pembayaran</option>
@@ -148,13 +155,15 @@
             let totalBulan = $('.targetbulanan').length; // Menghitung jumlah bulan
             let totalTargetString = $('#target').val(); // Mengambil nilai target
             let totalTarget = totalTargetString == "" ? 0 : totalTargetString.replace(/\./g, '');
-            let targetPerBulan = Math.floor(parseInt(totalTarget) / parseInt(totalBulan)); // Menghitung target per bulan
+            let targetPerBulan = Math.floor(parseInt(totalTarget) / parseInt(
+            totalBulan)); // Menghitung target per bulan
             console.log(grandTotaltarget);
             let sisa = parseInt(totalTarget) - parseInt(grandTotaltarget);
             // if (sisa > 0) {
             //     $('input[name="target_perbulan[]"]:last').val(convertToRupiah(targetPerBulan + sisa));
             // }
-            $('input[name="target_perbulan[]"]').val(convertToRupiah(targetPerBulan)); // Mengisi otomatis target per bulan
+            $('input[name="target_perbulan[]"]').val(convertToRupiah(
+            targetPerBulan)); // Mengisi otomatis target per bulan
         }
 
         function calculateTotalTarget() {
