@@ -25,15 +25,16 @@
 <div class="card p-0 m-0">
     <div class="card-content p-0">
         @if (Storage::disk('public')->exists('/penjualan/' . $penjualan->foto) && !empty($penjualan->foto))
-            <img src="{{ getfotoPenjualan($penjualan->foto) }}" class="card-img-top img-fluid" alt="user image" style="height: 150px; object-fit: cover"
-                id="foto">
+            <img src="{{ getfotoPenjualan($penjualan->foto) }}" class="card-img-top img-fluid" alt="user image"
+                style="height: 150px; object-fit: cover" id="foto">
         @else
-            <img src="{{ asset('assets/img/elements/1.jpg') }}"class="card-img-top img-fluid" alt="user image" style="height: 150px; object-fit: cover"
-                id="foto">
+            <img src="{{ asset('assets/img/elements/1.jpg') }}"class="card-img-top img-fluid" alt="user image"
+                style="height: 150px; object-fit: cover" id="foto">
         @endif
         <div class="card-img-overlay" style="background-color: #00000097;">
             <h5 class="card-title text-white m-0">{{ $penjualan->no_faktur }}</h5>
-            <h5 class="card-title text-white m-0">{{ $penjualan->kode_pelanggan }} - {{ $penjualan->nama_pelanggan }}</h5>
+            <h5 class="card-title text-white m-0">{{ $penjualan->kode_pelanggan }} - {{ $penjualan->nama_pelanggan }}
+            </h5>
             <p class="card-text text-white m-0">{{ DateToIndo($penjualan->tanggal) }}</p>
             @if ($penjualan->jenis_transaksi == 'T')
                 <span class="badge bg-success">TUNAI</span>
@@ -54,7 +55,8 @@
     @if (date('Y-m-d', strtotime($penjualan->created_at)) != date('Y-m-d'))
         <div class="row mt-2">
             <div class="col">
-                <a href="#" onclick="ajax_print('/sfa/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/cetak',this)"
+                <a href="#"
+                    onclick="ajax_print('/sfa/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/cetak',this)"
                     class="btn btn-primary w-100">
                     <i class="ti ti-printer me-1"></i>
                     Cetak Faktur
@@ -65,10 +67,12 @@
     @else
         <div class="row mt-2">
             <div class="btn-group" role="group" aria-label="First group">
-                <a href="{{ route('sfa.editpenjualan', Crypt::encrypt($penjualan->no_faktur)) }}" class="btn btn-success waves-effect text-white ">
+                <a href="{{ route('sfa.editpenjualan', Crypt::encrypt($penjualan->no_faktur)) }}"
+                    class="btn btn-success waves-effect text-white ">
                     <i class="ti ti-edit"></i>
                 </a>
-                <a href="#" onclick="ajax_print('/sfa/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/cetak',this)"
+                <a href="#"
+                    onclick="ajax_print('/sfa/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/cetak',this)"
                     class="btn btn-primary w-100">
                     <i class="ti ti-printer me-1"></i>
                     Cetak Faktur
@@ -98,10 +102,12 @@
         </div>
         <div class="row mb-1">
             <div class="col-2">
-                <form method="POST" class="deleteform" action="/sfa/{{ Crypt::encrypt($penjualan->no_faktur) }}/deletesignature">
+                <form method="POST" class="deleteform"
+                    action="/sfa/{{ Crypt::encrypt($penjualan->no_faktur) }}/deletesignature">
                     @csrf
                     @method('DELETE')
-                    <a href=" #" tanggal="{{ $penjualan->tanggal }}" class="btn btn-danger btn-block  delete-confirm">
+                    <a href=" #" tanggal="{{ $penjualan->tanggal }}"
+                        class="btn btn-danger btn-block  delete-confirm">
                         <i class="ti ti-trash"></i>
                     </a>
                 </form>
@@ -159,7 +165,8 @@
                         $penjualan->penyesuaian +
                         $penjualan->ppn;
                 @endphp
-                <i class="ti ti-shopping-bag me-1 text-primary" style="font-size: 36px"></i> {{ formatAngka($total_netto) }}
+                <i class="ti ti-shopping-bag me-1 text-primary" style="font-size: 36px"></i>
+                {{ formatAngka($total_netto) }}
             </h4>
         </div>
         <div class="card-body">
@@ -167,26 +174,28 @@
             <div class="nav-align-top">
                 <ul class="nav nav-tabs nav-fill" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#detailpenjualan"
-                            aria-controls="detailpenjualan" aria-selected="true">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#detailpenjualan" aria-controls="detailpenjualan" aria-selected="true">
                             Detail
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#pembayaran"
-                            aria-controls="pembayaran" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#pembayaran" aria-controls="pembayaran" aria-selected="false"
+                            tabindex="-1">
                             Bayar
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#transfer"
-                            aria-controls="transfer" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#transfer" aria-controls="transfer" aria-selected="false"
+                            tabindex="-1">
                             Transfer
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#giro" aria-controls="giro"
-                            aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#giro" aria-controls="giro" aria-selected="false" tabindex="-1">
                             Giro
                         </button>
                     </li>
@@ -200,7 +209,10 @@
                             @endphp
                             @foreach ($detail as $d)
                                 @php
-                                    $jumlah = explode('|', convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah));
+                                    $jumlah = explode(
+                                        '|',
+                                        convertToduspackpcsv2($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah),
+                                    );
                                     $jumlah_dus = $jumlah[0];
                                     $jumlah_pack = $jumlah[1];
                                     $jumlah_pcs = $jumlah[2];
@@ -220,20 +232,26 @@
                                 </tr>
                                 <tr>
                                     @if (!empty($jumlah_dus))
-                                        <td> {{ formatAngka($jumlah_dus) }} Dus x {{ formatAngka($d->harga_dus) }}</td>
-                                        <td class="text-end font-weight-bold"><b>{{ formatAngka($subtotal_dus) }}</b></td>
+                                        <td> {{ formatAngka($jumlah_dus) }} Dus x {{ formatAngka($d->harga_dus) }}
+                                        </td>
+                                        <td class="text-end font-weight-bold"><b>{{ formatAngka($subtotal_dus) }}</b>
+                                        </td>
                                     @endif
                                 </tr>
                                 <tr>
                                     @if (!empty($jumlah_pack))
-                                        <td> {{ formatAngka($jumlah_pack) }} Pack x {{ formatAngka($d->harga_pack) }}</td>
-                                        <td class="text-end font-weight-bold"><b>{{ formatAngka($subtotal_pack) }}</b></td>
+                                        <td> {{ formatAngka($jumlah_pack) }} Pack x {{ formatAngka($d->harga_pack) }}
+                                        </td>
+                                        <td class="text-end font-weight-bold"><b>{{ formatAngka($subtotal_pack) }}</b>
+                                        </td>
                                     @endif
                                 </tr>
                                 <tr>
                                     @if (!empty($jumlah_pcs))
-                                        <td> {{ formatAngka($jumlah_pcs) }} Pcs x {{ formatAngka($d->harga_pcs) }}</td>
-                                        <td class="text-end font-weight-bold"> <b>{{ formatAngka($subtotal_pcs) }}</b></td>
+                                        <td> {{ formatAngka($jumlah_pcs) }} Pcs x {{ formatAngka($d->harga_pcs) }}
+                                        </td>
+                                        <td class="text-end font-weight-bold"> <b>{{ formatAngka($subtotal_pcs) }}</b>
+                                        </td>
                                     @endif
                                 </tr>
                             @endforeach
@@ -247,11 +265,13 @@
                             </tr>
                             <tr>
                                 <td>POT. ISTIMEWA</td>
-                                <td class="text-end fw-bold text-danger">{{ formatAngka($penjualan->potongan_istimewa) }}</td>
+                                <td class="text-end fw-bold text-danger">
+                                    {{ formatAngka($penjualan->potongan_istimewa) }}</td>
                             </tr>
                             <tr>
                                 <td>PENYESUAIAN</td>
-                                <td class="text-end fw-bold text-danger">{{ formatAngka($penjualan->penyesuaian) }}</td>
+                                <td class="text-end fw-bold text-danger">{{ formatAngka($penjualan->penyesuaian) }}
+                                </td>
                             </tr>
                             @if (!empty($penjualan->ppn))
                                 <tr>
@@ -261,7 +281,8 @@
                             @endif
                             <tr>
                                 <td>RETUR</td>
-                                <td class="text-end fw-bold text-danger">{{ formatAngka($penjualan->total_retur) }}</td>
+                                <td class="text-end fw-bold text-danger">{{ formatAngka($penjualan->total_retur) }}
+                                </td>
                             </tr>
                             <tr>
                                 <td>GRAND TOTAL</td>
@@ -277,7 +298,8 @@
                                 <td id="sisabayar">{{ formatAngka($total_netto - $penjualan->total_bayar) }}</td>
                             </tr>
                             <tr>
-                                <td colspan="2" class="{{ $penjualan->status == '1' ? 'bg-success' : 'bg-danger' }} text-white text-center">
+                                <td colspan="2"
+                                    class="{{ $penjualan->status == '1' ? 'bg-success' : 'bg-danger' }} text-white text-center">
                                     {{ $penjualan->status == '1' ? 'LUNAS' : 'BELUM LUNAS' }}
                                 </td>
 
@@ -286,7 +308,8 @@
                     </div>
 
                     <div class="tab-pane fade p-0" id="pembayaran" role="tabpanel">
-                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreateBayar"><i class="ti ti-plus me-1"></i>Input
+                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreateBayar"><i
+                                class="ti ti-plus me-1"></i>Input
                             Pembayaran</a>
 
 
@@ -306,7 +329,9 @@
                                     <div class="timeline-event px-0 pb-0 d-flex justify-content-between">
                                         <div>
                                             <div class="timeline-header">
-                                                <small class="text-success text-uppercase fw-medium">{{ $d->no_bukti }} -
+                                                <small
+                                                    class="text-success text-uppercase fw-medium">{{ $d->no_bukti }}
+                                                    -
                                                     {{ $jenis_bayar[$d->jenis_bayar] }}</small>
                                             </div>
                                             <h6 class="mb-1">{{ DateToIndo($d->tanggal) }}</h6>
@@ -316,14 +341,18 @@
                                         <div class="d-flex aksihistoribayar">
                                             {{-- {{ $d->print_tagihan }} --}}
                                             @if ($d->tanggal >= date('Y-m-d') && $d->print_tagihan == 0)
-                                                @if (($d->jenis_bayar == 'TP' && $penjualan->jenis_bayar != 'TN') || ($d->jenis_bayar == 'TN' && $penjualan->jenis_bayar != 'TN'))
+                                                @if (
+                                                    ($d->jenis_bayar == 'TP' && $penjualan->jenis_bayar != 'TN') ||
+                                                        ($d->jenis_bayar == 'TN' && $penjualan->jenis_bayar != 'TN'))
                                                     <div>
-                                                        <a href="#" class="me-1 btnEditBayar" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
+                                                        <a href="#" class="me-1 btnEditBayar"
+                                                            no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
                                                             <i class="ti ti-edit text-primary"></i>
                                                         </a>
                                                     </div>
                                                     <div>
-                                                        <form method="POST" name="deleteform" class="deleteform" id="bayarform"
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            id="bayarform"
                                                             style="margin-bottom:0px !important; padding:0 !important"
                                                             action="{{ route('pembayaranpenjualan.delete', Crypt::encrypt($d->no_bukti)) }}">
                                                             @csrf
@@ -343,7 +372,8 @@
 
                     </div>
                     <div class="tab-pane fade" id="transfer" role="tabpanel">
-                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreatetransfer"><i class="ti ti-plus me-1"></i>Input
+                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreatetransfer"><i
+                                class="ti ti-plus me-1"></i>Input
                             Transfer</a>
                         <ul class="timeline mb-0 pb-1">
                             @foreach ($transfer as $d)
@@ -354,13 +384,25 @@
                                     <div class="timeline-event px-0 pb-0 d-flex justify-content-between">
                                         <div>
                                             <div class="timeline-header">
-                                                <small class="text-success text-uppercase fw-medium">{{ $d->kode_transfer }} -
+                                                <small
+                                                    class="text-success text-uppercase fw-medium">{{ $d->kode_transfer }}
+                                                    -
                                                     @php
                                                         $status_transfer =
-                                                            $d->status == '0' ? 'Pending' : ($d->status == '1' ? 'Diterima' : 'Ditolak');
-                                                        $bg_status = $d->status == '0' ? 'warning' : ($d->status == '1' ? 'success' : 'danger');
+                                                            $d->status == '0'
+                                                                ? 'Pending'
+                                                                : ($d->status == '1'
+                                                                    ? 'Diterima'
+                                                                    : 'Ditolak');
+                                                        $bg_status =
+                                                            $d->status == '0'
+                                                                ? 'warning'
+                                                                : ($d->status == '1'
+                                                                    ? 'success'
+                                                                    : 'danger');
                                                     @endphp
-                                                    <span class="badge bg-{{ $bg_status }}">{{ $status_transfer }}</span>
+                                                    <span
+                                                        class="badge bg-{{ $bg_status }}">{{ $status_transfer }}</span>
                                                 </small>
                                             </div>
                                             <h6 class="mb-1">{{ DateToIndo($d->tanggal) }}</h6>
@@ -397,7 +439,8 @@
                         </ul>
                     </div>
                     <div class="tab-pane fade" id="giro" role="tabpanel">
-                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreategiro"><i class="ti ti-plus me-1"></i>Input Giro</a>
+                        <a href="#" class="btn btn-primary mb-3 w-100" id="btnCreategiro"><i
+                                class="ti ti-plus me-1"></i>Input Giro</a>
                         <ul class="timeline mb-0 pb-1">
                             @foreach ($giro as $d)
                                 <li class="timeline-item ps-4 border-left-dashed pb-1">
@@ -407,12 +450,25 @@
                                     <div class="timeline-event px-0 pb-0 d-flex justify-content-between">
                                         <div>
                                             <div class="timeline-header d-flex">
-                                                <small class="text-success text-uppercase fw-medium">{{ $d->no_giro }} -
+                                                <small
+                                                    class="text-success text-uppercase fw-medium">{{ $d->no_giro }}
+                                                    -
                                                     @php
-                                                        $status_giro = $d->status == '0' ? 'Pending' : ($d->status == '1' ? 'Diterima' : 'Ditolak');
-                                                        $bg_giro = $d->status == '0' ? 'warning' : ($d->status == '1' ? 'success' : 'danger');
+                                                        $status_giro =
+                                                            $d->status == '0'
+                                                                ? 'Pending'
+                                                                : ($d->status == '1'
+                                                                    ? 'Diterima'
+                                                                    : 'Ditolak');
+                                                        $bg_giro =
+                                                            $d->status == '0'
+                                                                ? 'warning'
+                                                                : ($d->status == '1'
+                                                                    ? 'success'
+                                                                    : 'danger');
                                                     @endphp
-                                                    <span class="badge bg-{{ $bg_giro }}">{{ $status_giro }}</span>
+                                                    <span
+                                                        class="badge bg-{{ $bg_giro }}">{{ $status_giro }}</span>
                                                 </small>
                                             </div>
                                             <h6 class="mb-1">{{ DateToIndo($d->tanggal) }}</h6>
@@ -425,7 +481,8 @@
 
 
                                                 <div>
-                                                    <a href="#" class="me-2 btnEditgiro" kode_giro="{{ Crypt::encrypt($d->kode_giro) }}">
+                                                    <a href="#" class="me-2 btnEditgiro"
+                                                        kode_giro="{{ Crypt::encrypt($d->kode_giro) }}">
                                                         <i class="ti ti-edit text-success"></i>
                                                     </a>
                                                 </div>
@@ -466,12 +523,14 @@
 <script>
     let jmlprint = "{{ $penjualan->print }}";
     let jmlprinttagihan = "{{ $print_tagihan }}";
+    let jmlprintgiro = "{{ $print_giro }}";
+    let jmlprinttransfer = "{{ $print_transfer }}";
     let lock_print = "{{ $penjualan->lock_print }}";
 
     function ajax_print(url, btn) {
         // alert(lock_print);
-        //alert(jmlprint + ' ' + jmlprinttagihan);
-        if (jmlprint >= 1 && jmlprinttagihan <= 0 && lock_print == 0) {
+        alert(jmlprint + ' ' + jmlprinttagihan + ' ' + jmlprintgiro + ' ' + jmlprinttransfer);
+        if (jmlprint >= 1 && jmlprinttagihan <= 0 && jmlprintgiro <= 0 && jmlprinttransfer <= 0 && lock_print == 0) {
             swal.fire({
                 icon: 'warning',
                 title: 'Oops...',
@@ -490,6 +549,8 @@
             });
             jmlprint++;
             jmlprinttagihan--;
+            jmlprintgiro--;
+            jmlprinttransfer--;
             lock_print = 0;
         }).fail(function() {
             alert("ajax error");

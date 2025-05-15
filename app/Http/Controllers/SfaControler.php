@@ -646,6 +646,16 @@ class SfaControler extends Controller
             ->where('tanggal', '>', '2024-10-20')
             ->where('print_tagihan', 0)->count();
 
+        $data['print_giro'] = Detailgiro::where('no_faktur', $no_faktur)
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->where('print_giro', 0)
+            ->count();
+
+        $data['print_transfer'] = Detailtransfer::where('no_faktur', $no_faktur)
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->where('print_transfer', 0)
+            ->count();
+
         // dd($data['print_tagihan']);
         return view('sfa.penjualan_show', $data);
     }
@@ -695,7 +705,13 @@ class SfaControler extends Controller
 
         $cabang = Cabang::where('kode_cabang', $kode_cabang)->first();
 
+        $giro = Detailgiro::where('no_faktur', $no_faktur)
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->get();
 
+        $transfer = Detailtransfer::where('no_faktur', $no_faktur)
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->get();
 
 
         $profile = CapabilityProfile::load("POS-5890");
@@ -724,6 +740,9 @@ class SfaControler extends Controller
             }
         }
 
+
+
+
         $nama_pt = strtoupper($cabang->nama_pt);
         $alamat = $cabang->alamat_cabang;
 
@@ -738,13 +757,36 @@ class SfaControler extends Controller
             $databayar[] = new item('', '');
         }
 
+        if (!$giro->isEmpty()) {
+            foreach ($giro as $g) {
+                $status_list = ['Pending', 'Diterima', 'Ditolak'];
+                $datagiro[] = new item($g->no_giro . " " . date('d-m-y', strtotime($g->tanggal)) . "\n" . formatAngka($g->jumlah) . " " . $status_list[$g->status] . "\n" . "------------------");
+            }
+        }
+
+        if (!$transfer->isEmpty()) {
+            foreach ($transfer as $t) {
+                $status_list = ['Pending', 'Diterima', 'Ditolak'];
+                $datatransfer[] = new item($t->no_transfer . " " . date('d-m-y', strtotime($t->tanggal)) . "\n" . formatAngka($t->jumlah) . " " . $status_list[$t->status] . "\n" . "------------------");
+            }
+        }
+
         try {
             //Detail Penjualan
             $items = $datadetail;
 
+
             //Detail Pembayaran
             if (!$pembayaran->isEmpty()) {
                 $itemsbayar = $databayar;
+            }
+
+            if (!$giro->isEmpty()) {
+                $itemsgiro = $datagiro;
+            }
+
+            if (!$transfer->isEmpty()) {
+                $itemstransfer = $datatransfer;
             }
 
 
@@ -797,6 +839,10 @@ class SfaControler extends Controller
             }
             $printer->text(new item('', ''));
 
+            // Mengatur teks menjadi tebal (bold)
+            // Metode setEmphasis(true) digunakan untuk mengaktifkan mode penekanan teks
+            // pada printer thermal, yang akan membuat teks berikutnya dicetak dengan format tebal
+            // sampai mode ini dinonaktifkan dengan setEmphasis(false)
             $printer->setEmphasis(true);
             foreach ($items as $item) {
                 $printer->text($item->getAsString(32)); // for 58mm Font A
@@ -862,6 +908,33 @@ class SfaControler extends Controller
                 $printer->text($sisa->getAsString(32)); // for 58mm Font A
             }
 
+
+            if (!$giro->isEmpty()) {
+                $printer->feed();
+                // Metode feed() digunakan untuk menggerakkan kertas printer ke bawah
+                // Ini menciptakan baris kosong/spasi antara bagian pembayaran dan bagian giro
+                // Memisahkan informasi untuk meningkatkan keterbacaan pada struk yang dicetak
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->text("GIRO \n");
+                $printer->setEmphasis(true);
+                foreach ($itemsgiro as $itemgiro) {
+                    $printer->text($itemgiro->getAsString(32)); // for 58mm Font A
+                    // Kode ini mencetak informasi giro pada struk
+                    // Parameter 32 menunjukkan lebar karakter untuk printer 58mm dengan Font A
+                    // itemgiro berisi informasi seperti nomor giro, tanggal, dan nominal
+                    // getAsString() memformat data giro menjadi string yang siap dicetak
+                }
+            }
+
+            if (!$transfer->isEmpty()) {
+                $printer->feed();
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->text("TRANSFER \n");
+                $printer->setEmphasis(true);
+                foreach ($itemstransfer as $itemtransfer) {
+                    $printer->text($itemtransfer->getAsString(32)); // for 58mm Font A
+                }
+            }
 
 
             $printer->feed(2);
@@ -1000,6 +1073,32 @@ class SfaControler extends Controller
             }
 
 
+            if (!$giro->isEmpty()) {
+                $printer->feed();
+                // Metode feed() digunakan untuk menggerakkan kertas printer ke bawah
+                // Ini menciptakan baris kosong/spasi antara bagian pembayaran dan bagian giro
+                // Memisahkan informasi untuk meningkatkan keterbacaan pada struk yang dicetak
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->text("GIRO \n");
+                $printer->setEmphasis(true);
+                foreach ($itemsgiro as $itemgiro) {
+                    $printer->text($itemgiro->getAsString(32)); // for 58mm Font A
+                    // Kode ini mencetak informasi giro pada struk
+                    // Parameter 32 menunjukkan lebar karakter untuk printer 58mm dengan Font A
+                    // itemgiro berisi informasi seperti nomor giro, tanggal, dan nominal
+                    // getAsString() memformat data giro menjadi string yang siap dicetak
+                }
+            }
+
+            if (!$transfer->isEmpty()) {
+                $printer->feed();
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->text("TRANSFER \n");
+                $printer->setEmphasis(true);
+                foreach ($itemstransfer as $itemtransfer) {
+                    $printer->text($itemtransfer->getAsString(32)); // for 58mm Font A
+                }
+            }
 
             $printer->feed(2);
             $printer->setJustification(Printer::JUSTIFY_CENTER);
@@ -1126,7 +1225,32 @@ class SfaControler extends Controller
                     $printer->text($sisa->getAsString(32)); // for 58mm Font A
                 }
 
+                if (!$giro->isEmpty()) {
+                    $printer->feed();
+                    // Metode feed() digunakan untuk menggerakkan kertas printer ke bawah
+                    // Ini menciptakan baris kosong/spasi antara bagian pembayaran dan bagian giro
+                    // Memisahkan informasi untuk meningkatkan keterbacaan pada struk yang dicetak
+                    $printer->setJustification(Printer::JUSTIFY_LEFT);
+                    $printer->text("GIRO \n");
+                    $printer->setEmphasis(true);
+                    foreach ($itemsgiro as $itemgiro) {
+                        $printer->text($itemgiro->getAsString(32)); // for 58mm Font A
+                        // Kode ini mencetak informasi giro pada struk
+                        // Parameter 32 menunjukkan lebar karakter untuk printer 58mm dengan Font A
+                        // itemgiro berisi informasi seperti nomor giro, tanggal, dan nominal
+                        // getAsString() memformat data giro menjadi string yang siap dicetak
+                    }
+                }
 
+                if (!$transfer->isEmpty()) {
+                    $printer->feed();
+                    $printer->setJustification(Printer::JUSTIFY_LEFT);
+                    $printer->text("TRANSFER \n");
+                    $printer->setEmphasis(true);
+                    foreach ($itemstransfer as $itemtransfer) {
+                        $printer->text($itemtransfer->getAsString(32)); // for 58mm Font A
+                    }
+                }
 
                 $printer->feed(2);
                 $printer->setJustification(Printer::JUSTIFY_CENTER);
@@ -1185,6 +1309,14 @@ class SfaControler extends Controller
 
             Historibayarpenjualan::where('no_faktur', $no_faktur)->update([
                 'print_tagihan' => 1
+            ]);
+
+            Detailgiro::where('no_faktur', $no_faktur)->where('print_giro', 0)->update([
+                'print_giro' => 1
+            ]);
+
+            Detailtransfer::where('no_faktur', $no_faktur)->where('print_transfer', 0)->update([
+                'print_transfer' => 1
             ]);
         }
     }
