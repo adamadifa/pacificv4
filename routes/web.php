@@ -371,6 +371,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/{kode_pelanggan}/getlistfakturkreditoption', 'getlistfakturkreditoption')->name('pelanggan.getlistfakturkreditoption');
         Route::get('/pelanggan/getpelangganjson', 'getPelangganjson')->name('pelanggan.getpelangganjson');
         Route::get('/pelanggan/{kode_cabang}/getpelanggancabangjson', 'getPelanggancabangjson')->name('pelanggan.getpelanggancabangjson');
+        Route::get('/pelanggan/{no_pengajuan}/getpelanggangagalprogramikatan', 'getpelanggangagalprogramikatan')->name('pelanggan.getpelanggangagalprogramikatan');
 
 
         Route::get('/pelanggan/{kode_pelanggan}/{kode_program}/getavgpelanggan', 'getAvgpelanggan')->name('pelanggan.getAvgpelanggan');

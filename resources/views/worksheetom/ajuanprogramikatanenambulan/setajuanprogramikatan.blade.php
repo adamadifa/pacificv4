@@ -274,7 +274,7 @@
             order: [
                 [2, 'asc']
             ],
-            ajax: "{{ route('pelanggan.getpelanggancabangjson', $programikatan->kode_cabang) }}",
+            ajax: "{{ route('pelanggan.getpelanggangagalprogramikatan', Crypt::encrypt($programikatan->no_pengajuan)) }}",
             bAutoWidth: false,
             columns: [{
                     data: 'DT_RowIndex',
