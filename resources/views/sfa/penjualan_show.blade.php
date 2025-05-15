@@ -529,7 +529,7 @@
 
     function ajax_print(url, btn) {
         // alert(lock_print);
-        alert(jmlprint + ' ' + jmlprinttagihan + ' ' + jmlprintgiro + ' ' + jmlprinttransfer);
+        //alert(jmlprint + ' ' + jmlprinttagihan + ' ' + jmlprintgiro + ' ' + jmlprinttransfer);
         if (jmlprint >= 1 && jmlprinttagihan <= 0 && jmlprintgiro <= 0 && jmlprinttransfer <= 0 && lock_print == 0) {
             swal.fire({
                 icon: 'warning',
