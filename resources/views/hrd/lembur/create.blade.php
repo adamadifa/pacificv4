@@ -26,7 +26,8 @@
         </select>
     </div>
     @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
-        <div class="form-group mb-3">
+        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
+            select2="select2KodeCabang" />
         <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
             select2="select2KodeDept" />
     @endif
