@@ -42,7 +42,8 @@
                     @php
                         $istirahat = $lembur->istirahat == 1 ? 1 : 0;
                         $jmljam = hitungjamdesimal($lembur->tanggal_dari, $lembur->tanggal_sampai);
-                        $jmljam = $jmljam > 7 ? 7 : $jmljam - $istirahat;
+                        // $jmljam = $jmljam > 7 ? 7 : $jmljam - $istirahat;
+                        $jmljam = $jmljam - $istirahat;
                     @endphp
                     {{ $jmljam }} Jam
                 </td>
