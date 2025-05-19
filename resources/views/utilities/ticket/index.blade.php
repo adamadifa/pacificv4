@@ -19,8 +19,9 @@
                                 @hasanyrole($roles_show_cabang)
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
+                                                key="kode_cabang" textShow="nama_cabang" upperCase="true"
+                                                selected="{{ Request('kode_cabang_search') }}"
                                                 select2="select2Kodecabangsearch" />
                                         </div>
                                     </div>
@@ -28,8 +29,12 @@
                                 <div class="form-group">
                                     <select name="status_search" id="status_search" class="form-select">
                                         <option value="">Semua Status</option>
-                                        <option value="pending" {{ Request('status_search') == 'pending' ? 'selected' : '' }}>Belum Selesai</option>
-                                        <option value="selesai" {{ Request('status_search') == 'selessai' ? 'selected' : '' }}>Selesai</option>
+                                        <option value="pending"
+                                            {{ Request('status_search') == 'pending' ? 'selected' : '' }}>Belum Selesai
+                                        </option>
+                                        <option value="selesai"
+                                            {{ Request('status_search') == 'selessai' ? 'selected' : '' }}>Selesai
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -111,18 +116,21 @@
                                                     <div class="d-flex">
 
                                                         @if ($d->gm == null)
-                                                            <a href="#" class="btnEdit me-1" kode_pengajuan="{{ $d->kode_pengajuan }}"><i
+                                                            <a href="#" class="btnEdit me-1"
+                                                                kode_pengajuan="{{ $d->kode_pengajuan }}"><i
                                                                     class="ti ti-edit text-success"></i>
                                                             </a>
                                                         @endif
 
                                                         @can('ticket.approve')
                                                             @if (in_array($level_user, ['gm administrasi', 'regional operation manager']) && $d->status == '0')
-                                                                <a href="#" class="btnApprove me-1" kode_pengajuan="{{ $d->kode_pengajuan }}">
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pengajuan="{{ $d->kode_pengajuan }}">
                                                                     <i class="ti ti-external-link text-primary"></i>
                                                                 </a>
                                                             @elseif($level_user == 'super admin')
-                                                                <a href="#" class="btnApprove me-1" kode_pengajuan="{{ $d->kode_pengajuan }}">
+                                                                <a href="#" class="btnApprove me-1"
+                                                                    kode_pengajuan="{{ $d->kode_pengajuan }}">
                                                                     <i class="ti ti-external-link text-primary"></i>
                                                                 </a>
                                                             @endif
@@ -143,7 +151,10 @@
                                                                 <i class="ti ti-paperclip text-primary"></i>
                                                             </a>
                                                         @endif
-
+                                                        <a href="#" class="addmessage"
+                                                            no_ticket="{{ $d->kode_pengajuan }}">
+                                                            <i class="ti ti-message-plus text-success"></i>
+                                                        </a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -162,6 +173,8 @@
     </div>
 </div>
 <x-modal-form id="mdlCreate" size="" show="loadCreate" title="Buat Ticket" />
+<x-modal-form id="mdlMessage" size="" show="loadMessage" title="Buat Ticket" />
+
 @endsection
 
 
@@ -187,6 +200,14 @@
             $('#mdlCreate').modal("show");
             $('#mdlCreate').find('.modal-title').text('Approve Ticket');
             $("#loadCreate").load(`/ticket/${kode_pengajuan}/approve`);
+        });
+
+        $(".addmessage").click(function(e) {
+            const kode_pengajuan = $(this).attr('no_ticket');
+            e.preventDefault();
+            $('#mdlMessage').modal("show");
+            $('#mdlMessage').find('.modal-title').text('Add Message');
+            $("#loadMessage").load(`/ticket/${kode_pengajuan}/message`);
         });
 
 

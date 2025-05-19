@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\Ticketmessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
@@ -166,6 +167,41 @@ class TicketController extends Controller
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Throwable $th) {
             return Redirect::back()->with(messageError($th->getMessage()));
+        }
+    }
+
+    public function message($kode_pengajuan)
+    {
+        $ticketmessage = Ticketmessage::where('kode_pengajuan', $kode_pengajuan)
+        ->select('tickets_messages.*', 'users.name')
+        ->join('users', 'tickets_messages.id_user', '=', 'users.id')
+        ->get();
+        $data['ticketmessage'] = $ticketmessage;
+        $data['kode_pengajuan'] = $kode_pengajuan;
+        return view('utilities.ticket.message', $data);
+    }
+
+    public function storemessage($kode_pengajuan, Request $request)
+    {
+        $kode_pengajuan = Crypt::decrypt($kode_pengajuan);
+        $request->validate([
+            'message' => 'required',    
+        ]);
+        try {
+            Ticketmessage::create([
+                'kode_pengajuan' => $kode_pengajuan,
+                'message' => $request->message,
+                'id_user' => auth()->user()->id,
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data Berhasil Disimpan'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
         }
     }
 }

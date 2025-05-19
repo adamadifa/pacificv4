@@ -2233,6 +2233,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/ticket/{no_pengajuan}/destroy', 'destroy')->name('ticket.delete');
         Route::get('/ticket/{no_pengajuan}/approve', 'approve')->name('ticket.approve')->can('ticket.approve');
         Route::post('/ticket/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticket.storeapprove')->can('ticket.approve');
+        Route::get('/ticket/{no_pengajuan}/message', 'message')->name('ticket.message');
+        Route::post('/ticket/{no_pengajuan}/storemessage', 'storemessage')->name('ticket.storemessage');
     });
 
     Route::controller(TicketupdateController::class)->group(function () {
