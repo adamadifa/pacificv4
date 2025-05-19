@@ -71,14 +71,11 @@
                                     <th rowspan="2">No.</th>
                                     <th rowspan="2">Kode</th>
                                     <th rowspan="2" style="width: 15%">Nama </th>
-                                    <th rowspan="2" class="text-center">TOTAL<br>PENJUALAN </th>
                                     <th rowspan="2" class="text-center">Target</th>
-                                    <th rowspan="2" class="text-center">%</th>
                                     <th rowspan="2">Reward</th>
                                     <th rowspan="2">TOP</th>
                                     <th colspan="3">Budget</th>
-                                    <th rowspan="2">PMB</th>
-                                    <th rowspan="2">Pencairan</th>
+                                    <th rowspan="2">MP</th>
                                     <th rowspan="2">Doc</th>
                                     <th rowspan="2">#</th>
                                 </tr>
@@ -101,26 +98,14 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $d->kode_pelanggan }}</td>
                                         <td>{{ $d->nama_pelanggan }}</td>
-                                        <td class="text-center">{{ formatAngka($d->qty_rata_rata) }} </td>
                                         <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                                        <td class="text-end">
-                                            @php
-                                                $kenaikan = $d->qty_target - ROUND($d->qty_rata_rata);
-                                                $persentase =
-                                                    $d->qty_rata_rata == 0
-                                                        ? 0
-                                                        : ($kenaikan / ROUND($d->qty_rata_rata)) * 100;
-                                                $persentase = formatAngkaDesimal($persentase);
-                                            @endphp
-                                            {{ $persentase }}%
-                                        </td>
                                         <td class="text-end">{{ formatAngka($d->reward) }}</td>
                                         <td class="text-end">{{ $d->top }}</td>
                                         <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
                                         <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
                                         <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
                                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
-                                        <td class="text-end">{{ formatAngka($d->periode_pencairan) }} Bulan</td>
+
                                         {{-- <td>{{ $d->no_rekening }}</td>
                                         <td>{{ $d->pemilik_rekening }}</td>
                                         <td>{{ $d->bank }}</td> --}}
@@ -134,19 +119,11 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
-                                                <a href="{{ route('ajuanprogramikatan.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
+                                                <a href="{{ route('ajuanprogramikatan.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan_programikatan), Crypt::encrypt($d->kode_pelanggan)]) }}"
                                                     target="_blank" class="me-1">
                                                     <i class="ti ti-printer text-primary"></i>
                                                 </a>
-                                                @can('ajuanprogramikatan.edit')
-                                                    @if ($programikatan->status == 0)
-                                                        <a href="#"
-                                                            kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
-                                                            class="btnEdit me-1">
-                                                            <i class="ti ti-edit text-success"></i>
-                                                        </a>
-                                                    @endif
-                                                @endcan
+
                                                 @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
                                                     @if ($programikatan->status == 0)
                                                         @can('ajuanprogramikatan.delete')
@@ -162,9 +139,9 @@
                                                     @endif
                                                 @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
                                                     @if ($programikatan->status == 0)
-                                                        @can('ajuanprogramikatan.delete')
+                                                        @can('ajuanprogramenambulan.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                action="{{ route('ajuanprogramenambulan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <a href="#" class="delete-confirm ml-1">
@@ -175,9 +152,9 @@
                                                     @endif
                                                 @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
                                                     @if ($programikatan->status == 0)
-                                                        @can('ajuanprogramikatan.delete')
+                                                        @can('ajuanprogramenambulan.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                action="{{ route('ajuanprogramenambulan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <a href="#" class="delete-confirm ml-1">
@@ -188,9 +165,9 @@
                                                     @endif
                                                 @elseif($user->hasRole(['super admin', 'direktur', 'regional sales manager', 'gm marketing']))
                                                     @if ($programikatan->status == 0)
-                                                        @can('ajuanprogramikatan.delete')
+                                                        @can('ajuanprogramenambulan.delete')
                                                             <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('ajuanprogramikatan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                                action="{{ route('ajuanprogramenambulan.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <a href="#" class="delete-confirm ml-1">
@@ -351,11 +328,13 @@
             e.preventDefault();
             let kode_pelanggan = $(this).attr('kode_pelanggan');
             let nama_pelanggan = $(this).attr('nama_pelanggan');
+            let no_pengajuan_programikatan = $(this).attr('no_pengajuan');
             let kode_program = "{{ Crypt::encrypt($programikatan->kode_program) }}";
             let no_pengajuan = "{{ Crypt::encrypt($programikatan->no_pengajuan) }}";
             gettargetpelanggan(kode_pelanggan, kode_program, no_pengajuan);
             $(document).find("input[name='nama_pelanggan']").val(nama_pelanggan);
             $(document).find("input[name='kode_pelanggan']").val(kode_pelanggan);
+            $(document).find("input[name='no_pengajuan_programikatan']").val(no_pengajuan_programikatan)
             $("#modalPelanggan").modal("hide");
         });
 

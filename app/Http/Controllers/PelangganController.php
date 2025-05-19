@@ -924,6 +924,7 @@ class PelangganController extends Controller
             ->groupBy('marketing_penjualan.kode_pelanggan', DB::raw('MONTH(marketing_penjualan.tanggal)'));
 
         $peserta_gagal = Detailtargetikatan::select(
+            'marketing_program_ikatan_target.no_pengajuan',
             'marketing_program_ikatan_target.kode_pelanggan',
 
 
@@ -944,7 +945,8 @@ class PelangganController extends Controller
             ->where('marketing_program_ikatan_target.bulan', '<=', $bulan)
             ->where('marketing_program_ikatan_target.tahun', $tahun)
             ->where('marketing_program_ikatan.kode_cabang', $ajuanprogramikatan->kode_cabang)
-            ->whereRaw('IFNULL(jml_dus,0) < target_perbulan');
+            ->whereRaw('IFNULL(jml_dus,0) < target_perbulan')
+            ->groupBy('marketing_program_ikatan_target.no_pengajuan', 'marketing_program_ikatan_target.kode_pelanggan');
 
 
         // $pelanggan = Pelanggan::where('kode_cabang', $ajuanprogramikatan->kode_cabang)
@@ -959,11 +961,16 @@ class PelangganController extends Controller
                 'pelanggan.*',
                 'wilayah.nama_wilayah',
                 'salesman.nama_salesman',
-                DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan")
+                DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan"),
+                'no_pengajuan'
             );
             $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
             $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
             $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+            $query->leftJoinSub($peserta_gagal, 'peserta_gagal', function ($join) {
+                $join->on('pelanggan.kode_pelanggan', '=', 'peserta_gagal.kode_pelanggan');
+            });
+            $query->whereNotNull('no_pengajuan');
             // if (!$user->hasRole($roles_access_all_cabang)) {
             //     if ($user->hasRole('regional sales manager')) {
             //         $query->where('cabang.kode_regional', auth()->user()->kode_regional);
@@ -972,13 +979,15 @@ class PelangganController extends Controller
             //     }
             // }
             $query->where('pelanggan.kode_cabang', $ajuanprogramikatan->kode_cabang);
-            $query->whereIn('pelanggan.kode_pelanggan', $peserta_gagal);
+            // $query->whereIn('pelanggan.kode_pelanggan', $peserta_gagal);
             $query->where('status_aktif_pelanggan', 1);
             $pelanggan = $query;
             return DataTables::of($pelanggan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" nama_pelanggan="' . $row->nama_pelanggan . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" nama_pelanggan="' . $row->nama_pelanggan . '" no_pengajuan="' . $row->no_pengajuan . '" 
+                    
+                    class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])

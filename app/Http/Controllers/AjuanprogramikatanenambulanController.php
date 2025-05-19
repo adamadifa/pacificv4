@@ -218,11 +218,26 @@ class AjuanprogramikatanenambulanController extends Controller
 
 
         $data['detail'] = Detailajuanprogramikatanenambulan::join('pelanggan', 'marketing_program_ikatan_enambulan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_ikatan_detail', function ($join) {
+                $join->on('marketing_program_ikatan_enambulan_detail.no_pengajuan_programikatan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
+                    ->on('marketing_program_ikatan_enambulan_detail.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
             ->where('marketing_program_ikatan_enambulan_detail.no_pengajuan', $no_pengajuan)
-            ->join('marketing_program_ikatan_enambulan', 'marketing_program_ikatan_enambulan_detail.no_pengajuan_programikatan', '=', 'marketing_program_ikatan_enambulan.no_pengajuan')
-            ->select('marketing_program_ikatan_enambulan_detail.*', 'pelanggan.nama_pelanggan')
+
+            ->select(
+                'marketing_program_ikatan_enambulan_detail.*',
+                'pelanggan.nama_pelanggan',
+                'metode_pembayaran',
+                'top',
+                'qty_target',
+                'reward',
+                'budget_smm',
+                'budget_rsm',
+                'budget_gm',
+                'file_doc'
+            )
             ->get();
-        // dd($data['detail']);
+
         $data['user'] = $user;
         $data['programikatan'] = $programikatan;
         return view('worksheetom.ajuanprogramikatanenambulan.setajuanprogramikatan', $data);
@@ -319,6 +334,50 @@ class AjuanprogramikatanenambulanController extends Controller
         return view('worksheetom.ajuanprogramikatanenambulan.tambahpelanggan', $data);
     }
 
+    public function storepelanggan(Request $request, $no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($request->kode_pelanggan);
+        $no_pengajuan_programikatan = $request->no_pengajuan_programikatan;
+        $request->validate([
+            'kode_pelanggan' => 'required',
+        ]);
+
+
+        $ajuan = Ajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)->first();
+
+
+        DB::beginTransaction();
+        try {
+            //code...
+            $cek = Detailajuanprogramikatanenambulan::join('marketing_program_ikatan_enambulan', 'marketing_program_ikatan_enambulan_detail.no_pengajuan', '=', 'marketing_program_ikatan_enambulan.no_pengajuan')
+                ->where('marketing_program_ikatan_enambulan.kode_program', $ajuan->kode_program)
+                ->where('marketing_program_ikatan_enambulan_detail.kode_pelanggan', $kode_pelanggan)
+                ->first();
+
+            if ($cek) {
+                return Redirect::back()->with(messageError('Pelanggan Sudah Ada'));
+            }
+
+
+
+            Detailajuanprogramikatanenambulan::create([
+                'no_pengajuan' => $no_pengajuan,
+                'no_pengajuan_programikatan' => $no_pengajuan_programikatan,
+                'kode_pelanggan' => $kode_pelanggan,
+
+
+            ]);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+            dd($e->getMessage());
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
     public function destroy($no_pengajuan)
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
@@ -330,4 +389,72 @@ class AjuanprogramikatanenambulanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function deletepelanggan($no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        //dd($no_pengajuan, $kode_pelanggan);
+        try {
+
+            Detailajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->delete();
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Hapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function cetak($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $programikatan = Ajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+            ->join('program_ikatan', 'marketing_program_ikatan_enambulan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        $list_pelanggan = Detailajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+            ->select('marketing_program_ikatan_enambulan_detail.kode_pelanggan')
+            ->get();
+        $tanggal_ajuan = $programikatan->tanggal;
+        $tahun = date('Y', strtotime($tanggal_ajuan));
+        $tahunlalu = $tahun - 1;
+        $produk = json_decode($programikatan->produk, true) ?? [];
+
+        $dari = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_dari));
+        $sampai = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_sampai));
+
+
+
+       
+        $data['programikatan'] = $programikatan;
+
+
+
+
+
+        $data['detail'] = Detailajuanprogramikatanenambulan::join('pelanggan', 'marketing_program_ikatan_enambulan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_ikatan_detail', function ($join) {
+                $join->on('marketing_program_ikatan_enambulan_detail.no_pengajuan_programikatan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
+                    ->on('marketing_program_ikatan_enambulan_detail.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
+            ->where('marketing_program_ikatan_enambulan_detail.no_pengajuan', $no_pengajuan)
+
+            ->select(
+                'marketing_program_ikatan_enambulan_detail.*',
+                'pelanggan.nama_pelanggan',
+                'metode_pembayaran',
+                'top',
+                'qty_target',
+                'reward',
+                'budget_smm',
+                'budget_rsm',
+                'budget_gm',
+                'file_doc'
+            )
+            ->get();
+        return view('worksheetom.ajuanprogramikatanenambulan.cetak', $data);
+    }
+
 }

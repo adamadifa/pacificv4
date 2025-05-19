@@ -181,8 +181,8 @@
                                                                 </a>
                                                             @endif
                                                         @endcan
-                                                        @can('ajuanprogramikatan.show')
-                                                            <a href="{{ route('ajuanprogramikatan.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
+                                                        @can('ajuanprogramenambulan.show')
+                                                            <a href="{{ route('ajuanprogramenambulan.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
                                                                 target="_blank">
                                                                 <i class="ti ti-printer text-success"></i>
                                                             </a>

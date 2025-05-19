@@ -1,7 +1,9 @@
-<form action="#" method="POST" id="formEditpelanggan" enctype="multipart/form-data">
+<form action="{{ route('ajuanprogramenambulan.storepelanggan', Crypt::encrypt($ajuanprogramikatan->no_pengajuan)) }}"
+    method="POST" id="formEditpelanggan" enctype="multipart/form-data">
     @csrf
     <div class="input-group mb-3">
         <input type="hidden" name="kode_pelanggan" id="kode_pelanggan" readonly>
+        <input type="hidden" name="no_pengajuan_programikatan" id="no_pengajuan_programikatan" readonly>
         <input type="text" class="form-control" name="nama_pelanggan" id="nama_pelanggan" readonly
             placeholder="Cari Pelanggan" aria-label="Cari Pelanggan" aria-describedby="nama_pelanggan">
         <a class="btn btn-primary waves-effect" id="kode_pelanggan_search"><i class="ti ti-search text-white"></i></a>
