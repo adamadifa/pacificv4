@@ -767,6 +767,11 @@ class LaporanhrdController extends Controller
 
         $data['cuti'] = $query->get();
         $data['tahun'] = $request->tahun;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Laporan Cuti.xls");
+        }
         return view('hrd.laporan.cuti_cetak', $data);
     }
 }
