@@ -7,6 +7,7 @@ use App\Models\Detaillembur;
 use App\Models\Disposisilembur;
 use App\Models\Karyawan;
 use App\Models\Lembur;
+use App\Models\Cabang;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -32,6 +33,8 @@ class LemburController extends Controller
     public function create()
     {
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getcabang();
         return view('hrd.lembur.create', $data);
     }
 
@@ -53,11 +56,12 @@ class LemburController extends Controller
         $validationRules = [];
         if (in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
             $validationRules['kode_dept'] = 'required';
+            $validationRules['kode_cabang'] = 'required';
         }
         $request->validate($validationRules);
 
         $kode_dept = in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi']) ? $request->kode_dept : $user->kode_dept;
-        $kode_cabang = $user->kode_cabang;
+        $kode_cabang = in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi']) ? $request->kode_cabang : $user->kode_cabang;
         DB::beginTransaction();
         try {
             $lastlembur = Lembur::whereRaw('MID(kode_lembur,3,2)="' . date('y', strtotime($request->tanggal)) . '"')

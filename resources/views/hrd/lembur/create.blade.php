@@ -26,6 +26,7 @@
         </select>
     </div>
     @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
+        <div class="form-group mb-3">
         <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
             select2="select2KodeDept" />
     @endif
@@ -56,6 +57,18 @@
                 });
             });
         }
+
+        const select2KodeCabang = $(".select2KodeCabang");
+        if (select2KodeCabang.length > 0) {
+            select2KodeCabang.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Pilih Cabang',
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
 
         $("#jam_mulai,#jam_selesai").mask("99:99");
 
