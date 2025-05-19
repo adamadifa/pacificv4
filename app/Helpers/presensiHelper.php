@@ -308,7 +308,16 @@ function presensiHitunglembur($datalembur)
         $jamlembur_dari = date('H:i', strtotime($tgl_lembur_dari));
         $jmljam_lbr = hitungjamlembur($tgl_lembur_dari, $tgl_lembur_sampai);
         $istirahatlbr = $datalembur[0]['istirahat'] == 1 ? 1 : 0;
-        $jmljam_lembur = $jmljam_lbr > 7 ? 7 : $jmljam_lbr - $istirahatlbr;
+        $karyawan_12_jam = ['01'];
+        $nik = $datalembur[0]['nik'];
+    
+        if(in_array($nik,$karyawan_12_jam)){
+            $jmljam_lembur = $jmljam_lbr - $istirahatlbr;
+        }else{
+            $jmljam_lembur = $jmljam_lbr > 7 ? 7 : $jmljam_lbr - $istirahatlbr;
+        }
+
+
         $kategori_lembur = $datalembur[0]['kategori'];
 
         if ($jamlembur_dari >= '22:00' && $jmljam_lbr >= 5) {
