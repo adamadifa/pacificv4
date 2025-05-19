@@ -266,7 +266,7 @@
                             <td class="center">{{ formatAngka($d->realisasi_penjvsavg) }}</td>
                             <td class="right">
                                 @php
-                                    $reward_penjvsavg = $d->status_komisi == 1 && $persentase_ro >= 80 ? $d->realisasi_penjvsavg * 2000 : 0;
+                                    $reward_penjvsavg = $d->status_komisi == 1 && $persentase_ro >= 80 ? $d->realisasi_penjvsavg * 10000 : 0;
                                     $total_reward_penjvsavg += $reward_penjvsavg;
                                 @endphp
                                 {{ formatAngka($reward_penjvsavg) }}
