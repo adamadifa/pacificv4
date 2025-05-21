@@ -106,8 +106,12 @@ class DashboardController extends Controller
             DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
             DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
         )
-            ->where('tanggal', '>=', $start_date)
-            ->where('tanggal', '<=', date('Y-m-d'))
+            ->when(!empty($request->dari) && !empty($request->sampai), function ($query) use ($request) {
+                $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+            })
+            ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
+                $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
+            })
             ->groupBy('keuangan_mutasi.kode_kategori');
 
         $rekapdebetkreditbytanggal  = Mutasikeuangan::select(
@@ -177,7 +181,11 @@ class DashboardController extends Controller
             ->where('bank.kode_bank', '!=', 'BK071')
             ->first();
 
-
+        if ($request->exportButton == 1) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Komisi Salesman.xls");
+        }
         return view('dashboard.owner', $data);
     }
 

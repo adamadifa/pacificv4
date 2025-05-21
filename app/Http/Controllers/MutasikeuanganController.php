@@ -170,20 +170,16 @@ class MutasikeuanganController extends Controller
             // })
             // ->groupBy('kode_bank')
             ->first();
-        $data['mutasi']  = Mutasikeuangan::whereBetween('tanggal', [$dari, $sampai])
-            ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
-                $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
-            })
-            ->when(!empty($kode_bank), function ($query) use ($kode_bank) {
-                $query->where('kode_bank', $kode_bank);
-            })
-            // ->when($dari, function ($query) use ($dari) {
-            //     $query->where('tanggal', '>=', $dari);
-            // })
-            // ->when($sampai, function ($query) use ($sampai) {
-            //     $query->where('tanggal', '<=', $sampai);
-            // })
-            ->get();
+
+        $qmutasi = Mutasikeuangan::query();
+        if (!empty($dari) && !empty($sampai)) {
+            $qmutasi->whereBetween('tanggal', [$dari, $sampai]);
+        } else {
+            $qmutasi->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
+        }
+
+
+        $data['mutasi']  = $qmutasi->get();
 
         $data['dari'] = $dari;
         $data['sampai'] = $sampai;
