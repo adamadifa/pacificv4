@@ -39,29 +39,37 @@
                         <th style="width: 1%">No</th>
                         <th style="width: 4%">Tanggal</th>
                         <th style="width: 15%">Kategori</th>
+                        <th style="width: 15%">Bank</th>
+                        <th style="width: 15%">No Rekening</th>
                         <th>Debet</th>
                         <th>Kredit</th>
                 </thead>
                 <tbody>
+                    @php
+                        $totaldebet = 0;
+                        $totalkredit = 0;
+                    @endphp
                     @foreach ($mutasi_kategori_detail as $d)
+                        @php
+                            $totaldebet += $d->debet;
+                            $totalkredit += $d->kredit;
+                        @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->tanggal }}</td>
                             <td>{{ $d->nama_kategori }}</td>
+                            <td>{{ $d->nama_bank }}</td>
+                            <td>{{ $d->no_rekening }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->debet) }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->kredit) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
-                    {{-- <tr>
-                        <th colspan="3">TOTAL</th>
-                        <th class="right">{{ formatAngka($totaldebet) }}</th>
-                        <th class="right">{{ formatAngka($totalkredit) }}</th>
-                        <th class="right">{{ formatAngka($saldo) }}</th>
-                        <th></th>
-                        <th></th>
-                    </tr> --}}
+                    <tr>
+                        <td colspan="5" class="right">Total</td>
+                        <td class="right">{{ formatAngkaDesimal($totaldebet) }}</td>
+                        <td class="right">{{ formatAngkaDesimal($totalkredit) }}</td>
                 </tfoot>
             </table>
         </div>

@@ -192,17 +192,21 @@ class DashboardController extends Controller
             $data['mutasi_kategori_detail']  = Mutasikeuangan::select(
                 'keuangan_mutasi.tanggal',
                 'keuangan_mutasi_kategori.nama_kategori',
+                'bank.nama_bank',
+                'bank.no_rekening',
                 DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
                 DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
             )
                 ->leftJoin('keuangan_mutasi_kategori', 'keuangan_mutasi.kode_kategori', '=', 'keuangan_mutasi_kategori.kode_kategori')
+                ->leftJoin('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank')
                 ->when(!empty($request->dari) && !empty($request->sampai), function ($query) use ($request) {
                     $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
                 })
                 ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
                     $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
                 })
-                ->groupBy('keuangan_mutasi.tanggal', 'keuangan_mutasi_kategori.nama_kategori')
+                ->groupBy('keuangan_mutasi.tanggal', 'keuangan_mutasi_kategori.nama_kategori', 'bank.nama_bank', 'bank.no_rekening')
+                ->orderBy('keuangan_mutasi.tanggal', 'asc')
                 ->get();
 
             return view('keuangan.laporan.mutasikeuangan_kategori_cetak', $data);
