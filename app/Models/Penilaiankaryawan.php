@@ -90,6 +90,11 @@ class Penilaiankaryawan extends Model
                 $query->where('hrd_karyawan.kode_dept', 'AKT');
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->where('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+            } else if ($user->hasRole('spv produksi')) {
+                $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                $query->where('hrd_jabatan.kategori', 'NM');
+                $query->where('hrd_jabatan.kode_jabatan', '!=', 'J12');
             } else {
                 $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
                 $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
@@ -132,6 +137,11 @@ class Penilaiankaryawan extends Model
                 $query->orwhere('hrd_karyawan.kode_dept', 'AKT');
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->orwhereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+            } else if ($user->hasRole('spv produksi')) {
+                $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                $query->where('hrd_jabatan.kategori', 'NM');
+                $query->where('hrd_jabatan.kode_jabatan', '!=', 'J12');
             } else {
                 $query->orwhere('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
                 $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
