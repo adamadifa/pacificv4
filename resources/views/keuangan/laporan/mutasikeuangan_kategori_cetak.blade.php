@@ -58,8 +58,8 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->tanggal }}</td>
                             <td>{{ $d->nama_kategori }}</td>
-                            <td>{{ $d->nama_bank }}</td>
-                            <td>{{ $d->no_rekening }}</td>
+                            {{-- <td>{{ $d->nama_bank }}</td>
+                            <td>{{ $d->no_rekening }}</td> --}}
                             <td class="right">{{ formatAngkaDesimal($d->debet) }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->kredit) }}</td>
                         </tr>
@@ -67,9 +67,10 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5" class="right">Total</td>
+                        <td colspan="3" class="right">Total</td>
                         <td class="right">{{ formatAngkaDesimal($totaldebet) }}</td>
                         <td class="right">{{ formatAngkaDesimal($totalkredit) }}</td>
+                    </tr>
                 </tfoot>
             </table>
         </div>
