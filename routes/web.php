@@ -1927,6 +1927,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/cetakkartupjp', 'cetakkartupjp')->name('laporankeuangan.cetakkartupjp')->can('keu.kartupinjaman');
         Route::post('/laporankeuangan/cetakkartukasbon', 'cetakkartukasbon')->name('laporankeuangan.cetakkartukasbon')->can('keu.kartukasbon');
         Route::post('/laporankeuangan/cetakkartupiutangkaryawan', 'cetakkartupiutangkaryawan')->name('laporankeuangan.cetakkartupiutangkaryawan')->can('keu.kartupiutangkaryawan');
+        Route::get('/laporankeuangan/{dari}/{sampai}/{exportButton}/cetakmutasikategori', 'cetakmutasikategori')->name('laporankeuangan.cetakmutasikategori');
     });
 
     Route::controller(LaporanmarketingController::class)->group(function () {

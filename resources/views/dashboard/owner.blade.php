@@ -97,9 +97,8 @@
                                                     class="ti ti-heart-rate-monitor me-1"></i>Tampilkan</button>
                                         </div>
                                         <div class="col-6">
-                                            <button type="submit" name="exportButton" value="1" class="btn btn-success w-100" id="exportButton">
-                                                <i class="ti ti-download"></i>
-                                            </button>
+                                            <button type="submit" name="export" value="1" class="btn btn-success w-100" id="exportButton"><i
+                                                    class="ti ti-file-export me-1"></i>Download</button>
                                         </div>
                                     </div>
                                 </form>
