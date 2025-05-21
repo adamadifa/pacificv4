@@ -39,8 +39,8 @@
                         <th style="width: 1%">No</th>
                         <th style="width: 4%">Tanggal</th>
                         <th style="width: 15%">Kategori</th>
-                        <th style="width: 15%">Bank</th>
-                        <th style="width: 15%">No Rekening</th>
+                        {{-- <th style="width: 15%">Bank</th>
+                        <th style="width: 15%">No Rekening</th> --}}
                         <th>Debet</th>
                         <th>Kredit</th>
                 </thead>
