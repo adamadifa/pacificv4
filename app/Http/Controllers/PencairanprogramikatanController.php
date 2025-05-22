@@ -34,7 +34,7 @@ class PencairanprogramikatanController extends Controller
         );
         $query->join('program_ikatan', 'marketing_pencairan_ikatan.kode_program', '=', 'program_ikatan.kode_program');
         $query->join('cabang', 'marketing_pencairan_ikatan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->orderBy('marketing_pencairan_ikatan.tanggal', 'desc');
+
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
@@ -73,7 +73,8 @@ class PencairanprogramikatanController extends Controller
             $query->where('marketing_pencairan_ikatan.status', '!=', 2);
         }
 
-
+        $query->orderBy('status');
+        $query->orderBy('marketing_pencairan_ikatan.tanggal');
         $pencairanprogramikatan = $query->paginate(15);
         $pencairanprogramikatan->appends(request()->all());
         $data['pencairanprogramikatan'] = $pencairanprogramikatan;
