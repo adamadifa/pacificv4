@@ -663,7 +663,10 @@ class PencairanprogramikatanController extends Controller
             ->where('marketing_program_ikatan.kode_program', $pencairanprogramikatan->kode_program)
             ->where('marketing_program_ikatan_target.bulan', $pencairanprogramikatan->bulan)
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogramikatan->tahun)
-            ->where('marketing_program_ikatan.kode_cabang', $pencairanprogramikatan->kode_cabang);
+            ->where('marketing_program_ikatan.kode_cabangd', $pencairanprogramikatan->kode_cabang)
+            ->get();
+
+        die;
 
 
 
