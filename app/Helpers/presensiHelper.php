@@ -310,24 +310,24 @@ function presensiHitunglembur($datalembur)
         $istirahatlbr = $datalembur[0]['istirahat'] == 1 ? 1 : 0;
         $karyawan_12_jam = ['01'];
         $nik = $datalembur[0]['nik'];
-    
-        if(in_array($nik,$karyawan_12_jam)){
+
+        if (in_array($nik, $karyawan_12_jam)) {
             $jmljam_lembur = $jmljam_lbr - $istirahatlbr;
-        }else{
+        } else {
             $jmljam_lembur = $jmljam_lbr > 7 ? 7 : $jmljam_lbr - $istirahatlbr;
         }
 
 
         $kategori_lembur = $datalembur[0]['kategori'];
 
-        if ($jamlembur_dari >= '22:00' && $jmljam_lbr >= 5) {
+        if ($jamlembur_dari >= '22:00' && $jmljam_lbr >= 5 && !in_array($nik, $karyawan_12_jam)) {
             // $premilembur = 6000;
             // $premilembur_shift_3 = 6000;
             $nama_jadwal = "SHIFT 3";
             $kode_shift = "M";
             $jmlharilembur_shift_3 = 1;
             $jmlharilembur_shift_2 = 0;
-        } else if ($jamlembur_dari >= '15:00' && $jmljam_lbr >= 5) {
+        } else if ($jamlembur_dari >= '15:00' && $jmljam_lbr >= 5 && !in_array($nik, $karyawan_12_jam)) {
             // $premilembur = 5000;
             // $premilembur_shift_2 = 5000;
             $nama_jadwal = "SHIFT 2";
