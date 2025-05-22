@@ -642,7 +642,7 @@ class PencairanprogramikatanController extends Controller
 
 
         $pelangganprogram = Detailtargetikatan::select(
-            'marketing_program_ikatan_detail.kode_pelanggan',
+            'marketing_program_ikatan_target.kode_pelanggan',
             'marketing_program_ikatan_detail.top',
             'marketing_program_ikatan_detail.metode_pembayaran',
             'marketing_program_ikatan_target.target_perbulan as qty_target',
@@ -673,6 +673,18 @@ class PencairanprogramikatanController extends Controller
             ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
                 $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
             })
+            ->select(
+                'marketing_pencairan_ikatan_detail.*',
+                'pelangganprogram.metode_pembayaran',
+                'pelangganprogram.top',
+                'pelangganprogram.qty_target',
+                'pelangganprogram.reward',
+                'pelangganprogram.tipe_reward',
+                'pelangganprogram.budget_smm',
+                'pelangganprogram.budget_rsm',
+                'pelangganprogram.budget_gm',
+                'pelangganprogram.kode_program'
+            )
             ->where('marketing_pencairan_ikatan_detail.kode_pencairan', $kode_pencairan)
             ->orderBy('pelangganprogram.metode_pembayaran')
             ->get();
