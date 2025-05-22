@@ -642,7 +642,7 @@ class PencairanprogramikatanController extends Controller
 
 
         $pelangganprogram = Detailtargetikatan::select(
-            'marketing_program_ikatan_target.kode_pelanggan',
+            'marketing_program_ikatan_detail.kode_pelanggan',
             'marketing_program_ikatan_detail.top',
             'marketing_program_ikatan_detail.metode_pembayaran',
             'marketing_program_ikatan_target.target_perbulan as qty_target',
