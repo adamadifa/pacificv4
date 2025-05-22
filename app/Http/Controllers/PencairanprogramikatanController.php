@@ -675,6 +675,10 @@ class PencairanprogramikatanController extends Controller
             })
             ->select(
                 'marketing_pencairan_ikatan_detail.*',
+                'pelanggan.nama_pelanggan',
+                'pelanggan.bank',
+                'pelanggan.pemilik_rekening',
+                'pelanggan.no_rekening',
                 'pelangganprogram.metode_pembayaran',
                 'pelangganprogram.top',
                 'pelangganprogram.qty_target',
