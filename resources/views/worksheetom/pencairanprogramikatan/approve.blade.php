@@ -22,7 +22,8 @@
         margin-bottom: 5px;
     }
 </style>
-<form action="{{ route('pencairanprogramikatan.storeapprove', Crypt::encrypt($pencairanprogram->kode_pencairan)) }}" method="POST">
+<form action="{{ route('pencairanprogramikatan.storeapprove', Crypt::encrypt($pencairanprogram->kode_pencairan)) }}"
+    method="POST">
     @csrf
     <div class="row">
         <div class="col">
@@ -103,7 +104,10 @@
                         @foreach ($detail as $key => $d)
                             @php
                                 $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                                $total_reward = $d->total_reward > 1000000 && !in_array($d->kode_program, $bb_dep) ? 1000000 : $d->total_reward;
+                                $total_reward =
+                                    $d->total_reward > 1000000 && !in_array($d->kode_program, $bb_dep)
+                                        ? 1000000
+                                        : $d->total_reward;
                                 $subtotal_reward += $total_reward;
                                 $grandtotal_reward += $total_reward;
                             @endphp
@@ -126,7 +130,7 @@
                                 <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
                                 <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td>
                                 <td class="text-end">{{ formatAngka($total_reward) }}</td>
-                                <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+                                <td>{{ $metode_pembayaran[$d->metode_pembayaran] ?? '-' }}</td>
 
                                 <td>{{ $d->no_rekening }}</td>
                                 <td>{{ $d->pemilik_rekening }}</td>
@@ -165,7 +169,8 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-thumb-up me-1"></i>Approve</button></button>
+            <button class="btn btn-primary w-100" id="btnSimpan"><i
+                    class="ti ti-thumb-up me-1"></i>Approve</button></button>
         </div>
         <div class="col">
             @if ($level_user == 'manager keuangan')
