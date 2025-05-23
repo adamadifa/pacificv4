@@ -1,4 +1,5 @@
-<form action="{{ route('pencairanprogramikatan.storepelanggan', Crypt::encrypt($kode_pencairan)) }}" id="formprosesPelanggan" method="POST">
+<form action="{{ route('pencairanprogramikatan.storepelanggan', Crypt::encrypt($kode_pencairan)) }}"
+    id="formprosesPelanggan" method="POST">
 
     @csrf
     <table class="table table-bordered ">
@@ -35,7 +36,8 @@
     <div class="row mt-3">
         <div class="col">
             <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block w-100" id="btnSimpan"><i class="ti ti-send me-1 "></i>Proses</button>
+                <button type="submit" class="btn btn-primary btn-block w-100" id="btnSimpan"><i
+                        class="ti ti-send me-1 "></i>Proses</button>
             </div>
         </div>
     </div>

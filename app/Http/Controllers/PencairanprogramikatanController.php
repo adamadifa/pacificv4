@@ -321,6 +321,10 @@ class PencairanprogramikatanController extends Controller
 
         $lastbulan = getbulandantahunlalu($pencairanprogram->bulan, $pencairanprogram->tahun, "bulan");
         $lasttahun = getbulandantahunlalu($pencairanprogram->bulan, $pencairanprogram->tahun, "tahun");
+
+
+
+
         $start_last_date = "2025-01-01";
 
         $end_last_date = date('Y-m-t', strtotime($lasttahun . '-' . $lastbulan . '-01'));
@@ -495,7 +499,7 @@ class PencairanprogramikatanController extends Controller
             })
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
 
-            ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
+            // ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
             ->where('marketing_program_ikatan.status', 1)
             ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
             ->where('marketing_program_ikatan_target.bulan', '<', $pencairanprogram->bulan)
