@@ -33,6 +33,7 @@ class Kontrakkaryawan extends Model
             'cabang.nama_pt',
             'cabang.alamat_cabang',
             'hrd_penilaian.masa_kontrak',
+            'cabang.email',
         );
         $query->join('hrd_karyawan', 'hrd_kontrak.nik', '=', 'hrd_karyawan.nik');
         $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
