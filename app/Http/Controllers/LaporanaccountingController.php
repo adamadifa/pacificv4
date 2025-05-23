@@ -943,7 +943,7 @@ class LaporanaccountingController extends Controller
             ->where('bulan', $bulan)->where('tahun', $tahun);
 
         $saldo_awal_kaskecil = Saldoawalkaskecil::select('coa_kas_kecil.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
-            ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang_coa', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
+            ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
             ->leftJoinSub($mutasi_kaskecil, 'mutasi_kaskecil', function ($join) {
                 $join->on('keuangan_kaskecil_saldoawal.kode_cabang', '=', 'mutasi_kaskecil.kode_cabang');
             })
@@ -1027,7 +1027,7 @@ class LaporanaccountingController extends Controller
             DB::raw('IF(debet_kredit="D",2,1) as urutan')
         );
         $kaskecil->leftJoinSub($coa_kas_kecil, 'coa_kas_kecil', function ($join) {
-            $join->on('keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang');
+            $join->on('keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang_coa');
         });
         $kaskecil->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil');
         $kaskecil->whereBetween('keuangan_kaskecil.tanggal', [$request->dari, $request->sampai]);
