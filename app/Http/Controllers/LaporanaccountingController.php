@@ -943,7 +943,7 @@ class LaporanaccountingController extends Controller
             ->where('bulan', $bulan)->where('tahun', $tahun);
 
         $saldo_awal_kaskecil = Saldoawalkaskecil::select('coa_kas_kecil.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
-            ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
+            ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang_coa', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
             ->leftJoinSub($mutasi_kaskecil, 'mutasi_kaskecil', function ($join) {
                 $join->on('keuangan_kaskecil_saldoawal.kode_cabang', '=', 'mutasi_kaskecil.kode_cabang');
             })
@@ -1057,7 +1057,7 @@ class LaporanaccountingController extends Controller
         $piutangcabang->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $piutangcabang->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $piutangcabang->leftJoinSub($coa_piutangcabang, 'coa_piutangcabang', function ($join) {
-            $join->on('salesman.kode_cabang', '=', 'coa_piutangcabang.kode_cabang');
+            $join->on('salesman.kode_cabang', '=', 'coa_piutangcabang.kode_cabang_coa');
         });
         $piutangcabang->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
