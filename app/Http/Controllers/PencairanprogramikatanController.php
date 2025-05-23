@@ -317,7 +317,8 @@ class PencairanprogramikatanController extends Controller
             ->where('marketing_pencairan_ikatan.bulan', $pencairanprogram->bulan)
             ->where('marketing_pencairan_ikatan.tahun', $pencairanprogram->tahun)
             ->where('marketing_pencairan_ikatan.kode_program', $pencairanprogram->kode_program)
-            ->where('marketing_pencairan_ikatan.kode_cabang', $pencairanprogram->kode_cabang);
+            ->where('marketing_pencairan_ikatan.kode_cabangd', $pencairanprogram->kode_cabang);
+        dd($pelanggansudahdicairkan->get());
 
         $lastbulan = getbulandantahunlalu($pencairanprogram->bulan, $pencairanprogram->tahun, "bulan");
         $lasttahun = getbulandantahunlalu($pencairanprogram->bulan, $pencairanprogram->tahun, "tahun");
