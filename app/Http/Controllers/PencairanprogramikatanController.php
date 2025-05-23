@@ -505,7 +505,7 @@ class PencairanprogramikatanController extends Controller
             ->where('marketing_program_ikatan_target.bulan', '<', $pencairanprogram->bulan)
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
             ->where('marketing_program_ikatan.kode_cabangd', $pencairanprogram->kode_cabang)
-            ->whereRaw('IFNULL(jml_dus,0) < target_perbulan');
+            ->whereRaw('IFNULL(jml_dus,0) < target_perbuland');
         dd($peserta_gagal);
 
 
