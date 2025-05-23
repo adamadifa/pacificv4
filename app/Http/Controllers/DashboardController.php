@@ -184,7 +184,7 @@ class DashboardController extends Controller
         if ($request->export == 1) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-            header("Content-Disposition: attachment; filename=Komisi Salesman.xls");
+            header("Content-Disposition: attachment; filename=Rekap Mutasi Keuangan.xls");
             $dari = !empty($request->dari) ? $request->dari : $start_date;
             $sampai = !empty($request->sampai) ? $request->sampai : date('Y-m-d');
             $data['dari'] = $dari;
