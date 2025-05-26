@@ -176,13 +176,13 @@ class AjuanlimitkreditController extends Controller
             //dd($no_pengajuan);
             $lokasi = explode(",", $request->lokasi);
 
-            dd($pelanggan);
+            // dd($pelanggan);
             if (empty($pelanggan->foto) && empty($pelanggan->foto_owner) && toNumber($request->jumlah) > 15000000) {
                 return Redirect::back()->with('message', 'Ajuan lebih dari Rp. 15.000.000, foto toko dan foto owner wajib diisi.');
             }
-            if (toNumber($request->jumlah) > 15000000 && empty($request->foto) || toNumber($request->jumlah) > 15000000 && empty($request->foto_owner)) {
-                return Redirect::back()->with(messageSuccess('Ajuan Limit Melebihi 15jt Foto Toko dan Owner Wajib Ada'));
-            }
+            // if (toNumber($request->jumlah) > 15000000 && empty($request->foto) || toNumber($request->jumlah) > 15000000 && empty($request->foto_owner)) {
+            //     return Redirect::back()->with(messageSuccess('Ajuan Limit Melebihi 15jt Foto Toko dan Owner Wajib Ada'));
+            // }
             //Update Data Pelanggan
             Pelanggan::where('kode_pelanggan', $request->kode_pelanggan)->update([
                 'nik' => $request->nik,
