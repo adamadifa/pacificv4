@@ -2198,6 +2198,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanprogramenambulan/{no_pengajuan}/storepelanggan', 'storepelanggan')->name('ajuanprogramenambulan.storepelanggan')->can('ajuanprogramenambulan.create');
         Route::delete('/ajuanprogramenambulan/{no_pengajuan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('ajuanprogramenambulan.deletepelanggan')->can('ajuanprogramenambulan.create');
         Route::get('/ajuanprogramenambulan/{no_pengajuan}/cetak', 'cetak')->name('ajuanprogramenambulan.cetak')->can('ajuanprogramenambulan.show');
+
+        Route::get('/ajuanprogramenambulan/{no_pengajuan}/approve', 'approve')->name('ajuanprogramenambulan.approve')->can('ajuanprogramikatan.approve');
+        Route::post('/ajuanprogramenambulan/{no_pengajuan}/storeapprove', 'storeapprove')->name('ajuanprogramenambulan.storeapprove')->can('ajuanprogramikatan.approve');
     });
 
     Route::controller(AjuanprogramkumulatifController::class)->group(function () {

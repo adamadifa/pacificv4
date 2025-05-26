@@ -427,7 +427,7 @@ class AjuanprogramikatanenambulanController extends Controller
 
 
 
-       
+
         $data['programikatan'] = $programikatan;
 
 
@@ -457,4 +457,93 @@ class AjuanprogramikatanenambulanController extends Controller
         return view('worksheetom.ajuanprogramikatanenambulan.cetak', $data);
     }
 
+
+    public function approve($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $programikatan = Ajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+            ->join('program_ikatan', 'marketing_program_ikatan_enambulan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        $list_pelanggan = Detailajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+            ->select('marketing_program_ikatan_enambulan_detail.kode_pelanggan')
+            ->get();
+        $tanggal_ajuan = $programikatan->tanggal;
+        $tahun = date('Y', strtotime($tanggal_ajuan));
+        $tahunlalu = $tahun - 1;
+        $produk = json_decode($programikatan->produk, true) ?? [];
+
+        $dari = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_dari));
+        $sampai = $tahunlalu . "-" . date('m-d', strtotime($programikatan->periode_sampai));
+
+
+
+        $data['programikatan'] = $programikatan;
+
+
+
+        $data['detail'] = Detailajuanprogramikatanenambulan::join('pelanggan', 'marketing_program_ikatan_enambulan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_ikatan_detail', function ($join) {
+                $join->on('marketing_program_ikatan_enambulan_detail.no_pengajuan_programikatan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
+                    ->on('marketing_program_ikatan_enambulan_detail.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
+            ->where('marketing_program_ikatan_enambulan_detail.no_pengajuan', $no_pengajuan)
+
+            ->select(
+                'marketing_program_ikatan_enambulan_detail.*',
+                'pelanggan.nama_pelanggan',
+                'metode_pembayaran',
+                'top',
+                'qty_target',
+                'reward',
+                'budget_smm',
+                'budget_rsm',
+                'budget_gm',
+                'file_doc'
+            )
+            ->get();
+        return view('worksheetom.ajuanprogramikatanenambulan.approve', $data);
+    }
+
+
+    public function storeapprove(Request $request, $no_pengajuan)
+    {
+        $user = User::find(auth()->user()->id);
+        if ($user->hasRole('operation manager')) {
+            $field = 'om';
+        } else if ($user->hasRole('regional sales manager')) {
+            $field = 'rsm';
+        } else if ($user->hasRole('gm marketing')) {
+            $field = 'gm';
+        } else if ($user->hasRole('direktur')) {
+            $field = 'direktur';
+        }
+
+
+        // dd(isset($_POST['decline']));
+        if (isset($_POST['decline'])) {
+            $status  = 2;
+        } else {
+            $status = $user->hasRole('direktur') || $user->hasRole('super admin') ? 1 : 0;
+        }
+
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        try {
+            if ($user->hasRole('super admin')) {
+                Ajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+                    ->update([
+                        'status' => $status
+                    ]);
+            } else {
+                Ajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+                    ->update([
+                        $field => auth()->user()->id,
+                        'status' => $status
+                    ]);
+            }
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
