@@ -21,6 +21,7 @@ class Ajuanlimitkredit extends Model
             'pelanggan.nama_pelanggan',
             'pelanggan.nik',
             'pelanggan.alamat_pelanggan',
+            'pelanggan.alamat_toko',
             'pelanggan.no_hp_pelanggan',
             'salesman.nama_salesman',
             'cabang.nama_cabang',
