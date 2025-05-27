@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('hrd_izinabsensi', function (Blueprint $table) {
-            //
+        Schema::table('hrd_izinabsen', function (Blueprint $table) {
+            $table->char('head', 1)->after('keterangan_hrd')->default('0');
+            $table->char('hrd', 1)->after('head')->default('0');
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('hrd_izinabsensi', function (Blueprint $table) {
-            //
+        Schema::table('hrd_izinabsen', function (Blueprint $table) {
+            $table->dropColumn('head');
+            $table->dropColumn('hrd');
         });
     }
 };

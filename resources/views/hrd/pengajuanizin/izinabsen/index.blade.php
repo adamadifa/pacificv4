@@ -21,29 +21,31 @@
                             <form action="{{ route('izinabsen.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <x-input-with-icon label="Nama Karyawan" name="nama_karyawan" value="{{ Request('nama_karyawan') }}"
-                                            icon="ti ti-user" />
+                                        <x-input-with-icon label="Nama Karyawan" name="nama_karyawan"
+                                            value="{{ Request('nama_karyawan') }}" icon="ti ti-user" />
                                     </div>
                                 </div>
                                 @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12 col-md-12">
-                                            <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                                select2="select2Kodecabang" upperCase="true" selected="{{ Request('kode_cabang') }}" />
+                                            <x-select label="Cabang" name="kode_cabang" :data="$cabang"
+                                                key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
+                                                upperCase="true" selected="{{ Request('kode_cabang') }}" />
                                         </div>
                                         <div class="col-lg-6 col-sm-12 col-md-12">
-                                            <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                                                select2="select2KodeDept" upperCase="true" selected="{{ Request('kode_dept') }}" />
+                                            <x-select label="Departemen" name="kode_dept" :data="$departemen"
+                                                key="kode_dept" textShow="nama_dept" select2="select2KodeDept"
+                                                upperCase="true" selected="{{ Request('kode_dept') }}" />
                                         </div>
                                     </div>
                                 @endif
@@ -53,7 +55,8 @@
                                         <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
                                             <option value="">Poisi Ajuan</option>
                                             @foreach ($listApprove as $d)
-                                                <option value="{{ $d }}" {{ Request('posisi_ajuan') == $d ? 'selected' : '' }}>
+                                                <option value="{{ $d }}"
+                                                    {{ Request('posisi_ajuan') == $d ? 'selected' : '' }}>
                                                     {{ textUpperCase($d) }}</option>
                                             @endforeach
                                         </select>
@@ -63,12 +66,18 @@
                                 <div class="form-group mb-3">
                                     <select name="status" id="status" class="form-select">
                                         <option value="">Status</option>
-                                        <option value="pending" {{ Request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="disetujui" {{ Request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                                        <option value="pending" {{ Request('status') === 'pending' ? 'selected' : '' }}>
+                                            Pending</option>
+                                        <option value="disetujui"
+                                            {{ Request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui
+                                        </option>
                                         @if ($level_user == 'asst. manager hrd')
-                                            <option value="direktur" {{ Request('status') === 'direktur' ? 'selected' : '' }}>Disetujui Direktur
+                                            <option value="direktur"
+                                                {{ Request('status') === 'direktur' ? 'selected' : '' }}>Disetujui
+                                                Direktur
                                             </option>
-                                            <option value="pendingdirektur" {{ Request('status') === 'pendingdirektur' ? 'selected' : '' }}>Pending
+                                            <option value="pendingdirektur"
+                                                {{ Request('status') === 'pendingdirektur' ? 'selected' : '' }}>Pending
                                                 Direktur
                                             </option>
                                         @endif
@@ -142,7 +151,7 @@
                                                     {{ $d->keterangan }}
                                                 </td> --}}
                                                 <td>
-                                                    @if ($level_user == 'direktur')
+                                                    {{-- @if ($level_user == 'direktur')
                                                         @if ($d->direktur === '0')
                                                             <span class="badge bg-warning">
                                                                 {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
@@ -168,9 +177,20 @@
                                                                 {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
                                                             </span>
                                                         @endif
+                                                    @endif --}}
+                                                    @if (empty($d->head))
+                                                        <span class="badge bg-warning">
+                                                            HEAD
+                                                        </span>
+                                                    @elseif(!empty($d->head) && empty($d->hrd))
+                                                        <span class="badge bg-warning">
+                                                            HRD
+                                                        </span>
+                                                    @elseif(!empty($d->head) && !empty($d->hrd))
+                                                        <span class="badge bg-warning">
+                                                            DIREKTUR
+                                                        </span>
                                                     @endif
-
-
                                                 </td>
                                                 <td class="text-center">
                                                     @if ($level_user == 'direktur')
@@ -194,15 +214,20 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="#" class="btnShow me-1" kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
+                                                        <a href="#" class="btnShow me-1"
+                                                            kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
                                                             <i class="ti ti-file-description text-info"></i>
                                                         </a>
                                                         @can('izinabsen.edit')
                                                             @if (
                                                                 ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
-                                                                    ($d->status === '0' && $d->id_pengirim === auth()->user()->id && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
+                                                                    ($d->status === '0' &&
+                                                                        $d->id_pengirim === auth()->user()->id &&
+                                                                        $d->posisi_ajuan === $next_role &&
+                                                                        $level_user != $end_role) ||
                                                                     (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
-                                                                <a href="#" class="btnEdit me-1" kode_izin = "{{ Crypt::encrypt($d->kode_izin) }}">
+                                                                <a href="#" class="btnEdit me-1"
+                                                                    kode_izin = "{{ Crypt::encrypt($d->kode_izin) }}">
                                                                     <i class="ti ti-edit text-success"></i>
                                                                 </a>
                                                             @endif
@@ -218,30 +243,36 @@
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @elseif ($d->posisi_ajuan == $next_role && $d->status === '0')
-                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                    <form method="POST" name="deleteform"
+                                                                        class="deleteform"
                                                                         action="{{ route('izinabsen.cancel', Crypt::encrypt($d->kode_izin)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                            <i
+                                                                                class="ti ti-square-rounded-x text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @elseif ($level_user == $d->posisi_ajuan && $d->status === '1')
-                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                    <form method="POST" name="deleteform"
+                                                                        class="deleteform"
                                                                         action="{{ route('izinabsen.cancel', Crypt::encrypt($d->kode_izin)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                            <i
+                                                                                class="ti ti-square-rounded-x text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @elseif ($level_user == 'asst. manager hrd' && $d->posisi_ajuan == 'direktur' && $d->direktur === '0')
-                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                    <form method="POST" name="deleteform"
+                                                                        class="deleteform"
                                                                         action="{{ route('izinabsen.cancel', Crypt::encrypt($d->kode_izin)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                            <i
+                                                                                class="ti ti-square-rounded-x text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @endif
@@ -252,12 +283,14 @@
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
-                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                    <form method="POST" name="deleteform"
+                                                                        class="deleteform"
                                                                         action="{{ route('izinabsen.cancel', Crypt::encrypt($d->kode_izin)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                            <i
+                                                                                class="ti ti-square-rounded-x text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @endif
@@ -266,7 +299,10 @@
                                                         @can('izinabsen.delete')
                                                             @if (
                                                                 ($d->status == '0' && $d->id_pengirim == auth()->user()->id) ||
-                                                                    ($d->status == '0' && $d->id_pengirim == auth()->user()->id && $d->posisi_ajuan == $next_role && $level_user != $end_role) ||
+                                                                    ($d->status == '0' &&
+                                                                        $d->id_pengirim == auth()->user()->id &&
+                                                                        $d->posisi_ajuan == $next_role &&
+                                                                        $level_user != $end_role) ||
                                                                     (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status == '0'))
                                                                 <form class="delete-form me-1"
                                                                     action="{{ route('izinabsen.delete', Crypt::encrypt($d->kode_izin)) }}"
