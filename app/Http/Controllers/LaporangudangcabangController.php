@@ -497,7 +497,7 @@ class LaporangudangcabangController extends Controller
 
         $results = Detailmutasigudangcabang::select(
             'gudang_cabang_mutasi.tanggal',
-            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='SJ',gudang_cabang_mutasi_detail.jumlah,0))  as pusat"),
+            DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='SJ' OR jenis_mutasi='TI',gudang_cabang_mutasi_detail.jumlah,0))  as pusat"),
             DB::raw('0 as jml_pengambilan'),
             DB::raw('0 as jml_pengembalian'),
             DB::raw("SUM(IF(gudang_cabang_mutasi.jenis_mutasi='RP',gudang_cabang_mutasi_detail.jumlah,0))  as reject_pasar"),
