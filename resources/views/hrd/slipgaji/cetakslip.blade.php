@@ -395,7 +395,7 @@
                         $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                     }
 
-                    Jika Jabatan Salesman
+                    //Jika Jabatan Salesman
                     if (
                         $d['kode_jabatan'] == 'J19' &&
                         $tanggal_presensi >= '2024-10-21' &&
