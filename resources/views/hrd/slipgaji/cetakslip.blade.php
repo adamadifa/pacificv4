@@ -686,19 +686,19 @@
             <table class="table">
                 <tr>
                     <th>Overtime 1</th>
-                    <td class="text-center">{{ desimal($total_overtime_1) }}</td>
+                    <td class="text-center">{{ formatAngkaDesimal($total_overtime_1) }}</td>
                     <td>JAM</td>
                     <td class="text-right">{{ formatAngkaDesimal($upah_overtime_1) }}</td>
                 </tr>
                 <tr>
                     <th>Overtime 2</th>
-                    <td class="text-center">{{ desimal($total_overtime_2) }}</td>
+                    <td class="text-center">{{ formatAngkaDesimal($total_overtime_2) }}</td>
                     <td>JAM</td>
                     <td class="text-right">{{ formatAngkaDesimal($upah_overtime_2) }}</td>
                 </tr>
                 <tr>
                     <th>Lembur Hari Libur</th>
-                    <td class="text-center">{{ desimal($total_overtime_libur) }}
+                    <td class="text-center">{{ formatAngkaDesimal($total_overtime_libur) }}
                     </td>
                     <td>JAM</td>
                     <td class="text-right">{{ formatAngkaDesimal($upah_overtime_libur) }}</td>
@@ -730,7 +730,7 @@
                 </tr>
                 <tr>
                     <th>Absensi</th>
-                    <td>{{ desimal($grand_total_potongan_jam) }} JAM</td>
+                    <td>{{ formatAngkaDesimal($grand_total_potongan_jam) }} JAM</td>
                 </tr>
                 <tr>
                     <th>Denda Keterlambatan</th>
