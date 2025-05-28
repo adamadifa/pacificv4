@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('hrd_izinabsen', function (Blueprint $table) {
-            $table->char('head', 1)->after('keterangan_hrd')->default('0');
-            $table->char('hrd', 1)->after('head')->default('0');
+            $table->integer('head')->after('keterangan_hrd')->default(0);
+            $table->integer('hrd')->after('head')->default(0);
+            $table->integer('forward_to_direktur')->after('hrd')->default(0);
         });
     }
 
@@ -25,6 +26,7 @@ return new class extends Migration
         Schema::table('hrd_izinabsen', function (Blueprint $table) {
             $table->dropColumn('head');
             $table->dropColumn('hrd');
+            $table->dropColumn('forward_to_direktur');
         });
     }
 };

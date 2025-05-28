@@ -37,7 +37,7 @@ class Izinabsen extends Model
         $query->join('cabang', 'hrd_izinabsen.kode_cabang', '=', 'cabang.kode_cabang');
 
 
-        $role_access_full = ['super admin', 'asst. manager hrd', 'spv presensi', 'direktur'];
+        $role_access_full = ['super admin', 'asst. manager hrd', 'spv presensi'];
         //Jika Admin Presensi
         if (!in_array($role, $role_access_full)) {
             if ($user->can('izinabsen.create') && !$user->can('izinabsen.approve')) {
@@ -106,32 +106,10 @@ class Izinabsen extends Model
             }
 
 
-
-
-
-
-
-            //else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
-            //         $query->whereIn('hrd_izinabsen.kode_dept', ['AKT', 'KEU']);
-            //         // $query->where('hrd_karyawan.kode_cabang', 'PST');
-            //         // $query->whereIn('hrd_izinabsen.kode_jabatan', ['J04', 'J05', 'J06']);
-            //     } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
-            //         $query->whereIn('hrd_izinabsen.kode_dept', ['MKT']);
-            //         $query->whereIn('hrd_izinabsen.kode_jabatan', ['J03', 'J05', 'J06']);
-            //     } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
-            //         $query->where('hrd_izinabsen.kode_dept', 'MKT');
-            //         $query->where('hrd_izinabsen.kode_jabatan', 'J07');
-            //         $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-            //     } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
-            //         $query->where('hrd_izinabsen.kode_dept', 'AKT');
-            //         $query->whereIn('hrd_izinabsen.kode_jabatan', ['J08']);
-            //     } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
-            //         $query->whereIn('hrd_izinabsen.kode_dept', ['AKT', 'KEU']);
-            //         // $query->where('hrd_izinabsen.kode_cabang', 'PST');
-            //         // $query->whereIn('hrd_izinabsen.kode_jabatan', ['J28', 'J12', 'J13', 'J14']);
-            //     }
-
-
+            if ($role == 'direktur') {
+                $query->where('hrd_izinabsen.kode_jabatan', 'J02');
+                $query->orWhere('hrd_izinabsen.forward_to_direktur', 1);
+            }
         }
 
         $query->orderBy('hrd_izinabsen.status');
