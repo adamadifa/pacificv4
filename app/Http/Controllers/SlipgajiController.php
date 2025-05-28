@@ -79,7 +79,7 @@ class SlipgajiController extends Controller
     public function cetakslipgaji($nik, $bulan, $tahun)
     {
         $nik = Crypt::decrypt($nik);
-        $response = Http::get('https://app.portalmp.com/api/slipgaji/' . $bulan . '/' . $tahun . '/' . $nik);
+        $response = Http::get('https://app.portalmp.com/api/slipgaji/' . $bulan * 1 . '/' . $tahun . '/' . $nik);
         $data = $response->json(); // Mengubah response ke array
         $data['start_date'] = $data['start_date'];
         $data['end_date'] = $data['end_date'];
