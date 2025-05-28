@@ -334,7 +334,6 @@
                 @endif
                 @if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21' && $tanggal_presensi < '2025-04-21')
                     @php
-                        echo 'BBBBB';
                         $potongan_jam_sakit = 0;
                     @endphp
                 @endif
@@ -402,7 +401,6 @@
                         $tanggal_presensi >= '2024-10-21' &&
                         $tanggal_presensi < '2025-04-21'
                     ) {
-                        echo 'AAAAAAAAAAAA';
                         $potongan_jam_izin = 0;
                     }
                     $total_potongan_jam =
@@ -451,6 +449,7 @@
                             $total_jam = 3.5;
                         }
                     }
+
                     //Mulai Berlaku Dari Tanggal 2024-11-21 --> Step 1
                     if ($tanggal_presensi >= '2024-11-21') {
                         if (getNamahari($tanggal_presensi) == 'Sabtu') {
@@ -611,6 +610,7 @@
             $cicilan_piutang +
             $jml_pengurang +
             $spip;
+
         $jmlbersih = $bruto - $jml_potongan_upah + $jml_penambah;
     @endphp
     <div class="row" style="margin-top: 70px">
