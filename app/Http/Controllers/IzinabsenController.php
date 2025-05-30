@@ -22,13 +22,16 @@ class IzinabsenController extends Controller
     public function index(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
+        $role = $user->getRoleNames()->first();
         $i_absen = new Izinabsen();
         $izinabsen = $i_absen->getIzinabsen(request: $request)->paginate(15);
         $izinabsen->appends(request()->all());
         $data['izinabsen'] = $izinabsen;
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
-        $data['roles_approve'] = config('hrd.roles_approve_presensi');
+        $data['roles_can_approve'] = config('presensi.approval');
+        $data['level_hrd'] = config('presensi.approval.level_hrd');
+        // dd($data['roles_approve'][$role]);
         $data['listApprove'] = listApprovepresensi(auth()->user()->kode_dept, auth()->user()->kode_cabang, $user->getRoleNames()->first());
         return view('hrd.pengajuanizin.izinabsen.index', $data);
     }
@@ -201,59 +204,15 @@ class IzinabsenController extends Controller
     public function approve($kode_izin)
     {
         $kode_izin = Crypt::decrypt($kode_izin);
+
         $user = User::find(auth()->user()->id);
         $i_absen = new Izinabsen();
+
         $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+
         $data['izinabsen'] = $izinabsen;
         $level_hrd = ['asst. manager hrd', 'spv presensi'];
         $role = $user->getRoleNames()->first();
-        // $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
-        // $end_role = end($roles_approve);
-        // $role = $role == "spv presensi" ? "asst. manager hrd" : $role;
-        // if ($role != $end_role && in_array($role, $roles_approve)) {
-        //     $cek_index = array_search($role, $roles_approve) + 1;
-        //     //return 1;
-        // } else {
-        //     $cek_index = count($roles_approve) - 1;
-        //     //return 2;
-        // }
-
-        // $nextrole = $roles_approve[$cek_index];
-        // if ($nextrole == "regional sales manager") {
-        //     $userrole = User::role($nextrole)
-        //         ->where('kode_regional', $izinabsen->kode_regional)
-        //         ->where('status', 1)
-        //         ->first();
-        // } else {
-        //     $userrole = User::role($nextrole)
-        //         ->where('status', 1)
-        //         ->first();
-        // }
-
-        // $index_start = $cek_index + 1;
-        // if ($userrole == null) {
-        //     for ($i = $index_start; $i < count($roles_approve); $i++) {
-        //         if ($roles_approve[$i] == 'regional sales manager') {
-        //             $userrole = User::role($roles_approve[$i])
-        //                 ->where('kode_regional', $izinabsen->kode_regional)
-        //                 ->where('status', 1)
-        //                 ->first();
-        //         } else {
-        //             $userrole = User::role($roles_approve[$i])
-        //                 ->where('status', 1)
-        //                 ->first();
-        //         }
-
-        //         if ($userrole != null) {
-        //             $nextrole = $roles_approve[$i];
-        //             break;
-        //         }
-        //     }
-        // }
-
-        // $data['nextrole'] = $nextrole;
-        // $data['userrole'] = $userrole;
-        // $data['end_role'] = $end_role;
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
         return view('hrd.pengajuanizin.izinabsen.approve', $data);
@@ -322,7 +281,7 @@ class IzinabsenController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
         $level_hrd = ['asst. manager hrd', 'spv presensi'];
-        dd(in_array($role, $level_hrd));
+
 
         $i_absen = new Izinabsen();
         $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
@@ -334,11 +293,14 @@ class IzinabsenController extends Controller
                         'head' => 1,
                     ]);
                 } else {
+                    //dd('test');
 
+                    $forward_to_direktur = isset($request->direktur) ? 1 : 0;
                     Izinabsen::where('kode_izin', $kode_izin)
                         ->update([
                             'hrd' => 1,
-                            'status' => 1
+                            'status' => 1,
+                            'forward_to_direktur' => $forward_to_direktur
                         ]);
 
 
@@ -561,34 +523,23 @@ class IzinabsenController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
         $kode_izin = Crypt::decrypt($kode_izin);
-        $i_absen = new Izinabsen();
-        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+        // $i_absen = new Izinabsen();
+        $level_hrd = config('presensi.approval.level_hrd');
+        // $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinabsen->kode_dept, $izinabsen->kode_cabang, $izinabsen->kategori_jabatan, $izinabsen->kode_jabatan);
-        $end_role = end($roles_approve);
         DB::beginTransaction();
         try {
+            if ($role != 'direktur') {
 
-            Disposisiizinabsen::where('kode_izin', $kode_izin)
-                ->where('id_pengirim', auth()->user()->id)
-                ->where('id_penerima', '!=', auth()->user()->id)
-                ->delete();
 
-            Disposisiizinabsen::where('kode_izin', $kode_izin)
-                ->where('id_penerima', auth()->user()->id)
-                ->update([
-                    'status' => 0
-                ]);
-            if ($role == 'direktur') {
-                Izinabsen::where('kode_izin', $kode_izin)
-                    ->update([
-                        'direktur' => 0
-                    ]);
-            } else {
-                if ($role == $end_role) {
+                if (in_array($role, $level_hrd)) {
+
                     Izinabsen::where('kode_izin', $kode_izin)
                         ->update([
-                            'status' => 0
+                            'status' => 0,
+                            'hrd' => 0,
+                            'forward_to_direktur' => 0
+
                         ]);
 
                     $presensi_izinabsen = Presensizinabsen::select('id_presensi')->where('kode_izin', $kode_izin);
@@ -600,8 +551,19 @@ class IzinabsenController extends Controller
                     $presensi_izinabsen->delete();
 
                     Presensi::whereIn('id', $id_presensi)->delete();
+                } else {
+                    Izinabsen::where('kode_izin', $kode_izin)->update([
+                        'head' => 0
+                    ]);
                 }
+            } else {
+
+
+                Izinabsen::where('kode_izin', $kode_izin)->update([
+                    'direktur' => 0
+                ]);
             }
+
 
 
             DB::commit();

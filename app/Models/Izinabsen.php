@@ -25,6 +25,8 @@ class Izinabsen extends Model
         $query->select(
             'hrd_izinabsen.*',
             'nama_karyawan',
+            'hrd_karyawan.kode_jabatan',
+            'hrd_karyawan.kode_dept',
             'nama_jabatan',
             'hrd_jabatan.kategori as kategori_jabatan',
             'cabang.nama_cabang',
@@ -56,9 +58,7 @@ class Izinabsen extends Model
             //Jika Role Operation Manager --> Akunting
             if ($role == 'operation manager') {
                 //Jika Sebagai Admin Presensi
-                if ($user->can('izinabsen.create')) {
-                    $query->where('hrd_izinabsen.kode_dept', 'AKT');
-                } else {
+                if (!$user->can('izinabsen.create')) {
                     $query->where('hrd_izinabsen.kode_cabang', auth()->user()->kode_cabang);
                     $query->where('hrd_izinabsen.kode_dept', 'AKT');
                 }
@@ -115,7 +115,35 @@ class Izinabsen extends Model
                 $query->orWhere('hrd_izinabsen.forward_to_direktur', 1);
             }
         }
-
+        if (!empty($request)) {
+            if (!empty($request->dari) && !empty($request->sampai)) {
+                $query->whereBetween('hrd_izinabsen.tanggal', [$request->dari, $request->sampai]);
+            }
+            if (!empty($request->kode_cabang)) {
+                $query->where('hrd_izinabsen.kode_cabang', $request->kode_cabang);
+            }
+            if (!empty($request->kode_dept)) {
+                $query->where('hrd_izinabsen.kode_dept', $request->kode_dept);
+            }
+            if (!empty($request->nama_karyawan)) {
+                $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+            }
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->where('hrd_izinabsen.status', '0');
+                } else if ($request->status == "disetujui") {
+                    $query->where('hrd_izinabsen.status', '1');
+                } else if ($request->status == "direktur") {
+                    $query->where('hrd_izinabsen.direktur', '1');
+                } else if ($request->status == "pendingdirektur") {
+                    $query->where('roles.name', 'direktur');
+                    $query->where('hrd_izinabsen.direktur', '0');
+                }
+            }
+        }
+        if (!empty($kode_izin)) {
+            $query->where('hrd_izinabsen.kode_izin', $kode_izin);
+        }
         $query->orderBy('hrd_izinabsen.status');
         $query->orderBy('hrd_izinabsen.tanggal', 'desc');
         $query->orderBy('hrd_izinabsen.created_at', 'desc');
