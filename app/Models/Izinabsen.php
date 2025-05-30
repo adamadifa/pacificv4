@@ -17,7 +17,7 @@ class Izinabsen extends Model
     function getIzinabsen($kode_izin = null, Request $request = null)
     {
 
-        //Catatan Update Permission 
+        //Catatan Update Permission
         //Role RSM,GM,Manager,Direktur hanya lihat dan approve
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
@@ -36,13 +36,17 @@ class Izinabsen extends Model
         $query->join('hrd_departemen', 'hrd_izinabsen.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->join('cabang', 'hrd_izinabsen.kode_cabang', '=', 'cabang.kode_cabang');
 
-
+        //dd($user->can('izinabsen.create'));
         $role_access_full = ['super admin', 'asst. manager hrd', 'spv presensi'];
+        //dd(!in_array($role, $role_access_full));
         //Jika Admin Presensi
         if (!in_array($role, $role_access_full)) {
-            if ($user->can('izinabsen.create') && !$user->can('izinabsen.approve')) {
-                if (auth()->user()->kode_cabang == 'PST') {
-                    $query->where('hrd_izinabsen.kode_dept', auth()->user()->kode_dept);
+
+
+
+            if ($user->can('izinabsen.create')) {
+                if ($user->kode_cabang == 'PST') {
+                    $query->where('hrd_izinabsen.kode_dept', $user->kode_dept);
                 } else {
                     $query->where('hrd_izinabsen.kode_cabang', auth()->user()->kode_cabang);
                 }
