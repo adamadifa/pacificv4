@@ -154,10 +154,14 @@
                                                             HEAD
                                                         </span>
                                                     @elseif(!empty($d->head) && empty($d->hrd))
-                                                        <span class="badge bg-warning">
-                                                            HRD
-                                                        </span>
-                                                    @elseif(!empty($d->head) && !empty($d->hrd))
+                                                        @if ($d->status == 1 && $d->forward_to_direktur == 0)
+                                                            <span class="badge bg-success">HRD</span>
+                                                        @else
+                                                            <span class="badge bg-info">
+                                                                HRD
+                                                            </span>
+                                                        @endif
+                                                    @elseif(!empty($d->head) && !empty($d->hrd) && $d->forward_to_direktur == '1')
                                                         <span class="badge bg-warning">
                                                             DIREKTUR
                                                         </span>

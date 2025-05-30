@@ -1,4 +1,5 @@
-<form action="{{ route('izinabsen.storeapprove', Crypt::encrypt($izinabsen->kode_izin)) }}" method="POST" id="formApproveizin">
+<form action="{{ route('izinabsen.storeapprove', Crypt::encrypt($izinabsen->kode_izin)) }}" method="POST"
+    id="formApproveizin">
     @csrf
     <div class="row">
         <div class="col">
@@ -47,12 +48,14 @@
         </div>
     </div>
     <div class="row mt-3">
+
+
         @if ($level_user != 'direktur')
-            @if ($level_user != $end_role && $level_user != 'spv presensi')
+            @if (!in_array($level_user, $level_hrd))
                 <div class="col">
                     <button class="btn btn-primary w-100" id="btnSimpan">
                         <i class="ti ti-thumb-up me-1"></i> Setuju,
-                        Teruskan ke {{ textCamelCase($nextrole) }} ({{ $userrole->name }})
+                        Teruskan ke HRD
                     </button>
                 </div>
             @else
@@ -75,7 +78,6 @@
                         </button>
                     </div>
                 @endif
-
             @endif
         @else
             <div class="col">
