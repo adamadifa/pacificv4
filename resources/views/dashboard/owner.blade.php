@@ -203,7 +203,7 @@
                     <div class="col">
                         <div class="table-responsive" id="rekapkategori-container"
                             style="display: block; width: 100%; overflow-x: auto;">
-                            <table class="table table-bordered table-striped" id="rekapkategori">
+                            <table class="table table-bordered" id="rekapkategori">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Tanggal</th>
