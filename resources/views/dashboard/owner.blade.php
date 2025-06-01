@@ -28,7 +28,7 @@
             position: sticky;
             left: 0;
             z-index: 2;
-            /* background-color: #fff; */
+            background-color: #fff;
             border-right: 1px solid #dee2e6;
         }
 
@@ -96,18 +96,18 @@
 
         /* Striped rows with fixed columns */
         /* #rekapkategori tbody tr:nth-of-type(odd) {
-                        background-color: rgba(0, 0, 0, 0.05);
-                    }
+                            background-color: rgba(0, 0, 0, 0.05);
+                        }
 
-                    #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
-                    #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
-                        background-color: rgba(0, 0, 0, 0.05);
-                    }
+                        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
+                        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
+                            background-color: rgba(0, 0, 0, 0.05);
+                        }
 
-                    #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
-                    #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
-                        background-color: #fff;
-                    } */
+                        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
+                        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
+                            background-color: #fff;
+                        } */
     </style>
 
     <div class="row">
