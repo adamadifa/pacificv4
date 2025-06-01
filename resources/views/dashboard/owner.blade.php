@@ -7,94 +7,105 @@
             background: none !important;
         }
 
-        /* Responsive table styles for mobile */
-        @media (max-width: 767.98px) {
-            #rekapkategori-container {
-                overflow-x: auto;
-                position: relative;
-                width: 100%;
-                display: block;
-            }
+        /* Table styles for all screen sizes */
+        #rekapkategori-container {
+            overflow-x: auto;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+        }
 
-            #rekapkategori {
-                min-width: 500px;
-                width: 100%;
-                display: table;
-            }
+        #rekapkategori {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
 
-            #rekapkategori th:nth-child(1),
-            #rekapkategori td:nth-child(1),
-            #rekapkategori th:nth-child(2),
-            #rekapkategori td:nth-child(2) {
-                position: sticky;
-                z-index: 1;
-            }
+        /* Fixed columns styling */
+        #rekapkategori th:nth-child(1),
+        #rekapkategori td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            background-color: #fff;
+            border-right: 1px solid #dee2e6;
+        }
 
-            #rekapkategori th:nth-child(1),
-            #rekapkategori td:nth-child(1) {
-                left: 0;
-                border-right: 1px solid #dee2e6;
-            }
+        #rekapkategori th:nth-child(2),
+        #rekapkategori td:nth-child(2) {
+            position: sticky;
+            left: 120px; /* Width of first column */
+            z-index: 2;
+            background-color: #fff;
+            border-right: 1px solid #dee2e6;
+            box-shadow: 5px 0 8px -3px rgba(0,0,0,0.15);
+        }
 
-            #rekapkategori th:nth-child(2),
-            #rekapkategori td:nth-child(2) {
-                left: 120px;
-                /* Adjust based on the width of the first column */
-                border-right: 1px solid #dee2e6;
-            }
+        /* Header styling */
+        #rekapkategori thead th {
+            position: sticky;
+            top: 0;
+            background-color: #212529;
+            color: white;
+            z-index: 3;
+        }
 
-            #rekapkategori thead th {
-                position: sticky;
-                top: 0;
-                z-index: 2;
-            }
+        /* Corner headers (fixed horizontally and vertically) */
+        #rekapkategori thead th:nth-child(1),
+        #rekapkategori thead th:nth-child(2) {
+            z-index: 4;
+        }
 
-            #rekapkategori thead th:nth-child(1),
-            #rekapkategori thead th:nth-child(2) {
-                z-index: 3;
-                /* Higher z-index for frozen headers */
-            }
+        /* Footer styling */
+        #rekapkategori tfoot tr td {
+            position: sticky;
+            bottom: 0;
+            background-color: #212529;
+            color: #fff;
+            z-index: 2;
+        }
 
-            #rekapkategori tfoot tr td {
-                position: sticky;
-                bottom: 0;
-                background-color: #212529;
-                color: #fff;
-                z-index: 1;
-            }
+        /* Column widths */
+        #rekapkategori th:nth-child(1),
+        #rekapkategori td:nth-child(1) {
+            min-width: 120px;
+            width: 120px;
+        }
 
-            /* Set widths for columns */
-            #rekapkategori th:nth-child(1),
-            #rekapkategori td:nth-child(1) {
-                min-width: 120px;
-                width: 120px;
-            }
+        #rekapkategori th:nth-child(2),
+        #rekapkategori td:nth-child(2) {
+            min-width: 150px;
+            width: 150px;
+        }
 
-            #rekapkategori th:nth-child(2),
-            #rekapkategori td:nth-child(2) {
-                min-width: 150px;
-                width: 150px;
-            }
+        #rekapkategori th:nth-child(3),
+        #rekapkategori td:nth-child(3),
+        #rekapkategori th:nth-child(4),
+        #rekapkategori td:nth-child(4) {
+            min-width: 150px;
+        }
 
-            #rekapkategori th:nth-child(3),
-            #rekapkategori td:nth-child(3),
-            #rekapkategori th:nth-child(4),
-            #rekapkategori td:nth-child(4) {
-                min-width: 150px;
-            }
+        /* Cell styling */
+        #rekapkategori th,
+        #rekapkategori td {
+            padding: 8px;
+            white-space: nowrap;
+        }
 
-            /* Ensure table cells have proper padding */
-            #rekapkategori th,
-            #rekapkategori td {
-                padding: 8px;
-                white-space: nowrap;
-            }
+        /* Striped rows with fixed columns */
+        #rekapkategori tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
 
-            /* Ensure frozen cells have proper background when table-striped */
-            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
-            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
-                background-color: rgba(0, 0, 0, 0.05);
-            }
+        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
+        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
+        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
+            background-color: #fff;
         }
     </style>
 
