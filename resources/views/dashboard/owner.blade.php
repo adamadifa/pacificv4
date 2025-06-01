@@ -35,11 +35,12 @@
         #rekapkategori th:nth-child(2),
         #rekapkategori td:nth-child(2) {
             position: sticky;
-            left: 120px; /* Width of first column */
+            left: 120px;
+            /* Width of first column */
             z-index: 2;
             background-color: #fff;
             border-right: 1px solid #dee2e6;
-            box-shadow: 5px 0 8px -3px rgba(0,0,0,0.15);
+            box-shadow: 5px 0 8px -3px rgba(0, 0, 0, 0.15);
         }
 
         /* Header styling */
@@ -94,7 +95,7 @@
         }
 
         /* Striped rows with fixed columns */
-        #rekapkategori tbody tr:nth-of-type(odd) {
+        /* #rekapkategori tbody tr:nth-of-type(odd) {
             background-color: rgba(0, 0, 0, 0.05);
         }
 
@@ -106,7 +107,7 @@
         #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
         #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
             background-color: #fff;
-        }
+        } */
     </style>
 
     <div class="row">
