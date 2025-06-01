@@ -31,6 +31,10 @@
             background-color: #fff;
             border-right: 1px solid #dee2e6;
         }
+        
+        #rekapkategori thead th:nth-child(1) {
+            background-color: #212529;
+        }
 
         #rekapkategori th:nth-child(2),
         #rekapkategori td:nth-child(2) {
@@ -41,6 +45,10 @@
             background-color: #fff;
             border-right: 1px solid #dee2e6;
             box-shadow: 5px 0 8px -3px rgba(0, 0, 0, 0.15);
+        }
+
+        #rekapkategori thead th:nth-child(2) {
+            background-color: #212529;
         }
 
         /* Header styling */
