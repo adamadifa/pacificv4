@@ -6,6 +6,96 @@
             box-shadow: none !important;
             background: none !important;
         }
+
+        /* Responsive table styles for mobile */
+        @media (max-width: 767.98px) {
+            #rekapkategori-container {
+                overflow-x: auto;
+                position: relative;
+                width: 100%;
+                display: block;
+            }
+
+            #rekapkategori {
+                min-width: 500px;
+                width: 100%;
+                display: table;
+            }
+
+            #rekapkategori th:nth-child(1),
+            #rekapkategori td:nth-child(1),
+            #rekapkategori th:nth-child(2),
+            #rekapkategori td:nth-child(2) {
+                position: sticky;
+                z-index: 1;
+            }
+
+            #rekapkategori th:nth-child(1),
+            #rekapkategori td:nth-child(1) {
+                left: 0;
+                border-right: 1px solid #dee2e6;
+            }
+
+            #rekapkategori th:nth-child(2),
+            #rekapkategori td:nth-child(2) {
+                left: 120px;
+                /* Adjust based on the width of the first column */
+                border-right: 1px solid #dee2e6;
+            }
+
+            #rekapkategori thead th {
+                position: sticky;
+                top: 0;
+                z-index: 2;
+            }
+
+            #rekapkategori thead th:nth-child(1),
+            #rekapkategori thead th:nth-child(2) {
+                z-index: 3;
+                /* Higher z-index for frozen headers */
+            }
+
+            #rekapkategori tfoot tr td {
+                position: sticky;
+                bottom: 0;
+                background-color: #212529;
+                color: #fff;
+                z-index: 1;
+            }
+
+            /* Set widths for columns */
+            #rekapkategori th:nth-child(1),
+            #rekapkategori td:nth-child(1) {
+                min-width: 120px;
+                width: 120px;
+            }
+
+            #rekapkategori th:nth-child(2),
+            #rekapkategori td:nth-child(2) {
+                min-width: 150px;
+                width: 150px;
+            }
+
+            #rekapkategori th:nth-child(3),
+            #rekapkategori td:nth-child(3),
+            #rekapkategori th:nth-child(4),
+            #rekapkategori td:nth-child(4) {
+                min-width: 150px;
+            }
+
+            /* Ensure table cells have proper padding */
+            #rekapkategori th,
+            #rekapkategori td {
+                padding: 8px;
+                white-space: nowrap;
+            }
+
+            /* Ensure frozen cells have proper background when table-striped */
+            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
+            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+        }
     </style>
 
     <div class="row">
@@ -59,7 +149,8 @@
                                             @foreach ($bank as $d)
                                                 <tr>
                                                     <td>
-                                                        <a href="{{ route('mutasikeuangan.show', [Crypt::encrypt($d->kode_bank), $dari, $sampai]) }}">
+                                                        <a
+                                                            href="{{ route('mutasikeuangan.show', [Crypt::encrypt($d->kode_bank), $dari, $sampai]) }}">
                                                             {{ $d->nama_bank_alias ? $d->nama_bank_alias : $d->nama_bank }}
                                                             {{ $d->no_rekening }}
                                                         </a>
@@ -81,14 +172,14 @@
                                 <form action="{{ URL::current() }}" method="GET">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                                datepicker="flatpickr-date" />
+                                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                                icon="ti ti-calendar" datepicker="flatpickr-date" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                                datepicker="flatpickr-date" />
+                                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                                icon="ti ti-calendar" datepicker="flatpickr-date" />
                                         </div>
                                     </div>
                                     <div class="row mt-3 mb-3">
@@ -97,7 +188,8 @@
                                                     class="ti ti-heart-rate-monitor me-1"></i>Tampilkan</button>
                                         </div>
                                         <div class="col-6">
-                                            <button type="submit" name="export" value="1" class="btn btn-success w-100" id="exportButton"><i
+                                            <button type="submit" name="export" value="1"
+                                                class="btn btn-success w-100" id="exportButton"><i
                                                     class="ti ti-file-export me-1"></i>Download</button>
                                         </div>
                                     </div>
@@ -106,7 +198,53 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
+                    <div class="col">
+                        <div class="table-responsive" id="rekapkategori-container"
+                            style="display: block; width: 100%; overflow-x: auto;">
+                            <table class="table table-bordered table-striped" id="rekapkategori">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Kategori</th>
+                                        {{-- <th style="width: 15%">Bank</th>
+                                        <th style="width: 15%">No Rekening</th> --}}
+                                        <th>Debet</th>
+                                        <th>Kredit</th>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $totaldebet = 0;
+                                        $totalkredit = 0;
+                                    @endphp
+                                    @foreach ($mutasi_kategori_detail as $d)
+                                        @php
+                                            $totaldebet += $d->debet;
+                                            $totalkredit += $d->kredit;
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $d->tanggal }}</td>
+                                            <td>{{ $d->nama_kategori }}</td>
+                                            {{-- <td>{{ $d->nama_bank }}</td>
+                                            <td>{{ $d->no_rekening }}</td> --}}
+                                            <td class="right">{{ formatAngkaDesimal($d->debet) }}</td>
+                                            <td class="right">{{ formatAngkaDesimal($d->kredit) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-dark">
+                                        <td colspan="2" class="right">Total</td>
+                                        <td class="right">{{ formatAngkaDesimal($totaldebet) }}</td>
+                                        <td class="right">{{ formatAngkaDesimal($totalkredit) }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {{-- <div class="row">
                     @foreach ($kategori as $d)
                         <div class="col-lg-3 col-sm-6 mb-2">
                             <a href=#">
@@ -135,7 +273,7 @@
                             </a>
                         </div>
                     @endforeach
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

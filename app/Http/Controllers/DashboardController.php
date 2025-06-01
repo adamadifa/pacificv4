@@ -181,6 +181,31 @@ class DashboardController extends Controller
             ->where('bank.kode_bank', '!=', 'BK071')
             ->first();
 
+
+
+        // $dari = !empty($request->dari) ? $request->dari : $start_date;
+        // $sampai = !empty($request->sampai) ? $request->sampai : date('Y-m-d');
+        // $data['dari'] = $dari;
+        // $data['sampai'] = $sampai;
+        $data['mutasi_kategori_detail']  = Mutasikeuangan::select(
+            'keuangan_mutasi.tanggal',
+            'keuangan_mutasi_kategori.nama_kategori',
+            // 'bank.nama_bank',
+            // 'bank.no_rekening',
+            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+        )
+            ->leftJoin('keuangan_mutasi_kategori', 'keuangan_mutasi.kode_kategori', '=', 'keuangan_mutasi_kategori.kode_kategori')
+            ->leftJoin('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank')
+            ->when(!empty($request->dari) && !empty($request->sampai), function ($query) use ($request) {
+                $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+            })
+            ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
+                $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
+            })
+            ->groupBy('keuangan_mutasi.tanggal', 'keuangan_mutasi_kategori.nama_kategori')
+            ->orderBy('keuangan_mutasi.tanggal', 'asc')
+            ->get();
         if ($request->export == 1) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
