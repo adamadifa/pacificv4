@@ -38,7 +38,7 @@
             left: 120px;
             /* Width of first column */
             z-index: 2;
-            /* background-color: #fff; */
+            background-color: #fff;
             border-right: 1px solid #dee2e6;
             box-shadow: 5px 0 8px -3px rgba(0, 0, 0, 0.15);
         }
