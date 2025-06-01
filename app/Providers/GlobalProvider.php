@@ -85,6 +85,9 @@ class GlobalProvider extends ServiceProvider
             $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             if ($auth->check()) {
                 $level_user = auth()->user()->roles->pluck('name')[0];
+                $roles_can_approve_presensi = config('presensi.approval');
+                $level_hrd = config('presensi.approval.level_hrd');
+
                 $notifikasi_limitkredit = Disposisiajuanlimitkredit::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
                 $notifikasi_ajuanfaktur = Disposisiajuanfaktur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
                 $notifikasi_target = Disposisitargetkomisi::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
@@ -93,7 +96,16 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_marketing = $notifikasi_pengajuan_marketing + $notifikasi_komisi;
 
                 $notifikasi_penilaiankaryawan = Disposisipenilaiankaryawan::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+
+                //Jika Bukan Direktur
                 $notifikasi_izinabsen = Disposisiizinabsen::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+
+
+
+
+
+
+
                 $notifikasi_izincuti = Disposisiizincuti::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
                 $notifikasi_izinterlambat = Disposisiizinterlambat::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
                 $notifikasi_izinsakit = Disposisiizinsakit::where('id_penerima', auth()->user()->id)->where('status', 0)->count();

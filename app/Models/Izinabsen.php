@@ -40,6 +40,7 @@ class Izinabsen extends Model
 
         //dd($user->can('izinabsen.create'));
         $role_access_full = ['super admin', 'asst. manager hrd', 'spv presensi'];
+        $role_approve_presensi = config('presensi.approval');
         //dd(!in_array($role, $role_access_full));
         //Jika Admin Presensi
         if (!in_array($role, $role_access_full)) {
@@ -52,67 +53,33 @@ class Izinabsen extends Model
                 } else {
                     $query->where('hrd_izinabsen.kode_cabang', auth()->user()->kode_cabang);
                 }
-            }
+            } else {
+                $dept_access = $role_approve_presensi[$role]['dept'];
+                $jabatan_access = $role_approve_presensi[$role]['jabatan'] ?? [];
+                $jabatan_filter = $role_approve_presensi[$role]['jabatan_filter'];
+                $cabang_access = $role_approve_presensi[$role]['cabang'];
+                $dept_access_2 = $role_approve_presensi[$role]['dept2'];
+                $jabatan_access_2 = $role_approve_presensi[$role]['jabatan2'] ?? [];
 
-
-            //Jika Role Operation Manager --> Akunting
-            if ($role == 'operation manager') {
-                //Jika Sebagai Admin Presensi
-                if (!$user->can('izinabsen.create')) {
-                    $query->where('hrd_izinabsen.kode_cabang', auth()->user()->kode_cabang);
-                    $query->where('hrd_izinabsen.kode_dept', 'AKT');
+                $query->whereIn('hrd_izinabsen.kode_dept', $dept_access);
+                if ($jabatan_filter && $jabatan_access != null) {
+                    $query->where('hrd_izinabsen.kode_jabatan', $jabatan_access);
                 }
-            }
-
-
-            //Jika Role SMM --> Marketing
-            if ($role == 'sales marketing manager') {
-                //Jika Sebagai Admin Presensi
-                if ($user->can('izinabsen.create')) {
-                    $query->where('hrd_izinabsen.kode_dept', 'MKT');
-                } else {
+                if ($cabang_access == 1) {
                     $query->where('hrd_izinabsen.kode_cabang', auth()->user()->kode_cabang);
-                    $query->where('hrd_izinabsen.kode_dept', 'MKT');
+                } else if ($cabang_access == 2) {
+                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
                 }
-            }
 
-            //Jika Role Regional Sales Manager --> SMM
-            if ($role == 'regional sales manager') {
-                $query->where('hrd_izinabsen.kode_dept', 'MKT');
-                $query->where('hrd_izinabsen.kode_jabatan', 'J07'); // Sales Marketing Manager
-                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-            }
-
-            //Jika Role GM Marketing --> RSM --> MKT
-            if ($user->hasRole('gm marketing')) {
-                $query->whereIn('hrd_izinabsen.kode_dept', ['MKT']);
-                $query->whereIn('hrd_izinabsen.kode_jabatan', ['J03', 'J05', 'J06']);
-            }
-
-            //Jika Role GM Operasional --> Manager, Asst. Manager ---> PMB,GDG,MTC,PRD,GAF,HRD
-            if ($role == 'gm operasional') {
-                $query->whereIn('hrd_izinabsen.kode_dept', ['PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
-                $query->whereIn('hrd_izinabsen.kode_jabatan', ['J05', 'J06']);
-            }
-
-
-            //Jika ROle GM Administrasi --> All Akunting  & Keuangan --> Cabang dan Pusat
-            if ($user->hasRole(['gm administrasi', 'manager keuangan'])) { //GM ADMINISTRASI
-                $query->whereIn('hrd_izinabsen.kode_dept', ['AKT', 'KEU']);
-                // $query->where('hrd_karyawan.kode_cabang', 'PST');
-                // $query->whereIn('hrd_izinabsen.kode_jabatan', ['J04', 'J05', 'J06']);
-            }
-
-            //Jika Role ROM --> OM --> AKT --> Cabang
-            if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
-                $query->where('hrd_izinabsen.kode_dept', 'AKT');
-                $query->whereIn('hrd_izinabsen.kode_jabatan', ['J08']);
-            }
-
-
-            if ($role == 'direktur') {
-                $query->where('hrd_izinabsen.kode_jabatan', 'J02');
-                $query->orWhere('hrd_izinabsen.forward_to_direktur', 1);
+                $query->orWhereIn('hrd_izinabsen.kode_dept', $dept_access_2);
+                if ($jabatan_filter && $jabatan_access_2 != null) {
+                    $query->where('hrd_izinabsen.kode_jabatan', $jabatan_access_2);
+                }
+                if ($cabang_access == 1) {
+                    $query->where('hrd_izinabsen.kode_cabang', auth()->user()->kode_cabang);
+                } else if ($cabang_access == 2) {
+                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                }
             }
         }
         if (!empty($request)) {
@@ -140,7 +107,22 @@ class Izinabsen extends Model
                     $query->where('hrd_izinabsen.direktur', '0');
                 }
             }
+
+            if (!empty($request->posisi_ajuan)) {
+                if ($request->posisi_ajuan == 'head') {
+                    $query->where('head', 0);
+                } else if ($request->posisi_ajuan == 'hrd') {
+                    $query->where('head', 1);
+                    $query->where('hrd', 0);
+                } else if ($request->posisi_ajuan == 'direktur') {
+                    $query->where('forward_to_direktur', 1);
+                    $query->where('direktur', 0);
+                }
+            }
         }
+
+
+
         if (!empty($kode_izin)) {
             $query->where('hrd_izinabsen.kode_izin', $kode_izin);
         }
