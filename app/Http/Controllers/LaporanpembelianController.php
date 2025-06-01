@@ -222,7 +222,7 @@ class LaporanpembelianController extends Controller
             $query->orderBy('kode_jenis_barang');
             $query->orderBy('pembelian.kode_supplier');
         }
-        $query->where('kode_transaksi', 'PMB');
+        $query->where('pembelian_detail.kode_transaksi', 'PMB');
         $data['rekappembelian'] = $query->get();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
