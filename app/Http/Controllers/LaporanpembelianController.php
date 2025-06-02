@@ -638,8 +638,8 @@ class LaporanpembelianController extends Controller
             'nama_akun',
             DB::raw('IFNULL(jurnaldebet,0) as jurnaldebet'),
             DB::raw('IFNULL(jurnalkredit,0) as jurnalkredit'),
-            DB::raw("SUM(IF( kode_transaksi = 'PMB',( ROUND(pembelian_detail.jumlah * pembelian_detail.harga,2) ) + penyesuaian, 0 )) AS pmb"),
-            DB::raw("SUM(IF( kode_transaksi = 'PNJ', ( ROUND(pembelian_detail.jumlah * pembelian_detail.harga,2) ), 0 )) AS pnj")
+            DB::raw("SUM(IF( pembelian_detail.kode_transaksi = 'PMB',( ROUND(pembelian_detail.jumlah * pembelian_detail.harga,2) ) + penyesuaian, 0 )) AS pmb"),
+            DB::raw("SUM(IF( pembelian_detail.kode_transaksi = 'PNJ', ( ROUND(pembelian_detail.jumlah * pembelian_detail.harga,2) ), 0 )) AS pnj")
         )
             ->leftjoin('pembelian', 'pembelian_detail.no_bukti', '=', 'pembelian.no_bukti')
             ->leftjoin('coa', 'pembelian.kode_akun', '=', 'coa.kode_akun')
