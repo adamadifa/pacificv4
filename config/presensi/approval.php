@@ -49,6 +49,17 @@ return [
         'cabang' => 0
     ],
 
+    
+    'gm marketing' => [
+        'dept' => ['MKT'],
+        'jabatan' => ['J05','J03'],
+        'dept2' => [],
+        'jabatan2' => [],
+        'jabatan_filter' => true,
+        'cabang' => 0
+    ],
+
+
     'gm operasional' => [
         'dept' => ['GDG', 'GAF', 'PRD', 'PMB', 'MTC'],
         'jabatan' => ['J05', 'J06'],

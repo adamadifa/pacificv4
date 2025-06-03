@@ -28,6 +28,8 @@ class Removepermissionfromroleseeder extends Seeder
             'manager audit',
             'manager produksi',
             'manager maintenance',
+            'gm marketing',
+            'direktur'
         ];
 
         // Daftar permission yang akan dihapus dari role

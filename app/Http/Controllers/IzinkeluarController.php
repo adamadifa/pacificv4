@@ -28,8 +28,7 @@ class IzinkeluarController extends Controller
         $data['izinkeluar'] = $izinkeluar;
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
-        $data['roles_approve'] = config('hrd.roles_approve_presensi');
-        $data['listApprove'] = listApprovepresensi(auth()->user()->kode_dept, auth()->user()->kode_cabang, $user->getRoleNames()->first());
+        $data['level_hrd'] = config('presensi.approval.level_hrd');
         return view('hrd.pengajuanizin.izinkeluar.index', $data);
     }
 
@@ -80,64 +79,64 @@ class IzinkeluarController extends Controller
             ]);
 
 
-            $roles_approve = cekRoleapprovepresensi($karyawan->kode_dept, $karyawan->kode_cabang, $karyawan->kategori, $karyawan->kode_jabatan);
+            // $roles_approve = cekRoleapprovepresensi($karyawan->kode_dept, $karyawan->kode_cabang, $karyawan->kategori, $karyawan->kode_jabatan);
 
-            if (in_array($role, $roles_approve)) {
-                $index_role = array_search($role, $roles_approve);
-            } else {
-                $index_role = 0;
-            }
+            // if (in_array($role, $roles_approve)) {
+            //     $index_role = array_search($role, $roles_approve);
+            // } else {
+            //     $index_role = 0;
+            // }
 
-            if (in_array($roles_approve[$index_role], ['operation manager', 'sales marketing manager'])) {
-                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)
-                    ->where('kode_cabang', $karyawan->kode_cabang)
-                    ->first();
-            } else {
-                if ($roles_approve[$index_role] == 'regional sales manager') {
-                    $cek_user_approve = User::role($roles_approve[$index_role])
-                        ->where('kode_regional', $karyawan->kode_regional)
-                        ->where('status', 1)
-                        ->first();
-                } else {
-                    $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
-                }
-            }
+            // if (in_array($roles_approve[$index_role], ['operation manager', 'sales marketing manager'])) {
+            //     $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)
+            //         ->where('kode_cabang', $karyawan->kode_cabang)
+            //         ->first();
+            // } else {
+            //     if ($roles_approve[$index_role] == 'regional sales manager') {
+            //         $cek_user_approve = User::role($roles_approve[$index_role])
+            //             ->where('kode_regional', $karyawan->kode_regional)
+            //             ->where('status', 1)
+            //             ->first();
+            //     } else {
+            //         $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            //     }
+            // }
 
-            if ($cek_user_approve == null) {
-                for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
-                    // $cek_user_approve = User::role($roles_approve[$i])
-                    //     ->where('status', 1)
-                    //     ->first();
-                    if ($roles_approve[$i] == 'regional sales manager') {
-                        $cek_user_approve = User::role($roles_approve[$index_role])
-                            ->where('kode_regional', $karyawan->kode_regional)
-                            ->where('status', 1)
-                            ->first();
-                    } else {
-                        $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
-                    }
+            // if ($cek_user_approve == null) {
+            //     for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
+            //         // $cek_user_approve = User::role($roles_approve[$i])
+            //         //     ->where('status', 1)
+            //         //     ->first();
+            //         if ($roles_approve[$i] == 'regional sales manager') {
+            //             $cek_user_approve = User::role($roles_approve[$index_role])
+            //                 ->where('kode_regional', $karyawan->kode_regional)
+            //                 ->where('status', 1)
+            //                 ->first();
+            //         } else {
+            //             $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            //         }
 
-                    if ($cek_user_approve != null) {
-                        break;
-                    }
-                }
-            }
+            //         if ($cek_user_approve != null) {
+            //             break;
+            //         }
+            //     }
+            // }
 
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisiizinkeluar::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPIK" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+            // $tanggal_hariini = date('Y-m-d');
+            // $lastdisposisi = Disposisiizinkeluar::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+            //     ->orderBy('kode_disposisi', 'desc')
+            //     ->first();
+            // $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            // $format = "DPIK" . date('Ymd');
+            // $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
 
-            Disposisiizinkeluar::create([
-                'kode_disposisi' => $kode_disposisi,
-                'kode_izin_keluar' => $kode_izin_keluar,
-                'id_pengirim' => auth()->user()->id,
-                'id_penerima' => $cek_user_approve->id,
-                'status' => 0
-            ]);
+            // Disposisiizinkeluar::create([
+            //     'kode_disposisi' => $kode_disposisi,
+            //     'kode_izin_keluar' => $kode_izin_keluar,
+            //     'id_pengirim' => auth()->user()->id,
+            //     'id_penerima' => $cek_user_approve->id,
+            //     'status' => 0
+            // ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
@@ -194,59 +193,20 @@ class IzinkeluarController extends Controller
     }
 
 
-    public function approve($kode_izin_keluar)
+    public function approve($kode_izin)
     {
-        $kode_izin_keluar = Crypt::decrypt($kode_izin_keluar);
+        $kode_izin = Crypt::decrypt($kode_izin);
+
         $user = User::find(auth()->user()->id);
-        $i_keluar = new Izinkeluar();
-        $izinkeluar = $i_keluar->getIzinkeluar(kode_izin_keluar: $kode_izin_keluar)->first();
-        $data['izinkeluar'] = $izinkeluar;
+        $i_absen = new Izinabsen();
 
+        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+
+        $data['izinabsen'] = $izinabsen;
+        $level_hrd = ['asst. manager hrd', 'spv presensi'];
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinkeluar->kode_dept, $izinkeluar->kode_cabang, $izinkeluar->kategori_jabatan, $izinkeluar->kode_jabatan);
-        $end_role = end($roles_approve);
-        if ($role != $end_role && in_array($role, $roles_approve)) {
-            $cek_index = array_search($role, $roles_approve) + 1;
-        } else {
-            $cek_index = count($roles_approve) - 1;
-        }
-
-        $nextrole = $roles_approve[$cek_index];
-        if ($nextrole == "regional sales manager") {
-            $userrole = User::role($nextrole)
-                ->where('kode_regional', $izinkeluar->kode_regional)
-                ->where('status', 1)
-                ->first();
-        } else {
-            $userrole = User::role($nextrole)
-                ->where('status', 1)
-                ->first();
-        }
-
-        $index_start = $cek_index + 1;
-        if ($userrole == null) {
-            for ($i = $index_start; $i < count($roles_approve); $i++) {
-                if ($roles_approve[$i] == 'regional sales manager') {
-                    $userrole = User::role($roles_approve[$i])
-                        ->where('kode_regional', $izinkeluar->kode_regional)
-                        ->where('status', 1)
-                        ->first();
-                } else {
-                    $userrole = User::role($roles_approve[$i])
-                        ->where('status', 1)
-                        ->first();
-                }
-
-                if ($userrole != null) {
-                    $nextrole = $roles_approve[$i];
-                    break;
-                }
-            }
-        }
-
-        $data['nextrole'] = $nextrole;
-        $data['userrole'] = $userrole;
-        $data['end_role'] = $end_role;
+        $data['level_hrd'] = $level_hrd;
+        $data['role'] = $role;
         return view('hrd.pengajuanizin.izinkeluar.approve', $data);
     }
 
@@ -311,101 +271,13 @@ class IzinkeluarController extends Controller
 
     public function storeapprove($kode_izin_keluar, Request $request)
     {
-        $kode_izin_keluar = Crypt::decrypt($kode_izin_keluar);
-        $user = User::findorfail(auth()->user()->id);
-        $i_keluar = new Izinkeluar();
-        $izinkeluar = $i_keluar->getIzinkeluar(kode_izin_keluar: $kode_izin_keluar)->first();
-        $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinkeluar->kode_dept, $izinkeluar->kode_cabang, $izinkeluar->kategori_jabatan, $izinkeluar->kode_jabatan);
-        $end_role = end($roles_approve);
-
-        if ($role != $end_role && in_array($role, $roles_approve)) {
-            $cek_index = array_search($role, $roles_approve);
-            $nextrole = $roles_approve[$cek_index + 1];
-            $userrole = User::role($nextrole)
-                ->where('status', 1)
-                ->first();
-        }
-
-        //dd($userrole);
-
-        DB::beginTransaction();
         try {
-            // Upadate Disposisi Pengirim
-
-            // dd($kode_penilaian);
-            Disposisiizinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
-                ->where('id_penerima', auth()->user()->id)
-                ->update([
-                    'status' => 1
-                ]);
-
-
-
-
-
-            if ($role == 'direktur') {
-                Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)->update([
-                    'direktur' => 1
-                ]);
-            } else {
-                //Insert Dispsosi ke Penerima
-                $tanggal_hariini = date('Y-m-d');
-                $lastdisposisi = Disposisiizinkeluar::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                    ->orderBy('kode_disposisi', 'desc')
-                    ->first();
-                $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-                $format = "DPIK" . date('Ymd');
-                $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
-
-                if ($role == $end_role) {
-                    Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
-                        ->update([
-                            'status' => 1
-                        ]);
-
-                    $cekpresensi = Presensi::where('nik', $izinkeluar->nik)->where('tanggal', $izinkeluar->tanggal)->first();
-                    //dd($cekpresensi);
-                    if ($cekpresensi != null) {
-                        Presensiizinkeluar::create([
-                            'id_presensi' => $cekpresensi->id,
-                            'kode_izin_keluar' => $kode_izin_keluar,
-                        ]);
-                    } else {
-                        DB::rollBack();
-                        return Redirect::back()->with(messageError('Karyawan Belum Melakukan Presesnsi Pada Tanggal Tersebut'));
-                    }
-                    if (isset($request->direktur)) {
-                        $userrole = User::role('direktur')->where('status', 1)->first();
-                        Disposisiizinkeluar::create([
-                            'kode_disposisi' => $kode_disposisi,
-                            'kode_izin_keluar' => $kode_izin_keluar,
-                            'id_pengirim' => auth()->user()->id,
-                            'id_penerima' => $userrole->id,
-                            'status' => 0,
-                        ]);
-                    }
-                } else {
-
-                    Disposisiizinkeluar::create([
-                        'kode_disposisi' => $kode_disposisi,
-                        'kode_izin_keluar' => $kode_izin_keluar,
-                        'id_pengirim' => auth()->user()->id,
-                        'id_penerima' => $userrole->id,
-                        'status' => 0,
-                    ]);
-                }
-            }
-
-
-
-            DB::commit();
-            return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));
+            
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+
     }
 
 

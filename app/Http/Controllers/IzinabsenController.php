@@ -24,6 +24,7 @@ class IzinabsenController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
         $i_absen = new Izinabsen();
+        // dd($i_absen->getIzinabsen(request: $request)->get());
         $izinabsen = $i_absen->getIzinabsen(request: $request)->paginate(15);
         $izinabsen->appends(request()->all());
         $data['izinabsen'] = $izinabsen;
@@ -32,7 +33,7 @@ class IzinabsenController extends Controller
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
         // dd($data['roles_approve'][$role]);
-        $data['listApprove'] = listApprovepresensi(auth()->user()->kode_dept, auth()->user()->kode_cabang, $user->getRoleNames()->first());
+       
         return view('hrd.pengajuanizin.izinabsen.index', $data);
     }
 
@@ -84,75 +85,75 @@ class IzinabsenController extends Controller
                 'id_user' => $user->id,
             ]);
 
-            $cekregional = Cabang::where('kode_cabang', $karyawan->kode_cabang)->first();
+            // $cekregional = Cabang::where('kode_cabang', $karyawan->kode_cabang)->first();
 
-            $roles_approve = cekRoleapprovepresensi($karyawan->kode_dept, $karyawan->kode_cabang, $karyawan->kategori, $karyawan->kode_jabatan);
+            // $roles_approve = cekRoleapprovepresensi($karyawan->kode_dept, $karyawan->kode_cabang, $karyawan->kategori, $karyawan->kode_jabatan);
 
-            //dd($roles_approve);
-            // dd($karyawan->kategori);
-            // dd($roles_approve);
-            if (in_array($role, $roles_approve)) {
-                $index_role = array_search($role, $roles_approve);
-            } else {
-                $index_role = 0;
-            }
-            // Jika Tidak Ada di dalam array
+            // //dd($roles_approve);
+            // // dd($karyawan->kategori);
+            // // dd($roles_approve);
+            // if (in_array($role, $roles_approve)) {
+            //     $index_role = array_search($role, $roles_approve);
+            // } else {
+            //     $index_role = 0;
+            // }
+            // // Jika Tidak Ada di dalam array
 
-            if (in_array($roles_approve[$index_role], ['operation manager', 'sales marketing manager'])) {
-                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)
-                    ->where('kode_cabang', $karyawan->kode_cabang)
-                    ->first();
-            } else {
-                if ($roles_approve[$index_role] == 'regional sales manager') {
-                    $cek_user_approve = User::role($roles_approve[$index_role])
-                        ->where('kode_regional', $cekregional->kode_regional)
-                        ->where('status', 1)
-                        ->first();
-                } else {
-                    $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
-                }
-            }
-
-
+            // if (in_array($roles_approve[$index_role], ['operation manager', 'sales marketing manager'])) {
+            //     $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)
+            //         ->where('kode_cabang', $karyawan->kode_cabang)
+            //         ->first();
+            // } else {
+            //     if ($roles_approve[$index_role] == 'regional sales manager') {
+            //         $cek_user_approve = User::role($roles_approve[$index_role])
+            //             ->where('kode_regional', $cekregional->kode_regional)
+            //             ->where('status', 1)
+            //             ->first();
+            //     } else {
+            //         $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            //     }
+            // }
 
 
-            if ($cek_user_approve == null) {
-                for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
-                    if ($roles_approve[$i] == 'regional sales manager') {
-                        $cek_user_approve = User::role($roles_approve[$index_role])
-                            ->where('kode_regional', $cekregional->kode_regional)
-                            ->where('status', 1)
-                            ->first();
-                    } else {
-                        $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
-                    }
-
-                    // $cek_user_approve = User::role($roles_approve[$i])
-                    //     ->where('status', 1)
-                    //     ->first();
-                    if ($cek_user_approve != null) {
-                        break;
-                    }
-                }
-            }
 
 
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisiizinabsen::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPIA" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+            // if ($cek_user_approve == null) {
+            //     for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
+            //         if ($roles_approve[$i] == 'regional sales manager') {
+            //             $cek_user_approve = User::role($roles_approve[$index_role])
+            //                 ->where('kode_regional', $cekregional->kode_regional)
+            //                 ->where('status', 1)
+            //                 ->first();
+            //         } else {
+            //             $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
+            //         }
+
+            //         // $cek_user_approve = User::role($roles_approve[$i])
+            //         //     ->where('status', 1)
+            //         //     ->first();
+            //         if ($cek_user_approve != null) {
+            //             break;
+            //         }
+            //     }
+            // }
 
 
-            Disposisiizinabsen::create([
-                'kode_disposisi' => $kode_disposisi,
-                'kode_izin' => $kode_izin,
-                'id_pengirim' => auth()->user()->id,
-                'id_penerima' => $cek_user_approve->id,
-                'status' => 0
-            ]);
+            // $tanggal_hariini = date('Y-m-d');
+            // $lastdisposisi = Disposisiizinabsen::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+            //     ->orderBy('kode_disposisi', 'desc')
+            //     ->first();
+            // $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            // $format = "DPIA" . date('Ymd');
+            // $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+
+            // Disposisiizinabsen::create([
+            //     'kode_disposisi' => $kode_disposisi,
+            //     'kode_izin' => $kode_izin,
+            //     'id_pengirim' => auth()->user()->id,
+            //     'id_penerima' => $cek_user_approve->id,
+            //     'status' => 0
+            // ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {

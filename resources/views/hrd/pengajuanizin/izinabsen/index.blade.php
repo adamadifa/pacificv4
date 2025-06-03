@@ -50,7 +50,7 @@
                                     </div>
                                 @endif
 
-                                @if ($level_user != 'direktur')
+                                {{-- @if ($level_user != 'direktur')
                                     <div class="form-group mb-3">
                                         <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
                                             <option value="">Poisi Ajuan</option>
@@ -63,7 +63,7 @@
                                             </option>
                                         </select>
                                     </div>
-                                @endif
+                                @endif --}}
 
                                 <div class="form-group mb-3">
                                     <select name="status" id="status" class="form-select">
@@ -118,23 +118,6 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($izinabsen as $d)
-                                            @php
-                                                $roles_approve = cekRoleapprovepresensi(
-                                                    $d->kode_dept,
-                                                    $d->kode_cabang,
-                                                    $d->kategori_jabatan,
-                                                    $d->kode_jabatan,
-                                                );
-                                                $end_role = end($roles_approve);
-
-                                                if ($level_user != $end_role && in_array($level_user, $roles_approve)) {
-                                                    $index_role = array_search($level_user, $roles_approve);
-                                                    $next_role = $roles_approve[$index_role + 1];
-                                                } else {
-                                                    $lastindex = count($roles_approve) - 1;
-                                                    $next_role = $roles_approve[$lastindex];
-                                                }
-                                            @endphp
                                             <tr>
                                                 <td>{{ $d->kode_izin }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>

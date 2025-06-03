@@ -54,16 +54,18 @@
         </div>
     </div>
     <div class="row mt-3">
+
+
         @if ($level_user != 'direktur')
-            @if ($level_user != $end_role)
+            @if (!in_array($level_user, $level_hrd))
                 <div class="col">
                     <button class="btn btn-primary w-100" id="btnSimpan">
                         <i class="ti ti-thumb-up me-1"></i> Setuju,
-                        Teruskan ke {{ textCamelCase($nextrole) }} ({{ $userrole->name }})
+                        Teruskan ke HRD
                     </button>
                 </div>
             @else
-                @if ($izinkeluar->kategori_jabatan == 'MJ')
+                @if ($izinabsen->kategori_jabatan == 'MJ')
                     <div class="col-4">
                         <button class="btn btn-success w-100" id="btnSimpan">
                             <i class="ti ti-thumb-up me-1"></i> Setuju
@@ -82,7 +84,6 @@
                         </button>
                     </div>
                 @endif
-
             @endif
         @else
             <div class="col">

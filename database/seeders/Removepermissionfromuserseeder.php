@@ -30,6 +30,8 @@ class Removepermissionfromuserseeder extends Seeder
             'manager audit',
             'manager produksi',
             'manager maintenance',
+            'gm marketing',
+            'direktur'
         ];
 
         // Permission yang ingin dihapus dari user (langsung)

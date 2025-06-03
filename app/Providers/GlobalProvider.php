@@ -18,6 +18,8 @@ use App\Models\Disposisiizinterlambat;
 use App\Models\Disposisilembur;
 use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Disposisitargetkomisi;
+use App\Models\Izinabsen;
+use App\Models\Izinkeluar;
 use App\Models\Pencairanprogram;
 use App\Models\Pencairanprogramikatan;
 use App\Models\Ticket;
@@ -95,12 +97,17 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_komisi = $notifikasi_target;
                 $notifikasi_marketing = $notifikasi_pengajuan_marketing + $notifikasi_komisi;
 
+
+               
+
                 $notifikasi_penilaiankaryawan = Disposisipenilaiankaryawan::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
 
+                $cek_approval_presensi = $roles_can_approve_presensi[$level_user] ?? [];
                 //Jika Bukan Direktur
-                $notifikasi_izinabsen = Disposisiizinabsen::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
-
-
+                $izinabsen = new Izinabsen();
+                $izinkeluar = new Izinkeluar();
+                $notifikasi_izinabsen = $cek_approval_presensi || in_array($level_user,$level_hrd) || $level_user=='direktur' ? $izinabsen->getIzinabsen(cekPending:true)->count() : 0;
+                $notifikasi_izinkeluar = $cek_approval_presensi || in_array($level_user,$level_hrd) || $level_user=='direktur' ? $izinkeluar->getIzinkeluar(cekPending:true)->count() : 0;
 
 
 
@@ -112,7 +119,7 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_izinpulang = Disposisiizinpulang::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
                 $notifikasi_izindinas = Disposisiizindinas::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
                 $notifikasi_izinkoreksi = Disposisiizinkoreksi::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
-                $notifikasi_izinkeluar = Disposisiizinkeluar::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                
                 $notifikasi_pengajuan_izin = $notifikasi_izinabsen + $notifikasi_izincuti + $notifikasi_izinterlambat + $notifikasi_izinsakit + $notifikasi_izinpulang + $notifikasi_izindinas + $notifikasi_izinkoreksi + $notifikasi_izinkeluar;
 
                 $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
