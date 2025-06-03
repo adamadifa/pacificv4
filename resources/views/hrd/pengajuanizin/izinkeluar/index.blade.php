@@ -181,14 +181,14 @@
                                                             @if (in_array($level_user, $level_hrd))
                                                                 @if ($d->status == 0)
                                                                     <a href="#" class="btnEdit me-1"
-                                                                        kode_izin = "{{ Crypt::encrypt($d->kode_izin) }}">
+                                                                        kode_izin_keluar = "{{ Crypt::encrypt($d->kode_izin_keluar) }}">
                                                                         <i class="ti ti-edit text-success"></i>
                                                                     </a>
                                                                 @endif
                                                             @else
                                                                 @if ($d->status == 0 && empty($d->head) && $d->status == 0)
                                                                     <a href="#" class="btnEdit me-1"
-                                                                        kode_izin = "{{ Crypt::encrypt($d->kode_izin) }}">
+                                                                        kode_izin_keluar = "{{ Crypt::encrypt($d->kode_izin_keluar) }}">
                                                                         <i class="ti ti-edit text-success"></i>
                                                                     </a>
                                                                 @endif
@@ -198,7 +198,7 @@
                                                             @if (in_array($level_user, $level_hrd))
                                                                 @if ($d->status == 0)
                                                                     <form class="delete-form me-1"
-                                                                        action="{{ route('izinkeluar.delete', Crypt::encrypt($d->kode_izin)) }}"
+                                                                        action="{{ route('izinkeluar.delete', Crypt::encrypt($d->kode_izin_keluar)) }}"
                                                                         method="POST">
                                                                         @csrf
                                                                         @method('DELETE')
@@ -210,7 +210,7 @@
                                                             @else
                                                                 @if ($d->status == 0 && empty($d->head) && $d->status == 0)
                                                                     <form class="delete-form me-1"
-                                                                        action="{{ route('izinkeluar.delete', Crypt::encrypt($d->kode_izin)) }}"
+                                                                        action="{{ route('izinkeluar.delete', Crypt::encrypt($d->kode_izin_keluar)) }}"
                                                                         method="POST">
                                                                         @csrf
                                                                         @method('DELETE')
@@ -225,14 +225,14 @@
                                                             @if (in_array($level_user, $level_hrd))
                                                                 @if (!empty($d->head) && empty($d->hrd) && $d->status == 0)
                                                                     <a href="#" class="btnApprove me-1"
-                                                                        kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
+                                                                        kode_izin_keluar="{{ Crypt::encrypt($d->kode_izin_keluar) }}">
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
                                                                     @if (!empty($d->hrd) && empty($d->direktur))
                                                                         <form method="POST" name="deleteform"
                                                                             class="deleteform"
-                                                                            action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin)) }}">
+                                                                            action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin_keluar)) }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <a href="#" class="cancel-confirm me-1">
@@ -254,7 +254,7 @@
                                                                     @if (in_array($d->kode_jabatan, $jabatan_access) || empty($jabatan_access))
                                                                         @if (empty($d->head) && empty($d->hrd) && $d->status == 0)
                                                                             <a href="#" class="btnApprove me-1"
-                                                                                kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
+                                                                                kode_izin_keluar="{{ Crypt::encrypt($d->kode_izin_keluar) }}">
                                                                                 <i
                                                                                     class="ti ti-external-link text-success"></i>
                                                                             </a>
@@ -262,7 +262,7 @@
                                                                             @if (empty($d->hrd) && $d->status == 0)
                                                                                 <form method="POST" name="deleteform"
                                                                                     class="deleteform"
-                                                                                    action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin)) }}">
+                                                                                    action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin_keluar)) }}">
                                                                                     @csrf
                                                                                     @method('DELETE')
                                                                                     <a href="#"
@@ -279,13 +279,13 @@
                                                             @if ($level_user == 'direktur')
                                                                 @if ($d->direktur == 0 && !empty($d->hrd) && $d->forward_to_direktur == '1')
                                                                     <a href="#" class="btnApprove me-1"
-                                                                        kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
+                                                                        kode_izin_keluar="{{ Crypt::encrypt($d->kode_izin_keluar) }}">
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
                                                                     <form method="POST" name="deleteform"
                                                                         class="deleteform"
-                                                                        action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin)) }}">
+                                                                        action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin_keluar)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">

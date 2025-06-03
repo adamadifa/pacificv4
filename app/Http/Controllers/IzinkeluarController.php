@@ -28,6 +28,7 @@ class IzinkeluarController extends Controller
         $data['izinkeluar'] = $izinkeluar;
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
         return view('hrd.pengajuanizin.izinkeluar.index', $data);
     }
@@ -193,16 +194,16 @@ class IzinkeluarController extends Controller
     }
 
 
-    public function approve($kode_izin)
+    public function approve($kode_izin_keluar)
     {
-        $kode_izin = Crypt::decrypt($kode_izin);
+        $kode_izin_keluar = Crypt::decrypt($kode_izin_keluar);
 
         $user = User::find(auth()->user()->id);
-        $i_absen = new Izinabsen();
+        $i_keluar = new Izinkeluar();
 
-        $izinabsen = $i_absen->getIzinabsen(kode_izin: $kode_izin)->first();
+        $izinkeluar = $i_keluar->getIzinkeluar(kode_izin_keluar: $kode_izin_keluar)->first();
 
-        $data['izinabsen'] = $izinabsen;
+        $data['izinkeluar'] = $izinkeluar;
         $level_hrd = ['asst. manager hrd', 'spv presensi'];
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
@@ -271,13 +272,73 @@ class IzinkeluarController extends Controller
 
     public function storeapprove($kode_izin_keluar, Request $request)
     {
+        $kode_izin_keluar = Crypt::decrypt($kode_izin_keluar);
+        $user = User::findorfail(auth()->user()->id);
+        $i_keluar = new Izinkeluar();
+        $izinkeluar = $i_keluar->getIzinkeluar(kode_izin_keluar: $kode_izin_keluar)->first();
+        $role = $user->getRoleNames()->first();
+        $level_hrd = config('presensi.approval.level_hrd');
+
+
+
+        //dd($userrole);
+
+        DB::beginTransaction();
         try {
-            
+
+            if ($role != 'direktur') {
+                if (!in_array($role, $level_hrd)) {
+                    Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)->update([
+                        'head' => 1,
+                    ]);
+                } else {
+                    $forward_to_direktur = isset($request->direktur) ? 1 : 0;
+                    Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
+                        ->update([
+                            'hrd' => 1,
+                            'status' => 1,
+                            'forward_to_direktur' => $forward_to_direktur
+                        ]);
+
+                    $cekpresensi = Presensi::where('nik', $izinkeluar->nik)->where('tanggal', $izinkeluar->tanggal)->first();
+                    //dd($cekpresensi);
+                    if ($cekpresensi != null) {
+                        Presensiizinkeluar::create([
+                            'id_presensi' => $cekpresensi->id,
+                            'kode_izin_keluar' => $kode_izin_keluar,
+                        ]);
+                    } else {
+                        DB::rollBack();
+                        return Redirect::back()->with(messageError('Karyawan Belum Melakukan Presesnsi Pada Tanggal Tersebut'));
+                    }
+
+                    if (isset($request->forward_to_direktur)) {
+                        Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
+                            ->update([
+                                'forward_to_direktur' => 1
+                            ]);
+                    }
+                }
+            } else {
+                if ($izinkeluar->forward_to_direktur == 1) {
+                    Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
+                        ->update([
+                            'direktur' => 1
+                        ]);
+                } else {
+                    Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
+                        ->update([
+                            'head' => 1,
+                            'direktur' => 1
+                        ]);
+                }
+            }
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));
         } catch (\Exception $e) {
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
-
     }
 
 
@@ -289,37 +350,33 @@ class IzinkeluarController extends Controller
         $i_keluar = new Izinkeluar();
         $izinkeluar = $i_keluar->getIzinkeluar(kode_izin_keluar: $kode_izin_keluar)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izinkeluar->kode_dept, $izinkeluar->kode_cabang, $izinkeluar->kategori_jabatan, $izinkeluar->kode_jabatan);
-        $end_role = end($roles_approve);
+        $level_hrd = config('presensi.approval.level_hrd');
         DB::beginTransaction();
         try {
 
-            Disposisiizinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
-                ->where('id_pengirim', auth()->user()->id)
-                ->where('id_penerima', '!=', auth()->user()->id)
-                ->delete();
+            if ($role != 'direktur') {
 
-            Disposisiizinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
-                ->where('id_penerima', auth()->user()->id)
-                ->update([
-                    'status' => 0
-                ]);
-            if ($role == 'direktur') {
-                Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
-                    ->update([
-                        'direktur' => 0
-                    ]);
-            } else {
-                if ($role == $end_role) {
+
+                if (in_array($role, $level_hrd)) {
+
                     Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)
                         ->update([
-                            'status' => 0
+                            'status' => 0,
+                            'hrd' => 0,
+                            'forward_to_direktur' => 0
+
                         ]);
-
-                    Presensiizinkeluar::where('kode_izin_keluar', $kode_izin_keluar)->delete();
+                        Presensiizinkeluar::where('kode_izin_keluar', $kode_izin_keluar)->delete();
+                } else {
+                    Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)->update([
+                        'head' => 0
+                    ]);
                 }
+            } else {
+                Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)->update([
+                    'direktur' => 0
+                ]);
             }
-
 
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));

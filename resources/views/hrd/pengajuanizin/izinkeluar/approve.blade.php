@@ -65,7 +65,7 @@
                     </button>
                 </div>
             @else
-                @if ($izinabsen->kategori_jabatan == 'MJ')
+                @if ($izinkeluar->kategori_jabatan == 'MJ')
                     <div class="col-4">
                         <button class="btn btn-success w-100" id="btnSimpan">
                             <i class="ti ti-thumb-up me-1"></i> Setuju
