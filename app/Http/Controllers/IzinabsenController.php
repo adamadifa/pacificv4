@@ -33,7 +33,7 @@ class IzinabsenController extends Controller
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
         // dd($data['roles_approve'][$role]);
-       
+
         return view('hrd.pengajuanizin.izinabsen.index', $data);
     }
 

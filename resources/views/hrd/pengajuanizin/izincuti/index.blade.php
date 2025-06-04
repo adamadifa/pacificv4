@@ -47,7 +47,7 @@
                                     </div>
                                 @endif
 
-                                @if ($level_user != 'direktur')
+                                {{-- @if ($level_user != 'direktur')
                                     <div class="form-group mb-3">
                                         <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
                                             <option value="">Posisi Ajuan</option>
@@ -57,7 +57,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                @endif
+                                @endif --}}
 
                                 <div class="form-group mb-3">
                                     <select name="status" id="status" class="form-select">
@@ -107,23 +107,6 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($izincuti as $d)
-                                            @php
-                                                $roles_approve = cekRoleapprovepresensi(
-                                                    $d->kode_dept,
-                                                    $d->kode_cabang,
-                                                    $d->kategori_jabatan,
-                                                    $d->kode_jabatan,
-                                                );
-                                                $end_role = end($roles_approve);
-
-                                                if ($level_user != $end_role && in_array($level_user, $roles_approve)) {
-                                                    $index_role = array_search($level_user, $roles_approve);
-                                                    $next_role = $roles_approve[$index_role + 1];
-                                                } else {
-                                                    $lastindex = count($roles_approve) - 1;
-                                                    $next_role = $roles_approve[$lastindex];
-                                                }
-                                            @endphp
                                             <tr>
                                                 <td>{{ $d->kode_izin_cuti }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
@@ -153,35 +136,27 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($level_user == 'direktur')
-                                                        @if ($d->direktur === '0')
-                                                            <span class="badge bg-warning">
-                                                                {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
-                                                            </span>
-                                                        @else
-                                                            <span class="badge bg-primary">
-                                                                {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
-                                                            </span>
-                                                        @endif
-                                                    @else
-                                                        @if ($level_user == $d->posisi_ajuan)
-                                                            @if ($level_user == 'asst. manager hrd' && $d->status == '1')
-                                                                <span class="badge bg-primary">
-                                                                    {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
-                                                                </span>
-                                                            @else
-                                                                <span class="badge bg-warning">
-                                                                    {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
-                                                                </span>
-                                                            @endif
-                                                        @else
-                                                            <span class="badge bg-primary">
-                                                                {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
-                                                            </span>
-                                                        @endif
+                                                    @if (empty($d->head))
+                                                        <span class="badge bg-warning">
+                                                            HEAD
+                                                        </span>
+                                                    @elseif(!empty($d->head) && empty($d->hrd))
+                                                        <span class="badge bg-info">
+                                                            HRD
+                                                        </span>
+                                                    @elseif(!empty($d->head) && !empty($d->hrd) && $d->forward_to_direktur == '0')
+                                                        <span class="badge bg-success">
+                                                            HRD
+                                                        </span>
+                                                    @elseif(!empty($d->head) && !empty($d->hrd) && $d->forward_to_direktur == '1' && $d->direktur == '0')
+                                                        <span class="badge bg-warning">
+                                                            DIREKTUR
+                                                        </span>
+                                                    @elseif(!empty($d->head) && !empty($d->hrd) && $d->forward_to_direktur == '1' && $d->direktur == '1')
+                                                        <span class="badge bg-success">
+                                                            DIREKTUR
+                                                        </span>
                                                     @endif
-
-
                                                 </td>
                                                 <td class="text-center">
                                                     @if ($level_user == 'direktur')
@@ -205,60 +180,101 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="#" class="btnShow me-1"
-                                                            kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}"
-                                                            kode="{{ $d->kode_izin_cuti }}">
+                                                        <a href="#" class="btnShow me-1" kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}">
                                                             <i class="ti ti-file-description text-info"></i>
                                                         </a>
                                                         @can('izincuti.edit')
-                                                            @if (
-                                                                ($d->status === '0' && $d->id_pengirim == auth()->user()->id) ||
-                                                                    ($d->status === '0' && $d->id_pengirim === auth()->user()->id && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
-                                                                    (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
-                                                                <a href="#" class="btnEdit me-1"
-                                                                    kode_izin_cuti = "{{ Crypt::encrypt($d->kode_izin_cuti) }}">
-                                                                    <i class="ti ti-edit text-success"></i>
-                                                                </a>
+                                                            @if (in_array($level_user, $level_hrd))
+                                                                @if ($d->status == 0)
+                                                                    <a href="#" class="btnEdit me-1"
+                                                                        kode_izin_cuti = "{{ Crypt::encrypt($d->kode_izin_cuti) }}">
+                                                                        <i class="ti ti-edit text-success"></i>
+                                                                    </a>
+                                                                @endif
+                                                            @else
+                                                                @if ($d->status == 0 && empty($d->head) && $d->status == 0)
+                                                                    <a href="#" class="btnEdit me-1"
+                                                                        kode_izin_cuti = "{{ Crypt::encrypt($d->kode_izin_cuti) }}">
+                                                                        <i class="ti ti-edit text-success"></i>
+                                                                    </a>
+                                                                @endif
                                                             @endif
                                                         @endcan
-                                                        @can('izincuti.approve')
-                                                            @if ($level_user != 'direktur')
-                                                                @if ($level_user == $d->posisi_ajuan && $d->status === '0')
-                                                                    <a href="#" class="btnApprove me-1"
-                                                                        kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}"
-                                                                        kode="{{ $d->kode_izin_cuti }}">
-                                                                        <i class="ti ti-external-link text-success"></i>
-                                                                    </a>
-                                                                @elseif ($d->posisi_ajuan == $next_role && $d->status === '0')
-                                                                    <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('izincuti.cancel', Crypt::encrypt($d->kode_izin_cuti)) }}">
+                                                        @can('izincuti.delete')
+                                                            @if (in_array($level_user, $level_hrd))
+                                                                @if ($d->status == 0)
+                                                                    <form class="delete-form me-1"
+                                                                        action="{{ route('izincuti.delete', Crypt::encrypt($d->kode_izin_cuti)) }}"
+                                                                        method="POST">
                                                                         @csrf
                                                                         @method('DELETE')
-                                                                        <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
-                                                                        </a>
-                                                                    </form>
-                                                                @elseif ($level_user == $d->posisi_ajuan && $d->status === '1')
-                                                                    <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('izincuti.cancel', Crypt::encrypt($d->kode_izin_cuti)) }}">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
-                                                                        </a>
-                                                                    </form>
-                                                                @elseif ($level_user == 'asst. manager hrd' && $d->posisi_ajuan == 'direktur' && $d->direktur === '0')
-                                                                    <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('izincuti.cancel', Crypt::encrypt($d->kode_izin_cuti)) }}">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                        <a href="#" class="delete-confirm">
+                                                                            <i class="ti ti-trash text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @endif
                                                             @else
-                                                                @if ($d->direktur === '0')
+                                                                @if ($d->status == 0 && empty($d->head) && $d->status == 0)
+                                                                    <form class="delete-form me-1"
+                                                                        action="{{ route('izincuti.delete', Crypt::encrypt($d->kode_izin_cuti)) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <a href="#" class="delete-confirm">
+                                                                            <i class="ti ti-trash text-danger"></i>
+                                                                        </a>
+                                                                    </form>
+                                                                @endif
+                                                            @endif
+                                                        @endcan
+                                                        @can('izincuti.approve')
+                                                            @if (in_array($level_user, $level_hrd))
+                                                                @if (!empty($d->head) && empty($d->hrd) && $d->status == 0)
+                                                                    <a href="#" class="btnApprove me-1"
+                                                                        kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}">
+                                                                        <i class="ti ti-external-link text-success"></i>
+                                                                    </a>
+                                                                @else
+                                                                    @if (!empty($d->hrd) && empty($d->direktur))
+                                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                                            action="{{ route('izincuti.cancel', Crypt::encrypt($d->kode_izin_cuti)) }}">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <a href="#" class="cancel-confirm me-1">
+                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                            </a>
+                                                                        </form>
+                                                                    @endif
+                                                                @endif
+                                                            @else
+                                                                @php
+                                                                    $dept_access = $roles_can_approve[$level_user]['dept'] ?? [];
+                                                                    $jabatan_access = $roles_can_approve[$level_user]['jabatan'] ?? [];
+                                                                @endphp
+                                                                @if (in_array($d->kode_dept, $dept_access))
+                                                                    @if (in_array($d->kode_jabatan, $jabatan_access) || empty($jabatan_access))
+                                                                        @if (empty($d->head) && empty($d->hrd) && $d->status == 0)
+                                                                            <a href="#" class="btnApprove me-1"
+                                                                                kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}">
+                                                                                <i class="ti ti-external-link text-success"></i>
+                                                                            </a>
+                                                                        @else
+                                                                            @if (empty($d->hrd) && $d->status == 0)
+                                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                                    action="{{ route('izincuti.cancel', Crypt::encrypt($d->kode_izin_cuti)) }}">
+                                                                                    @csrf
+                                                                                    @method('DELETE')
+                                                                                    <a href="#" class="cancel-confirm me-1">
+                                                                                        <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                                    </a>
+                                                                                </form>
+                                                                            @endif
+                                                                        @endif
+                                                                    @endif
+                                                                @endif
+                                                            @endif
+                                                            @if ($level_user == 'direktur')
+                                                                @if ($d->direktur == 0 && !empty($d->hrd) && $d->forward_to_direktur == '1')
                                                                     <a href="#" class="btnApprove me-1"
                                                                         kode_izin_cuti="{{ Crypt::encrypt($d->kode_izin_cuti) }}">
                                                                         <i class="ti ti-external-link text-success"></i>
@@ -275,22 +291,7 @@
                                                                 @endif
                                                             @endif
                                                         @endcan
-                                                        @can('izincuti.delete')
-                                                            @if (
-                                                                ($d->status === '0' && $d->id_pengirim === auth()->user()->id) ||
-                                                                    ($d->status === '0' && $d->id_pengirim === auth()->user()->id && $d->posisi_ajuan === $next_role && $level_user != $end_role) ||
-                                                                    (in_array($level_user, ['super admin', 'asst. manager hrd']) && $d->status === '0'))
-                                                                <form class="delete-form me-1"
-                                                                    action="{{ route('izincuti.delete', Crypt::encrypt($d->kode_izin_cuti)) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            @endif
-                                                        @endcan
+
                                                     </div>
                                                 </td>
                                             </tr>

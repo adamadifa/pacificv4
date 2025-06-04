@@ -19,8 +19,10 @@ use App\Models\Disposisilembur;
 use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Disposisitargetkomisi;
 use App\Models\Izinabsen;
+use App\Models\Izincuti;
 use App\Models\Izinkeluar;
 use App\Models\Izinpulang;
+use App\Models\Izinsakit;
 use App\Models\Izinterlambat;
 use App\Models\Pencairanprogram;
 use App\Models\Pencairanprogramikatan;
@@ -100,7 +102,7 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_marketing = $notifikasi_pengajuan_marketing + $notifikasi_komisi;
 
 
-               
+
 
                 $notifikasi_penilaiankaryawan = Disposisipenilaiankaryawan::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
 
@@ -110,22 +112,25 @@ class GlobalProvider extends ServiceProvider
                 $izinkeluar = new Izinkeluar();
                 $izinpulang = new Izinpulang();
                 $izinterlambat = new Izinterlambat();
-                $notifikasi_izinabsen = $cek_approval_presensi || in_array($level_user,$level_hrd) || $level_user=='direktur' ? $izinabsen->getIzinabsen(cekPending:true)->count() : 0;
-                $notifikasi_izinkeluar = $cek_approval_presensi || in_array($level_user,$level_hrd) || $level_user=='direktur' ? $izinkeluar->getIzinkeluar(cekPending:true)->count() : 0;
-                $notifikasi_izinpulang = $cek_approval_presensi || in_array($level_user,$level_hrd) || $level_user=='direktur' ? $izinpulang->getIzinpulang(cekPending:true)->count() : 0;
-                $notifikasi_izinterlambat = $cek_approval_presensi || in_array($level_user,$level_hrd) || $level_user=='direktur' ? $izinterlambat->getIzinterlambat(cekPending:true)->count() : 0;
+                $izinsakit = new Izinsakit();
+                $izincuti = new Izincuti();
+                $notifikasi_izinabsen = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinabsen->getIzinabsen(cekPending: true)->count() : 0;
+                $notifikasi_izinkeluar = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinkeluar->getIzinkeluar(cekPending: true)->count() : 0;
+                $notifikasi_izinpulang = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinpulang->getIzinpulang(cekPending: true)->count() : 0;
+                $notifikasi_izinterlambat = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinterlambat->getIzinterlambat(cekPending: true)->count() : 0;
+                $notifikasi_izinsakit = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinsakit->getIzinsakit(cekPending: true)->count() : 0;
+                $notifikasi_izincuti = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izincuti->getIzincuti(cekPending: true)->count() : 0;
 
 
 
 
-
-                $notifikasi_izincuti = Disposisiizincuti::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
-                
-                $notifikasi_izinsakit = Disposisiizinsakit::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
               
+
+
+
                 $notifikasi_izindinas = Disposisiizindinas::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
                 $notifikasi_izinkoreksi = Disposisiizinkoreksi::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
-                
+
                 $notifikasi_pengajuan_izin = $notifikasi_izinabsen + $notifikasi_izincuti + $notifikasi_izinterlambat + $notifikasi_izinsakit + $notifikasi_izinpulang + $notifikasi_izindinas + $notifikasi_izinkoreksi + $notifikasi_izinkeluar;
 
                 $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
