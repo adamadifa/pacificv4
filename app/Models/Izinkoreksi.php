@@ -15,7 +15,7 @@ class Izinkoreksi extends Model
     protected $guarded = [];
     public $incrementing  = false;
 
-    function getIzinkoreksi($kode_izin_koreksi = null, Request $request = null,$cekPending = false)
+    function getIzinkoreksi($kode_izin_koreksi = null, Request $request = null, $cekPending = false)
     {
         //Catatan Update Permission
         //Role RSM,GM,Manager,Direktur hanya lihat dan approve
@@ -48,8 +48,8 @@ class Izinkoreksi extends Model
             'hrd_departemen.nama_dept',
             'cabang.kode_regional',
             'hrd_jadwalkerja.nama_jadwal',
-            'hrd_jamkerja.jam_masuk',
-            'hrd_jamkerja.jam_pulang',
+            'hrd_jamkerja.jam_masuk as jam_mulai',
+            'hrd_jamkerja.jam_pulang as jam_selesai',
         );
         $query->join('hrd_karyawan', 'hrd_izinkoreksi.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_izinkoreksi.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
@@ -85,10 +85,10 @@ class Izinkoreksi extends Model
                             $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                         }
                         if (!empty($request->status)) {
-                            if(!empty($request->status)){
-                                if($request->status=='pending'){
+                            if (!empty($request->status)) {
+                                if ($request->status == 'pending') {
                                     $query->where('hrd_izinkoreksi.status', '0');
-                                }else if($request->status=='disetujui'){
+                                } else if ($request->status == 'disetujui') {
                                     $query->where('hrd_izinkoreksi.status', '1');
                                 }
                             }
@@ -138,21 +138,21 @@ class Izinkoreksi extends Model
                     $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                 }
 
-                if($role=='direktur'){
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                if ($role == 'direktur') {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izinkoreksi.forward_to_direktur', '1');
                             $query->where('hrd_izinkoreksi.direktur', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izinkoreksi.forward_to_direktur', '1');
                             $query->where('hrd_izinkoreksi.direktur', '1');
                         }
                     }
-                }else{
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                } else {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izinkoreksi.status', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izinkoreksi.status', '1');
                         }
                     }
