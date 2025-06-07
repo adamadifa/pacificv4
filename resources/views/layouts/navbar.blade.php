@@ -38,6 +38,7 @@
                     'operation manager',
                     'sales marketing manager',
                     'regional sales manager',
+                    'regional operation manager',
                     'manager keuangan',
                 ]))
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">

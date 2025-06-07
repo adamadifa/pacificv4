@@ -24,8 +24,8 @@ class IzindinasController extends Controller
         $data['izindinas'] = $izindinas;
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
-        $data['roles_approve'] = config('hrd.roles_approve_presensi');
-        $data['listApprove'] = listApprovepresensi(auth()->user()->kode_dept, auth()->user()->kode_cabang, $user->getRoleNames()->first());
+        $data['roles_can_approve'] = config('presensi.approval');
+        $data['level_hrd'] = config('presensi.approval.level_hrd');
         return view('hrd.pengajuanizin.izindinas.index', $data);
     }
 
@@ -83,64 +83,6 @@ class IzindinasController extends Controller
 
             Izindinas::create($dataizindinas);
 
-
-            $roles_approve = cekRoleapprovepresensi($karyawan->kode_dept, $karyawan->kode_cabang, $karyawan->kategori, $karyawan->kode_jabatan);
-
-            if (in_array($role, $roles_approve)) {
-                $index_role = array_search($role, $roles_approve);
-            } else {
-                $index_role = 0;
-            }
-
-            if (in_array($roles_approve[$index_role], ['operation manager', 'sales marketing manager'])) {
-                $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)
-                    ->where('kode_cabang', $karyawan->kode_cabang)
-                    ->first();
-            } else {
-                if ($roles_approve[$index_role] == 'regional sales manager') {
-                    $cek_user_approve = User::role($roles_approve[$index_role])
-                        ->where('kode_regional', $karyawan->kode_regional)
-                        ->where('status', 1)
-                        ->first();
-                } else {
-                    $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
-                }
-            }
-
-            if ($cek_user_approve == null) {
-                for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
-                    // $cek_user_approve = User::role($roles_approve[$i])
-                    //     ->where('status', 1)
-                    //     ->first();
-                    if ($roles_approve[$i] == 'regional sales manager') {
-                        $cek_user_approve = User::role($roles_approve[$index_role])
-                            ->where('kode_regional', $karyawan->kode_regional)
-                            ->where('status', 1)
-                            ->first();
-                    } else {
-                        $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
-                    }
-                    if ($cek_user_approve != null) {
-                        break;
-                    }
-                }
-            }
-
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisiizindinas::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPID" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
-
-            Disposisiizindinas::create([
-                'kode_disposisi' => $kode_disposisi,
-                'kode_izin_dinas' => $kode_izin_dinas,
-                'id_pengirim' => auth()->user()->id,
-                'id_penerima' => $cek_user_approve->id,
-                'status' => 0
-            ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
@@ -208,56 +150,17 @@ class IzindinasController extends Controller
     public function approve($kode_izin_dinas)
     {
         $kode_izin_dinas = Crypt::decrypt($kode_izin_dinas);
+
         $user = User::find(auth()->user()->id);
         $i_dinas = new Izindinas();
+
         $izindinas = $i_dinas->getIzindinas(kode_izin_dinas: $kode_izin_dinas)->first();
+
         $data['izindinas'] = $izindinas;
-
+        $level_hrd = ['asst. manager hrd', 'spv presensi'];
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izindinas->kode_dept, $izindinas->kode_cabang, $izindinas->kategori_jabatan, $izindinas->kode_jabatan);
-        $end_role = end($roles_approve);
-        if ($role != $end_role && in_array($role, $roles_approve)) {
-            $cek_index = array_search($role, $roles_approve) + 1;
-        } else {
-            $cek_index = count($roles_approve) - 1;
-        }
-
-        $nextrole = $roles_approve[$cek_index];
-        if ($nextrole == "regional sales manager") {
-            $userrole = User::role($nextrole)
-                ->where('kode_regional', $izindinas->kode_regional)
-                ->where('status', 1)
-                ->first();
-        } else {
-            $userrole = User::role($nextrole)
-                ->where('status', 1)
-                ->first();
-        }
-
-        $index_start = $cek_index + 1;
-        if ($userrole == null) {
-            for ($i = $index_start; $i < count($roles_approve); $i++) {
-                if ($roles_approve[$i] == 'regional sales manager') {
-                    $userrole = User::role($roles_approve[$i])
-                        ->where('kode_regional', $izindinas->kode_regional)
-                        ->where('status', 1)
-                        ->first();
-                } else {
-                    $userrole = User::role($roles_approve[$i])
-                        ->where('status', 1)
-                        ->first();
-                }
-
-                if ($userrole != null) {
-                    $nextrole = $roles_approve[$i];
-                    break;
-                }
-            }
-        }
-
-        $data['nextrole'] = $nextrole;
-        $data['userrole'] = $userrole;
-        $data['end_role'] = $end_role;
+        $data['level_hrd'] = $level_hrd;
+        $data['role'] = $role;
         return view('hrd.pengajuanizin.izindinas.approve', $data);
     }
 
@@ -270,78 +173,43 @@ class IzindinasController extends Controller
         $i_dinas = new Izindinas();
         $izindinas = $i_dinas->getIzindinas(kode_izin_dinas: $kode_izin_dinas)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izindinas->kode_dept, $izindinas->kode_cabang, $izindinas->kategori_jabatan, $izindinas->kode_jabatan);
-        $end_role = end($roles_approve);
-
-        if ($role != $end_role && in_array($role, $roles_approve)) {
-            $cek_index = array_search($role, $roles_approve);
-            $nextrole = $roles_approve[$cek_index + 1];
-            $userrole = User::role($nextrole)
-                ->where('status', 1)
-                ->first();
-        }
-
-        //dd($userrole);
-
+        $level_hrd = config('presensi.approval.level_hrd');
         DB::beginTransaction();
         try {
-            // Upadate Disposisi Pengirim
 
-            // dd($kode_penilaian);
-            Disposisiizindinas::where('kode_izin_dinas', $kode_izin_dinas)
-                ->where('id_penerima', auth()->user()->id)
-                ->update([
-                    'status' => 1
-                ]);
+            if ($role != 'direktur') {
+                if (!in_array($role, $level_hrd)) {
+                    Izindinas::where('kode_izin_dinas', $kode_izin_dinas)->update([
+                        'head' => 1,
+                    ]);
+                } else {
+                    //dd('test');
 
-
-
-
-
-            if ($role == 'direktur') {
-                Izindinas::where('kode_izin_dinas', $kode_izin_dinas)->update([
-                    'direktur' => 1
-                ]);
-            } else {
-                //Insert Dispsosi ke Penerima
-                $tanggal_hariini = date('Y-m-d');
-                $lastdisposisi = Disposisiizindinas::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                    ->orderBy('kode_disposisi', 'desc')
-                    ->first();
-                $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-                $format = "DPID" . date('Ymd');
-                $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
-
-                if ($role == $end_role) {
+                    $forward_to_direktur = isset($request->direktur) ? 1 : 0;
                     Izindinas::where('kode_izin_dinas', $kode_izin_dinas)
                         ->update([
-                            'status' => 1
+                            'hrd' => 1,
+                            'status' => 1,
+                            'forward_to_direktur' => $forward_to_direktur
                         ]);
-                    //dd($request->direktur);
-                    if (isset($request->direktur)) {
-                        //dd('test');
-                        $userrole = User::role('direktur')->where('status', 1)->first();
-                        Disposisiizindinas::create([
-                            'kode_disposisi' => $kode_disposisi,
-                            'kode_izin_dinas' => $kode_izin_dinas,
-                            'id_pengirim' => auth()->user()->id,
-                            'id_penerima' => $userrole->id,
-                            'status' => 0,
-                        ]);
-                    }
-                } else {
 
-                    Disposisiizindinas::create([
-                        'kode_disposisi' => $kode_disposisi,
-                        'kode_izin_dinas' => $kode_izin_dinas,
-                        'id_pengirim' => auth()->user()->id,
-                        'id_penerima' => $userrole->id,
-                        'status' => 0,
-                    ]);
+                   
+                }
+            } else {
+                if ($izindinas->forward_to_direktur == 1) {
+                    Izindinas::where('kode_izin_dinas', $kode_izin_dinas)
+                        ->update([
+                            'direktur' => 1
+                        ]);
+                } else {
+                    Izindinas::where('kode_izin_dinas', $kode_izin_dinas)
+                        ->update([
+                            'head' => 1,
+                            'direktur' => 1
+                        ]);
                 }
             }
-
-
+            
 
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));
@@ -361,35 +229,34 @@ class IzindinasController extends Controller
         $i_dinas = new Izindinas();
         $izindinas = $i_dinas->getIzindinas(kode_izin_dinas: $kode_izin_dinas)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovepresensi($izindinas->kode_dept, $izindinas->kode_cabang, $izindinas->kategori_jabatan, $izindinas->kode_jabatan);
-        $end_role = end($roles_approve);
+        $level_hrd = config('presensi.approval.level_hrd');
         DB::beginTransaction();
         try {
 
-            Disposisiizindinas::where('kode_izin_dinas', $kode_izin_dinas)
-                ->where('id_pengirim', auth()->user()->id)
-                ->where('id_penerima', '!=', auth()->user()->id)
-                ->delete();
+            if ($role != 'direktur') {
 
-            Disposisiizindinas::where('kode_izin_dinas', $kode_izin_dinas)
-                ->where('id_penerima', auth()->user()->id)
-                ->update([
-                    'status' => 0
-                ]);
-            if ($role == 'direktur') {
-                Izindinas::where('kode_izin_dinas', $kode_izin_dinas)
-                    ->update([
-                        'direktur' => 0
-                    ]);
-            } else {
-                if ($role == $end_role) {
+
+                if (in_array($role, $level_hrd)) {
+
                     Izindinas::where('kode_izin_dinas', $kode_izin_dinas)
                         ->update([
-                            'status' => 0
-                        ]);
-                }
-            }
+                            'status' => 0,
+                            'hrd' => 0,
+                            'forward_to_direktur' => 0
 
+                        ]);
+                } else {
+                    Izindinas::where('kode_izin_dinas', $kode_izin_dinas)->update([
+                        'head' => 0
+                    ]);
+                }
+            } else {
+
+
+                Izindinas::where('kode_izin_dinas', $kode_izin_dinas)->update([
+                    'direktur' => 0
+                ]);
+            }
 
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
