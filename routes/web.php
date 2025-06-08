@@ -127,6 +127,7 @@ use App\Http\Controllers\RejectgudangjadiController;
 use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\RepackgudangcabangController;
 use App\Http\Controllers\RepackgudangjadiController;
+use App\Http\Controllers\ResignController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaldoawalbarangproduksiController;
@@ -1637,6 +1638,17 @@ Route::middleware('auth')->group(function () {
         Route::put('/jasamasakerja/{kode_jmk}/update', 'update')->name('jasamasakerja.update')->can('jasamasakerja.update');
         Route::delete('/jasamasakerja/{kode_jmk}/delete', 'destroy')->name('jasamasakerja.delete')->can('jasamasakerja.delete');
     });
+
+    Route::controller(ResignController::class)->group(function () {
+        Route::get('/resign', 'index')->name('resign.index')->can('resign.index');
+        Route::get('/resign/create', 'create')->name('resign.create')->can('resign.create');
+        Route::post('/resign/store', 'store')->name('resign.store')->can('resign.store');
+        Route::get('/resign/{kode_jmk}/show', 'show')->name('resign.show')->can('resign.show');
+        Route::get('/resign/{kode_jmk}/edit', 'edit')->name('resign.edit')->can('resign.edit');
+        Route::put('/resign/{kode_jmk}/update', 'update')->name('resign.update')->can('resign.update');
+        Route::delete('/resign/{kode_jmk}/delete', 'destroy')->name('resign.delete')->can('resign.delete');
+    });
+    
 
 
     Route::controller(KesepakatanbersamaController::class)->group(function () {

@@ -18,6 +18,7 @@
             'presensi.presensikaryawan',
             'slipgaji.index',
             'penyupah.index',
+            'resign.index'
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -43,6 +44,7 @@
             'presensikaryawan',
             'slipgaji',
             'penyupah',
+            'resign'
         ])
             ? 'open'
             : '' }}">
@@ -86,6 +88,14 @@
                 <li class="menu-item {{ request()->is(['jasamasakerja']) ? 'active' : '' }}">
                     <a href="{{ route('jasamasakerja.index') }}" class="menu-link">
                         <div>Jasa Masa Kerja</div>
+                    </a>
+                </li>
+            @endif
+
+            @if (auth()->user()->hasAnyPermission(['resign.index']))
+                <li class="menu-item {{ request()->is(['resign', 'resign/*']) ? 'active' : '' }}">
+                    <a href="{{ route('resign.index') }}" class="menu-link">
+                        <div>Resign</div>
                     </a>
                 </li>
             @endif
