@@ -92,9 +92,7 @@ class TargetkomisiController extends Controller
             $query->where('cabang.kode_regional', auth()->user()->kode_regional);
         }
         if (!empty($request->bulan)) {
-            $query->where('buland', $request->bulan);
-        } else {
-            $query->where('bulan', date('m'));
+            $query->where('bulan', $request->bulan);
         }
         if (!empty($request->tahun)) {
             $query->where('tahun', $request->tahun);
