@@ -47,7 +47,7 @@
                                     </div>
                                 @endif
 
-                                
+
                                 <div class="form-group mb-3">
                                     <select name="status" id="status" class="form-select">
                                         <option value="">Status</option>
@@ -96,7 +96,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($izinkeluar as $d)
-                                            
+
                                             <tr>
                                                 <td>{{ $d->kode_izin_keluar }}</td>
                                                 <td>{{ formatIndo($d->tanggal) }}</td>
@@ -173,8 +173,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="#" class="btnShow me-1"
-                                                            kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
+                                                        <a href="#" class="btnShow me-1" kode_izin="{{ Crypt::encrypt($d->kode_izin) }}">
                                                             <i class="ti ti-file-description text-info"></i>
                                                         </a>
                                                         @can('izinkeluar.edit')
@@ -230,45 +229,41 @@
                                                                     </a>
                                                                 @else
                                                                     @if (!empty($d->hrd) && empty($d->direktur))
-                                                                        <form method="POST" name="deleteform"
-                                                                            class="deleteform"
+                                                                        <form method="POST" name="deleteform" class="deleteform"
                                                                             action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin_keluar)) }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <a href="#" class="cancel-confirm me-1">
-                                                                                <i
-                                                                                    class="ti ti-square-rounded-x text-danger"></i>
+                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
                                                                             </a>
                                                                         </form>
                                                                     @endif
                                                                 @endif
                                                             @else
                                                                 @php
-                                                                    $dept_access =
-                                                                        $roles_can_approve[$level_user]['dept'] ?? [];
-                                                                    $jabatan_access =
-                                                                        $roles_can_approve[$level_user]['jabatan'] ??
-                                                                        [];
+                                                                    $dept_access = $roles_can_approve[$level_user]['dept'] ?? [];
+                                                                    $dept_acess_2 = $roles_can_approve[$level_user]['dept2'] ?? [];
+                                                                    $jabatan_access = $roles_can_approve[$level_user]['jabatan'] ?? [];
+                                                                    $jabatan_access_2 = $roles_can_approve[$level_user]['jabatan2'] ?? [];
                                                                 @endphp
-                                                                @if (in_array($d->kode_dept, $dept_access))
-                                                                    @if (in_array($d->kode_jabatan, $jabatan_access) || empty($jabatan_access))
+                                                                @if (in_array($d->kode_dept, $dept_access) || in_array($d->kode_dept, $dept_acess_2) || empty($dept_access) || empty($dept_acess_2))
+                                                                    @if (in_array($d->kode_jabatan, $jabatan_access) ||
+                                                                            empty($jabatan_access) ||
+                                                                            in_array($d->kode_jabatan, $jabatan_access_2) ||
+                                                                            empty($jabatan_access_2))
                                                                         @if (empty($d->head) && empty($d->hrd) && $d->status == 0)
                                                                             <a href="#" class="btnApprove me-1"
                                                                                 kode_izin_keluar="{{ Crypt::encrypt($d->kode_izin_keluar) }}">
-                                                                                <i
-                                                                                    class="ti ti-external-link text-success"></i>
+                                                                                <i class="ti ti-external-link text-success"></i>
                                                                             </a>
                                                                         @else
                                                                             @if (empty($d->hrd) && $d->status == 0)
-                                                                                <form method="POST" name="deleteform"
-                                                                                    class="deleteform"
+                                                                                <form method="POST" name="deleteform" class="deleteform"
                                                                                     action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin_keluar)) }}">
                                                                                     @csrf
                                                                                     @method('DELETE')
-                                                                                    <a href="#"
-                                                                                        class="cancel-confirm me-1">
-                                                                                        <i
-                                                                                            class="ti ti-square-rounded-x text-danger"></i>
+                                                                                    <a href="#" class="cancel-confirm me-1">
+                                                                                        <i class="ti ti-square-rounded-x text-danger"></i>
                                                                                     </a>
                                                                                 </form>
                                                                             @endif
@@ -283,14 +278,12 @@
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
-                                                                    <form method="POST" name="deleteform"
-                                                                        class="deleteform"
+                                                                    <form method="POST" name="deleteform" class="deleteform"
                                                                         action="{{ route('izinkeluar.cancel', Crypt::encrypt($d->kode_izin_keluar)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
-                                                                            <i
-                                                                                class="ti ti-square-rounded-x text-danger"></i>
+                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @endif

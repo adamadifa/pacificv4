@@ -46,7 +46,7 @@
                                         </div>
                                     </div>
                                 @endif
-{{-- 
+                                {{--
                                 @if ($level_user != 'direktur')
                                     <div class="form-group mb-3">
                                         <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
@@ -185,7 +185,8 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="#" class="btnShow me-1" kode_izin_dinas="{{ Crypt::encrypt($d->kode_izin_dinas) }}">
+                                                        <a href="#" class="btnShow me-1"
+                                                            kode_izin_dinas="{{ Crypt::encrypt($d->kode_izin_dinas) }}">
                                                             <i class="ti ti-file-description text-info"></i>
                                                         </a>
                                                         @can('izindinas.edit')
@@ -254,10 +255,15 @@
                                                             @else
                                                                 @php
                                                                     $dept_access = $roles_can_approve[$level_user]['dept'] ?? [];
+                                                                    $dept_acess_2 = $roles_can_approve[$level_user]['dept2'] ?? [];
                                                                     $jabatan_access = $roles_can_approve[$level_user]['jabatan'] ?? [];
+                                                                    $jabatan_access_2 = $roles_can_approve[$level_user]['jabatan2'] ?? [];
                                                                 @endphp
-                                                                @if (in_array($d->kode_dept, $dept_access))
-                                                                    @if (in_array($d->kode_jabatan, $jabatan_access) || empty($jabatan_access))
+                                                                @if (in_array($d->kode_dept, $dept_access) || in_array($d->kode_dept, $dept_acess_2) || empty($dept_access) || empty($dept_acess_2))
+                                                                    @if (in_array($d->kode_jabatan, $jabatan_access) ||
+                                                                            empty($jabatan_access) ||
+                                                                            in_array($d->kode_jabatan, $jabatan_access_2) ||
+                                                                            empty($jabatan_access_2))
                                                                         @if (empty($d->head) && empty($d->hrd) && $d->status == 0)
                                                                             <a href="#" class="btnApprove me-1"
                                                                                 kode_izin_dinas="{{ Crypt::encrypt($d->kode_izin_dinas) }}">

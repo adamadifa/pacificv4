@@ -166,11 +166,11 @@
                                                             kode_izin_terlambat="{{ Crypt::encrypt($d->kode_izin_terlambat) }}">
                                                             <i class="ti ti-file-description text-info"></i>
                                                         </a>
-                                                            @can('izinterlambat.edit')
+                                                        @can('izinterlambat.edit')
                                                             @if (in_array($level_user, $level_hrd))
                                                                 @if ($d->status == 0)
                                                                     <a href="#" class="btnEdit me-1"
-                                                                    kode_izin_terlambat="{{ Crypt::encrypt($d->kode_izin_terlambat) }}">
+                                                                        kode_izin_terlambat="{{ Crypt::encrypt($d->kode_izin_terlambat) }}">
                                                                         <i class="ti ti-edit text-success"></i>
                                                                     </a>
                                                                 @endif
@@ -219,45 +219,41 @@
                                                                     </a>
                                                                 @else
                                                                     @if (!empty($d->hrd) && empty($d->direktur))
-                                                                        <form method="POST" name="deleteform"
-                                                                            class="deleteform"
+                                                                        <form method="POST" name="deleteform" class="deleteform"
                                                                             action="{{ route('izinterlambat.cancel', Crypt::encrypt($d->kode_izin_terlambat)) }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <a href="#" class="cancel-confirm me-1">
-                                                                                <i
-                                                                                    class="ti ti-square-rounded-x text-danger"></i>
+                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
                                                                             </a>
                                                                         </form>
                                                                     @endif
                                                                 @endif
                                                             @else
                                                                 @php
-                                                                    $dept_access =
-                                                                        $roles_can_approve[$level_user]['dept'] ?? [];
-                                                                    $jabatan_access =
-                                                                        $roles_can_approve[$level_user]['jabatan'] ??
-                                                                        [];
+                                                                    $dept_access = $roles_can_approve[$level_user]['dept'] ?? [];
+                                                                    $dept_acess_2 = $roles_can_approve[$level_user]['dept2'] ?? [];
+                                                                    $jabatan_access = $roles_can_approve[$level_user]['jabatan'] ?? [];
+                                                                    $jabatan_access_2 = $roles_can_approve[$level_user]['jabatan2'] ?? [];
                                                                 @endphp
-                                                                @if (in_array($d->kode_dept, $dept_access))
-                                                                    @if (in_array($d->kode_jabatan, $jabatan_access) || empty($jabatan_access))
+                                                                @if (in_array($d->kode_dept, $dept_access) || in_array($d->kode_dept, $dept_acess_2) || empty($dept_access) || empty($dept_acess_2))
+                                                                    @if (in_array($d->kode_jabatan, $jabatan_access) ||
+                                                                            empty($jabatan_access) ||
+                                                                            in_array($d->kode_jabatan, $jabatan_access_2) ||
+                                                                            empty($jabatan_access_2))
                                                                         @if (empty($d->head) && empty($d->hrd) && $d->status == 0)
                                                                             <a href="#" class="btnApprove me-1"
                                                                                 kode_izin_terlambat="{{ Crypt::encrypt($d->kode_izin_terlambat) }}">
-                                                                                <i
-                                                                                    class="ti ti-external-link text-success"></i>
+                                                                                <i class="ti ti-external-link text-success"></i>
                                                                             </a>
                                                                         @else
                                                                             @if (empty($d->hrd) && $d->status == 0)
-                                                                                <form method="POST" name="deleteform"
-                                                                                    class="deleteform"
+                                                                                <form method="POST" name="deleteform" class="deleteform"
                                                                                     action="{{ route('izinterlambat.cancel', Crypt::encrypt($d->kode_izin_terlambat)) }}">
                                                                                     @csrf
                                                                                     @method('DELETE')
-                                                                                    <a href="#"
-                                                                                        class="cancel-confirm me-1">
-                                                                                        <i
-                                                                                            class="ti ti-square-rounded-x text-danger"></i>
+                                                                                    <a href="#" class="cancel-confirm me-1">
+                                                                                        <i class="ti ti-square-rounded-x text-danger"></i>
                                                                                     </a>
                                                                                 </form>
                                                                             @endif
@@ -272,14 +268,12 @@
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
-                                                                    <form method="POST" name="deleteform"
-                                                                        class="deleteform"
+                                                                    <form method="POST" name="deleteform" class="deleteform"
                                                                         action="{{ route('izinterlambat.cancel', Crypt::encrypt($d->kode_izin_terlambat)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
-                                                                            <i
-                                                                                class="ti ti-square-rounded-x text-danger"></i>
+                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @endif
