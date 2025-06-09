@@ -59,6 +59,9 @@ class Izinpulang extends Model
         //dd(!in_array($role, $role_access_full));
         //Jika Admin Presensi
         //dd($cekPending);
+        if (!empty($kode_izin_pulang)) {
+            $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
+        }
         if (!$cekPending) {
             if (!in_array($role, $role_access_full)) {
                 if ($user->can('izinpulang.create')) {
@@ -157,9 +160,7 @@ class Izinpulang extends Model
                 }
             }
 
-            if (!empty($kode_izin_pulang)) {
-                $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
-            }
+            
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
                 $query->where('hrd_izinpulang.head', '0');

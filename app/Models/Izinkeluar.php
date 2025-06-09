@@ -60,6 +60,9 @@ class Izinkeluar extends Model
         //dd(!in_array($role, $role_access_full));
         //Jika Admin Presensi
         //dd($cekPending);
+        if (!empty($kode_izin_keluar)) {
+            $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
+        }
         if (!$cekPending) {
             if (!in_array($role, $role_access_full)) {
                 if ($user->can('izinkeluar.create')) {
@@ -158,9 +161,7 @@ class Izinkeluar extends Model
                 }
             }
 
-            if (!empty($kode_izin_keluar)) {
-                $query->where('hrd_izinkeluar.kode_izin_keluar', $kode_izin_keluar);
-            }
+            
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
                 $query->where('hrd_izinkeluar.head', '0');

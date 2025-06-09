@@ -56,6 +56,9 @@ class Izincuti extends Model
         //dd(!in_array($role, $role_access_full));
         //Jika Admin Presensi
         //dd($cekPending);
+        if (!empty($kode_izin_cuti)) {
+            $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
+        }
         if (!$cekPending) {
             if (!in_array($role, $role_access_full)) {
                 if ($user->can('izinabsen.create')) {
@@ -154,9 +157,7 @@ class Izincuti extends Model
                 }
             }
 
-            if (!empty($kode_izin_cuti)) {
-                $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
-            }
+           
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
                 $query->where('hrd_izincuti.head', '0');
