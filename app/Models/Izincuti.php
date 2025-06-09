@@ -14,7 +14,7 @@ class Izincuti extends Model
     protected $guarded = [];
     public $incrementing  = false;
 
-    function getIzincuti($kode_izin_cuti = null, Request $request = null,$cekPending=false)
+    function getIzincuti($kode_izin_cuti = null, Request $request = null, $cekPending = false)
     {
         //Catatan Update Permission
         //Role RSM,GM,Manager,Direktur hanya lihat dan approve
@@ -80,10 +80,10 @@ class Izincuti extends Model
                             $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                         }
                         if (!empty($request->status)) {
-                            if(!empty($request->status)){
-                                if($request->status=='pending'){
+                            if (!empty($request->status)) {
+                                if ($request->status == 'pending') {
                                     $query->where('hrd_izincuti.status', '0');
-                                }else if($request->status=='disetujui'){
+                                } else if ($request->status == 'disetujui') {
                                     $query->where('hrd_izincuti.status', '1');
                                 }
                             }
@@ -133,29 +133,29 @@ class Izincuti extends Model
                     $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                 }
 
-                if($role=='direktur'){
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                if ($role == 'direktur') {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izincuti.forward_to_direktur', '1');
                             $query->where('hrd_izincuti.direktur', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izincuti.forward_to_direktur', '1');
                             $query->where('hrd_izincuti.direktur', '1');
                         }
                     }
-                }else{
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                } else {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izincuti.status', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izincuti.status', '1');
                         }
                     }
                 }
             }
 
-            if (!empty($kode_izin)) {
-                $query->where('hrd_izincuti.kode_izin', $kode_izin);
+            if (!empty($kode_izin_)) {
+                $query->where('hrd_izincuti.kode_izin_cuti', $kode_izin_cuti);
             }
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
