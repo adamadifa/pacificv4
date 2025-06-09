@@ -154,8 +154,8 @@ class Izinsakit extends Model
                 }
             }
 
-            if (!empty($kode_izin)) {
-                $query->where('hrd_izinsakit.kode_izin', $kode_izin);
+            if (!empty($kode_izin_sakit)) {
+                $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
             }
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
