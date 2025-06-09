@@ -61,6 +61,9 @@ class Izinkoreksi extends Model
         //dd(!in_array($role, $role_access_full));
         //Jika Admin Presensi
         //dd($cekPending);
+        if (!empty($kode_izin_koreksi)) {
+            $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
+        }
         if (!$cekPending) {
             if (!in_array($role, $role_access_full)) {
                 if ($user->can('izinabsen.create')) {
@@ -159,9 +162,7 @@ class Izinkoreksi extends Model
                 }
             }
 
-            if (!empty($kode_izin_koreksi)) {
-                $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
-            }
+            
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
                 $query->where('hrd_izinkoreksi.head', '0');
