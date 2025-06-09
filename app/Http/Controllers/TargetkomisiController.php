@@ -93,6 +93,8 @@ class TargetkomisiController extends Controller
         }
         if (!empty($request->bulan)) {
             $query->where('bulan', $request->bulan);
+        } else {
+            $query->where('bulan', date('m'));
         }
         if (!empty($request->tahun)) {
             $query->where('tahun', $request->tahun);
