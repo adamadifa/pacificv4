@@ -159,8 +159,8 @@ class Izinkoreksi extends Model
                 }
             }
 
-            if (!empty($kode_izin)) {
-                $query->where('hrd_izinkoreksi.kode_izin', $kode_izin);
+            if (!empty($kode_izin_koreksi)) {
+                $query->where('hrd_izinkoreksi.kode_izin_koreksi', $kode_izin_koreksi);
             }
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
