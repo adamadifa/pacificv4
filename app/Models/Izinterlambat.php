@@ -14,7 +14,7 @@ class Izinterlambat extends Model
     protected $guarded = [];
     public $incrementing  = false;
 
-    function getIzinterlambat($kode_izin_terlambat = null, Request $request = null, $cekPending=false)
+    function getIzinterlambat($kode_izin_terlambat = null, Request $request = null, $cekPending = false)
     {
         //Catatan Update Permission
         //Role RSM,GM,Manager,Direktur hanya lihat dan approve
@@ -80,10 +80,10 @@ class Izinterlambat extends Model
                             $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                         }
                         if (!empty($request->status)) {
-                            if(!empty($request->status)){
-                                if($request->status=='pending'){
+                            if (!empty($request->status)) {
+                                if ($request->status == 'pending') {
                                     $query->where('hrd_izinterlambat.status', '0');
-                                }else if($request->status=='disetujui'){
+                                } else if ($request->status == 'disetujui') {
                                     $query->where('hrd_izinterlambat.status', '1');
                                 }
                             }
@@ -133,29 +133,29 @@ class Izinterlambat extends Model
                     $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                 }
 
-                if($role=='direktur'){
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                if ($role == 'direktur') {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izinterlambat.forward_to_direktur', '1');
                             $query->where('hrd_izinterlambat.direktur', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izinterlambat.forward_to_direktur', '1');
                             $query->where('hrd_izinterlambat.direktur', '1');
                         }
                     }
-                }else{
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                } else {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izinterlambat.status', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izinterlambat.status', '1');
                         }
                     }
                 }
             }
 
-            if (!empty($kode_izin)) {
-                $query->where('hrd_izinterlambat.kode_izin', $kode_izin);
+            if (!empty($kode_izin_terlambat)) {
+                $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
             }
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {

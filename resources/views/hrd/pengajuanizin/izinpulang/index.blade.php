@@ -219,45 +219,36 @@
                                                                     </a>
                                                                 @else
                                                                     @if (!empty($d->hrd) && empty($d->direktur))
-                                                                        <form method="POST" name="deleteform"
-                                                                            class="deleteform"
+                                                                        <form method="POST" name="deleteform" class="deleteform"
                                                                             action="{{ route('izinpulang.cancel', Crypt::encrypt($d->kode_izin_pulang)) }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <a href="#" class="cancel-confirm me-1">
-                                                                                <i
-                                                                                    class="ti ti-square-rounded-x text-danger"></i>
+                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
                                                                             </a>
                                                                         </form>
                                                                     @endif
                                                                 @endif
                                                             @else
                                                                 @php
-                                                                    $dept_access =
-                                                                        $roles_can_approve[$level_user]['dept'] ?? [];
-                                                                    $jabatan_access =
-                                                                        $roles_can_approve[$level_user]['jabatan'] ??
-                                                                        [];
+                                                                    $dept_access = $roles_can_approve[$level_user]['dept'] ?? [];
+                                                                    $jabatan_access = $roles_can_approve[$level_user]['jabatan'] ?? [];
                                                                 @endphp
                                                                 @if (in_array($d->kode_dept, $dept_access))
                                                                     @if (in_array($d->kode_jabatan, $jabatan_access) || empty($jabatan_access))
                                                                         @if (empty($d->head) && empty($d->hrd) && $d->status == 0)
                                                                             <a href="#" class="btnApprove me-1"
                                                                                 kode_izin_pulang="{{ Crypt::encrypt($d->kode_izin_pulang) }}">
-                                                                                <i
-                                                                                    class="ti ti-external-link text-success"></i>
+                                                                                <i class="ti ti-external-link text-success"></i>
                                                                             </a>
                                                                         @else
                                                                             @if (empty($d->hrd) && $d->status == 0)
-                                                                                <form method="POST" name="deleteform"
-                                                                                    class="deleteform"
+                                                                                <form method="POST" name="deleteform" class="deleteform"
                                                                                     action="{{ route('izinpulang.cancel', Crypt::encrypt($d->kode_izin_pulang)) }}">
                                                                                     @csrf
                                                                                     @method('DELETE')
-                                                                                    <a href="#"
-                                                                                        class="cancel-confirm me-1">
-                                                                                        <i
-                                                                                            class="ti ti-square-rounded-x text-danger"></i>
+                                                                                    <a href="#" class="cancel-confirm me-1">
+                                                                                        <i class="ti ti-square-rounded-x text-danger"></i>
                                                                                     </a>
                                                                                 </form>
                                                                             @endif
@@ -272,14 +263,12 @@
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
-                                                                    <form method="POST" name="deleteform"
-                                                                        class="deleteform"
+                                                                    <form method="POST" name="deleteform" class="deleteform"
                                                                         action="{{ route('izinpulang.cancel', Crypt::encrypt($d->kode_izin_pulang)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
-                                                                            <i
-                                                                                class="ti ti-square-rounded-x text-danger"></i>
+                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @endif

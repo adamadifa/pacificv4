@@ -17,8 +17,8 @@ class Izinpulang extends Model
 
     function getIzinpulang($kode_izin_pulang = null, Request $request = null, $cekPending = false)
     {
-        
-        
+
+
         //Catatan Update Permission
         //Role RSM,GM,Manager,Direktur hanya lihat dan approve
         $user = User::findorfail(auth()->user()->id);
@@ -83,10 +83,10 @@ class Izinpulang extends Model
                             $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                         }
                         if (!empty($request->status)) {
-                            if(!empty($request->status)){
-                                if($request->status=='pending'){
+                            if (!empty($request->status)) {
+                                if ($request->status == 'pending') {
                                     $query->where('hrd_izinpulang.status', '0');
-                                }else if($request->status=='disetujui'){
+                                } else if ($request->status == 'disetujui') {
                                     $query->where('hrd_izinpulang.status', '1');
                                 }
                             }
@@ -136,29 +136,29 @@ class Izinpulang extends Model
                     $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                 }
 
-                if($role=='direktur'){
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                if ($role == 'direktur') {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izinpulang.forward_to_direktur', '1');
                             $query->where('hrd_izinpulang.direktur', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izinpulang.forward_to_direktur', '1');
                             $query->where('hrd_izinpulang.direktur', '1');
                         }
                     }
-                }else{
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                } else {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izinpulang.status', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izinpulang.status', '1');
                         }
                     }
                 }
             }
 
-            if (!empty($kode_izin)) {
-                $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin);
+            if (!empty($kode_izin_pulang)) {
+                $query->where('hrd_izinpulang.kode_izin_pulang', $kode_izin_pulang);
             }
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
@@ -202,9 +202,9 @@ class Izinpulang extends Model
         $query->orderBy('hrd_izinpulang.tanggal', 'desc');
         $query->orderBy('hrd_izinpulang.created_at', 'desc');
         return $query;
-        
-        
-        
+
+
+
         // $user = User::findorfail(auth()->user()->id);
         // $role = $user->getRoleNames()->first();
         // $query = Izinpulang::query();
