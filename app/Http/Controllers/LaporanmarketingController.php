@@ -5314,6 +5314,11 @@ class LaporanmarketingController extends Controller
         $query->groupBy('marketing_penjualan.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
         $data['rekappenjualan'] = $query->get();
         $data['produk'] = $produk;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Rekap Retur $request->dari-$request->sampai.xls");
+        }
         return view('marketing.laporan.rekappenjualan_retur_cetak', $data);
     }
 
