@@ -74,7 +74,8 @@ class PencairanprogramikatanController extends Controller
         }
 
         $query->orderBy('marketing_pencairan_ikatan.status', 'asc');
-        $query->orderBy('marketing_pencairan_ikatan.tanggal');
+        $query->orderBy('marketing_pencairan_ikatan.bulan', 'desc');
+        $query->orderBy('marketing_pencairan_ikatan.tahun', 'desc');
         $pencairanprogramikatan = $query->paginate(15);
         $pencairanprogramikatan->appends(request()->all());
         $data['pencairanprogramikatan'] = $pencairanprogramikatan;
