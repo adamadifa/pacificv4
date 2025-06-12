@@ -272,7 +272,7 @@ class IzincutiController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izincuti.approve', $data);
+        return view('hrd.pengajuanizin.izincuti.show', $data);
     }
 
     public function storeapprove($kode_izin_cuti, Request $request)
