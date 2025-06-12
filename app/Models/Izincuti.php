@@ -45,14 +45,15 @@ class Izincuti extends Model
             'hrd_jabatan.kategori as kategori_jabatan',
             'cabang.nama_cabang',
             'hrd_departemen.nama_dept',
-            'cabang.kode_regional'
+            'cabang.kode_regional',
+            'hrd_jeniscuti.nama_cuti'
         );
         $query->join('hrd_karyawan', 'hrd_izincuti.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_izincuti.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('hrd_departemen', 'hrd_izincuti.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->join('cabang', 'hrd_izincuti.kode_cabang', '=', 'cabang.kode_cabang');
-
-
+        $query->join('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti');
+        
         //dd(!in_array($role, $role_access_full));
         //Jika Admin Presensi
         //dd($cekPending);
