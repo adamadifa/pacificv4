@@ -110,6 +110,20 @@ class PencairanprogramController extends Controller
                 $query->where('status', 2);
             }
         }
+
+        if ($user->hasRole('direktur')) {
+            $query->orderBy('marketing_program_pencairan.status', 'asc');
+            $query->orderBy('marketing_program_pencairan.bulan', 'desc');
+            $query->orderBy('marketing_program_pencairan.tahun', 'desc');
+        }else if($user->hasRole('staff keuangan')){
+            $query->orderBy('marketing_program_pencairan.keuangan', 'asc');
+            $query->orderBy('marketing_program_pencairan.bulan', 'desc');
+            $query->orderBy('marketing_program_pencairan.tahun', 'desc');
+        } else {
+            $query->orderBy('marketing_program_pencairan.status', 'asc');
+            $query->orderBy('marketing_program_pencairan.bulan', 'desc');
+            $query->orderBy('marketing_program_pencairan.tahun', 'desc');
+        }
         $pencairanprogram = $query->paginate(15);
         $pencairanprogram->appends(request()->all());
 
