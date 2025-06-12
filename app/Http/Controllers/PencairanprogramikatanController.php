@@ -73,9 +73,19 @@ class PencairanprogramikatanController extends Controller
             $query->where('marketing_pencairan_ikatan.status', '!=', 2);
         }
 
-        $query->orderBy('marketing_pencairan_ikatan.status', 'asc');
-        $query->orderBy('marketing_pencairan_ikatan.bulan', 'desc');
-        $query->orderBy('marketing_pencairan_ikatan.tahun', 'desc');
+        if ($user->hasRole('direktur')) {
+            $query->orderBy('marketing_pencairan_ikatan.status', 'asc');
+            $query->orderBy('marketing_pencairan_ikatan.bulan', 'desc');
+            $query->orderBy('marketing_pencairan_ikatan.tahun', 'desc');
+        }else if($user->hasRole('staff keuangan')){
+            $query->orderBy('marketing_pencairan_ikatan.keuangan', 'asc');
+            $query->orderBy('marketing_pencairan_ikatan.bulan', 'desc');
+            $query->orderBy('marketing_pencairan_ikatan.tahun', 'desc');
+        } else {
+            $query->orderBy('marketing_pencairan_ikatan.status', 'asc');
+            $query->orderBy('marketing_pencairan_ikatan.bulan', 'desc');
+            $query->orderBy('marketing_pencairan_ikatan.tahun', 'desc');
+        }
         $pencairanprogramikatan = $query->paginate(15);
         $pencairanprogramikatan->appends(request()->all());
         $data['pencairanprogramikatan'] = $pencairanprogramikatan;
