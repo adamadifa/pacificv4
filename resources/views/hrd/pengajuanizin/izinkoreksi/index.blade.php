@@ -238,7 +238,7 @@
                                                                     @endif
                                                                 @endif
                                                             @else
-                                                            {{ $d->kode_jabatan }}
+                                                            {{-- {{ $d->kode_jabatan }} --}}
                                                                 @php
                                                                     $dept_access = $roles_can_approve[$level_user]['dept'] ?? [];
                                                                     $dept_acess_2 = $roles_can_approve[$level_user]['dept2'] ?? [];
