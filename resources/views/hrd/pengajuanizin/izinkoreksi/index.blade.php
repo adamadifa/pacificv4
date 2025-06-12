@@ -245,6 +245,7 @@
                                                                     $jabatan_access = $roles_can_approve[$level_user]['jabatan'] ?? [];
                                                                     $jabatan_access_2 = $roles_can_approve[$level_user]['jabatan2'] ?? [];
                                                                     var_dump($jabatan_access);
+                                                                    var_dump(in_array($d->kode_dept, $dept_access) || in_array($d->kode_dept, $dept_acess_2) || empty($dept_access) || empty($dept_acess_2));
                                                                 @endphp
                                                                 @if (in_array($d->kode_dept, $dept_access) || in_array($d->kode_dept, $dept_acess_2) || empty($dept_access) || empty($dept_acess_2))
                                                                     @if (in_array($d->kode_jabatan, $jabatan_access) ||
