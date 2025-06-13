@@ -556,7 +556,8 @@ function pihakpertamacabang($cabang, $perusahaan)
         'BKI' => 'Sumarido Tanjung',
         'PWK' => 'M. Ridwan Nugraha',
         'TSM' => 'Aceng Saepul Anwar',
-        'BTN' => 'Muhammad Rizky'
+        'BTN' => 'Muhammad Rizky',
+        'CRB' => 'Ari Ricardo'
     ];
 
     if ($perusahaan == "MP") {
