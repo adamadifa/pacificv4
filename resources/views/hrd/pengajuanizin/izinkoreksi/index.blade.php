@@ -246,7 +246,7 @@
                                                             @endphp
                                                             @if (in_array($level_user, $level_hrd))
                                                             
-                                                                @if (!empty($d->head) && empty($d->hrd) && $d->status == 0 || $d->kode_dept=='HRD' || $d->kode_jabatan=='J02')
+                                                                @if (!empty($d->head) && empty($d->hrd) && $d->status == 0 || empty($d->head) && $d->kode_dept=='HRD' || empty($d->head) && $d->kode_jabatan=='J02')
                                                                     <a href="#" class="btnApprove me-1"
                                                                         kode_izin_koreksi="{{ Crypt::encrypt($d->kode_izin_koreksi) }}">
                                                                         <i class="ti ti-external-link text-success"></i>

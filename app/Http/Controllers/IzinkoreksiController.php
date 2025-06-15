@@ -288,6 +288,7 @@ class IzinkoreksiController extends Controller
                     $forward_to_direktur = isset($request->direktur) ? 1 : 0;
                     Izinkoreksi::where('kode_izin_koreksi', $kode_izin_koreksi)
                         ->update([
+                            'head' => 1,
                             'hrd' => 1,
                             'status' => 1,
                             'forward_to_direktur' => $forward_to_direktur
