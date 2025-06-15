@@ -62,7 +62,7 @@ class IzindinasController extends Controller
             $kode_izin_dinas  = buatkode($last_kode_izin_dinas, "ID"  . date('ym', strtotime($request->dari)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
-
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan='J02' ? '1' : '0';
 
             $dataizindinas = [
                 'kode_izin_dinas' => $kode_izin_dinas,
@@ -75,6 +75,7 @@ class IzindinasController extends Controller
                 'sampai' => $request->sampai,
                 'keterangan' => $request->keterangan,
                 'kode_cabang_tujuan' => $request->kode_cabang_tujuan,
+                'head' => $head,
                 'status' => 0,
                 'direktur' => 0,
                 'id_user' => $user->id,

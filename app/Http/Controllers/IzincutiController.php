@@ -83,6 +83,7 @@ class IzincutiController extends Controller
                 ];
             }
 
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan='J02' ? '1' : '0';
             $dataizincuti = [
                 'kode_izin_cuti' => $kode_izin_cuti,
                 'nik' => $request->nik,
@@ -95,6 +96,7 @@ class IzincutiController extends Controller
                 'kode_cuti' => $request->kode_cuti,
                 'kode_cuti_khusus' => $request->kode_cuti == 'C03' ? $request->kode_cuti_khusus : null,
                 'keterangan' => $request->keterangan,
+                'head' => $head,
                 'status' => 0,
                 'direktur' => 0,
                 'id_user' => $user->id,

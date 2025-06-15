@@ -70,6 +70,8 @@ class IzinabsenController extends Controller
             $kode_izin  = buatkode($last_kode_izin, "IA"  . date('ym', strtotime($request->dari)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
+
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan='J02' ? '1' : '0';
             Izinabsen::create([
                 'kode_izin' => $kode_izin,
                 'nik' => $request->nik,
@@ -80,6 +82,7 @@ class IzinabsenController extends Controller
                 'dari' => $request->dari,
                 'sampai' => $request->sampai,
                 'keterangan' => $request->keterangan,
+                'head' => $head,
                 'status' => 0,
                 'direktur' => 0,
                 'id_user' => $user->id,

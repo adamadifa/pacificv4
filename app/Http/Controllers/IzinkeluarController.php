@@ -64,6 +64,7 @@ class IzinkeluarController extends Controller
             $kode_izin_keluar  = buatkode($last_kode_izin_keluar, "IK"  . date('ym', strtotime($request->tanggal)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan='J02' ? '1' : '0';
             Izinkeluar::create([
                 'kode_izin_keluar' => $kode_izin_keluar,
                 'nik' => $request->nik,
@@ -74,6 +75,7 @@ class IzinkeluarController extends Controller
                 'keperluan' => $request->keperluan,
                 'jam_keluar' => $request->tanggal . ' ' . $request->jam_keluar,
                 'keterangan' => $request->keterangan,
+                'head' => $head,
                 'status' => 0,
                 'direktur' => 0,
                 'id_user' => $user->id,

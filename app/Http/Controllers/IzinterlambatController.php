@@ -60,6 +60,7 @@ class IzinterlambatController extends Controller
             $kode_izin_terlambat  = buatkode($last_kode_izin_terlambat, "IT"  . date('ym', strtotime($request->tanggal)), 4);
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan='J02' ? '1' : '0';
             Izinterlambat::create([
                 'kode_izin_terlambat' => $kode_izin_terlambat,
                 'nik' => $request->nik,
@@ -71,6 +72,7 @@ class IzinterlambatController extends Controller
                 'keterangan' => $request->keterangan,
                 'status' => 0,
                 'direktur' => 0,
+                'head' => $head,
                 'id_user' => $user->id,
             ]);
 
