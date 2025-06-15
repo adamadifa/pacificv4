@@ -112,6 +112,7 @@ class IzinkoreksiController extends Controller
                 $jam_pulang = $request->tanggal . " " . $request->jam_pulang;
             }
 
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan='J02' ? '1' : '0';
 
             Izinkoreksi::create([
                 'kode_izin_koreksi' => $kode_izin_koreksi,
@@ -125,6 +126,7 @@ class IzinkoreksiController extends Controller
                 'kode_jadwal' => $request->kode_jadwal,
                 'kode_jam_kerja' => $request->kode_jam_kerja,
                 'keterangan' => $request->keterangan,
+                'head' => $head,
                 'status' => 0,
                 'direktur' => 0,
                 'id_user' => $user->id,
