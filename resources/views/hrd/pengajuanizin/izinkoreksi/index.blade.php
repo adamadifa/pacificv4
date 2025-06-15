@@ -20,29 +20,31 @@
                             <form action="{{ route('izinkoreksi.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <x-input-with-icon label="Nama Karyawan" name="nama_karyawan" value="{{ Request('nama_karyawan') }}"
-                                            icon="ti ti-user" />
+                                        <x-input-with-icon label="Nama Karyawan" name="nama_karyawan"
+                                            value="{{ Request('nama_karyawan') }}" icon="ti ti-user" />
                                     </div>
                                 </div>
                                 @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12 col-md-12">
-                                            <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                                select2="select2Kodecabang" upperCase="true" selected="{{ Request('kode_cabang') }}" />
+                                            <x-select label="Cabang" name="kode_cabang" :data="$cabang"
+                                                key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
+                                                upperCase="true" selected="{{ Request('kode_cabang') }}" />
                                         </div>
                                         <div class="col-lg-6 col-sm-12 col-md-12">
-                                            <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                                                select2="select2KodeDept" upperCase="true" selected="{{ Request('kode_dept') }}" />
+                                            <x-select label="Departemen" name="kode_dept" :data="$departemen"
+                                                key="kode_dept" textShow="nama_dept" select2="select2KodeDept"
+                                                upperCase="true" selected="{{ Request('kode_dept') }}" />
                                         </div>
                                     </div>
                                 @endif
@@ -62,12 +64,17 @@
                                 <div class="form-group mb-3">
                                     <select name="status" id="status" class="form-select">
                                         <option value="">Status</option>
-                                        <option value="pending" {{ Request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="disetujui" {{ Request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                                        <option value="pending" {{ Request('status') === 'pending' ? 'selected' : '' }}>
+                                            Pending</option>
+                                        <option value="disetujui"
+                                            {{ Request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                         @if ($level_user == 'asst. manager hrd')
-                                            <option value="direktur" {{ Request('status') === 'direktur' ? 'selected' : '' }}>Disetujui Direktur
+                                            <option value="direktur"
+                                                {{ Request('status') === 'direktur' ? 'selected' : '' }}>Disetujui
+                                                Direktur
                                             </option>
-                                            <option value="pendingdirektur" {{ Request('status') === 'pendingdirektur' ? 'selected' : '' }}>Pending
+                                            <option value="pendingdirektur"
+                                                {{ Request('status') === 'pendingdirektur' ? 'selected' : '' }}>Pending
                                                 Direktur
                                             </option>
                                         @endif
@@ -122,7 +129,8 @@
                                                     {{ date('H:i', strtotime($d->jam_pulang)) }}
                                                 </td>
                                                 <td>
-                                                    {{ $d->nama_jadwal }} - {{ date('H:i', strtotime($d->jam_mulai)) }} -
+                                                    {{ $d->nama_jadwal }} -
+                                                    {{ date('H:i', strtotime($d->jam_mulai)) }} -
                                                     {{ date('H:i', strtotime($d->jam_selesai)) }}
                                                 </td>
                                                 <td>
@@ -219,40 +227,51 @@
                                                             @endif
                                                         @endcan
                                                         @can('izinkoreksi.approve')
+                                                            @php
+                                                                $dept_access =
+                                                                    $roles_can_approve[$level_user]['dept'] ?? [];
+                                                                $dept_acess_2 =
+                                                                    $roles_can_approve[$level_user]['dept2'] ?? [];
+                                                                $jabatan_access =
+                                                                    $roles_can_approve[$level_user]['jabatan'] ?? [];
+                                                                $jabatan_access_2 =
+                                                                    $roles_can_approve[$level_user]['jabatan2'] ?? [];
+                                                                // var_dump($jabatan_access);
+                                                                // var_dump(in_array($d->kode_dept, $dept_access) || in_array($d->kode_dept, $dept_acess_2) || empty($dept_access) || empty($dept_acess_2));
+                                                                // var_dump(in_array($d->kode_jabatan, $jabatan_access) ||
+                                                                //         empty($jabatan_access) ||
+                                                                //         in_array($d->kode_jabatan, $jabatan_access_2) ||
+                                                                //         empty($jabatan_access_2));
+                                                                // var_dump(empty($d->head) && empty($d->hrd) && $d->status == 0);
+                                                            @endphp
                                                             @if (in_array($level_user, $level_hrd))
-                                                                @if (!empty($d->head) && empty($d->hrd) && $d->status == 0)
+                                                            
+                                                                @if (!empty($d->head) && empty($d->hrd) && $d->status == 0 || $d->kode_dept=='HRD' || $d->kode_jabatan=='J02')
                                                                     <a href="#" class="btnApprove me-1"
                                                                         kode_izin_koreksi="{{ Crypt::encrypt($d->kode_izin_koreksi) }}">
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
                                                                     @if (!empty($d->hrd) && empty($d->direktur))
-                                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                                        <form method="POST" name="deleteform"
+                                                                            class="deleteform"
                                                                             action="{{ route('izinkoreksi.cancel', Crypt::encrypt($d->kode_izin_koreksi)) }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <a href="#" class="cancel-confirm me-1">
-                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                                <i
+                                                                                    class="ti ti-square-rounded-x text-danger"></i>
                                                                             </a>
                                                                         </form>
                                                                     @endif
                                                                 @endif
                                                             @else
-                                                            {{-- {{ $d->kode_jabatan }} --}}
-                                                                @php
-                                                                    $dept_access = $roles_can_approve[$level_user]['dept'] ?? [];
-                                                                    $dept_acess_2 = $roles_can_approve[$level_user]['dept2'] ?? [];
-                                                                    $jabatan_access = $roles_can_approve[$level_user]['jabatan'] ?? [];
-                                                                    $jabatan_access_2 = $roles_can_approve[$level_user]['jabatan2'] ?? [];
-                                                                    // var_dump($jabatan_access);
-                                                                    // var_dump(in_array($d->kode_dept, $dept_access) || in_array($d->kode_dept, $dept_acess_2) || empty($dept_access) || empty($dept_acess_2));
-                                                                    // var_dump(in_array($d->kode_jabatan, $jabatan_access) ||
-                                                                    //         empty($jabatan_access) ||
-                                                                    //         in_array($d->kode_jabatan, $jabatan_access_2) ||
-                                                                    //         empty($jabatan_access_2));
-                                                                    // var_dump(empty($d->head) && empty($d->hrd) && $d->status == 0);
-                                                                @endphp
-                                                                @if (in_array($d->kode_dept, $dept_access) || in_array($d->kode_dept, $dept_acess_2) || empty($dept_access) || empty($dept_acess_2))
+                                                                {{-- {{ $d->kode_jabatan }} --}}
+
+                                                                @if (in_array($d->kode_dept, $dept_access) ||
+                                                                        in_array($d->kode_dept, $dept_acess_2) ||
+                                                                        empty($dept_access) ||
+                                                                        empty($dept_acess_2))
                                                                     @if (in_array($d->kode_jabatan, $jabatan_access) ||
                                                                             empty($jabatan_access) ||
                                                                             in_array($d->kode_jabatan, $jabatan_access_2) ||
@@ -260,16 +279,20 @@
                                                                         @if (empty($d->head) && empty($d->hrd) && $d->status == 0)
                                                                             <a href="#" class="btnApprove me-1"
                                                                                 kode_izin_koreksi="{{ Crypt::encrypt($d->kode_izin_koreksi) }}">
-                                                                                <i class="ti ti-external-link text-success"></i>
+                                                                                <i
+                                                                                    class="ti ti-external-link text-success"></i>
                                                                             </a>
                                                                         @else
                                                                             @if (empty($d->hrd) && $d->status == 0)
-                                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                                <form method="POST" name="deleteform"
+                                                                                    class="deleteform"
                                                                                     action="{{ route('izinkoreksi.cancel', Crypt::encrypt($d->kode_izin_koreksi)) }}">
                                                                                     @csrf
                                                                                     @method('DELETE')
-                                                                                    <a href="#" class="cancel-confirm me-1">
-                                                                                        <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                                    <a href="#"
+                                                                                        class="cancel-confirm me-1">
+                                                                                        <i
+                                                                                            class="ti ti-square-rounded-x text-danger"></i>
                                                                                     </a>
                                                                                 </form>
                                                                             @endif
@@ -284,12 +307,14 @@
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
-                                                                    <form method="POST" name="deleteform" class="deleteform"
+                                                                    <form method="POST" name="deleteform"
+                                                                        class="deleteform"
                                                                         action="{{ route('izinkoreksi.cancel', Crypt::encrypt($d->kode_izin_koreksi)) }}">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
+                                                                            <i
+                                                                                class="ti ti-square-rounded-x text-danger"></i>
                                                                         </a>
                                                                     </form>
                                                                 @endif

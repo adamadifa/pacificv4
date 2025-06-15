@@ -130,6 +130,16 @@ return [
     ],
 
 
+    'asst. manager hrd' => [
+        'dept' => ['HRD'],
+        'jabatan' => ['J12'],
+        'dept2' => [],
+        'jabatan2' => ['J02'],
+        'jabatan_filter' => false,
+        'cabang' => 0
+    ],
+
+
     'level_hrd' => ['asst. manager hrd', 'spv presensi'],
 
 ];
