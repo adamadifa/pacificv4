@@ -50,15 +50,21 @@
                             <table class="table table-bordered">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>Kode</th>
-                                        <th>Tanggal</th>
-                                        <th>NIK</th>
-                                        <th style="width: 15%">Nama</th>
-                                        <th>Jabatan</th>
-                                        <th>Dept.</th>
-                                        <th>Cabang</th>
-                                        <th>Keterangan</th>
-                                        <th>#</th>
+                                        <th rowspan="2">Kode</th>
+                                        <th rowspan="2">Tanggal</th>
+                                        <th rowspan="2">NIK</th>
+                                        <th rowspan="2" style="width: 15%">Nama</th>
+                                        <th rowspan="2">Jabatan</th>
+                                        <th rowspan="2">Dept.</th>
+                                        <th rowspan="2">Cabang</th>
+                                        <th colspan="3" class="text-center">Piutang</th>
+                                        <th rowspan="2">Keterangan</th>
+                                        <th rowspan="2">#</th>
+                                    </tr>
+                                    <tr>
+                                        <th>PJP</th>
+                                        <th>Kasbon</th>
+                                        <th>Lainnya</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -71,12 +77,20 @@
                                             <td>{{ $d->nama_jabatan }}</td>
                                             <td>{{ $d->kode_dept }}</td>
                                             <td>{{ $d->kode_cabang }}</td>
+                                            <td class="text-center">{!! $d->pjp ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i> '  !!}</td>
+                                            <td class="text-center">{!! $d->kasbon ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i>'  !!}</td>
+                                            <td class="text-center">{!! $d->piutang ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i>'  !!}</td>
                                             <td>{{ $d->keterangan }}</td>
                                             <td>
                                                 <div class="d-flex">
                                                     @can('resign.edit')
                                                         <a href="#" class="btnEdit me-1" kode_resign ="{{ Crypt::encrypt($d->kode_resign) }}">
                                                             <i class="ti ti-edit text-success"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can('resign.show')
+                                                        <a href="{{ route('resign.cetak', Crypt::encrypt($d->kode_resign)) }}" class="btnShow me-1">
+                                                            <i class="ti ti-printer text-primary"></i>
                                                         </a>
                                                     @endcan
                                                     @can('resign.delete')
@@ -89,6 +103,7 @@
                                                             </a>
                                                         </form>
                                                     @endcan
+                                                    
                                                 </div>
                                             </td>
                                         </tr>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gaji;
+use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
 use App\Models\Resign;
 use Illuminate\Http\Request;
@@ -62,6 +64,9 @@ class ResignController extends Controller
                 'nik' => $request->nik,
                 'tanggal' => $request->tanggal,
                 'keterangan' => $request->keterangan,
+                'pjp' => $request->pjp ?? 0,
+                'kasbon' => $request->kasbon ?? 0,
+                'piutang' => $request->piutang_lainnya ?? 0,
             ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
@@ -96,6 +101,9 @@ class ResignController extends Controller
                 'nik' => $request->nik,
                 'tanggal' => $request->tanggal,
                 'keterangan' => $request->keterangan,
+                'pjp' => $request->pjp ?? 0,
+                'kasbon' => $request->kasbon ?? 0,
+                'piutang' => $request->piutang_lainnya ?? 0,
             ]);
             return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
         } catch (\Exception $e) {
@@ -103,6 +111,37 @@ class ResignController extends Controller
         }
     }
 
+
+    public function cetak($kode_resign)
+    {
+        $kode_resign = Crypt::decrypt($kode_resign);
+        $data['resign'] =  Resign::select(
+            'hrd_resign.*',
+            'nama_karyawan',
+            'nama_jabatan',
+            'hrd_karyawan.tanggal_masuk',
+            'hrd_karyawan.no_ktp',
+            'hrd_karyawan.alamat as alamat_karyawan',
+            'hrd_karyawan.kode_dept',
+            'hrd_karyawan.kode_cabang',
+            'nama_cabang',
+            'alamat_cabang',
+            'nama_pt'
+        )
+            ->join('hrd_karyawan', 'hrd_resign.nik', '=', 'hrd_karyawan.nik')
+            ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
+            ->join('cabang', 'hrd_karyawan.kode_cabang', 'cabang.kode_cabang')
+            ->where('kode_resign', $kode_resign)
+            ->first();
+
+
+      $data['gaji'] = Gaji::where('nik', $data['resign']->nik)
+            ->orderBy('tanggal_berlaku', 'desc')
+            ->first();
+        $data['pihak_satu'] = config('hrd.pihak_satu');
+        // $data['potongan'] = Potongankesepakatanbersama::where('no_kb', $no_kb)->get();
+        return view('hrd.resign.cetak', $data);
+    }
 
     public function destroy($kode_resign)
     {
@@ -114,4 +153,7 @@ class ResignController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+
 }

@@ -1643,10 +1643,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/resign', 'index')->name('resign.index')->can('resign.index');
         Route::get('/resign/create', 'create')->name('resign.create')->can('resign.create');
         Route::post('/resign/store', 'store')->name('resign.store')->can('resign.store');
-        Route::get('/resign/{kode_jmk}/show', 'show')->name('resign.show')->can('resign.show');
-        Route::get('/resign/{kode_jmk}/edit', 'edit')->name('resign.edit')->can('resign.edit');
-        Route::put('/resign/{kode_jmk}/update', 'update')->name('resign.update')->can('resign.update');
-        Route::delete('/resign/{kode_jmk}/delete', 'destroy')->name('resign.delete')->can('resign.delete');
+        Route::get('/resign/{kode_resign}/show', 'show')->name('resign.show')->can('resign.show');
+        Route::get('/resign/{kode_resign}/cetak', 'cetak')->name('resign.cetak')->can('resign.show');
+        Route::get('/resign/{kode_resign}/edit', 'edit')->name('resign.edit')->can('resign.edit');
+        Route::put('/resign/{kode_resign}/update', 'update')->name('resign.update')->can('resign.update');
+        Route::delete('/resign/{kode_resign}/delete', 'destroy')->name('resign.delete')->can('resign.delete');
     });
     
 
