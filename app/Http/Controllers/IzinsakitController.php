@@ -76,7 +76,7 @@ class IzinsakitController extends Controller
                     'doc_sid' => $sid,
                 ];
             }
-            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan='J02' ? '1' : '0';
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan=='J02' ? '1' : '0';
 
             $dataizinsakit = [
                 'kode_izin_sakit' => $kode_izin_sakit,

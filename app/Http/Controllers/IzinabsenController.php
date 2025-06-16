@@ -71,7 +71,7 @@ class IzinabsenController extends Controller
             $k = new Karyawan();
             $karyawan = $k->getKaryawan($request->nik);
 
-            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan='J02' ? '1' : '0';
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan=='J02' ? '1' : '0';
             Izinabsen::create([
                 'kode_izin' => $kode_izin,
                 'nik' => $request->nik,
