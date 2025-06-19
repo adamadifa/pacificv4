@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Gaji;
 use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
+use App\Models\Kasbon;
+use App\Models\Rencanacicilanpjp;
 use App\Models\Resign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -135,8 +137,20 @@ class ResignController extends Controller
             ->first();
 
 
-      $data['gaji'] = Gaji::where('nik', $data['resign']->nik)
+        $data['gaji'] = Gaji::where('nik', $data['resign']->nik)
             ->orderBy('tanggal_berlaku', 'desc')
+            ->first();
+        $data['pjp'] = Rencanacicilanpjp::join('keuangan_pjp', 'keuangan_pjp_rencanacicilan.no_pinjaman', '=', 'keuangan_pjp.no_pinjaman')
+            ->select(DB::raw('SUM(keuangan_pjp_rencanacicilan.jumlah) as sisa_pjp'))
+            ->where('keuangan_pjp.nik', $data['resign']->nik)
+            ->where('keuangan_pjp_rencanacicilan.bayar', 0)
+            ->first();
+            $data['kasbon'] = Kasbon::select(DB::raw('SUM(jumlah) as total_kasbon'))
+            ->where('nik', $data['resign']->nik)
+            ->where('status',0)
+            ->first();
+        $data['jmk_sudahbayar'] = Jasamasakerja::where('nik', $data['resign']->nik)
+            ->select(DB::raw('SUM(jumlah) as jmk_sudahbayar'))
             ->first();
         $data['pihak_satu'] = config('hrd.pihak_satu');
         // $data['potongan'] = Potongankesepakatanbersama::where('no_kb', $no_kb)->get();
@@ -153,7 +167,4 @@ class ResignController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
-
-
-
 }

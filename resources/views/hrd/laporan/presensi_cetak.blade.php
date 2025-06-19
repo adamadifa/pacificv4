@@ -426,7 +426,7 @@
                                     @elseif($d[$tanggal_presensi]['status'] == 's')
                                         @php
                                             $potongan_jam_terlambat = 0;
-                                            $potongan_jam_dirumahkan = 0;
+                                            // $potongan_jam_dirumahkan = 0;
                                             $potongan_jam_izinkeluar = 0;
                                             $potongan_jam_pulangcepat = 0;
                                             $potongan_jam_tidakhadir = 0;
@@ -447,6 +447,7 @@
                                                         : $total_jam_jadwal;
                                                 }
                                                 $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : 0;
+                                                $potongan_jam_dirumahkan = $total_jam_jadwal - $total_jam;
                                                 $keterangan = 'SID';
                                             @endphp
                                         @else
@@ -458,6 +459,7 @@
                                                     $potongan_jam_sakit = !empty($cekdirumahkan)
                                                         ? $total_jam_jadwal - $total_jam
                                                         : $total_jam;
+                                                    $potongan_jam_dirumahkan = $total_jam_jadwal - $total_jam;
                                                 } else {
                                                     $total_jam = !empty($cekdirumahkan)
                                                         ? $total_jam_jadwal / 2
@@ -465,6 +467,7 @@
                                                     $potongan_jam_sakit = !empty($cekdirumahkan)
                                                         ? $total_jam
                                                         : $total_jam;
+                                                    $potongan_jam_dirumahkan = $total_jam_jadwal - $total_jam;
                                                 }
 
                                                 $keterangan = '';

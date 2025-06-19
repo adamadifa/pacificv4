@@ -37,7 +37,7 @@
                         <td>{{ formatIndo($d->tanggal) }}</td>
                         <td>{{ $d->kode_akun }}- {{ $d->nama_akun }}</td>
                         <td>{{ textCamelCase($d->keterangan) }}</td>
-                        <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
+                        <td style="text-align:right">{{ formatAngka($d->jumlah) }}</td>
                         <td>{{ $d->sumber }}</td>
                         <td>{{ textUpperCase($d->nama_cabang) }}</td>
                     </tr>

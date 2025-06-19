@@ -58,7 +58,8 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt=""
+                                style="width: 80px; height:80px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -161,17 +162,20 @@
             </p>
             <p style="text-indent:1cm; text-align:justify">
                 Untuk selanjutnya disebut PIHAK KEDUA ( II) atau pekerja.<br>
-                Pada tanggal {{ DateToIndo($resign->sampai) }} PIHAK PERTAMA ( I ) dan PIHAK KEDUA ( II ) bertempat di CV
+                Pada tanggal {{ DateToIndo($resign->sampai) }} PIHAK PERTAMA ( I ) dan PIHAK KEDUA ( II ) bertempat di
+                CV
                 Makmur Permata Tasikmalaya telah mengadakan perundingan atau musyawarah mufakat yang mendalam secara
                 kekeluargaan dengan menghasilkan kesepakatan sebagai berikut :
                 <br>
             <ol>
                 <li>
-                    PIHAK PERTAMA (I) dan PIHAK KEDUA (II) telah sepakat terkait kontrak kerja yang diputihkan mulai tanggal
+                    PIHAK PERTAMA (I) dan PIHAK KEDUA (II) telah sepakat terkait kontrak kerja yang diputihkan mulai
+                    tanggal
                     {{ DateToIndo($resign->sampai) }}
                 </li>
                 <li>
-                    PIHAK PERTAMA ( I ) bersedia untuk memberikan kompensasi atau kebijakan kepada PIHAK KEDUA ( II ) yang
+                    PIHAK PERTAMA ( I ) bersedia untuk memberikan kompensasi atau kebijakan kepada PIHAK KEDUA ( II )
+                    yang
                     besarnya sebagai berikut :
                 </li>
             </ol>
@@ -187,7 +191,8 @@
                             $tanggal = $resign->tanggal_masuk;
                             $masakerjakb = hitungMasakerja($tanggal, $resign->tanggal);
                         @endphp
-                        {{ $masakerjakb['tahun'] }} Tahun {{ $masakerjakb['bulan'] }} Bulan {{ $masakerjakb['hari'] }} Hari
+                        {{ $masakerjakb['tahun'] }} Tahun {{ $masakerjakb['bulan'] }} Bulan
+                        {{ $masakerjakb['hari'] }} Hari
                     </th>
                 </tr>
                 <tr>
@@ -230,6 +235,15 @@
                             <tr>
                                 @php
                                     $mk_kb = $masakerjakb['tahun'];
+                                    $mk_bulan = $masakerjakb['tahun'] * 12 + $masakerjakb['bulan'];
+                                    if ($mk_bulan <= 23) {
+                                        $persentase_jmk = 25;
+                                    } elseif ($mk_bulan <= 28) {
+                                        $persentase_jmk = 50;
+                                    } else {
+                                        $persentase_jmk = 100;
+                                    }
+
                                     if ($mk_kb >= 3 && $mk_kb < 6) {
                                         $jmlkali = 2;
                                     } elseif ($mk_kb >= 6 && $mk_kb < 9) {
@@ -244,22 +258,18 @@
                                         $jmlkali = 7;
                                     } elseif ($mk_kb >= 21 && $mk_kb < 24) {
                                         $jmlkali = 8;
-                                    } elseif ($mk_kb >= 24) {
+                                    } elseif ($mk_kb > 24) {
                                         $jmlkali = 10;
-                                    } else {
-                                        $jmlkali = 0.5;
+                                    }else{
+                                        $jmlkali = 1;
                                     }
 
-                                    if ($mk_kb <= 2) {
-                                        $totalupah = $gaji->gaji_pokok;
-                                    } else {
-                                        $totalupah =
-                                            $gaji->gaji_pokok +
-                                            $gaji->t_tanggungjawab +
-                                            $gaji->t_makan +
-                                            $gaji->t_skill +
-                                            $gaji->t_jabatan;
-                                    }
+                                    $totalupah =
+                                        $gaji->gaji_pokok +
+                                        $gaji->t_tanggungjawab +
+                                        $gaji->t_makan +
+                                        $gaji->t_skill +
+                                        $gaji->t_jabatan;
 
                                     $grandtotal_upah =
                                         $gaji->gaji_pokok +
@@ -277,27 +287,36 @@
                                     // } else {
                                     //     $persentasejmk = 25;
                                     // }
-                                    $persentasejmk = 25;
-                                    $totalpemutihan = ($persentasejmk / 100) * $totalupah;
+                                    // $persentasejmk = 25;
+                                    //$totalpemutihan = ($persentasejmk / 100) * $totalupah;
+                                    $totaljmk = ($persentase_jmk / 100) * $totalupah * $jmlkali;
+                                    $persentase_pengganti_hak = 15;
+                                    
                                 @endphp
                                 <td style="width: 2px">1.</td>
                                 <td>Jasa Masa Kerja </td>
-                                <td>{{ $persentasejmk }}%</td>
+                                <td>
+                                    @if ($persentase_jmk != 100)
+                                        {{ $persentase_jmk }}%
+                                    @else
+                                        {{ $jmlkali }} x
+                                    @endif
+                                </td>
                                 <td>x</td>
                                 <td>Rp. {{ formatRupiah($totalupah) }}</td>
                                 <td>Rp.</td>
-                                <td style="text-align:right">{{ formatRupiah($totalpemutihan) }}</td>
+                                <td style="text-align:right">{{ formatRupiah($totaljmk) }}</td>
                             </tr>
                             <tr>
                                 <td style="width: 2px; border-bottom:1px solid black">2.</td>
                                 <td style="border-bottom:1px solid black">Uang Pengganti Hak</td>
-                                <td style="border-bottom:1px solid black">0%</td>
+                                <td style="border-bottom:1px solid black">{{ $persentase_pengganti_hak }}%</td>
                                 <td style="border-bottom:1px solid black">x</td>
-                                <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totalpemutihan) }}</td>
+                                <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totaljmk) }}</td>
                                 <td style="border-bottom:1px solid black">Rp.</td>
                                 <td style="border-bottom:1px solid black; text-align:right">
                                     @php
-                                        $uph = (0 / 100) * ($jmlkali * $totalupah);
+                                        $uph = ($persentase_pengganti_hak / 100) * $totaljmk;
                                     @endphp
                                     {{ formatRupiah($uph) }}
                                 </td>
@@ -307,14 +326,31 @@
                                 <td>Rp.</td>
                                 <td style="text-align:right; font-weight:bold">
                                     @php
-                                        $jml_ujmk = ($persentasejmk / 100) * $totalupah + $uph;
+                                        $jml_ujmk = $totaljmk + $uph;
                                     @endphp
                                     {{ formatRupiah($jml_ujmk) }}
                                 </td>
                             </tr>
                             @php
-                                $totalpotongan = 0;
+                                $totalpotongan = ($pjp->sisa_pjp ?? 0) + ($jmk_sudahbayar->jmk_sudahbayar ?? 0) + ($kasbon->total_kasbon ?? 0);
                             @endphp
+                            @if ($totalpotongan > 0)
+                                <tr>
+                                    <td colspan="5">PJP</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right">{{ formatRupiah($pjp->sisa_pjp) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">Kasbon</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right">{{ formatRupiah($kasbon->total_kasbon) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">JMK Sudah di Bayar</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right">{{ formatRupiah($jmk_sudahbayar->jmk_sudahbayar ?? 0) }}</td>
+                                </tr>
+                            @endif
                             {{-- @foreach ($potongan as $d)
                                 @php
                                     $totalpotongan += $d->jumlah;
@@ -365,12 +401,15 @@
             <p>
             <ol start="3">
                 <li>
-                    PIHAK KEDUA ( II ) dapat menerima dengan baik kompensasi atau kebijakan dari PIHAK PERTAMA (I) seperti
+                    PIHAK KEDUA ( II ) dapat menerima dengan baik kompensasi atau kebijakan dari PIHAK PERTAMA (I)
+                    seperti
                     tersebut di atas.
                 </li>
                 <li>
-                    Dengan ditandatanganinya kesepakatan bersama ini oleh kedua belah pihak, PIHAK PERTAMA ( I ) dan PIHAK
-                    KEDUA ( II ) menyatakan permasalahan telah selesai dan tidak ada saling menuntut apapun dikemudian hari.
+                    Dengan ditandatanganinya kesepakatan bersama ini oleh kedua belah pihak, PIHAK PERTAMA ( I ) dan
+                    PIHAK
+                    KEDUA ( II ) menyatakan permasalahan telah selesai dan tidak ada saling menuntut apapun dikemudian
+                    hari.
                 </li>
             </ol>
             Demikian Kesepakatan Bersama ini dibuat dan ditandatangani oleh kedua belah pihak.
