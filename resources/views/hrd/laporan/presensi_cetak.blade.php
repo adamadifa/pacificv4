@@ -447,8 +447,8 @@
                                                         : $total_jam_jadwal;
                                                 }
                                                 $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : 0;
-                                            
-                                                $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75  : 1.25;
+                                                
+                                                $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1  : 2;
                                                 $keterangan = 'SID';
                                             @endphp
                                         @else
