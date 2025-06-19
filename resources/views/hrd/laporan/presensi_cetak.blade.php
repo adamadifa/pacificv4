@@ -447,8 +447,11 @@
                                                         : $total_jam_jadwal;
                                                 }
                                                 $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : 0;
-                                                
-                                                $potongan_jam_dirumahkan = !empty($cekdirumahkan) && $total_jam_jadwal == 7 ? 1.75  : 1.25;
+
+                                                if (!empty($cekdirumahkan)) {
+                                                    $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                                }
+
                                                 $keterangan = 'SID';
                                             @endphp
                                         @else
@@ -460,7 +463,9 @@
                                                     $potongan_jam_sakit = !empty($cekdirumahkan)
                                                         ? $total_jam_jadwal - $total_jam
                                                         : $total_jam;
-                                                    $potongan_jam_dirumahkan = !empty($cekdirumahkan) && $total_jam_jadwal == 7 ? 1.75  : 1.25;
+                                                    if (!empty($cekdirumahkan)) {
+                                                        $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                                    }
                                                 } else {
                                                     $total_jam = !empty($cekdirumahkan)
                                                         ? $total_jam_jadwal / 2
@@ -468,7 +473,9 @@
                                                     $potongan_jam_sakit = !empty($cekdirumahkan)
                                                         ? $total_jam
                                                         : $total_jam;
-                                                    $potongan_jam_dirumahkan = !empty($cekdirumahkan) && $total_jam_jadwal == 7 ? 1.75  : 1.25;
+                                                    if (!empty($cekdirumahkan)) {
+                                                        $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                                    }
                                                 }
 
                                                 $keterangan = '';
