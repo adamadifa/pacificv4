@@ -312,13 +312,19 @@
                 @if (!empty($d[$tanggal_presensi]['doc_sid']) || $d[$tanggal_presensi]['izin_sakit_direktur'] == '1')
                     @php
                         $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
-                        $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : 0;
+                        $potongan_jam_sakit = 0;
+                        if (!empty($cekdirumahkan)) {
+                            $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                        }
                         $keterangan = 'SID';
                     @endphp
                 @else
                     @php
                         $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                         $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : $total_jam;
+                        if (!empty($cekdirumahkan)) {
+                            $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                        }
                         $keterangan = '';
                     @endphp
                 @endif
