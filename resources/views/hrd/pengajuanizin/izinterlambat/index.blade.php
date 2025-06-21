@@ -224,7 +224,7 @@
                                                                         (empty($d->head) && $d->kode_dept == 'HRD') ||
                                                                         (empty($d->head) && $d->kode_jabatan == 'J02'))
                                                                     <a href="#" class="btnApprove me-1"
-                                                                        kode_izin_koreksi="{{ Crypt::encrypt($d->kode_izin_terlambat) }}">
+                                                                        kode_izin_terlambat="{{ Crypt::encrypt($d->kode_izin_terlambat) }}">
                                                                         <i class="ti ti-external-link text-success"></i>
                                                                     </a>
                                                                 @else
