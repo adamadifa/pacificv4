@@ -386,7 +386,7 @@
         $(".btnApprove").click(function(e) {
             e.preventDefault();
             const kode_izin_terlambat = $(this).attr("kode_izin_terlambat");
-            alert(kode_izin_terlambat);
+            //alert(kode_izin_terlambat);
             $("#modal").modal("show");
             loading();
             $("#modal").find(".modal-title").text("Approve Izin terlambat");
