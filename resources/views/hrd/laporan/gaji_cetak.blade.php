@@ -546,8 +546,11 @@
                                             $total_jam = !empty($cekdirumahkan)
                                                 ? $total_jam_jadwal / 2
                                                 : $total_jam_jadwal;
-                                            $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : 0;
+                                            $potongan_jam_sakit =  0;
                                             $keterangan = 'SID';
+                                            if (!empty($cekdirumahkan)) {
+                                                $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                            }
                                         @endphp
                                     @else
                                         @php
@@ -556,6 +559,9 @@
                                                 : $total_jam_jadwal;
                                             $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : $total_jam;
                                             $keterangan = '';
+                                            if (!empty($cekdirumahkan)) {
+                                                $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                            }
                                         @endphp
                                     @endif
                                     @if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21' && $tanggal_presensi < '2025-04-21')
