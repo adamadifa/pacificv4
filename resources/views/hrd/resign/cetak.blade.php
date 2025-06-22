@@ -58,8 +58,7 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt=""
-                                style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:80px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -260,23 +259,14 @@
                                         $jmlkali = 8;
                                     } elseif ($mk_kb > 24) {
                                         $jmlkali = 10;
-                                    }else{
+                                    } else {
                                         $jmlkali = 1;
                                     }
 
-                                    $totalupah =
-                                        $gaji->gaji_pokok +
-                                        $gaji->t_tanggungjawab +
-                                        $gaji->t_makan +
-                                        $gaji->t_skill +
-                                        $gaji->t_jabatan;
+                                    $totalupah = $gaji->gaji_pokok + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill + $gaji->t_jabatan;
 
                                     $grandtotal_upah =
-                                        $gaji->gaji_pokok +
-                                        $gaji->t_tanggungjawab +
-                                        $gaji->t_makan +
-                                        $gaji->t_skill +
-                                        $gaji->t_jabatan;
+                                        $gaji->gaji_pokok + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill + $gaji->t_jabatan;
 
                                     // if ($jmk != null) {
                                     //     if ($masakerjakb['tahun'] == 1 and $masakerjakb['bulan'] >= 3) {
@@ -291,7 +281,7 @@
                                     //$totalpemutihan = ($persentasejmk / 100) * $totalupah;
                                     $totaljmk = ($persentase_jmk / 100) * $totalupah * $jmlkali;
                                     $persentase_pengganti_hak = 15;
-                                    
+
                                 @endphp
                                 <td style="width: 2px">1.</td>
                                 <td>Jasa Masa Kerja </td>
@@ -362,12 +352,12 @@
                                     <td style="text-align: right">{{ formatRupiah($d->jumlah) }}</td>
                                 </tr>
                             @endforeach --}}
-                            {{-- <tr style="font-weight:bold">
+                            <tr style="font-weight:bold">
                                 <td colspan="5" style="border-bottom:1px solid black">Jumlah Potongan</td>
                                 <td style="border-bottom:1px solid black">Rp.</td>
                                 <td style="border-bottom:1px solid black; text-align:right">{{ formatRupiah($totalpotongan) }}
                                 </td>
-                            </tr> --}}
+                            </tr>
                             <tr style="font-weight:bold">
                                 <td colspan="5">Jumlah Uang Yang Diterima Karyawan</td>
                                 <td>Rp.</td>
