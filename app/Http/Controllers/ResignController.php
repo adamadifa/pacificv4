@@ -6,6 +6,7 @@ use App\Models\Gaji;
 use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
 use App\Models\Kasbon;
+use App\Models\Kategorijmk;
 use App\Models\Rencanacicilanpjp;
 use App\Models\Resign;
 use Illuminate\Http\Request;
@@ -19,9 +20,10 @@ class ResignController extends Controller
     {
 
         $query = Resign::query();
-        $query->select('hrd_resign.*', 'nama_karyawan', 'nama_jabatan', 'kode_dept', 'kode_cabang');
+        $query->select('hrd_resign.*', 'nama_karyawan', 'nama_jabatan', 'kode_dept', 'kode_cabang', 'nama_kategori');
         $query->join('hrd_karyawan', 'hrd_resign.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_kategorijmk', 'hrd_resign.kode_kategori', '=', 'hrd_kategorijmk.kode_kategori');
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('hrd_resign.tanggal', [$request->dari, $request->sampai]);
         }
@@ -43,6 +45,7 @@ class ResignController extends Controller
         $data['karyawan'] = Karyawan::orderBy('nama_karyawan')
             ->where('status_aktif_karyawan', 1)
             ->get();
+        $data['kategori_jmk'] = Kategorijmk::all();
         return view('hrd.resign.create', $data);
     }
 
@@ -52,6 +55,7 @@ class ResignController extends Controller
             'nik' => 'required',
             'tanggal' => 'required|date',
             'keterangan' => 'required',
+            'kode_kategori' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -64,6 +68,7 @@ class ResignController extends Controller
             Resign::create([
                 'kode_resign' => $kode_resign,
                 'nik' => $request->nik,
+                'kode_kategori' => $request->kode_kategori,
                 'tanggal' => $request->tanggal,
                 'keterangan' => $request->keterangan,
                 'pjp' => $request->pjp ?? 0,
@@ -85,6 +90,7 @@ class ResignController extends Controller
         $data['karyawan'] = Karyawan::orderBy('nama_karyawan')
             ->where('status_aktif_karyawan', 1)
             ->get();
+        $data['kategori_jmk'] = Kategorijmk::all();
         return view('hrd.resign.edit', $data);
     }
 
@@ -95,12 +101,14 @@ class ResignController extends Controller
             'nik' => 'required',
             'tanggal' => 'required|date',
             'keterangan' => 'required',
+            'kode_kategori' => 'required',
         ]);
 
         $kode_resign = Crypt::decrypt($kode_resign);
         try {
             Resign::where('kode_resign', $kode_resign)->update([
                 'nik' => $request->nik,
+                'kode_kategori' => $request->kode_kategori,
                 'tanggal' => $request->tanggal,
                 'keterangan' => $request->keterangan,
                 'pjp' => $request->pjp ?? 0,

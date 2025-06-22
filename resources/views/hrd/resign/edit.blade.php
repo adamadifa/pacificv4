@@ -3,7 +3,10 @@
     @method('PUT')
     <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_resign" value="{{ $resign->kode_resign }}" disabled="true" />
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" value="{{ $resign->tanggal }}" datepicker="flatpickr-date" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" selected="{{ $resign->nik }}" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
+        selected="{{ $resign->nik }}" />
+    <x-select label="Kategori JMK" name="kategori_jmk" :data="$kategori_jmk" key="kode_kategori" textShow="nama_kategori"
+        selected="{{ $resign->kategori_jmk }}" />
     <x-input-with-icon icon="ti ti-file-text" label="Keterangan" name="keterangan" value="{{ $resign->keterangan }}" />
     <div class="form-check mt-2">
         <input class="form-check-input" type="checkbox" name="pjp" id="pjp" value="1" {{ $resign->pjp ? 'checked' : '' }}>
@@ -18,7 +21,8 @@
         </label>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="piutang_lainnya" id="piutang_lainnya" value="1" {{ $resign->piutang_lainnya ? 'checked' : '' }}>
+        <input class="form-check-input" type="checkbox" name="piutang_lainnya" id="piutang_lainnya" value="1"
+            {{ $resign->piutang_lainnya ? 'checked' : '' }}>
         <label class="form-check-label" for="piutang_lainnya">
             Piutang Lainnya
         </label>

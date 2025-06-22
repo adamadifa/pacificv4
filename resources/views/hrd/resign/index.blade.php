@@ -58,7 +58,7 @@
                                         <th rowspan="2">Dept.</th>
                                         <th rowspan="2">Cabang</th>
                                         <th colspan="3" class="text-center">Piutang</th>
-                                        <th rowspan="2">Keterangan</th>
+                                        <th rowspan="2">Kategori</th>
                                         <th rowspan="2">#</th>
                                     </tr>
                                     <tr>
@@ -77,10 +77,10 @@
                                             <td>{{ $d->nama_jabatan }}</td>
                                             <td>{{ $d->kode_dept }}</td>
                                             <td>{{ $d->kode_cabang }}</td>
-                                            <td class="text-center">{!! $d->pjp ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i> '  !!}</td>
-                                            <td class="text-center">{!! $d->kasbon ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i>'  !!}</td>
-                                            <td class="text-center">{!! $d->piutang ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i>'  !!}</td>
-                                            <td>{{ $d->keterangan }}</td>
+                                            <td class="text-center">{!! $d->pjp ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i> ' !!}</td>
+                                            <td class="text-center">{!! $d->kasbon ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i>' !!}</td>
+                                            <td class="text-center">{!! $d->piutang ? '<i class="ti ti-check text-success"></i>' : '<i class="ti ti-x text-danger"></i>' !!}</td>
+                                            <td>{{ $d->nama_kategori }}</td>
                                             <td>
                                                 <div class="d-flex">
                                                     @can('resign.edit')
@@ -103,7 +103,7 @@
                                                             </a>
                                                         </form>
                                                     @endcan
-                                                    
+
                                                 </div>
                                             </td>
                                         </tr>
