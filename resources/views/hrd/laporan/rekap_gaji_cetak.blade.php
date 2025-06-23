@@ -416,8 +416,7 @@
                         $d['t_istri'] +
                         $d['t_skill'];
                     $insentif = $d['iu_masakerja'] + $d['iu_lembur'] + $d['iu_penempatan'] + $d['iu_kpi'];
-                    $insentif_manager =
-                        $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
+                    $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
                     $jumlah_insentif = $insentif + $insentif_manager;
                     $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
                 @endphp
@@ -476,28 +475,18 @@
                             }
 
                             $total_overtime_libur += $overtime_libur;
-                            $total_premi_shift2_lembur +=
-                                $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
-                            $total_premi_shift3_lembur +=
-                                $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
+                            $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
+                            $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                         @endphp
                         @if (isset($d[$tanggal_presensi]))
                             @php
                                 $lintashari = $d[$tanggal_presensi]['lintashari'];
                                 $tanggal_selesai =
-                                    $lintashari == '1'
-                                        ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)))
-                                        : $tanggal_presensi;
+                                    $lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi;
                                 $total_jam_jadwal = $d[$tanggal_presensi]['total_jam'];
                                 //Jadwal Jam Kerja
-                                $j_mulai = date(
-                                    'Y-m-d H:i',
-                                    strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']),
-                                );
-                                $j_selesai = date(
-                                    'Y-m-d H:i',
-                                    strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']),
-                                );
+                                $j_mulai = date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']));
+                                $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']));
 
                                 //Jam Absen Masuk dan Pulang
                                 $jam_in = !empty($d[$tanggal_presensi]['jam_in'])
@@ -544,36 +533,20 @@
                                         if ($lintashari == '0') {
                                             $jam_awal_istirahat = date(
                                                 'Y-m-d H:i',
-                                                strtotime(
-                                                    $tanggal_presensi .
-                                                        ' ' .
-                                                        $d[$tanggal_presensi]['jam_awal_istirahat'],
-                                                ),
+                                                strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_awal_istirahat']),
                                             );
                                             $jam_akhir_istirahat = date(
                                                 'Y-m-d H:i',
-                                                strtotime(
-                                                    $tanggal_presensi .
-                                                        ' ' .
-                                                        $d[$tanggal_presensi]['jam_akhir_istirahat'],
-                                                ),
+                                                strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_akhir_istirahat']),
                                             );
                                         } else {
                                             $jam_awal_istirahat = date(
                                                 'Y-m-d H:i',
-                                                strtotime(
-                                                    $tanggal_selesai .
-                                                        ' ' .
-                                                        $d[$tanggal_presensi]['jam_awal_istirahat'],
-                                                ),
+                                                strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_awal_istirahat']),
                                             );
                                             $jam_akhir_istirahat = date(
                                                 'Y-m-d H:i',
-                                                strtotime(
-                                                    $tanggal_selesai .
-                                                        ' ' .
-                                                        $d[$tanggal_presensi]['jam_akhir_istirahat'],
-                                                ),
+                                                strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_akhir_istirahat']),
                                             );
                                         }
                                     } else {
@@ -594,12 +567,7 @@
                                     );
 
                                     //Cek Pulang Cepat
-                                    $pulangcepat = presensiHitungPulangCepat(
-                                        $jam_out,
-                                        $jam_selesai,
-                                        $jam_awal_istirahat,
-                                        $jam_akhir_istirahat,
-                                    );
+                                    $pulangcepat = presensiHitungPulangCepat($jam_out, $jam_selesai, $jam_awal_istirahat, $jam_akhir_istirahat);
 
                                     //Cek Izin Keluar
                                     $izin_keluar = presensiHitungJamKeluarKantor(
@@ -618,24 +586,14 @@
                                     $potongan_jam_sakit = 0;
                                     $potongan_jam_dirumahkan = 0;
                                     $potongan_jam_tidakhadir =
-                                        empty($d[$tanggal_presensi]['jam_in']) ||
-                                        empty($d[$tanggal_presensi]['jam_out'])
-                                            ? $total_jam_jadwal
-                                            : 0;
+                                        empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out']) ? $total_jam_jadwal : 0;
                                     $potongan_jam_izin = 0;
-                                    $potongan_jam_pulangcepat =
-                                        $d[$tanggal_presensi]['izin_pulang_direktur'] == '1'
-                                            ? 0
-                                            : $pulangcepat['desimal'];
+                                    $potongan_jam_pulangcepat = $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
                                     $potongan_jam_izinkeluar =
-                                        $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' ||
-                                        $izin_keluar['desimal'] <= 1
+                                        $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['desimal'] <= 1
                                             ? 0
                                             : $izin_keluar['desimal'];
-                                    $potongan_jam_terlambat =
-                                        $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1'
-                                            ? 0
-                                            : $terlambat['desimal'];
+                                    $potongan_jam_terlambat = $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['desimal'];
 
                                     //Total Potongan
                                     $total_potongan_jam =
@@ -649,8 +607,7 @@
 
                                     //Total Jam Kerja
                                     $total_jam =
-                                        !empty($d[$tanggal_presensi]['jam_in']) &&
-                                        !empty($d[$tanggal_presensi]['jam_out'])
+                                        !empty($d[$tanggal_presensi]['jam_in']) && !empty($d[$tanggal_presensi]['jam_out'])
                                             ? $total_jam_jadwal - $total_potongan_jam
                                             : 0;
 
@@ -690,7 +647,7 @@
                                 @if (!empty($d[$tanggal_presensi]['doc_sid']) || $d[$tanggal_presensi]['izin_sakit_direktur'] == '1')
                                     @php
                                         $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
-                                        $potongan_jam_sakit =  0;
+                                        $potongan_jam_sakit = 0;
                                         if (!empty($cekdirumahkan)) {
                                             $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
                                         }
@@ -726,15 +683,30 @@
 
                                     $potongan_jam_terlambat = 0;
                                     if ($d[$tanggal_presensi]['kode_cuti'] != 'C01') {
-                                        if (!empty($cekdirumahkan)) {
-                                            $potongan_jam_dirumahkan = $total_jam_jadwal / 2;
-                                            $total_jam = $total_jam_jadwal / 2;
+                                        if ($tanggal_presensi >= '2024-11-21') {
+                                            if (!empty($cekdirumahkan)) {
+                                                $total_jam = ROUND($total_jam_jadwal / 1.33, 2);
+                                                // $potongan_jam_dirumahkan = $total_jam_jadwal - $total_jam;
+                                                if (!empty($cekdirumahkan)) {
+                                                    $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                                }
+                                            } else {
+                                                $potongan_jam_dirumahkan = 0;
+                                                $total_jam = $total_jam_jadwal;
+                                            }
                                         } else {
-                                            $potongan_jam_dirumahkan = 0;
-                                            $total_jam = $total_jam_jadwal;
+                                            if (!empty($cekdirumahkan)) {
+                                                // $potongan_jam_dirumahkan = $total_jam_jadwal / 2;
+                                                $total_jam = $total_jam_jadwal / 2;
+                                            } else {
+                                                $potongan_jam_dirumahkan = 0;
+                                                $total_jam = $total_jam_jadwal;
+                                            }
                                         }
                                     } else {
-                                        $potongan_jam_dirumahkan = 0;
+                                        if (!empty($cekdirumahkan)) {
+                                            $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                        }
                                         $total_jam = $total_jam_jadwal;
                                     }
                                     $potongan_jam_izinkeluar = 0;
@@ -766,17 +738,11 @@
                                         $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam : 0;
                                     } else {
                                         $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
-                                        $potongan_jam_izin = !empty($cekdirumahkan)
-                                            ? $total_jam_jadwal / 2
-                                            : $total_jam_jadwal;
+                                        $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                     }
 
                                     //Jika Jabatan Salesman
-                                    if (
-                                        $d['kode_jabatan'] == 'J19' &&
-                                        $tanggal_presensi >= '2024-10-21' &&
-                                        $tanggal_presensi < '2025-04-21'
-                                    ) {
+                                    if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21' && $tanggal_presensi < '2025-04-21') {
                                         $potongan_jam_izin = 0;
                                     }
 
@@ -844,10 +810,7 @@
                                         $potongan_jam_dirumahkan = $total_jam;
                                     }
 
-                                    if (
-                                        in_array($d['nik'], $privillage_karyawan) &&
-                                        $tanggal_presensi >= '2024-11-21'
-                                    ) {
+                                    if (in_array($d['nik'], $privillage_karyawan) && $tanggal_presensi >= '2024-11-21') {
                                         $potongan_jam_dirumahkan = 0;
                                     }
                                     $potongan_jam_dirumahkan = $potongan_jam_dirumahkan;
@@ -866,10 +829,7 @@
                             @elseif(!empty($cekliburpengganti))
                                 @php
                                     $color = 'rgba(243, 158, 0, 0.833)';
-                                    $keterangan =
-                                        'Libur Pengganti Hari Minggu <br>(' .
-                                        formatIndo($cekliburpengganti[0]['tanggal_diganti']) .
-                                        ')';
+                                    $keterangan = 'Libur Pengganti Hari Minggu <br>(' . formatIndo($cekliburpengganti[0]['tanggal_diganti']) . ')';
                                     $total_jam = 0;
                                     $potongan_jam_dirumahkan = 0;
                                 @endphp
@@ -957,11 +917,7 @@
                         $upah_premi_shift2 = 5000 * $premi_shift2;
                         $upah_premi_shift3 = 6000 * $premi_shift3;
 
-                        $bruto =
-                            $upah_perjam * $total_jam_kerja +
-                            $total_upah_overtime +
-                            $upah_premi_shift2 +
-                            $upah_premi_shift3;
+                        $bruto = $upah_perjam * $total_jam_kerja + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
 
                         $iuran_bpjs_kesehatan = $d['iuran_bpjs_kesehatan'];
                         $iuran_bpjs_tenagakerja = $d['iuran_bpjs_tenagakerja'];
