@@ -508,6 +508,10 @@
                                                 }
                                                 $total_jam = $total_jam_jadwal;
                                             }
+
+                                            if (in_array($d['nik'], $privillage_karyawan) && $tanggal_presensi >= '2024-11-21') {
+                                                $potongan_jam_dirumahkan = 0;
+                                            }
                                             $potongan_jam_izinkeluar = 0;
                                             $potongan_jam_pulangcepat = 0;
                                             $potongan_jam_tidakhadir = 0;
