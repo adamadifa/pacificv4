@@ -485,14 +485,17 @@
                                                 if ($tanggal_presensi >= '2024-11-21') {
                                                     if (!empty($cekdirumahkan)) {
                                                         $total_jam = ROUND($total_jam_jadwal / 1.33, 2);
-                                                        $potongan_jam_dirumahkan = $total_jam_jadwal - $total_jam;
+                                                        // $potongan_jam_dirumahkan = $total_jam_jadwal - $total_jam;
+                                                        if (!empty($cekdirumahkan)) {
+                                                            $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                                        }
                                                     } else {
                                                         $potongan_jam_dirumahkan = 0;
                                                         $total_jam = $total_jam_jadwal;
                                                     }
                                                 } else {
                                                     if (!empty($cekdirumahkan)) {
-                                                        $potongan_jam_dirumahkan = $total_jam_jadwal / 2;
+                                                        // $potongan_jam_dirumahkan = $total_jam_jadwal / 2;
                                                         $total_jam = $total_jam_jadwal / 2;
                                                     } else {
                                                         $potongan_jam_dirumahkan = 0;
@@ -500,7 +503,9 @@
                                                     }
                                                 }
                                             } else {
-                                                $potongan_jam_dirumahkan = 0;
+                                                if (!empty($cekdirumahkan)) {
+                                                    $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                                }
                                                 $total_jam = $total_jam_jadwal;
                                             }
                                             $potongan_jam_izinkeluar = 0;
