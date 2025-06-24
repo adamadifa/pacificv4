@@ -1064,7 +1064,7 @@ class LaporanaccountingController extends Controller
         $jurnalumum->orderBy('accounting_jurnalumum.kode_ju');
 
 
-       dd($jurnalumum->get());
+    //    dd($jurnalumum->get());
         $coa_kas_kecil = Coa::where('kode_transaksi', 'KKL');
         $coa_piutangcabang = Coa::where('kode_transaksi', 'PCB');
 
@@ -1129,6 +1129,7 @@ class LaporanaccountingController extends Controller
         ->unionAll($ledger_transaksi)
         ->unionAll($piutangcabang)
         ->unionAll($pembelian)
+        ->unionAll($jurnalumum)
         ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
         // dd($bukubesar->get());
