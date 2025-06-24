@@ -960,7 +960,10 @@ class LaporanaccountingController extends Controller
 
 
         // $data['saldoawalCollection'] = $saldoawalCollection;
-        //Ledger
+
+
+
+        //Ledger BANK
         $ledger = Ledger::query();
         $ledger->select(
             'bank.kode_akun',
@@ -992,7 +995,7 @@ class LaporanaccountingController extends Controller
             'nama_akun',
             'keuangan_ledger.tanggal',
             'keuangan_ledger.no_bukti',
-            DB::raw("'LEDGER' AS sumber"),
+            DB::raw('CONCAT_WS(" - ", bank.nama_bank, bank.no_rekening) AS sumber'),
             'keuangan_ledger.keterangan',
             DB::raw('IF(debet_kredit="K",jumlah,0) as jml_kredit'),
             DB::raw('IF(debet_kredit="D",jumlah,0) as jml_debet'),
@@ -1001,8 +1004,9 @@ class LaporanaccountingController extends Controller
         $ledger_transaksi->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $ledger_transaksi->whereBetween('keuangan_ledger.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
-        }
+        }   
         $ledger_transaksi->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
+        $ledger_transaksi->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
         $ledger_transaksi->orderBy('keuangan_ledger.kode_akun');
         $ledger_transaksi->orderBy('keuangan_ledger.tanggal');
         $ledger_transaksi->orderBy('keuangan_ledger.no_bukti');
