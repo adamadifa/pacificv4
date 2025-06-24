@@ -12,6 +12,7 @@ use App\Models\Detailhpp;
 use App\Models\Detailmutasigudangcabang;
 use App\Models\Detailmutasigudangjadi;
 use App\Models\Detailmutasiproduksi;
+use App\Models\Detailpembelian;
 use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
 use App\Models\Detailsaldoawalgudangcabang;
@@ -22,6 +23,7 @@ use App\Models\Historibayarpenjualan;
 use App\Models\Jurnalumum;
 use App\Models\Kaskecil;
 use App\Models\Ledger;
+use App\Models\Pembelian;
 use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Saldoawalgudangcabang;
@@ -1011,8 +1013,33 @@ class LaporanaccountingController extends Controller
         $ledger_transaksi->orderBy('keuangan_ledger.tanggal');
         $ledger_transaksi->orderBy('keuangan_ledger.no_bukti');
 
-        // dd($ledger_transaksi->get());
-        // dd($ledger_transaksi->first());
+
+        //Pembelian
+
+        $pembelian = Detailpembelian::query();
+        $pembelian->select(
+            'pembelian_detail.kode_akun',
+            'nama_akun',
+            'pembelian.tanggal',
+            'pembelian.no_bukti',
+            DB::raw("'PEMBELIAN' AS sumber"),
+            DB::raw('IF(pembelian_detail.kode_transaksi="PNJ",pembelian_detail.keterangan_penjualan,pembelian.keterangan) as keterangan'),
+            DB::raw('IF(pembelian_detail.kode_transaksi="PNJ",pembelian_detail.jumlah,0) as jml_kredit'),
+            DB::raw('IF(pembelian_detail.kode_transaksi="PMB",pembelian_detail.jumlah,0) as jml_debet'),
+            DB::raw('IF(pembelian_detail.kode_transaksi="PMB",2,1) as urutan')
+        );
+        $pembelian->join('pembelian', 'pembelian_detail.no_bukti', '=', 'pembelian.no_bukti');
+        $pembelian->join('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun');
+        $pembelian->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $pembelian->whereBetween('pembelian_detail.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }   
+        $pembelian->orderBy('pembelian_detail.kode_akun');
+        $pembelian->orderBy('pembelian.tanggal');
+        $pembelian->orderBy('pembelian.no_bukti');
+
+        dd($pembelian->get());
+        
 
         $coa_kas_kecil = Coa::where('kode_transaksi', 'KKL');
         $coa_piutangcabang = Coa::where('kode_transaksi', 'PCB');
