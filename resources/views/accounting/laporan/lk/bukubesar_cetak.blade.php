@@ -49,6 +49,7 @@
                         $kode_akun = '';
                         $total_debet = 0;
                         $total_kredit = 0;
+                        $saldo = 0;
                     @endphp
                     @foreach ($bukubesar as $key => $d)
                         @php
@@ -57,9 +58,6 @@
                             $akun = @$bukubesar[$key + 1]->kode_akun;
                         @endphp
                         @if ($kode_akun != $d->kode_akun)
-                            @php
-                                $saldo = 0;
-                            @endphp
                             <tr style="background-color:rgba(116, 170, 227, 0.465);">
                                 <th style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} -
                                     {{ $d->nama_akun }}
