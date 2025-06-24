@@ -1038,7 +1038,7 @@ class LaporanaccountingController extends Controller
         $pembelian->orderBy('pembelian.tanggal');
         $pembelian->orderBy('pembelian.no_bukti');
 
-        dd($pembelian->get());
+        
         
 
         $coa_kas_kecil = Coa::where('kode_transaksi', 'KKL');
@@ -1101,7 +1101,11 @@ class LaporanaccountingController extends Controller
         $piutangcabang->orderBy('marketing_penjualan_historibayar.no_bukti');
 
 
-        $bukubesar = $ledger->unionAll($kaskecil)->unionAll($ledger_transaksi)->unionAll($piutangcabang)->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
+        $bukubesar = $ledger->unionAll($kaskecil)
+        ->unionAll($ledger_transaksi)
+        ->unionAll($piutangcabang)
+        ->unionAll($pembelian)
+        ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
         // dd($bukubesar->get());
 
