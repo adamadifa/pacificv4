@@ -52,7 +52,8 @@
                     @endphp
                     @foreach ($bukubesar as $key => $d)
                         @php
-                            $saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['saldo'] ?? null;
+                            // $saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['saldo'] ?? null;
+                            $saldo_awal = 0;
                             $akun = @$bukubesar[$key + 1]->kode_akun;
                         @endphp
                         @if ($kode_akun != $d->kode_akun)

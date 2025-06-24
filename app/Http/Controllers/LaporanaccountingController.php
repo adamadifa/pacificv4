@@ -935,31 +935,31 @@ class LaporanaccountingController extends Controller
             ->where('tanggal', '<', $request->dari)
             ->groupBy('kode_cabang');
 
-        $saldo_awal_ledger  = Saldoawalledger::select('bank.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
-            ->join('bank', 'bank.kode_bank', '=', 'keuangan_ledger_saldoawal.kode_bank')
-            ->leftJoinSub($mutasi_ledger, 'mutasi_ledger', function ($join) {
-                $join->on('keuangan_ledger_saldoawal.kode_bank', '=', 'mutasi_ledger.kode_bank');
-            })
-            ->where('bulan', $bulan)->where('tahun', $tahun);
+        // $saldo_awal_ledger  = Saldoawalledger::select('bank.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
+        //     ->join('bank', 'bank.kode_bank', '=', 'keuangan_ledger_saldoawal.kode_bank')
+        //     ->leftJoinSub($mutasi_ledger, 'mutasi_ledger', function ($join) {
+        //         $join->on('keuangan_ledger_saldoawal.kode_bank', '=', 'mutasi_ledger.kode_bank');
+        //     })
+        //     ->where('bulan', $bulan)->where('tahun', $tahun);
 
-        $saldo_awal_kaskecil = Saldoawalkaskecil::select('coa_kas_kecil.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
-            ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
-            ->leftJoinSub($mutasi_kaskecil, 'mutasi_kaskecil', function ($join) {
-                $join->on('keuangan_kaskecil_saldoawal.kode_cabang', '=', 'mutasi_kaskecil.kode_cabang');
-            })
-            ->where('bulan', $bulan)->where('tahun', $tahun);
+        // $saldo_awal_kaskecil = Saldoawalkaskecil::select('coa_kas_kecil.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
+        //     ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
+        //     ->leftJoinSub($mutasi_kaskecil, 'mutasi_kaskecil', function ($join) {
+        //         $join->on('keuangan_kaskecil_saldoawal.kode_cabang', '=', 'mutasi_kaskecil.kode_cabang');
+        //     })
+        //     ->where('bulan', $bulan)->where('tahun', $tahun);
 
-        $saldoawal = $saldo_awal_ledger->union($saldo_awal_kaskecil)->get()->toArray();
-        // Mengubah $saldo_awal_ledger menjadi koleksi
-        $saldoawalCollection = collect($saldoawal);
-
-
-        // $saldo = $akunCollection->firstWhere('kode_akun', '1-1244')['saldo'] ?? null;
-
-        // echo "Saldo akun 1-1244: " . number_format($saldo);
+        // $saldoawal = $saldo_awal_ledger->union($saldo_awal_kaskecil)->get()->toArray();
+        // // Mengubah $saldo_awal_ledger menjadi koleksi
+        // $saldoawalCollection = collect($saldoawal);
 
 
-        $data['saldoawalCollection'] = $saldoawalCollection;
+        // // $saldo = $akunCollection->firstWhere('kode_akun', '1-1244')['saldo'] ?? null;
+
+        // // echo "Saldo akun 1-1244: " . number_format($saldo);
+
+
+        // $data['saldoawalCollection'] = $saldoawalCollection;
         //Ledger
         $ledger = Ledger::query();
         $ledger->select(
