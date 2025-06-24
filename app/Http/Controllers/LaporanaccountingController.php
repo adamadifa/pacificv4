@@ -1039,8 +1039,32 @@ class LaporanaccountingController extends Controller
         $pembelian->orderBy('pembelian.no_bukti');
 
         
-        
+        //JURNAL UMUM
 
+        $jurnalumum = Jurnalumum::query();
+        $jurnalumum->select(
+            'accounting_jurnalumum.kode_akun',
+            'nama_akun',
+            'accounting_jurnalumum.tanggal',
+            'accounting_jurnalumum.kode_ju as no_bukti',
+            DB::raw("'JURNAL UMUM' AS sumber"),
+            'accounting_jurnalumum.keterangan',
+            DB::raw('IF(accounting_jurnalumum.debet_kredit="K",accounting_jurnalumum.jumlah,0) as jml_kredit'),
+            DB::raw('IF(accounting_jurnalumum.debet_kredit="D",accounting_jurnalumum.jumlah,0) as jml_debet'),
+            DB::raw('IF(accounting_jurnalumum.debet_kredit="D",2,1) as urutan')
+        );
+        $jurnalumum->whereBetween('accounting_jurnalumum.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $jurnalumum->whereBetween('accounting_jurnalumum.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }   
+        $jurnalumum->join('coa', 'accounting_jurnalumum.kode_akun', '=', 'coa.kode_akun');
+       
+        $jurnalumum->orderBy('accounting_jurnalumum.kode_akun');
+        $jurnalumum->orderBy('accounting_jurnalumum.tanggal');
+        $jurnalumum->orderBy('accounting_jurnalumum.kode_ju');
+
+
+        $jurnalumum = $jurnalumum->get();
         $coa_kas_kecil = Coa::where('kode_transaksi', 'KKL');
         $coa_piutangcabang = Coa::where('kode_transaksi', 'PCB');
 
