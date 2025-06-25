@@ -364,6 +364,8 @@ function getAkunpiutangcabang($kode_cabang)
         $akun = "1-1494";
     } else if ($kode_cabang == "TGR") {
         $akun = "1-1495";
+    }else if ($kode_cabang == "CRB") {
+        $akun = "1-1496";
     } else {
         $akun = "99";
     }
