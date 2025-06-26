@@ -55,6 +55,9 @@
         <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
         <section class="sheet padding-10mm">
             @if ($resign->kode_cabang == 'PST')
+                @php
+                    $nama_pt = 'CV MAKMUR PERMATA';
+                @endphp
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
@@ -72,6 +75,9 @@
                     </tr>
                 </table>
             @else
+                @php
+                    $nama_pt = $resign->nama_pt;
+                @endphp
                 <table style="width: 100%">
                     <tr>
 
@@ -111,8 +117,8 @@
             </table>
             </p>
             <p style="text-indent:1cm; text-align:justify">
-                Untuk selanjutnya disebut PIHAK PERTAMA ( I ) dan bertindak atas nama CV. Makmur Permata yang
-                beralamat di Jl. Perintis Kemerdekaan No. 160 Tasikmalaya.
+                Untuk selanjutnya disebut PIHAK PERTAMA ( I ) dan bertindak atas nama {{ $nama_pt }} yang
+                beralamat di {{ $resign->alamat_cabang }} .
             </p>
             <p>
             <table>
@@ -162,15 +168,13 @@
             <p style="text-indent:1cm; text-align:justify">
                 Untuk selanjutnya disebut PIHAK KEDUA ( II) atau pekerja.<br>
                 Pada tanggal {{ DateToIndo($resign->sampai) }} PIHAK PERTAMA ( I ) dan PIHAK KEDUA ( II ) bertempat di
-                CV
-                Makmur Permata Tasikmalaya telah mengadakan perundingan atau musyawarah mufakat yang mendalam secara
+                {{ $resign->nama_pt }} telah mengadakan perundingan atau musyawarah mufakat yang mendalam secara
                 kekeluargaan dengan menghasilkan kesepakatan sebagai berikut :
                 <br>
             <ol>
                 <li>
-                    PIHAK PERTAMA (I) dan PIHAK KEDUA (II) telah sepakat terkait kontrak kerja yang diputihkan mulai
-                    tanggal
-                    {{ DateToIndo($resign->sampai) }}
+                    PIHAK PERTAMA (I) dan PIHAK KEDUA (II) telah sepakat terkait kontrak kerja yang diakhiri
+                    {{ DateToIndo($resign->tanggal) }}
                 </li>
                 <li>
                     PIHAK PERTAMA ( I ) bersedia untuk memberikan kompensasi atau kebijakan kepada PIHAK KEDUA ( II )
@@ -406,7 +410,8 @@
             </p>
             <table class="datatable7">
                 <tr>
-                    <td colspan="4" style="text-align: center">Tasikmalaya, {{ DateToIndo($resign->sampai) }}</td>
+                    <td colspan="4" style="text-align: center">{{ $resign->kode_cabang != 'PST' ? $resign->nama_cabang : 'Tasikmalaya' }},
+                        {{ DateToIndo($resign->tanggal) }}</td>
                 </tr>
                 <tr>
                     <td style="text-align:center">PIHAK KEDUA</td>
