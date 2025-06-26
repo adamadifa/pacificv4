@@ -57,7 +57,7 @@
                     @endphp
                     @foreach ($rekapbahankemasan as $key => $d)
                         @php
-                            $subtotal = $d->jumlah * $d->harga;
+                            $subtotal = ROUND($d->jumlah * $d->harga, 2);
                             $total = $subtotal + $d->penyesuaian - $d->jml_jk;
                             $kode_supplier = @$rekapbahankemasan[$key + 1]->kode_supplier;
 
