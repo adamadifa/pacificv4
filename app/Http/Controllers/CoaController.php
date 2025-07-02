@@ -18,28 +18,35 @@ class CoaController extends Controller
         // // Function to get sub-accounts recursively
         // $accounts = $this->getSubAccounts($accounts);
 
-        $accounts = Coa::orderby('kode_akun')->whereNotIn('kode_akun', ['1', '2'])->get();
+        $allAccounts = Coa::orderby('kode_akun')->whereNotIn('kode_akun', ['1', '2', '0-0000'])->get();
 
-        // Build the hierarchy
-        $accountsHierarchy = $this->buildHierarchy($accounts);
 
-        return view('accounting.coa.index', compact('accountsHierarchy'));
+        return view('accounting.coa.index', compact('allAccounts'));
     }
 
 
-    private function buildHierarchy($accounts, $parentId = 0)
+    private function buildTree($elements, $parentId = 0)
     {
-        $tree = [];
-        foreach ($accounts as $account) {
-            if ($account->sub_akun == $parentId) {
-                $children = $this->buildHierarchy($accounts, $account->kode_akun);
+
+
+        $branch = [];
+
+        foreach ($elements as $element) {
+            // Periksa apakah 'sub_akun' elemen ini sama dengan parentId yang dicari
+            if ($element->sub_akun == $parentId) {
+                // Cari semua anak dari elemen ini
+                $children = $this->buildTree($elements, $element->kode_akun);
+
                 if ($children) {
-                    $account->subAccounts = $children;
+                    // Jika ada anak, tambahkan sebagai properti 'children'
+                    $element->children = $children;
                 }
-                $tree[] = $account;
+
+                $branch[] = $element;
             }
         }
-        return $tree;
+
+        return $branch;
     }
 
 

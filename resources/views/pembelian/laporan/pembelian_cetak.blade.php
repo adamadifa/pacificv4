@@ -67,7 +67,7 @@
                     @foreach ($pembelian as $key => $d)
                         @php
                             $no_bukti = @$pembelian[$key + 1]->no_bukti;
-                            $subtotal = $d->jumlah * $d->harga;
+                            $subtotal = ROUND($d->jumlah * $d->harga, 2);
                             $total = $subtotal + $d->penyesuaian;
                             if ($d->ppn == '1') {
                                 $cekppn = '&#10004;';

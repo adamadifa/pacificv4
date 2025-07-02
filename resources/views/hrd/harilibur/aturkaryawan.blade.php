@@ -2,15 +2,17 @@
     <div class="row mb-3">
         <div class="col">
             <div class="d-flex justify-content-between">
-                <button class="btn btn-primary" id="tambahkansemua"><i class="ti ti-plus me-1"></i> Tambahkan Semua </button>
-                <button class="btn btn-danger" id="batalkansemua"><i class="ti ti-circle-minus me-1"></i> Batalkan Semua </button>
+                <button class="btn btn-primary" id="tambahkansemua"><i class="ti ti-plus me-1"></i> Tambahkan Semua
+                </button>
+                <button class="btn btn-danger" id="batalkansemua"><i class="ti ti-circle-minus me-1"></i> Batalkan Semua
+                </button>
             </div>
         </div>
     </div>
     <div class="row mb-3">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group" select2="select2Group"
-                upperCase="true" />
+            <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
+                select2="select2Group" upperCase="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon label="Nama Karyawan" name="nama_karyawan" icon="ti ti-user" />
@@ -72,12 +74,14 @@
         loadkaryawan();
 
         form.find("#kode_group").change(function() {
-            $("#loadkaryawan").html(`<tr><td colspan="5" class="text-center">Tunggu Sebentar...</td></tr>`);
+            $("#loadkaryawan").html(
+                `<tr><td colspan="5" class="text-center">Tunggu Sebentar...</td></tr>`);
             loadkaryawan();
         });
 
         form.find("#nama_karyawan").keyup(function() {
-            $("#loadkaryawan").html(`<tr><td colspan="5" class="text-center">Tunggu Sebentar...</td></tr>`);
+            $("#loadkaryawan").html(
+                `<tr><td colspan="5" class="text-center">Tunggu Sebentar...</td></tr>`);
             loadkaryawan();
         });
 
@@ -116,7 +120,8 @@
             e.preventDefault();
             const kode_libur = "{{ $harilibur->kode_libur }}";
             const kode_group = form.find("#kode_group").val();
-            $("#loadkaryawan").html(`<tr><td colspan="5" class="text-center">Tunggu Sebentar....</td></tr>`);
+            $("#loadkaryawan").html(
+                `<tr><td colspan="5" class="text-center">Tunggu Sebentar....</td></tr>`);
             $.ajax({
                 type: 'POST',
                 url: `/harilibur/tambahkansemua`,
@@ -145,7 +150,8 @@
             e.preventDefault();
             const kode_libur = "{{ $harilibur->kode_libur }}";
             const kode_group = form.find("#kode_group").val();
-            $("#loadkaryawan").html(`<tr><td colspan="5" class="text-center">Tunggu Sebentar....</td></tr>`);
+            $("#loadkaryawan").html(
+                `<tr><td colspan="5" class="text-center">Tunggu Sebentar....</td></tr>`);
             $.ajax({
                 type: 'POST',
                 url: `/harilibur/batalkansemua`,

@@ -86,7 +86,11 @@ class Kasbon extends Model
                 $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
                 $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
             } else {
-                $query->where('hrd_jabatan.kategori', 'NM');
+                if ($user->hasRole('sales marketing manager')) {
+                    $query->where('hrd_karyawan.kode_jabatan', '!=', 'J07');
+                } else {
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                }
                 $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
                 $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
             }

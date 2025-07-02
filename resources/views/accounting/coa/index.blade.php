@@ -16,23 +16,24 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table">
-                                <thead class="table-dark">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Kode Akun</th>
+                                    <th>Nama Akun</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- Memulai perulangan untuk menampilkan setiap baris akun --}}
+                                {{-- Loop semua akun yang dikirim dari controller --}}
+                                @foreach ($allAccounts as $account)
                                     <tr>
-                                        <th>Akun</th>
+                                        <td>{{ $account->kode_akun }}</td>
+                                        <td>{{ $account->nama_akun }}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <ul class="accordion" id="chartAccordion">
-                            @foreach ($accountsHierarchy as $account)
-                                @include('accounting.coa.account', ['account' => $account])
-                            @endforeach
-                        </ul>
+                                @endforeach
+                            </tbody>
+                        </table>
 
                     </div>
                 </div>

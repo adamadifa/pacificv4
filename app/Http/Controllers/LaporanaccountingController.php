@@ -20,6 +20,7 @@ use App\Models\Detailsaldoawalgudangjadi;
 use App\Models\Detailsaldoawalmutasiproduksi;
 use App\Models\Detailsaldoawalpiutangpelanggan;
 use App\Models\Historibayarpenjualan;
+use App\Models\Jurnalkoreksi;
 use App\Models\Jurnalumum;
 use App\Models\Kaskecil;
 use App\Models\Ledger;
@@ -1006,7 +1007,7 @@ class LaporanaccountingController extends Controller
         $ledger_transaksi->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $ledger_transaksi->whereBetween('keuangan_ledger.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
-        }   
+        }
         $ledger_transaksi->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
         $ledger_transaksi->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
         $ledger_transaksi->orderBy('keuangan_ledger.kode_akun');
@@ -1033,12 +1034,12 @@ class LaporanaccountingController extends Controller
         $pembelian->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $pembelian->whereBetween('pembelian_detail.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
-        }   
+        }
         $pembelian->orderBy('pembelian_detail.kode_akun');
         $pembelian->orderBy('pembelian.tanggal');
         $pembelian->orderBy('pembelian.no_bukti');
 
-        
+
         //JURNAL UMUM
 
         $jurnalumum = Jurnalumum::query();
@@ -1056,15 +1057,42 @@ class LaporanaccountingController extends Controller
         $jurnalumum->whereBetween('accounting_jurnalumum.tanggal', [$request->dari, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $jurnalumum->whereBetween('accounting_jurnalumum.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
-        }   
+        }
         $jurnalumum->join('coa', 'accounting_jurnalumum.kode_akun', '=', 'coa.kode_akun');
-       
+
         $jurnalumum->orderBy('accounting_jurnalumum.kode_akun');
         $jurnalumum->orderBy('accounting_jurnalumum.tanggal');
         $jurnalumum->orderBy('accounting_jurnalumum.kode_ju');
 
 
-    //    dd($jurnalumum->get());
+
+        //JURNAL Koreksi
+
+        $jurnalkoreksi = Jurnalkoreksi::query();
+        $jurnalkoreksi->select(
+            'pembelian_jurnalkoreksi.kode_akun',
+            'nama_akun',
+            'pembelian_jurnalkoreksi.tanggal',
+            'pembelian_jurnalkoreksi.no_bukti',
+            DB::raw("'JURNAL KOREKSI' AS sumber"),
+            'pembelian_jurnalkoreksi.keterangan',
+            DB::raw('IF(pembelian_jurnalkoreksi.debet_kredit="K",pembelian_jurnalkoreksi.jumlah*harga,0) as jml_kredit'),
+            DB::raw('IF(pembelian_jurnalkoreksi.debet_kredit="D",pembelian_jurnalkoreksi.jumlah*harga,0) as jml_debet'),
+            DB::raw('IF(pembelian_jurnalkoreksi.debet_kredit="D",2,1) as urutan')
+        );
+        $jurnalkoreksi->whereBetween('pembelian_jurnalkoreksi.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $jurnalkoreksi->whereBetween('pembelian_jurnalkoreksi.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $jurnalkoreksi->join('coa', 'pembelian_jurnalkoreksi.kode_akun', '=', 'coa.kode_akun');
+
+        $jurnalkoreksi->orderBy('pembelian_jurnalkoreksi.kode_akun');
+        $jurnalkoreksi->orderBy('pembelian_jurnalkoreksi.tanggal');
+        $jurnalkoreksi->orderBy('pembelian_jurnalkoreksi.no_bukti');
+
+        // dd($jurnalkoreksi->get());
+
+        //    dd($jurnalumum->get());
         $coa_kas_kecil = Coa::where('kode_transaksi', 'KKL');
         $coa_piutangcabang = Coa::where('kode_transaksi', 'PCB');
 
@@ -1126,11 +1154,12 @@ class LaporanaccountingController extends Controller
 
 
         $bukubesar = $ledger->unionAll($kaskecil)
-        ->unionAll($ledger_transaksi)
-        ->unionAll($piutangcabang)
-        ->unionAll($pembelian)
-        ->unionAll($jurnalumum)
-        ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
+            ->unionAll($ledger_transaksi)
+            ->unionAll($piutangcabang)
+            ->unionAll($pembelian)
+            ->unionAll($jurnalumum)
+            ->unionAll($jurnalkoreksi)
+            ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
         // dd($bukubesar->get());
 
