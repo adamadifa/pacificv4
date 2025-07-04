@@ -1,21 +1,6 @@
 <form action="{{ route('sakasbesarkeuangan.store') }}" method="POST" id="formLedger">
     @csrf
-    @hasanyrole($roles_show_cabang)
-        <div class="form-group mb-4">
-            <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-                <option value="">Pilih Cabang</option>
-                @foreach ($cabang as $d)
-                    <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
-                @endforeach
-            </select>
-        </div>
-    @endhasanyrole
-
-    <div class="divider text-start">
-        <div class="divider-text">
-            <i class="ti ti-file-description me-2"></i>
-        </div>
-    </div>
+   <input type="text" name="kode_cabang" value="PST">
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
 
     <x-textarea label="Keterangan" name="keterangan" />

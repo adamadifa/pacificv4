@@ -71,7 +71,12 @@ class SaldokasbesarkeuanganController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $data['user'] = $user;
         
-        return view('keuangan.mutasikeuangan.sakasbesarkeuangan.create', $data);
+        if(request()->is('sakasbesarkeuanganpusat')){
+            return view('keuangan.mutasikeuangan.sakasbesarkeuangan.createpusat', $data);
+        }else{
+
+            return view('keuangan.mutasikeuangan.sakasbesarkeuangan.create', $data);
+        }
     }
 
 
