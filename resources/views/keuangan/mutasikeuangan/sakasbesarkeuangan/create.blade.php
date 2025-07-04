@@ -1,7 +1,8 @@
 <form action="{{ route('sakasbesarkeuangan.store') }}" method="POST" id="formLedger">
     @csrf
+    @if(!request()->is('sakasbesarkeuanganpusat'))
     @hasanyrole($roles_show_cabang)
-        @if (request()->is('sakasbesarkeuanganpusat'))
+        
             <div class="form-group mb-4">
                 <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
                     <option value="">Pilih Cabang</option>
@@ -10,16 +11,17 @@
                     @endforeach
                 </select>
             </div>
-        @else
-            <input type="hidden" name="kode_cabang" value="PST">
-        @endif
     @endhasanyrole
+    
 
     <div class="divider text-start">
         <div class="divider-text">
             <i class="ti ti-file-description me-2"></i>
         </div>
     </div>
+    @else
+    <input type="hidden" name="kode_cabang" value="PST">
+    @endif
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
 
     <x-textarea label="Keterangan" name="keterangan" />

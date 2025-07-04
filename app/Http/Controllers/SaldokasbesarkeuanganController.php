@@ -68,6 +68,9 @@ class SaldokasbesarkeuanganController extends Controller
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
+        $user = User::findorfail(auth()->user()->id);
+        $data['user'] = $user;
+        
         return view('keuangan.mutasikeuangan.sakasbesarkeuangan.create', $data);
     }
 
