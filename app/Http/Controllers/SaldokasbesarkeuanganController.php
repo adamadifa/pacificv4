@@ -42,6 +42,10 @@ class SaldokasbesarkeuanganController extends Controller
         if (!empty($kode_cabang)) {
             $qsaldokasbesar->where('keuangan_saldokasbesar.kode_cabang', $kode_cabang);
         }
+
+        if(request()->is('sakasbesarkeuanganpusat')){
+            $qsaldokasbesar->where('keuangan_saldokasbesar.kode_cabang', 'PST');
+        }
         $qsaldokasbesar->orderBy('keuangan_saldokasbesar.tanggal');
         $saldokasbesar = $qsaldokasbesar->get();
 
