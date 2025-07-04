@@ -1,6 +1,6 @@
 <form action="{{ route('sakasbesarkeuangan.store') }}" method="POST" id="formLedger">
     @csrf
-   <input type="text" name="kode_cabang" value="PST">
+   <input type="hidden" name="kode_cabang" value="PST">
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
 
     <x-textarea label="Keterangan" name="keterangan" />
