@@ -1,14 +1,18 @@
 <form action="{{ route('sakasbesarkeuangan.store') }}" method="POST" id="formLedger">
     @csrf
     @hasanyrole($roles_show_cabang)
-        <div class="form-group mb-4">
-            <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-                <option value="">Pilih Cabang</option>
-                @foreach ($cabang as $d)
-                    <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
-                @endforeach
-            </select>
-        </div>
+        @if (request()->is('sakasbesarkeuanganpusat'))
+            <div class="form-group mb-4">
+                <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
+                    <option value="">Pilih Cabang</option>
+                    @foreach ($cabang as $d)
+                        <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
+                    @endforeach
+                </select>
+            </div>
+        @else
+            <input type="hidden" name="kode_cabang" value="PST">
+        @endif
     @endhasanyrole
 
     <div class="divider text-start">
