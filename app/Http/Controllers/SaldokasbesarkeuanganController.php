@@ -55,7 +55,7 @@ class SaldokasbesarkeuanganController extends Controller
 
         $data['saldokasbesar'] = $saldokasbesar;
         if(request()->is('sakasbesarkeuanganpusat')){   
-            return view('keuangan.mutasikeuangan.sakasbesarkeuanganpusat.index', $data);
+            return view('keuangan.mutasikeuangan.sakasbesarkeuangan.indexpusat', $data);
         }else{
 
             return view('keuangan.mutasikeuangan.sakasbesarkeuangan.index', $data);
