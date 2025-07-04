@@ -118,7 +118,8 @@ class SaldokasbesarkeuanganController extends Controller
             'tanggal' => $request->tanggal,
             'keterangan' => $request->keterangan,
             'jumlah' => toNumber($request->jumlah),
-            'kode_cabang' => $kode_cabang
+            'kode_cabang' => $kode_cabang,
+            'debet_kredit' => $request->debet_kredit ?? 'K',
         ]);
 
         return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));

@@ -51,17 +51,25 @@
                                         <tr>
                                             <th>Tanggal</th>
                                             <th>Keterangan</th>
-                                            <th>Saldo</th>
+                                            <th>DEBET</th>
+                                            <th>KREDIT</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($saldokasbesar as $d)
+                                        @php
+                                            $debet = $d->debet_kredit == 'D' ? $d->jumlah : 0;
+                                            $kredit = $d->debet_kredit == 'K' ? $d->jumlah : 0;
+                                        @endphp
                                             <tr>
                                                 <td>{{ DateToIndo($d->tanggal) }}</td>
                                                 <td>{{ $d->keterangan }}</td>
                                                 <td class="text-end">
-                                                    {{ formatAngkaDesimal($d->jumlah) }}
+                                                    {{ formatAngkaDesimal($debet) }}
+                                                </td>
+                                                <td class="text-end">
+                                                    {{ formatAngkaDesimal($kredit) }}
                                                 </td>
                                                 <td>
                                                     <form method="POST" name="deleteform" class="deleteform"

@@ -5,7 +5,14 @@
 
     <x-textarea label="Keterangan" name="keterangan" />
     <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
-
+    <div class="form-group">
+        <label for="debet_kredit">Debet / Kredit</label>
+        <select name="debet_kredit" id="debet_kredit" class="form-select">
+            <option value="">Pilih Debet / Kredit</option>
+            <option value="D">Debet</option>
+            <option value="K">Kredit</option>
+        </select>
+    </div>
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
@@ -45,6 +52,7 @@
             const tanggal = form.find("#tanggal").val();
             const keterangan = form.find("#keterangan").val();
             const jumlah = form.find("#jumlah").val();
+            const debet_kredit = form.find("#debet_kredit").val();
             if (kode_cabang == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -86,6 +94,17 @@
                     showConfirmButton: true,
                     didClose: (e) => {
                         form.find("#jumlah").focus();
+                    },
+                });
+                return false;
+            } else if (debet_kredit == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Debet / Kredit Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        form.find("#debet_kredit").focus();
                     },
                 });
                 return false;
