@@ -121,7 +121,7 @@
             loading();
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text('Input Saldo Kas Besar');
-            $("#loadmodal").load('/sakasbesarkeuangan/create');
+            $("#loadmodal").load('/sakasbesarkeuangan/createpusat');
         });
 
         $(".btnEdit").click(function(e) {

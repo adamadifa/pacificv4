@@ -1311,6 +1311,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/sakasbesarkeuangan', 'index')->name('sakasbesarkeuangan.index')->can('sakasbesarkeuangan.index');
         Route::get('/sakasbesarkeuanganpusat', 'index')->name('sakasbesarkeuanganpusat.index')->can('sakasbesarkeuangan.index');
         Route::get('/sakasbesarkeuangan/create', 'create')->name('sakasbesarkeuangan.create')->can('sakasbesarkeuangan.create');
+        Route::get('/sakasbesarkeuangan/createpusat', 'create')->name('sakasbesarkeuangan.create')->can('sakasbesarkeuangan.create');
         Route::post('/sakasbesarkeuangan/store', 'store')->name('sakasbesarkeuangan.store')->can('sakasbesarkeuangan.store');
         Route::get('/sakasbesarkeuangan/{id}/edit', 'edit')->name('sakasbesarkeuangan.edit')->can('sakasbesarkeuangan.edit');
         Route::put('/sakasbesarkeuangan/{id}/update', 'update')->name('sakasbesarkeuangan.update')->can('sakasbesarkeuangan.update');

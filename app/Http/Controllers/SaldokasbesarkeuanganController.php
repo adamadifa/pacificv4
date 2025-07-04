@@ -71,7 +71,7 @@ class SaldokasbesarkeuanganController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $data['user'] = $user;
         
-        if(request()->is('sakasbesarkeuanganpusat')){
+        if(request()->is('saldokasbesarkeuangan/createpusat')){
             return view('keuangan.mutasikeuangan.sakasbesarkeuangan.createpusat', $data);
         }else{
 
