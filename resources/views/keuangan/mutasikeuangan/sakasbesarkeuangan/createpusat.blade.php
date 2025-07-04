@@ -6,7 +6,6 @@
     <x-textarea label="Keterangan" name="keterangan" />
     <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
     <div class="form-group">
-        <label for="debet_kredit">Debet / Kredit</label>
         <select name="debet_kredit" id="debet_kredit" class="form-select">
             <option value="">Pilih Debet / Kredit</option>
             <option value="D">Debet</option>
