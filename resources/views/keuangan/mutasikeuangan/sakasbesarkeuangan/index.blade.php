@@ -22,22 +22,27 @@
                             <form action="{{ route('sakasbesarkeuangan.index') }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
                                     </div>
                                 </div>
-                                @hasanyrole($roles_show_cabang)
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                                upperCase="true" selected="{{ Request('kode_cabang') }}" select2="select2Kodecabangsearch" />
+                                @if (!request()->is('sakasbesarkeuanganpusat'))
+                                    @hasanyrole($roles_show_cabang)
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                                <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang"
+                                                    key="kode_cabang" textShow="nama_cabang" upperCase="true"
+                                                    selected="{{ Request('kode_cabang') }}"
+                                                    select2="select2Kodecabangsearch" />
+                                            </div>
                                         </div>
-                                    </div>
-                                @endrole
+                                    @endrole
+                                @endif
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group mb-3">
