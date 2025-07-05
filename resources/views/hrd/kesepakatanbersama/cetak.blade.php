@@ -190,7 +190,7 @@
                             $masakerjakb = hitungMasakerja($nextmonth, $kontrak->sampai);
                            
                         @endphp
-                        {{ $nextmonth }} s/d {{ $kontrak->sampai }}
+                        {{ $jmk->tanggal }} - {{ $kontrak->dari }} - {{ $nextmonth }} s/d {{ $kontrak->sampai }}
                         {{ $masakerjakb['tahun'] }} Tahun {{ $masakerjakb['bulan'] }} Bulan {{ $masakerjakb['hari'] }} Hari
                     </th>
                 </tr>
