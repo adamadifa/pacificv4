@@ -186,8 +186,11 @@
                         @php
                             $tanggal = $jmk != null ? $jmk->tanggal : $kontrak->dari;
                             $nextmonth = date('Y-m-d', strtotime('+1 month', strtotime($tanggal)));
+                            
                             $masakerjakb = hitungMasakerja($nextmonth, $kontrak->sampai);
+                           
                         @endphp
+                        {{ $nextmonth }} s/d {{ $kontrak->sampai }}
                         {{ $masakerjakb['tahun'] }} Tahun {{ $masakerjakb['bulan'] }} Bulan {{ $masakerjakb['hari'] }} Hari
                     </th>
                 </tr>
