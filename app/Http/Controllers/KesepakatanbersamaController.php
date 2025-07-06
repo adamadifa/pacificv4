@@ -183,6 +183,7 @@ class KesepakatanbersamaController extends Controller
 
         $data['kontrak'] = Kontrakkaryawan::where('no_kontrak', $data['kesepakatanbersama']->no_kontrak)->first();
         $data['jmk'] = Jasamasakerja::where('nik', $data['kesepakatanbersama']->nik)
+            ->where('tanggal', '<', $data['kesepakatanbersama']->tanggal)
             ->orderBy('tanggal', 'desc')
             ->first();
         $data['pihak_satu'] = config('hrd.pihak_satu');
