@@ -264,6 +264,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Saldo Kas Besar Cabang</th>
+                                    <td>{{  $saldo_kasbesar_cabang ?formatRupiah($saldo_kasbesar_cabang->jumlah) : 'Belum Diinput' }}</td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
                 {{-- <div class="row">
                     @foreach ($kategori as $d)
                         <div class="col-lg-3 col-sm-6 mb-2">

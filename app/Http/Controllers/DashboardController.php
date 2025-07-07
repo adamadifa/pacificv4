@@ -28,6 +28,7 @@ use App\Models\Saldoawalgudangcabang;
 use App\Models\Saldoawalgudangjadi;
 use App\Models\Saldoawalledger;
 use App\Models\Saldoawalmutasikeungan;
+use App\Models\Saldokasbesarkeuangan;
 use App\Models\Salesman;
 use App\Models\User;
 use Carbon\Carbon;
@@ -206,6 +207,17 @@ class DashboardController extends Controller
             ->groupBy('keuangan_mutasi.tanggal', 'keuangan_mutasi_kategori.nama_kategori')
             ->orderBy('keuangan_mutasi.tanggal', 'asc')
             ->get();
+
+
+            $qsaldo_kasbesar_cabang = Saldokasbesarkeuangan::query();
+            if(!empty($request->sampai)){
+                $qsaldo_kasbesar_cabang->where('tanggal', $request->sampai);
+            }else{
+                $qsaldo_kasbesar_cabang->where('tanggal', date('Y-m-d'));
+            }
+            $qsaldo_kasbesar_cabang->where('kode_cabang', 'PST');
+            $data['saldo_kasbesar_cabang'] = $qsaldo_kasbesar_cabang->first();
+
         if ($request->export == 1) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
