@@ -165,7 +165,7 @@
                                                 <th>Saldo</th>
                                             </tr>
                                         </thead>
-                                        <tbody style="font-size: 12px !important">
+                                        <tbody>
                                             @foreach ($bank as $d)
                                                 <tr>
                                                     <td>
