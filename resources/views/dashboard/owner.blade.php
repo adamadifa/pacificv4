@@ -70,8 +70,8 @@
         #rekapkategori tfoot tr td {
             position: sticky;
             bottom: 0;
-            background-color: #212529;
-            color: #fff;
+            background-color: #212529 !important;
+            color: #fff !important;
             z-index: 2;
         }
 
