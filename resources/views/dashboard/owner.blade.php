@@ -70,8 +70,8 @@
         #rekapkategori tfoot tr td {
             position: sticky;
             bottom: 0;
-            background-color: #212529;
-            color: #fff;
+            /* background-color: #212529;
+            color: #fff; */
             z-index: 2;
         }
 
@@ -254,7 +254,7 @@
                                     @endforeach
                                 </tbody>
                                 <tfoot>
-                                    <tr class="table-dark">
+                                    <tr>
                                         <td colspan="2" class="text-end">Total</td>
                                         <td class="text-end">{{ formatAngkaDesimal($totaldebet) }}</td>
                                         <td class="text-end">{{ formatAngkaDesimal($totalkredit) }}</td>
