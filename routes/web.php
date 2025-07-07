@@ -106,6 +106,7 @@ use App\Http\Controllers\PembayaranpjpController;
 use App\Http\Controllers\PembayarantransferController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PencairanprogramController;
+use App\Http\Controllers\PencairanprogramenambulanController;
 use App\Http\Controllers\PencairanprogramikatanController;
 use App\Http\Controllers\PenilaiankaryawanController;
 use App\Http\Controllers\PenjualanController;
@@ -2177,6 +2178,27 @@ Route::middleware('auth')->group(function () {
         Route::get('/pencairanprogramikatan/{kode_pelanggan}/{kode_pencairan}/detailfaktur', 'detailfaktur')->name('pencairanprogramikatan.detailfaktur')->can('pencairanprogram.create');
         Route::delete('/pencairanprogramikatan/{kode_pencairan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('pencairanprogramikatan.deletepelanggan')->can('pencairanprogram.create');
         Route::get('/pencairanprogramikatan/{kode_pencairan}/upload', 'upload')->name('pencairanprogramikatan.upload')->can('pencairanprogramikt.upload');
+    });
+
+
+    Route::controller(PencairanprogramenambulanController::class)->group(function () {
+        Route::get('/pencairanprogramenambulan', 'index')->name('pencairanprogramenambulan.index')->can('pencairanprogramenambulan.index');
+        Route::get('/pencairanprogramenambulan/create', 'create')->name('pencairanprogramenambulan.create')->can('pencairanprogramenambulan.create');
+        Route::post('/pencairanprogramenambulan/store', 'store')->name('pencairanprogramenambulan.store')->can('pencairanprogramenambulan.store');
+        Route::get('/pencairanprogramenambulan/{kode_pencairan}/setpencairan', 'setpencairan')->name('pencairanprogramenambulan.setpencairan')->can('pencairanprogramenambulan.create');
+        Route::delete('/pencairanprogramenambulan/{kode_pencairan}/destroy', 'destroy')->name('pencairanprogramenambulan.delete')->can('pencairanprogramenambulan.delete');
+        Route::get('/pencairanprogramenambulan/{kode_pencairan}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogramenambulan.tambahpelanggan')->can('pencairanprogramenambulan.create');
+        Route::post('/pencairanprogramenambulan/getpelanggan', 'getpelanggan')->name('pencairanprogramenambulan.getpelanggan')->can('pencairanprogramenambulan.create');
+        Route::post('/pencairanprogramenambulan/{kode_pencairan}/storepelanggan', 'storepelanggan')->name('pencairanprogramenambulan.storepelanggan')->can('pencairanprogramenambulan.create');
+
+        Route::get('/pencairanprogramenambulan/{kode_pencairan}/approve', 'approve')->name('pencairanprogramenambulan.approve')->can('ajuanprogramenambulan.approve');
+        Route::post('/pencairanprogramenambulan/{kode_pencairan}/storeapprove', 'storeapprove')->name('pencairanprogramenambulan.storeapprove')->can('ajuanprogramenambulan.approve');
+        // Route::get('/pencairanprogramikatan/{kode_pencairan}/{kode_pelanggan}/upload', 'upload')->name('pencairanprogramikatan.upload')->can('pencairanprogramikt.upload');
+        Route::post('/pencairanprogramenambulan/{kode_pencairan}/storeupload', 'storeupload')->name('pencairanprogramenambulan.storeupload')->can('pencairanprogramenambulan.upload');
+        Route::get('/pencairanprogramenambulan/{kode_pencairan}/cetak', 'cetak')->name('pencairanprogramenambulan.cetak')->can('pencairanprogramenambulan.show');
+        Route::get('/pencairanprogramenambulan/{kode_pelanggan}/{kode_pencairan}/detailfaktur', 'detailfaktur')->name('pencairanprogramenambulan.detailfaktur')->can('pencairanprogramenambulan.create');
+        Route::delete('/pencairanprogramenambulan/{kode_pencairan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('pencairanprogramenambulan.deletepelanggan')->can('pencairanprogramenambulan.create');
+        Route::get('/pencairanprogramenambulan/{kode_pencairan}/upload', 'upload')->name('pencairanprogramenambulan.upload')->can('pencairanprogramenambulan.upload');
     });
 
 

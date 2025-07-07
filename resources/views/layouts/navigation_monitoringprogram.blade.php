@@ -17,7 +17,7 @@
         @can('ajuanprogramenambulan.index')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('ajuanprogramenambulan.index') }}"
-                    class="nav-link {{ request()->is(['ajuanprogramenambulan', 'ajuanprogramenambulan/*', 'pencairanprogramikatan']) ? 'active' : '' }}">
+                    class="nav-link {{ request()->is(['ajuanprogramenambulan', 'ajuanprogramenambulan/*', 'pencairanprogramenambulan']) ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i>Program Ikatan Enam Bulan
                 </a>
             </li>
