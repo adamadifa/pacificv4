@@ -248,16 +248,16 @@
                                             <td>{{ $d->nama_kategori }}</td>
                                             {{-- <td>{{ $d->nama_bank }}</td>
                                             <td>{{ $d->no_rekening }}</td> --}}
-                                            <td class="right">{{ formatAngkaDesimal($d->debet) }}</td>
-                                            <td class="right">{{ formatAngkaDesimal($d->kredit) }}</td>
+                                            <td class="text-end">{{ formatAngkaDesimal($d->debet) }}</td>
+                                            <td class="text-end">{{ formatAngkaDesimal($d->kredit) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                                 <tfoot>
                                     <tr class="table-dark">
-                                        <td colspan="2" class="right">Total</td>
-                                        <td class="right">{{ formatAngkaDesimal($totaldebet) }}</td>
-                                        <td class="right">{{ formatAngkaDesimal($totalkredit) }}</td>
+                                        <td colspan="2" class="text-end">Total</td>
+                                        <td class="text-end">{{ formatAngkaDesimal($totaldebet) }}</td>
+                                        <td class="text-end">{{ formatAngkaDesimal($totalkredit) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
