@@ -82,11 +82,11 @@
             width: 120px;
         }
 
-        #rekapkategori th:nth-child(2),
+        /* #rekapkategori th:nth-child(2),
         #rekapkategori td:nth-child(2) {
             min-width: 150px;
             width: 150px;
-        }
+        } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -255,7 +255,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="2" class="text-end">Total</td>
+                                        <td colspan="2">TOTAL</td>
                                         <td class="text-end">{{ formatAngkaDesimal($totaldebet) }}</td>
                                         <td class="text-end">{{ formatAngkaDesimal($totalkredit) }}</td>
                                     </tr>
