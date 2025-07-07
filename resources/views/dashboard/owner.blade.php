@@ -264,13 +264,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col">
                         <table class="table table-bordered">
-                            <thead class="table-dark">
+                            <thead>
                                 <tr>
-                                    <th>Saldo Kas Besar Cabang</th>
-                                    <td>{{  $saldo_kasbesar_cabang ?formatRupiah($saldo_kasbesar_cabang->jumlah) : 'Belum Diinput' }}</td>
+                                    <th class="table-dark">Saldo Kas Besar Cabang</th>
+                                    <td class="text-end">{{  $saldo_kasbesar_cabang ?formatRupiah($saldo_kasbesar_cabang->jumlah) : 'Belum Diinput' }}</td>
                                 </tr>
                             </thead>
                         </table>
