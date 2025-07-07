@@ -269,8 +269,13 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th class="table-dark" style="color:white !important">Saldo Kas Besar Cabang</th>
-                                    <td class="text-end">{{  $saldo_kasbesar_cabang ?formatRupiah($saldo_kasbesar_cabang->jumlah) : 'Belum Diinput' }}</td>
+                                    <th class="table-dark" style="color:white !important">Net Profit</th>
+                                    <td class="text-end">
+                                        @php
+                                            $net_profit = $totalkredit - $totaldebet;
+                                        @endphp
+                                        {{ formatRupiah($net_profit) }}
+                                    </td>
                                 </tr>
                             </thead>
                         </table>
