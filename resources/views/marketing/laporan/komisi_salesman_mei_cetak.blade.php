@@ -402,7 +402,7 @@
                             <th class="right">{{ formatAngka(${"total_realisasi_$k->kode_kategori"}) }}</th>
                             <th>
                                 @php
-                                    $ratiopoinsmm = ${"total_realisasi_$k->kode_kategori"} / ${"total_target_$k->kode_kategori"};
+                                    $ratiopoinsmm = !empty(${"total_realisasi_$k->kode_kategori"}) ? ${"total_realisasi_$k->kode_kategori"} / ${"total_target_$k->kode_kategori"} : 0;
                                     if ($ratiopoinsmm > 1) {
                                         $poinsmm = $k->poin;
                                     } else {
