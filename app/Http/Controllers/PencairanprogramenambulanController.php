@@ -429,4 +429,133 @@ class PencairanprogramenambulanController extends Controller
         $data['peserta'] = $peserta;
         return view('worksheetom.pencairanprogramenambulan.getpelanggan', $data);
     }
+
+
+    public function storepelanggan(Request $request, $kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $kode_pelanggan = $request->kode_pelanggan;
+        $jumlah = $request->jumlah;
+        $status = $request->status;
+        $status_pencairan = $request->status_pencairan;
+
+        // dd($status_pencairan);
+        // dd($kode_pelanggan);
+        DB::beginTransaction();
+        try {
+            //Detailpencairanprogramikatan::where('kode_pencairan', $kode_pencairan)->delete();
+            // for ($i = 0; $i < count($kode_pelanggan); $i++) {
+
+            //     if ($status[$i] == 1) {
+            //         Detailpencairanprogramikatan::create([
+            //             'kode_pencairan' => $kode_pencairan,
+            //             'kode_pelanggan' => $kode_pelanggan[$i],
+            //             'jumlah' => toNumber($jumlah[$i]),
+            //             'status_pencairan' => $status_pencairan[$i]
+            //         ]);
+            //         Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$i])->update([
+            //             'status' => 1
+            //         ]);
+            //     } else {
+            //         Detailajuanprogramikatan::where('kode_pelanggan', $kode_pelanggan[$i])->update([
+            //             'status' => 0
+            //         ]);
+            //     }
+            // }
+
+            $checkpelanggan = $request->input('checkpelanggan', []);
+            foreach ($checkpelanggan as $index => $value) {
+                if ($status[$index] == 1) {
+                    Detailpencairanprogramenambulan::create([
+                        'kode_pencairan' => $kode_pencairan,
+                        'kode_pelanggan' => $kode_pelanggan[$index],
+                        'jumlah' => toNumber($jumlah[$index]),
+                        'qty_tunai' => toNumber($request->qty_tunai[$index]),
+                        'qty_kredit' => toNumber($request->qty_kredit[$index]),
+                        'reward_tunai' => toNumber($request->reward_tunai[$index]),
+                        'reward_kredit' => toNumber($request->reward_kredit[$index]),
+                        'total_reward' => toNumber($request->total_reward[$index]),
+                        'status_pencairan' => $status_pencairan[$index]
+                    ]);
+
+                    Detailajuanprogramikatanenambulan::where('kode_pelanggan', $kode_pelanggan[$index])->update([
+                        'status' => 1
+                    ]);
+                } else {
+                    Detailajuanprogramikatanenambulan::where('kode_pelanggan', $kode_pelanggan[$index])->update([
+                        'status' => 0
+                    ]);
+                }
+            }
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Pelanggan Berhasil Di Proses'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+
+    public function detailfaktur($kode_pelanggan, $kode_pencairan)
+    {
+
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+
+
+        $pencairanprogram = Pencairanprogramenambulan::where('kode_pencairan', $kode_pencairan)
+            ->join('program_ikatan', 'marketing_pencairan_ikatan_enambulan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+
+
+
+        if ($pencairanprogram->semester == 1) {
+            $start_date = $pencairanprogram->tahun . '-01-01';
+            $end_date = $pencairanprogram->tahun . '-06-30';
+        } else {
+            $start_date = $pencairanprogram->tahun . '-07-01';
+            $end_date = $pencairanprogram->tahun . '-12-31';
+        }
+
+        $produk = json_decode($pencairanprogram->produk, true) ?? [];
+
+        $detailpenjualan = Detailpenjualan::select(
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.tanggal_pelunasan',
+            'marketing_penjualan.jenis_transaksi',
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            // ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            // ->where('status', 1)
+            // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 14")
+            ->where('status_batal', 0)
+            ->whereIn('produk_harga.kode_produk', $produk)
+            // ->whereIn('produk_harga.kode_produk', $produk)
+            ->get();
+
+        // dd($detailpenjualan);
+        return view('worksheetom.pencairanprogramikatan.detailfaktur', compact('detailpenjualan'));
+    }
+
+
+    public function deletepelanggan($kode_pencairan, $kode_pelanggan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        try {
+            Detailpencairanprogramenambulan::where('kode_pencairan', $kode_pencairan)->where('kode_pelanggan', $kode_pelanggan)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
