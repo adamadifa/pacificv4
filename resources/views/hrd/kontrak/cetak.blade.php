@@ -490,7 +490,7 @@
                     @endif
                 </tr>
                 <tr>
-                    <td style="text-align: center"><u>{{ $kontrak->nama_karyawan }}</u><br>Karyawan</td>
+                    <td style="text-align: center"><u>{{ $kontrak->nama_karyawan }}</u><br>Pekerja</td>
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
                         @if ($kontrak->kode_perusahaan == 'MP')
                             <td style="text-align: center">
