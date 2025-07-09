@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Detailajuanprogramikatanenambulan;
 use App\Models\Detailpencairanprogramenambulan;
 use App\Models\Detailpenjualan;
 use App\Models\Detailtargetikatan;
@@ -290,7 +291,14 @@ class PencairanprogramenambulanController extends Controller
             ->where('marketing_pencairan_ikatan_enambulan.kode_program', $pencairanprogram->kode_program)
             ->where('marketing_pencairan_ikatan_enambulan.kode_cabang', $pencairanprogram->kode_cabang);
 
-
+        $pelangganprogramenambulan = Detailajuanprogramikatanenambulan::select('kode_pelanggan')
+            ->join('marketing_program_ikatan_enambulan', 'marketing_program_ikatan_enambulan_detail.no_pengajuan', '=', 'marketing_program_ikatan_enambulan.no_pengajuan')
+            ->where('marketing_program_ikatan_enambulan.semester', $pencairanprogram->semester)
+            ->where('marketing_program_ikatan_enambulan.tahun', $pencairanprogram->tahun)
+            ->where('marketing_program_ikatan_enambulan.kode_program', $pencairanprogram->kode_program)
+            ->where('marketing_program_ikatan_enambulan.kode_cabang', $pencairanprogram->kode_cabang)
+            ->groupBy('marketing_program_ikatan_enambulan.kode_pelanggan')
+            ->get();
 
 
         $listpelangganikatan = Detailtargetikatan::select(
@@ -313,6 +321,7 @@ class PencairanprogramenambulanController extends Controller
             })
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
             ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang)
+            ->whereIn('marketing_program_ikatan_target.kode_pelanggan', $pelangganprogramenambulan)
             ->groupBy('marketing_program_ikatan_target.kode_pelanggan', 'marketing_program_ikatan_detail.top');
 
 
@@ -350,6 +359,7 @@ class PencairanprogramenambulanController extends Controller
             ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3")
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
+            ->whereIn('marketing_penjualan.kode_pelanggan', $pelangganprogramenambulan)
             ->groupBy('marketing_penjualan.kode_pelanggan');
 
 
@@ -388,6 +398,7 @@ class PencairanprogramenambulanController extends Controller
             })
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
             ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang)
+            ->whereIn('marketing_program_ikatan_target.kode_pelanggan', $pelangganprogramenambulan)
             ->groupBy(
                 'marketing_program_ikatan_target.kode_pelanggan',
                 'nama_pelanggan',
