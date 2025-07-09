@@ -31,7 +31,7 @@
             background-color: #fff;
             border-right: 1px solid #dee2e6;
         }
-        
+
         #rekapkategori thead th:nth-child(1) {
             background-color: #212529;
         }
@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-        #rekapkategori td:nth-child(2) {
-            min-width: 150px;
-            width: 150px;
-        } */
+                        #rekapkategori td:nth-child(2) {
+                            min-width: 150px;
+                            width: 150px;
+                        } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -104,18 +104,18 @@
 
         /* Striped rows with fixed columns */
         /* #rekapkategori tbody tr:nth-of-type(odd) {
-                            background-color: rgba(0, 0, 0, 0.05);
-                        }
+                                            background-color: rgba(0, 0, 0, 0.05);
+                                        }
 
-                        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
-                        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
-                            background-color: rgba(0, 0, 0, 0.05);
-                        }
+                                        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
+                                        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
+                                            background-color: rgba(0, 0, 0, 0.05);
+                                        }
 
-                        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
-                        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
-                            background-color: #fff;
-                        } */
+                                        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
+                                        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
+                                            background-color: #fff;
+                                        } */
     </style>
 
     <div class="row">
@@ -252,6 +252,12 @@
                                             <td class="text-end">{{ formatAngkaDesimal($d->kredit) }}</td>
                                         </tr>
                                     @endforeach
+                                    <tr>
+                                        <td colspan="2">Saldo Kas Besar Cabang</th>
+                                        <td class="text-end">
+                                            {{ $saldo_kasbesar_cabang ? formatRupiah($saldo_kasbesar_cabang->jumlah) : 'Belum Diinput' }}
+                                        </td>
+                                    </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -272,7 +278,7 @@
                                     <th class="table-dark" style="color:white !important">Net Profit</th>
                                     <td class="text-end">
                                         @php
-                                            $net_profit = $totalkredit - $totaldebet;
+                                            $net_profit = $totalkredit + $saldo_kasbesar_cabang->jumlah - $totaldebet;
                                         @endphp
                                         {{ formatRupiah($net_profit) }}
                                     </td>
@@ -281,18 +287,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="table-dark" style="color:white !important">Saldo Kas Besar Cabang</th>
-                                    <td class="text-end">{{  $saldo_kasbesar_cabang ?formatRupiah($saldo_kasbesar_cabang->jumlah) : 'Belum Diinput' }}</td>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
+
                 {{-- <div class="row">
                     @foreach ($kategori as $d)
                         <div class="col-lg-3 col-sm-6 mb-2">

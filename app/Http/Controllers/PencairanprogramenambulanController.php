@@ -293,12 +293,18 @@ class PencairanprogramenambulanController extends Controller
 
         $pelangganprogramenambulan = Detailajuanprogramikatanenambulan::select('kode_pelanggan')
             ->join('marketing_program_ikatan_enambulan', 'marketing_program_ikatan_enambulan_detail.no_pengajuan', '=', 'marketing_program_ikatan_enambulan.no_pengajuan')
-            ->where('marketing_program_ikatan_enambulan.semester', $pencairanprogram->semester)
-            ->where('marketing_program_ikatan_enambulan.tahun', $pencairanprogram->tahun)
             ->where('marketing_program_ikatan_enambulan.kode_program', $pencairanprogram->kode_program)
             ->where('marketing_program_ikatan_enambulan.kode_cabang', $pencairanprogram->kode_cabang)
-            ->groupBy('marketing_program_ikatan_enambulan.kode_pelanggan')
-            ->get();
+            ->when($pencairanprogram->semester == 1, function ($query) {
+                $query->whereRaw('MONTH(marketing_program_ikatan_enambulan.periode_sampai) <= 6');
+            })
+            ->when($pencairanprogram->semester == 2, function ($query) {
+                $query->whereRaw('MONTH(marketing_program_ikatan_enambulan.periode_dari) >= 7');
+            })
+
+            ->groupBy('marketing_program_ikatan_enambulan_detail.kode_pelanggan');
+
+
 
 
         $listpelangganikatan = Detailtargetikatan::select(
