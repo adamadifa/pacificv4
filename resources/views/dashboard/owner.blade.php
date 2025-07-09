@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                        #rekapkategori td:nth-child(2) {
-                            min-width: 150px;
-                            width: 150px;
-                        } */
+                            #rekapkategori td:nth-child(2) {
+                                min-width: 150px;
+                                width: 150px;
+                            } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -104,18 +104,18 @@
 
         /* Striped rows with fixed columns */
         /* #rekapkategori tbody tr:nth-of-type(odd) {
-                                            background-color: rgba(0, 0, 0, 0.05);
-                                        }
+                                                background-color: rgba(0, 0, 0, 0.05);
+                                            }
 
-                                        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
-                                        #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
-                                            background-color: rgba(0, 0, 0, 0.05);
-                                        }
+                                            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
+                                            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
+                                                background-color: rgba(0, 0, 0, 0.05);
+                                            }
 
-                                        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
-                                        #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
-                                            background-color: #fff;
-                                        } */
+                                            #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
+                                            #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
+                                                background-color: #fff;
+                                            } */
     </style>
 
     <div class="row">
@@ -278,7 +278,10 @@
                                     <th class="table-dark" style="color:white !important">Net Profit</th>
                                     <td class="text-end">
                                         @php
-                                            $net_profit = $totalkredit + $saldo_kasbesar_cabang->jumlah - $totaldebet;
+                                            $saldo_kb_cabang = $saldo_kasbesar_cabang
+                                                ? $saldo_kasbesar_cabang->jumlah
+                                                : 0;
+                                            $net_profit = $totalkredit + $saldo_kb_cabang - $totaldebet;
                                         @endphp
                                         {{ formatRupiah($net_profit) }}
                                     </td>
