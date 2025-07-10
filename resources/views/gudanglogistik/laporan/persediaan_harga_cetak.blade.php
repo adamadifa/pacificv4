@@ -88,7 +88,7 @@
                         }
 
                         $saldo_akhir = $d->saldo_awal_qty + $d->bm_jumlah - $d->bk_jumlah;
-                        $selisih = ROUND($d->opname_qty, 2) - ROUND($saldo_akhir, 2);
+                        $selisih = 0;
                         $total_saldo_awal += $d->saldo_awal_qty;
                         $total_saldo_awal_totalharga += $d->saldo_awal_totalharga;
 
