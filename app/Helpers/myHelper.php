@@ -391,7 +391,8 @@ function getAkunkaskecil($kode_cabang)
         'PWK' => '1-1120',
         'BTN' => '1-1121',
         'BKI' => '1-1122',
-        'TGR' => '1-1123'
+        'TGR' => '1-1123',
+        'CRB' => '1-1124'
     ];
 
     return $akun[$kode_cabang];
