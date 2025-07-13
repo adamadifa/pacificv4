@@ -1,34 +1,34 @@
-<form action="{{ route('pencairanprogramenambulan.storepelanggan', Crypt::encrypt($kode_pencairan)) }}"
-    id="formprosesPelanggan" method="POST">
+<form action="{{ route('pencairanprogramenambulan.storepelanggan', Crypt::encrypt($kode_pencairan)) }}" id="formprosesPelanggan" method="POST">
 
     @csrf
     <table class="table table-bordered ">
-        <thead class="table-dark">
+        <thead class="table-dark" style="font-size: 11px;">
             <tr>
-                <th rowspan="2">No</th>
-                <th rowspan="2">Kode Pelanggan</th>
-                <th rowspan="2">Nama Pelanggan</th>
-                <th class="text-center" rowspan="2">Target</th>
-                <th colspan="3" class="text-center">Budget</th>
-                <th colspan="3" class="text-center">Realisasi</th>
-                <th colspan="3" class="text-center">Reward</th>
-                <th rowspan="2"><i class="ti ti-file-dollar"></i></th>
-                <th rowspan="2"><i class="ti ti-square-check"></i></th>
+                <th rowspan="3">No</th>
+                <th rowspan="3">Kode</th>
+                <th rowspan="3">Nama Pelanggan</th>
+                <th class="text-center" colspan="{{ 6 * 3 }}">Realisasi</th>
+                <th class="text-center" colspan="5" rowspan="2">Total</th>
             </tr>
             <tr>
-                <th>SMM</th>
-                <th>RSM</th>
-                <th>GM</th>
-                <th>Tunai</th>
-                <th>Kredit</th>
-                <th>Total</th>
-                <th>Tunai</th>
-                <th>Kredit</th>
-                <th>Total</th>
+                @for ($i = date('m', strtotime($start_date)); $i <= date('m', strtotime($end_date)); $i++)
+                    <th class="text-center" colspan="3">{{ getMonthName($i) }}</th>
+                @endfor
             </tr>
-
+            <tr>
+                @for ($i = date('m', strtotime($start_date)); $i <= date('m', strtotime($end_date)); $i++)
+                    <th>T</th>
+                    <th>R</th>
+                    <th>RW</th>
+                @endfor
+                <th>T</th>
+                <th>R</th>
+                <th>RW</th>
+                <th>RC</th>
+                <th>RN</th>
+            </tr>
         </thead>
-        <tbody id="loadpenjualanpelanggan">
+        <tbody id="loadpenjualanpelanggan" style="font-size: 10px;">
 
         </tbody>
     </table>
@@ -36,8 +36,7 @@
     <div class="row mt-3">
         <div class="col">
             <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block w-100" id="btnSimpan"><i
-                        class="ti ti-send me-1 "></i>Proses</button>
+                <button type="submit" class="btn btn-primary btn-block w-100" id="btnSimpan"><i class="ti ti-send me-1 "></i>Proses</button>
             </div>
         </div>
     </div>

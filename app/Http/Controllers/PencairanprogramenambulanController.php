@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Detailajuanprogramikatanenambulan;
 use App\Models\Detailpencairanprogramenambulan;
+use App\Models\Detailpencairanprogramikatan;
 use App\Models\Detailpenjualan;
 use App\Models\Detailtargetikatan;
 use App\Models\Pencairanprogramenambulan;
@@ -260,7 +261,19 @@ class PencairanprogramenambulanController extends Controller
     function tambahpelanggan($kode_pencairan)
     {
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $pencairanprogram = Pencairanprogramenambulan::where('kode_pencairan', $kode_pencairan)->first();
+        if ($pencairanprogram->semester == 1) {
+            $start_date = $pencairanprogram->tahun . '-01-01';
+            $end_date = date('Y-m-t', strtotime($pencairanprogram->tahun . '-06-01'));
+        } else {
+            $start_date = $pencairanprogram->tahun . '-07-01';
+            $end_date = date('Y-m-t', strtotime($pencairanprogram->tahun . '-12-01'));
+        }
+
+        $data['start_date'] = $start_date;
+        $data['end_date'] = $end_date;
         $data['kode_pencairan'] = $kode_pencairan;
+
         return view('worksheetom.pencairanprogramenambulan.tambahpelanggan', $data);
     }
 
@@ -284,12 +297,23 @@ class PencairanprogramenambulanController extends Controller
         $query->where('kode_pencairan', $kode_pencairan);
         $pencairanprogram = $query->first();
 
+
+        if ($pencairanprogram->semester == 1) {
+            $start_date = $pencairanprogram->tahun . '-01-01';
+            $end_date = date('Y-m-t', strtotime($pencairanprogram->tahun . '-06-01'));
+        } else {
+            $start_date = $pencairanprogram->tahun . '-07-01';
+            $end_date = date('Y-m-t', strtotime($pencairanprogram->tahun . '-12-01'));
+        }
+
+
         $pelanggansudahdicairkan = Detailpencairanprogramenambulan::join('marketing_pencairan_ikatan_enambulan', 'marketing_pencairan_ikatan_enambulan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan_enambulan.kode_pencairan')
             ->select('kode_pelanggan')
             ->where('marketing_pencairan_ikatan_enambulan.semester', $pencairanprogram->semester)
             ->where('marketing_pencairan_ikatan_enambulan.tahun', $pencairanprogram->tahun)
             ->where('marketing_pencairan_ikatan_enambulan.kode_program', $pencairanprogram->kode_program)
             ->where('marketing_pencairan_ikatan_enambulan.kode_cabang', $pencairanprogram->kode_cabang);
+
 
         $pelangganprogramenambulan = Detailajuanprogramikatanenambulan::select('kode_pelanggan')
             ->join('marketing_program_ikatan_enambulan', 'marketing_program_ikatan_enambulan_detail.no_pengajuan', '=', 'marketing_program_ikatan_enambulan.no_pengajuan')
@@ -304,6 +328,20 @@ class PencairanprogramenambulanController extends Controller
 
             ->groupBy('marketing_program_ikatan_enambulan_detail.kode_pelanggan');
 
+
+        $pencairanreguler = Detailpencairanprogramikatan::select('kode_pelanggan', DB::raw('SUM(total_reward) as total_reward_reguler'))
+            ->join('marketing_pencairan_ikatan', 'marketing_pencairan_ikatan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan.kode_pencairan')
+            ->where('kode_program', $pencairanprogram->kode_program)
+            ->where('kode_cabang', $pencairanprogram->kode_cabang)
+            ->when($pencairanprogram->semester == 1, function ($query) {
+                $query->where('bulan', '<=', 6);
+            })
+            ->when($pencairanprogram->semester == 2, function ($query) {
+                $query->where('bulan', '>', 6);
+            })
+            ->where('tahun', $pencairanprogram->tahun)
+            ->whereIn('kode_pelanggan', $pelangganprogramenambulan)
+            ->groupBy('kode_pelanggan');
 
 
 
@@ -331,25 +369,45 @@ class PencairanprogramenambulanController extends Controller
             ->groupBy('marketing_program_ikatan_target.kode_pelanggan', 'marketing_program_ikatan_detail.top');
 
 
-        if ($pencairanprogram->semester == 1) {
-            $start_date = $pencairanprogram->tahun . '-01-01';
-            $end_date = date('Y-m-t', strtotime($pencairanprogram->tahun . '-06-01'));
-        } else {
-            $start_date = $pencairanprogram->tahun . '-07-01';
-            $end_date = date('Y-m-t', strtotime($pencairanprogram->tahun . '-12-01'));
-        }
+
 
         $produk = json_decode($pencairanprogram->produk, true) ?? [];
 
+        $select_jml_dus = [];
+        $select_jml_dus_tunai = [];
+        $select_jml_dus_kredit = [];
+
+        $select_field_jml_dus = [];
+        $select_field_jml_dus_tunai = [];
+        $select_field_jml_dus_kredit = [];
+
+        $select_target = [];
 
 
+        for ($i = date('m', strtotime($start_date)); $i <= date('m', strtotime($end_date)); $i++) {
+            $start_date_i = date('Y-m-01', strtotime($pencairanprogram->tahun . '-' . $i . '-01'));
+            $end_date_i = date('Y-m-t', strtotime($start_date_i));
+
+            $select_jml_dus[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '", floor(jumlah/isi_pcs_dus), 0)) as jml_dus_bulan_' . (int)$i);
+            $select_jml_dus_tunai[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '" AND jenis_transaksi = "T", floor(jumlah/isi_pcs_dus), 0)) as jml_dus_tunai_bulan_' . (int)$i);
+            $select_jml_dus_kredit[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '" AND jenis_transaksi = "K", floor(jumlah/isi_pcs_dus), 0)) as jml_dus_kredit_bulan_' . (int)$i);
+
+            $select_field_jml_dus[] = "jml_dus_bulan_" . (int)$i;
+            $select_field_jml_dus_tunai[] = "jml_dus_tunai_bulan_" . (int)$i;
+            $select_field_jml_dus_kredit[] = "jml_dus_kredit_bulan_" . (int)$i;
+
+
+            $select_target[] = DB::raw('SUM(IF(bulan = ' . (int)$i . ', target_perbulan, 0)) as qty_target_bulan_' . (int)$i);
+        }
 
 
         $detailpenjualan = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
-            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as jml_dus'),
-            DB::raw('SUM(IF(jenis_transaksi = "T", floor(jumlah/isi_pcs_dus), 0)) as jml_tunai'),
-            DB::raw('SUM(IF(jenis_transaksi = "K", floor(jumlah/isi_pcs_dus), 0)) as jml_kredit'),
+            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as total_jml_dus'),
+            ...$select_jml_dus,
+            ...$select_jml_dus_tunai,
+            ...$select_jml_dus_kredit
+
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
@@ -373,16 +431,19 @@ class PencairanprogramenambulanController extends Controller
         $peserta = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
             'nama_pelanggan',
-            DB::raw('SUM(target_perbulan) as qty_target'),
             'budget_rsm',
             'budget_smm',
             'budget_gm',
             'reward',
-            'jml_dus',
-            'jml_tunai',
-            'jml_kredit',
             'file_doc',
-            'marketing_program_ikatan.kode_program'
+            'marketing_program_ikatan.kode_program',
+            DB::raw('SUM(target_perbulan) as total_qty_target'),
+            'total_jml_dus',
+            'total_reward_reguler',
+            ...$select_target,
+            ...$select_field_jml_dus,
+            ...$select_field_jml_dus_tunai,
+            ...$select_field_jml_dus_kredit
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
@@ -391,6 +452,10 @@ class PencairanprogramenambulanController extends Controller
             })
             ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
                 $join->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'detailpenjualan.kode_pelanggan');
+            })
+
+            ->leftJoinSub($pencairanreguler, 'pencairanreguler', function ($join) {
+                $join->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'pencairanreguler.kode_pelanggan');
             })
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
@@ -402,6 +467,7 @@ class PencairanprogramenambulanController extends Controller
             ->when($pencairanprogram->semester == 2, function ($query) {
                 $query->where('marketing_program_ikatan_target.bulan', '>', 6);
             })
+
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
             ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang)
             ->whereIn('marketing_program_ikatan_target.kode_pelanggan', $pelangganprogramenambulan)
@@ -412,21 +478,25 @@ class PencairanprogramenambulanController extends Controller
                 'budget_smm',
                 'budget_gm',
                 'reward',
-                'jml_dus',
-                'jml_tunai',
-                'jml_kredit',
                 'file_doc',
-                'marketing_program_ikatan.kode_program'
+                'marketing_program_ikatan.kode_program',
+                'total_jml_dus',
+                ...$select_field_jml_dus,
+                ...$select_field_jml_dus_tunai,
+                ...$select_field_jml_dus_kredit,
+
             )
             ->get();
 
-
+        //dd($peserta);
 
 
         // dd($peserta);
         // $data['detail'] = $detail;
         $data['kode_pencairan'] = $kode_pencairan;
         $data['peserta'] = $peserta;
+        $data['start_date'] = $start_date;
+        $data['end_date'] = $end_date;
         return view('worksheetom.pencairanprogramenambulan.getpelanggan', $data);
     }
 
