@@ -404,6 +404,8 @@ class PencairanprogramenambulanController extends Controller
         $detailpenjualan = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
             DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as total_jml_dus'),
+            DB::raw('SUM(IF(jenis_transaksi = "T", floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi = "K", floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus_kredit'),
             ...$select_jml_dus,
             ...$select_jml_dus_tunai,
             ...$select_jml_dus_kredit
@@ -439,6 +441,8 @@ class PencairanprogramenambulanController extends Controller
             'marketing_program_ikatan.kode_program',
             DB::raw('SUM(target_perbulan) as total_qty_target'),
             'total_jml_dus',
+            'total_jml_dus_tunai',
+            'total_jml_dus_kredit',
             'total_reward_reguler',
             ...$select_target,
             ...$select_field_jml_dus,
@@ -481,6 +485,8 @@ class PencairanprogramenambulanController extends Controller
                 'file_doc',
                 'marketing_program_ikatan.kode_program',
                 'total_jml_dus',
+                'total_jml_dus_tunai',
+                'total_jml_dus_kredit',
                 ...$select_field_jml_dus,
                 ...$select_field_jml_dus_tunai,
                 ...$select_field_jml_dus_kredit,
@@ -534,6 +540,7 @@ class PencairanprogramenambulanController extends Controller
             // }
 
             $checkpelanggan = $request->input('checkpelanggan', []);
+            // dd($status);
             foreach ($checkpelanggan as $index => $value) {
                 if ($status[$index] == 1) {
                     Detailpencairanprogramenambulan::create([

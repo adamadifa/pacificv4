@@ -12,13 +12,19 @@
     @endif
 
     <tr>
-        <td class="text-center {{ $bg_color }}">{{ $loop->iteration }}</td>
-        <td class="{{ $bg_color }}">
+        <td class="text-center {{ $bg_color }} sticky-col first-col">{{ $loop->iteration }}</td>
+        <td class="{{ $bg_color }} sticky-col second-col">
             <input type="hidden" name="kode_pelanggan[{{ $loop->index }}]" value="{{ $d->kode_pelanggan }}">
-            {{-- <input type="hidden" name="status[{{ $loop->index }}]" value="{{ $status }}"> --}}
+            <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->total_jml_dus }}">
+            <input type="hidden" name="qty_tunai[{{ $loop->index }}]" value="{{ $d->total_jml_dus_tunai }}">
+            <input type="hidden" name="qty_kredit[{{ $loop->index }}]" value="{{ $d->total_jml_dus_kredit }}">
+            <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="0">
+            <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="0">
+
+
             {{ $d->kode_pelanggan }}
         </td>
-        <td class="{{ $bg_color }}">{{ $d->nama_pelanggan }}</td>
+        <td class="{{ $bg_color }} sticky-col third-col">{{ $d->nama_pelanggan }}</td>
         @php
             $total_reward = 0;
         @endphp
@@ -51,6 +57,9 @@
                 {{ formatAngka($reward) }}
             </td>
         @endfor
+        @php
+            $status = $reward == 0 ? 0 : 1;
+        @endphp
         <td class="text-center bg-info text-white">{{ formatAngka($d->total_qty_target) }}</td>
         <td class="text-center {{ $d->total_jml_dus >= $d->total_qty_target ? 'bg-success text-white' : 'bg-danger text-white' }}">
             {{ formatAngka($d->total_jml_dus) }}</td>
@@ -61,6 +70,43 @@
                 $rn = $status_reward == 1 ? $total_reward - $d->total_reward_reguler : 0;
             @endphp
             {{ formatAngka($rn) }}
+
+            <!--Total Reward-->
+            <input type="hidden" name="status[{{ $loop->index }}]" value="{{ $status }}">
+            <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $rn }}">
+        </td>
+        <td class="">
+            <!-- Status Pencairan-->
+            @if ($d->total_jml_dus >= $d->total_qty_target)
+                <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select">
+                    @if ($reward >= 100000)
+                        <option value="1">Cairkan</option>
+                    @endif
+                    <option value="0">Simpan</option>
+                </select>
+            @else
+                <input type="hidden" name="status_pencairan[{{ $loop->index }}]" value="0">
+            @endif
+        </td>
+        <td>
+            @if ($d->total_jml_dus >= $d->total_qty_target)
+                <div class="form-check mt-3 mb-2 ">
+                    <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
+                        id="checkpelanggan">
+                </div>
+            @else
+                <input class="form-check-input checkpelanggan pelangganna" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
+                    id="checkpelanggan" checked>
+            @endif
         </td>
     </tr>
 @endforeach
+<script>
+    $(document).ready(function() {
+        function hide() {
+            $(".pelangganna").hide();
+        }
+
+        hide();
+    });
+</script>

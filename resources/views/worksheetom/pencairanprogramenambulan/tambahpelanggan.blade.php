@@ -1,37 +1,41 @@
 <form action="{{ route('pencairanprogramenambulan.storepelanggan', Crypt::encrypt($kode_pencairan)) }}" id="formprosesPelanggan" method="POST">
 
     @csrf
-    <table class="table table-bordered ">
-        <thead class="table-dark" style="font-size: 11px;">
-            <tr>
-                <th rowspan="3">No</th>
-                <th rowspan="3">Kode</th>
-                <th rowspan="3">Nama Pelanggan</th>
-                <th class="text-center" colspan="{{ 6 * 3 }}">Realisasi</th>
-                <th class="text-center" colspan="5" rowspan="2">Total</th>
-            </tr>
-            <tr>
-                @for ($i = date('m', strtotime($start_date)); $i <= date('m', strtotime($end_date)); $i++)
-                    <th class="text-center" colspan="3">{{ getMonthName($i) }}</th>
-                @endfor
-            </tr>
-            <tr>
-                @for ($i = date('m', strtotime($start_date)); $i <= date('m', strtotime($end_date)); $i++)
+    <div class="table-responsive">
+        <table class="table table-bordered " style="width: 120%">
+            <thead class="table-dark" style="font-size: 11px;">
+                <tr>
+                    <th rowspan="3">No</th>
+                    <th rowspan="3">Kode</th>
+                    <th rowspan="3">Nama Pelanggan</th>
+                    <th class="text-center" colspan="{{ 6 * 3 }}">Realisasi</th>
+                    <th class="text-center" colspan="5" rowspan="2">Total</th>
+                    <th rowspan="3"><i class="ti ti-file-dollar"></i></th>
+                    <th rowspan="3"><i class="ti ti-square-check"></i></th>
+                </tr>
+                <tr>
+                    @for ($i = date('m', strtotime($start_date)); $i <= date('m', strtotime($end_date)); $i++)
+                        <th class="text-center" colspan="3">{{ getMonthName($i) }}</th>
+                    @endfor
+                </tr>
+                <tr>
+                    @for ($i = date('m', strtotime($start_date)); $i <= date('m', strtotime($end_date)); $i++)
+                        <th>T</th>
+                        <th>R</th>
+                        <th>RW</th>
+                    @endfor
                     <th>T</th>
                     <th>R</th>
                     <th>RW</th>
-                @endfor
-                <th>T</th>
-                <th>R</th>
-                <th>RW</th>
-                <th>RC</th>
-                <th>RN</th>
-            </tr>
-        </thead>
-        <tbody id="loadpenjualanpelanggan" style="font-size: 10px;">
+                    <th>RC</th>
+                    <th>RN</th>
+                </tr>
+            </thead>
+            <tbody id="loadpenjualanpelanggan" style="font-size: 10px;">
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
     <div class="row mt-3">
         <div class="col">
