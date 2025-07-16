@@ -24,7 +24,7 @@ class AjuanprogramikatanenambulanController extends Controller
         $query = Ajuanprogramikatanenambulan::query();
         $query->join('cabang', 'marketing_program_ikatan_enambulan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('program_ikatan', 'marketing_program_ikatan_enambulan.kode_program', '=', 'program_ikatan.kode_program');
-        $query->orderBy('marketing_program_ikatan_enambulan.no_pengajuan', 'desc');
+        // $query->orderBy('marketing_program_ikatan_enambulan.no_pengajuan', 'desc');
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
@@ -101,6 +101,7 @@ class AjuanprogramikatanenambulanController extends Controller
                 $query->where('status', 2);
             }
         }
+        $query->orderBy('marketing_program_ikatan_enambulan.tanggal', 'desc');
         $ajuanprogramikatan = $query->paginate(15);
         $ajuanprogramikatan->appends(request()->all());
         $data['ajuanprogramikatan'] = $ajuanprogramikatan;
@@ -152,6 +153,7 @@ class AjuanprogramikatanenambulanController extends Controller
                 'semester' => 'required',
                 'tahun' => 'required',
                 'keterangan' => 'required',
+                'periode_pencairan' => 'required',
 
             ]);
         } else {
@@ -162,6 +164,7 @@ class AjuanprogramikatanenambulanController extends Controller
                 'semester' => 'required',
                 'tahun' => 'required',
                 'keterangan' => 'required',
+                'periode_pencairan' => 'required',
 
             ]);
             $kode_cabang = $request->kode_cabang;
@@ -188,6 +191,7 @@ class AjuanprogramikatanenambulanController extends Controller
                 'kode_cabang' => $kode_cabang,
                 'periode_dari' => $periode_dari,
                 'periode_sampai' => $periode_sampai,
+                'periode_pencairan' => $request->periode_pencairan,
                 'status' => 0,
                 // 'keterangan' => $request->keterangan,
             ]);
@@ -353,6 +357,8 @@ class AjuanprogramikatanenambulanController extends Controller
             $cek = Detailajuanprogramikatanenambulan::join('marketing_program_ikatan_enambulan', 'marketing_program_ikatan_enambulan_detail.no_pengajuan', '=', 'marketing_program_ikatan_enambulan.no_pengajuan')
                 ->where('marketing_program_ikatan_enambulan.kode_program', $ajuan->kode_program)
                 ->where('marketing_program_ikatan_enambulan_detail.kode_pelanggan', $kode_pelanggan)
+                ->where('marketing_program_ikatan_enambulan.periode_dari', $ajuan->periode_dari)
+                ->where('marketing_program_ikatan_enambulan.periode_sampai', $ajuan->periode_sampai)
                 ->first();
 
             if ($cek) {

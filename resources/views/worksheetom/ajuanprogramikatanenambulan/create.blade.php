@@ -43,6 +43,18 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+                <select name="periode_pencairan" id="periode_pencairan" class="form-select">
+                    <option value="">Periode Pencairan</option>
+                    <option value="1">Akhir Semester</option>
+                    <option value="2">Perbulan</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
     <x-textarea label="Keterangan" name="keterangan" />
 
     <div class="form-group mb3">
