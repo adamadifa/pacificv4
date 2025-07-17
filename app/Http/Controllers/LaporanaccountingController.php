@@ -919,24 +919,24 @@ class LaporanaccountingController extends Controller
 
 
         //Mutasi
-        $mutasi_ledger  = Ledger::select(
-            'kode_bank',
-            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
-        )
-            ->where('tanggal', '>=', $start_date)
-            ->where('tanggal', '<', $request->dari)
-            ->where('kode_bank', $request->kode_bank_search)
-            ->groupBy('kode_bank');
+        // $mutasi_ledger  = Ledger::select(
+        //     'kode_bank',
+        //     DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+        //     DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+        // )
+        //     ->where('tanggal', '>=', $start_date)
+        //     ->where('tanggal', '<', $request->dari)
+        //     ->where('kode_bank', $request->kode_bank_search)
+        //     ->groupBy('kode_bank');
 
-        $mutasi_kaskecil = Kaskecil::select(
-            'kode_cabang',
-            DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-            DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
-        )
-            ->where('tanggal', '>=', $start_date)
-            ->where('tanggal', '<', $request->dari)
-            ->groupBy('kode_cabang');
+        // $mutasi_kaskecil = Kaskecil::select(
+        //     'kode_cabang',
+        //     DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
+        //     DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
+        // )
+        //     ->where('tanggal', '>=', $start_date)
+        //     ->where('tanggal', '<', $request->dari)
+        //     ->groupBy('kode_cabang');
 
         // $saldo_awal_ledger  = Saldoawalledger::select('bank.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
         //     ->join('bank', 'bank.kode_bank', '=', 'keuangan_ledger_saldoawal.kode_bank')
@@ -1153,12 +1153,36 @@ class LaporanaccountingController extends Controller
         $piutangcabang->orderBy('marketing_penjualan_historibayar.no_bukti');
 
 
+        //Penjualan Produk
+        $penjualan_produk = Detailpenjualan::query();
+        $penjualan_produk->select(
+            'produk.kode_akun',
+            'nama_akun',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.no_faktur',
+            DB::raw("'PENJUALAN' AS sumber"),
+            DB::raw("CONCAT(' Penjualan Produk ',produk_harga.kode_produk, ' - ', pelanggan.nama_pelanggan) as keterangan"),
+            DB::raw('subtotal as jml_kredit'),
+            DB::raw('0 as jml_debet'),
+            DB::raw('1 as urutan')
+        );
+        $penjualan_produk->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $penjualan_produk->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+        $penjualan_produk->join('coa', 'produk.kode_akun', '=', 'coa.kode_akun');
+        $penjualan_produk->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $penjualan_produk->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $penjualan_produk->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        $penjualan_produk->where('marketing_penjualan.status_batal', 0);
+
+
+
         $bukubesar = $ledger->unionAll($kaskecil)
             ->unionAll($ledger_transaksi)
             ->unionAll($piutangcabang)
             ->unionAll($pembelian)
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
+            ->unionAll($penjualan_produk)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
         // dd($bukubesar->get());
