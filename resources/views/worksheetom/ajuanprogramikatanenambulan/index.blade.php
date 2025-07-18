@@ -285,7 +285,7 @@
             $("#modalDetailtarget").modal("show");
             $("#modalDetailtarget").find(".modal-title").text('Detail Target Pelanggan');
             $("#modalDetailtarget").find("#loadmodaldetailtarget").load(
-                `/ajuanprogramikatan/${no_pengajuan}/${kode_pelanggan}/detailtarget`);
+                `/ajuanprogramenambulan/${no_pengajuan}/${kode_pelanggan}/detailtarget`);
         });
     });
 </script>

@@ -1,8 +1,8 @@
 @php
     $agent = new Jenssegers\Agent\Agent();
 @endphp
-<nav class="layout-navbar container-fluid navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar"
-    @if ($agent->isMobile()) style="width:100% !important; margin:0 !important  " @endif>
+<nav class="layout-navbar container-fluid navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+    id="layout-navbar" @if ($agent->isMobile()) style="width:100% !important; margin:0 !important  " @endif>
     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
         <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
             <i class="ti ti-menu-2 ti-sm"></i>
@@ -24,7 +24,8 @@
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             @if (Cookie::get('kodepelanggan') != null && $level_user == 'salesman')
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
-                    <a class="btn btn-sm btn-primary mt-1" href="/sfa/pelanggan/{{ Cookie::get('kodepelanggan') }}/show">
+                    <a class="btn btn-sm btn-primary mt-1"
+                        href="/sfa/pelanggan/{{ Cookie::get('kodepelanggan') }}/show">
                         <i class="ti ti-sm ti-user"></i> Pelanggan
                     </a>
                 </li>
@@ -42,8 +43,8 @@
                     'manager keuangan',
                 ]))
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
-                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                        aria-expanded="false">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false">
                         <i class="ti ti-layout-grid-add ti-md"></i>
                         <span class="badge bg-danger rounded-pill badge-notifications">{{ $total_notifikasi }}</span>
                     </a>
@@ -51,8 +52,8 @@
                         <div class="dropdown-menu-header border-bottom">
                             <div class="dropdown-header d-flex align-items-center py-3">
                                 <h5 class="text-body mb-0 me-auto">Shortcuts</h5>
-                                <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" data-bs-toggle="tooltip" data-bs-placement="top"
-                                    title="Add shortcuts">
+                                <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Add shortcuts">
                                     <i class="ti ti-sm ti-apps"></i>
                                 </a>
 
@@ -110,7 +111,8 @@
                                             </span>
                                         @endif
                                     </span>
-                                    <a href="/targetkomisi?posisi_ajuan={{ $level_user }}&status=0" class="stretched-link">Target</a>
+                                    <a href="/targetkomisi?posisi_ajuan={{ $level_user }}&status=0"
+                                        class="stretched-link">Target</a>
                                     <small class="text-muted mb-0">Marketing</small>
                                 </div>
                             </div>
@@ -152,7 +154,8 @@
                                         @endif
                                     </span>
 
-                                    <a href="{{ route('ajuantransfer.index') }}" class="stretched-link">Ajuan Transfer</a>
+                                    <a href="{{ route('ajuantransfer.index') }}" class="stretched-link">Ajuan
+                                        Transfer</a>
                                     <small class="text-muted mb-0">Dana</small>
                                 </div>
                             </div>
@@ -160,17 +163,18 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
-                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
-                        data-bs-auto-close="outside" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                         <i class="ti ti-archive ti-md"></i>
-                        <span class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_ajuan_program }}</span>
+                        <span
+                            class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_ajuan_program }}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end py-0">
                         <div class="dropdown-menu-header border-bottom">
                             <div class="dropdown-header d-flex align-items-center py-3">
                                 <h5 class="text-body mb-0 me-auto">Shortcuts</h5>
-                                <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title="Add shortcuts">
+                                <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Add shortcuts">
                                     <i class="ti ti-sm ti-archive"></i>
                                 </a>
 
@@ -188,7 +192,8 @@
 
                                     </span>
 
-                                    <a href="{{ route('ajuanprogramikatan.index') }}?status=pending" class="stretched-link">Ajuan</a>
+                                    <a href="{{ route('ajuanprogramikatan.index') }}?status=pending"
+                                        class="stretched-link">Ajuan</a>
                                     <small class="text-muted mb-0">Program Ikatan</small>
                                 </div>
                                 <div class="dropdown-shortcuts-item col">
@@ -199,7 +204,8 @@
                                                 style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pencairanprogramikatan }}</span>
                                         @endif
                                     </span>
-                                    <a href="{{ route('pencairanprogramikatan.index') }}" class="stretched-link">Pencairan</a>
+                                    <a href="{{ route('pencairanprogramikatan.index') }}"
+                                        class="stretched-link">Pencairan</a>
                                     <small class="text-muted mb-0">Program Ikatan</small>
                                 </div>
                             </div>
@@ -214,7 +220,8 @@
 
                                     </span>
 
-                                    <a href="{{ route('ajuankumulatif.index') }}?status=pending" class="stretched-link">Ajuan</a>
+                                    <a href="{{ route('ajuankumulatif.index') }}?status=pending"
+                                        class="stretched-link">Ajuan</a>
                                     <small class="text-muted mb-0">Program Kumulatif</small>
                                 </div>
                                 <div class="dropdown-shortcuts-item col">
@@ -225,11 +232,40 @@
                                                 style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pencairanprogramkumulatif }}</span>
                                         @endif
                                     </span>
-                                    <a href="{{ route('pencairanprogram.index') }}" class="stretched-link">Pencairan</a>
+                                    <a href="{{ route('pencairanprogram.index') }}"
+                                        class="stretched-link">Pencairan</a>
                                     <small class="text-muted mb-0">Program Kumulatif</small>
                                 </div>
                             </div>
+                            <div class="row row-bordered overflow-visible g-0">
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-file-invoice fs-4"></i>
 
+                                        @if (!empty($notifikasi_ajuanprogramikatanenambulan))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_ajuanprogramikatanenambulan }}</span>
+                                        @endif
+
+                                    </span>
+
+                                    <a href="{{ route('ajuanprogramenambulan.index') }}?status=pending"
+                                        class="stretched-link">Ajuan</a>
+                                    <small class="text-muted mb-0">Program Enambulan</small>
+                                </div>
+                                <div class="dropdown-shortcuts-item col">
+                                    <span class="dropdown-shortcuts-icon rounded-circle mb-2">
+                                        <i class="ti ti-file-invoice fs-4"></i>
+                                        @if (!empty($notifikasi_pencairanprogramikatanenambulan))
+                                            <span class="badge bg-danger rounded-pill badge-notifications"
+                                                style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pencairanprogramikatanenambulan }}</span>
+                                        @endif
+                                    </span>
+                                    <a href="{{ route('pencairanprogramenambulan.index') }}"
+                                        class="stretched-link">Pencairan</a>
+                                    <small class="text-muted mb-0">Program Enambulan</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -237,13 +273,15 @@
                     <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                         <a class="nav-link" href="{{ route('ticket.index') }}">
                             <i class="ti ti-tool ti-md"></i>
-                            <span class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_ticket }}</span>
+                            <span
+                                class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_ticket }}</span>
                         </a>
                     </li>
                     <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                         <a class="nav-link" href="{{ route('ticketupdate.index') }}?status=pending">
                             <i class="ti ti-recycle ti-md"></i>
-                            <span class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_update_data }}</span>
+                            <span
+                                class="badge bg-danger rounded-pill badge-notifications">{{ $notifikasi_update_data }}</span>
                         </a>
                     </li>
                 @endif
@@ -469,7 +507,8 @@
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ asset('/assets/img/avatars/1.png') }}" alt class="h-auto rounded-circle" />
+                                        <img src="{{ asset('/assets/img/avatars/1.png') }}" alt
+                                            class="h-auto rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -512,7 +551,8 @@
 
     <!-- Search Small Screens -->
     <div class="navbar-search-wrapper search-input-wrapper d-none">
-        <input type="text" class="form-control search-input container-fluid border-0" placeholder="Search..." aria-label="Search..." />
+        <input type="text" class="form-control search-input container-fluid border-0" placeholder="Search..."
+            aria-label="Search..." />
         <i class="ti ti-x ti-sm search-toggler cursor-pointer"></i>
     </div>
 </nav>

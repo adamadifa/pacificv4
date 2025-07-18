@@ -552,4 +552,34 @@ class AjuanprogramikatanenambulanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    public function detailtarget($no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+
+        $programikatanenambulan = Ajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+            ->join('program_ikatan', 'marketing_program_ikatan_enambulan.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+        $periode_dari = $programikatanenambulan->periode_dari;
+        $periode_sampai = $programikatanenambulan->periode_sampai;
+        $list_bulan = [];
+        $list_tahun = [];
+        $current_date = $periode_dari;
+        while ($current_date <= $periode_sampai) {
+            $list_bulan[] = date('m', strtotime($current_date));
+            $list_tahun[] = date('Y', strtotime($current_date));
+            $current_date = date('Y-m-d', strtotime('+1 month', strtotime($current_date)));
+        }
+        $detailprogramikatan = Detailajuanprogramikatanenambulan::where('no_pengajuan', $no_pengajuan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->first();
+
+        $data['detailtarget'] = Detailtargetikatan::where('no_pengajuan', $detailprogramikatan->no_pengajuan_programikatan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->whereIn('bulan', $list_bulan)
+            ->get();
+        return view('worksheetom.ajuanprogramikatan.detailtarget', $data);
+    }
 }

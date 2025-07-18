@@ -1,4 +1,5 @@
-<form action="{{ route('ajuanprogramenambulan.storeapprove', Crypt::encrypt($programikatan->no_pengajuan)) }}" method="POST">
+<form action="{{ route('ajuanprogramenambulan.storeapprove', Crypt::encrypt($programikatan->no_pengajuan)) }}"
+    method="POST">
     @csrf
     <div class="row">
         <div class="col">
@@ -82,13 +83,15 @@
                             <td class="text-end">{{ $d->periode_pencairan }} Bulan</td>
                             <td>
                                 @if ($d->file_doc != null)
-                                    <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}" target="_blank">
+                                    <a href="{{ asset('storage/ajuanprogramikatan/' . $d->file_doc) }}"
+                                        target="_blank">
                                         <i class="ti ti-file-text"></i>
                                     </a>
                                 @endif
                             </td>
                             <td>
-                                <a href="#" class="btnDetailTarget" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}"
+                                <a href="#" class="btnDetailTarget"
+                                    kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}"
                                     no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
                                     <i class="ti ti-file-description"></i>
                                 </a>
@@ -101,7 +104,8 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-thumb-up me-1"></i>Approve</button></button>
+            <button class="btn btn-primary w-100" id="btnSimpan"><i
+                    class="ti ti-thumb-up me-1"></i>Approve</button></button>
         </div>
         <div class="col">
             <button class="btn btn-danger w-100" id="btnSimpan" name="decline" value="1"><i

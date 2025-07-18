@@ -2238,6 +2238,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/ajuanprogramenambulan/{no_pengajuan}/approve', 'approve')->name('ajuanprogramenambulan.approve')->can('ajuanprogramikatan.approve');
         Route::post('/ajuanprogramenambulan/{no_pengajuan}/storeapprove', 'storeapprove')->name('ajuanprogramenambulan.storeapprove')->can('ajuanprogramikatan.approve');
+        Route::get('/ajuanprogramenambulan/{no_pengajuan}/{kode_pelanggan}/detailtarget', 'detailtarget')->name('ajuanprogramenambulan.detailtarget')->can('ajuanprogramikatan.show');
     });
 
     Route::controller(AjuanprogramkumulatifController::class)->group(function () {

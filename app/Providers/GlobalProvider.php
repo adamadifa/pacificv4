@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Ajuanprogramikatan;
+use App\Models\Ajuanprogramikatanenambulan;
 use App\Models\Ajuanprogramkumulatif;
 use App\Models\Ajuantransferdana;
 use App\Models\Disposisiajuanfaktur;
@@ -27,6 +28,7 @@ use App\Models\Izinpulang;
 use App\Models\Izinsakit;
 use App\Models\Izinterlambat;
 use App\Models\Pencairanprogram;
+use App\Models\Pencairanprogramenambulan;
 use App\Models\Pencairanprogramikatan;
 use App\Models\Ticket;
 use App\Models\Ticketupdatedata;
@@ -128,12 +130,12 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_izinkoreksi = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinkoreksi->getIzinkoreksi(cekPending: true)->count() : 0;
 
 
-              
 
 
 
-  
-                
+
+
+
 
                 $notifikasi_pengajuan_izin = $notifikasi_izinabsen + $notifikasi_izincuti + $notifikasi_izinterlambat + $notifikasi_izinsakit + $notifikasi_izinpulang + $notifikasi_izindinas + $notifikasi_izinkoreksi + $notifikasi_izinkeluar;
 
@@ -252,6 +254,11 @@ class GlobalProvider extends ServiceProvider
                     $notifikasi_pencairanprogramkumulatif = Pencairanprogram::whereNull('om')
                         ->where('kode_cabang', auth()->user()->kode_cabang)
                         ->count();
+
+                    $notifikasi_ajuanprogramikatanenambulan = Ajuanprogramikatanenambulan::whereNull('om')->where('kode_cabang', auth()->user()->kode_cabang)->count();
+                    $notifikasi_pencairanprogramikatanenambulan = Pencairanprogramenambulan::whereNull('marketing_pencairan_ikatan_enambulan.om')
+                        ->where('marketing_pencairan_ikatan_enambulan.kode_cabang', auth()->user()->kode_cabang)
+                        ->count();
                 } else if ($level_user == 'regional sales manager') {
                     $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('rsm')
                         ->join('cabang', 'marketing_program_ikatan.kode_cabang', '=', 'cabang.kode_cabang')
@@ -274,7 +281,18 @@ class GlobalProvider extends ServiceProvider
                         ->join('cabang', 'marketing_program_pencairan.kode_cabang', '=', 'cabang.kode_cabang')
                         ->where('kode_regional', auth()->user()->kode_regional)
                         ->whereNotNull('om')
+                        ->count();
 
+
+                    $notifikasi_ajuanprogramikatanenambulan = Ajuanprogramikatanenambulan::whereNull('rsm')
+                        ->join('cabang', 'marketing_program_ikatan_enambulan.kode_cabang', '=', 'cabang.kode_cabang')
+                        ->where('cabang.kode_regional', auth()->user()->kode_regional)
+                        ->whereNotNull('om')
+                        ->count();
+                    $notifikasi_pencairanprogramikatanenambulan = Pencairanprogramenambulan::whereNull('marketing_pencairan_ikatan_enambulan.rsm')
+                        ->join('cabang', 'marketing_pencairan_ikatan_enambulan.kode_cabang', '=', 'cabang.kode_cabang')
+                        ->where('cabang.kode_regional', auth()->user()->kode_regional)
+                        ->whereNotNull('marketing_pencairan_ikatan_enambulan.om')
                         ->count();
                 } else if ($level_user == 'gm marketing') {
                     $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('gm')
@@ -296,6 +314,16 @@ class GlobalProvider extends ServiceProvider
                         ->whereNotNull('rsm')
                         ->where('status', 0)
                         ->count();
+
+                    $notifikasi_ajuanprogramikatanenambulan = Ajuanprogramikatanenambulan::whereNull('gm')
+                        ->whereNotNull('rsm')
+                        ->where('status', 0)
+                        ->count();
+
+                    $notifikasi_pencairanprogramikatanenambulan = Pencairanprogramenambulan::whereNull('marketing_pencairan_ikatan_enambulan.gm')
+                        ->where('marketing_pencairan_ikatan_enambulan.status', 0)
+                        ->whereNotNull('marketing_pencairan_ikatan_enambulan.rsm')
+                        ->count();
                 } else if ($level_user == 'direktur') {
                     $notifikasi_ajuanprogramikatan = Ajuanprogramikatan::whereNull('direktur')
                         ->whereNotNull('gm')
@@ -314,15 +342,27 @@ class GlobalProvider extends ServiceProvider
                         ->whereNotNull('gm')
                         ->where('status', 0)
                         ->count();
+
+                    $notifikasi_ajuanprogramikatanenambulan = Ajuanprogramikatanenambulan::whereNull('direktur')
+                        ->whereNotNull('gm')
+                        ->where('status', 0)
+                        ->count();
+
+                    $notifikasi_pencairanprogramikatanenambulan = Pencairanprogramenambulan::whereNull('direktur')
+                        ->whereNotNull('gm')
+                        ->where('status', 0)
+                        ->count();
                 } else {
                     $notifikasi_ajuanprogramikatan = 0;
                     $notifikasi_pencairanprogramikatan = 0;
                     $notifikasi_ajuanprogramkumulatif = 0;
                     $notifikasi_pencairanprogramkumulatif = 0;
+                    $notifikasi_ajuanprogramikatanenambulan = 0;
+                    $notifikasi_pencairanprogramikatanenambulan = 0;
                 }
 
 
-                $notifikasi_ajuan_program = $notifikasi_ajuanprogramikatan + $notifikasi_pencairanprogramikatan + $notifikasi_ajuanprogramkumulatif + $notifikasi_pencairanprogramkumulatif;
+                $notifikasi_ajuan_program = $notifikasi_ajuanprogramikatan + $notifikasi_pencairanprogramikatan + $notifikasi_ajuanprogramkumulatif + $notifikasi_pencairanprogramkumulatif + $notifikasi_ajuanprogramikatanenambulan + $notifikasi_pencairanprogramikatanenambulan;
                 $notifikasi_hrd = $notifikasi_penilaiankaryawan + $notifikasi_pengajuan_izin + $notifikasi_lembur;
                 $total_notifikasi = $notifikasi_marketing + $notifikasi_hrd + $notifikasiajuantransferdana;
 
@@ -363,6 +403,8 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_pencairanprogramikatan = 0;
                 $notifikasi_ajuanprogramkumulatif = 0;
                 $notifikasi_pencairanprogramkumulatif = 0;
+                $notifikasi_ajuanprogramikatanenambulan = 0;
+                $notifikasi_pencairanprogramikatanenambulan = 0;
                 $notifikasi_ajuan_program = 0;
 
                 $notifikasi_izinabsen_presensi = 0;
@@ -786,6 +828,8 @@ class GlobalProvider extends ServiceProvider
                 'notifikasi_pencairanprogramikatan' => $notifikasi_pencairanprogramikatan,
                 'notifikasi_ajuanprogramkumulatif' => $notifikasi_ajuanprogramkumulatif,
                 'notifikasi_pencairanprogramkumulatif' => $notifikasi_pencairanprogramkumulatif,
+                'notifikasi_ajuanprogramikatanenambulan' => $notifikasi_ajuanprogramikatanenambulan,
+                'notifikasi_pencairanprogramikatanenambulan' => $notifikasi_pencairanprogramikatanenambulan,
                 'notifikasi_ajuan_program' => $notifikasi_ajuan_program,
 
                 'notifikasi_ticket' => $notifikasi_ticket,
