@@ -154,10 +154,6 @@
                                     @foreach ($detail as $key => $d)
                                         @php
                                             $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
-                                            $total_reward =
-                                                $d->total_reward > 1000000 && !in_array($d->kode_program, $bb_dep)
-                                                    ? 1000000
-                                                    : $d->total_reward;
                                             $subtotal_reward += $total_reward;
                                             $grandtotal_reward += $total_reward;
                                         @endphp
