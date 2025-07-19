@@ -79,9 +79,7 @@
             <!-- Status Pencairan-->
             @if ($d->total_jml_dus >= $d->total_qty_target)
                 <select name="status_pencairan[{{ $loop->index }}]" id="status_pencairan" class="form-select">
-                    @if ($reward >= 100000)
-                        <option value="1">Cairkan</option>
-                    @endif
+                    <option value="1">Cairkan</option>
                     <option value="0">Simpan</option>
                 </select>
             @else

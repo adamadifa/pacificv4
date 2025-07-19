@@ -1173,8 +1173,30 @@ class LaporanaccountingController extends Controller
         $penjualan_produk->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $penjualan_produk->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         $penjualan_produk->where('marketing_penjualan.status_batal', 0);
+        $penjualan_produk->orderBy('marketing_penjualan.tanggal');
+        $penjualan_produk->orderBy('marketing_penjualan.no_faktur');
 
 
+        $retur_penjualan = Detailretur::query();
+        $retur_penjualan->select(DB::raw("'4-2100' as kode_akun"),
+       DB::raw("'Retur Penjualan' as nama_akun"),
+        'marketing_retur.tanggal',
+        DB::raw("marketing_retur.no_retur as no_bukti"),
+        DB::raw("'RETUR PENJUALAN' AS sumber"),
+        DB::raw("CONCAT(marketing_retur.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
+        DB::raw('0 as jml_kredit'),
+        'marketing_retur_detail.jumlah as jml_debet',
+        DB::raw('1 as urutan')
+        );
+
+
+        $retur_penjualan->join('marketing_retur','marketing_retur_detail.no_retur','=','marketing_retur.no_retur');
+        $retur_penjualan->join('marketing_penjualan','marketing_retur.no_faktur','=','marketing_penjualan.no_faktur');
+        $retur_penjualan->join('pelanggan','marketing_penjualan.kode_pelanggan','=','pelanggan.kode_pelanggan');
+        $retur_penjualan->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
+        $retur_penjualan->where('marketing_retur.jenis_retur', 'PF');
+        $retur_penjualan->orderBy('marketing_retur.tanggal');
+        $retur_penjualan->orderBy('marketing_retur.no_retur');
 
         $bukubesar = $ledger->unionAll($kaskecil)
             ->unionAll($ledger_transaksi)
@@ -1183,6 +1205,7 @@ class LaporanaccountingController extends Controller
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
             ->unionAll($penjualan_produk)
+            ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
         // dd($bukubesar->get());
