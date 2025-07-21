@@ -559,7 +559,7 @@ function pihakpertamacabang($cabang, $perusahaan)
         'BKI' => 'Sumarido Tanjung',
         'PWK' => 'M. Ridwan Nugraha',
         'TSM' => 'Aceng Saepul Anwar',
-        'BTN' => 'Muhammad Rizky',
+        'BTN' => 'Mauldy',
         'CRB' => 'Ari Ricardo'
     ];
 
