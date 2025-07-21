@@ -132,6 +132,7 @@ use App\Http\Controllers\ResignController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaldoawalbarangproduksiController;
+use App\Http\Controllers\SaldoawalbukubesarController;
 use App\Http\Controllers\SaldoawalgudangbahanController;
 use App\Http\Controllers\SaldoawalgudangcabangController;
 use App\Http\Controllers\SaldoawalgudangjadiController;
@@ -2186,17 +2187,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/pencairanprogramenambulan/create', 'create')->name('pencairanprogramenambulan.create')->can('pencairanprogramenambulan.create');
         Route::post('/pencairanprogramenambulan/store', 'store')->name('pencairanprogramenambulan.store')->can('pencairanprogramenambulan.store');
         Route::get('/pencairanprogramenambulan/{kode_pencairan}/setpencairan', 'setpencairan')->name('pencairanprogramenambulan.setpencairan')->can('pencairanprogramenambulan.create');
-        Route::delete('/pencairanprogramenambulan/{kode_pencairan}/destroy', 'destroy')->name('pencairanprogramenambulan.delete')->can('pencairanprogramenambulan.delete');
+
         Route::get('/pencairanprogramenambulan/{kode_pencairan}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogramenambulan.tambahpelanggan')->can('pencairanprogramenambulan.create');
         Route::post('/pencairanprogramenambulan/getpelanggan', 'getpelanggan')->name('pencairanprogramenambulan.getpelanggan')->can('pencairanprogramenambulan.create');
         Route::post('/pencairanprogramenambulan/{kode_pencairan}/storepelanggan', 'storepelanggan')->name('pencairanprogramenambulan.storepelanggan')->can('pencairanprogramenambulan.create');
 
-        Route::get('/pencairanprogramenambulan/{kode_pencairan}/approve', 'approve')->name('pencairanprogramenambulan.approve')->can('ajuanprogramenambulan.approve');
-        Route::post('/pencairanprogramenambulan/{kode_pencairan}/storeapprove', 'storeapprove')->name('pencairanprogramenambulan.storeapprove')->can('ajuanprogramenambulan.approve');
+        Route::get('/pencairanprogramenambulan/{kode_pencairan}/approve', 'approve')->name('pencairanprogramenambulan.approve')->can('ajuanprogramikatan.approve');
+        Route::post('/pencairanprogramenambulan/{kode_pencairan}/storeapprove', 'storeapprove')->name('pencairanprogramenambulan.storeapprove')->can('ajuanprogramikatan.approve');
         // Route::get('/pencairanprogramikatan/{kode_pencairan}/{kode_pelanggan}/upload', 'upload')->name('pencairanprogramikatan.upload')->can('pencairanprogramikt.upload');
         Route::post('/pencairanprogramenambulan/{kode_pencairan}/storeupload', 'storeupload')->name('pencairanprogramenambulan.storeupload')->can('pencairanprogramenambulan.upload');
         Route::get('/pencairanprogramenambulan/{kode_pencairan}/cetak', 'cetak')->name('pencairanprogramenambulan.cetak')->can('pencairanprogramenambulan.show');
         Route::get('/pencairanprogramenambulan/{kode_pelanggan}/{kode_pencairan}/detailfaktur', 'detailfaktur')->name('pencairanprogramenambulan.detailfaktur')->can('pencairanprogramenambulan.create');
+        Route::delete('/pencairanprogramenambulan/{kode_pencairan}/destroy', 'destroy')->name('pencairanprogramenambulan.delete')->can('pencairanprogramenambulan.delete');
         Route::delete('/pencairanprogramenambulan/{kode_pencairan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('pencairanprogramenambulan.deletepelanggan')->can('pencairanprogramenambulan.create');
         Route::get('/pencairanprogramenambulan/{kode_pencairan}/upload', 'upload')->name('pencairanprogramenambulan.upload')->can('pencairanprogramenambulan.upload');
     });
@@ -2326,6 +2328,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/worksheetom/evaluasisharing', [WorksheetomController::class, 'evaluasisharing'])->name('worksheetom.evaluasisharing')->can('worksheetom.evaluasisharing');
     Route::get('/worksheetom/bbm', [WorksheetomController::class, 'bbm'])->name('worksheetom.bbm')->can('worksheetom.bbm');
     Route::get('/worksheetom/ratiobs', [LaporanmarketingController::class, 'ratiobs'])->name('worksheetom.ratiobs')->can('worksheetom.ratiobs');
+
+
+    Route::controller(SaldoawalbukubesarController::class)->group(function () {
+        Route::get('/saldoawalbukubesar', 'index')->name('saldoawalbukubesar.index')->can('saldoawalbukubesar.index');
+        Route::get('/saldoawalbukubesar/create', 'create')->name('saldoawalbukubesar.create')->can('saldoawalbukubesar.create');
+        Route::post('/saldoawalbukubesar/store', 'store')->name('saldoawalbukubesar.store')->can('saldoawalbukubesar.store');
+        Route::get('/saldoawalbukubesar/{kode_saldo_awal}/edit', 'edit')->name('saldoawalbukubesar.edit')->can('saldoawalbukubesar.edit');
+        Route::put('/saldoawalbukubesar/{kode_saldo_awal}/update', 'update')->name('saldoawalbukubesar.update')->can('saldoawalbukubesar.update');
+        Route::delete('/saldoawalbukubesar/{kode_saldo_awal}/delete', 'destroy')->name('saldoawalbukubesar.delete')->can('saldoawalbukubesar.delete');
+
+        Route::post('/saldoawalbukubesar/getsaldo', 'getsaldo')->name('saldoawalbukubesar.getsaldo');
+    });
 });
 
 
