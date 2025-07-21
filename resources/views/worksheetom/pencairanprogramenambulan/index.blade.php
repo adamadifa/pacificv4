@@ -153,7 +153,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        @can('ajuanprogramenambulan.approve')
+                                                        @can('ajuanprogramikatan.approve')
                                                             @if ($user->hasRole('operation manager') && $d->rsm == null)
                                                                 <a href="#" class="btnApprove me-1"
                                                                     kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
