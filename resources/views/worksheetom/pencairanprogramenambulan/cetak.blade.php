@@ -148,9 +148,9 @@
                         <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
                         <td style="text-align: right">{{ formatAngka($total_reward) }}</td>
                         <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
-                        <td>{{ $d->no_rekening }}</td>
-                        <td>{{ $d->pemilik_rekening }}</td>
-                        <td>{{ $d->bank }}</td>
+                        <td>{!! $d->no_rekening !!}</td>
+                        <td>{!! $d->pemilik_rekening !!}</td>
+                        <td>{!! $d->bank !!}</td>
                     </tr>
                 @endforeach
             </tbody>
