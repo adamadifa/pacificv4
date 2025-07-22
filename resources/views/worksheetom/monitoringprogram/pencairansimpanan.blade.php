@@ -117,7 +117,7 @@
                                 </table>
                             </div>
                             <div style="float: right;">
-                                {{-- {{ $saldosimpanan->links() }} --}}
+                                {{ $pencairan->links() }}
                             </div>
                         </div>
                     </div>
