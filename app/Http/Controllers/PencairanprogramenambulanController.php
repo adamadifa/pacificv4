@@ -875,9 +875,9 @@ class PencairanprogramenambulanController extends Controller
         
 
         if ($request->export == 'true') {
-            header("Content-type: application/vnd-ms-excel");
-            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-            header("Content-Disposition: attachment; filename=$kode_pencairan.xls");
+            // header("Content-type: application/vnd-ms-excel");
+            // // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            // header("Content-Disposition: attachment; filename=$kode_pencairan.xls");
             return view('worksheetom.pencairanprogramenambulan.cetak_export', $data);
         }
         return view('worksheetom.pencairanprogramenambulan.cetak', $data);
