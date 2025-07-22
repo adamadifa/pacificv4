@@ -83,7 +83,7 @@
         <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
         <section class="sheet padding-10mm">
 
-            <table class="table">
+            <table class="datatable3">
                 <tr>
                     <th>Kode Pencairan</th>
                     <td class="text-end">{{ $pencairanprogram->kode_pencairan }}</td>
@@ -144,7 +144,7 @@
                         <th rowspan="2">Bank</th>
                         <th rowspan="2"><i class="ti ti-file-description"></i></th>
                         <th rowspan="2"><i class="ti ti-moneybag"></i></th>
-                        <th rowspan="2">#</th>
+                       
                     </tr>
                     <tr>
                         {{-- <th>SMM</th>
@@ -219,31 +219,7 @@
                                     <i class="ti ti-hourglass-empty text-warning"></i>
                                 @endif
                             </td>
-                            <td>
-                                <div class="d-flex">
-                                    {{-- <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
-                                            <i class="ti ti-file-description"></i>
-                                        </a> --}}
-                                    {{-- @can('pencairanprogramikt.upload')
-                                                <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
-                                                    kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
-                                                    <i class="ti ti-upload text-primary"></i>
-                                                </a>
-                                            @endcan --}}
-                                    {{-- @can('pencairanprogramenambulan.delete')
-                                        @if ($pencairanprogram->status == '0')
-                                            <form method="POST" name="deleteform" class="deleteform"
-                                                action="{{ route('pencairanprogramenambulan.deletepelanggan', [Crypt::encrypt($pencairanprogram->kode_pencairan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <a href="#" class="delete-confirm ml-1">
-                                                    <i class="ti ti-trash text-danger"></i>
-                                                </a>
-                                            </form>
-                                        @endif
-                                    @endcan --}}
-                                </div>
-                            </td>
+                            
                         </tr>
                         {{-- @if ($d->metode_pembayaran != $next_metode_pembayaran)
                                     <tr class="table-dark">
