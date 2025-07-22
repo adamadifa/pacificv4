@@ -187,6 +187,16 @@
                                                                 <i class="ti ti-settings text-primary"></i>
                                                             </a>
                                                         @endcan
+                                                        @can('pencairanprogramenambulan.show')
+                                                            <a href="{{ route('pencairanprogramenambulan.cetak', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                                class="me-1" target="_blank">
+                                                                <i class="ti ti-printer text-success"></i>
+                                                            </a>
+                                                            <a href="{{ route('pencairanprogramenambulan.cetak', Crypt::encrypt($d->kode_pencairan)) }}?export=true"
+                                                                class="me-1" target="_blank">
+                                                                <i class="ti ti-download text-success"></i>
+                                                            </a>
+                                                        @endcan
                                                         @can('pencairanprogramenambulan.upload')
                                                             <a href="#"
                                                                 kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}"class="btnUpload">
