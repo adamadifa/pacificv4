@@ -403,9 +403,11 @@ class PencairanprogramenambulanController extends Controller
 
         $detailpenjualan = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
-            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as total_jml_dus'),
-            DB::raw('SUM(IF(jenis_transaksi = "T", floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus_tunai'),
-            DB::raw('SUM(IF(jenis_transaksi = "K", floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus_kredit'),
+            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as total_qty'),
+            DB::raw('SUM(IF(datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus'),
+            DB::raw('SUM(IF(jenis_transaksi = "T" AND datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi = "K" AND datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus_kredit'),
+
             ...$select_jml_dus,
             ...$select_jml_dus_tunai,
             ...$select_jml_dus_kredit
@@ -422,7 +424,7 @@ class PencairanprogramenambulanController extends Controller
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
             ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
             ->where('marketing_penjualan.status', 1)
-            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3")
+            // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3")
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
             ->whereIn('marketing_penjualan.kode_pelanggan', $pelangganprogramenambulan)
