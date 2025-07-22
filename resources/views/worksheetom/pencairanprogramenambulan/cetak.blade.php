@@ -142,8 +142,8 @@
                         <th rowspan="2">No. Rekening</th>
                         <th rowspan="2">Pemilik</th>
                         <th rowspan="2">Bank</th>
-                      
-                       
+
+
                     </tr>
                     <tr>
                         {{-- <th>SMM</th>
@@ -190,25 +190,15 @@
                             <td>{{ $d->pemilik_rekening }}</td>
                             <td>{{ $d->bank }}</td>
                         </tr>
-                        {{-- @if ($d->metode_pembayaran != $next_metode_pembayaran)
-                                    <tr class="table-dark">
-                                        <td colspan="12">TOTAL REWARD </td>
-                                        <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
-                                        <td colspan="8"></td>
-                                    </tr>
-                                    @php
-                                        $subtotal_reward = 0;
-                                    @endphp
-                                @endif --}}
                     @endforeach
                 </tbody>
-                {{-- <tfoot class="table-dark">
-                            <tr>
-                                <td colspan="12">GRAND TOTAL REWARD </td>
-                                <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
-                                <td colspan="8"></td>
-                            </tr>
-                        </tfoot> --}}
+                <tfoot class="table-dark">
+                    <tr>
+                        <td colspan="7">GRAND TOTAL REWARD </td>
+                        <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
+                        <td colspan="4"></td>
+                    </tr>
+                </tfoot>
             </table>
             <br>
             <br>
