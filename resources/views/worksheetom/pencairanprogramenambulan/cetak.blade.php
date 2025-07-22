@@ -184,7 +184,7 @@
                             <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                             <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
-                            <td class="text-end">{{ formatAngka($total_reward) }}</td>
+                            <td style="text-align: right">{{ formatAngka($total_reward) }}</td>
                             <td>{{ $d->metode_pembayaran }}</td>
                             <td>{{ $d->no_rekening }}</td>
                             <td>{{ $d->pemilik_rekening }}</td>
@@ -195,7 +195,7 @@
                 <tfoot class="table-dark">
                     <tr>
                         <td colspan="7">GRAND TOTAL REWARD </td>
-                        <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
+                        <td style="text-align: right">{{ formatAngka($grandtotal_reward) }}</td>
                         <td colspan="4"></td>
                     </tr>
                 </tfoot>
