@@ -784,4 +784,99 @@ class PencairanprogramenambulanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+
+    public function cetak($kode_pencairan, Request $request)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $query = Pencairanprogramenambulan::query();
+        $query->select(
+            'marketing_pencairan_ikatan_enambulan.*',
+            'cabang.nama_cabang',
+            'nama_program',
+        );
+        $query->join('cabang', 'marketing_pencairan_ikatan_enambulan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan_enambulan.kode_program', '=', 'program_ikatan.kode_program');
+        $query->orderBy('marketing_pencairan_ikatan_enambulan.tanggal', 'desc');
+        $query->where('kode_pencairan', $kode_pencairan);
+        $pencairanprogramenambulan = $query->first();
+
+
+        $pelangganprogram = Detailtargetikatan::select(
+            'marketing_program_ikatan_target.kode_pelanggan',
+            'marketing_program_ikatan_detail.top',
+            'marketing_program_ikatan_detail.metode_pembayaran',
+            DB::raw('SUM(marketing_program_ikatan_target.target_perbulan) as qty_target'),
+            'reward',
+            'tipe_reward',
+            'budget_smm',
+            'budget_rsm',
+            'budget_gm'
+        )
+            ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_ikatan_detail', function ($join) {
+                $join->on('marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
+                    ->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
+            ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+            ->where('marketing_program_ikatan.status', 1)
+            ->where('marketing_program_ikatan.kode_program', $pencairanprogramenambulan->kode_program)
+            ->when($pencairanprogramenambulan->semester == 1, function ($query) {
+                $query->where('marketing_program_ikatan_target.bulan', '<=', 6);
+            })
+            ->when($pencairanprogramenambulan->semester == 2, function ($query) {
+                $query->where('marketing_program_ikatan_target.bulan', '>', 6);
+            })
+            ->where('marketing_program_ikatan_target.tahun', $pencairanprogramenambulan->tahun)
+            ->where('marketing_program_ikatan.kode_cabang', $pencairanprogramenambulan->kode_cabang)
+            ->groupBy(
+                'marketing_program_ikatan_target.kode_pelanggan',
+                'marketing_program_ikatan_detail.top',
+                'marketing_program_ikatan_detail.metode_pembayaran',
+                'reward',
+                'tipe_reward',
+                'budget_smm',
+                'budget_rsm',
+                'budget_gm'
+            );
+
+
+
+
+        $detail = Detailpencairanprogramenambulan::join('pelanggan', 'marketing_pencairan_ikatan_enambulan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_pencairan_ikatan_enambulan', 'marketing_pencairan_ikatan_enambulan_detail.kode_pencairan', '=', 'marketing_pencairan_ikatan_enambulan.kode_pencairan')
+            ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
+                $join->on('marketing_pencairan_ikatan_enambulan_detail.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
+            })
+            ->select(
+                'marketing_pencairan_ikatan_enambulan_detail.*',
+                'pelanggan.nama_pelanggan',
+                'top',
+                'metode_pembayaran',
+                'qty_target',
+                'reward',
+                'tipe_reward',
+                'budget_smm',
+                'budget_rsm',
+                'budget_gm',
+                'kode_program'
+            )
+            ->where('marketing_pencairan_ikatan_enambulan_detail.kode_pencairan', $kode_pencairan)
+            ->orderBy('pelangganprogram.metode_pembayaran')
+            ->get();
+
+      
+        $data['pencairanprogram'] = $pencairanprogramenambulan;
+        $data['detail'] = $detail;
+        
+
+        if ($request->export == 'true') {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=$kode_pencairan.xls");
+            return view('worksheetom.pencairanprogramenambulan.cetak_export', $data);
+        }
+        return view('worksheetom.pencairanprogramenambulan.cetak', $data);
+    }
 }
