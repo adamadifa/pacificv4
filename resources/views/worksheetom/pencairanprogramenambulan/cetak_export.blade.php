@@ -93,31 +93,105 @@
     <br>
     <br>
 
+    <table class="datatable3">
+        <tr>
+            <th>Kode Pencairan</th>
+            <td class="text-end">{{ $pencairanprogram->kode_pencairan }}</td>
+        </tr>
+        <tr>
+            <th>Tanggal</th>
+            <td class="text-end">{{ DateToIndo($pencairanprogram->tanggal) }}</td>
+        </tr>
+        <tr>
+            <th>Periode Penjualan</th>
+            <td class="text-end">
+                @if ($pencairanprogram->semester == 1)
+                    @php
+                        $periode_start = $pencairanprogram->tahun . '-01-01';
+                        $periode_end = date('Y-m-t', strtotime($pencairanprogram->tahun . '-06-01'));
+                    @endphp
+                @endif
+                @if ($pencairanprogram->semester == 2)
+                    @php
+                        $periode_start = $pencairanprogram->tahun . '-07-01';
+                        $periode_end = date('Y-m-t', strtotime($pencairanprogram->tahun . '-12-01'));
+                    @endphp
+                @endif
+                {{ DateToIndo($periode_start) }} s/d {{ DateToIndo($periode_end) }}
+            </td>
+        </tr>
+        <tr>
+            <th>No. Dokumen</th>
+            <td class="text-end">{{ $pencairanprogram->nomor_dokumen }}</td>
+        </tr>
+        <tr>
+            <th>Program</th>
+            <td class="text-end">{{ $pencairanprogram->nama_program }}</td>
+        </tr>
+        <tr>
+            <th>Cabang</th>
+            <td class="text-end">{{ strtoupper($pencairanprogram->nama_cabang) }}</td>
+        </tr>
+
+    </table>
+    <br>
+    <br>
+
     <table id="example" class="datatable3" style="width:100%">
         <thead class="table-dark">
             <tr>
                 <th rowspan="2">No.</th>
                 <th rowspan="2">Kode</th>
                 <th rowspan="2">Nama Pelanggan</th>
+                <th rowspan="2" class="text-center">Target</th>
                 <th class="text-center" colspan="3">Realisasi</th>
-                <th class="text-center">Reward</th>
+                <th class="text-center" rowspan="2">Reward</th>
+
+                <th rowspan="2">Pembayaran</th>
+                <th rowspan="2">No. Rekening</th>
+                <th rowspan="2">Pemilik</th>
+                <th rowspan="2">Bank</th>
+
+
             </tr>
             <tr>
                 <th class="text-center">Tunai</th>
                 <th class="text-center">Kredit</th>
                 <th class="text-center">Total</th>
             </tr>
+
         </thead>
-        <tbody>
+        <tbody id="loaddetailpencairan">
+            @php
+                $metode_pembayaran = [
+                    'TN' => 'Tunai',
+                    'TF' => 'Transfer',
+                    'VC' => 'Voucher',
+                ];
+                $subtotal_reward = 0;
+                $grandtotal_reward = 0;
+                $bb_dep = ['PRIK004', 'PRIK001'];
+            @endphp
             @foreach ($detail as $key => $d)
+                @php
+                    $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
+                    $total_reward = $d->total_reward;
+                    $subtotal_reward += $total_reward;
+                    $grandtotal_reward += $total_reward;
+                @endphp
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $d->kode_pelanggan }}</td>
                     <td>{{ $d->nama_pelanggan }}</td>
+                    <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                     <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                     <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                     <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
-                    <td style="text-align: right">{{ formatAngka($d->total_reward) }}</td>
+                    <td style="text-align: right">{{ formatAngka($total_reward) }}</td>
+                    <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
+                    <td>{{ $d->no_rekening }}</td>
+                    <td>{{ $d->pemilik_rekening }}</td>
+                    <td>{{ $d->bank }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -125,6 +199,7 @@
             <tr>
                 <td colspan="7">GRAND TOTAL REWARD </td>
                 <td style="text-align: right">{{ formatAngka($grandtotal_reward) }}</td>
+                <td colspan="4"></td>
             </tr>
         </tfoot>
     </table>
