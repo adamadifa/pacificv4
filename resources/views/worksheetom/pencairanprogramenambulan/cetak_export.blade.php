@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Cetak Ajuan Program Enam Bulan </title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css">
+  
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <style>
         @page {
@@ -19,14 +18,7 @@
             font-size: 14px
         }
 
-        .sheet {
-            overflow: auto !important;
-            height: auto !important;
-            width: auto !important;
-            margin-left: 10px;
-            margin-right: 10px;
-        }
-
+    
         .text-center {
             text-align: center;
         }
