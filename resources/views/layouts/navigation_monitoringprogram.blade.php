@@ -34,14 +34,14 @@
         @endif
 
         @if (auth()->user()->hasAnyRole(['staff keuangan', 'manager keuangan']))
-          
+            @can('pencairanprogramenambulan.index')
                 <li class="nav-item" role="presentation">
                     <a href="{{ route('pencairanprogramenambulan.index') }}"
                         class="nav-link {{ request()->is(['pencairanprogramenambulan', 'pencairanprogramenambulan/*']) ? 'active' : '' }}">
                         <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pencairan Program Ikatan Enam Bulan
                     </a>
                 </li>
-        
+            @endcan
         @endif
 
         
