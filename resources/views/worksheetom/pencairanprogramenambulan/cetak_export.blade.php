@@ -42,49 +42,7 @@
 
 <body>
 
-    <table class="datatable3">
-        <tr>
-            <th>Kode Pencairan</th>
-            <td class="text-end">{{ $pencairanprogram->kode_pencairan }}</td>
-        </tr>
-        <tr>
-            <th>Tanggal</th>
-            <td class="text-end">{{ DateToIndo($pencairanprogram->tanggal) }}</td>
-        </tr>
-        <tr>
-            <th>Periode Penjualan</th>
-            <td class="text-end">
-                @if ($pencairanprogram->semester == 1)
-                    @php
-                        $periode_start = $pencairanprogram->tahun . '-01-01';
-                        $periode_end = date('Y-m-t', strtotime($pencairanprogram->tahun . '-06-01'));
-                    @endphp
-                @endif
-                @if ($pencairanprogram->semester == 2)
-                    @php
-                        $periode_start = $pencairanprogram->tahun . '-07-01';
-                        $periode_end = date('Y-m-t', strtotime($pencairanprogram->tahun . '-12-01'));
-                    @endphp
-                @endif
-                {{ DateToIndo($periode_start) }} s/d {{ DateToIndo($periode_end) }}
-            </td>
-        </tr>
-        <tr>
-            <th>No. Dokumen</th>
-            <td class="text-end">{{ $pencairanprogram->nomor_dokumen }}</td>
-        </tr>
-        <tr>
-            <th>Program</th>
-            <td class="text-end">{{ $pencairanprogram->nama_program }}</td>
-        </tr>
-        <tr>
-            <th>Cabang</th>
-            <td class="text-end">{{ strtoupper($pencairanprogram->nama_cabang) }}</td>
-        </tr>
-    </table>
-    <br>
-    <br>
-
+    
     <table class="datatable3">
         <tr>
             <th>Kode Pencairan</th>
