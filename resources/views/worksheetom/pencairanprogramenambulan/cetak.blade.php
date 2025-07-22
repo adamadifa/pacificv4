@@ -127,13 +127,13 @@
             <br>
             <br>
 
-            <table id="example" class="display nowrap table table-striped table-bordered" style="width:100%">
+            <table id="example" class="datatable3" style="width:100%">
                 <thead class="table-dark">
                     <tr>
                         <th rowspan="2">No.</th>
                         <th rowspan="2">Kode</th>
                         <th rowspan="2">Nama Pelanggan</th>
-                        <th colspan="3" class="text-center">Budget</th>
+                        {{-- <th colspan="3" class="text-center">Budget</th> --}}
                         <th rowspan="2" class="text-center">Target</th>
                         <th class="text-center" colspan="3">Realisasi</th>
                         <th class="text-center">Reward</th>
@@ -147,14 +147,14 @@
                         <th rowspan="2">#</th>
                     </tr>
                     <tr>
-                        <th>SMM</th>
+                        {{-- <th>SMM</th>
                         <th>RSM</th>
-                        <th>GM</th>
+                        <th>GM</th> --}}
                         <th>Tunai</th>
                         <th>Kredit</th>
                         <th>Total</th>
                         {{-- <th>Tunai</th>
-                                        <th>Kredit</th> --}}
+                                <th>Kredit</th> --}}
                         <th>Total</th>
                     </tr>
 
@@ -181,19 +181,20 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
-                            <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
+                            {{-- <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
                             <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
-                            <td class="text-end">{{ formatAngka($d->budget_gm) }}</td>
+                            <td class="text-end">{{ formatAngka($d->budget_gm) }}</td> --}}
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                             <td class="text-center">
-                                <a href="#" class="btnDetailfaktur" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
+                                <a href="#" class="btnDetailfaktur"
+                                    kode_pelanggan="{{ $d['kode_pelanggan'] }}">
                                     {{ formatAngka($d->jumlah) }}
                                 </a>
                             </td>
                             {{-- <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
-                                            <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td> --}}
+                                    <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td> --}}
                             <td class="text-end">{{ formatAngka($total_reward) }}</td>
                             <td>{{ $d->metode_pembayaran }}</td>
 
@@ -221,15 +222,15 @@
                             <td>
                                 <div class="d-flex">
                                     {{-- <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
-                                                    <i class="ti ti-file-description"></i>
-                                                </a> --}}
+                                            <i class="ti ti-file-description"></i>
+                                        </a> --}}
                                     {{-- @can('pencairanprogramikt.upload')
-                                                        <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
-                                                            kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
-                                                            <i class="ti ti-upload text-primary"></i>
-                                                        </a>
-                                                    @endcan --}}
-                                    @can('pencairanprogramenambulan.delete')
+                                                <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
+                                                    kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
+                                                    <i class="ti ti-upload text-primary"></i>
+                                                </a>
+                                            @endcan --}}
+                                    {{-- @can('pencairanprogramenambulan.delete')
                                         @if ($pencairanprogram->status == '0')
                                             <form method="POST" name="deleteform" class="deleteform"
                                                 action="{{ route('pencairanprogramenambulan.deletepelanggan', [Crypt::encrypt($pencairanprogram->kode_pencairan), Crypt::encrypt($d->kode_pelanggan)]) }}">
@@ -240,29 +241,29 @@
                                                 </a>
                                             </form>
                                         @endif
-                                    @endcan
+                                    @endcan --}}
                                 </div>
                             </td>
                         </tr>
                         {{-- @if ($d->metode_pembayaran != $next_metode_pembayaran)
-                                            <tr class="table-dark">
-                                                <td colspan="12">TOTAL REWARD </td>
-                                                <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
-                                                <td colspan="8"></td>
-                                            </tr>
-                                            @php
-                                                $subtotal_reward = 0;
-                                            @endphp
-                                        @endif --}}
+                                    <tr class="table-dark">
+                                        <td colspan="12">TOTAL REWARD </td>
+                                        <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
+                                        <td colspan="8"></td>
+                                    </tr>
+                                    @php
+                                        $subtotal_reward = 0;
+                                    @endphp
+                                @endif --}}
                     @endforeach
                 </tbody>
                 {{-- <tfoot class="table-dark">
-                                    <tr>
-                                        <td colspan="12">GRAND TOTAL REWARD </td>
-                                        <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
-                                        <td colspan="8"></td>
-                                    </tr>
-                                </tfoot> --}}
+                            <tr>
+                                <td colspan="12">GRAND TOTAL REWARD </td>
+                                <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
+                                <td colspan="8"></td>
+                            </tr>
+                        </tfoot> --}}
             </table>
             <br>
             <br>
