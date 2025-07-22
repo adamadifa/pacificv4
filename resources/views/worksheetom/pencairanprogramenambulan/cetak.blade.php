@@ -104,7 +104,7 @@
                     <th rowspan="2">Nama Pelanggan</th>
                     <th rowspan="2" class="text-center">Target</th>
                     <th class="text-center" colspan="3">Realisasi</th>
-                    <th class="text-center">Reward</th>
+                    <th class="text-center" rowspan="2">Reward</th>
 
                     <th rowspan="2">Pembayaran</th>
                     <th rowspan="2">No. Rekening</th>
