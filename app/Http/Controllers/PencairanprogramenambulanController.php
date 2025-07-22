@@ -772,4 +772,16 @@ class PencairanprogramenambulanController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+
+    public function destroy($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        try {
+            Pencairanprogramenambulan::where('kode_pencairan', $kode_pencairan)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Hapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
