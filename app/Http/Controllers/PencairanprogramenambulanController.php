@@ -388,9 +388,9 @@ class PencairanprogramenambulanController extends Controller
             $start_date_i = date('Y-m-01', strtotime($pencairanprogram->tahun . '-' . $i . '-01'));
             $end_date_i = date('Y-m-t', strtotime($start_date_i));
 
-            $select_jml_dus[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '", floor(jumlah/isi_pcs_dus), 0)) as jml_dus_bulan_' . (int)$i);
-            $select_jml_dus_tunai[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '" AND jenis_transaksi = "T", floor(jumlah/isi_pcs_dus), 0)) as jml_dus_tunai_bulan_' . (int)$i);
-            $select_jml_dus_kredit[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '" AND jenis_transaksi = "K", floor(jumlah/isi_pcs_dus), 0)) as jml_dus_kredit_bulan_' . (int)$i);
+            $select_jml_dus[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '" AND datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as jml_dus_bulan_' . (int)$i);
+            $select_jml_dus_tunai[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '" AND jenis_transaksi = "T" AND datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as jml_dus_tunai_bulan_' . (int)$i);
+            $select_jml_dus_kredit[] = DB::raw('SUM(IF(marketing_penjualan.tanggal BETWEEN "' . $start_date_i . '" AND "' . $end_date_i . '" AND jenis_transaksi = "K" AND datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as jml_dus_kredit_bulan_' . (int)$i);
 
             $select_field_jml_dus[] = "jml_dus_bulan_" . (int)$i;
             $select_field_jml_dus_tunai[] = "jml_dus_tunai_bulan_" . (int)$i;
