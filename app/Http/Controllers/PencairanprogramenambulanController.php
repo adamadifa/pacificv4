@@ -403,8 +403,8 @@ class PencairanprogramenambulanController extends Controller
 
         $detailpenjualan = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
-            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as total_qty'),
-            DB::raw('SUM(IF(datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus'),
+            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as total_jml_dus'),
+            DB::raw('SUM(IF(datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as total_qty'),
             DB::raw('SUM(IF(jenis_transaksi = "T" AND datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus_tunai'),
             DB::raw('SUM(IF(jenis_transaksi = "K" AND datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3, floor(jumlah/isi_pcs_dus), 0)) as total_jml_dus_kredit'),
 
