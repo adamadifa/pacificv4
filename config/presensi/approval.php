@@ -61,7 +61,7 @@ return [
 
 
     'gm operasional' => [
-        'dept' => ['GDG', 'GAF', 'PRD', 'PMB', 'MTC'],
+        'dept' => ['GDG', 'GAF', 'PRD', 'PMB', 'MTC','HRD'],
         'jabatan' => ['J05', 'J06'],
         'dept2' => ['PDQ'],
         'jabatan2' => [],
