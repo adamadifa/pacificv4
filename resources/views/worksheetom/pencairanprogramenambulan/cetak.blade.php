@@ -142,8 +142,7 @@
                         <th rowspan="2">No. Rekening</th>
                         <th rowspan="2">Pemilik</th>
                         <th rowspan="2">Bank</th>
-                        <th rowspan="2"><i class="ti ti-file-description"></i></th>
-                        <th rowspan="2"><i class="ti ti-moneybag"></i></th>
+                      
                        
                     </tr>
                     <tr>
@@ -181,45 +180,15 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
-                            {{-- <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
-                            <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
-                            <td class="text-end">{{ formatAngka($d->budget_gm) }}</td> --}}
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
-                            <td class="text-center">
-                                <a href="#" class="btnDetailfaktur"
-                                    kode_pelanggan="{{ $d['kode_pelanggan'] }}">
-                                    {{ formatAngka($d->jumlah) }}
-                                </a>
-                            </td>
-                            {{-- <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
-                                    <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td> --}}
+                            <td class="text-center">{{ formatAngka($d->jumlah) }}</td>
                             <td class="text-end">{{ formatAngka($total_reward) }}</td>
                             <td>{{ $d->metode_pembayaran }}</td>
-
                             <td>{{ $d->no_rekening }}</td>
                             <td>{{ $d->pemilik_rekening }}</td>
                             <td>{{ $d->bank }}</td>
-
-
-                            <td>
-                                @if (!empty($d->bukti_transfer))
-                                    <a href="{{ url($d->bukti_transfer) }}" target="_blank">
-                                        <i class="ti ti-receipt text-success"></i>
-                                    </a>
-                                @else
-                                    <i class="ti ti-hourglass-empty text-warning"></i>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($d->status_pencairan == '1')
-                                    <i class="ti ti-checks text-success"></i>
-                                @else
-                                    <i class="ti ti-hourglass-empty text-warning"></i>
-                                @endif
-                            </td>
-                            
                         </tr>
                         {{-- @if ($d->metode_pembayaran != $next_metode_pembayaran)
                                     <tr class="table-dark">
