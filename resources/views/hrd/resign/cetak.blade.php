@@ -240,10 +240,13 @@
                                     $mk_kb = $masakerjakb['tahun'];
                                     $mk_bulan = $masakerjakb['tahun'] * 12 + $masakerjakb['bulan'];
                                     if ($mk_bulan <= 23) {
+                                        $totalupah = $gaji->gaji_pokok ;
                                         $persentase_jmk = 25;
                                     } elseif ($mk_bulan <= 28) {
+                                        $totalupah = $gaji->gaji_pokok ;
                                         $persentase_jmk = 50;
                                     } else {
+                                        $totalupah = $gaji->gaji_pokok + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill + $gaji->t_jabatan;
                                         $persentase_jmk = 100;
                                     }
 
@@ -267,7 +270,7 @@
                                         $jmlkali = 1;
                                     }
 
-                                    $totalupah = $gaji->gaji_pokok + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill + $gaji->t_jabatan;
+                                    
 
                                     $grandtotal_upah =
                                         $gaji->gaji_pokok + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill + $gaji->t_jabatan;
