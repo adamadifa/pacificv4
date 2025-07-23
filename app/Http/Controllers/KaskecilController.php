@@ -245,6 +245,7 @@ class KaskecilController extends Controller
                     'kode_akun' => $request->kode_akun,
                     'jumlah' => toNumber($request->jumlah),
                 ]);
+                $debet_kredit = $request->debet_kredit;
             } else {
                 Kaskecil::where('id', $id)->update([
                     // 'no_bukti' => $request->no_bukti,
@@ -252,6 +253,7 @@ class KaskecilController extends Controller
                     'keterangan' => $request->keterangan,
                     'kode_akun' => $request->kode_akun,
                 ]);
+                $debet_kredit = $kaskecil->debet_kredit;
             }
 
             //dd($kaskecil);
@@ -264,7 +266,7 @@ class KaskecilController extends Controller
 
             //dd($kaskecil);
             //Inseert Cost Ratio
-            if ($request->debet_kredit == 'D' and in_array($cekAkun, ['6-1', '6-2'])) {
+            if ($debet_kredit == 'D' and in_array($cekAkun, ['6-1', '6-2'])) {
                 if (!$cekCostratio) {
                     $lastcostratio = Costratio::select('kode_cr')
                         ->whereRaw('LEFT(kode_cr,6) ="CR' . date('my', strtotime($request->tanggal)) . '"')
@@ -292,7 +294,7 @@ class KaskecilController extends Controller
                         'kode_akun' => $request->kode_akun,
                         'keterangan' => $request->keterangan,
                         'kode_cabang' => $kode_cabang,
-                        'jumlah' => toNumber($request->jumlah),
+                        'jumlah' => $kaskecil->jumlah,
                     ]);
                 }
             } else {
