@@ -269,7 +269,7 @@ class KaskecilController extends Controller
 
            
             if ($debet_kredit == 'D' and in_array($cekAkun, ['6-1', '6-2'])) {
-                dd('OK');
+                dd($cekCostratio);
                 if (!$cekCostratio) {
                     $lastcostratio = Costratio::select('kode_cr')
                         ->whereRaw('LEFT(kode_cr,6) ="CR' . date('my', strtotime($request->tanggal)) . '"')
