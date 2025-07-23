@@ -267,7 +267,7 @@ class KaskecilController extends Controller
             //dd($kaskecil);
             //Inseert Cost Ratio
 
-            dd($debet_kredit);
+            dd($cekCostratio);
             if ($debet_kredit == 'D' and in_array($cekAkun, ['6-1', '6-2'])) {
                 // dd($cekCostratio);
                 if (!$cekCostratio) {
