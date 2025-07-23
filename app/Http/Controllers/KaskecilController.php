@@ -269,8 +269,9 @@ class KaskecilController extends Controller
 
            
             if ($debet_kredit == 'D' and in_array($cekAkun, ['6-1', '6-2'])) {
-                dd($cekCostratio);
+                // dd($cekCostratio);
                 if (!$cekCostratio) {
+                    dd('OK');
                     $lastcostratio = Costratio::select('kode_cr')
                         ->whereRaw('LEFT(kode_cr,6) ="CR' . date('my', strtotime($request->tanggal)) . '"')
                         ->orderBy('kode_cr', 'desc')
@@ -293,6 +294,7 @@ class KaskecilController extends Controller
                         'id' => $kaskecil->id,
                     ]);
                 } else {
+                    dd('OK2');
                     Costratio::where('kode_cr', $cekCostratio->kode_cr)->update([
                         'kode_akun' => $request->kode_akun,
                         'keterangan' => $request->keterangan,
