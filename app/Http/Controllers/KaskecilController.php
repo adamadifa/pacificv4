@@ -294,7 +294,7 @@ class KaskecilController extends Controller
                         'id' => $kaskecil->id,
                     ]);
                 } else {
-                    dd('OK2');
+                    dd($kaskecil);
                     Costratio::where('kode_cr', $cekCostratio->kode_cr)->update([
                         'kode_akun' => $request->kode_akun,
                         'keterangan' => $request->keterangan,
