@@ -287,7 +287,7 @@
                                     // $persentasejmk = 25;
                                     //$totalpemutihan = ($persentasejmk / 100) * $totalupah;
                                     $totaljmk = ($persentase_jmk / 100) * $totalupah * $jmlkali;
-                                    $persentase_pengganti_hak = 15;
+                                    $persentase_pengganti_hak = $mk_kb >=3 ?  15 :0;
 
                                 @endphp
                                 <td style="width: 2px">1.</td>
