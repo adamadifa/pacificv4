@@ -266,6 +266,8 @@ class KaskecilController extends Controller
 
             //dd($kaskecil);
             //Inseert Cost Ratio
+
+            dd($debet_kredit);
             if ($debet_kredit == 'D' and in_array($cekAkun, ['6-1', '6-2'])) {
                 if (!$cekCostratio) {
                     $lastcostratio = Costratio::select('kode_cr')
