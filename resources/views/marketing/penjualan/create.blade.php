@@ -1228,8 +1228,6 @@
             hitungdiskonStick();
             hitungdiskonSC();
             hitungdiskonSP();
-            hitungdiskonSPPP500();
-            hitungdiskonSPPP1000();
             calculateGrandtotal();
         }
 
@@ -1321,11 +1319,28 @@
 
         }
 
+
+        function hitungdiskonSPPP500() {
+            let totalQuantity = calculateTotalQuantityByCategory('D008');
+            let diskon = calculateDiscount(totalQuantity, 'D008');
+            return diskon;
+
+        }
+
+        function hitungdiskonSPPP1000() {
+            let totalQuantity = calculateTotalQuantityByCategory('D009');
+            let diskon = calculateDiscount(totalQuantity, 'D009');
+            return diskon;
+
+        }
+
         function hitungdiskonSwan() {
             let totalQuantity = calculateTotalQuantityByCategory('D001');
             let diskon = calculateDiscount(totalQuantity, 'D001');
             let diskonbp500 = hitungdiskonProductBP500();
-            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500);
+                let diskonSPPP500 = hitungdiskonSPPP500();
+            let diskonSPPP1000 = hitungdiskonSPPP1000();
+            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500) + parseInt(diskonSPPP500) + parseInt(diskonSPPP1000);
             $("#potongan_swan").val(convertToRupiah(totaldiskon));
             return totaldiskon;
         }
@@ -1349,20 +1364,6 @@
             let totalQuantity = calculateTotalQuantityByCategory('D005');
             let diskon = calculateDiscount(totalQuantity, 'D005');
             $("#potongan_sambal").val(convertToRupiah(diskon));
-        }
-
-
-        function hitungdiskonSPPP500() {
-            let totalQuantity = calculateTotalQuantityByCategory('D008');
-            let diskon = calculateDiscount(totalQuantity, 'D008');
-            $("#potongan_sp").val(convertToRupiah(diskon));
-        }
-
-
-        function hitungdiskonSPPP1000() {
-            let totalQuantity = calculateTotalQuantityByCategory('D009');
-            let diskon = calculateDiscount(totalQuantity, 'D009');
-            $("#potongan_sp").val(convertToRupiah(diskon));
         }
 
 
