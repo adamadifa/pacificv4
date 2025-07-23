@@ -1228,6 +1228,8 @@
             hitungdiskonStick();
             hitungdiskonSC();
             hitungdiskonSP();
+            hitungdiskonSPPP500();
+            hitungdiskonSPPP1000();
             calculateGrandtotal();
         }
 
@@ -1347,6 +1349,20 @@
             let totalQuantity = calculateTotalQuantityByCategory('D005');
             let diskon = calculateDiscount(totalQuantity, 'D005');
             $("#potongan_sambal").val(convertToRupiah(diskon));
+        }
+
+
+        function hitungdiskonSPPP500() {
+            let totalQuantity = calculateTotalQuantityByCategory('D008');
+            let diskon = calculateDiscount(totalQuantity, 'D008');
+            $("#potongan_sp").val(convertToRupiah(diskon));
+        }
+
+
+        function hitungdiskonSPPP1000() {
+            let totalQuantity = calculateTotalQuantityByCategory('D009');
+            let diskon = calculateDiscount(totalQuantity, 'D009');
+            $("#potongan_sp").val(convertToRupiah(diskon));
         }
 
 
