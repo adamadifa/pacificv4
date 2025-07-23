@@ -429,7 +429,7 @@
                 <tr>
                     <td style="text-align:center">
                         <u>{{ $resign->nama_karyawan }}</u><br>
-                        Karyawan
+                        Pekerja
                     </td>
                     <td style="text-align:center">
                         <u>{{ $pihak_satu['nama_pihak_satu'] }}</u><br>
