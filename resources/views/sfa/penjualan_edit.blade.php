@@ -1154,13 +1154,40 @@
             return diskon;
         }
 
+        function hitungdiskonProductBP500() {
+            let totalQuantity = calculateTotalQuantityByProduct('BP500');
+            let diskon = totalQuantity * 2000;
+            return diskon;
+
+        }
+
+        function hitungdiskonSPPP500() {
+            let totalQuantity = calculateTotalQuantityByCategory('D008');
+            let diskon = calculateDiscount(totalQuantity, 'D008');
+            return diskon;
+
+        }
+
+        function hitungdiskonSPPP1000() {
+            let totalQuantity = calculateTotalQuantityByCategory('D009');
+            let diskon = calculateDiscount(totalQuantity, 'D009');
+            return diskon;
+
+        }
+
 
         function hitungdiskonSwan() {
             let totalQuantity = calculateTotalQuantityByCategory('D001');
             let diskon = calculateDiscount(totalQuantity, 'D001');
-            $("#potongan_swan").val(convertToRupiah(diskon));
-            return diskon;
+            let diskonbp500 = hitungdiskonProductBP500();
+            let diskonSPPP500 = hitungdiskonSPPP500();
+            let diskonSPPP1000 = hitungdiskonSPPP1000();
+            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500) + parseInt(diskonSPPP500) + parseInt(diskonSPPP1000);
+            $("#potongan_swan").val(convertToRupiah(totaldiskon));
+            return totaldiskon;
         }
+
+
 
         function hitungdiskonStick() {
             let totalQuantity = calculateTotalQuantityByCategory('D003');
