@@ -238,6 +238,9 @@ class PencairanprogramenambulanController extends Controller
             ->select(
                 'marketing_pencairan_ikatan_enambulan_detail.*',
                 'pelanggan.nama_pelanggan',
+                'pelanggan.no_rekening',
+                'pelanggan.pemilik_rekening',
+                'pelanggan.bank',
                 'top',
                 'metode_pembayaran',
                 'qty_target',
