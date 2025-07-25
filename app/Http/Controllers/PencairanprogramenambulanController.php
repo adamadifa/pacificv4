@@ -240,7 +240,7 @@ class PencairanprogramenambulanController extends Controller
                 'pelanggan.nama_pelanggan',
                 'pelanggan.no_rekening',
                 'pelanggan.pemilik_rekening',
-                'pelanggan.bankd',
+                'pelanggan.bank',
                 'top',
                 'metode_pembayaran',
                 'qty_target',
