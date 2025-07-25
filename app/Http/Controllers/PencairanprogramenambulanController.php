@@ -542,6 +542,7 @@ class PencairanprogramenambulanController extends Controller
             // }
 
             $checkpelanggan = $request->input('checkpelanggan', []);
+            dd($checkpelanggan);
             // dd($status);
             foreach ($checkpelanggan as $index => $value) {
                 if ($status[$index] == 1) {
