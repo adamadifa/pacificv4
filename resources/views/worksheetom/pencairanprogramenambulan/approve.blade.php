@@ -76,34 +76,21 @@
                     <table id="example" class="display nowrap table table-striped table-bordered" style="width:100%">
                         <thead class="table-dark">
                             <tr>
-                                <th rowspan="2">No.</th>
-                                <th rowspan="2">Kode</th>
-                                <th rowspan="2">Nama Pelanggan</th>
+                                <th >No.</th>
+                                <th >Kode</th>
+                                <th >Nama Pelanggan</th>
                                 {{-- <th colspan="3" class="text-center">Budget</th> --}}
-                                <th rowspan="2" class="text-center">Target</th>
-                                <th class="text-center" colspan="3">Realisasi</th>
+                                <th  class="text-center">Target</th>
+                                <th class="text-center">Realisasi</th>
                                 <th class="text-center">Reward</th>
-
-                                <th rowspan="2">Pembayaran</th>
-                                <th rowspan="2">No. Rekening</th>
-                                <th rowspan="2">Pemilik</th>
-                                <th rowspan="2">Bank</th>
-                                <th rowspan="2"><i class="ti ti-file-description"></i></th>
-                                <th rowspan="2"><i class="ti ti-moneybag"></i></th>
-                                <th rowspan="2">#</th>
+                                <th >Pembayaran</th>
+                                <th >No. Rekening</th>
+                                <th >Pemilik</th>
+                                <th >Bank</th>
+                                <th ><i class="ti ti-file-description"></i></th>
+                                <th ><i class="ti ti-moneybag"></i></th>
+                                <th >#</th>
                             </tr>
-                            <tr>
-                                {{-- <th>SMM</th>
-                                <th>RSM</th>
-                                <th>GM</th> --}}
-                                <th>Tunai</th>
-                                <th>Kredit</th>
-                                <th>Total</th>
-                                {{-- <th>Tunai</th>
-                                        <th>Kredit</th> --}}
-                                <th>Total</th>
-                            </tr>
-
                         </thead>
                         <tbody id="loaddetailpencairan">
                             @php
@@ -131,8 +118,6 @@
                                     <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
                                     <td class="text-end">{{ formatAngka($d->budget_gm) }}</td> --}}
                                     <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                                    <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
-                                    <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
                                     <td class="text-center">
                                         <a href="#" class="btnDetailfaktur"
                                             kode_pelanggan="{{ $d['kode_pelanggan'] }}">
