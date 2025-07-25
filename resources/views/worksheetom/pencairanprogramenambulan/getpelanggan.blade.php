@@ -57,9 +57,7 @@
                 {{ formatAngka($reward) }}
             </td>
         @endfor
-        @php
-            $status = $total_reward == 0 ? 0 : 1;
-        @endphp
+      
         <td class="text-center bg-info text-white">{{ formatAngka($d->total_qty_target) }}</td>
         <td class="text-center {{ $d->total_jml_dus >= $d->total_qty_target ? 'bg-success text-white' : 'bg-danger text-white' }}">
             {{ formatAngka($d->total_jml_dus) }}</td>
@@ -68,6 +66,7 @@
         <td class="text-end">
             @php
                 $rn = $status_reward == 1 ? $total_reward - $d->total_reward_reguler : 0;
+                $status = $rn == 0 ? 0 : 1;
             @endphp
             {{ formatAngka($rn) }}
 
