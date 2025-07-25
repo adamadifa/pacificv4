@@ -116,7 +116,7 @@
                                         <th rowspan="2">Nama Pelanggan</th>
                                       
                                         <th rowspan="2" class="text-center">Target</th>
-                                        <th class="text-center" colspan="3">Realisasi</th>
+                                        <th class="text-center">Realisasi</th>
                                         <th class="text-center">Reward</th>
 
                                         <th rowspan="2">Pembayaran</th>
@@ -129,9 +129,7 @@
                                     </tr>
                                     <tr>
                                        
-                                        <th>Tunai</th>
-                                        <th>Kredit</th>
-                                        <th>Total</th>
+                                       
                                         {{-- <th>Tunai</th>
                                         <th>Kredit</th> --}}
                                         <th>Total</th>
@@ -161,8 +159,7 @@
                                             <td>{{ $d->kode_pelanggan }}</td>
                                             <td>{{ $d->nama_pelanggan }}</td>
                                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                                            <td class="text-center">{{ formatAngka($d->qty_tunai) }}</td>
-                                            <td class="text-center">{{ formatAngka($d->qty_kredit) }}</td>
+                                          
                                             <td class="text-center">
                                                 <a href="#" class="btnDetailfaktur"
                                                     kode_pelanggan="{{ $d['kode_pelanggan'] }}">
