@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                                                                                                #rekapkategori td:nth-child(2) {
-                                                                                                                    min-width: 150px;
-                                                                                                                    width: 150px;
-                                                                                                                } */
+                                                                                                                            #rekapkategori td:nth-child(2) {
+                                                                                                                                min-width: 150px;
+                                                                                                                                width: 150px;
+                                                                                                                            } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -336,10 +336,10 @@
                         tanggal: tanggal
                     },
                     success: function(response) {
-                        $("#modal").html(response);
                         $("#modal").modal("show");
                         $("#modal").find(".modal-title").html("Detail Mutasi " + kode_kategori +
                             " " + tanggal);
+                        $("#modal").find("#detailmutasi").html(response);
                     }
                 });
             });
