@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                            #rekapkategori td:nth-child(2) {
-                                                min-width: 150px;
-                                                width: 150px;
-                                            } */
+                                                                                        #rekapkategori td:nth-child(2) {
+                                                                                            min-width: 150px;
+                                                                                            width: 150px;
+                                                                                        } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -101,27 +101,11 @@
             padding: 8px;
             white-space: nowrap;
         }
-
-        /* Striped rows with fixed columns */
-        /* #rekapkategori tbody tr:nth-of-type(odd) {
-                                                                background-color: rgba(0, 0, 0, 0.05);
-                                                            }
-
-                                                            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
-                                                            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
-                                                                background-color: rgba(0, 0, 0, 0.05);
-                                                            }
-
-                                                            #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
-                                                            #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
-                                                                background-color: #fff;
-                                                            } */
     </style>
 
     <div class="row">
         <div class="col-xl-12">
             <div class="nav-align-top mb-4">
-
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 mb-2">
                         @php
@@ -153,9 +137,6 @@
                                             <i class="ti ti-moneybag ti-sm"></i>
                                         </span>
                                     </div>
-
-
-
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-striped table-hover">
@@ -248,8 +229,10 @@
                                             <td>{{ $d->nama_kategori }}</td>
                                             {{-- <td>{{ $d->nama_bank }}</td>
                                             <td>{{ $d->no_rekening }}</td> --}}
-                                            <td class="text-end">{{ formatAngkaDesimal($d->debet) }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($d->kredit) }}</td>
+                                            <td class="text-end detaildebet" kode_kategori="{{ $d->kode_kategori }}"
+                                                tanggal="{{ $d->tanggal }}">{{ formatAngkaDesimal($d->debet) }}</td>
+                                            <td class="text-end detailkredit" kode_kategori="{{ $d->kode_kategori }}"
+                                                tanggal="{{ $d->tanggal }}">{{ formatAngkaDesimal($d->kredit) }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
@@ -330,3 +313,14 @@
         </div>
     </div>
 @endsection
+@push('myscript')
+    <script>
+        $(document).ready(function() {
+            $(".detaildebet").on("click", function() {
+                var kode_kategori = $(this).attr("kode_kategori");
+                var tanggal = $(this).attr("tanggal");
+                alert(kode_kategori + " " + tanggal);
+            });
+        });
+    </script>
+@endpush
