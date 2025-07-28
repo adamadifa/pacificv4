@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                                                                                                                            #rekapkategori td:nth-child(2) {
-                                                                                                                                                min-width: 150px;
-                                                                                                                                                width: 150px;
-                                                                                                                                            } */
+                                                                                                                                                                #rekapkategori td:nth-child(2) {
+                                                                                                                                                                    min-width: 150px;
+                                                                                                                                                                    width: 150px;
+                                                                                                                                                                } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -107,6 +107,10 @@
         }
 
         .detailkredit {
+            cursor: pointer;
+        }
+
+        .detailkategori {
             cursor: pointer;
         }
     </style>
@@ -234,7 +238,9 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $d->tanggal }}</td>
-                                            <td>{{ $d->nama_kategori }}</td>
+                                            <td class="detailkategori" kode_kategori="{{ $d->kode_kategori }}"
+                                                tanggal="{{ $d->tanggal }}" nama_kategori="{{ $d->nama_kategori }}">
+                                                {{ $d->nama_kategori }}</td>
                                             {{-- <td>{{ $d->nama_bank }}</td>
                                             <td>{{ $d->no_rekening }}</td> --}}
                                             <td class="text-end detaildebet" kode_kategori="{{ $d->kode_kategori }}"
@@ -327,7 +333,7 @@
 @push('myscript')
     <script>
         $(document).ready(function() {
-            $(".detaildebet").on("click", function() {
+            $(".detaildebet, .detailkredit, .detailkategori").on("click", function() {
                 var kode_kategori = $(this).attr("kode_kategori");
                 var tanggal = $(this).attr("tanggal");
                 var nama_kategori = $(this).attr("nama_kategori");
