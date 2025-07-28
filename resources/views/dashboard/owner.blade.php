@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                                                                                                                                                #rekapkategori td:nth-child(2) {
-                                                                                                                                                                    min-width: 150px;
-                                                                                                                                                                    width: 150px;
-                                                                                                                                                                } */
+                                                                                                                                                                    #rekapkategori td:nth-child(2) {
+                                                                                                                                                                        min-width: 150px;
+                                                                                                                                                                        width: 150px;
+                                                                                                                                                                    } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -328,7 +328,7 @@
             </div>
         </div>
     </div>
-    <x-modal-form id="modal" size="modal-xl" show="detailmutasi" title="" />
+    <x-modal-form id="modal" size="modal-fullscreen" show="detailmutasi" title="" />
 @endsection
 @push('myscript')
     <script>
