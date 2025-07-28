@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                                                                        #rekapkategori td:nth-child(2) {
-                                                                                            min-width: 150px;
-                                                                                            width: 150px;
-                                                                                        } */
+                                                                                            #rekapkategori td:nth-child(2) {
+                                                                                                min-width: 150px;
+                                                                                                width: 150px;
+                                                                                            } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -100,6 +100,14 @@
         #rekapkategori td {
             padding: 8px;
             white-space: nowrap;
+        }
+
+        .detaildebet {
+            cursor: pointer;
+        }
+
+        .detailkredit {
+            cursor: pointer;
         }
     </style>
 
