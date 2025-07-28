@@ -2301,6 +2301,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/mutasikeuangan/{id}/update', 'update')->name('mutasikeuangan.update')->can('mutasikeuangan.update');
         Route::delete('/mutasikeuangan/{id}/destroy', 'destroy')->name('mutasikeuangan.delete')->can('mutasikeuangan.delete');
         Route::get('/mutasikeuangan/{kode_bank}/{dari}/{sampai}/show', 'show')->name('mutasikeuangan.show');
+        Route::get('/mutasikeuangan/showmutasikategori', 'showmutasikategori')->name('mutasikeuangan.showmutasikategori');
     });
 
 

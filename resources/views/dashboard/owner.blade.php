@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                                                                            #rekapkategori td:nth-child(2) {
-                                                                                                min-width: 150px;
-                                                                                                width: 150px;
-                                                                                            } */
+                                                                                                                #rekapkategori td:nth-child(2) {
+                                                                                                                    min-width: 150px;
+                                                                                                                    width: 150px;
+                                                                                                                } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -320,6 +320,7 @@
             </div>
         </div>
     </div>
+    <x-modal-form id="modal" size="modal-xl" show="detailmutasi" title="" />
 @endsection
 @push('myscript')
     <script>
@@ -327,7 +328,20 @@
             $(".detaildebet").on("click", function() {
                 var kode_kategori = $(this).attr("kode_kategori");
                 var tanggal = $(this).attr("tanggal");
-                alert(kode_kategori + " " + tanggal);
+                $.ajax({
+                    url: "{{ route('mutasikeuangan.showmutasikategori') }}",
+                    type: "GET",
+                    data: {
+                        kode_kategori: kode_kategori,
+                        tanggal: tanggal
+                    },
+                    success: function(response) {
+                        $("#modal").html(response);
+                        $("#modal").modal("show");
+                        $("#modal").find(".modal-title").html("Detail Mutasi " + kode_kategori +
+                            " " + tanggal);
+                    }
+                });
             });
         });
     </script>
