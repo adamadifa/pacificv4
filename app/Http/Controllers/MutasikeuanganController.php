@@ -185,4 +185,11 @@ class MutasikeuanganController extends Controller
         $data['sampai'] = $sampai;
         return view('keuangan.mutasikeuangan.show', $data);
     }
+
+
+    public function showmutasikategori($kode_kategori, $tanggal)
+    {
+        $data['mutasi'] = Mutasikeuangan::where('kode_kategori', $kode_kategori)->where('tanggal', $tanggal)->get();
+        return view('keuangan.mutasikeuangan.showmutasikategori', $data);
+    }
 }
