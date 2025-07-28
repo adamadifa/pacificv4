@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                                                                                                            #rekapkategori td:nth-child(2) {
-                                                                                                                                min-width: 150px;
-                                                                                                                                width: 150px;
-                                                                                                                            } */
+                                                                                                                                            #rekapkategori td:nth-child(2) {
+                                                                                                                                                min-width: 150px;
+                                                                                                                                                width: 150px;
+                                                                                                                                            } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -238,9 +238,11 @@
                                             {{-- <td>{{ $d->nama_bank }}</td>
                                             <td>{{ $d->no_rekening }}</td> --}}
                                             <td class="text-end detaildebet" kode_kategori="{{ $d->kode_kategori }}"
-                                                tanggal="{{ $d->tanggal }}">{{ formatAngkaDesimal($d->debet) }}</td>
+                                                tanggal="{{ $d->tanggal }}" nama_kategori="{{ $d->nama_kategori }}">
+                                                {{ formatAngkaDesimal($d->debet) }}</td>
                                             <td class="text-end detailkredit" kode_kategori="{{ $d->kode_kategori }}"
-                                                tanggal="{{ $d->tanggal }}">{{ formatAngkaDesimal($d->kredit) }}</td>
+                                                tanggal="{{ $d->tanggal }}" nama_kategori="{{ $d->nama_kategori }}">
+                                                {{ formatAngkaDesimal($d->kredit) }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
@@ -328,6 +330,7 @@
             $(".detaildebet").on("click", function() {
                 var kode_kategori = $(this).attr("kode_kategori");
                 var tanggal = $(this).attr("tanggal");
+                var nama_kategori = $(this).attr("nama_kategori");
                 $.ajax({
                     url: "{{ route('mutasikeuangan.showmutasikategori') }}",
                     type: "GET",
@@ -337,7 +340,8 @@
                     },
                     success: function(response) {
                         $("#modal").modal("show");
-                        $("#modal").find(".modal-title").html("Detail Mutasi " + kode_kategori +
+                        $("#modal").find(".modal-title").html("Detail Transaksi " +
+                            nama_kategori +
                             " " + tanggal);
                         $("#modal").find("#detailmutasi").html(response);
                     }

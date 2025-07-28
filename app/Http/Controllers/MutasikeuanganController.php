@@ -189,7 +189,9 @@ class MutasikeuanganController extends Controller
 
     public function showmutasikategori(Request $request)
     {
-        $data['mutasi'] = Mutasikeuangan::where('kode_kategori', $request->kode_kategori)->where('tanggal', $request->tanggal)->get();
+        $data['mutasi'] = Mutasikeuangan::where('kode_kategori', $request->kode_kategori)->where('tanggal', $request->tanggal)
+            ->join('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank')
+            ->get();
         return view('keuangan.mutasikeuangan.showmutasikategori', $data);
     }
 }
