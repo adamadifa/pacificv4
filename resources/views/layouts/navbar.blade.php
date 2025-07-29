@@ -261,7 +261,7 @@
                                                 style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pencairanprogramikatanenambulan }}</span>
                                         @endif
                                     </span>
-                                    <a href="{{ route('pencairanprogramenambulan.index') }}"
+                                    <a href="{{ route('pencairanprogramenambulan.index') }}?status=pending"
                                         class="stretched-link">Pencairan</a>
                                     <small class="text-muted mb-0">Program Enambulan</small>
                                 </div>
