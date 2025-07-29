@@ -47,6 +47,7 @@ class SaldoawalbukubesarController extends Controller
         $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
+        $data['nama_bulan'] = config('global.nama_bulan');
         $data['saldoawalbukubesar'] = Saldoawalbukubesar::where('kode_saldo_awal', $kode_saldo_awal)->first();
         $data['coa'] = Coa::orderby('kode_akun', 'asc')
             ->whereNotIn('kode_akun', ['1', '0-0000'])
