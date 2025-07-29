@@ -20,7 +20,7 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->foreign('kode_akun')->references('kode_akun')
-                ->on('akun')
+                ->on('coa')
                 ->restrictOnDelete()
                 ->cascadeOnUpdate();
             $table->timestamps();
