@@ -16,6 +16,17 @@ class SaldoawalbukubesarController extends Controller
         $data['list_bulan'] = config('global.list_bulan');
         $data['nama_bulan'] = config('global.nama_bulan');
         $data['start_year'] = config('global.start_year');
+       $query = Saldoawalbukubesar::query();
+       if($request->has('bulan')){
+           $query->where('bulan', $request->bulan);
+       }
+       if($request->has('tahun')){
+           $query->where('tahun', $request->tahun);
+       }else{
+           $query->where('tahun', date('Y'));
+       }
+       $query->orderBy('bulan', 'asc');
+       $data['saldoawalbukubesar'] = $query->get();
         return view('accounting.saldoawalbukubesar.index', $data);
     }
 
