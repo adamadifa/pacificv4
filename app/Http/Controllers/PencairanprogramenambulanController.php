@@ -58,18 +58,51 @@ class PencairanprogramenambulanController extends Controller
 
 
         if ($user->hasRole('regional sales manager')) {
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->whereNotnull('marketing_pencairan_ikatan_enambulan.om');
+                    $query->whereNull('marketing_pencairan_ikatan_enambulan.rsm');
+                } else if ($request->status == 'approved') {
+                    $query->whereNotnull('marketing_pencairan_ikatan_enambulan.rsm');
+                    $query->where('status', 0);
+                } else if ($request->status == 'rejected') {
+                    $query->where('status', 2);
+                }
+            }
             $query->whereNotNull('marketing_pencairan_ikatan_enambulan.om');
-            $query->where('marketing_pencairan_ikatan_enambulan.status', '!=', 2);
+            // $query->where('marketing_pencairan_ikatan_enambulan.status', '!=', 2);
         }
 
         if ($user->hasRole('gm marketing')) {
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->whereNotnull('marketing_pencairan_ikatan_enambulan.rsm');
+                    $query->whereNull('marketing_pencairan_ikatan_enambulan.gm');
+                } else if ($request->status == 'approved') {
+                    $query->whereNotnull('marketing_pencairan_ikatan_enambulan.gm');
+                    $query->where('status', 0);
+                } else if ($request->status == 'rejected') {
+                    $query->where('status', 2);
+                }
+            }
             $query->whereNotNull('marketing_pencairan_ikatan_enambulan.rsm');
-            $query->where('marketing_pencairan_ikatan_enambulan.status', '!=', 2);
+            // $query->where('marketing_pencairan_ikatan_enambulan.status', '!=', 2);
         }
 
         if ($user->hasRole('direktur')) {
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->whereNotnull('marketing_pencairan_ikatan_enambulan.gm');
+                    $query->whereNull('marketing_pencairan_ikatan_enambulan.direktur');
+                } else if ($request->status == 'approved') {
+                    $query->whereNotnull('marketing_pencairan_ikatan_enambulan.direktur');
+                    $query->where('status', 0);
+                } else if ($request->status == 'rejected') {
+                    $query->where('status', 2);
+                }
+            }
             $query->whereNotNull('marketing_pencairan_ikatan_enambulan.gm');
-            $query->where('marketing_pencairan_ikatan_enambulan.status', '!=', 2);
+            // $query->where('marketing_pencairan_ikatan_enambulan.status', '!=', 2);
         }
 
         if ($user->hasRole('direktur')) {

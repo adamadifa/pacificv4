@@ -348,8 +348,8 @@ class GlobalProvider extends ServiceProvider
                         ->where('status', 0)
                         ->count();
 
-                    $notifikasi_pencairanprogramikatanenambulan = Pencairanprogramenambulan::where('direktur',0)
-                        ->where('gm','!=',0)
+                    $notifikasi_pencairanprogramikatanenambulan = Pencairanprogramenambulan::whereNull('direktur')
+                        ->whereNotNull('gm')
                         ->where('status', 0)
                         ->count();
                 } else {
