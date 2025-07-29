@@ -320,6 +320,7 @@
 
                                 if (!empty($cekliburnasional)) {
                                     if($d['kode_jabatan'] == 'J20'){
+                                        // $overtime_libur = $lembur_libur['overtime_libur'] * 2;
                                         $overtime_libur = $lembur_libur['overtime_libur'] * 2;
                                     }else{
                                         $overtime_libur = $lembur_libur['overtime_libur'];
