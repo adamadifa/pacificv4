@@ -49,6 +49,7 @@ class SaldoawalbukubesarController extends Controller
         $data['start_year'] = config('global.start_year');
         $data['nama_bulan'] = config('global.nama_bulan');
         $data['saldoawalbukubesar'] = Saldoawalbukubesar::where('kode_saldo_awal', $kode_saldo_awal)->first();
+        $data['detailsaldoawalbukubesar'] = Detailsaldoawalbukubesar::join('coa', 'bukubesar_saldoawal_detail.kode_akun', '=', 'coa.kode_akun')->where('bukubesar_saldoawal_detail.kode_saldo_awal', $kode_saldo_awal)->get();
         $data['coa'] = Coa::orderby('kode_akun', 'asc')
             ->whereNotIn('kode_akun', ['1', '0-0000'])
             ->get();

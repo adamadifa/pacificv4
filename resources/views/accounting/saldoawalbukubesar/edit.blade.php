@@ -78,6 +78,18 @@
                                         </tr>
                                     </thead>
                                     <tbody id="loaddetailsaldo">
+                                        @foreach ($detailsaldoawalbukubesar as $d)
+                                            <tr id="idx-{{ $d->kode_akun }}">
+                                                <td>
+                                                    <input type="hidden" name="kode_akun[]" value="{{ $d->kode_akun }}"/>
+                                                    {{ $d->nama_akun }}
+                                                </td>
+                                                <td class="text-end">
+                                                    <input type="hidden" name="jumlah[]" value="{{ $d->jumlah }}"/>
+                                                    {{ $d->jumlah }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
