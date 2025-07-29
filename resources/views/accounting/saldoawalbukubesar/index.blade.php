@@ -59,7 +59,6 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Kode</th>
-                                        <th>Cabang</th>
                                         <th>Bulan</th>
                                         <th>Tahun</th>
                                         <th>#</th>
@@ -73,7 +72,9 @@
                                             <td>{{ $d->tahun }}</td>
                                             <td>
                                             <div class="d-flex">
-                                                <a href="{{ route('saldoawalbukubesar.edit', Crypt::encrypt($d->kode_saldo_awal)) }}" class="btn btn-primary"><i class="ti ti-edit me-1"></i></a>
+                                                <a href="{{ route('saldoawalbukubesar.edit', Crypt::encrypt($d->kode_saldo_awal)) }}" >
+                                                    <i class="ti ti-edit me-1 text-success"></i>
+                                                </a>
                                             </div>
                                             </td
                                         </tr>
