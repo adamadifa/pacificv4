@@ -160,13 +160,49 @@
                 } else {
                     $("#loaddetailsaldo").append(`
                     <tr id="idx-${kode_akun}">
-                        <td>${nama_akun}</td>
-                        <td class="text-end">${jumlah}</td>
+                        <td>
+                            <input type="hidden" name="kode_akun[]" value="${kode_akun}"/>
+                            ${nama_akun}
+                        </td>
+                        <td class="text-end">
+                            <input type="hidden" name="jumlah[]" value="${jumlah}"/>
+                            ${jumlah}
+                        </td>
                     </tr>
                     `);
                 }
             }
         });
+    })
+
+    $(document).on('submit', '#formCreatesaldoawal', function(e) {
+        let bulan = $("#bulan").val();
+        let tahun = $("#tahun").val();
+        let jmldata = $("#loaddetailsaldo tr").length;
+        if(bulan == "" || tahun == "") {
+            Swal.fire({
+                title: "Oops!",
+                text: 'Bulan dan Tahun Harus Diisi !',
+                icon: "warning",
+                showConfirmButton: true,
+                didClose: (e) => {
+                    $("#bulan").focus();
+                },
+            });
+            return false;
+        } else if(jmldata == 0) {
+            Swal.fire({
+                title: "Oops!",
+                text: 'Data Saldo Harus Diisi !',
+                icon: "warning",
+                showConfirmButton: true,
+                didClose: (e) => {
+                    $("#kode_akun").focus();
+                },
+            });
+            return false;
+        } 
+        
     })
 </script>
 @endpush
