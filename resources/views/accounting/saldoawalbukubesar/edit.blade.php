@@ -23,29 +23,20 @@
                     @csrf
                     <div class="row">
                         <div class="col-12">
-                            <div class="row">
-                                <div class="form-group mb-3">
-                                    <select name="bulan" id="bulan" class="form-select">
-                                        <option value="">Bulan</option>
-                                        @foreach ($list_bulan as $d)
-                                            <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <select name="tahun" id="tahun" class="form-select">
-                                        <option value="">Tahun</option>
-                                        @for ($t = $start_year; $t <= date('Y'); $t++)
-                                            <option value="{{ $t }}">{{ $t }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <a href="#" class="btn btn-success w-100" id="getsaldo">
-                                        <i class="ti  ti-badges me-1"></i> Get Saldo
-                                    </a>
-                                </div>
-                            </div>
+                            <table class="table">
+                                <tr>
+                                    <th>Kode</th>
+                                    <td>{{ $saldoawalbukubesar->kode_saldo_awal }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Bulan</th>
+                                    <td>{{ $nama_bulan[$saldoawalbukubesar->bulan] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Tahun</th>
+                                    <td>{{ $saldoawalbukubesar->tahun }}</td>
+                                </tr>
+                            </table>
 
                         </div>
                     </div>
@@ -87,6 +78,18 @@
                                         </tr>
                                     </thead>
                                     <tbody id="loaddetailsaldo">
+                                        @foreach ($detailsaldoawalbukubesar as $d)
+                                            <tr id="idx-{{ $d->kode_akun }}">
+                                                <td>
+                                                    <input type="hidden" name="kode_akun[]" value="{{ $d->kode_akun }}"/>
+                                                    {{ $d->nama_akun }}
+                                                </td>
+                                                <td class="text-end">
+                                                    <input type="hidden" name="jumlah[]" value="{{ $d->jumlah }}"/>
+                                                    {{ $d->jumlah }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

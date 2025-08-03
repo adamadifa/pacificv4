@@ -59,14 +59,26 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Kode</th>
-                                        <th>Cabang</th>
                                         <th>Bulan</th>
                                         <th>Tahun</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($saldoawalbukubesar as $d)
+                                        <tr>
+                                            <td>{{ $d->kode_saldo_awal }}</td>
+                                            <td>{{ $nama_bulan[$d->bulan] }}</td>
+                                            <td>{{ $d->tahun }}</td>
+                                            <td>
+                                            <div class="d-flex">
+                                                <a href="{{ route('saldoawalbukubesar.edit', Crypt::encrypt($d->kode_saldo_awal)) }}" >
+                                                    <i class="ti ti-edit me-1 text-success"></i>
+                                                </a>
+                                            </div>
+                                            </td
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

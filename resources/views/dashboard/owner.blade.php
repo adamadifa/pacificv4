@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                            #rekapkategori td:nth-child(2) {
-                                                min-width: 150px;
-                                                width: 150px;
-                                            } */
+                                                                                                                                                                    #rekapkategori td:nth-child(2) {
+                                                                                                                                                                        min-width: 150px;
+                                                                                                                                                                        width: 150px;
+                                                                                                                                                                    } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -102,26 +102,22 @@
             white-space: nowrap;
         }
 
-        /* Striped rows with fixed columns */
-        /* #rekapkategori tbody tr:nth-of-type(odd) {
-                                                                background-color: rgba(0, 0, 0, 0.05);
-                                                            }
+        .detaildebet {
+            cursor: pointer;
+        }
 
-                                                            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(1),
-                                                            #rekapkategori tbody tr:nth-of-type(odd) td:nth-child(2) {
-                                                                background-color: rgba(0, 0, 0, 0.05);
-                                                            }
+        .detailkredit {
+            cursor: pointer;
+        }
 
-                                                            #rekapkategori tbody tr:nth-of-type(even) td:nth-child(1),
-                                                            #rekapkategori tbody tr:nth-of-type(even) td:nth-child(2) {
-                                                                background-color: #fff;
-                                                            } */
+        .detailkategori {
+            cursor: pointer;
+        }
     </style>
 
     <div class="row">
         <div class="col-xl-12">
             <div class="nav-align-top mb-4">
-
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 mb-2">
                         @php
@@ -153,9 +149,6 @@
                                             <i class="ti ti-moneybag ti-sm"></i>
                                         </span>
                                     </div>
-
-
-
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-striped table-hover">
@@ -245,11 +238,17 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $d->tanggal }}</td>
-                                            <td>{{ $d->nama_kategori }}</td>
+                                            <td class="detailkategori" kode_kategori="{{ $d->kode_kategori }}"
+                                                tanggal="{{ $d->tanggal }}" nama_kategori="{{ $d->nama_kategori }}">
+                                                {{ $d->nama_kategori }}</td>
                                             {{-- <td>{{ $d->nama_bank }}</td>
                                             <td>{{ $d->no_rekening }}</td> --}}
-                                            <td class="text-end">{{ formatAngkaDesimal($d->debet) }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($d->kredit) }}</td>
+                                            <td class="text-end detaildebet" kode_kategori="{{ $d->kode_kategori }}"
+                                                tanggal="{{ $d->tanggal }}" nama_kategori="{{ $d->nama_kategori }}">
+                                                {{ formatAngkaDesimal($d->debet) }}</td>
+                                            <td class="text-end detailkredit" kode_kategori="{{ $d->kode_kategori }}"
+                                                tanggal="{{ $d->tanggal }}" nama_kategori="{{ $d->nama_kategori }}">
+                                                {{ formatAngkaDesimal($d->kredit) }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
@@ -329,4 +328,31 @@
             </div>
         </div>
     </div>
+    <x-modal-form id="modal" size="modal-fullscreen" show="detailmutasi" title="" />
 @endsection
+@push('myscript')
+    <script>
+        $(document).ready(function() {
+            $(".detaildebet, .detailkredit, .detailkategori").on("click", function() {
+                var kode_kategori = $(this).attr("kode_kategori");
+                var tanggal = $(this).attr("tanggal");
+                var nama_kategori = $(this).attr("nama_kategori");
+                $.ajax({
+                    url: "{{ route('mutasikeuangan.showmutasikategori') }}",
+                    type: "GET",
+                    data: {
+                        kode_kategori: kode_kategori,
+                        tanggal: tanggal
+                    },
+                    success: function(response) {
+                        $("#modal").modal("show");
+                        $("#modal").find(".modal-title").html("Detail Transaksi " +
+                            nama_kategori +
+                            " " + tanggal);
+                        $("#modal").find("#detailmutasi").html(response);
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

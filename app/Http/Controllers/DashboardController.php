@@ -190,6 +190,7 @@ class DashboardController extends Controller
         // $data['sampai'] = $sampai;
         $data['mutasi_kategori_detail']  = Mutasikeuangan::select(
             'keuangan_mutasi.tanggal',
+            'keuangan_mutasi.kode_kategori',
             'keuangan_mutasi_kategori.nama_kategori',
             // 'bank.nama_bank',
             // 'bank.no_rekening',
@@ -204,19 +205,23 @@ class DashboardController extends Controller
             ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
                 $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
             })
-            ->groupBy('keuangan_mutasi.tanggal', 'keuangan_mutasi_kategori.nama_kategori')
+            ->groupBy(
+                'keuangan_mutasi.tanggal',
+                'keuangan_mutasi_kategori.nama_kategori',
+                'keuangan_mutasi.kode_kategori'
+            )
             ->orderBy('keuangan_mutasi.tanggal', 'asc')
             ->get();
 
 
-            $qsaldo_kasbesar_cabang = Saldokasbesarkeuangan::query();
-            if(!empty($request->sampai)){
-                $qsaldo_kasbesar_cabang->where('tanggal', $request->sampai);
-            }else{
-                $qsaldo_kasbesar_cabang->where('tanggal', date('Y-m-d'));
-            }
-            $qsaldo_kasbesar_cabang->where('kode_cabang', 'PST');
-            $data['saldo_kasbesar_cabang'] = $qsaldo_kasbesar_cabang->first();
+        $qsaldo_kasbesar_cabang = Saldokasbesarkeuangan::query();
+        if (!empty($request->sampai)) {
+            $qsaldo_kasbesar_cabang->where('tanggal', $request->sampai);
+        } else {
+            $qsaldo_kasbesar_cabang->where('tanggal', date('Y-m-d'));
+        }
+        $qsaldo_kasbesar_cabang->where('kode_cabang', 'PST');
+        $data['saldo_kasbesar_cabang'] = $qsaldo_kasbesar_cabang->first();
 
         if ($request->export == 1) {
             header("Content-type: application/vnd-ms-excel");

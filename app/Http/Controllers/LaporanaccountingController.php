@@ -1205,8 +1205,8 @@ class LaporanaccountingController extends Controller
             ->unionAll($pembelian)
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
-            ->unionAll($penjualan_produk)
-            ->unionAll($retur_penjualan)
+            // ->unionAll($penjualan_produk)
+            // ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
         // dd($bukubesar->get());
