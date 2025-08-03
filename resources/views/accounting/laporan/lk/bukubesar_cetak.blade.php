@@ -53,8 +53,16 @@
                     @endphp
                     @foreach ($bukubesar as $key => $d)
                         @php
-                            // $saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['saldo'] ?? null;
-                            $saldo_awal = 0;
+                            $saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['jumlah'] ?? 0;
+                            // Error "Cannot use object of type stdClass as array" terjadi karena hasil dari firstWhere() adalah object, bukan array.
+                            // Jadi, akses propertinya harus menggunakan -> bukan ['key']
+                            $mutasi_debet = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ?? 0;
+                            $mutasi_kredit = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ?? 0;
+                            if ($d->jenis_akun == '1') {
+                                $saldo_awal = $saldo_awal + $mutasi_kredit - $mutasi_debet;
+                            } else {
+                                $saldo_awal = $saldo_awal + $mutasi_debet - $mutasi_kredit;
+                            }
                             $akun = @$bukubesar[$key + 1]->kode_akun;
                         @endphp
                         @if ($kode_akun != $d->kode_akun)
@@ -72,7 +80,11 @@
                             @endphp
                         @endif
                         @php
-                            $saldo += $d->jml_debet - $d->jml_kredit;
+                            if ($d->jenis_akun == '1') {
+                                $saldo += $d->jml_kredit - $d->jml_debet;
+                            } else {
+                                $saldo += $d->jml_debet - $d->jml_kredit;
+                            }
                             $total_debet = $total_debet + $d->jml_debet;
                             $total_kredit = $total_kredit + $d->jml_kredit;
                         @endphp

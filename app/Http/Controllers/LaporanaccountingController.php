@@ -15,6 +15,7 @@ use App\Models\Detailmutasiproduksi;
 use App\Models\Detailpembelian;
 use App\Models\Detailpenjualan;
 use App\Models\Detailretur;
+use App\Models\Detailsaldoawalbukubesar;
 use App\Models\Detailsaldoawalgudangcabang;
 use App\Models\Detailsaldoawalgudangjadi;
 use App\Models\Detailsaldoawalmutasiproduksi;
@@ -964,12 +965,18 @@ class LaporanaccountingController extends Controller
 
         // $data['saldoawalCollection'] = $saldoawalCollection;
 
-
-
+        $saldoawal = Detailsaldoawalbukubesar::join('bukubesar_saldoawal', 'bukubesar_saldoawal.kode_saldo_awal', '=', 'bukubesar_saldoawal_detail.kode_saldo_awal')
+            ->where('bukubesar_saldoawal.bulan', $bulan)
+            ->where('bukubesar_saldoawal.tahun', $tahun)
+            ->get()->toArray();
+        // Mengubah $saldo_awal_ledger menjadi koleksi
+        $saldoawalCollection = collect($saldoawal);
+        // dd($saldoawalCollection);
         //Ledger BANK
         $ledger = Ledger::query();
         $ledger->select(
             'bank.kode_akun',
+            'coa.jenis_akun',
             'nama_akun',
             'keuangan_ledger.tanggal',
             'keuangan_ledger.no_bukti',
@@ -983,18 +990,19 @@ class LaporanaccountingController extends Controller
         $ledger->join('coa', 'bank.kode_akun', '=', 'coa.kode_akun');
 
 
-        $ledger->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
+        $ledger->whereBetween('keuangan_ledger.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $ledger->whereBetween('bank.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
         $ledger->orderBy('bank.kode_akun');
         $ledger->orderBy('tanggal');
         $ledger->orderBy('keuangan_ledger.no_bukti');
-        // dd($ledger->first());
+
 
         $ledger_transaksi = Ledger::query();
         $ledger_transaksi->select(
             'keuangan_ledger.kode_akun',
+            'coa.jenis_akun',
             'nama_akun',
             'keuangan_ledger.tanggal',
             'keuangan_ledger.no_bukti',
@@ -1004,7 +1012,7 @@ class LaporanaccountingController extends Controller
             DB::raw('IF(debet_kredit="D",jumlah,0) as jml_debet'),
             DB::raw('IF(debet_kredit="D",2,1) as urutan')
         );
-        $ledger_transaksi->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
+        $ledger_transaksi->whereBetween('keuangan_ledger.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $ledger_transaksi->whereBetween('keuangan_ledger.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
@@ -1020,6 +1028,7 @@ class LaporanaccountingController extends Controller
         $pembelian = Detailpembelian::query();
         $pembelian->select(
             'pembelian_detail.kode_akun',
+            'coa.jenis_akun',
             'nama_akun',
             'pembelian.tanggal',
             'pembelian.no_bukti',
@@ -1031,7 +1040,7 @@ class LaporanaccountingController extends Controller
         );
         $pembelian->join('pembelian', 'pembelian_detail.no_bukti', '=', 'pembelian.no_bukti');
         $pembelian->join('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun');
-        $pembelian->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai]);
+        $pembelian->whereBetween('pembelian.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $pembelian->whereBetween('pembelian_detail.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
@@ -1045,6 +1054,7 @@ class LaporanaccountingController extends Controller
         $jurnalumum = Jurnalumum::query();
         $jurnalumum->select(
             'accounting_jurnalumum.kode_akun',
+            'coa.jenis_akun',
             'nama_akun',
             'accounting_jurnalumum.tanggal',
             'accounting_jurnalumum.kode_ju as no_bukti',
@@ -1054,7 +1064,7 @@ class LaporanaccountingController extends Controller
             DB::raw('IF(accounting_jurnalumum.debet_kredit="D",accounting_jurnalumum.jumlah,0) as jml_debet'),
             DB::raw('IF(accounting_jurnalumum.debet_kredit="D",2,1) as urutan')
         );
-        $jurnalumum->whereBetween('accounting_jurnalumum.tanggal', [$request->dari, $request->sampai]);
+        $jurnalumum->whereBetween('accounting_jurnalumum.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $jurnalumum->whereBetween('accounting_jurnalumum.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
@@ -1071,6 +1081,7 @@ class LaporanaccountingController extends Controller
         $jurnalkoreksi = Jurnalkoreksi::query();
         $jurnalkoreksi->select(
             'pembelian_jurnalkoreksi.kode_akun',
+            'coa.jenis_akun',
             'nama_akun',
             'pembelian_jurnalkoreksi.tanggal',
             'pembelian_jurnalkoreksi.no_bukti',
@@ -1080,7 +1091,7 @@ class LaporanaccountingController extends Controller
             DB::raw('IF(pembelian_jurnalkoreksi.debet_kredit="D",pembelian_jurnalkoreksi.jumlah*harga,0) as jml_debet'),
             DB::raw('IF(pembelian_jurnalkoreksi.debet_kredit="D",2,1) as urutan')
         );
-        $jurnalkoreksi->whereBetween('pembelian_jurnalkoreksi.tanggal', [$request->dari, $request->sampai]);
+        $jurnalkoreksi->whereBetween('pembelian_jurnalkoreksi.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $jurnalkoreksi->whereBetween('pembelian_jurnalkoreksi.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
@@ -1090,7 +1101,7 @@ class LaporanaccountingController extends Controller
         $jurnalkoreksi->orderBy('pembelian_jurnalkoreksi.tanggal');
         $jurnalkoreksi->orderBy('pembelian_jurnalkoreksi.no_bukti');
 
-        // dd($jurnalkoreksi->get());
+
 
         //    dd($jurnalumum->get());
         $coa_kas_kecil = Coa::where('kode_transaksi', 'KKL');
@@ -1100,6 +1111,7 @@ class LaporanaccountingController extends Controller
         $kaskecil = Kaskecil::query();
         $kaskecil->select(
             'coa_kas_kecil.kode_akun',
+            'coa_kas_kecil.jenis_akun',
             'nama_akun',
             'keuangan_kaskecil.tanggal',
             'keuangan_kaskecil.no_bukti',
@@ -1113,7 +1125,7 @@ class LaporanaccountingController extends Controller
             $join->on('keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang_coa');
         });
         $kaskecil->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil');
-        $kaskecil->whereBetween('keuangan_kaskecil.tanggal', [$request->dari, $request->sampai]);
+        $kaskecil->whereBetween('keuangan_kaskecil.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $kaskecil->whereBetween('coa_kas_kecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
@@ -1127,6 +1139,7 @@ class LaporanaccountingController extends Controller
         $piutangcabang = Historibayarpenjualan::query();
         $piutangcabang->select(
             'coa_piutangcabang.kode_akun',
+            'coa_piutangcabang.jenis_akun',
             'nama_akun',
             'marketing_penjualan_historibayar.tanggal',
             'marketing_penjualan_historibayar.no_bukti',
@@ -1142,7 +1155,7 @@ class LaporanaccountingController extends Controller
         $piutangcabang->leftJoinSub($coa_piutangcabang, 'coa_piutangcabang', function ($join) {
             $join->on('salesman.kode_cabang', '=', 'coa_piutangcabang.kode_cabang_coa');
         });
-        $piutangcabang->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
+        $piutangcabang->whereBetween('marketing_penjualan_historibayar.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $piutangcabang->whereBetween('coa_piutangcabang.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
@@ -1157,6 +1170,7 @@ class LaporanaccountingController extends Controller
         $penjualan_produk = Detailpenjualan::query();
         $penjualan_produk->select(
             'produk.kode_akun',
+            'coa.jenis_akun',
             'nama_akun',
             'marketing_penjualan.tanggal',
             'marketing_penjualan.no_faktur',
@@ -1171,33 +1185,72 @@ class LaporanaccountingController extends Controller
         $penjualan_produk->join('coa', 'produk.kode_akun', '=', 'coa.kode_akun');
         $penjualan_produk->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $penjualan_produk->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $penjualan_produk->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        $penjualan_produk->whereBetween('marketing_penjualan.tanggal', [$start_date, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $penjualan_produk->whereBetween('produk.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
         $penjualan_produk->where('marketing_penjualan.status_batal', 0);
         $penjualan_produk->orderBy('marketing_penjualan.tanggal');
         $penjualan_produk->orderBy('marketing_penjualan.no_faktur');
 
+        // if ($request->kode_akun_dari == '4-2100' || $request->kode_akun_sampai == '4-2100') {
+        //     $retur_penjualan = Detailretur::query();
+        //     $retur_penjualan->select(
+        //         DB::raw("'4-2100' as kode_akun"),
+        //         DB::raw("'Retur Penjualan' as nama_akun"),
+        //         'marketing_retur.tanggal',
+        //         DB::raw("marketing_retur.no_retur as no_bukti"),
+        //         DB::raw("'RETUR PENJUALAN' AS sumber"),
+        //         DB::raw("CONCAT(marketing_retur.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
+        //         DB::raw('0 as jml_kredit'),
+        //         'marketing_retur_detail.subtotal as jml_debet',
+        //         DB::raw('1 as urutan')
+        //     );
 
-        $retur_penjualan = Detailretur::query();
-        $retur_penjualan->select(
-            DB::raw("'4-2100' as kode_akun"),
-            DB::raw("'Retur Penjualan' as nama_akun"),
-            'marketing_retur.tanggal',
-            DB::raw("marketing_retur.no_retur as no_bukti"),
-            DB::raw("'RETUR PENJUALAN' AS sumber"),
-            DB::raw("CONCAT(marketing_retur.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
-            DB::raw('0 as jml_kredit'),
-            'marketing_retur_detail.jumlah as jml_debet',
-            DB::raw('1 as urutan')
-        );
+        //     $retur_penjualan->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        //     $retur_penjualan->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        //     $retur_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        //     $retur_penjualan->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
+        //     $retur_penjualan->where('marketing_retur.jenis_retur', 'PF');
+        //     $retur_penjualan->orderBy('marketing_retur.tanggal');
+        //     $retur_penjualan->orderBy('marketing_retur.no_retur');
+        // } else {
+        //     // Jika tidak ada retur_penjualan, buat query kosong agar tidak error pada unionAll
+        //     $retur_penjualan = Detailretur::query()->select(
+        //         DB::raw("'4-2100' as kode_akun"),
+        //         DB::raw("'Retur Penjualan' as nama_akun"),
+        //         DB::raw("NULL as tanggal"),
+        //         DB::raw("NULL as no_bukti"),
+        //         DB::raw("'RETUR PENJUALAN' AS sumber"),
+        //         DB::raw("NULL as keterangan"),
+        //         DB::raw('0 as jml_kredit'),
+        //         DB::raw('0 as jml_debet'),
+        //         DB::raw('1 as urutan')
+        //     )->whereRaw('0 = 1'); // Query kosong
+        // }
 
+        // Melakukan sum debet dan kredit dari data union sebelum tanggal $request->dari, group by kode_akun
+        $mutasi_transaksi = $ledger->unionAll($kaskecil)
+            ->unionAll($ledger_transaksi)
+            ->unionAll($piutangcabang)
+            ->unionAll($pembelian)
+            ->unionAll($jurnalumum)
+            ->unionAll($jurnalkoreksi)
+            ->unionAll($penjualan_produk);
 
-        $retur_penjualan->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
-        $retur_penjualan->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
-        $retur_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $retur_penjualan->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
-        $retur_penjualan->where('marketing_retur.jenis_retur', 'PF');
-        $retur_penjualan->orderBy('marketing_retur.tanggal');
-        $retur_penjualan->orderBy('marketing_retur.no_retur');
+        // Ambil data union sebagai subquery
+        $mutasi_subquery = DB::query()->fromSub($mutasi_transaksi, 'mutasi')
+            ->where('tanggal', '>=', $tahun . '-' . $bulan . '-01')
+            ->where('tanggal', '<', $request->dari);
+
+        // Hitung total debet dan kredit sebelum tanggal $request->dari, group by kode_akun
+        $mutasiakun = $mutasi_subquery
+            ->selectRaw('kode_akun, SUM(jml_debet) as total_debet, SUM(jml_kredit) as total_kredit')
+            ->groupBy('kode_akun')
+            ->get()->toArray();
+        $mutasiakunCollection = collect($mutasiakun);
+
+        // Contoh penggunaan: $total_mutasi_per_akun adalah collection, akses per kode_akun
 
         $bukubesar = $ledger->unionAll($kaskecil)
             ->unionAll($ledger_transaksi)
@@ -1205,7 +1258,8 @@ class LaporanaccountingController extends Controller
             ->unionAll($pembelian)
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
-            // ->unionAll($penjualan_produk)
+            ->unionAll($penjualan_produk)
+            ->whereBetween('tanggal', [$request->dari, $request->sampai])
             // ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
@@ -1214,6 +1268,8 @@ class LaporanaccountingController extends Controller
         $data['bukubesar'] = $bukubesar;
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
+        $data['saldoawalCollection'] = $saldoawalCollection;
+        $data['mutasiakunCollection'] = $mutasiakunCollection;
         return view('accounting.laporan.lk.bukubesar_cetak', $data);
     }
 }
