@@ -443,7 +443,8 @@ class PencairanprogramikatanController extends Controller
             ->where('kode_program', $pencairanprogram->kode_program)
             ->where('marketing_program_ikatan_enambulan.kode_cabang', $pencairanprogram->kode_cabang)
             ->where('marketing_program_ikatan_enambulan.periode_pencairan', 2)
-            ->where('marketing_program_ikatan_enambulan.status', 1);
+            ->where('marketing_program_ikatan_enambulan.status', 1)
+            ->get()->pluck('kode_pelanggan');
 
 
 
