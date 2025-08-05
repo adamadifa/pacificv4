@@ -448,7 +448,7 @@ class PencairanprogramikatanController extends Controller
 
 
 
-        dd($peserta_ikut_program_enambulan);
+
         $peserta = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
             'nama_pelanggan',
@@ -473,7 +473,10 @@ class PencairanprogramikatanController extends Controller
             })
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
-            ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $peserta_gagal)
+            ->where(function ($query) use ($peserta_gagal, $peserta_ikut_program_enambulan) {
+                $query->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $peserta_gagal)
+                    ->orWhereIn('marketing_program_ikatan_target.kode_pelanggan', $peserta_ikut_program_enambulan);
+            })
             ->where('marketing_program_ikatan.status', 1)
             ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
             ->where('marketing_program_ikatan_target.bulan', $pencairanprogram->bulan)
