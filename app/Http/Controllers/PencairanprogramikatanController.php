@@ -438,6 +438,33 @@ class PencairanprogramikatanController extends Controller
             ->whereRaw('IFNULL(jml_dus,0) < target_perbulan');
 
 
+        // Query untuk mencari pelanggan yang tidak tercapai lebih dari 1 bulan
+        $peserta_gagal_lebih_dari_satu_bulan = Detailtargetikatan::select(
+            'marketing_program_ikatan_target.kode_pelanggan',
+            DB::raw('COUNT(*) as jumlah_bulan_gagal')
+        )
+            ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_program_ikatan_detail', function ($join) {
+                $join->on('marketing_program_ikatan_target.no_pengajuan', '=', 'marketing_program_ikatan_detail.no_pengajuan')
+                    ->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'marketing_program_ikatan_detail.kode_pelanggan');
+            })
+            ->leftJoinSub($detailpenjualan_bulanlalu, 'detailpenjualan', function ($join) {
+                $join->on('marketing_program_ikatan_target.kode_pelanggan', '=', 'detailpenjualan.kode_pelanggan');
+                $join->on('marketing_program_ikatan_target.bulan', '=', 'detailpenjualan.bulan');
+            })
+            ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
+            ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
+            ->where('marketing_program_ikatan.status', 1)
+            ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
+            ->where('marketing_program_ikatan_target.bulan', '<', $pencairanprogram->bulan)
+            ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
+            ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang)
+            ->whereRaw('IFNULL(jml_dus,0) < target_perbulan')
+            ->groupBy('marketing_program_ikatan_target.kode_pelanggan')
+            ->havingRaw('COUNT(*) > 1')
+            ->pluck('marketing_program_ikatan_target.kode_pelanggan');
+
+
         $peserta_ikut_program_enambulan = Detailajuanprogramikatanenambulan::join('marketing_program_ikatan_enambulan', 'marketing_program_ikatan_enambulan_detail.no_pengajuan', '=', 'marketing_program_ikatan_enambulan.no_pengajuan')
             ->select('kode_pelanggan')
             ->where('kode_program', $pencairanprogram->kode_program)
