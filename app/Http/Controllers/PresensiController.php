@@ -445,7 +445,7 @@ class PresensiController extends Controller
         $lintashari  = $jam_kerja->lintashari;
 
         $cek = Presensi::where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
-
+        dd($cek);
         //dd($cek);
         if ($status_scan == 0) {
             //dd('1');
