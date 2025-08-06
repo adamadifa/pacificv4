@@ -445,12 +445,10 @@ class PresensiController extends Controller
         $lintashari  = $jam_kerja->lintashari;
 
         $cek = Presensi::where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
-        dd($cek);
+
         //dd($cek);
         if ($status_scan == 0) {
-            //dd('1');
             if ($cek == null) {
-                dd('insert');
                 $data = [
                     'nik' => $nik,
                     'tanggal' => $tgl_presensi,
@@ -467,7 +465,6 @@ class PresensiController extends Controller
                     return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
                 }
             } else {
-                dd('update');
                 try {
                     $data_masuk = [
                         'jam_in' => $jam
