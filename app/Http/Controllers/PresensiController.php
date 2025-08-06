@@ -448,6 +448,7 @@ class PresensiController extends Controller
 
         //dd($cek);
         if ($status_scan == 0) {
+            dd('1');
             if ($cek == null) {
                 $data = [
                     'nik' => $nik,
@@ -465,6 +466,7 @@ class PresensiController extends Controller
                     return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
                 }
             } else {
+                dd('2');
                 try {
                     $data_masuk = [
                         'jam_in' => $jam
