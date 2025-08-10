@@ -552,7 +552,7 @@ class PresensiController extends Controller
         $user = User::findOrFail(auth()->user()->id);
 
         try {
-            if ($user->hasRole(['asst. manager hrd', 'super admin'])) {
+            if ($user->hasRole(['asst. manager hrd', 'super admin', 'spv presensi'])) {
                 Presensi::where('id', $id_presensi)->update([
                     'kode_jadwal' => $request->kode_jadwal,
                     'kode_jam_kerja' => $request->kode_jam_kerja,
