@@ -316,7 +316,8 @@ class PenjualanController extends Controller
 
 
         //PERBAIKAN NO FAKTUR
-        $cekpenjualan = Penjualan::where('kode_salesman', $penjualan->kode_salesman)
+        $cekpenjualan = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('kode_salesman', $penjualan->kode_salesman)
             ->where('kode_sales', $salesman->kode_sales)
             ->where('tanggal', '>=', $penjualan->tanggal)
             ->whereRaw('MID(no_faktur,4,2) != "PR"')
@@ -328,7 +329,8 @@ class PenjualanController extends Controller
         } else {
 
             //Perbaikan Generate Faktur
-            $cekpenjualan = Penjualan::where('kode_salesman', $penjualan->kode_salesman)
+            $cekpenjualan = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('kode_salesman', $penjualan->kode_salesman)
                 ->where('tanggal', '<=', $penjualan->tanggal)
                 ->where('kode_sales', $salesman->kode_sales)
                 ->whereRaw('MID(no_faktur,4,2) != "PR"')
