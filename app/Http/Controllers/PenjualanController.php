@@ -369,7 +369,7 @@ class PenjualanController extends Controller
                 ->where('kode_sales', $kode_sales)
                 ->where('kode_cabang', $kode_cabang)
                 ->whereRaw('YEAR(tanggal)="' . $thn . '"')
-                ->whereRaw('LEFT(no_faktur,3)="' . $kode_pt . '"')
+                ->whereRaw('LEFT(no_faktur,3)="' . $kode_pt . $tahun . $kode_sales . '"')
                 ->orderBy('no_faktur', 'desc')
                 ->first();
             $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
