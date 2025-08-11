@@ -320,6 +320,8 @@ class PenjualanController extends Controller
             ->orderBy('no_faktur', 'desc')
             ->first();
 
+
+        dd($cekpenjualan);
         if ($cekpenjualan != null) {
             $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
         } else {
