@@ -314,7 +314,10 @@ class PenjualanController extends Controller
         // $start_date = date('Y-m-d', strtotime("-1 month", strtotime(date('Y-m-d'))));
         // $end_date = date('Y-m-t');
 
+
+        //PERBAIKAN NO FAKTUR
         $cekpenjualan = Penjualan::where('kode_salesman', $penjualan->kode_salesman)
+            ->where('kode_sales', $salesman->kode_sales)
             ->where('tanggal', '>=', $penjualan->tanggal)
             ->whereRaw('MID(no_faktur,4,2) != "PR"')
             ->orderBy('no_faktur', 'desc')
@@ -323,8 +326,11 @@ class PenjualanController extends Controller
         if ($cekpenjualan != null) {
             $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
         } else {
+
+            //Perbaikan Generate Faktur
             $cekpenjualan = Penjualan::where('kode_salesman', $penjualan->kode_salesman)
                 ->where('tanggal', '<=', $penjualan->tanggal)
+                ->where('kode_sales', $salesman->kode_sales)
                 ->whereRaw('MID(no_faktur,4,2) != "PR"')
                 ->orderBy('no_faktur', 'desc')
                 ->first();
