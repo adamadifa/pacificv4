@@ -321,9 +321,10 @@ class PenjualanController extends Controller
             ->first();
 
 
-        dd($cekpenjualan);
+
         if ($cekpenjualan != null) {
             $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
+            dd($last_no_faktur);
         } else {
             $cekpenjualan = Penjualan::where('kode_salesman', $penjualan->kode_salesman)
                 ->where('tanggal', '<=', $penjualan->tanggal)
