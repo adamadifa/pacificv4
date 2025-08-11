@@ -373,7 +373,7 @@ class PenjualanController extends Controller
                 ->orderBy('no_faktur', 'desc')
                 ->first();
             $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
-            dd($last_no_faktur);
+            //dd($last_no_faktur);
             $no_faktur_auto = buatkode($last_no_faktur, $kode_pt . $tahun . $kode_sales, 6);
         }
 
