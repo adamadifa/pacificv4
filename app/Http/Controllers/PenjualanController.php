@@ -324,7 +324,7 @@ class PenjualanController extends Controller
 
         if ($cekpenjualan != null) {
             $last_no_faktur = $cekpenjualan != null ? $cekpenjualan->no_faktur : '';
-            dd($last_no_faktur);
+            // dd($last_no_faktur);
         } else {
             $cekpenjualan = Penjualan::where('kode_salesman', $penjualan->kode_salesman)
                 ->where('tanggal', '<=', $penjualan->tanggal)
@@ -373,9 +373,11 @@ class PenjualanController extends Controller
                 ->orderBy('no_faktur', 'desc')
                 ->first();
             $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
+            dd($last_no_faktur);
             $no_faktur_auto = buatkode($last_no_faktur, $kode_pt . $tahun . $kode_sales, 6);
         }
 
+        dd($no_faktur_auto);
         // echo $no_fak_penj_auto;
         // die;
         try {
