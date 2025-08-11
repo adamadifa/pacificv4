@@ -257,7 +257,7 @@
                     <td><a href="#" id="${baris}" class="delete"><i class="ti ti-trash text-danger"></i></a></td>
                 </tr>`;
                 form.find("#loadjurnalumum").append(newRow);
-                // resetForm();
+                resetForm();
             }
         });
 
@@ -285,12 +285,12 @@
 
 
         function resetForm() {
-            form.find("#tanggal").val("");
+            //form.find("#tanggal").val("");
             form.find('.select2Kodeakun').val('').trigger("change");
             form.find("#debet_kredit").val("");
             form.find("#jumlah").val("");
-            form.find("#keterangan").val("");
-            form.find("#kode_peruntukan").val("");
+            //form.find("#keterangan").val("");
+            //form.find("#kode_peruntukan").val("");
             form.find('.select2Kodecabang').val('').trigger("change");
         }
 
