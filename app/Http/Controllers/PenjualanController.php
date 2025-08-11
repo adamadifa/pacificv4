@@ -365,11 +365,11 @@ class PenjualanController extends Controller
         $start_date = "2024-03-01";
         if ($penjualan->tanggal >= '2024-03-01') {
             $lastransaksi = Penjualan::join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-                ->where('tanggald', '>=', $start_date)
+                ->where('tanggal', '>=', $start_date)
                 ->where('kode_sales', $kode_sales)
                 ->where('kode_cabang', $kode_cabang)
                 ->whereRaw('YEAR(tanggal)="' . $thn . '"')
-                ->whereRaw('LEFT(no_faktur,3)="' . $kode_pt . $tahun . $kode_sales . '"')
+                ->whereRaw('LEFT(no_faktur,6)="' . $kode_pt . $tahun . $kode_sales . '"')
                 ->orderBy('no_faktur', 'desc')
                 ->first();
             $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
