@@ -87,7 +87,8 @@
 
          @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index']) ||
                  auth()->user()->hasRole(['super admin', 'gm administrasi']))
-             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket']) ? 'open' : '' }} ">
+             <li
+                 class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-settings"></i>
                      <div>Utilities</div>
@@ -112,6 +113,15 @@
                          <li class="menu-item {{ request()->is(['activitylog', 'activitylog/*']) ? 'active' : '' }}">
                              <a href="{{ route('activitylog.index') }}" class="menu-link">
                                  <div>Log Aktivitas</div>
+                             </a>
+                         </li>
+                     @endcan
+
+                     @can('backup.database')
+                         <li
+                             class="menu-item {{ request()->is(['backup-database', 'backup-database/*']) ? 'active' : '' }}">
+                             <a href="{{ route('backup.database.index') }}" class="menu-link">
+                                 <div>Backup Database</div>
                              </a>
                          </li>
                      @endcan
@@ -149,7 +159,8 @@
                                  <div>Permission</div>
                              </a>
                          </li>
-                         <li class="menu-item  {{ request()->is(['permissiongroups', 'permissiongroups/*']) ? 'active' : '' }}">
+                         <li
+                             class="menu-item  {{ request()->is(['permissiongroups', 'permissiongroups/*']) ? 'active' : '' }}">
                              <a href="{{ route('permissiongroups.index') }}" class="menu-link">
                                  <div>Group Permission</div>
                              </a>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivitylogController;
 use App\Http\Controllers\AjuanfakturkreditController;
+use App\Http\Controllers\BackupDatabaseController;
 use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AjuanprogramikatanController;
 use App\Http\Controllers\AjuanprogramikatanenambulanController;
@@ -2340,6 +2341,20 @@ Route::middleware('auth')->group(function () {
         Route::delete('/saldoawalbukubesar/{kode_saldo_awal}/delete', 'destroy')->name('saldoawalbukubesar.delete')->can('saldoawalbukubesar.delete');
 
         Route::post('/saldoawalbukubesar/getsaldo', 'getsaldo')->name('saldoawalbukubesar.getsaldo');
+    });
+
+    // Backup Database Routes
+    Route::controller(BackupDatabaseController::class)->group(function () {
+        Route::get('/backup-database', 'index')->name('backup.database.index')->can('backup.database');
+        Route::post('/backup-database/create', 'create')->name('backup.database.create')->can('backup.database');
+        Route::post('/backup-database/create-large', 'createLargeBackup')->name('backup.database.create.large')->can('backup.database');
+        Route::get('/backup-database/{filename}/download', 'download')->name('backup.database.download')->can('backup.database');
+        Route::get('/backup-database/{filename}/resume-download', 'resumeDownload')->name('backup.database.resume.download')->can('backup.database');
+        Route::delete('/backup-database/{filename}/destroy', 'destroy')->name('backup.database.destroy')->can('backup.database');
+
+        // Streaming download langsung dari database
+        Route::get('/backup-database/stream-download', 'streamDownloadFromDatabase')->name('backup.database.stream.download')->can('backup.database');
+        Route::get('/backup-database/stream-download-progress', 'streamDownloadWithProgress')->name('backup.database.stream.download.progress')->can('backup.database');
     });
 });
 
