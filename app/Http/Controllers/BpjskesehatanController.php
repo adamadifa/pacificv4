@@ -86,6 +86,9 @@ class BpjskesehatanController extends Controller
             $last_kodebpjskes = $bpjskes != null ? $bpjskes->kode_bpjs_kesehatan : '';
             $kode_bpjs_kesehatan  = buatkode($last_kodebpjskes, "BK" . $tahun, 5);
 
+
+            dd($kode_bpjs_kesehatan);
+
             Bpjskesehatan::create([
                 'kode_bpjs_kesehatan' => $kode_bpjs_kesehatan,
                 'nik' => $request->nik,
