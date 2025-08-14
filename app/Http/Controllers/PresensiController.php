@@ -544,14 +544,14 @@ class PresensiController extends Controller
         $id_presensi = Crypt::decrypt($id_presensi);
         $presensi = Presensi::where('id', $id_presensi)->first();
         $tanggal = $presensi->tanggal;
-        $tanggal_pulang  = $request->kode_jam_kerja == 'JK08' ? date('Y-m-d', strtotime($tanggal . ' + 1 days')) : $tanggal;
+        $tanggal_pulang  = in_array($request->kode_jam_kerja, ['JK08', 'JK25']) ? date('Y-m-d', strtotime($tanggal . ' + 1 days')) : $tanggal;
         $jam_in = !empty($request->jam_in) ? $tanggal . ' ' . $request->jam_in : null;
 
         $jam_out = !empty($request->jam_out) ? $tanggal_pulang . ' ' . $request->jam_out : null;
 
         $user = User::findOrFail(auth()->user()->id);
 
-        dd($user->hasRole(['asst. manager hrd', 'super admin', 'spv presensi']));
+        //dd($user->hasRole(['asst. manager hrd', 'super admin', 'spv presensi']));
         try {
             if ($user->hasRole(['asst. manager hrd', 'super admin', 'spv presensi'])) {
                 Presensi::where('id', $id_presensi)->update([
