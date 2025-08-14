@@ -84,7 +84,7 @@ class BpjskesehatanController extends Controller
                 ->first();
 
             $last_kodebpjskes = $bpjskes != null ? $bpjskes->kode_bpjs_kesehatan : '';
-            $kode_bpjs_kesehatan  = buatkode($last_kodebpjskes, "BK" . $tahun, 5);
+            $kode_bpjs_kesehatan  = buatkode($last_kodebpjskes, "BS" . $tahun, 5);
 
 
             // dd($kode_bpjs_kesehatan);
