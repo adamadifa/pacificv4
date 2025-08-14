@@ -551,6 +551,7 @@ class PresensiController extends Controller
 
         $user = User::findOrFail(auth()->user()->id);
 
+        dd($user->hasRole(['asst. manager hrd', 'super admin', 'spv presensi']));
         try {
             if ($user->hasRole(['asst. manager hrd', 'super admin', 'spv presensi'])) {
                 Presensi::where('id', $id_presensi)->update([
