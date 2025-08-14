@@ -51,10 +51,10 @@ class Karyawan extends Model
                 $query->where('hrd_karyawan.kode_jabatan', 'J08');
             } else {
                 if ($user->hasRole('sales marketing manager')) {
-                    $query->where('hrd_karyawan.kode_cabangd', auth()->user()->kode_cabang);
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
                     $query->whereNot('hrd_karyawan.kode_jabatan', 'J07');
                 } else {
-                    $query->where('hrd_karyawan.kode_deptd', auth()->user()->kode_dept);
+                    $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
                     $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
                     $query->where('hrd_jabatan.kategori', 'NM');
                 }
