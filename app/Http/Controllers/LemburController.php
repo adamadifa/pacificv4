@@ -242,7 +242,8 @@ class LemburController extends Controller
         //     $query->where('hrd_karyawan.kode_dept', $harilibur->kode_dept);
         // }
         $query->where('hrd_karyawan.kode_dept', $lembur->kode_dept);
-
+        $query->where('hrd_karyawan.kode_cabang', $lembur->kode_cabang);
+        $query->where('hrd_karyawan.status_aktif_karyawan', 1);
         if (!empty($request->kode_group)) {
             $query->where('hrd_karyawan.kode_group', $request->kode_group);
         }
