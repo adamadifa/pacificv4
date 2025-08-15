@@ -218,6 +218,7 @@ class LemburController extends Controller
         $data['lembur'] = $lembur;
         $data['group'] = Karyawan::where('hrd_karyawan.kode_dept', $lembur->kode_dept)
             ->where('kode_cabang', $lembur->kode_cabang)
+            ->where('status_aktif_karyawan', 1)
             ->select('hrd_karyawan.kode_group', 'nama_group')
             ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
             ->orderBy('hrd_karyawan.kode_group')
