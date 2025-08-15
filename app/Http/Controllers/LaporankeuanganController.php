@@ -44,7 +44,7 @@ class LaporankeuanganController extends Controller
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
 
         $data['coa'] = Coa::orderby('kode_akun')->get();
-        if ($user->hasRole('admin pajak')) {
+        if ($user->hasRole(['admin pajak', 'rom'])) {
             $data['coa'] = Coa::orderby('kode_akun')
                 ->where(DB::raw('LEFT(kode_akun, 2)'), '5-')
                 ->orWhere(DB::raw('LEFT(kode_akun, 2)'), '6-')
@@ -62,7 +62,7 @@ class LaporankeuanganController extends Controller
     {
 
         $user = User::findorfail(auth()->user()->id);
-        if (lockreport($request->dari) == "error" && !$user->hasRole('admin pajak')) {
+        if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'rom'])) {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
         $data['dari'] = $request->dari;
@@ -103,7 +103,7 @@ class LaporankeuanganController extends Controller
             if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
                 $query->whereBetween('keuangan_ledger.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
             }
-            if ($user->hasRole('admin pajak')) {
+            if ($user->hasRole(['admin pajak', 'rom'])) {
                 $query->whereIn(DB::raw('LEFT(keuangan_ledger.kode_akun, 2)'), ['5-', '6-', '7-', '8-', '9-']);
             }
             $data['ledger'] = $query->get();
@@ -134,7 +134,7 @@ class LaporankeuanganController extends Controller
             if (!empty($request->kode_bank_ledger)) {
                 $query->where('keuangan_ledger.kode_bank', $request->kode_bank_ledger);
             }
-            if ($user->hasRole('admin pajak')) {
+            if ($user->hasRole(['admin pajak', 'rom'])) {
                 $query->whereIn(DB::raw('LEFT(keuangan_ledger.kode_akun, 2)'), ['5-', '6-', '7-', '8-', '9-']);
             }
             $query->groupBy('keuangan_ledger.kode_akun', 'nama_akun');
@@ -1825,7 +1825,7 @@ class LaporankeuanganController extends Controller
     public function cetakkaskecil(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
-        if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'manager audit'])) {
+        if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'manager audit', 'rom'])) {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
 
@@ -1946,7 +1946,7 @@ class LaporankeuanganController extends Controller
     {
 
         $user = User::findorfail(auth()->user()->id);
-        if (lockreport($request->dari) == "error" && !$user->hasRole('admin pajak')) {
+        if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'rom'])) {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
         $data['dari'] = $request->dari;
