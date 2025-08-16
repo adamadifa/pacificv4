@@ -50,8 +50,10 @@ class Lembur extends Model
             } else {
                 if ($user->kode_cabang == 'PST') {
                     $query->where('hrd_lembur.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    $query->where('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
                 }
-                $query->where('hrd_lembur.kode_cabangd', auth()->user()->kode_cabang);
             }
 
             if (!empty($kode_lembur)) {
@@ -89,9 +91,11 @@ class Lembur extends Model
                 $query->orwhereIn('hrd_lembur.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
             } else {
                 if ($user->kode_cabang == 'PST') {
-                    $query->where('hrd_lembur.kode_dept', auth()->user()->kode_dept);
+                    $query->orwhere('hrd_lembur.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    $query->orwhere('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
                 }
-                $query->where('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
             }
 
             $query->WhereIn('hrd_lembur.kode_lembur', function ($query) use ($user) {
