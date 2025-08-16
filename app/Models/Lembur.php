@@ -51,7 +51,7 @@ class Lembur extends Model
                 if ($user->kode_cabang == 'PST') {
                     $query->where('hrd_lembur.kode_dept', auth()->user()->kode_dept);
                 }
-                $query->where('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
+                $query->where('hrd_lembur.kode_cabangd', auth()->user()->kode_cabang);
             }
 
             if (!empty($kode_lembur)) {
