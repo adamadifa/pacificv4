@@ -1191,10 +1191,9 @@ class LaporanaccountingController extends Controller
         }
         $penjualan_produk->where('marketing_penjualan.status_batal', 0);
         $penjualan_produk->orderBy('marketing_penjualan.tanggal');
-        $penjualan_produk->orderBy('marketing_penjualan.no_fakturd');
+        $penjualan_produk->orderBy('marketing_penjualan.no_faktur');
 
 
-        dd($penjualan_produk->get());
 
         // if ($request->kode_akun_dari == '4-2100' || $request->kode_akun_sampai == '4-2100') {
         //     $retur_penjualan = Detailretur::query();
@@ -1261,7 +1260,7 @@ class LaporanaccountingController extends Controller
             ->unionAll($pembelian)
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
-            ->unionAll($penjualan_produk)
+
             ->whereBetween('tanggal', [$request->dari, $request->sampai])
             // ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
