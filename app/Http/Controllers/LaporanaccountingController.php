@@ -1191,7 +1191,7 @@ class LaporanaccountingController extends Controller
         }
         $penjualan_produk->where('marketing_penjualan.status_batal', 0);
         $penjualan_produk->orderBy('marketing_penjualan.tanggal');
-        $penjualan_produk->orderBy('marketing_penjualan.no_faktur');
+        $penjualan_produk->orderBy('marketing_penjualan.no_fakturd');
 
 
         dd($penjualan_produk->get());
