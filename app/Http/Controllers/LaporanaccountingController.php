@@ -918,53 +918,6 @@ class LaporanaccountingController extends Controller
 
 
 
-
-        //Mutasi
-        // $mutasi_ledger  = Ledger::select(
-        //     'kode_bank',
-        //     DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-        //     DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
-        // )
-        //     ->where('tanggal', '>=', $start_date)
-        //     ->where('tanggal', '<', $request->dari)
-        //     ->where('kode_bank', $request->kode_bank_search)
-        //     ->groupBy('kode_bank');
-
-        // $mutasi_kaskecil = Kaskecil::select(
-        //     'kode_cabang',
-        //     DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-        //     DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
-        // )
-        //     ->where('tanggal', '>=', $start_date)
-        //     ->where('tanggal', '<', $request->dari)
-        //     ->groupBy('kode_cabang');
-
-        // $saldo_awal_ledger  = Saldoawalledger::select('bank.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
-        //     ->join('bank', 'bank.kode_bank', '=', 'keuangan_ledger_saldoawal.kode_bank')
-        //     ->leftJoinSub($mutasi_ledger, 'mutasi_ledger', function ($join) {
-        //         $join->on('keuangan_ledger_saldoawal.kode_bank', '=', 'mutasi_ledger.kode_bank');
-        //     })
-        //     ->where('bulan', $bulan)->where('tahun', $tahun);
-
-        // $saldo_awal_kaskecil = Saldoawalkaskecil::select('coa_kas_kecil.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
-        //     ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
-        //     ->leftJoinSub($mutasi_kaskecil, 'mutasi_kaskecil', function ($join) {
-        //         $join->on('keuangan_kaskecil_saldoawal.kode_cabang', '=', 'mutasi_kaskecil.kode_cabang');
-        //     })
-        //     ->where('bulan', $bulan)->where('tahun', $tahun);
-
-        // $saldoawal = $saldo_awal_ledger->union($saldo_awal_kaskecil)->get()->toArray();
-        // // Mengubah $saldo_awal_ledger menjadi koleksi
-        // $saldoawalCollection = collect($saldoawal);
-
-
-        // // $saldo = $akunCollection->firstWhere('kode_akun', '1-1244')['saldo'] ?? null;
-
-        // // echo "Saldo akun 1-1244: " . number_format($saldo);
-
-
-        // $data['saldoawalCollection'] = $saldoawalCollection;
-
         $saldoawal = Detailsaldoawalbukubesar::join('bukubesar_saldoawal', 'bukubesar_saldoawal.kode_saldo_awal', '=', 'bukubesar_saldoawal_detail.kode_saldo_awal')
             ->where('bukubesar_saldoawal.bulan', $bulan)
             ->where('bukubesar_saldoawal.tahun', $tahun)
@@ -1232,7 +1185,19 @@ class LaporanaccountingController extends Controller
         // }
 
         // Melakukan sum debet dan kredit dari data union sebelum tanggal $request->dari, group by kode_akun
-        $mutasi_transaksi = $ledger->unionAll($kaskecil)
+        // $mutasi_transaksi = $ledger->unionAll($kaskecil)
+        //     ->unionAll($ledger_transaksi)
+        //     ->unionAll($piutangcabang)
+        //     ->unionAll($pembelian)
+        //     ->unionAll($jurnalumum)
+        //     ->unionAll($jurnalkoreksi)
+        //     ->unionAll($penjualan_produk);
+
+
+
+        // Contoh penggunaan: $total_mutasi_per_akun adalah collection, akses per kode_akun
+
+        $data = $ledger->unionAll($kaskecil)
             ->unionAll($ledger_transaksi)
             ->unionAll($piutangcabang)
             ->unionAll($pembelian)
@@ -1241,7 +1206,7 @@ class LaporanaccountingController extends Controller
             ->unionAll($penjualan_produk);
 
         // Ambil data union sebagai subquery
-        $mutasi_subquery = DB::query()->fromSub($mutasi_transaksi, 'mutasi')
+        $mutasi_subquery = DB::query()->fromSub($data, 'mutasi')
             ->where('tanggal', '>=', $tahun . '-' . $bulan . '-01')
             ->where('tanggal', '<', $request->dari);
 
@@ -1252,15 +1217,7 @@ class LaporanaccountingController extends Controller
             ->get()->toArray();
         $mutasiakunCollection = collect($mutasiakun);
 
-        // Contoh penggunaan: $total_mutasi_per_akun adalah collection, akses per kode_akun
-
-        $bukubesar = $ledger->unionAll($kaskecil)
-            ->unionAll($ledger_transaksi)
-            ->unionAll($piutangcabang)
-            ->unionAll($pembelian)
-            ->unionAll($jurnalumum)
-            ->unionAll($jurnalkoreksi)
-            ->unionAll($penjualan_produk)
+        $bukubesar = DB::query()->fromSub($data, 'bukubesar')
             ->whereBetween('tanggal', [$request->dari, $request->sampai])
             // ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
