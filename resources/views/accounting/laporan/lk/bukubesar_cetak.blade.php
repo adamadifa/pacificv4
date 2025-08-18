@@ -54,10 +54,12 @@
                     @foreach ($bukubesar as $key => $d)
                         @php
                             $saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['jumlah'] ?? 0;
-                            // Error "Cannot use object of type stdClass as array" terjadi karena hasil dari firstWhere() adalah object, bukan array.
-                            // Jadi, akses propertinya harus menggunakan -> bukan ['key']
-                            $mutasi_debet = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ?? 0;
-                            $mutasi_kredit = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ?? 0;
+                            $mutasi_debet =
+                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ??
+                                0;
+                            $mutasi_kredit =
+                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ??
+                                0;
                             if ($d->jenis_akun == '1') {
                                 $saldo_awal = $saldo_awal + $mutasi_kredit - $mutasi_debet;
                             } else {
