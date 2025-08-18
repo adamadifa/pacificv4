@@ -1197,7 +1197,7 @@ class LaporanaccountingController extends Controller
 
         // Contoh penggunaan: $total_mutasi_per_akun adalah collection, akses per kode_akun
 
-        $data = $ledger->unionAll($kaskecil)
+        $union_data = $ledger->unionAll($kaskecil)
             ->unionAll($ledger_transaksi)
             ->unionAll($piutangcabang)
             ->unionAll($pembelian)
@@ -1206,7 +1206,7 @@ class LaporanaccountingController extends Controller
             ->unionAll($penjualan_produk);
 
         // Ambil data union sebagai subquery
-        $mutasi_subquery = DB::query()->fromSub($data, 'mutasi')
+        $mutasi_subquery = DB::query()->fromSub($union_data, 'mutasi')
             ->where('tanggal', '>=', $tahun . '-' . $bulan . '-01')
             ->where('tanggal', '<', $request->dari);
 
@@ -1218,7 +1218,7 @@ class LaporanaccountingController extends Controller
         $mutasiakunCollection = collect($mutasiakun);
 
 
-        $bukubesar = DB::query()->fromSub($data, 'bukubesar')
+        $bukubesar = DB::query()->fromSub($union_data, 'bukubesar')
             ->whereBetween('tanggal', [$request->dari, $request->sampai])
             // ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
