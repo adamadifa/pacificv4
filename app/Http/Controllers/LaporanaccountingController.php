@@ -1238,7 +1238,8 @@ class LaporanaccountingController extends Controller
             ->unionAll($pembelian)
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
-            ->unionAll($penjualan_produk);
+            // ->unionAll($penjualan_produk)
+        ;
 
         // Ambil data union sebagai subquery
         $mutasi_subquery = DB::query()->fromSub($mutasi_transaksi, 'mutasi')
@@ -1260,7 +1261,7 @@ class LaporanaccountingController extends Controller
             ->unionAll($pembelian)
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
-            // ->unionAll($penjualan_produk)
+            ->unionAll($penjualan_produk)
             ->whereBetween('tanggal', [$request->dari, $request->sampai])
             // ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
