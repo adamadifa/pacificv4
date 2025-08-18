@@ -1238,8 +1238,7 @@ class LaporanaccountingController extends Controller
             ->unionAll($pembelian)
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
-            // ->unionAll($penjualan_produk)
-        ;
+            ->unionAll($penjualan_produk);
 
         // Ambil data union sebagai subquery
         $mutasi_subquery = DB::query()->fromSub($mutasi_transaksi, 'mutasi')
