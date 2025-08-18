@@ -1217,11 +1217,14 @@ class LaporanaccountingController extends Controller
             ->get()->toArray();
         $mutasiakunCollection = collect($mutasiakun);
 
+
         $bukubesar = DB::query()->fromSub($data, 'bukubesar')
             ->whereBetween('tanggal', [$request->dari, $request->sampai])
             // ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
+
+        dd($bukubesar);
         // dd($bukubesar->get());
 
         $data['bukubesar'] = $bukubesar;
