@@ -1193,6 +1193,9 @@ class LaporanaccountingController extends Controller
         $penjualan_produk->orderBy('marketing_penjualan.tanggal');
         $penjualan_produk->orderBy('marketing_penjualan.no_faktur');
 
+
+        dd($penjualan_produk->get());
+
         // if ($request->kode_akun_dari == '4-2100' || $request->kode_akun_sampai == '4-2100') {
         //     $retur_penjualan = Detailretur::query();
         //     $retur_penjualan->select(
