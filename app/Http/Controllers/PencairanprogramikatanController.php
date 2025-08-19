@@ -432,6 +432,9 @@ class PencairanprogramikatanController extends Controller
             ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
             ->where('marketing_program_ikatan.status', 1)
             ->where('marketing_program_ikatan.kode_program', $pencairanprogram->kode_program)
+            ->when($pencairanprogram->kode_program == 'PRIK002' && $pencairanprogram->bulan > 6, function ($query) {
+                $query->where('marketing_program_ikatan_target.bulan', '>', 6);
+            })
             ->where('marketing_program_ikatan_target.bulan', '<', $pencairanprogram->bulan)
             ->where('marketing_program_ikatan_target.tahun', $pencairanprogram->tahun)
             ->where('marketing_program_ikatan.kode_cabang', $pencairanprogram->kode_cabang)
