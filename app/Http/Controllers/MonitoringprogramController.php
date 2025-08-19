@@ -147,7 +147,7 @@ class MonitoringprogramController extends Controller
             // ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
             ->where('marketing_program_ikatan.status', 1)
             ->where('marketing_program_ikatan.kode_program', $request->kode_program)
-            ->when($request->kode_program == 'PRIK002', function ($query) {
+            ->when($request->kode_program == 'PRIK002' && $bulan > 6, function ($query) {
                 $query->where('marketing_program_ikatan_target.bulan', '>', 6);
             })
             ->where('marketing_program_ikatan_target.bulan', '<', $bulan)
