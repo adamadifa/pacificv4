@@ -40,7 +40,8 @@ class MonitoringprogramController extends Controller
 
         $listpelangganikatan = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
-            'marketing_program_ikatan_detail.top'
+            'marketing_program_ikatan_detail.top',
+
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
@@ -128,8 +129,6 @@ class MonitoringprogramController extends Controller
         $bulan = $request->bulan != null ? $request->bulan : 0;
         $peserta_gagal = Detailtargetikatan::select(
             'marketing_program_ikatan_target.kode_pelanggan',
-
-
         )
             ->join('pelanggan', 'marketing_program_ikatan_target.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_program_ikatan_detail', function ($join) {
@@ -145,6 +144,7 @@ class MonitoringprogramController extends Controller
             // ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
             ->where('marketing_program_ikatan.status', 1)
             ->where('marketing_program_ikatan.kode_program', $request->kode_program)
+            ->whereRaw('marketing_program_ikatan_target.bulan >= MONTH(marketing_program_ikatan.periode_dari)')
             ->where('marketing_program_ikatan_target.bulan', '<', $bulan)
             ->where('marketing_program_ikatan_target.tahun', $request->tahun)
             ->where('marketing_program_ikatan.kode_cabang', $request->kode_cabang)
