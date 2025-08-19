@@ -6,8 +6,8 @@
         <div class="divider-text">Data Karyawan</div>
     </div>
     <div class="input-group mb-3">
-        <input type="text" class="form-control" name="nik" id="nik" readonly placeholder="Cari Karyawan" aria-label="Cari Karyawan"
-            aria-describedby="nik_search">
+        <input type="text" class="form-control" name="nik" id="nik" readonly placeholder="Cari Karyawan"
+            aria-label="Cari Karyawan" aria-describedby="nik_search">
         <a class="btn btn-primary waves-effect" id="nik_search"><i class="ti ti-search text-white"></i></a>
     </div>
     <div class="row mb-3">
@@ -315,18 +315,22 @@
                     const jumlahBulankerja = calculateMonthDifference(startDate, endDate);
                     const masaKerja = calculateWorkDuration(startDate, endDate);
 
-                    form.find("#masa_kerja").text(`${masaKerja.years} Tahun, ${masaKerja.months} Bulan`);
+                    form.find("#masa_kerja").text(
+                        `${masaKerja.years} Tahun, ${masaKerja.months} Bulan`);
                     form.find("#status_karyawan").text(response.data.statuskaryawan);
-                    form.find("#gapok_tunjangan").text(convertToRupiah(response.data.gapok_tunjangan));
+                    form.find("#gapok_tunjangan").text(convertToRupiah(response.data
+                        .gapok_tunjangan));
 
                     let tenor_max;
                     if (response.data.status_karyawan == 'T') {
                         tenor_max = 20;
                         form.find('#akhir_kontrak').html('<i class="ti ti-infinity"></i>');
                     } else {
-                        tenor_max = calculateMonthDifference(new Date(), new Date(response.data.akhir_kontrak));
+                        tenor_max = calculateMonthDifference(new Date(), new Date(response.data
+                            .akhir_kontrak));
                         tenor_max = tenor_max > 0 ? tenor_max : 0;
-                        form.find("#akhir_kontrak").text(convertDateFormatToIndonesian(response.data.akhir_kontrak));
+                        form.find("#akhir_kontrak").text(convertDateFormatToIndonesian(response.data
+                            .akhir_kontrak));
                     }
                     max_cicilan = tenor_max;
                     form.find("#tenor_max").text(tenor_max + ' Bulan');
@@ -338,15 +342,34 @@
 
                     let plafon = angsuran_max * tenor_max;
                     form.find("#plafon").text(convertToRupiah(plafon));
-                    form.find("#jmk_dibayar").text(convertToRupiah(response.data.total_jmk_dibayar));
+                    form.find("#jmk_dibayar").text(convertToRupiah(response.data
+                        .total_jmk_dibayar));
 
                     let jmlkali_jmk = hitungJmk(masaKerja.years);
-                    let total_jmk;
-                    if (masaKerja.years <= 2) {
-                        total_jmk = jmlkali_jmk * response.data.gaji_pokok;
+                    let masa_kerja_bulan = (parseInt(masaKerja.years) * 12) + parseInt(masaKerja
+                        .months);
+                    let total_upah = 0;
+                    let persentase_jmk = 0;
+                    if (parseInt(masa_kerja_bulan) <= 23) {
+                        total_upah = response.data.gaji_pokok;
+                        persentase_jmk = 25;
+                    } else if (parseInt(masa_kerja_bulan) <= 28) {
+                        total_upah = response.data.gaji_pokok;
+                        persentase_jmk = 50;
                     } else {
-                        total_jmk = jmlkali_jmk * response.data.gapok_tunjangan;
+                        total_upah = response.data.gapok_tunjangan;
+                        persentase_jmk = 100;
                     }
+
+
+                    let total_jmk;
+                    // if (masaKerja.years <= 2) {
+                    //     total_jmk = jmlkali_jmk * response.data.gaji_pokok;
+                    // } else {
+                    //     total_jmk = jmlkali_jmk * response.data.gapok_tunjangan;
+                    // }
+                    total_jmk = (persentase_jmk / 100) * parseInt(total_upah) * parseInt(
+                        jmlkali_jmk);
                     form.find("#jmk").text(convertToRupiah(total_jmk));
 
                     let sisa_jmk = total_jmk - response.data.total_jmk_dibayar;
@@ -364,7 +387,8 @@
                     const sp_cabang = ['SP1', 'SP2', 'SP3'];
 
                     const minimal_bayar = 75 / 100 * response.data.total_pinjaman;
-                    const persentase_bayar = Math.round(response.data.total_pembayaran / response.data.total_pinjaman * 100);
+                    const persentase_bayar = Math.round(response.data.total_pembayaran / response
+                        .data.total_pinjaman * 100);
                     //Kondisi Karyawan Tidak Bisa Melakukan PJP
                     if (response.data.status_karyawan == 'O') {
                         // Jika Status Karyawan Outsourcing
@@ -393,7 +417,8 @@
                             </span>
                             Tidak Dapat Melakukan Ajuan PJP, Karena Kontrak Karyawan Habis pada Tanggal ${convertDateFormatToIndonesian(response.data.akhir_kontrak)}, Silahkan Hubungi Departemen HRD
                         </div>`);
-                    } else if (response.data.kode_cabang == 'PST' && sp_pusat.includes(response.data.jenis_sp) || response.data
+                    } else if (response.data.kode_cabang == 'PST' && sp_pusat.includes(response.data
+                            .jenis_sp) || response.data
                         .kode_cabang != 'PST' && sp_cabang.includes(response.data.jenis_sp)) {
                         //Masih dalam Masa SP
                         $("#loadpjp").html(`
@@ -436,7 +461,8 @@
             let jmlpinjaman = form.find("#jumlah_pinjaman").val();
             let jumlah_pinjaman = jmlpinjaman != "" ? jmlpinjaman.replace(/\./g, '') : 0;
             let angsuran = form.find("#angsuran").val();
-            let angsuranperbulan = angsuran != "" && angsuran !== '0' ? Math.round(jumlah_pinjaman / angsuran) : 0;
+            let angsuranperbulan = angsuran != "" && angsuran !== '0' ? Math.round(jumlah_pinjaman / angsuran) :
+                0;
             angsuranperbulan = isNaN(angsuranperbulan) ? 0 : angsuranperbulan;
             form.find("#jumlah_angsuran").val(convertToRupiah(angsuranperbulan));
         }
