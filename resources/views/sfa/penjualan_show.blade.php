@@ -67,10 +67,10 @@
     @else
         <div class="row mt-2">
             <div class="btn-group" role="group" aria-label="First group">
-                <a href="{{ route('sfa.editpenjualan', Crypt::encrypt($penjualan->no_faktur)) }}"
+                {{-- <a href="{{ route('sfa.editpenjualan', Crypt::encrypt($penjualan->no_faktur)) }}"
                     class="btn btn-success waves-effect text-white ">
                     <i class="ti ti-edit"></i>
-                </a>
+                </a> --}}
                 <a href="#"
                     onclick="ajax_print('/sfa/penjualan/{{ Crypt::encrypt($penjualan->no_faktur) }}/cetak',this)"
                     class="btn btn-primary w-100">
