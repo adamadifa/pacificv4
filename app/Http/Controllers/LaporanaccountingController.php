@@ -1077,8 +1077,13 @@ class LaporanaccountingController extends Controller
         $kaskecil->leftJoinSub($coa_kas_kecil, 'coa_kas_kecil', function ($join) {
             $join->on('keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang_coa');
         });
-        $kaskecil->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil');
-        $kaskecil->where('keuangan_kaskecil.kode_akun', '!=', '1-1104');
+        $kaskecil->where(function ($q) {
+            $q->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil') // tampil semua selain ini
+                ->orWhere(function ($q2) {
+                    $q2->where('keuangan_kaskecil.keterangan', 'Penerimaan Kas Kecil')
+                        ->where('keuangan_kaskecil.kode_akun', '1-1104'); // khusus ini boleh tampil
+                });
+        });
         $kaskecil->whereBetween('keuangan_kaskecil.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $kaskecil->whereBetween('coa_kas_kecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
