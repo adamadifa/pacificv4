@@ -91,10 +91,9 @@ class PenjualanController extends Controller
 
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        } else {
+            $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
         }
-        // else {
-        //     $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
-        // }
 
         if (!empty($request->no_faktur_search)) {
             $query->where('marketing_penjualan.no_faktur', $request->no_faktur_search);
