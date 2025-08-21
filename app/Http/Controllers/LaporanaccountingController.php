@@ -1093,7 +1093,7 @@ class LaporanaccountingController extends Controller
         $kaskecil->orderBy('keuangan_kaskecil.no_bukti');
 
 
-        $kaskecil_transaksi = Ledger::query();
+        $kaskecil_transaksi = Kaskecil::query();
         $kaskecil_transaksi->select(
             'keuangan_kaskecil.kode_akun',
             'coa.jenis_akun',
