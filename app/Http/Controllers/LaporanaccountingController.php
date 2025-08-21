@@ -1093,7 +1093,29 @@ class LaporanaccountingController extends Controller
         $kaskecil->orderBy('keuangan_kaskecil.no_bukti');
 
 
+        $kaskecil_transaksi = Ledger::query();
+        $kaskecil_transaksi->select(
+            'keuangan_kaskecil.kode_akun',
+            'coa.jenis_akun',
+            'nama_akun',
+            'keuangan_kaskecil.tanggal',
+            'keuangan_kaskecil.no_bukti',
+            DB::raw("'KAS KECIL' AS sumber"),
+            'keuangan_kaskecil.keterangan',
+            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_kredit'),
+            DB::raw('IF(debet_kredit="D",jumlah,0) as jml_debet'),
+            DB::raw('IF(debet_kredit="D",2,1) as urutan')
+        );
+        $kaskecil_transaksi->whereBetween('keuangan_kaskecil.tanggal', [$start_date, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $kaskecil_transaksi->whereBetween('keuangan_kaskecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $kaskecil_transaksi->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
+        $kaskecil_transaksi->orderBy('keuangan_kaskecil.kode_akun');
+        $kaskecil_transaksi->orderBy('keuangan_kaskecil.tanggal');
+        $kaskecil_transaksi->orderBy('keuangan_kaskecil.no_bukti');
 
+        dd($kaskecil_transaksi->get());
         //Piutang dari Kas Besar Penjualan
         $piutangcabang = Historibayarpenjualan::query();
         $piutangcabang->select(
