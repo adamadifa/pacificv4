@@ -79,7 +79,7 @@ class BpjskesehatanController extends Controller
             $tahun = substr($tgl[0], 2, 2);
             $bpjskes = DB::table("hrd_bpjs_kesehatan")
                 ->whereRaw('YEAR(tanggal_berlaku)="' . $tgl[0] . '"')
-                ->whereRaw('LENGTH(kode_bpjs_kesehatan) = 10')
+                ->whereRaw('LENGTH(kode_bpjs_kesehatan) = 9')
                 ->orderBy("kode_bpjs_kesehatan", "desc")
                 ->first();
 
