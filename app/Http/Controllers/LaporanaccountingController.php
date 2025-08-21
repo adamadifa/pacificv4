@@ -1104,7 +1104,7 @@ class LaporanaccountingController extends Controller
             'keuangan_kaskecil.keterangan',
             DB::raw('IF(debet_kredit="K",jumlah,0) as jml_kredit'),
             DB::raw('IF(debet_kredit="D",jumlah,0) as jml_debet'),
-            DB::raw('IF(debet_kredit="D",2,1) as urutan')
+            DB::raw('IF(debet_kredit="D",1,2) as urutan')
         );
         $kaskecil_transaksi->whereBetween('keuangan_kaskecil.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
