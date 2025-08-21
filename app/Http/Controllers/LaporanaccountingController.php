@@ -1115,7 +1115,7 @@ class LaporanaccountingController extends Controller
         $kaskecil_transaksi->orderBy('keuangan_kaskecil.tanggal');
         $kaskecil_transaksi->orderBy('keuangan_kaskecil.no_bukti');
 
-        dd($kaskecil_transaksi->get());
+
         //Piutang dari Kas Besar Penjualan
         $piutangcabang = Historibayarpenjualan::query();
         $piutangcabang->select(
@@ -1226,6 +1226,7 @@ class LaporanaccountingController extends Controller
         // Contoh penggunaan: $total_mutasi_per_akun adalah collection, akses per kode_akun
 
         $union_data = $ledger->unionAll($kaskecil)
+            ->unionAll($kaskecil_transaksi)
             ->unionAll($ledger_transaksi)
             ->unionAll($piutangcabang)
             ->unionAll($pembelian)
