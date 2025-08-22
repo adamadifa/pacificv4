@@ -192,7 +192,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="2">TERJUAL</th>
+                        <th colspan="3">TERJUAL</th>
                         @if (!$produk->isEmpty())
                             @foreach ($produk as $d)
                                 @php
@@ -211,7 +211,7 @@
                         <th class="right">{{ formatAngka($total_voucher) }}</th>
                     </tr>
                     <tr>
-                        <th colspan="2">BATAL</th>
+                        <th colspan="3">BATAL</th>
                         @if (!$produk->isEmpty())
                             @foreach ($produk as $d)
                                 @php
@@ -231,7 +231,7 @@
 
                     </tr>
                     <tr>
-                        <th colspan="2">BS</th>
+                        <th colspan="3">BS</th>
                         @if (!$produk->isEmpty())
                             @foreach ($produk as $d)
                                 <th></th>
