@@ -79,7 +79,7 @@
             <table class="datatable5">
                 <thead>
                     <tr>
-                        <th>No</th>
+                        <th rowspan="2">No</th>
                         <th rowspan="2">PELANGGAN</th>
                         <th rowspan="2">NO. FAKTUR</th>
                         @if (!$produk->isEmpty())
