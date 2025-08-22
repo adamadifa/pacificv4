@@ -79,6 +79,7 @@
             <table class="datatable5">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th rowspan="2">PELANGGAN</th>
                         <th rowspan="2">NO. FAKTUR</th>
                         @if (!$produk->isEmpty())
@@ -95,6 +96,7 @@
 
 
                     <tr>
+
                         @foreach ($produk as $d)
                             <th>{{ $d->kode_produk }}</th>
                         @endforeach
@@ -160,6 +162,7 @@
                             }
                         @endphp
                         <tr style="background-color: {{ $color }}">
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $d['nama_pelanggan'] }}</td>
                             <td>{{ $d['no_faktur'] }}</td>
                             @if (!$produk->isEmpty())
