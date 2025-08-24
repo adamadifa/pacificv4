@@ -216,6 +216,7 @@ class DashboardController extends Controller
 
 
         $qsaldo_kasbesar_cabang = Saldokasbesarkeuangan::query();
+        $qsaldo_kasbesar_cabang->select(DB::raw('SUM(IF(debet_kredit="K",jumlah,0)) as kredit'), DB::raw('SUM(IF(debet_kredit="D",jumlah,0)) as debet'));
         if (!empty($request->sampai)) {
             $start_date = date("Y-m-01", strtotime($request->sampai));
             $end_date = $request->sampai;

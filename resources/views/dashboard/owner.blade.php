@@ -83,10 +83,10 @@
         }
 
         /* #rekapkategori th:nth-child(2),
-                                                                                                                                                                    #rekapkategori td:nth-child(2) {
-                                                                                                                                                                        min-width: 150px;
-                                                                                                                                                                        width: 150px;
-                                                                                                                                                                    } */
+                                                                                                                                                                                                #rekapkategori td:nth-child(2) {
+                                                                                                                                                                                                    min-width: 150px;
+                                                                                                                                                                                                    width: 150px;
+                                                                                                                                                                                                } */
 
         #rekapkategori th:nth-child(3),
         #rekapkategori td:nth-child(3),
@@ -253,22 +253,32 @@
                                     @endforeach
                                     <tr>
                                         <td colspan="2">Saldo Kas Besar Cabang</th>
-                                        <td></td>
                                         <td class="text-end">
-                                            {{ $saldo_kasbesar_cabang ? formatRupiah($saldo_kasbesar_cabang->jumlah) : 'Belum Diinput' }}
+                                            {{ $saldo_kasbesar_cabang ? formatRupiah($saldo_kasbesar_cabang->debet) : 0 }}
+                                        </td>
+                                        <td class="text-end">
+                                            {{ $saldo_kasbesar_cabang ? formatRupiah($saldo_kasbesar_cabang->kredit) : 0 }}
                                         </td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td colspan="2">TOTAL</td>
-                                        <td class="text-end">{{ formatAngkaDesimal($totaldebet) }}</td>
                                         <td class="text-end">
                                             @php
-                                                $saldo_kb_cabang = $saldo_kasbesar_cabang
-                                                    ? $saldo_kasbesar_cabang->jumlah
+                                                $saldo_kb_debet = $saldo_kasbesar_cabang
+                                                    ? $saldo_kasbesar_cabang->debet
                                                     : 0;
-                                                $net_kredit = $totalkredit + $saldo_kb_cabang;
+                                                $net_debet = $totaldebet + $saldo_kb_debet;
+                                            @endphp
+                                            {{ formatAngkaDesimal($net_debet) }}
+                                        </td>
+                                        <td class="text-end">
+                                            @php
+                                                $saldo_kb_kredit = $saldo_kasbesar_cabang
+                                                    ? $saldo_kasbesar_cabang->kredit
+                                                    : 0;
+                                                $net_kredit = $totalkredit + $saldo_kb_kredit;
                                             @endphp
                                             {{ formatAngkaDesimal($net_kredit) }}</td>
                                     </tr>
@@ -285,7 +295,7 @@
                                     <th class="table-dark" style="color:white !important">Net Profit</th>
                                     <td class="text-end">
                                         @php
-                                            $net_profit = $net_kredit - $totaldebet;
+                                            $net_profit = $net_kredit - $net_debet;
                                         @endphp
                                         {{ formatRupiah($net_profit) }}
                                     </td>
