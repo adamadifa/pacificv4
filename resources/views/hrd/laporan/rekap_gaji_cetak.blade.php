@@ -406,20 +406,24 @@
 
                 foreach ($cabang as $cbg) {
                     ${'total_gajipokok_' . $cbg->kode_cabang} = 0;
+
                     ${'total_tunjangan_jabatan_' . $cbg->kode_cabang} = 0;
                     ${'total_tunjangan_masakerja_' . $cbg->kode_cabang} = 0;
                     ${'total_tunjangan_tanggungjawab_' . $cbg->kode_cabang} = 0;
                     ${'total_tunjangan_makan_' . $cbg->kode_cabang} = 0;
                     ${'total_tunjangan_istri_' . $cbg->kode_cabang} = 0;
                     ${'total_tunjangan_skill_' . $cbg->kode_cabang} = 0;
+
                     ${'total_insentif_masakerja_' . $cbg->kode_cabang} = 0;
                     ${'total_insentif_lembur_' . $cbg->kode_cabang} = 0;
                     ${'total_insentif_penempatan_' . $cbg->kode_cabang} = 0;
                     ${'total_insentif_kpi_' . $cbg->kode_cabang} = 0;
+
                     ${'total_im_ruanglingkup_' . $cbg->kode_cabang} = 0;
-                    ${'total_im_penempatan' . $cbg->kode_cabang} = 0;
+                    ${'total_im_penempatan_' . $cbg->kode_cabang} = 0;
                     ${'total_im_kinerja_' . $cbg->kode_cabang} = 0;
                     ${'total_im_kendaraan_' . $cbg->kode_cabang} = 0;
+
                     ${'total_upah_' . $cbg->kode_cabang} = 0;
                     ${'total_insentif_' . $cbg->kode_cabang} = 0;
                     ${'total_all_jamkerja_' . $cbg->kode_cabang} = 0;
@@ -1304,22 +1308,31 @@
 
                     foreach ($cabang as $cbg) {
                         ${'total_gajipokok_' . $cbg->kode_cabang} += $total_gajipokok;
+
                         ${'total_tunjangan_jabatan_' . $cbg->kode_cabang} += $total_tunjangan_jabatan;
                         ${'total_tunjangan_masakerja_' . $cbg->kode_cabang} += $total_tunjangan_masakerja;
                         ${'total_tunjangan_tanggungjawab_' . $cbg->kode_cabang} += $total_tunjangan_tanggungjawab;
                         ${'total_tunjangan_makan_' . $cbg->kode_cabang} += $total_tunjangan_makan;
                         ${'total_tunjangan_istri_' . $cbg->kode_cabang} += $total_tunjangan_istri;
                         ${'total_tunjangan_skill_' . $cbg->kode_cabang} += $total_tunjangan_skill;
+
+                        //Insentif
                         ${'total_insentif_masakerja_' . $cbg->kode_cabang} += $total_insentif_masakerja;
                         ${'total_insentif_lembur_' . $cbg->kode_cabang} += $total_insentif_lembur;
                         ${'total_insentif_penempatan_' . $cbg->kode_cabang} += $total_insentif_penempatan;
                         ${'total_insentif_kpi_' . $cbg->kode_cabang} += $total_insentif_kpi;
+
+                        //IM
                         ${'total_im_ruanglingkup_' . $cbg->kode_cabang} += $total_im_ruanglingkup;
                         ${'total_im_penempatan_' . $cbg->kode_cabang} += $total_im_penempatan;
                         ${'total_im_kinerja_' . $cbg->kode_cabang} += $total_im_kinerja;
                         ${'total_im_kendaraan_' . $cbg->kode_cabang} += $total_im_kendaraan;
+
+                        //Upah
                         ${'total_upah_' . $cbg->kode_cabang} += $total_upah;
                         ${'total_insentif_' . $cbg->kode_cabang} += $total_insentif;
+
+                        //Jam Kerja
                         ${'total_all_jamkerja_' . $cbg->kode_cabang} += $total_all_jamkerja;
                         ${'total_all_upahperjam_' . $cbg->kode_cabang} += $total_all_upahperjam;
                         ${'total_all_overtime_1_' . $cbg->kode_cabang} += $total_all_overtime_1;
@@ -1329,19 +1342,29 @@
                         ${'total_all_overtime_libur_' . $cbg->kode_cabang} += $total_all_overtime_libur;
                         ${'total_all_upah_overtime_libur_' . $cbg->kode_cabang} += $total_all_upah_overtime_libur;
                         ${'total_all_upah_overtime_' . $cbg->kode_cabang} += $total_all_upah_overtime;
+
+                        //Premi
                         ${'total_all_premi_shift2_' . $cbg->kode_cabang} += $total_all_premi_shift2;
                         ${'total_all_upah_premi_shift2_' . $cbg->kode_cabang} += $total_all_upah_premi_shift2;
                         ${'total_all_premi_shift3_' . $cbg->kode_cabang} += $total_all_premi_shift3;
                         ${'total_all_upah_premi_shift3_' . $cbg->kode_cabang} += $total_all_upah_premi_shift3;
+
+                        //Bruto
                         ${'total_all_bruto_' . $cbg->kode_cabang} += $total_all_bruto;
                         ${'total_all_potongan_jam_' . $cbg->kode_cabang} += $total_all_potongan_jam;
+
+                        //BPJS
                         ${'total_all_bpjskesehatan_' . $cbg->kode_cabang} += $total_all_bpjskesehatan;
                         ${'total_all_bpjstk_' . $cbg->kode_cabang} += $total_all_bpjstk;
                         ${'total_all_denda_' . $cbg->kode_cabang} += $total_all_denda;
+
+                        //Pinjaman
                         ${'total_all_pjp_' . $cbg->kode_cabang} += $total_all_pjp;
                         ${'total_all_kasbon_' . $cbg->kode_cabang} += $total_all_kasbon;
                         ${'total_all_nonpjp_' . $cbg->kode_cabang} += $total_all_nonpjp;
                         ${'total_all_spip_' . $cbg->kode_cabang} += $total_all_spip;
+
+                        //Pengurang
                         ${'total_all_pengurang_' . $cbg->kode_cabang} += $total_all_pengurang;
                         ${'total_all_penambah_' . $cbg->kode_cabang} += $total_all_penambah;
                         ${'total_all_potongan_' . $cbg->kode_cabang} += $total_all_potongan;
