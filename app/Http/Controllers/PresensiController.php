@@ -462,9 +462,9 @@ class PresensiController extends Controller
 
                 $simpan = Presensi::create($data);
                 if ($simpan) {
-                    //return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
+                    return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
                 } else {
-                    //return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
+                    return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
                 }
             } else {
                 try {
