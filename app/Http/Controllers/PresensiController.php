@@ -446,6 +446,7 @@ class PresensiController extends Controller
 
         $cek = Presensi::where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
 
+        dd($status_scan);
         //dd($cek);
         if ($status_scan == 0) {
             if ($cek == null) {
