@@ -1307,7 +1307,7 @@
                     }
 
                     foreach ($cabang as $cbg) {
-                        if ($d['kode_cabang'] == $cbg->kode_cabang) {
+                        if ($d['kode_cabang'] == $cbg->kode_cabang && $d['kode_klasifikasi'] == 'K04') {
                             ${'total_gajipokok_' . $cbg->kode_cabang} += $d['gaji_pokok'];
 
                             ${'total_tunjangan_jabatan_' . $cbg->kode_cabang} += $d['t_jabatan'];
