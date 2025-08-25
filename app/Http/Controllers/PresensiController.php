@@ -446,9 +446,10 @@ class PresensiController extends Controller
 
         $cek = Presensi::where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
 
-        dd($status_scan);
+        //dd($status_scan);
         //dd($cek);
         if ($status_scan == 0) {
+            dd($cek);
             if ($cek == null) {
                 $data = [
                     'nik' => $nik,
@@ -461,9 +462,9 @@ class PresensiController extends Controller
 
                 $simpan = Presensi::create($data);
                 if ($simpan) {
-                    return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
+                    //return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
                 } else {
-                    return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
+                    //return Redirect::back()->with(messageError('Presensi Gagal Disimpan'));
                 }
             } else {
                 try {
