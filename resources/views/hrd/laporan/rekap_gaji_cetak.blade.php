@@ -1938,131 +1938,118 @@
                             <td>{{ $cbg->nama_cabang }}</td>
                             <td style="text-align: right">{{ formatAngka(${'total_gajipokok_' . $cbg->kode_cabang}) }}
                             </td>
-                            <td style="text-align: right">{{ formatAngka(${'total_t_jabatan_' . $cbg->kode_cabang}) }}
-                            </td>
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_t_masakerja_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngka(${'total_tunjangan_jabatan_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_t_tanggungjawab_' . $cbg->kode_cabang}) }}</td>
-                            <td style="text-align: right">{{ formatAngka(${'total_t_makan_' . $cbg->kode_cabang}) }}
-                            </td>
-                            <td style="text-align: right">{{ formatAngka(${'total_t_istri_' . $cbg->kode_cabang}) }}
-                            </td>
-                            <td style="text-align: right">{{ formatAngka(${'total_t_skill_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngka(${'total_tunjangan_masakerja_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_tanggungjawab_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_makan_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_istri_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_skill_' . $cbg->kode_cabang}) }}</td>
 
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_i_masakerja_' . $cbg->kode_cabang}) }}
-                            </td>
-                            <td style="text-align: right">{{ formatAngka(${'total_i_lembur_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngka(${'total_insentif_masakerja_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_i_penempatan_' . $cbg->kode_cabang}) }}</td>
-                            <td style="text-align: right">{{ formatAngka(${'total_i_kpi_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngka(${'total_insentif_lembur_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_insentif_penempatan_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_insentif_kpi_' . $cbg->kode_cabang}) }}</td>
 
                             <td style="text-align: right">
                                 {{ formatAngka(${'total_im_ruanglingkup_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
                                 {{ formatAngka(${'total_im_penempatan_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_im_kinerja_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngka(${'total_im_kinerja_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
                                 {{ formatAngka(${'total_im_kendaraan_' . $cbg->kode_cabang}) }}</td>
 
                             <td style="text-align: right">{{ formatAngka(${'total_upah_' . $cbg->kode_cabang}) }}
                             </td>
-
                             <td style="text-align: right">{{ formatAngka(${'total_insentif_' . $cbg->kode_cabang}) }}
                             </td>
 
                             <!--Jam Kerja -->
                             <td style="text-align: right">
-                                {{ formatAngkaDesimal(${'total_jamkerja_' . $cbg->kode_cabang}) }}</td>
+                                {{ formatAngkaDesimal(${'total_all_jamkerja_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_upahperjam_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngka(${'total_all_upahperjam_' . $cbg->kode_cabang}) }}</td>
 
                             <!--Overtime-->
                             <td style="text-align: right">
-                                {{ formatAngkaDesimal(${'total_overtime_1_' . $cbg->kode_cabang}) }}</td>
+                                {{ formatAngkaDesimal(${'total_all_overtime_1_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngkaDesimal(${'total_upah_ot_1_' . $cbg->kode_cabang}) }}</td>
-
+                                {{ formatAngkaDesimal(${'total_all_upah_ot_1_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngkaDesimal(${'total_overtime_2_' . $cbg->kode_cabang}) }}</td>
+                                {{ formatAngkaDesimal(${'total_all_overtime_2_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngkaDesimal(${'total_upah_ot_2_' . $cbg->kode_cabang}) }}</td>
-
+                                {{ formatAngkaDesimal(${'total_all_upah_ot_2_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngkaDesimal(${'total_overtime_libur_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngkaDesimal(${'total_all_overtime_libur_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngkaDesimal(${'total_upah_overtime_libur_' . $cbg->kode_cabang}) }}
-                            </td>
-
-                            <td style="text-align: right">{{ formatAngka(${'total_upah_ot_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngkaDesimal(${'total_all_upah_overtime_libur_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_upah_overtime_' . $cbg->kode_cabang}) }}</td>
 
                             <!-- Premi -->
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_premi_shift2_' . $cbg->kode_cabang}) }}</td>
+                                {{ formatAngka(${'total_all_premi_shift2_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_upah_premi_shift2_' . $cbg->kode_cabang}) }}</td>
-
+                                {{ formatAngka(${'total_all_upah_premi_shift2_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_premi_shift3_' . $cbg->kode_cabang}) }}</td>
+                                {{ formatAngka(${'total_all_premi_shift3_' . $cbg->kode_cabang}) }}</td>
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_upah_premi_shift3_' . $cbg->kode_cabang}) }}</td>
+                                {{ formatAngka(${'total_all_upah_premi_shift3_' . $cbg->kode_cabang}) }}</td>
 
                             <!-- Bruto-->
-                            <td style="text-align: right">{{ formatAngka(${'total_bruto_' . $cbg->kode_cabang}) }}
-                            </td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_bruto_' . $cbg->kode_cabang}) }}</td>
 
                             <!-- Potongan -->
                             <td style="text-align: right">
-                                {{ formatAngkaDesimal(${'total_potongan_jam_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngkaDesimal(${'total_all_potongan_jam_' . $cbg->kode_cabang}) }}</td>
 
                             <!-- BPJS -->
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_bpjskesehatan_' . $cbg->kode_cabang}) }}</td>
+                                {{ formatAngka(${'total_all_bpjskesehatan_' . $cbg->kode_cabang}) }}</td>
                             <td></td>
-                            <td style="text-align: right">{{ formatAngka(${'total_bpjstk_' . $cbg->kode_cabang}) }}
-                            </td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_bpjstk_' . $cbg->kode_cabang}) }}</td>
 
                             <!-- Denda-->
-                            <td style="text-align: right">{{ formatAngka(${'total_denda_' . $cbg->kode_cabang}) }}
-                            </td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_denda_' . $cbg->kode_cabang}) }}</td>
 
                             <!--Pinjaman-->
-                            <td style="text-align: right">{{ formatAngka(${'total_pjp_' . $cbg->kode_cabang}) }}</td>
-                            <td style="text-align: right">{{ formatAngka(${'total_kasbon_' . $cbg->kode_cabang}) }}
+                            <td style="text-align: right">{{ formatAngka(${'total_all_pjp_' . $cbg->kode_cabang}) }}
                             </td>
-                            <td style="text-align: right">{{ formatAngka(${'total_nonpjp_' . $cbg->kode_cabang}) }}
-                            </td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_kasbon_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_nonpjp_' . $cbg->kode_cabang}) }}</td>
 
                             <!-- SPIP-->
-                            <td style="text-align: right">{{ formatAngka(${'total_spip_' . $cbg->kode_cabang}) }}
+                            <td style="text-align: right">{{ formatAngka(${'total_all_spip_' . $cbg->kode_cabang}) }}
                             </td>
 
                             <!-- PENGURANG-->
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_pengurang_' . $cbg->kode_cabang}) }}
-                            </td>
-                            <td style="text-align: right">{{ formatAngka(${'total_potongan_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngka(${'total_all_pengurang_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_potongan_' . $cbg->kode_cabang}) }}</td>
 
                             <!-- penambah -->
-                            <td style="text-align: right">{{ formatAngka(${'total_penambah_' . $cbg->kode_cabang}) }}
-                            </td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_penambah_' . $cbg->kode_cabang}) }}</td>
 
                             <!-- JUMLAH BERSIH -->
                             <td style="text-align: right">
-                                {{ formatAngka(${'total_jmlbersih_' . $cbg->kode_cabang}) }}
-                            </td>
+                                {{ formatAngka(${'total_all_jmlbersih_' . $cbg->kode_cabang}) }}</td>
                         </tr>
                     @endforeach
                     <tr>
