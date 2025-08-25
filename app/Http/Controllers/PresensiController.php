@@ -449,7 +449,7 @@ class PresensiController extends Controller
         //dd($status_scan);
         //dd($cek);
         if ($status_scan == 0) {
-            dd($cek);
+            //dd($cek);
             if ($cek == null) {
                 $data = [
                     'nik' => $nik,
