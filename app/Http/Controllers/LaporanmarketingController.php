@@ -4741,7 +4741,7 @@ class LaporanmarketingController extends Controller
             return view('marketing.laporan.komisi_salesman_cetak', $data);
         } else if ($request->bulan == 4 && $request->tahun == 2025) {
             return view('marketing.laporan.komisi_salesman_april_cetak', $data);
-        } else if ($request->bulan >= 5 && $request->bulan <= 8 && $request->tahun == 2025) {
+        } else if ($request->bulan >= 5 && $request->bulan < 8 && $request->tahun == 2025) {
             return view('marketing.laporan.komisi_salesman_mei_cetak', $data);
         } else {
             return view('marekting.laporan.komisi_salesman_agustus_cetak', $data);
