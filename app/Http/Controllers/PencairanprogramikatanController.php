@@ -477,7 +477,7 @@ class PencairanprogramikatanController extends Controller
             ->get()->pluck('kode_pelanggan');
 
 
-        dd($peserta_ikut_program_enambulan);
+        //dd($peserta_ikut_program_enambulan);
 
 
         $peserta = Detailtargetikatan::select(
