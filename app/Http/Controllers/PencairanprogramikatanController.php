@@ -477,6 +477,7 @@ class PencairanprogramikatanController extends Controller
             ->get()->pluck('kode_pelanggan');
 
 
+        dd($peserta_ikut_program_enambulan);
 
 
         $peserta = Detailtargetikatan::select(
@@ -503,6 +504,11 @@ class PencairanprogramikatanController extends Controller
             })
             ->join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
             ->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $pelanggansudahdicairkan)
+            // Query where ini artinya: ambil data pelanggan yang TIDAK termasuk dalam daftar peserta_gagal
+            // ATAU pelanggan yang termasuk dalam daftar peserta_ikut_program_enambulan.
+            // Dengan kata lain, pelanggan yang gagal (tidak memenuhi syarat) akan dikecualikan,
+            // kecuali jika pelanggan tersebut juga merupakan peserta program enam bulan (peserta_ikut_program_enambulan),
+            // maka tetap akan diikutkan.
             ->where(function ($query) use ($peserta_gagal, $peserta_ikut_program_enambulan) {
                 $query->whereNotIn('marketing_program_ikatan_target.kode_pelanggan', $peserta_gagal)
                     ->orWhereIn('marketing_program_ikatan_target.kode_pelanggan', $peserta_ikut_program_enambulan);
