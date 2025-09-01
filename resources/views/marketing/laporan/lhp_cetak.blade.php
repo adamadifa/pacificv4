@@ -79,6 +79,7 @@
             <table class="datatable5">
                 <thead>
                     <tr>
+                        <th rowspan="2">No</th>
                         <th rowspan="2">PELANGGAN</th>
                         <th rowspan="2">NO. FAKTUR</th>
                         @if (!$produk->isEmpty())
@@ -95,6 +96,7 @@
 
 
                     <tr>
+
                         @foreach ($produk as $d)
                             <th>{{ $d->kode_produk }}</th>
                         @endforeach
@@ -160,6 +162,7 @@
                             }
                         @endphp
                         <tr style="background-color: {{ $color }}">
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $d['nama_pelanggan'] }}</td>
                             <td>{{ $d['no_faktur'] }}</td>
                             @if (!$produk->isEmpty())
@@ -189,7 +192,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="2">TERJUAL</th>
+                        <th colspan="3">TERJUAL</th>
                         @if (!$produk->isEmpty())
                             @foreach ($produk as $d)
                                 @php
@@ -208,7 +211,7 @@
                         <th class="right">{{ formatAngka($total_voucher) }}</th>
                     </tr>
                     <tr>
-                        <th colspan="2">BATAL</th>
+                        <th colspan="3">BATAL</th>
                         @if (!$produk->isEmpty())
                             @foreach ($produk as $d)
                                 @php
@@ -228,7 +231,7 @@
 
                     </tr>
                     <tr>
-                        <th colspan="2">BS</th>
+                        <th colspan="3">BS</th>
                         @if (!$produk->isEmpty())
                             @foreach ($produk as $d)
                                 <th></th>

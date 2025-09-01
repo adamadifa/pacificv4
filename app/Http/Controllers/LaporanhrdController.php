@@ -663,6 +663,7 @@ class LaporanhrdController extends Controller
                     // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
                     header("Content-Disposition: attachment; filename=Rekap Gaji.xls");
                 }
+                $data['cabang'] = Cabang::orderby('kode_cabang')->get();
                 return view('hrd.laporan.rekap_gaji_cetak', $data);
             } else if ($request->format_laporan == 4) {
                 if (isset($_POST['exportButton'])) {

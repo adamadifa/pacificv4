@@ -22,30 +22,34 @@
                             @hasanyrole($roles_show_cabang)
                                 <div class="row">
                                     <div class="col-lg-12 col-sm-12 col-md-12">
-                                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                            selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" />
+                                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang"
+                                            key="kode_cabang" textShow="nama_cabang"
+                                            selected="{{ Request('kode_cabang_search') }}" upperCase="true"
+                                            select2="select2Kodecabangsearch" />
                                     </div>
                                 </div>
                             @endhasanyrole
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan"
-                                        icon="ti ti-search" />
+                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}"
+                                        name="nama_karyawan" icon="ti ti-search" />
                                 </div>
 
                                 <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                                        selected="{{ Request('kode_dept') }}" upperCase="true" select2="select2Kodedeptsearch" />
+                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept"
+                                        textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true"
+                                        select2="select2Kodedeptsearch" />
                                 </div>
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
-                                        selected="{{ Request('kode_group') }}" upperCase="true" />
+                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group"
+                                        textShow="nama_group" selected="{{ Request('kode_group') }}" upperCase="true" />
                                 </div>
 
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <button class="btn btn-primary w-100"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
+                                    <button class="btn btn-primary w-100"><i
+                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
                                 </div>
                             </div>
                         </form>
@@ -74,7 +78,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($karyawan as $d)
-                                        <tr class="{{ $d->status_aktif_karyawan === '0' ? 'bg-danger text-white' : '' }}">
+                                        <tr
+                                            class="{{ $d->status_aktif_karyawan === '0' ? 'bg-danger text-white' : '' }}">
                                             <td class="text-center">
                                                 {{ $loop->iteration + $karyawan->firstItem() - 1 }}
                                             </td>
@@ -91,16 +96,18 @@
                                                 @elseif ($d->status_karyawan == 'K')
                                                     <span class="badge bg-warning">K</span>
                                                 @else
-                                                    <span class="badge bg-danger">Undifined</span>
+                                                    <span class="badge bg-danger">Outsource</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if ($d->lock_location == 1)
-                                                    <a href="{{ route('karyawan.unlocklocation', Crypt::encrypt($d->nik)) }}">
+                                                    <a
+                                                        href="{{ route('karyawan.unlocklocation', Crypt::encrypt($d->nik)) }}">
                                                         <i class="ti ti-lock-open text-success"></i>
                                                     </a>
                                                 @else
-                                                    <a href="{{ route('karyawan.unlocklocation', Crypt::encrypt($d->nik)) }}">
+                                                    <a
+                                                        href="{{ route('karyawan.unlocklocation', Crypt::encrypt($d->nik)) }}">
                                                         <i class="ti ti-lock text-danger"></i>
                                                     </a>
                                                 @endif
@@ -110,18 +117,19 @@
                                                 @if (!empty($d->foto))
                                                     @if (Storage::disk('public')->exists('/karyawan/' . $d->foto))
                                                         <div class="avatar avatar-xs me-2">
-                                                            <img src="{{ getfotoKaryawan($d->foto) }}" alt="" class="rounded-circle">
+                                                            <img src="{{ getfotoKaryawan($d->foto) }}" alt=""
+                                                                class="rounded-circle">
                                                         </div>
                                                     @else
                                                         <div class="avatar avatar-xs me-2">
-                                                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt=""
-                                                                class="rounded-circle">
+                                                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}"
+                                                                alt="" class="rounded-circle">
                                                         </div>
                                                     @endif
                                                 @else
                                                     <div class="avatar avatar-xs me-2">
-                                                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt=""
-                                                            class="rounded-circle">
+                                                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}"
+                                                            alt="" class="rounded-circle">
                                                     </div>
                                                 @endif
 
@@ -130,14 +138,16 @@
                                                 <div class="d-flex">
                                                     @can('karyawan.edit')
                                                         <div>
-                                                            <a href="#" class="me-2 editKaryawan" nik="{{ Crypt::encrypt($d->nik) }}">
+                                                            <a href="#" class="me-2 editKaryawan"
+                                                                nik="{{ Crypt::encrypt($d->nik) }}">
                                                                 <i class="ti ti-edit text-success"></i>
                                                             </a>
                                                         </div>
                                                     @endcan
                                                     @can('karyawan.show')
                                                         <div>
-                                                            <a href="{{ route('karyawan.show', Crypt::encrypt($d->nik)) }}" class="me-2">
+                                                            <a href="{{ route('karyawan.show', Crypt::encrypt($d->nik)) }}"
+                                                                class="me-2">
                                                                 <i class="ti ti-file-description text-info"></i>
                                                             </a>
                                                         </div>

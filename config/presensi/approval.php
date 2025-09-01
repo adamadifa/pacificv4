@@ -14,7 +14,7 @@ return [
 
     'sales marketing manager' => [
         'dept' => ['MKT'],
-        'jabatan' => ['J18', 'J19', 'J21', 'J12', 'J22', 'J23'],
+        'jabatan' => ['J18', 'J19', 'J21', 'J12', 'J22', 'J23', 'J08', 'J13', 'J14', 'J15', 'J17', 'J18'],
         'dept2' => [],
         'jabatan2' => [],
         'jabatan_filter' => false,
@@ -49,10 +49,10 @@ return [
         'cabang' => 0
     ],
 
-    
+
     'gm marketing' => [
         'dept' => ['MKT'],
-        'jabatan' => ['J05','J03'],
+        'jabatan' => ['J05', 'J03'],
         'dept2' => [],
         'jabatan2' => [],
         'jabatan_filter' => true,
@@ -61,7 +61,7 @@ return [
 
 
     'gm operasional' => [
-        'dept' => ['GDG', 'GAF', 'PRD', 'PMB', 'MTC','HRD'],
+        'dept' => ['GDG', 'GAF', 'PRD', 'PMB', 'MTC', 'HRD'],
         'jabatan' => ['J05', 'J06'],
         'dept2' => ['PDQ'],
         'jabatan2' => [],

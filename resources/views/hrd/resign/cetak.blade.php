@@ -61,7 +61,8 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt=""
+                                style="width: 80px; height:80px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -240,13 +241,18 @@
                                     $mk_kb = $masakerjakb['tahun'];
                                     $mk_bulan = $masakerjakb['tahun'] * 12 + $masakerjakb['bulan'];
                                     if ($mk_bulan <= 23) {
-                                        $totalupah = $gaji->gaji_pokok ;
+                                        $totalupah = $gaji->gaji_pokok;
                                         $persentase_jmk = 25;
                                     } elseif ($mk_bulan <= 28) {
-                                        $totalupah = $gaji->gaji_pokok ;
+                                        $totalupah = $gaji->gaji_pokok;
                                         $persentase_jmk = 50;
                                     } else {
-                                        $totalupah = $gaji->gaji_pokok + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill + $gaji->t_jabatan;
+                                        $totalupah =
+                                            $gaji->gaji_pokok +
+                                            $gaji->t_tanggungjawab +
+                                            $gaji->t_makan +
+                                            $gaji->t_skill +
+                                            $gaji->t_jabatan;
                                         $persentase_jmk = 100;
                                     }
 
@@ -270,10 +276,12 @@
                                         $jmlkali = 1;
                                     }
 
-                                    
-
                                     $grandtotal_upah =
-                                        $gaji->gaji_pokok + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill + $gaji->t_jabatan;
+                                        $gaji->gaji_pokok +
+                                        $gaji->t_tanggungjawab +
+                                        $gaji->t_makan +
+                                        $gaji->t_skill +
+                                        $gaji->t_jabatan;
 
                                     // if ($jmk != null) {
                                     //     if ($masakerjakb['tahun'] == 1 and $masakerjakb['bulan'] >= 3) {
@@ -287,7 +295,7 @@
                                     // $persentasejmk = 25;
                                     //$totalpemutihan = ($persentasejmk / 100) * $totalupah;
                                     $totaljmk = ($persentase_jmk / 100) * $totalupah * $jmlkali;
-                                    $persentase_pengganti_hak = $mk_kb >=3 ?  15 :0;
+                                    $persentase_pengganti_hak = $mk_kb >= 3 ? 15 : 0;
 
                                 @endphp
                                 <td style="width: 2px">1.</td>
@@ -329,7 +337,10 @@
                                 </td>
                             </tr>
                             @php
-                                $totalpotongan = ($pjp->sisa_pjp ?? 0) + ($jmk_sudahbayar->jmk_sudahbayar ?? 0) + ($kasbon->total_kasbon ?? 0);
+                                $totalpotongan =
+                                    ($pjp->sisa_pjp ?? 0) +
+                                    ($jmk_sudahbayar->jmk_sudahbayar ?? 0) +
+                                    ($kasbon->total_kasbon ?? 0);
                             @endphp
                             @if ($totalpotongan > 0)
                                 <tr>
@@ -345,7 +356,8 @@
                                 <tr>
                                     <td colspan="5">JMK Sudah di Bayar</td>
                                     <td>Rp.</td>
-                                    <td style="text-align:right">{{ formatRupiah($jmk_sudahbayar->jmk_sudahbayar ?? 0) }}</td>
+                                    <td style="text-align:right">
+                                        {{ formatRupiah($jmk_sudahbayar->jmk_sudahbayar ?? 0) }}</td>
                                 </tr>
                             @endif
                             {{-- @foreach ($potongan as $d)
@@ -362,7 +374,8 @@
                             <tr style="font-weight:bold">
                                 <td colspan="5" style="border-bottom:1px solid black">Jumlah Potongan</td>
                                 <td style="border-bottom:1px solid black">Rp.</td>
-                                <td style="border-bottom:1px solid black; text-align:right">{{ formatRupiah($totalpotongan) }}
+                                <td style="border-bottom:1px solid black; text-align:right">
+                                    {{ formatRupiah($totalpotongan) }}
                                 </td>
                             </tr>
                             <tr style="font-weight:bold">
@@ -413,7 +426,8 @@
             </p>
             <table class="datatable7">
                 <tr>
-                    <td colspan="4" style="text-align: center">{{ $resign->kode_cabang != 'PST' ? $resign->nama_cabang : 'Tasikmalaya' }},
+                    <td colspan="4" style="text-align: center">
+                        {{ $resign->kode_cabang != 'PST' ? $resign->nama_cabang : 'Tasikmalaya' }},
                         {{ DateToIndo($resign->tanggal) }}</td>
                 </tr>
                 <tr>

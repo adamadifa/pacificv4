@@ -4741,8 +4741,10 @@ class LaporanmarketingController extends Controller
             return view('marketing.laporan.komisi_salesman_cetak', $data);
         } else if ($request->bulan == 4 && $request->tahun == 2025) {
             return view('marketing.laporan.komisi_salesman_april_cetak', $data);
-        } else {
+        } else if ($request->bulan >= 5 && $request->bulan < 8 && $request->tahun == 2025) {
             return view('marketing.laporan.komisi_salesman_mei_cetak', $data);
+        } else {
+            return view('marketing.laporan.komisi_salesman_agustus_cetak', $data);
         }
     }
 
@@ -5251,6 +5253,7 @@ class LaporanmarketingController extends Controller
         }
         $query->where('status_promosi', 0);
         $query->where('status_batal', 0);
+        $query->orderBy('produk.nama_produk', 'asc');
         $query->groupBy('produk_harga.kode_produk', 'produk.nama_produk', 'produk.isi_pcs_dus');
         $data['rekappenjualan'] = $query->get();
         $data['cbg'] = $cabang;

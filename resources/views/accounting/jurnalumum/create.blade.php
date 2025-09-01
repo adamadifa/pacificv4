@@ -15,7 +15,8 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-sm-12 col-md-12">
-                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true" icon="ti ti-moneybag" />
+                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true"
+                        icon="ti ti-moneybag" />
                 </div>
             </div>
             <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
@@ -42,7 +43,8 @@
                 </select>
             </div>
             <div class="form-group mb-3">
-                <button class="btn btn-primary w-100" id="btnTambahItem"><i class="ti ti-plus me-1"></i>Tambah Item</button>
+                <button class="btn btn-primary w-100" id="btnTambahItem"><i class="ti ti-plus me-1"></i>Tambah
+                    Item</button>
             </div>
         </div>
     </div>
@@ -68,7 +70,8 @@
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-3">
-                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value="" id="defaultCheck3">
+                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox"
+                    value="" id="defaultCheck3">
                 <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
             </div>
             <div class="form-group" id="saveButton">
@@ -282,12 +285,12 @@
 
 
         function resetForm() {
-            form.find("#tanggal").val("");
+            //form.find("#tanggal").val("");
             form.find('.select2Kodeakun').val('').trigger("change");
             form.find("#debet_kredit").val("");
             form.find("#jumlah").val("");
-            form.find("#keterangan").val("");
-            form.find("#kode_peruntukan").val("");
+            //form.find("#keterangan").val("");
+            //form.find("#kode_peruntukan").val("");
             form.find('.select2Kodecabang').val('').trigger("change");
         }
 

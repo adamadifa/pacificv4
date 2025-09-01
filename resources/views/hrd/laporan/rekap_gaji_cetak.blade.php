@@ -404,6 +404,56 @@
                 $total_jmlbersih_mp = 0;
                 $total_jmlbersih_pcf = 0;
 
+                foreach ($cabang as $cbg) {
+                    ${'total_gajipokok_' . $cbg->kode_cabang} = 0;
+
+                    ${'total_tunjangan_jabatan_' . $cbg->kode_cabang} = 0;
+                    ${'total_tunjangan_masakerja_' . $cbg->kode_cabang} = 0;
+                    ${'total_tunjangan_tanggungjawab_' . $cbg->kode_cabang} = 0;
+                    ${'total_tunjangan_makan_' . $cbg->kode_cabang} = 0;
+                    ${'total_tunjangan_istri_' . $cbg->kode_cabang} = 0;
+                    ${'total_tunjangan_skill_' . $cbg->kode_cabang} = 0;
+
+                    ${'total_insentif_masakerja_' . $cbg->kode_cabang} = 0;
+                    ${'total_insentif_lembur_' . $cbg->kode_cabang} = 0;
+                    ${'total_insentif_penempatan_' . $cbg->kode_cabang} = 0;
+                    ${'total_insentif_kpi_' . $cbg->kode_cabang} = 0;
+
+                    ${'total_im_ruanglingkup_' . $cbg->kode_cabang} = 0;
+                    ${'total_im_penempatan_' . $cbg->kode_cabang} = 0;
+                    ${'total_im_kinerja_' . $cbg->kode_cabang} = 0;
+                    ${'total_im_kendaraan_' . $cbg->kode_cabang} = 0;
+
+                    ${'total_upah_' . $cbg->kode_cabang} = 0;
+                    ${'total_insentif_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_jamkerja_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_upahperjam_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_overtime_1_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_upah_ot_1_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_overtime_2_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_upah_ot_2_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_overtime_libur_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_upah_overtime_libur_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_upah_overtime_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_premi_shift2_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_upah_premi_shift2_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_premi_shift3_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_upah_premi_shift3_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_bruto_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_potongan_jam_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_bpjskesehatan_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_bpjstk_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_denda_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_pjp_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_kasbon_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_nonpjp_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_spip_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_pengurang_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_penambah_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_potongan_' . $cbg->kode_cabang} = 0;
+                    ${'total_all_jmlbersih_' . $cbg->kode_cabang} = 0;
+                }
+
             @endphp
             @foreach ($presensi as $d)
                 @php
@@ -416,7 +466,8 @@
                         $d['t_istri'] +
                         $d['t_skill'];
                     $insentif = $d['iu_masakerja'] + $d['iu_lembur'] + $d['iu_penempatan'] + $d['iu_kpi'];
-                    $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
+                    $insentif_manager =
+                        $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
                     $jumlah_insentif = $insentif + $insentif_manager;
                     $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
                 @endphp
@@ -465,9 +516,9 @@
                             $total_overtime_2 += $lembur['overtime_2'];
 
                             if (!empty($cekliburnasional)) {
-                                if($d['kode_jabatan'] == 'J20'){
+                                if ($d['kode_jabatan'] == 'J20') {
                                     $overtime_libur = $lembur_libur['overtime_libur'] * 2;
-                                }else{
+                                } else {
                                     $overtime_libur = $lembur_libur['overtime_libur'];
                                 }
                                 $total_overtime_libur_nasional += $overtime_libur;
@@ -479,18 +530,28 @@
                             }
 
                             $total_overtime_libur += $overtime_libur;
-                            $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
-                            $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
+                            $total_premi_shift2_lembur +=
+                                $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
+                            $total_premi_shift3_lembur +=
+                                $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                         @endphp
                         @if (isset($d[$tanggal_presensi]))
                             @php
                                 $lintashari = $d[$tanggal_presensi]['lintashari'];
                                 $tanggal_selesai =
-                                    $lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi;
+                                    $lintashari == '1'
+                                        ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)))
+                                        : $tanggal_presensi;
                                 $total_jam_jadwal = $d[$tanggal_presensi]['total_jam'];
                                 //Jadwal Jam Kerja
-                                $j_mulai = date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']));
-                                $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']));
+                                $j_mulai = date(
+                                    'Y-m-d H:i',
+                                    strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']),
+                                );
+                                $j_selesai = date(
+                                    'Y-m-d H:i',
+                                    strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']),
+                                );
 
                                 //Jam Absen Masuk dan Pulang
                                 $jam_in = !empty($d[$tanggal_presensi]['jam_in'])
@@ -537,20 +598,36 @@
                                         if ($lintashari == '0') {
                                             $jam_awal_istirahat = date(
                                                 'Y-m-d H:i',
-                                                strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_awal_istirahat']),
+                                                strtotime(
+                                                    $tanggal_presensi .
+                                                        ' ' .
+                                                        $d[$tanggal_presensi]['jam_awal_istirahat'],
+                                                ),
                                             );
                                             $jam_akhir_istirahat = date(
                                                 'Y-m-d H:i',
-                                                strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_akhir_istirahat']),
+                                                strtotime(
+                                                    $tanggal_presensi .
+                                                        ' ' .
+                                                        $d[$tanggal_presensi]['jam_akhir_istirahat'],
+                                                ),
                                             );
                                         } else {
                                             $jam_awal_istirahat = date(
                                                 'Y-m-d H:i',
-                                                strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_awal_istirahat']),
+                                                strtotime(
+                                                    $tanggal_selesai .
+                                                        ' ' .
+                                                        $d[$tanggal_presensi]['jam_awal_istirahat'],
+                                                ),
                                             );
                                             $jam_akhir_istirahat = date(
                                                 'Y-m-d H:i',
-                                                strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_akhir_istirahat']),
+                                                strtotime(
+                                                    $tanggal_selesai .
+                                                        ' ' .
+                                                        $d[$tanggal_presensi]['jam_akhir_istirahat'],
+                                                ),
                                             );
                                         }
                                     } else {
@@ -571,7 +648,12 @@
                                     );
 
                                     //Cek Pulang Cepat
-                                    $pulangcepat = presensiHitungPulangCepat($jam_out, $jam_selesai, $jam_awal_istirahat, $jam_akhir_istirahat);
+                                    $pulangcepat = presensiHitungPulangCepat(
+                                        $jam_out,
+                                        $jam_selesai,
+                                        $jam_awal_istirahat,
+                                        $jam_akhir_istirahat,
+                                    );
 
                                     //Cek Izin Keluar
                                     $izin_keluar = presensiHitungJamKeluarKantor(
@@ -590,14 +672,24 @@
                                     $potongan_jam_sakit = 0;
                                     $potongan_jam_dirumahkan = 0;
                                     $potongan_jam_tidakhadir =
-                                        empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out']) ? $total_jam_jadwal : 0;
+                                        empty($d[$tanggal_presensi]['jam_in']) ||
+                                        empty($d[$tanggal_presensi]['jam_out'])
+                                            ? $total_jam_jadwal
+                                            : 0;
                                     $potongan_jam_izin = 0;
-                                    $potongan_jam_pulangcepat = $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
+                                    $potongan_jam_pulangcepat =
+                                        $d[$tanggal_presensi]['izin_pulang_direktur'] == '1'
+                                            ? 0
+                                            : $pulangcepat['desimal'];
                                     $potongan_jam_izinkeluar =
-                                        $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['desimal'] <= 1
+                                        $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' ||
+                                        $izin_keluar['desimal'] <= 1
                                             ? 0
                                             : $izin_keluar['desimal'];
-                                    $potongan_jam_terlambat = $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['desimal'];
+                                    $potongan_jam_terlambat =
+                                        $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1'
+                                            ? 0
+                                            : $terlambat['desimal'];
 
                                     //Total Potongan
                                     $total_potongan_jam =
@@ -611,7 +703,8 @@
 
                                     //Total Jam Kerja
                                     $total_jam =
-                                        !empty($d[$tanggal_presensi]['jam_in']) && !empty($d[$tanggal_presensi]['jam_out'])
+                                        !empty($d[$tanggal_presensi]['jam_in']) &&
+                                        !empty($d[$tanggal_presensi]['jam_out'])
                                             ? $total_jam_jadwal - $total_potongan_jam
                                             : 0;
 
@@ -713,7 +806,10 @@
                                         }
                                         $total_jam = $total_jam_jadwal;
                                     }
-                                    if (in_array($d['nik'], $privillage_karyawan) && $tanggal_presensi >= '2024-11-21') {
+                                    if (
+                                        in_array($d['nik'], $privillage_karyawan) &&
+                                        $tanggal_presensi >= '2024-11-21'
+                                    ) {
                                         $potongan_jam_dirumahkan = 0;
                                     }
                                     $potongan_jam_izinkeluar = 0;
@@ -745,11 +841,17 @@
                                         $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam : 0;
                                     } else {
                                         $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
-                                        $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                        $potongan_jam_izin = !empty($cekdirumahkan)
+                                            ? $total_jam_jadwal / 2
+                                            : $total_jam_jadwal;
                                     }
 
                                     //Jika Jabatan Salesman
-                                    if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21' && $tanggal_presensi < '2025-04-21') {
+                                    if (
+                                        $d['kode_jabatan'] == 'J19' &&
+                                        $tanggal_presensi >= '2024-10-21' &&
+                                        $tanggal_presensi < '2025-04-21'
+                                    ) {
                                         $potongan_jam_izin = 0;
                                     }
 
@@ -817,7 +919,10 @@
                                         $potongan_jam_dirumahkan = $total_jam;
                                     }
 
-                                    if (in_array($d['nik'], $privillage_karyawan) && $tanggal_presensi >= '2024-11-21') {
+                                    if (
+                                        in_array($d['nik'], $privillage_karyawan) &&
+                                        $tanggal_presensi >= '2024-11-21'
+                                    ) {
                                         $potongan_jam_dirumahkan = 0;
                                     }
                                     $potongan_jam_dirumahkan = $potongan_jam_dirumahkan;
@@ -836,7 +941,10 @@
                             @elseif(!empty($cekliburpengganti))
                                 @php
                                     $color = 'rgba(243, 158, 0, 0.833)';
-                                    $keterangan = 'Libur Pengganti Hari Minggu <br>(' . formatIndo($cekliburpengganti[0]['tanggal_diganti']) . ')';
+                                    $keterangan =
+                                        'Libur Pengganti Hari Minggu <br>(' .
+                                        formatIndo($cekliburpengganti[0]['tanggal_diganti']) .
+                                        ')';
                                     $total_jam = 0;
                                     $potongan_jam_dirumahkan = 0;
                                 @endphp
@@ -924,7 +1032,11 @@
                         $upah_premi_shift2 = 5000 * $premi_shift2;
                         $upah_premi_shift3 = 6000 * $premi_shift3;
 
-                        $bruto = $upah_perjam * $total_jam_kerja + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
+                        $bruto =
+                            $upah_perjam * $total_jam_kerja +
+                            $total_upah_overtime +
+                            $upah_premi_shift2 +
+                            $upah_premi_shift3;
 
                         $iuran_bpjs_kesehatan = $d['iuran_bpjs_kesehatan'];
                         $iuran_bpjs_tenagakerja = $d['iuran_bpjs_tenagakerja'];
@@ -1192,6 +1304,73 @@
 
                         //Jumlah Bersih
                         $total_jmlbersih_penjualan += $jmlbersih;
+                    }
+
+                    foreach ($cabang as $cbg) {
+                        if ($d['kode_cabang'] == $cbg->kode_cabang && $d['kode_klasifikasi'] == 'K04') {
+                            ${'total_gajipokok_' . $cbg->kode_cabang} += $d['gaji_pokok'];
+
+                            ${'total_tunjangan_jabatan_' . $cbg->kode_cabang} += $d['t_jabatan'];
+                            ${'total_tunjangan_masakerja_' . $cbg->kode_cabang} += $d['t_masakerja'];
+                            ${'total_tunjangan_tanggungjawab_' . $cbg->kode_cabang} += $d['t_tanggungjawab'];
+                            ${'total_tunjangan_makan_' . $cbg->kode_cabang} += $d['t_makan'];
+                            ${'total_tunjangan_istri_' . $cbg->kode_cabang} += $d['t_istri'];
+                            ${'total_tunjangan_skill_' . $cbg->kode_cabang} += $d['t_skill'];
+
+                            //Insentif
+                            ${'total_insentif_masakerja_' . $cbg->kode_cabang} += $d['iu_masakerja'];
+                            ${'total_insentif_lembur_' . $cbg->kode_cabang} += $d['iu_lembur'];
+                            ${'total_insentif_penempatan_' . $cbg->kode_cabang} += $d['iu_penempatan'];
+                            ${'total_insentif_kpi_' . $cbg->kode_cabang} += $d['iu_kpi'];
+
+                            //IM
+                            ${'total_im_ruanglingkup_' . $cbg->kode_cabang} += $d['im_ruanglingkup'];
+                            ${'total_im_penempatan_' . $cbg->kode_cabang} += $d['im_penempatan'];
+                            ${'total_im_kinerja_' . $cbg->kode_cabang} += $d['im_kinerja'];
+                            ${'total_im_kendaraan_' . $cbg->kode_cabang} += $d['im_kendaraan'];
+
+                            //Upah
+                            ${'total_upah_' . $cbg->kode_cabang} += $upah;
+                            ${'total_insentif_' . $cbg->kode_cabang} += $jumlah_insentif;
+
+                            //Jam Kerja
+                            ${'total_all_jamkerja_' . $cbg->kode_cabang} += $total_jam_kerja;
+                            ${'total_all_upahperjam_' . $cbg->kode_cabang} += $upah_perjam;
+                            ${'total_all_overtime_1_' . $cbg->kode_cabang} += $total_overtime_1;
+                            ${'total_all_upah_ot_1_' . $cbg->kode_cabang} += $upah_overtime_1;
+                            ${'total_all_overtime_2_' . $cbg->kode_cabang} += $total_overtime_2;
+                            ${'total_all_upah_ot_2_' . $cbg->kode_cabang} += $upah_overtime_2;
+                            ${'total_all_overtime_libur_' . $cbg->kode_cabang} += $total_overtime_libur;
+                            ${'total_all_upah_overtime_libur_' . $cbg->kode_cabang} += $upah_overtime_libur;
+                            ${'total_all_upah_overtime_' . $cbg->kode_cabang} += $total_upah_overtime;
+
+                            //Premi
+                            ${'total_all_premi_shift2_' . $cbg->kode_cabang} += $premi_shift2;
+                            ${'total_all_upah_premi_shift2_' . $cbg->kode_cabang} += $upah_premi_shift2;
+                            ${'total_all_premi_shift3_' . $cbg->kode_cabang} += $premi_shift3;
+                            ${'total_all_upah_premi_shift3_' . $cbg->kode_cabang} += $upah_premi_shift3;
+
+                            //Bruto
+                            ${'total_all_bruto_' . $cbg->kode_cabang} += $bruto;
+                            ${'total_all_potongan_jam_' . $cbg->kode_cabang} += $grand_total_potongan_jam;
+
+                            //BPJS
+                            ${'total_all_bpjskesehatan_' . $cbg->kode_cabang} += $iuran_bpjs_kesehatan;
+                            ${'total_all_bpjstk_' . $cbg->kode_cabang} += $iuran_bpjs_tenagakerja;
+                            ${'total_all_denda_' . $cbg->kode_cabang} += $total_denda;
+
+                            //Pinjaman
+                            ${'total_all_pjp_' . $cbg->kode_cabang} += $cicilan_pjp;
+                            ${'total_all_kasbon_' . $cbg->kode_cabang} += $cicilan_kasbon;
+                            ${'total_all_nonpjp_' . $cbg->kode_cabang} += $cicilan_piutang;
+                            ${'total_all_spip_' . $cbg->kode_cabang} += $spip;
+
+                            //Pengurang
+                            ${'total_all_pengurang_' . $cbg->kode_cabang} += $jml_pengurang;
+                            ${'total_all_penambah_' . $cbg->kode_cabang} += $jml_penambah;
+                            ${'total_all_potongan_' . $cbg->kode_cabang} += $jml_potongan_upah;
+                            ${'total_all_jmlbersih_' . $cbg->kode_cabang} += $jmlbersih;
+                        }
                     }
 
                     //TKL
@@ -1756,6 +1935,125 @@
                         <!-- JUMLAH BERSIH -->
                         <td style="text-align: right">{{ formatAngka($total_jmlbersih_penjualan) }}</td>
                     </tr>
+                    @foreach ($cabang as $cbg)
+                        <tr>
+                            <td>{{ $cbg->nama_cabang }}</td>
+                            <td style="text-align: right">{{ formatAngka(${'total_gajipokok_' . $cbg->kode_cabang}) }}
+                            </td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_jabatan_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_masakerja_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_tanggungjawab_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_makan_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_istri_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_tunjangan_skill_' . $cbg->kode_cabang}) }}</td>
+
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_insentif_masakerja_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_insentif_lembur_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_insentif_penempatan_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_insentif_kpi_' . $cbg->kode_cabang}) }}</td>
+
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_im_ruanglingkup_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_im_penempatan_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_im_kinerja_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_im_kendaraan_' . $cbg->kode_cabang}) }}</td>
+
+                            <td style="text-align: right">{{ formatAngka(${'total_upah_' . $cbg->kode_cabang}) }}
+                            </td>
+                            <td style="text-align: right">{{ formatAngka(${'total_insentif_' . $cbg->kode_cabang}) }}
+                            </td>
+
+                            <!--Jam Kerja -->
+                            <td style="text-align: right">
+                                {{ formatAngkaDesimal(${'total_all_jamkerja_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_upahperjam_' . $cbg->kode_cabang}) }}</td>
+
+                            <!--Overtime-->
+                            <td style="text-align: right">
+                                {{ formatAngkaDesimal(${'total_all_overtime_1_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngkaDesimal(${'total_all_upah_ot_1_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngkaDesimal(${'total_all_overtime_2_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngkaDesimal(${'total_all_upah_ot_2_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngkaDesimal(${'total_all_overtime_libur_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngkaDesimal(${'total_all_upah_overtime_libur_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_upah_overtime_' . $cbg->kode_cabang}) }}</td>
+
+                            <!-- Premi -->
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_premi_shift2_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_upah_premi_shift2_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_premi_shift3_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_upah_premi_shift3_' . $cbg->kode_cabang}) }}</td>
+
+                            <!-- Bruto-->
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_bruto_' . $cbg->kode_cabang}) }}</td>
+
+                            <!-- Potongan -->
+                            <td style="text-align: right">
+                                {{ formatAngkaDesimal(${'total_all_potongan_jam_' . $cbg->kode_cabang}) }}</td>
+
+                            <!-- BPJS -->
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_bpjskesehatan_' . $cbg->kode_cabang}) }}</td>
+                            <td></td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_bpjstk_' . $cbg->kode_cabang}) }}</td>
+
+                            <!-- Denda-->
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_denda_' . $cbg->kode_cabang}) }}</td>
+
+                            <!--Pinjaman-->
+                            <td style="text-align: right">{{ formatAngka(${'total_all_pjp_' . $cbg->kode_cabang}) }}
+                            </td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_kasbon_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_nonpjp_' . $cbg->kode_cabang}) }}</td>
+
+                            <!-- SPIP-->
+                            <td style="text-align: right">{{ formatAngka(${'total_all_spip_' . $cbg->kode_cabang}) }}
+                            </td>
+
+                            <!-- PENGURANG-->
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_pengurang_' . $cbg->kode_cabang}) }}</td>
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_potongan_' . $cbg->kode_cabang}) }}</td>
+
+                            <!-- penambah -->
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_penambah_' . $cbg->kode_cabang}) }}</td>
+
+                            <!-- JUMLAH BERSIH -->
+                            <td style="text-align: right">
+                                {{ formatAngka(${'total_all_jmlbersih_' . $cbg->kode_cabang}) }}</td>
+                        </tr>
+                    @endforeach
                     <tr>
                         <td>TKL</td>
                         <td style="text-align: right">{{ formatAngka($total_gajipokok_tkl) }}</td>

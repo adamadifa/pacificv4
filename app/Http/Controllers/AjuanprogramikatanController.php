@@ -312,6 +312,8 @@ class AjuanprogramikatanController extends Controller
             //code...
             $cek = Detailajuanprogramikatan::join('marketing_program_ikatan', 'marketing_program_ikatan_detail.no_pengajuan', '=', 'marketing_program_ikatan.no_pengajuan')
                 ->where('marketing_program_ikatan.kode_program', $ajuan->kode_program)
+                ->where('marketing_program_ikatan.periode_dari', '<=', $ajuan->periode_sampai)
+                ->where('marketing_program_ikatan.periode_sampai', '>=', $ajuan->periode_dari)
                 ->where('marketing_program_ikatan_detail.kode_pelanggan', $request->kode_pelanggan)
                 ->first();
 

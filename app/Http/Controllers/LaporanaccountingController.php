@@ -918,53 +918,6 @@ class LaporanaccountingController extends Controller
 
 
 
-
-        //Mutasi
-        // $mutasi_ledger  = Ledger::select(
-        //     'kode_bank',
-        //     DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-        //     DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
-        // )
-        //     ->where('tanggal', '>=', $start_date)
-        //     ->where('tanggal', '<', $request->dari)
-        //     ->where('kode_bank', $request->kode_bank_search)
-        //     ->groupBy('kode_bank');
-
-        // $mutasi_kaskecil = Kaskecil::select(
-        //     'kode_cabang',
-        //     DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
-        //     DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
-        // )
-        //     ->where('tanggal', '>=', $start_date)
-        //     ->where('tanggal', '<', $request->dari)
-        //     ->groupBy('kode_cabang');
-
-        // $saldo_awal_ledger  = Saldoawalledger::select('bank.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
-        //     ->join('bank', 'bank.kode_bank', '=', 'keuangan_ledger_saldoawal.kode_bank')
-        //     ->leftJoinSub($mutasi_ledger, 'mutasi_ledger', function ($join) {
-        //         $join->on('keuangan_ledger_saldoawal.kode_bank', '=', 'mutasi_ledger.kode_bank');
-        //     })
-        //     ->where('bulan', $bulan)->where('tahun', $tahun);
-
-        // $saldo_awal_kaskecil = Saldoawalkaskecil::select('coa_kas_kecil.kode_akun', DB::raw("IFNULL(jumlah,0) + IFNULL(kredit,0) - IFNULL(debet,0) as saldo"))
-        //     ->join('coa_kas_kecil', 'coa_kas_kecil.kode_cabang', '=', 'keuangan_kaskecil_saldoawal.kode_cabang')
-        //     ->leftJoinSub($mutasi_kaskecil, 'mutasi_kaskecil', function ($join) {
-        //         $join->on('keuangan_kaskecil_saldoawal.kode_cabang', '=', 'mutasi_kaskecil.kode_cabang');
-        //     })
-        //     ->where('bulan', $bulan)->where('tahun', $tahun);
-
-        // $saldoawal = $saldo_awal_ledger->union($saldo_awal_kaskecil)->get()->toArray();
-        // // Mengubah $saldo_awal_ledger menjadi koleksi
-        // $saldoawalCollection = collect($saldoawal);
-
-
-        // // $saldo = $akunCollection->firstWhere('kode_akun', '1-1244')['saldo'] ?? null;
-
-        // // echo "Saldo akun 1-1244: " . number_format($saldo);
-
-
-        // $data['saldoawalCollection'] = $saldoawalCollection;
-
         $saldoawal = Detailsaldoawalbukubesar::join('bukubesar_saldoawal', 'bukubesar_saldoawal.kode_saldo_awal', '=', 'bukubesar_saldoawal_detail.kode_saldo_awal')
             ->where('bukubesar_saldoawal.bulan', $bulan)
             ->where('bukubesar_saldoawal.tahun', $tahun)
@@ -1034,8 +987,8 @@ class LaporanaccountingController extends Controller
             'pembelian.no_bukti',
             DB::raw("'PEMBELIAN' AS sumber"),
             DB::raw('IF(pembelian_detail.kode_transaksi="PNJ",pembelian_detail.keterangan_penjualan,pembelian_detail.keterangan) as keterangan'),
-            DB::raw('IF(pembelian_detail.kode_transaksi="PNJ",pembelian_detail.jumlah,0) as jml_kredit'),
-            DB::raw('IF(pembelian_detail.kode_transaksi="PMB",pembelian_detail.jumlah,0) as jml_debet'),
+            DB::raw('IF(pembelian_detail.kode_transaksi="PNJ",pembelian_detail.jumlah * harga + penyesuaian,0) as jml_kredit'),
+            DB::raw('IF(pembelian_detail.kode_transaksi="PMB",pembelian_detail.jumlah * harga + penyesuaian,0) as jml_debet'),
             DB::raw('IF(pembelian_detail.kode_transaksi="PMB",2,1) as urutan')
         );
         $pembelian->join('pembelian', 'pembelian_detail.no_bukti', '=', 'pembelian.no_bukti');
@@ -1124,7 +1077,13 @@ class LaporanaccountingController extends Controller
         $kaskecil->leftJoinSub($coa_kas_kecil, 'coa_kas_kecil', function ($join) {
             $join->on('keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang_coa');
         });
-        $kaskecil->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil');
+        $kaskecil->where(function ($q) {
+            $q->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil') // tampil semua selain ini
+                ->orWhere(function ($q2) {
+                    $q2->where('keuangan_kaskecil.keterangan', 'Penerimaan Kas Kecil')
+                        ->where('keuangan_kaskecil.kode_akun', '1-1104'); // khusus ini boleh tampil
+                });
+        });
         $kaskecil->whereBetween('keuangan_kaskecil.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $kaskecil->whereBetween('coa_kas_kecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
@@ -1133,6 +1092,28 @@ class LaporanaccountingController extends Controller
         $kaskecil->orderBy('keuangan_kaskecil.tanggal');
         $kaskecil->orderBy('keuangan_kaskecil.no_bukti');
 
+
+        $kaskecil_transaksi = Kaskecil::query();
+        $kaskecil_transaksi->select(
+            'keuangan_kaskecil.kode_akun',
+            'coa.jenis_akun',
+            'nama_akun',
+            'keuangan_kaskecil.tanggal',
+            'keuangan_kaskecil.no_bukti',
+            DB::raw("'KAS KECIL' AS sumber"),
+            'keuangan_kaskecil.keterangan',
+            DB::raw('IF(debet_kredit="K",jumlah,0) as jml_kredit'),
+            DB::raw('IF(debet_kredit="D",jumlah,0) as jml_debet'),
+            DB::raw('IF(debet_kredit="D",1,2) as urutan')
+        );
+        $kaskecil_transaksi->whereBetween('keuangan_kaskecil.tanggal', [$start_date, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $kaskecil_transaksi->whereBetween('keuangan_kaskecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $kaskecil_transaksi->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
+        $kaskecil_transaksi->orderBy('keuangan_kaskecil.kode_akun');
+        $kaskecil_transaksi->orderBy('keuangan_kaskecil.tanggal');
+        $kaskecil_transaksi->orderBy('keuangan_kaskecil.no_bukti');
 
 
         //Piutang dari Kas Besar Penjualan
@@ -1269,6 +1250,8 @@ class LaporanaccountingController extends Controller
         $penjualan_produk->orderBy('marketing_penjualan.tanggal');
         $penjualan_produk->orderBy('marketing_penjualan.no_faktur');
 
+
+
         // if ($request->kode_akun_dari == '4-2100' || $request->kode_akun_sampai == '4-2100') {
         //     $retur_penjualan = Detailretur::query();
         //     $retur_penjualan->select(
@@ -1306,7 +1289,20 @@ class LaporanaccountingController extends Controller
         // }
 
         // Melakukan sum debet dan kredit dari data union sebelum tanggal $request->dari, group by kode_akun
-        $mutasi_transaksi = $ledger->unionAll($kaskecil)
+        // $mutasi_transaksi = $ledger->unionAll($kaskecil)
+        //     ->unionAll($ledger_transaksi)
+        //     ->unionAll($piutangcabang)
+        //     ->unionAll($pembelian)
+        //     ->unionAll($jurnalumum)
+        //     ->unionAll($jurnalkoreksi)
+        //     ->unionAll($penjualan_produk);
+
+
+
+        // Contoh penggunaan: $total_mutasi_per_akun adalah collection, akses per kode_akun
+
+        $union_data = $ledger->unionAll($kaskecil)
+            ->unionAll($kaskecil_transaksi)
             ->unionAll($ledger_transaksi)
             ->unionAll($piutangcabang)
             ->unionAll($pembelian)
@@ -1315,7 +1311,7 @@ class LaporanaccountingController extends Controller
             ->unionAll($penjualan_produk);
 
         // Ambil data union sebagai subquery
-        $mutasi_subquery = DB::query()->fromSub($mutasi_transaksi, 'mutasi')
+        $mutasi_subquery = DB::query()->fromSub($union_data, 'mutasi')
             ->where('tanggal', '>=', $tahun . '-' . $bulan . '-01')
             ->where('tanggal', '<', $request->dari);
 
@@ -1335,13 +1331,11 @@ class LaporanaccountingController extends Controller
             ->unionAll($jurnalumum)
             ->unionAll($jurnalkoreksi)
             ->unionAll($penjualan_produk)
-            ->unionAll($penjualannetto)
-            ->unionAll($kasbesarpiutangdagang)
             ->whereBetween('tanggal', [$request->dari, $request->sampai])
             // ->unionAll($retur_penjualan)
             ->orderBy('kode_akun')->orderBy('tanggal')->orderBy('urutan')->orderBy('no_bukti')->get();
 
-        // dd($bukubesar->get());
+
 
         $data['bukubesar'] = $bukubesar;
         $data['dari'] = $request->dari;

@@ -207,6 +207,13 @@
                                                                 class="me-1">
                                                                 <i class="ti ti-edit text-success"></i>
                                                             </a>
+                                                        @else
+                                                            @if (in_array($level_user, ['spv presensi', 'super admin']))
+                                                                <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}"
+                                                                    class="me-1">
+                                                                    <i class="ti ti-edit text-success"></i>
+                                                                </a>
+                                                            @endif
                                                         @endif
                                                     @endcan
                                                     @can('penilaiankaryawan.show')

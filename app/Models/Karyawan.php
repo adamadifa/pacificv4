@@ -50,9 +50,14 @@ class Karyawan extends Model
                 $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
                 $query->where('hrd_karyawan.kode_jabatan', 'J08');
             } else {
-                $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
-                $query->where('hrd_jabatan.kategori', 'NM');
+                if ($user->hasRole('sales marketing manager')) {
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->whereNot('hrd_karyawan.kode_jabatan', 'J07');
+                } else {
+                    $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                }
             }
 
 

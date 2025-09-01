@@ -214,11 +214,17 @@ class DashboardController extends Controller
             ->get();
 
 
+
         $qsaldo_kasbesar_cabang = Saldokasbesarkeuangan::query();
+        $qsaldo_kasbesar_cabang->select(DB::raw('SUM(IF(debet_kredit="K",jumlah,0)) as kredit'), DB::raw('SUM(IF(debet_kredit="D",jumlah,0)) as debet'));
         if (!empty($request->sampai)) {
-            $qsaldo_kasbesar_cabang->where('tanggal', $request->sampai);
+            $start_date = date("Y-m-01", strtotime($request->sampai));
+            $end_date = $request->sampai;
+            $qsaldo_kasbesar_cabang->whereBetween('tanggal', [$start_date, $end_date]);
         } else {
-            $qsaldo_kasbesar_cabang->where('tanggal', date('Y-m-d'));
+            $start_date = date("Y-m-01", strtotime(date('Y-m-d')));
+            $end_date = date('Y-m-d');
+            $qsaldo_kasbesar_cabang->whereBetween('tanggal', [$start_date, $end_date]);
         }
         $qsaldo_kasbesar_cabang->where('kode_cabang', 'PST');
         $data['saldo_kasbesar_cabang'] = $qsaldo_kasbesar_cabang->first();

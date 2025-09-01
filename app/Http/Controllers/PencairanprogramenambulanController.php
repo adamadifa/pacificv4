@@ -355,12 +355,14 @@ class PencairanprogramenambulanController extends Controller
             ->join('marketing_program_ikatan_enambulan', 'marketing_program_ikatan_enambulan_detail.no_pengajuan', '=', 'marketing_program_ikatan_enambulan.no_pengajuan')
             ->where('marketing_program_ikatan_enambulan.kode_program', $pencairanprogram->kode_program)
             ->where('marketing_program_ikatan_enambulan.kode_cabang', $pencairanprogram->kode_cabang)
+            ->where('marketing_program_ikatan_enambulan.periode_pencairan', '1')
             ->when($pencairanprogram->semester == 1, function ($query) {
                 $query->whereRaw('MONTH(marketing_program_ikatan_enambulan.periode_sampai) <= 6');
             })
             ->when($pencairanprogram->semester == 2, function ($query) {
                 $query->whereRaw('MONTH(marketing_program_ikatan_enambulan.periode_dari) >= 7');
             })
+
 
             ->groupBy('marketing_program_ikatan_enambulan_detail.kode_pelanggan');
 
@@ -911,10 +913,10 @@ class PencairanprogramenambulanController extends Controller
             ->orderBy('pelangganprogram.metode_pembayaran')
             ->get();
 
-      
+
         $data['pencairanprogram'] = $pencairanprogramenambulan;
         $data['detail'] = $detail;
-        
+
 
         if ($request->export == 'true') {
             header("Content-type: application/vnd-ms-excel");
