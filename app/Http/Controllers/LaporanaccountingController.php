@@ -1414,7 +1414,7 @@ class LaporanaccountingController extends Controller
                 $join->on('coa.kode_akun', '=', 'rekapakun.kode_akun');
             })
                 ->select('coa.kode_akun', 'coa.nama_akun', 'rekapakun.saldo_akhir')
-                ->whereRaw('LEFT(kode_akun,1) IN (' . implode(',', $neraca) . ')')
+                ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca) . ')')
                 ->get();
 
 
