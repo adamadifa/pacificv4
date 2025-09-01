@@ -26,7 +26,7 @@
 <body>
     <div class="header">
         <h4 class="title">
-            LEDGER<br>
+            BUKU BESAR<br>
         </h4>
         <h4> PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
     </div>
@@ -53,22 +53,21 @@
                     @endphp
                     @foreach ($bukubesar as $key => $d)
                         @php
-                            $saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['jumlah'] ?? 0;
-                            $mutasi_debet =
-                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ??
-                                0;
-                            $mutasi_kredit =
-                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ??
-                                0;
-                            if ($d->jenis_akun == '1') {
-                                $saldo_awal = $saldo_awal + $mutasi_kredit - $mutasi_debet;
-                            } else {
-                                $saldo_awal = $saldo_awal + $mutasi_debet - $mutasi_kredit;
-                            }
+                            //$saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['jumlah'] ?? 0;
+                            $mutasi_debet = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ?? 0;
+                            $mutasi_kredit = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ?? 0;
+                            // if ($d->jenis_akun == '1') {
+                            //     $saldo_awal = $saldo_awal + $mutasi_kredit - $mutasi_debet;
+                            // } else {
+                            //     $saldo_awal = $saldo_awal + $mutasi_debet - $mutasi_kredit;
+                            // }
                             $akun = @$bukubesar[$key + 1]->kode_akun;
                         @endphp
                         @if ($kode_akun != $d->kode_akun)
-                            <tr style="background-color:rgba(116, 170, 227, 0.465);">
+                            @php
+                                $saldo = 0;
+                            @endphp
+                            {{-- <tr style="background-color:rgba(116, 170, 227, 0.465);">
                                 <th style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} -
                                     {{ $d->nama_akun }}
                                 </th>
@@ -79,7 +78,7 @@
                             </tr>
                             @php
                                 $saldo = $saldo_awal;
-                            @endphp
+                            @endphp --}}
                         @endif
                         @php
                             if ($d->jenis_akun == '1') {
@@ -90,6 +89,12 @@
                             $total_debet = $total_debet + $d->jml_debet;
                             $total_kredit = $total_kredit + $d->jml_kredit;
                         @endphp
+                        @if ($d->sumber == 'SALDO AWAL')
+                            <tr class="thead-dark">
+                                <th colspan="6">SALDO AWAL</th>
+                                <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</th>
+                            </tr>
+                        @endif
                         <tr>
                             <td>{{ formatIndo($d->tanggal) }}</td>
                             <td>{{ $d->no_bukti }}</td>

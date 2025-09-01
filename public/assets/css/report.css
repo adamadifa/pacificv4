@@ -124,6 +124,37 @@
     text-transform: uppercase;
     border-width: 1px;
 }
+
+
+
+.datatable9 {
+    border: 0px solid #080909;
+    border-collapse: collapse;
+
+    /*float:left; */
+}
+
+.datatable9 td {
+    border: 0px solid #000000;
+    padding: 4px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    /* border-width: 1px; */
+}
+
+.datatable9 th {
+    border: 0px solid #050506;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    /* background-color: #024a75; */
+    /* color: white; */
+    text-transform: uppercase;
+    /* border-width: 1px; */
+}
+
 h4 {
     font-family: Arial, Helvetica, sans-serif;
     line-height: 2px;

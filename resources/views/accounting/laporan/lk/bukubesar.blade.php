@@ -24,6 +24,17 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="form-group mb-3">
+                <select name="formatlaporan" id="formatlaporan" class="form-select">
+                    <option value="">Format Laporan</option>
+                    <option value="1">Buku Besar</option>
+                    <option value="2">Neraca</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
         </div>
