@@ -1415,6 +1415,7 @@ class LaporanaccountingController extends Controller
             })
                 ->select('coa.kode_akun', 'coa.nama_akun', 'rekapakun.saldo_akhir')
                 ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca) . ')')
+                ->whereNotNull('rekapakun.saldo_akhir')
                 ->get();
 
 
