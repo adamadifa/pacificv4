@@ -36,12 +36,12 @@
                 <thead>
                     <tr>
                         <th style="font-size:12;">KODE AKUN</th>
-                        <th style="font-size:12;">NAMA AKUN</th>
+                        <th style="font-size:12; text-align:left !important">NAMA AKUN</th>
                         <th style="font-size:12;">SALDO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($rekap_akun as $d)
+                    @foreach ($neraca as $d)
                         <tr>
                             <td>{{ $d->kode_akun }}</td>
                             <td>{{ $d->nama_akun }}</td>
