@@ -1400,11 +1400,12 @@ class LaporanaccountingController extends Controller
             return view('accounting.laporan.lk.bukubesar_cetak', $data);
         } else {
 
-
+            $neraca = array('1,2,3');
             // Ambil hasil union sebagai subquery, lalu lakukan SUM group by kode_akun
             $data['rekap_akun'] = DB::query()->fromSub($union_data, 'rekap')
                 ->selectRaw('kode_akun, nama_akun,
                     SUM(IF(jenis_akun = 1, jml_kredit - jml_debet, jml_debet - jml_kredit)) as saldo_akhir')
+                ->whereRaw('LEFT(kode_akun,1) IN (' . implode(',', $neraca) . ')')
                 ->groupBy('kode_akun', 'nama_akun')
                 ->orderBy('kode_akun')
 
