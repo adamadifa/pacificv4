@@ -1102,7 +1102,10 @@ class LaporanaccountingController extends Controller
         $kaskecil->leftJoinSub($coa_kas_kecil, 'coa_kas_kecil', function ($join) {
             $join->on('keuangan_kaskecil.kode_cabang', '=', 'coa_kas_kecil.kode_cabang_coa');
         });
-        $kaskecil->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil');
+        $kaskecil->where(function ($query) {
+            $query->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil')
+                ->orWhere('keuangan_kaskecil.kode_cabang', '=', 'PST');
+        });
 
 
 
