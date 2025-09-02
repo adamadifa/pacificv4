@@ -1401,6 +1401,7 @@ class LaporanaccountingController extends Controller
         } else {
 
             $neraca = array('1,2,3');
+            $akun_jangan_ditampilkan = ['0-0000', '1'];
             // Ambil hasil union sebagai subquery, lalu lakukan SUM group by kode_akun
 
             $rekapakun = DB::query()->fromSub($union_data, 'rekap')
@@ -1415,7 +1416,16 @@ class LaporanaccountingController extends Controller
             })
                 ->select('coa.kode_akun', 'coa.nama_akun', 'rekapakun.saldo_akhir')
                 ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca) . ')')
-                ->whereNotNull('rekapakun.saldo_akhir')
+                ->whereNotIn('coa.kode_akun', $akun_jangan_ditampilkan)
+                ->where(function ($query) {
+                    // Hanya tampilkan saldo_akhir yang tidak null, 
+                    // atau jika null hanya untuk level 0 dan 1
+                    $query->whereNotNull('rekapakun.saldo_akhir')
+                        ->orWhere(function ($q) {
+                            $q->whereNull('rekapakun.saldo_akhir')
+                                ->whereIn('coa.level', [0, 1]);
+                        });
+                })
                 ->get();
 
 
