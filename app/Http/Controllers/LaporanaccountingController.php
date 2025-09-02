@@ -1414,7 +1414,7 @@ class LaporanaccountingController extends Controller
             $data['neraca'] = Coa::leftJoinSub($rekapakun, 'rekapakun', function ($join) {
                 $join->on('coa.kode_akun', '=', 'rekapakun.kode_akun');
             })
-                ->select('coa.kode_akun', 'coa.nama_akun', 'rekapakun.saldo_akhir')
+                ->select('coa.kode_akun', 'coa.nama_akun', 'coa.level', 'rekapakun.saldo_akhir')
                 ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca) . ')')
                 ->whereNotIn('coa.kode_akun', $akun_jangan_ditampilkan)
                 ->where(function ($query) {
