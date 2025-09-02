@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class sendActivityJob implements ShouldQueue
 {
@@ -58,25 +59,32 @@ class sendActivityJob implements ShouldQueue
 
                 $curl = curl_init();
 
-                curl_setopt_array($curl, array(
+                curl_setopt_array($curl, [
                     CURLOPT_URL => 'https://wa.pedasalami.com/send-media',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_TIMEOUT => 30, // jangan 0 biar tidak ngegantung
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
                     CURLOPT_POSTFIELDS => json_encode($pesan),
-                    CURLOPT_HTTPHEADER => array(
+                    CURLOPT_HTTPHEADER => [
                         'Content-Type: application/json'
-                    ),
-                ));
+                    ],
+                ]);
 
                 $response = curl_exec($curl);
+
+                if (curl_errno($curl)) {
+                    Log::error("Curl error ke {$d}: " . curl_error($curl));
+                } else {
+                    Log::info("Pesan terkirim ke {$d}: " . $response);
+                }
+
                 curl_close($curl);
-                sleep(5);
-                flush();
+
+                sleep(5); // boleh ada jeda
             }
         } else {
             $pesan = [
