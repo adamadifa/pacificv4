@@ -47,18 +47,18 @@
                             $indent = ($d->level ?? 0) * 20;
                         @endphp
                         <tr>
-                            <td>
+                            {{-- <td>
                                 @if ($d->level == 0 || $d->level == 1)
                                     <b>{{ $d->kode_akun }}</b>
                                 @else
                                     {{ $d->kode_akun }}
                                 @endif
-                            </td>
+                            </td> --}}
                             <td style="padding-left: {{ $indent }}px;">
                                 @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ $d->nama_akun }}</b>
+                                    <b>{{ $d->kode_akun }} {{ $d->nama_akun }}</b>
                                 @else
-                                    {{ $d->nama_akun }}
+                                    {{ $d->kode_akun }} {{ $d->nama_akun }}
                                 @endif
                             </td>
                             <td style="text-align: right;">
