@@ -54,8 +54,12 @@
                     @foreach ($bukubesar as $key => $d)
                         @php
                             //$saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['jumlah'] ?? 0;
-                            $mutasi_debet = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ?? 0;
-                            $mutasi_kredit = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ?? 0;
+                            $mutasi_debet =
+                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ??
+                                0;
+                            $mutasi_kredit =
+                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ??
+                                0;
                             // if ($d->jenis_akun == '1') {
                             //     $saldo_awal = $saldo_awal + $mutasi_kredit - $mutasi_debet;
                             // } else {
@@ -94,16 +98,18 @@
                                 <th colspan="6">SALDO AWAL</th>
                                 <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</th>
                             </tr>
+                        @else
+                            <tr>
+                                <td>{{ formatIndo($d->tanggal) }}</td>
+                                <td>{{ $d->no_bukti }}</td>
+                                <td>{{ textUpperCase($d->sumber) }}</td>
+                                <td>{{ textCamelCase($d->keterangan) }}</td>
+                                <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_debet) }}</td>
+                                <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_kredit) }}</td>
+                                <td style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</td>
+                            </tr>
                         @endif
-                        <tr>
-                            <td>{{ formatIndo($d->tanggal) }}</td>
-                            <td>{{ $d->no_bukti }}</td>
-                            <td>{{ textUpperCase($d->sumber) }}</td>
-                            <td>{{ textCamelCase($d->keterangan) }}</td>
-                            <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_debet) }}</td>
-                            <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_kredit) }}</td>
-                            <td style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</td>
-                        </tr>
+
                         @if ($akun != $d->kode_akun)
                             <tr class="thead-dark">
                                 <th colspan="4">TOTAL</th>
