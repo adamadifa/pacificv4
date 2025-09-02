@@ -35,7 +35,6 @@
             <table class="datatable9">
                 <thead>
                     <tr>
-                        <th style="font-size:12;">KODE AKUN</th>
                         <th style="font-size:12; text-align:left !important">NAMA AKUN</th>
                         <th style="font-size:12;">SALDO</th>
                     </tr>
