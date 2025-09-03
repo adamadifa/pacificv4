@@ -108,8 +108,14 @@ class AktifitassmmController extends Controller
                     Storage::put($file, $image_base64);
                 }
                 $path_image = Storage::url('uploads/aktifitas_smm/' . $fileName);
-
-                dispatch(new sendActivityJob($id_group_wa, $nama, $cekuser->kode_cabang, $activity, $fileName, $role_name));
+                $group_wa = ['120363181708613638@g.us', '120363048652516047@g.us', '120363023468297226@g.us'];
+                if ($role_name == 'gm marketing') {
+                    foreach ($group_wa as $d) {
+                        dispatch(new sendActivityJob($d, $nama, $cekuser->kode_cabang, $activity, $fileName, $role_name));
+                    }
+                } else {
+                    dispatch(new sendActivityJob($id_group_wa, $nama, $cekuser->kode_cabang, $activity, $fileName, $role_name));
+                }
                 // $pesan = [
                 //     'api_key' => 'B2TSubtfeWwb3eDHdIyoa0qRXJVgq8',
                 //     'sender' => '6289670444321',

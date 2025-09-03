@@ -45,76 +45,103 @@ class sendActivityJob implements ShouldQueue
         // $url = "https://sfa.pacific-tasikmalaya.com/storage/uploads/smactivity/";
         // $url = "https://sfa.pedasalami.com/storage/uploads/smactivity/";
         $url = "https://app.portalmp.com/storage/uploads/aktifitas_smm/";
+        $pesan = [
+            'api_key' => 'B2TSubtfeWwb3eDHdIyoa0qRXJVgq8',
+            'sender' => '6289670444321',
+            'number' => $this->id_group_wa,
+            'media_type' => 'image',
+            'caption' => '*' . $this->nama . ': (' . $this->cabang . ')* ' . $this->activity,
+            'url' => $url . $this->foto
+        ];
 
-        if ($this->lv == "gm marketing") {
-            foreach ($group_wa as $d) {
-                $pesan = [
-                    'api_key' => 'B2TSubtfeWwb3eDHdIyoa0qRXJVgq8',
-                    'sender' => '6289670444321',
-                    'number' => $d,
-                    'media_type' => 'image',
-                    'caption' => '*' . $this->nama . ': (' . $this->cabang . ')* ' . $this->activity,
-                    'url' => $url . $this->foto
-                ];
+        $curl = curl_init();
 
-                $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://wa.pedasalami.com/send-media',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($pesan),
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
 
-                curl_setopt_array($curl, [
-                    CURLOPT_URL => 'https://wa.pedasalami.com/send-media',
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => '',
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 30, // jangan 0 biar tidak ngegantung
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => json_encode($pesan),
-                    CURLOPT_HTTPHEADER => [
-                        'Content-Type: application/json'
-                    ],
-                ]);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        // if ($this->lv == "gm marketing") {
+        //     foreach ($group_wa as $d) {
+        //         $pesan = [
+        //             'api_key' => 'B2TSubtfeWwb3eDHdIyoa0qRXJVgq8',
+        //             'sender' => '6289670444321',
+        //             'number' => $d,
+        //             'media_type' => 'image',
+        //             'caption' => '*' . $this->nama . ': (' . $this->cabang . ')* ' . $this->activity,
+        //             'url' => $url . $this->foto
+        //         ];
 
-                $response = curl_exec($curl);
+        //         $curl = curl_init();
 
-                if (curl_errno($curl)) {
-                    Log::error("Curl error ke {$d}: " . curl_error($curl));
-                } else {
-                    Log::info("Pesan terkirim ke {$d}: " . $response);
-                }
+        //         curl_setopt_array($curl, [
+        //             CURLOPT_URL => 'https://wa.pedasalami.com/send-media',
+        //             CURLOPT_RETURNTRANSFER => true,
+        //             CURLOPT_ENCODING => '',
+        //             CURLOPT_MAXREDIRS => 10,
+        //             CURLOPT_TIMEOUT => 30, // jangan 0 biar tidak ngegantung
+        //             CURLOPT_FOLLOWLOCATION => true,
+        //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //             CURLOPT_CUSTOMREQUEST => 'POST',
+        //             CURLOPT_POSTFIELDS => json_encode($pesan),
+        //             CURLOPT_HTTPHEADER => [
+        //                 'Content-Type: application/json'
+        //             ],
+        //         ]);
 
-                curl_close($curl);
+        //         $response = curl_exec($curl);
 
-                sleep(5); // boleh ada jeda
-            }
-        } else {
-            $pesan = [
-                'api_key' => 'B2TSubtfeWwb3eDHdIyoa0qRXJVgq8',
-                'sender' => '6289670444321',
-                'number' => $this->id_group_wa,
-                'media_type' => 'image',
-                'caption' => '*' . $this->nama . ': (' . $this->cabang . ')* ' . $this->activity,
-                'url' => $url . $this->foto
-            ];
+        //         if (curl_errno($curl)) {
+        //             Log::error("Curl error ke {$d}: " . curl_error($curl));
+        //         } else {
+        //             Log::info("Pesan terkirim ke {$d}: " . $response);
+        //         }
 
-            $curl = curl_init();
+        //         curl_close($curl);
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://wa.pedasalami.com/send-media',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => json_encode($pesan),
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json'
-                ),
-            ));
+        //         sleep(5); // boleh ada jeda
+        //     }
+        // } else {
+        //     $pesan = [
+        //         'api_key' => 'B2TSubtfeWwb3eDHdIyoa0qRXJVgq8',
+        //         'sender' => '6289670444321',
+        //         'number' => $this->id_group_wa,
+        //         'media_type' => 'image',
+        //         'caption' => '*' . $this->nama . ': (' . $this->cabang . ')* ' . $this->activity,
+        //         'url' => $url . $this->foto
+        //     ];
 
-            $response = curl_exec($curl);
-            curl_close($curl);
-        }
+        //     $curl = curl_init();
+
+        //     curl_setopt_array($curl, array(
+        //         CURLOPT_URL => 'https://wa.pedasalami.com/send-media',
+        //         CURLOPT_RETURNTRANSFER => true,
+        //         CURLOPT_ENCODING => '',
+        //         CURLOPT_MAXREDIRS => 10,
+        //         CURLOPT_TIMEOUT => 0,
+        //         CURLOPT_FOLLOWLOCATION => true,
+        //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //         CURLOPT_CUSTOMREQUEST => 'POST',
+        //         CURLOPT_POSTFIELDS => json_encode($pesan),
+        //         CURLOPT_HTTPHEADER => array(
+        //             'Content-Type: application/json'
+        //         ),
+        //     ));
+
+        //     $response = curl_exec($curl);
+        //     curl_close($curl);
+        // }
     }
 }
