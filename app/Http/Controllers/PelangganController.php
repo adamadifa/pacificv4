@@ -998,6 +998,9 @@ class PelangganController extends Controller
 
     public function nonaktif()
     {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
         $penjualanterakhir = Penjualan::query()
             ->select('kode_pelanggan', DB::raw('MAX(tanggal) as tanggal'))
             ->groupBy('kode_pelanggan');
@@ -1019,6 +1022,7 @@ class PelangganController extends Controller
                     ->Where('penjualanterakhir.tanggal', '<=', now()->subDays(90));
             })
             ->where('pelanggan.status_aktif_pelanggan', 1)
+            ->where('pelanggan.kode_cabang', $user->kode_cabang)
             ->get();
 
 
