@@ -54,7 +54,7 @@
                                 @endif
                             </td> --}}
                             <td style="padding-left: {{ $indent }}px;">
-                                @if ($d->level == 0 || $d->level == 1)
+                                @if ($d->level == 0 || $d->level == 1 || $d->level == 2)
                                     <b>{{ $d->kode_akun }} {{ $d->nama_akun }}</b>
                                 @else
                                     {{ $d->kode_akun }} {{ $d->nama_akun }}
