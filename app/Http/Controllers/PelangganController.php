@@ -994,4 +994,28 @@ class PelangganController extends Controller
                 ->make(true);
         }
     }
+
+
+    public function nonaktif()
+    {
+        $penjualanterakhir = Penjualan::query()
+            ->select('kode_pelanggan', DB::raw('MAX(tanggal) as tanggal'))
+            ->groupBy('kode_pelanggan');
+
+
+        $pelanggan = Pelanggan::query()
+            ->select('pelanggan.kode_pelanggan', 'pelanggan.nama_pelanggan')
+            ->leftJoinSub($penjualanterakhir, 'penjualanterakhir', function ($join) {
+                $join->on('pelanggan.kode_pelanggan', '=', 'penjualanterakhir.kode_pelanggan');
+            })
+            ->where(function ($query) {
+                $query->whereNotNull('penjualanterakhir.tanggal')
+                    ->Where('penjualanterakhir.tanggal', '<=', now()->subDays(90));
+            })
+            ->get();
+
+        dd($pelanggan);
+
+        return view('datamaster.pelanggan.nonaktif', compact('pelanggan'));
+    }
 }

@@ -381,6 +381,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/pelanggan/{kode_pelanggan}/{kode_program}/getavgpelanggan', 'getAvgpelanggan')->name('pelanggan.getAvgpelanggan');
         Route::get('/pelanggan/{kode_pelanggan}/{kode_program}/gethistoripelangganprogram', 'gethistoripelangganprogram')->name('pelanggan.gethistoripelangganprogram');
         Route::get('/pelanggan/{kode_pelanggan}/{kode_program}/{no_pengajuan}/gettargetpelanggan', 'gettargetpelanggan')->name('pelanggan.gettargetpelanggan');
+
+
+        Route::get('/pelanggan/nonaktif', 'nonaktif')->name('pelanggan.nonaktif');
+
         // Route::get('/sfa/pelanggan', 'index')->name('sfa.pelanggan');
     });
 
