@@ -18,8 +18,7 @@
                 </div>
                 <div class="col-5 text-center text-sm-left">
                     <div class="card-body pb-0 px-0 px-md-4">
-                        <img src="{{ asset('assets/img/illustrations/card-advance-sale.png') }}" height="140"
-                            alt="view sales">
+                        <img src="{{ asset('assets/img/illustrations/card-advance-sale.png') }}" height="140" alt="view sales">
                     </div>
                 </div>
             </div>
@@ -37,8 +36,7 @@
                 </div>
                 <div class="col-5 text-center text-sm-left">
                     <div class="card-body pb-0 px-0 px-md-4">
-                        <img src="{{ asset('assets/img/illustrations/girl-with-laptop.png') }}" height="140"
-                            alt="view sales">
+                        <img src="{{ asset('assets/img/illustrations/girl-with-laptop.png') }}" height="140" alt="view sales">
                     </div>
                 </div>
             </div>
@@ -56,8 +54,7 @@
                 </div>
                 <div class="col-5 text-center text-sm-left">
                     <div class="card-body pb-0 px-0 px-md-4">
-                        <img src="{{ asset('assets/img/illustrations/inactive-customer.png') }}" height="140"
-                            alt="view sales">
+                        <img src="{{ asset('assets/img/illustrations/inactive-customer.png') }}" height="140" alt="view sales">
                     </div>
                 </div>
             </div>
@@ -78,16 +75,13 @@
                         <form action="/pelanggan/export" method="GET" id="formCetak" target="_blank">
                             <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
                             <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
-                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak"
-                                value="{{ Request('kode_cabang') }}" />
-                            <input type="hidden" name="kode_salesman" id="kode_salesman_cetak"
-                                value="{{ Request('kode_salesman') }}" />
+                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang') }}" />
+                            <input type="hidden" name="kode_salesman" id="kode_salesman_cetak" value="{{ Request('kode_salesman') }}" />
                             <input type="hidden" name="status" id="status_cetak" value="{{ Request('status') }}" />
                             <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
                             <button class="btn btn-success" name="exportButton"><i class="ti ti-download me-1"></i>Export
                                 Excel</button>
-                            <a href="#" class="btn btn-danger" id="btnNonaktif"><i
-                                    class="ti ti-user-x me-1"></i>Nonaktifkan Pelanggan</a>
+                            <a href="#" class="btn btn-danger" id="btnNonaktif"><i class="ti ti-user-x me-1"></i>Nonaktifkan Pelanggan</a>
                         </form>
                     @endcan
 
@@ -106,12 +100,12 @@
                                 <div class="col">
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12 col-md-12">
-                                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}"
-                                                name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                                datepicker="flatpickr-date" />
                                         </div>
                                         <div class="col-lg-6 col-sm-12 col-md-12">
-                                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}"
-                                                name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                                datepicker="flatpickr-date" />
                                         </div>
                                     </div>
                                 </div>
@@ -122,16 +116,15 @@
                                         <option value="">Status</option>
                                         <option value="aktif" {{ Request('status') == 'aktif' ? 'selected' : '' }}>
                                             Aktif</option>
-                                        <option value="nonaktif"
-                                            {{ Request('status') == 'nonaktif' ? 'selected' : '' }}>Non Aktif</option>
+                                        <option value="nonaktif" {{ Request('status') == 'nonaktif' ? 'selected' : '' }}>Non Aktif</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 @hasanyrole($roles_show_cabang)
                                     <div class="col-lg-2 col-sm-12 col-md-12">
-                                        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
+                                        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                            selected="{{ Request('kode_cabang') }}" />
                                     </div>
                                 @endhasanyrole
                                 <div class="col-lg-2 col-sm-12 col-md-12">
@@ -142,18 +135,16 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan') }}"
-                                        name="kode_pelanggan" icon="ti ti-barcode" />
+                                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan') }}" name="kode_pelanggan"
+                                        icon="ti ti-barcode" />
                                 </div>
                                 <div class="col-lg-3 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Pelanggan"
-                                        value="{{ Request('nama_pelanggan') }}" name="nama_pelanggan"
+                                    <x-input-with-icon label="Cari Nama Pelanggan" value="{{ Request('nama_pelanggan') }}" name="nama_pelanggan"
                                         icon="ti ti-user" />
                                 </div>
 
                                 <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i
-                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
+                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
                                 </div>
                             </div>
 
@@ -199,19 +190,18 @@
                                                 @if (!empty($d->foto))
                                                     @if (Storage::disk('public')->exists('/pelanggan/' . $d->foto))
                                                         <div class="avatar avatar-xs me-2">
-                                                            <img src="{{ getfotoPelanggan($d->foto) }}"
-                                                                alt="" class="rounded-circle">
+                                                            <img src="{{ getfotoPelanggan($d->foto) }}" alt="" class="rounded-circle">
                                                         </div>
                                                     @else
                                                         <div class="avatar avatar-xs me-2">
-                                                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}"
-                                                                alt="" class="rounded-circle">
+                                                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt=""
+                                                                class="rounded-circle">
                                                         </div>
                                                     @endif
                                                 @else
                                                     <div class="avatar avatar-xs me-2">
-                                                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}"
-                                                            alt="" class="rounded-circle">
+                                                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt=""
+                                                            class="rounded-circle">
                                                     </div>
                                                 @endif
 
@@ -238,8 +228,7 @@
                                                     @endcan
                                                     @can('pelanggan.show')
                                                         <div>
-                                                            <a href="{{ route('pelanggan.show', Crypt::encrypt($d->kode_pelanggan)) }}"
-                                                                class="me-2">
+                                                            <a href="{{ route('pelanggan.show', Crypt::encrypt($d->kode_pelanggan)) }}" class="me-2">
                                                                 <i class="ti ti-file-description text-info"></i>
                                                             </a>
                                                         </div>
@@ -275,8 +264,7 @@
 </div>
 <x-modal-form id="mdlcreatePelanggan" size="modal-lg" show="loadcreatePelanggan" title="Tambah Pelanggan" />
 <x-modal-form id="mdleditPelanggan" size="modal-lg" show="loadeditPelanggan" title="Edit Pelanggan" />
-<x-modal-form id="mdlNonaktifPelanggan" size="modal-lg" show="loadNonaktifPelanggan"
-    title="Nonaktifkan Pelanggan" />
+<x-modal-form id="mdlNonaktifPelanggan" size="modal-xl" show="loadNonaktifPelanggan" title="Nonaktifkan Pelanggan" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
@@ -291,6 +279,15 @@
         $("#btnNonaktif").click(function(e) {
             e.preventDefault();
             $('#mdlNonaktifPelanggan').modal("show");
+            $("#loadNonaktifPelanggan").html(`
+            <div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>
+            `);
             $("#loadNonaktifPelanggan").load('/pelanggan/nonaktif');
         });
 

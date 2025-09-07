@@ -364,7 +364,7 @@ function getAkunpiutangcabang($kode_cabang)
         $akun = "1-1494";
     } else if ($kode_cabang == "TGR") {
         $akun = "1-1495";
-    }else if ($kode_cabang == "CRB") {
+    } else if ($kode_cabang == "CRB") {
         $akun = "1-1496";
     } else {
         $akun = "99";
@@ -722,6 +722,15 @@ function getMonthName2($month)
     return $monthNames[$month - 1];
 }
 
+
+function konversiHariKeBulan($jumlahHari)
+{
+    if ($jumlahHari === null) {
+        return '-';
+    }
+    $bulan = floor($jumlahHari / 30);
+    return $bulan . ' bulan';
+}
 // function getroleuser()
 // {
 

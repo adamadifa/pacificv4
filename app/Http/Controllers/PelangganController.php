@@ -985,8 +985,8 @@ class PelangganController extends Controller
             return DataTables::of($pelanggan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" nama_pelanggan="' . $row->nama_pelanggan . '" no_pengajuan="' . $row->no_pengajuan . '" 
-                    
+                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" nama_pelanggan="' . $row->nama_pelanggan . '" no_pengajuan="' . $row->no_pengajuan . '"
+
                     class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
                     return $btn;
                 })
@@ -1002,9 +1002,15 @@ class PelangganController extends Controller
             ->select('kode_pelanggan', DB::raw('MAX(tanggal) as tanggal'))
             ->groupBy('kode_pelanggan');
 
+        $hariini = date('Y-m-d');
 
         $pelanggan = Pelanggan::query()
-            ->select('pelanggan.kode_pelanggan', 'pelanggan.nama_pelanggan')
+            ->select(
+                'pelanggan.kode_pelanggan',
+                'pelanggan.nama_pelanggan',
+                'penjualanterakhir.tanggal',
+                DB::raw("DATEDIFF('$hariini', penjualanterakhir.tanggal) as jmlhari")
+            )
             ->leftJoinSub($penjualanterakhir, 'penjualanterakhir', function ($join) {
                 $join->on('pelanggan.kode_pelanggan', '=', 'penjualanterakhir.kode_pelanggan');
             })
@@ -1012,10 +1018,18 @@ class PelangganController extends Controller
                 $query->whereNotNull('penjualanterakhir.tanggal')
                     ->Where('penjualanterakhir.tanggal', '<=', now()->subDays(90));
             })
+            ->where('pelanggan.status_aktif_pelanggan', 1)
             ->get();
 
-        dd($pelanggan);
+
 
         return view('datamaster.pelanggan.nonaktif', compact('pelanggan'));
+    }
+
+    public function updatenonaktifpelanggan(Request $request)
+    {
+        $kode_pelanggan = $request->kode_pelanggan;
+        $pelanggan = Pelanggan::whereIn('kode_pelanggan', $kode_pelanggan)->update(['status_aktif_pelanggan' => 0]);
+        return Redirect::back()->with(messageSuccess(count($kode_pelanggan) . ' Pelanggan berhasil di nonaktifkan'));
     }
 }

@@ -384,6 +384,7 @@ Route::middleware('auth')->group(function () {
 
 
         Route::get('/pelanggan/nonaktif', 'nonaktif')->name('pelanggan.nonaktif');
+        Route::post('/pelanggan/updatenonaktifpelanggan', 'updatenonaktifpelanggan')->name('pelanggan.updatenonaktifpelanggan');
 
         // Route::get('/sfa/pelanggan', 'index')->name('sfa.pelanggan');
     });
