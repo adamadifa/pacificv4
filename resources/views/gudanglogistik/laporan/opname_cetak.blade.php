@@ -136,7 +136,7 @@
                             <td class="right">{{ formatAngkaDesimal($saldo_akhir_totalharga) }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->opname_qty) }}</td>
                             <td class="right">
-                                {{ ROUND($saldo_akhir, 2) . ' - ' . $d->opname_qty . ' = ' . $selisih)}}
+                                {{ ROUND($saldo_akhir, 2) . ' - ' . $d->opname_qty . ' = ' . $selisih }}
                             </td>
                         </tr>
                     @endif
