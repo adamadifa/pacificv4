@@ -362,7 +362,7 @@
                     @endif
                 </tr>
                 <tr>
-                    <td style="text-align: center; height:4rem"></td>
+                    <td style="text-align: center; height:5rem"></td>
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
                         <td colspan="2" style="text-align: center"></td>
                     @else
