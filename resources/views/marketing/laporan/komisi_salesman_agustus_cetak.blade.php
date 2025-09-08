@@ -215,29 +215,29 @@
                                     @php
                                         $totalpoin = $total_poin;
                                     @endphp
-                                    @if ($totalpoin > 70 && $totalpoin <= 75)
-                                        @php
-                                            $reward_qty = 1000000;
-                                        @endphp
-                                    @elseif ($totalpoin > 75 && $totalpoin <= 80)
+                                    @if ($totalpoin >= 70 && $totalpoin < 75)
                                         @php
                                             $reward_qty = 1500000;
                                         @endphp
-                                    @elseif ($totalpoin > 80 && $totalpoin <= 85)
+                                    @elseif ($totalpoin >= 75 && $totalpoin < 80)
                                         @php
                                             $reward_qty = 2000000;
                                         @endphp
-                                    @elseif ($totalpoin > 85 && $totalpoin <= 90)
+                                    @elseif ($totalpoin >= 80 && $totalpoin < 85)
                                         @php
                                             $reward_qty = 2500000;
                                         @endphp
-                                    @elseif ($totalpoin > 90 && $totalpoin <= 95)
+                                    @elseif ($totalpoin >= 85 && $totalpoin < 90)
                                         @php
                                             $reward_qty = 3000000;
                                         @endphp
-                                    @elseif ($totalpoin > 95)
+                                    @elseif ($totalpoin >= 90 && $totalpoin < 95)
                                         @php
                                             $reward_qty = 3500000;
+                                        @endphp
+                                    @elseif ($totalpoin >= 95)
+                                        @php
+                                            $reward_qty = 4000000;
                                         @endphp
                                     @else
                                         @php
