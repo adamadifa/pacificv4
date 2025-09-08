@@ -7,6 +7,7 @@
                     <option value="">Format Laporan</option>
                     <option value="1">Buku Besar</option>
                     <option value="2">Neraca</option>
+                    <option value="3">Laba Rugi</option>
                 </select>
             </div>
         </div>
