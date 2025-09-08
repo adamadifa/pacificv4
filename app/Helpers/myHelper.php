@@ -530,15 +530,15 @@ function pihakpertamacabang($cabang, $perusahaan)
     $kepalaadmin = [
         'PWT' => 'Galuh Setiaji W',
         'BTN' => 'Anif Ardiana',
-        'BDG' => 'Rahmayanti',
+        'BDG' => 'Mohamad Ridwan Fauzi',
         'SKB' => 'Aceng Cahya Sugianto',
         'TGL' => 'Rosihul Iman',
         'SBY' => 'Angga Wahyu P',
         'SMR' => 'Muh. Fahmi Fadil',
         'KLT' => 'Fikkry Yusuf',
-        'BGR' => 'Rani Silviana',
+        'BGR' => 'Rizki Adam Husaeni',
         'GRT' => 'Nurman Susila',
-        'BKI' => 'Fandrias Anggoro',
+        'BKI' => 'Victor Simatupang',
         'PWK' => 'M. Hirzam Purnama',
         'TSM' => 'Dade Gunawan',
         'TGR' => 'Excel Delvara'
@@ -548,7 +548,7 @@ function pihakpertamacabang($cabang, $perusahaan)
     $kepalapenjualan = [
         'PWT' => 'Yeni Listiana S',
         'TGR' => 'Robertus David',
-        'BDG' => 'Oki Rahmat Effendy',
+        'BDG' => 'Dasep Reski Soejani',
         'SKB' => 'Asep Yusuf',
         'TGL' => 'Imam Syafangat',
         'SBY' => 'Angga Wahyu',
