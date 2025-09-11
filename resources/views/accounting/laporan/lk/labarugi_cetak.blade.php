@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Neraca {{ date('Y-m-d H:i:s') }}</title>
+    <title>Laba Rugi {{ date('Y-m-d H:i:s') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="{{ asset('assets/vendor/libs/freeze/js/freeze-table.min.js') }}"></script>
@@ -26,7 +26,7 @@
 <body>
     <div class="header">
         <h4 class="title">
-            NERACA<br>
+            LABA RUGI<br>
         </h4>
         <h4> PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
     </div>
@@ -40,7 +40,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($neraca as $d)
+                    @foreach ($labarugi as $d)
                         @php
                             // Hitung indentasi berdasarkan level (misal: 20px per level)
                             $indent = ($d->level ?? 0) * 20;

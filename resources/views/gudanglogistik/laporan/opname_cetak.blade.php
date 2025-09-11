@@ -86,11 +86,13 @@
                                 $cek = 2;
                             } else {
                                 $cek = 3;
-                                $harga_keluar = ($d->saldo_awal_totalharga + $d->bm_totalharga + $d->bm_penyesuaian) / $jml_barang_masuk_qty;
+                                $harga_keluar =
+                                    ($d->saldo_awal_totalharga + $d->bm_totalharga + $d->bm_penyesuaian) /
+                                    $jml_barang_masuk_qty;
                             }
 
                             $saldo_akhir = $d->saldo_awal_qty + $d->bm_jumlah - $d->bk_jumlah;
-                            $selisih = ROUND($saldo_akhir, 2) - ROUND($d->opname_qty);
+                            $selisih = ROUND($saldo_akhir, 2) - ROUND($d->opname_qty, 2);
                             $total_saldo_awal += $d->saldo_awal_qty;
                             $total_saldo_awal_totalharga += $d->saldo_awal_totalharga;
 
@@ -124,7 +126,8 @@
                             <td class="right">{{ formatAngkaDesimal($bm_totalharga) }}</td>
 
                             <td class="right">{{ formatAngkaDesimal($d->bk_jumlah) }}</td>
-                            <td class="right">{{ !empty($d->bk_jumlah) ? formatAngkaDesimal($harga_keluar) : '' }}</td>
+                            <td class="right">{{ !empty($d->bk_jumlah) ? formatAngkaDesimal($harga_keluar) : '' }}
+                            </td>
                             <td class="right">{{ formatAngkaDesimal($bk_totalharga) }}</td>
 
 
@@ -132,7 +135,9 @@
                             <td class="right">{{ formatAngkaDesimal($harga_keluar) }}</td>
                             <td class="right">{{ formatAngkaDesimal($saldo_akhir_totalharga) }}</td>
                             <td class="right">{{ formatAngkaDesimal($d->opname_qty) }}</td>
-                            <td class="right">{{ formatAngkaDesimal($selisih) }}</td>
+                            <td class="right">
+                                {{ formatAngkaDesimal($selisih) }}
+                            </td>
                         </tr>
                     @endif
                 @endforeach

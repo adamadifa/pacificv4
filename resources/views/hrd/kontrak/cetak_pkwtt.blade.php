@@ -58,7 +58,8 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt=""
+                                style="width: 80px; height:80px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -116,7 +117,8 @@
             </table>
             <p>
                 Bertindak untuk dan atas nama <b>{{ $kontrak->nama_pt }}</b>
-                berkedudukan di {{ $kontrak->kode_cabang != 'PST' ? $kontrak->nama_cabang : 'Tasikmalaya' }} selanjutnya disebut <b>PIHAK SATU.</b>
+                berkedudukan di {{ $kontrak->kode_cabang != 'PST' ? $kontrak->nama_cabang : 'Tasikmalaya' }}
+                selanjutnya disebut <b>PIHAK SATU.</b>
             </p>
             <p>
             <table>
@@ -148,7 +150,8 @@
                 Bertindak atas nama diri sendiri selanjutnya disebut <b>PIHAK KEDUA.</b><br>
             </p>
             <p>
-                <b>PIHAK SATU</b> dan <b>PIHAK DUA</b> telah mengadakan kesepakatan Perjanjian Kerja Waktu Tertentu dengan ketentuan
+                <b>PIHAK SATU</b> dan <b>PIHAK DUA</b> telah mengadakan kesepakatan Perjanjian Kerja Waktu Tertentu
+                dengan ketentuan
                 sebagai berikut:
             </p>
             <h4 style="text-align: center">
@@ -172,9 +175,15 @@
                         Pihak kedua setuju menerima upah dengan rincian terlampir:
                     @else
                         @php
-                            $totalupah = $gaji->gaji_pokok + $gaji->t_jabatan + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill;
+                            $totalupah =
+                                $gaji->gaji_pokok +
+                                $gaji->t_jabatan +
+                                $gaji->t_tanggungjawab +
+                                $gaji->t_makan +
+                                $gaji->t_skill;
                         @endphp
-                        Pihak kedua setuju menerima upah sebesar Rp {{ formatRupiah($totalupah) }} ,- dengan rincian sebagai
+                        Pihak kedua setuju menerima upah sebesar Rp {{ formatRupiah($totalupah) }} ,- dengan rincian
+                        sebagai
                         berikut :
                         <table>
                             <tr>
@@ -220,7 +229,8 @@
             </h4>
             <ol>
                 <li>
-                    Jam kerja adalah 8 jam sehari (termasuk istirahat 1 jam) atau 40 Jam seminggu Senin s/d Jumat 07.00 –
+                    Jam kerja adalah 8 jam sehari (termasuk istirahat 1 jam) atau 40 Jam seminggu Senin s/d Jumat 07.00
+                    –
                     15.00 WIB dan Sabtu Jam 07.00 – 12.00 WIB. Atau sesuai jadwal kerja yang disepakati bersama.
                 </li>
                 <li>
@@ -241,21 +251,25 @@
                     (Perjanjian Kerja Bersama)
                 </li>
                 <li>
-                    Pelanggaran tata tertib PKB (Perjanjian Kerja Bersama) oleh pihak kedua dapat diberikan peringatan baik
-                    lisan maupun tulisan dan bila terpaksa berlaku scorsing sampai pemutusan hubungan kerja dengan landasan
+                    Pelanggaran tata tertib PKB (Perjanjian Kerja Bersama) oleh pihak kedua dapat diberikan peringatan
+                    baik
+                    lisan maupun tulisan dan bila terpaksa berlaku scorsing sampai pemutusan hubungan kerja dengan
+                    landasan
                     hukum yang dipergunakan oleh pihak kesatu adalah PKB (Perjanjian Kerja Bersama) dan peraturan
                     ketenagakerjaan yang berlaku.
                 </li>
                 <li>
                     Dalam hal pekerja yang mendapatkan kesempatan promosi jabatan atas hasil seleksi yang ditempuh, maka
-                    pekerja wajib menandatangani surat pernyataan bersedia mengabdi sekurang-kurangnya 2 tahun untuk promosi
+                    pekerja wajib menandatangani surat pernyataan bersedia mengabdi sekurang-kurangnya 2 tahun untuk
+                    promosi
                     ke level supervisor dan 3 tahun untuk promosi ke level manajemen pusat/cabang.
                 </li>
                 <li>
                     Izin tidak masuk kerja terlebih dahulu meminta izin tertulis kepada pimpinan.
                 </li>
                 <li>
-                    Pihak kesatu berhak memindahkan / menempatkan pihak kedua dari pekerjaan yang dianggap perlu oleh pihak
+                    Pihak kesatu berhak memindahkan / menempatkan pihak kedua dari pekerjaan yang dianggap perlu oleh
+                    pihak
                     kesatu dan pihak kedua wajib mematuhi dan melaksanakannya dengan penuh tanggung jawab.
                 </li>
             </ol>
@@ -269,7 +283,8 @@
             <ol>
                 <li>Pihak kedua wajib bertanggungjawab terhadap tugas yang diberikan oleh pimpinan.</li>
                 <li>Pihak kedua wajib mengganti kerugian apabila pihak kedua merusak barang atau peralatan lainnya baik
-                    disengaja ataupun tidak disengaja milik perusahaan sehingga menyebabkan kerugian bagi perusahaan.</li>
+                    disengaja ataupun tidak disengaja milik perusahaan sehingga menyebabkan kerugian bagi perusahaan.
+                </li>
                 <li>Pihak kedua akan dituntut secara hukum apabila pihak kedua melakukan pencurian milik perusahaan baik
                     dilakukan secara individu atau bekerjasama dengan pihak lain atau pihak ketiga.</li>
                 <li>Pihak kedaua akan di scorsing sesuai dengan peraturan perusahaan yang berlaku, yaitu PKB (Perjanjian
@@ -283,8 +298,10 @@
             </h4>
             <ol>
                 <li>Seragam diatur di Peraturan Perusahaan.</li>
-                <li>Cuti diberikan setelah masa kerja satu tahun dan pengambilan cutinya jatuh pada bulan ketiga belas.</li>
-                <li>Cuti dalam kasus meninggalnya istri, ayah/ibu kandung, dan anak kandung diberikan cuti selama dua hari
+                <li>Cuti diberikan setelah masa kerja satu tahun dan pengambilan cutinya jatuh pada bulan ketiga belas.
+                </li>
+                <li>Cuti dalam kasus meninggalnya istri, ayah/ibu kandung, dan anak kandung diberikan cuti selama dua
+                    hari
                     berturut turut.</li>
 
             </ol>
@@ -295,7 +312,8 @@
                 MASA KERJA
             </h4>
             <ol>
-                <li>Perjanjian Kerja Waktu Tidak Tertentu ini mulai berlaku pada saat ditandatangani oleh kedua belah pihak.
+                <li>Perjanjian Kerja Waktu Tidak Tertentu ini mulai berlaku pada saat ditandatangani oleh kedua belah
+                    pihak.
                 </li>
                 <li>Perjanjian Kerja Waktu Tidak Tertentu ini akan berakhir apabila :
                     <ol type="a">
@@ -306,9 +324,11 @@
                     </ol>
                 </li>
 
-                <li>Untuk hal-hal yang belum tercantum dalam syarat-syarat kerja ini berlaku ketentuan-ketentuan umum pada
+                <li>Untuk hal-hal yang belum tercantum dalam syarat-syarat kerja ini berlaku ketentuan-ketentuan umum
+                    pada
                     PKB (Perjanjian Kerja Bersama).</li>
-                <li>Apabila dikemudian hari terdapat kekeliruan pada surat perjanjian kerja bersama ini maka akan ditinjau
+                <li>Apabila dikemudian hari terdapat kekeliruan pada surat perjanjian kerja bersama ini maka akan
+                    ditinjau
                     kembali dan diperbaiki sebagaimana mestinya.</li>
             </ol>
             </p>
@@ -324,7 +344,8 @@
             <table style="width: 100%;">
                 <tr>
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
-                        <td colspan="3" style="text-align: center; padding:1rem">{{ textCamelCase($kontrak->nama_cabang) }},
+                        <td colspan="3" style="text-align: center; padding:1rem">
+                            {{ textCamelCase($kontrak->nama_cabang) }},
                             {{ DateToIndo($kontrak->tanggal) }}</td>
                     @else
                         <td colspan="2" style="text-align: center; padding:1rem">
@@ -341,7 +362,7 @@
                     @endif
                 </tr>
                 <tr>
-                    <td style="text-align: center; height:3rem"></td>
+                    <td style="text-align: center; height:5rem"></td>
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
                         <td colspan="2" style="text-align: center"></td>
                     @else
@@ -349,7 +370,7 @@
                     @endif
                 </tr>
                 <tr>
-                    <td style="text-align: center"><u>{{ $kontrak->nama_karyawan }}</u><br>Karyawan</td>
+                    <td style="text-align: center"><u>{{ $kontrak->nama_karyawan }}</u><br>Pekerja</td>
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
                         @if ($kontrak->kode_perusahaan == 'MP')
                             <td style="text-align: center">

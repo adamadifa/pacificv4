@@ -1,13 +1,25 @@
 <form action="{{ route('laporanaccounting.cetakbukubesar') }}" id="formLedger" target="_blank" method="POST">
     @csrf
-
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="form-group mb-3">
+                <select name="formatlaporan" id="formatlaporan" class="form-select">
+                    <option value="">Format Laporan</option>
+                    <option value="1">Buku Besar</option>
+                    <option value="2">Neraca</option>
+                    <option value="3">Laba Rugi</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <div class="row" id="coa">
         <div class="col-lg-6 col-sm-12 col-md-12">
             <div class="form-group mb-3">
                 <select name="kode_akun_dari" id="kode_akun_dari" class="form-select select2Kodeakundari">
                     <option value="">Semua Akun</option>
                     @foreach ($coa as $d)
-                        <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ truncateText($d->nama_akun) }}</option>
+                        <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ truncateText($d->nama_akun) }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -17,23 +29,14 @@
                 <select name="kode_akun_sampai" id="kode_akun_sampai" class="form-select select2Kodeakunsampai">
                     <option value="">Semua Akun</option>
                     @foreach ($coa as $d)
-                        <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ truncateText($d->nama_akun) }}</option>
+                        <option value="{{ $d->kode_akun }}">{{ $d->kode_akun }} {{ truncateText($d->nama_akun) }}
+                        </option>
                     @endforeach
                 </select>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12 col-sm-12 col-md-12">
-            <div class="form-group mb-3">
-                <select name="formatlaporan" id="formatlaporan" class="form-select">
-                    <option value="">Format Laporan</option>
-                    <option value="1">Buku Besar</option>
-                    <option value="2">Neraca</option>
-                </select>
-            </div>
-        </div>
-    </div>
+
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
@@ -60,7 +63,20 @@
         $(function() {
             const formLedger = $("#formLedger");
 
+            // Fungsi untuk menampilkan/menyembunyikan COA sesuai format laporan
+            function showCoa() {
+                const formatlaporan = formLedger.find("#formatlaporan").val();
+                if (formatlaporan == '1') {
+                    $("#coa").show();
+                } else {
+                    $("#coa").hide();
+                    // Reset value COA ke kosong
+                    formLedger.find("#kode_akun_dari").val("").trigger('change');
+                    formLedger.find("#kode_akun_sampai").val("").trigger('change');
+                }
+            }
 
+            // Inisialisasi select2
             const select2Kodeakundari = $(".select2Kodeakundari");
             if (select2Kodeakundari.length) {
                 select2Kodeakundari.each(function() {
@@ -85,19 +101,13 @@
                 });
             }
 
-            // function showcoa() {
-            //     const formatlaporan = formLedger.find("#formatlaporan").val();
-            //     if (formatlaporan == '1') {
-            //         $("#coa").show();
-            //     } else {
-            //         $("#coa").hide();
-            //     }
-            // }
-            // showcoa();
+            // Jalankan showCoa saat halaman pertama kali dimuat
+            showCoa();
 
-            // formLedger.find("#formatlaporan").change(function() {
-            //     showcoa();
-            // });
+            // Event ketika formatlaporan berubah
+            formLedger.find("#formatlaporan").change(function() {
+                showCoa();
+            });
 
             formLedger.submit(function(e) {
                 const formatlaporan = formLedger.find("#formatlaporan").val();
