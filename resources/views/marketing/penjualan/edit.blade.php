@@ -444,6 +444,7 @@
     $(document).ready(function() {
 
         const kode_pelanggan = "{{ Crypt::encrypt($penjualan->kode_pelanggan) }}";
+        let kode_cabang_pelanggan = '';
 
         function convertToRupiah(number) {
             if (number) {
@@ -689,6 +690,7 @@
                     //     buttonEnable();
                     // }
                     $('#kode_pelanggan').val(response.data.kode_pelanggan);
+                    kode_cabang_pelanggan = response.data.kode_cabang;
                     $('#nama_pelanggan').val(response.data.nama_pelanggan);
                     $('#latitude').text(response.data.latitude);
                     $('#longitude').text(response.data.longitude);
@@ -1374,6 +1376,22 @@
 
         }
 
+        function hitungdiskonSAOSME() {
+            let kode_cabang_diskon_saosme = ['BTN', 'CRB'];
+            let totalQuantity = calculateTotalQuantityByCategory('D010');
+            let diskon = calculateDiscount(totalQuantity, 'D010');
+            if (kode_cabang_diskon_saosme.includes(kode_cabang_pelanggan)) {
+                diskon = diskon;
+                //alert('YES');
+            } else {
+                diskon = 0;
+                //alert('NO');
+            }
+
+            //alert(diskon);
+            return diskon;
+        }
+
 
         function hitungdiskonSwan() {
             let totalQuantity = calculateTotalQuantityByCategory('D001');
@@ -1381,7 +1399,9 @@
             let diskonbp500 = hitungdiskonProductBP500();
             let diskonSPPP500 = hitungdiskonSPPP500();
             let diskonSPPP1000 = hitungdiskonSPPP1000();
-            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500) + parseInt(diskonSPPP500) + parseInt(diskonSPPP1000);
+            let diskonSAOSME = hitungdiskonSAOSME();
+            let totaldiskon = parseInt(diskon) + parseInt(diskonbp500) + parseInt(diskonSPPP500) + parseInt(diskonSPPP1000) + parseInt(
+                diskonSAOSME);
             $("#potongan_swan").val(convertToRupiah(totaldiskon));
             return totaldiskon;
         }

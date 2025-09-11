@@ -474,6 +474,8 @@ class PenjualanController extends Controller
         $kode_salesman = $request->kode_salesman;
         $keterangan = $request->keterangan;
         //Potongan
+
+        // dd($request->potongan_swan);
         $potongan_aida = toNumber($request->potongan_aida);
         $potongan_swan = toNumber($request->potongan_swan);
         $potongan_stick = toNumber($request->potongan_stick);
