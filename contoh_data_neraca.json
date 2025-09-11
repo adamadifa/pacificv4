@@ -1,0 +1,251 @@
+{
+    "neraca": [
+        {
+            "kode_akun": "1-0000",
+            "nama_akun": "AKTIVA",
+            "level": 0,
+            "sub_akun": "1",
+            "saldo_akhir": null
+        },
+        {
+            "kode_akun": "1-1000",
+            "nama_akun": "AKTIVA LANCAR",
+            "level": 1,
+            "sub_akun": "1",
+            "saldo_akhir": null
+        },
+        {
+            "kode_akun": "1-1100",
+            "nama_akun": "KAS",
+            "level": 2,
+            "sub_akun": "1",
+            "saldo_akhir": null
+        },
+        {
+            "kode_akun": "1-1101",
+            "nama_akun": "Kas Besar Pusat",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 3630156800
+        },
+        {
+            "kode_akun": "1-1102",
+            "nama_akun": "Kas Kecil Bandung",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 9794500
+        },
+        {
+            "kode_akun": "1-1103",
+            "nama_akun": "Kas Kecil Bogor",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 11195200
+        },
+        {
+            "kode_akun": "1-1104",
+            "nama_akun": "Kas/Bank Perantara",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 0
+        },
+        {
+            "kode_akun": "1-1111",
+            "nama_akun": "Kas Kecil Pusat",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 5531700
+        },
+        {
+            "kode_akun": "1-1112",
+            "nama_akun": "Kas Kecil Tasik",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 8350000
+        },
+        {
+            "kode_akun": "1-1113",
+            "nama_akun": "Kas Kecil Sukabumi",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 7232000
+        },
+        {
+            "kode_akun": "1-1114",
+            "nama_akun": "Kas Kecil Pwt",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 1661200
+        },
+        {
+            "kode_akun": "1-1115",
+            "nama_akun": "Kas Kecil Tegal",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 0
+        },
+        {
+            "kode_akun": "1-1116",
+            "nama_akun": "Kas Kecil Surabaya",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 75400
+        },
+        {
+            "kode_akun": "1-1117",
+            "nama_akun": "Kas Kecil Semarang",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 2815600
+        },
+        {
+            "kode_akun": "1-1118",
+            "nama_akun": "Kas Kecil Klaten",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 927100
+        },
+        {
+            "kode_akun": "1-1119",
+            "nama_akun": "Kas Kecil Garut",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 140600
+        },
+        {
+            "kode_akun": "1-1120",
+            "nama_akun": "Kas Kecil Purwakarta",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 7055800
+        },
+        {
+            "kode_akun": "1-1121",
+            "nama_akun": "Kas Kecil Banten",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 5204100
+        },
+        {
+            "kode_akun": "1-1122",
+            "nama_akun": "Kas Kecil Bekasi",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 5069800
+        },
+        {
+            "kode_akun": "1-1123",
+            "nama_akun": "Kas Kecil Tangerang",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 5303400
+        },
+        {
+            "kode_akun": "1-1124",
+            "nama_akun": "Kas Kecil Cirebon",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 6494000
+        },
+        {
+            "kode_akun": "1-1200",
+            "nama_akun": "BANK",
+            "level": 2,
+            "sub_akun": "1",
+            "saldo_akhir": null
+        },
+        {
+            "kode_akun": "1-1201",
+            "nama_akun": "Bank BCA",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 500000000
+        },
+        {
+            "kode_akun": "1-1202",
+            "nama_akun": "Bank Mandiri",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 300000000
+        },
+        {
+            "kode_akun": "1-1300",
+            "nama_akun": "PIUTANG",
+            "level": 2,
+            "sub_akun": "1",
+            "saldo_akhir": null
+        },
+        {
+            "kode_akun": "1-1301",
+            "nama_akun": "Piutang Usaha",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 250000000
+        },
+        {
+            "kode_akun": "1-1302",
+            "nama_akun": "Piutang Lain-lain",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 50000000
+        },
+        {
+            "kode_akun": "1-2000",
+            "nama_akun": "AKTIVA TETAP",
+            "level": 1,
+            "sub_akun": "1",
+            "saldo_akhir": null
+        },
+        {
+            "kode_akun": "1-2100",
+            "nama_akun": "TANAH",
+            "level": 2,
+            "sub_akun": "1",
+            "saldo_akhir": null
+        },
+        {
+            "kode_akun": "1-2101",
+            "nama_akun": "Tanah Gedung",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 1000000000
+        },
+        {
+            "kode_akun": "1-2200",
+            "nama_akun": "GEDUNG",
+            "level": 2,
+            "sub_akun": "1",
+            "saldo_akhir": null
+        },
+        {
+            "kode_akun": "1-2201",
+            "nama_akun": "Gedung Kantor",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": 800000000
+        },
+        {
+            "kode_akun": "1-2202",
+            "nama_akun": "Akumulasi Penyusutan Gedung",
+            "level": 3,
+            "sub_akun": "1",
+            "saldo_akhir": -200000000
+        }
+    ],
+    "metadata": {
+        "total_records": 30,
+        "structure": {
+            "kode_akun": "Kode akun dengan format X-XXXX",
+            "nama_akun": "Nama akun",
+            "level": "Level hierarki (0=root, 1=group, 2=subgroup, 3=detail)",
+            "sub_akun": "Kode sub akun untuk grouping",
+            "saldo_akhir": "Saldo akhir akun (null untuk header, angka untuk detail)"
+        },
+        "hierarchy": {
+            "level_0": "Header utama (AKTIVA)",
+            "level_1": "Group utama (AKTIVA LANCAR, AKTIVA TETAP)",
+            "level_2": "Subgroup (KAS, BANK, PIUTANG, TANAH, GEDUNG)",
+            "level_3": "Akun detail (Kas Besar Pusat, Bank BCA, dll)"
+        }
+    }
+}

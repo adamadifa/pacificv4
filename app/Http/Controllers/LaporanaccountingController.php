@@ -926,6 +926,7 @@ class LaporanaccountingController extends Controller
             'bukubesar_saldoawal_detail.kode_akun',
             'coa.jenis_akun',
             'nama_akun',
+
             // Set tanggal 1 pada bulan yang dipilih sebagai default tanggal
             DB::raw("CONCAT('$tahun-$bulan-01') as tanggal"),
             'bukubesar_saldoawal_detail.kode_saldo_awal as no_bukti',
@@ -1417,11 +1418,11 @@ class LaporanaccountingController extends Controller
             $data['neraca'] = Coa::leftJoinSub($rekapakun, 'rekapakun', function ($join) {
                 $join->on('coa.kode_akun', '=', 'rekapakun.kode_akun');
             })
-                ->select('coa.kode_akun', 'coa.nama_akun', 'coa.level', 'rekapakun.saldo_akhir')
+                ->select('coa.kode_akun', 'coa.nama_akun', 'coa.level', 'coa.sub_akun', 'rekapakun.saldo_akhir')
                 ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca) . ')')
                 ->whereNotIn('coa.kode_akun', $akun_jangan_ditampilkan)
                 ->where(function ($query) {
-                    // Hanya tampilkan saldo_akhir yang tidak null, 
+                    // Hanya tampilkan saldo_akhir yang tidak null,
                     // atau jika null hanya untuk level 0 dan 1
                     $query->whereNotNull('rekapakun.saldo_akhir')
                         ->orWhere(function ($q) {
@@ -1456,7 +1457,7 @@ class LaporanaccountingController extends Controller
                 ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca) . ')')
                 ->whereNotIn('coa.kode_akun', $akun_jangan_ditampilkan)
                 ->where(function ($query) {
-                    // Hanya tampilkan saldo_akhir yang tidak null, 
+                    // Hanya tampilkan saldo_akhir yang tidak null,
                     // atau jika null hanya untuk level 0 dan 1
                     $query->whereNotNull('rekapakun.saldo_akhir')
                         ->orWhere(function ($q) {
