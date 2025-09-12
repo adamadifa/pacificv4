@@ -1379,7 +1379,7 @@ class LaporanaccountingController extends Controller
             DB::raw('1 as urutan')
         );
         $penyesuaian_penjualan->join('coa', 'marketing_penjualan.kode_akun_penyesuaian', '=', 'coa.kode_akun');
-        $potongan_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $penyesuaian_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $penyesuaian_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         $penyesuaian_penjualan->where('marketing_penjualan.status_batal', 0);
         $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
@@ -1392,7 +1392,7 @@ class LaporanaccountingController extends Controller
 
 
 
-        dd($penyesuaian_penjualan->get());
+        //dd($penyesuaian_penjualan->get());
 
 
         //dd($potongan_penjualan->get());
@@ -1465,7 +1465,8 @@ class LaporanaccountingController extends Controller
             ->unionAll($penjualannetto)
             ->unionAll($kasbesarpiutangdagang)
             ->unionAll($retur_penjualan)
-            ->unionAll($potongan_penjualan);
+            ->unionAll($potongan_penjualan)
+            ->unionAll($penyesuaian_penjualan);
 
         if ($request->formatlaporan == '1') {
 
