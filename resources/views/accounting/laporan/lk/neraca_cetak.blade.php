@@ -121,7 +121,7 @@
                         @endif
 
 
-                        @if ($next_level == 0)
+                        {{-- @if ($next_level == 0)
                             <tr class="subtotal-row">
                                 <td>
                                     <b>SUBTOTAL {{ strtoupper($level_0_name) }}</b>
@@ -134,7 +134,7 @@
                                 $subtotal_level_0 = 0;
                                 $level_0_name = '';
                             @endphp
-                        @endif
+                        @endif --}}
                     @endforeach
                 </tbody>
             </table>
