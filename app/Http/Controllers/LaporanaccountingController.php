@@ -1309,6 +1309,31 @@ class LaporanaccountingController extends Controller
 
 
 
+
+        $retur_penjualan = Detailretur::query();
+        $retur_penjualan->select(
+            'marketing_retur.kode_akun',
+            DB::raw("'Retur Penjualan' as nama_akun"),
+            'marketing_retur.tanggal',
+            DB::raw("marketing_retur.no_retur as no_bukti"),
+            DB::raw("'RETUR PENJUALAN' AS sumber"),
+            DB::raw("CONCAT(marketing_retur.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
+            DB::raw('0 as jml_kredit'),
+            'marketing_retur_detail.subtotal as jml_debet',
+            DB::raw('1 as urutan')
+        );
+
+        $retur_penjualan->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $retur_penjualan->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $retur_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $retur_penjualan->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $retur_penjualan->whereBetween('marketing_retur.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $retur_penjualan->where('marketing_retur.jenis_retur', 'PF');
+        $retur_penjualan->orderBy('marketing_retur.tanggal');
+        $retur_penjualan->orderBy('marketing_retur.no_retur');
+
         // if ($request->kode_akun_dari == '4-2100' || $request->kode_akun_sampai == '4-2100') {
         //     $retur_penjualan = Detailretur::query();
         //     $retur_penjualan->select(
@@ -1376,7 +1401,8 @@ class LaporanaccountingController extends Controller
             ->unionAll($jurnalkoreksi)
             ->unionAll($penjualan_produk)
             ->unionAll($penjualannetto)
-            ->unionAll($kasbesarpiutangdagang);
+            ->unionAll($kasbesarpiutangdagang)
+            ->unionAll($retur_penjualan);
 
         if ($request->formatlaporan == '1') {
 
