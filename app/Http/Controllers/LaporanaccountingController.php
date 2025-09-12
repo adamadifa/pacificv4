@@ -1385,8 +1385,9 @@ class LaporanaccountingController extends Controller
         $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
         $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
-            $potongan_penjualan->whereBetween('marketing_penjualan.kode_akun_potongan', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+            $potongan_penjualan->whereBetween('marketing_penjualan.kode_akun_penyesuaian', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
+
         $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
         $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
 
