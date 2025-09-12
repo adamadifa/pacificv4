@@ -1354,7 +1354,7 @@ class LaporanaccountingController extends Controller
         $potongan_penjualan->join('coa', 'marketing_penjualan.kode_akun_potongan', '=', 'coa.kode_akun');
         $potongan_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $potongan_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $potongan_penjualan->where('marketing_penjualan.jenis_transaksi', 'K');
+        $potongan_penjualan->where('marketing_penjualan.status_batal', 0);
         $potongan_penjualan->orderBy('marketing_penjualan.tanggal');
         $potongan_penjualan->orderBy('marketing_penjualan.no_faktur');
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
