@@ -1363,7 +1363,7 @@ class LaporanaccountingController extends Controller
         $potongan_penjualan->orderBy('marketing_penjualan.tanggal');
         $potongan_penjualan->orderBy('marketing_penjualan.no_faktur');
 
-        dd($potongan_penjualan->get());
+        //dd($potongan_penjualan->get());
         // if ($request->kode_akun_dari == '4-2100' || $request->kode_akun_sampai == '4-2100') {
         //     $retur_penjualan = Detailretur::query();
         //     $retur_penjualan->select(
@@ -1432,7 +1432,8 @@ class LaporanaccountingController extends Controller
             ->unionAll($penjualan_produk)
             ->unionAll($penjualannetto)
             ->unionAll($kasbesarpiutangdagang)
-            ->unionAll($retur_penjualan);
+            ->unionAll($retur_penjualan)
+            ->unionAll($potongan_penjualan);
 
         if ($request->formatlaporan == '1') {
 
