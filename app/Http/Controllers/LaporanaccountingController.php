@@ -1313,7 +1313,8 @@ class LaporanaccountingController extends Controller
         $retur_penjualan = Detailretur::query();
         $retur_penjualan->select(
             'marketing_retur.kode_akun',
-            DB::raw("'Retur Penjualan' as nama_akun"),
+            'coa.jenis_akun',
+            'nama_akun',
             'marketing_retur.tanggal',
             DB::raw("marketing_retur.no_retur as no_bukti"),
             DB::raw("'RETUR PENJUALAN' AS sumber"),
@@ -1324,6 +1325,7 @@ class LaporanaccountingController extends Controller
         );
 
         $retur_penjualan->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $retur_penjualan->join('coa', 'marketing_retur.kode_akun', '=', 'coa.kode_akun');
         $retur_penjualan->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $retur_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $retur_penjualan->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
