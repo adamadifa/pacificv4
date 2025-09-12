@@ -15,8 +15,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-sm-12 col-md-12">
-                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true"
-                        icon="ti ti-moneybag" />
+                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true" icon="ti ti-moneybag" />
                 </div>
             </div>
             <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
@@ -64,14 +63,21 @@
                 </thead>
                 <tbody id="loadjurnalumum">
                 </tbody>
+                <tfoot class="table-dark">
+                    <tr>
+                        <td colspan="3" class="text-end">TOTAL</td>
+                        <td class="text-end" id="total_debet"></td>
+                        <td class="text-end" id="total_kredit"></td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-3">
-                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox"
-                    value="" id="defaultCheck3">
+                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value="" id="defaultCheck3">
                 <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
             </div>
             <div class="form-group" id="saveButton">
@@ -84,6 +90,8 @@
     </div>
 </form>
 <script>
+    let total_debet = 0;
+    let total_kredit = 0;
     $(document).ready(function() {
         let baris = 0;
         const form = $('#formJurnalumum');
@@ -151,6 +159,21 @@
                 form.find("#saveButton").hide();
             }
         });
+
+        function calculateTotal() {
+            form.find("tbody tr").each(function() {
+                const debet = $(this).find("td:eq(3)").text().replace(/\./g, '') || 0;
+                const kredit = $(this).find("td:eq(4)").text().replace(/\./g, '') || 0;
+                // total_debet += parseFloat(debet);
+                // total_kredit += parseFloat(kredit);
+                total_debet += parseInt(debet);
+                total_kredit += parseInt(kredit);
+                console.log(total_debet);
+                console.log(total_kredit);
+            });
+            form.find("#total_debet").text(total_debet);
+            form.find("#total_kredit").text(total_kredit);
+        }
 
         $("#btnTambahItem").click(function(e) {
             e.preventDefault();
@@ -258,6 +281,7 @@
                 </tr>`;
                 form.find("#loadjurnalumum").append(newRow);
                 resetForm();
+                calculateTotal();
             }
         });
 
@@ -301,6 +325,17 @@
                 Swal.fire({
                     title: "Oops!",
                     text: "Jurnal Umum Tidak Boleh Kosong !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        form.find("#loadjurnalumum").focus();
+                    },
+                });
+                return false;
+            } else if (total_debet != total_kredit) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Total Debet Tidak Sama Dengan Total Kredit !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {

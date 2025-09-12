@@ -52,7 +52,8 @@ class PiutangkaryawanController extends Controller
                 'tanggal' => $request->tanggal,
                 'jumlah' => toNumber($request->jumlah),
                 'status' => isset($request->status) ? $request->status : 0,
-                'id_user' => auth()->user()->id
+                'id_user' => auth()->user()->id,
+                'kategori' => $request->kategori
             ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));

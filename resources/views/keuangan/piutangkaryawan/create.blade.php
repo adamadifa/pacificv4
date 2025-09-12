@@ -49,6 +49,13 @@
         <div class="col">
 
             <x-input-with-icon label="Jumlah Piutang" icon="ti ti-moneybag" name="jumlah" align="right" money="true" />
+            <div class="form-group mb-3">
+                <select name="kategori" id="kategori" class="form-select">
+                    <option value="">Kategori</option>
+                    <option value="KA">Karyawan</option>
+                    <option value="EK">Eks Karyawan</option>
+                </select>
+            </div>
             @can('piutangkaryawan.checkstatus')
                 <div class="form-check mb-3 mt-3">
                     <input class="form-check-input status" name="status" value="1" type="checkbox" id="status">

@@ -65,6 +65,7 @@
                                         <th>Jumlah</th>
                                         <th>Bayar</th>
                                         <th>Sisa Tagihan</th>
+                                        <th>Kategori</th>
                                         <th>Ket</th>
                                         <th>#</th>
                                     </tr>
@@ -85,6 +86,13 @@
                                             <td class="text-end">{{ formatAngka($d->totalpembayaran) }}</td>
                                             <td class="text-end">{{ formatAngka($sisatagihan) }}</td>
                                             <td>{!! $sisatagihan == 0 ? '<span class="badge bg-success">L</span>' : '<span class="badge bg-danger">BL</span>' !!}</td>
+                                            <td>
+                                                @if ($d->kategori == 'KA')
+                                                    <span class="badge bg-success">Karyawan</span>
+                                                @else
+                                                    <span class="badge bg-danger">Eks Karyawan</span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <div class="d-flex">
                                                     @can('piutangkaryawan.show')
