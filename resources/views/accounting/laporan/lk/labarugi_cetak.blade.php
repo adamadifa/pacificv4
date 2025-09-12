@@ -42,7 +42,7 @@
                 <tbody>
                     @foreach ($labarugi as $d)
                         @php
-                            $kode_akun_minus = ['4-2101', '4-2201', '4-2202', '5-1202'];
+                            $kode_akun_minus = ['4-2101', '4-2201', '4-2202', '5-1202', '5-3200', '5-3400', '5-3800'];
                             // Hitung indentasi berdasarkan level (misal: 20px per level)
                             $indent = ($d->level ?? 0) * 20;
                             if (in_array($d->kode_akun, $kode_akun_minus)) {
