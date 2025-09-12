@@ -1336,6 +1336,34 @@ class LaporanaccountingController extends Controller
         $retur_penjualan->orderBy('marketing_retur.tanggal');
         $retur_penjualan->orderBy('marketing_retur.no_retur');
 
+
+
+        $potongan_penjualan = Penjualan::query();
+        $potongan_penjualan->select(
+            'marketing_penjualan.kode_akun_potongan',
+            'coa.jenis_akun',
+            'nama_akun',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.no_faktur as no_bukti',
+            DB::raw("'PENJUALAN' AS sumber"),
+            DB::raw("CONCAT(' Penjualan ',penjualan.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
+            DB::raw('0 as jml_kredit'),
+            DB::raw('IFNULL(potongan,0) + IFNULL(potongan_istimewa,0) as jml_debet'),
+            DB::raw('1 as urutan')
+        );
+        $potongan_penjualan->join('coa', 'marketing_penjualan.kode_akun_potongan', '=', 'coa.kode_akun');
+        $potongan_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $potongan_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        $potongan_penjualan->where('marketing_penjualan.jenis_transaksi', 'K');
+        $potongan_penjualan->orderBy('marketing_penjualan.tanggal');
+        $potongan_penjualan->orderBy('marketing_penjualan.no_faktur');
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $potongan_penjualan->whereBetween('marketing_penjualan.kode_akun_potongan', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $potongan_penjualan->orderBy('marketing_penjualan.tanggal');
+        $potongan_penjualan->orderBy('marketing_penjualan.no_faktur');
+
+        dd($potongan_penjualan->get());
         // if ($request->kode_akun_dari == '4-2100' || $request->kode_akun_sampai == '4-2100') {
         //     $retur_penjualan = Detailretur::query();
         //     $retur_penjualan->select(
