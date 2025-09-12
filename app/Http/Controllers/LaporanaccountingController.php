@@ -1365,30 +1365,35 @@ class LaporanaccountingController extends Controller
 
 
 
-        // $penyesuaian_penjualan = Penjualan::query();
-        // $penyesuaian_penjualan->select(
-        //     'marketing_penjualan.kode_akun_penyesuaian',
-        //     'coa.jenis_akun',
-        //     'nama_akun',
-        //     'marketing_penjualan.tanggal',
-        //     'marketing_penjualan.no_faktur as no_bukti',
-        //     DB::raw("'PENJUALAN' AS sumber"),
-        //     DB::raw("CONCAT(' Penjualan ',marketing_penjualan.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
-        //     DB::raw('0 as jml_kredit'),
-        //     DB::raw('IFNULL(penyesuaian,0) as jml_debet'),
-        //     DB::raw('1 as urutan')
-        // );
-        // $penyesuaian_penjualan->join('coa', 'marketing_penjualan.kode_akun_penyesuaian', '=', 'coa.kode_akun');
-        // $potongan_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        // $penyesuaian_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        // $penyesuaian_penjualan->where('marketing_penjualan.status_batal', 0);
-        // $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
-        // $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
-        // if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
-        //     $potongan_penjualan->whereBetween('marketing_penjualan.kode_akun_potongan', [$request->kode_akun_dari, $request->kode_akun_sampai]);
-        // }
-        // $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
-        // $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
+        $penyesuaian_penjualan = Penjualan::query();
+        $penyesuaian_penjualan->select(
+            'marketing_penjualan.kode_akun_penyesuaian',
+            'coa.jenis_akun',
+            'nama_akun',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.no_faktur as no_bukti',
+            DB::raw("'PENJUALAN' AS sumber"),
+            DB::raw("CONCAT(' Penjualan ',marketing_penjualan.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
+            DB::raw('0 as jml_kredit'),
+            DB::raw('IFNULL(penyesuaian,0) as jml_debet'),
+            DB::raw('1 as urutan')
+        );
+        $penyesuaian_penjualan->join('coa', 'marketing_penjualan.kode_akun_penyesuaian', '=', 'coa.kode_akun');
+        $potongan_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $penyesuaian_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        $penyesuaian_penjualan->where('marketing_penjualan.status_batal', 0);
+        $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
+        $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $potongan_penjualan->whereBetween('marketing_penjualan.kode_akun_potongan', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
+        $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
+
+
+
+        dd($penyesuaian_penjualan->get());
+
 
         //dd($potongan_penjualan->get());
         // if ($request->kode_akun_dari == '4-2100' || $request->kode_akun_sampai == '4-2100') {
