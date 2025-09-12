@@ -45,17 +45,45 @@
                 </thead>
                 <tbody>
                     @php
-                        $lastLevel2 = null;
-                        $subtotalAmount = 0;
-                        $level2Items = [];
-                        $currentLevel2Name = '';
+                        // $lastLevel2 = null;
+                        // $subtotalAmount = 0;
+                        // $level2Items = [];
+                        // $currentLevel2Name = '';
+
+                        $subtotal_level_0 = 0;
+                        $level_0_name = '';
+
+                        $subtotal_level_1 = 0;
+                        $level_1_name = '';
                     @endphp
 
                     @foreach ($neraca as $index => $d)
                         @php
                             $indent = ($d->level ?? 0) * 20;
-                            $nextItem = isset($neraca[$index + 1]) ? $neraca[$index + 1] : null;
-                            $isLastItem = $index == count($neraca) - 1;
+                            $next_level = $neraca[$index + 1]->level ?? null;
+                            $next_before_level = $neraca[$index - 1]->level ?? null;
+
+                            //Level 0
+                            if ($d->level == 0) {
+                                $level_0_name = $d->nama_akun;
+                            }
+
+                            if ($next_level != 0) {
+                                $subtotal_level_0 += $d->saldo_akhir;
+                            }
+
+                            //Level 1
+
+                            if ($d->level == 1) {
+                                $level_1_name = $d->nama_akun;
+                            }
+
+                            if ($next_level != 1) {
+                                $subtotal_level_1 += $d->saldo_akhir;
+                            }
+
+                            //echo $level_0_name;
+
                         @endphp
 
                         <!-- Tampilkan item -->
@@ -76,58 +104,35 @@
                             </td>
                         </tr>
 
-                        @php
-                            // Jika level 2, simpan sebagai header grup
-                            if ($d->level == 2) {
-                                // Jika ada grup sebelumnya, tampilkan subtotalnya
-                                if ($lastLevel2 !== null && !empty($level2Items)) {
-                                    echo '<tr class="subtotal-row">';
-                                    echo '<td style="padding-left: ' .
-                                        ($lastLevel2->level ?? 0) * 20 .
-                                        'px;"><b>SUBTOTAL ' .
-                                        strtoupper($currentLevel2Name) .
-                                        '</b></td>';
-                                    echo '<td style="text-align: right;"><b>' . formatAngka($subtotalAmount) . '</b></td>';
-                                    echo '</tr>';
-                                }
 
-                                $lastLevel2 = $d;
-                                $subtotalAmount = 0;
-                                $level2Items = [];
-                                $currentLevel2Name = $d->nama_akun;
-                            }
-
-                            // Jika level > 2, tambahkan ke subtotal
-                            if ($d->level > 2 && $lastLevel2 !== null) {
-                                $subtotalAmount += $d->saldo_akhir ?? 0;
-                                $level2Items[] = $d;
-                            }
-
-                            // Cek apakah perlu menampilkan subtotal
-                            $showSubtotal = false;
-
-                            if ($isLastItem && !empty($level2Items)) {
-                                $showSubtotal = true;
-                            } elseif ($nextItem !== null && $nextItem->level <= 2 && !empty($level2Items)) {
-                                $showSubtotal = true;
-                            }
-                        @endphp
-
-                        <!-- Tampilkan subtotal jika diperlukan -->
-                        @if ($showSubtotal && $lastLevel2 !== null)
+                        @if (($next_level == 1 && $next_before_level != 0 && $d->level != 0) || $next_level == 0)
                             <tr class="subtotal-row">
-                                <td style="padding-left: {{ ($lastLevel2->level ?? 0) * 20 }}px;">
-                                    <b>SUBTOTAL {{ strtoupper($currentLevel2Name) }}</b>
+                                <td style="padding-left:20px;">
+                                    <b>SUBTOTAL {{ strtoupper($level_1_name) }}</b>
                                 </td>
                                 <td style="text-align: right;">
-                                    <b>{{ formatAngka($subtotalAmount) }}</b>
+                                    <b>{{ formatAngka($subtotal_level_1) }}</b>
                                 </td>
                             </tr>
                             @php
-                                $lastLevel2 = null;
-                                $subtotalAmount = 0;
-                                $level2Items = [];
-                                $currentLevel2Name = '';
+                                $subtotal_level_1 = 0;
+                                $level_1_name = '';
+                            @endphp
+                        @endif
+
+
+                        @if ($next_level == 0)
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>SUBTOTAL {{ strtoupper($level_0_name) }}</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($subtotal_level_0) }}</b>
+                                </td>
+                            </tr>
+                            @php
+                                $subtotal_level_0 = 0;
+                                $level_0_name = '';
                             @endphp
                         @endif
                     @endforeach
