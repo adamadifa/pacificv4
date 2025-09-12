@@ -42,8 +42,14 @@
                 <tbody>
                     @foreach ($labarugi as $d)
                         @php
+                            $kode_akun_minus = ['4-1201'];
                             // Hitung indentasi berdasarkan level (misal: 20px per level)
                             $indent = ($d->level ?? 0) * 20;
+                            if (in_array($d->kode_akun, $kode_akun_minus)) {
+                                $saldo_akhir = $d->saldo_akhir * -1;
+                            } else {
+                                $saldo_akhir = $d->saldo_akhir;
+                            }
                         @endphp
                         <tr>
                             {{-- <td>
@@ -62,9 +68,9 @@
                             </td>
                             <td style="text-align: right;">
                                 @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ formatAngka($d->saldo_akhir) }}</b>
+                                    <b>{{ formatAngka($saldo_akhir) }}</b>
                                 @else
-                                    {{ formatAngka($d->saldo_akhir) }}
+                                    {{ formatAngka($saldo_akhir) }}
                                 @endif
                             </td>
                         </tr>
