@@ -47,8 +47,10 @@
                             $indent = ($d->level ?? 0) * 20;
                             if (in_array($d->kode_akun, $kode_akun_minus)) {
                                 $saldo_akhir = $d->saldo_akhir * -1;
+                                $test = 'minus';
                             } else {
                                 $saldo_akhir = $d->saldo_akhir;
+                                $test = 'plus';
                             }
                         @endphp
                         <tr>
@@ -67,6 +69,7 @@
                                 @endif
                             </td>
                             <td style="text-align: right;">
+                                {{ $test }}
                                 @if ($d->level == 0 || $d->level == 1)
                                     <b>{{ formatAngka($saldo_akhir) }}</b>
                                 @else
