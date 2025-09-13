@@ -38,7 +38,9 @@
                         <i class="fa fa-arrow-left me-2"></i> Kembali
                     </a>
                     @can('pencairanprogramikt.create')
-                        @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $pencairanprogram->rsm == null)
+                        @if (
+                            $user->hasRole(['operation manager', 'sales marketing manager', 'regional operation manager']) &&
+                                $pencairanprogram->rsm == null)
                             @if ($pencairanprogram->status == 0)
                                 <a href="#" id="btnCreate" class="btn btn-primary"><i
                                         class="fa fa-user-plus me-2"></i> Tambah Pelanggan</a>
@@ -111,23 +113,23 @@
                                 style="width:100%">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th >No.</th>
-                                        <th >Kode</th>
-                                        <th >Nama Pelanggan</th>
-                                      
-                                        <th  class="text-center">Target</th>
+                                        <th>No.</th>
+                                        <th>Kode</th>
+                                        <th>Nama Pelanggan</th>
+
+                                        <th class="text-center">Target</th>
                                         <th class="text-center">Realisasi</th>
                                         <th class="text-center">Reward</th>
 
-                                        <th >Pembayaran</th>
-                                        <th >No. Rekening</th>
-                                        <th >Pemilik</th>
-                                        <th >Bank</th>
-                                        <th ><i class="ti ti-file-description"></i></th>
-                                        <th ><i class="ti ti-moneybag"></i></th>
-                                        <th >#</th>
+                                        <th>Pembayaran</th>
+                                        <th>No. Rekening</th>
+                                        <th>Pemilik</th>
+                                        <th>Bank</th>
+                                        <th><i class="ti ti-file-description"></i></th>
+                                        <th><i class="ti ti-moneybag"></i></th>
+                                        <th>#</th>
                                     </tr>
-                                    
+
                                 </thead>
                                 <tbody id="loaddetailpencairan">
                                     @php
@@ -152,7 +154,7 @@
                                             <td>{{ $d->kode_pelanggan }}</td>
                                             <td>{{ $d->nama_pelanggan }}</td>
                                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                                          
+
                                             <td class="text-center">
                                                 <a href="#" class="btnDetailfaktur"
                                                     kode_pelanggan="{{ $d['kode_pelanggan'] }}">
