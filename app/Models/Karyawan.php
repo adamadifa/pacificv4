@@ -44,7 +44,7 @@ class Karyawan extends Model
                 $query->where('hrd_karyawan.kode_jabatan', 'J07');
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
-                $query->where('hrd_karyawan.kode_dept', 'AKT');
+                // $query->where('hrd_karyawan.kode_dept', 'AKT');
                 $query->where('hrd_karyawan.kode_jabatan', 'J08');
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
                 $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
