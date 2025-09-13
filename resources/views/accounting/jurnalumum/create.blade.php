@@ -92,9 +92,9 @@
     </div>
 </form>
 <script>
-    let total_debet = 0;
-    let total_kredit = 0;
     $(document).ready(function() {
+        let total_debet_set = 0;
+        let total_kredit_set = 0;
         let baris = 0;
         const form = $('#formJurnalumum');
         $(".flatpickr-date").flatpickr();
@@ -163,6 +163,8 @@
         });
 
         function calculateTotal() {
+            let total_debet = 0;
+            let total_kredit = 0;
             form.find("tbody tr").each(function() {
                 const debet = $(this).find(".jmldebet").text().replace(/\./g, '') || 0;
                 const kredit = $(this).find(".jmlkredit").text().replace(/\./g, '') || 0;
@@ -173,8 +175,10 @@
                 console.log(total_debet);
                 console.log(total_kredit);
             });
-            form.find("#total_debet").text(total_debet);
-            form.find("#total_kredit").text(total_kredit);
+            total_debet_set = total_debet;
+            total_kredit_set = total_kredit;
+            form.find("#total_debet").text(total_debet_set);
+            form.find("#total_kredit").text(total_kredit_set);
         }
 
         $("#btnTambahItem").click(function(e) {
