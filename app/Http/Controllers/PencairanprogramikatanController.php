@@ -568,7 +568,7 @@ class PencairanprogramikatanController extends Controller
 
             $checkpelanggan = $request->input('checkpelanggan', []);
 
-            dd($status);
+            //dd($status);
             foreach ($checkpelanggan as $index => $value) {
 
                 if ($status[$index] == 1) {
