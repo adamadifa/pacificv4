@@ -339,7 +339,7 @@
                     },
                 });
                 return false;
-            } else if (total_debet != total_kredit) {
+            } else if (total_debet_set != total_kredit_set) {
                 Swal.fire({
                     title: "Oops!",
                     text: "Total Debet Tidak Sama Dengan Total Kredit !",
