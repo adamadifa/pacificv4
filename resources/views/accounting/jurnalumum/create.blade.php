@@ -15,7 +15,8 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-sm-12 col-md-12">
-                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true" icon="ti ti-moneybag" />
+                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true"
+                        icon="ti ti-moneybag" />
                 </div>
             </div>
             <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
@@ -77,7 +78,8 @@
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-3">
-                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value="" id="defaultCheck3">
+                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox"
+                    value="" id="defaultCheck3">
                 <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
             </div>
             <div class="form-group" id="saveButton">
@@ -162,8 +164,8 @@
 
         function calculateTotal() {
             form.find("tbody tr").each(function() {
-                const debet = $(this).find("td:eq(3)").text().replace(/\./g, '') || 0;
-                const kredit = $(this).find("td:eq(4)").text().replace(/\./g, '') || 0;
+                const debet = $(this).find(".jmldebet").text().replace(/\./g, '') || 0;
+                const kredit = $(this).find(".jmlkredit").text().replace(/\./g, '') || 0;
                 // total_debet += parseFloat(debet);
                 // total_kredit += parseFloat(kredit);
                 total_debet += parseInt(debet);
@@ -274,8 +276,8 @@
                     <td>${tanggal}</td>
                     <td>${nama_akun}</td>
                     <td>${keterangan}</td>
-                    <td class="text-end">${debet}</td>
-                    <td class="text-end">${kredit}</td>
+                    <td class="text-end jmldebet">${debet}</td>
+                    <td class="text-end jmlkredit">${kredit}</td>
                     <td>${kode_peruntukan} ${kode_cabang ? '(' + kode_cabang + ')' : ''}</td>
                     <td><a href="#" id="${baris}" class="delete"><i class="ti ti-trash text-danger"></i></a></td>
                 </tr>`;
@@ -303,6 +305,7 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $(`#${id}`).remove();
+                    calculateTotal();
                 }
             });
         });
