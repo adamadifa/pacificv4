@@ -96,9 +96,16 @@ class Penilaiankaryawan extends Model
                 $query->where('hrd_jabatan.kategori', 'NM');
                 $query->where('hrd_jabatan.kode_jabatan', '!=', 'J12');
             } else {
-                $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
-                $query->where('hrd_jabatan.kategori', 'NM');
+
+                if (auth()->user()->kode_cabang == 'PST') {
+                    $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                } else {
+                    // $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                }
             }
 
             if (!empty($request->dari) && !empty($request->sampai)) {
@@ -143,9 +150,15 @@ class Penilaiankaryawan extends Model
                 $query->where('hrd_jabatan.kategori', 'NM');
                 $query->where('hrd_jabatan.kode_jabatan', '!=', 'J12');
             } else {
-                $query->orwhere('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
-                $query->where('hrd_jabatan.kategori', 'NM');
+                if (auth()->user()->kode_cabang == 'PST') {
+                    $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                } else {
+                    // $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                }
             }
 
             $query->WhereIn('hrd_penilaian.kode_penilaian', function ($query) use ($user) {
