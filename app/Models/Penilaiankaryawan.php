@@ -96,9 +96,14 @@ class Penilaiankaryawan extends Model
                 $query->where('hrd_jabatan.kategori', 'NM');
                 $query->where('hrd_jabatan.kode_jabatan', '!=', 'J12');
             } else {
-                $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
-                $query->where('hrd_jabatan.kategori', 'NM');
+                if (auth()->user()->kode_cabang == 'PST') {
+                    $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                } else {
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_jabatan.kategori', 'NM');
+                }
             }
 
             if (!empty($request->dari) && !empty($request->sampai)) {
@@ -147,22 +152,22 @@ class Penilaiankaryawan extends Model
                 $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
                 $query->where('hrd_jabatan.kategori', 'NM');
             }
+            if (auth()->user()->kode_cabang == 'PST') {
+                $query->WhereIn('hrd_penilaian.kode_penilaian', function ($query) use ($user) {
+                    $query->select('disposisi.kode_penilaian');
+                    $query->from('hrd_penilaian_disposisi as disposisi');
+                    $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
+                    $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
+                    $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
 
-            $query->WhereIn('hrd_penilaian.kode_penilaian', function ($query) use ($user) {
-                $query->select('disposisi.kode_penilaian');
-                $query->from('hrd_penilaian_disposisi as disposisi');
-                $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-                $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-                $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
+                    $query->join('users as pengirim', 'disposisi.id_pengirim', '=', 'pengirim.id');
+                    $query->join('model_has_roles as model_has_roles_pengirim', 'pengirim.id', '=', 'model_has_roles_pengirim.model_id');
+                    $query->join('roles as roles_pengirim', 'model_has_roles_pengirim.role_id', '=', 'roles_pengirim.id');
 
-                $query->join('users as pengirim', 'disposisi.id_pengirim', '=', 'pengirim.id');
-                $query->join('model_has_roles as model_has_roles_pengirim', 'pengirim.id', '=', 'model_has_roles_pengirim.model_id');
-                $query->join('roles as roles_pengirim', 'model_has_roles_pengirim.role_id', '=', 'roles_pengirim.id');
-
-                $query->where('roles.name', $user->getRoleNames()->first());
-                $query->orWhere('roles_pengirim.name', $user->getRoleNames()->first());
-            });
-
+                    $query->where('roles.name', $user->getRoleNames()->first());
+                    $query->orWhere('roles_pengirim.name', $user->getRoleNames()->first());
+                });
+            }
             if (!empty($request->dari) && !empty($request->sampai)) {
                 $query->whereBetween('hrd_penilaian.tanggal', [$request->dari, $request->sampai]);
             }
