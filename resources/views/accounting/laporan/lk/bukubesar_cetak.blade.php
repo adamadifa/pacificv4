@@ -50,12 +50,18 @@
                         $total_debet = 0;
                         $total_kredit = 0;
                         $saldo = 0;
+                        $saldo_awal_kredit = 0;
+                        $saldo_awal_debet = 0;
                     @endphp
                     @foreach ($bukubesar as $key => $d)
                         @php
                             //$saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['jumlah'] ?? 0;
-                            $mutasi_debet = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ?? 0;
-                            $mutasi_kredit = optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ?? 0;
+                            $mutasi_debet =
+                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ??
+                                0;
+                            $mutasi_kredit =
+                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ??
+                                0;
                             // if ($d->jenis_akun == '1') {
                             //     $saldo_awal = $saldo_awal + $mutasi_kredit - $mutasi_debet;
                             // } else {
@@ -81,6 +87,7 @@
                             @endphp --}}
                         @endif
                         @php
+
                             if ($d->jenis_akun == '1') {
                                 $saldo += $d->jml_kredit - $d->jml_debet;
                             } else {
@@ -90,9 +97,25 @@
                             $total_kredit = $total_kredit + $d->jml_kredit;
                         @endphp
                         @if ($d->sumber == 'SALDO AWAL')
+                            @if ($d->jenis_akun == '1')
+                                @php
+                                    $saldo_awal_kredit = $saldo;
+                                    $saldo_awal_debet = 0;
+                                @endphp
+                            @else
+                                @php
+                                    $saldo_awal_kredit = 0;
+                                    $saldo_awal_debet = $saldo;
+                                @endphp
+                            @endif
                             <tr class="thead-dark">
                                 <th colspan="6">SALDO AWAL</th>
-                                <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</th>
+                                <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}
+
+
+                                    {{-- {{ 'Saldo Awal Debet' }} {{ $saldo_awal_debet }}
+                                    {{ 'Saldo Awal Kredit' }} {{ $saldo_awal_kredit }} --}}
+                                </th>
                             </tr>
                         @else
                             <tr>
@@ -109,8 +132,10 @@
                         @if ($akun != $d->kode_akun)
                             <tr class="thead-dark">
                                 <th colspan="4">TOTAL</th>
-                                <th style="text-align: right;">{{ formatAngkaDesimal($total_debet) }}</th>
-                                <th style="text-align: right;">{{ formatAngkaDesimal($total_kredit) }}</th>
+                                <th style="text-align: right;">
+                                    {{ formatAngkaDesimal($total_debet - $saldo_awal_debet) }}</th>
+                                <th style="text-align: right;">
+                                    {{ formatAngkaDesimal($total_kredit - $saldo_awal_kredit) }}</th>
                                 <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</th>
                             </tr>
                             @php
