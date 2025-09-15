@@ -40,6 +40,21 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        // $lastLevel2 = null;
+                        // $subtotalAmount = 0;
+                        // $level2Items = [];
+                        // $currentLevel2Name = '';
+
+                        $subtotal_level_0 = 0;
+                        $level_0_name = '';
+
+                        $subtotal_level_1 = 0;
+                        $level_1_name = '';
+
+                        $subtotal_level_2 = 0;
+                        $level_2_name = '';
+                    @endphp
                     @foreach ($labarugi as $d)
                         @php
                             $kode_akun_minus = ['4-2101', '4-2201', '4-2202', '5-1202', '5-3200', '5-3400', '5-3800'];
@@ -52,7 +67,37 @@
                                 $saldo_akhir = $d->saldo_akhir;
                                 $test = 'plus';
                             }
+
+                            $indent = ($d->level ?? 0) * 20;
+                            $next_level = $neraca[$index + 1]->level ?? null;
+                            $next_before_level = $neraca[$index - 1]->level ?? null;
+
+                            //Level 0
+                            if ($d->level == 0) {
+                                $level_0_name = $d->nama_akun;
+                            }
+
+                            $subtotal_level_0 += $saldo_akhir;
+
+                            //Level 1
+
+                            if ($d->level == 1) {
+                                $level_1_name = $d->nama_akun;
+                            }
+
+                            $subtotal_level_1 += $saldo_akhir;
+
+                            //Level 2
+                            if ($d->level == 2) {
+                                $level_2_name = $d->nama_akun;
+                            }
+
+                            $subtotal_level_2 += $d->saldo_akhir;
+
+                            //echo $level_0_name;
+
                         @endphp
+
                         <tr>
                             {{-- <td>
                                 @if ($d->level == 0 || $d->level == 1)
@@ -77,6 +122,57 @@
                                 @endif
                             </td>
                         </tr>
+                        @if (
+                            ($next_level == 2 && $next_before_level != 1 && $d->level != 1) ||
+                                ($next_level == 2 && $next_before_level == 1 && $d->level == 2) ||
+                                ($next_level == 1 && $next_before_level == 3 && $d->level != 0) ||
+                                ($next_level == 1 && $next_before_level == 2 && $d->level != 1) ||
+                                ($next_level == 0 && $d->level != 1))
+                            <tr class="subtotal-row">
+                                <td style="padding-left:40px;">
+                                    <b>SUBTOTAL {{ strtoupper($level_2_name) }}</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($subtotal_level_2) }}</b>
+                                </td>
+                            </tr>
+                            @php
+                                $subtotal_level_2 = 0;
+                                $level_2_name = '';
+                            @endphp
+                        @endif
+
+                        <!-- Jika Next Level 1 dan Next Before Level bukan 0 dan Level bukan 0 atau Next Level 0 -->
+                        @if (($next_level == 1 && $next_before_level != 0 && $d->level != 0) || $next_level == 0)
+                            <tr class="subtotal-row">
+                                <td style="padding-left:20px;">
+                                    <b>SUBTOTAL {{ strtoupper($level_1_name) }}</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($subtotal_level_1) }}</b>
+                                </td>
+                            </tr>
+                            @php
+                                $subtotal_level_1 = 0;
+                                $level_1_name = '';
+                            @endphp
+                        @endif
+
+
+                        @if ($next_level == 0)
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>SUBTOTAL {{ strtoupper($level_0_name) }}</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($subtotal_level_0) }}</b>
+                                </td>
+                            </tr>
+                            @php
+                                $subtotal_level_0 = 0;
+                                $level_0_name = '';
+                            @endphp
+                        @endif
                     @endforeach
                 </tbody>
             </table>
