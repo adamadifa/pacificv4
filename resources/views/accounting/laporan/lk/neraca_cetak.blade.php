@@ -55,6 +55,9 @@
 
                         $subtotal_level_1 = 0;
                         $level_1_name = '';
+
+                        $subtotal_level_2 = 0;
+                        $level_2_name = '';
                     @endphp
 
                     @foreach ($neraca as $index => $d)
@@ -68,9 +71,7 @@
                                 $level_0_name = $d->nama_akun;
                             }
 
-                            if ($next_level != 0) {
-                                $subtotal_level_0 += $d->saldo_akhir;
-                            }
+                            $subtotal_level_0 += $d->saldo_akhir;
 
                             //Level 1
 
@@ -78,9 +79,14 @@
                                 $level_1_name = $d->nama_akun;
                             }
 
-                            if ($next_level != 1) {
-                                $subtotal_level_1 += $d->saldo_akhir;
+                            $subtotal_level_1 += $d->saldo_akhir;
+
+                            //Level 2
+                            if ($d->level == 2) {
+                                $level_2_name = $d->nama_akun;
                             }
+
+                            $subtotal_level_2 += $d->saldo_akhir;
 
                             //echo $level_0_name;
 
@@ -104,7 +110,20 @@
                             </td>
                         </tr>
 
+                        <!-- Jika Next Level 2 dan Next Before Level bukan 1 dan Level bukan 1 atau Next Level 1 -->
+                        @if (
+                            ($next_level == 2 && $next_before_level != 1 && $d->level != 1) ||
+                                ($next_level == 2 && $next_before_level == 1 && $d->level == 2) ||
+                                ($next_level == 1 && $next_before_level == 3 && $d->level != 0) ||
+                                $next_level == 0)
+                            <tr class="subtotal-row">
+                                <td style="padding-left:40px; background-color:red !important">
+                                    <b>SUBTOTAL {{ strtoupper($level_2_name) }}</b>
+                                </td>
+                            </tr>
+                        @endif
 
+                        <!-- Jika Next Level 1 dan Next Before Level bukan 0 dan Level bukan 0 atau Next Level 0 -->
                         @if (($next_level == 1 && $next_before_level != 0 && $d->level != 0) || $next_level == 0)
                             <tr class="subtotal-row">
                                 <td style="padding-left:20px;">
@@ -121,7 +140,7 @@
                         @endif
 
 
-                        {{-- @if ($next_level == 0)
+                        @if ($next_level == 0)
                             <tr class="subtotal-row">
                                 <td>
                                     <b>SUBTOTAL {{ strtoupper($level_0_name) }}</b>
@@ -134,7 +153,7 @@
                                 $subtotal_level_0 = 0;
                                 $level_0_name = '';
                             @endphp
-                        @endif --}}
+                        @endif
                     @endforeach
                 </tbody>
             </table>
