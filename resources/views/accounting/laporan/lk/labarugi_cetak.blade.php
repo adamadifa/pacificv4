@@ -76,7 +76,7 @@
                         @php
                             $kode_akun_minus = ['4-2101', '4-2201', '4-2202', '5-1202', '5-3200', '5-3400', '5-3800'];
                             // Hitung indentasi berdasarkan level (misal: 20px per level)
-                            $indent = ($d->level ?? 0) * 20;
+                            // $indent = ($d->level ?? 0) * 20;
                             if (in_array($d->kode_akun, $kode_akun_minus)) {
                                 $saldo_akhir = $d->saldo_akhir * -1;
                                 $test = 'minus';
@@ -139,7 +139,12 @@
                                 @endif
                             </td>
                         </tr>
-                        {{-- @if (($next_level == 2 && $next_before_level != 1 && $d->level != 1) || ($next_level == 2 && $next_before_level == 1 && $d->level == 2) || ($next_level == 1 && $next_before_level == 3 && $d->level != 0) || ($next_level == 1 && $next_before_level == 2 && $d->level != 1) || ($next_level == 0 && $d->level != 1))
+                        @if (
+                            ($next_level == 2 && $next_before_level != 1 && $d->level != 1) ||
+                                ($next_level == 2 && $next_before_level == 1 && $d->level == 2) ||
+                                ($next_level == 1 && $next_before_level == 3 && $d->level != 0) ||
+                                ($next_level == 1 && $next_before_level == 2 && $d->level != 1) ||
+                                ($next_level == 0 && $d->level != 1))
                             <tr class="subtotal-row">
                                 <td style="padding-left:40px;">
                                     <b>SUBTOTAL {{ strtoupper($level_2_name) }}</b>
@@ -154,7 +159,7 @@
                             @endphp
                         @endif
 
-                        <!-- Jika Next Level 1 dan Next Before Level bukan 0 dan Level bukan 0 atau Next Level 0 -->
+                        {{-- <!-- Jika Next Level 1 dan Next Before Level bukan 0 dan Level bukan 0 atau Next Level 0 -->
                         @if (($next_level == 1 && $next_before_level != 0 && $d->level != 0) || $next_level == 0)
                             <tr class="subtotal-row">
                                 <td style="padding-left:20px;">
