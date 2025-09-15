@@ -55,7 +55,7 @@
                         $subtotal_level_2 = 0;
                         $level_2_name = '';
                     @endphp
-                    @foreach ($labarugi as $d)
+                    @foreach ($labarugi as $index => $d)
                         @php
                             $kode_akun_minus = ['4-2101', '4-2201', '4-2202', '5-1202', '5-3200', '5-3400', '5-3800'];
                             // Hitung indentasi berdasarkan level (misal: 20px per level)
