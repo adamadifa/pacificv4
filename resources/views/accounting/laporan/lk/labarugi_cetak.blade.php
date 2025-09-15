@@ -21,6 +21,23 @@
             color: white;
         }
     </style>
+    <style>
+        .text-red {
+            background-color: red;
+            color: white;
+        }
+
+        .subtotal-row {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            border-top: 2px solid #333;
+            border-bottom: 1px solid #666;
+        }
+
+        .subtotal-row td {
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
