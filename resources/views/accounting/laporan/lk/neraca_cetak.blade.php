@@ -115,12 +115,20 @@
                             ($next_level == 2 && $next_before_level != 1 && $d->level != 1) ||
                                 ($next_level == 2 && $next_before_level == 1 && $d->level == 2) ||
                                 ($next_level == 1 && $next_before_level == 3 && $d->level != 0) ||
-                                $next_level == 0)
+                                ($next_level == 1 && $next_before_level == 2 && $d->level != 1) ||
+                                ($next_level == 0 && $d->level != 1))
                             <tr class="subtotal-row">
-                                <td style="padding-left:40px; background-color:red !important">
+                                <td style="padding-left:40px;">
                                     <b>SUBTOTAL {{ strtoupper($level_2_name) }}</b>
                                 </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($subtotal_level_2) }}</b>
+                                </td>
                             </tr>
+                            @php
+                                $subtotal_level_2 = 0;
+                                $level_2_name = '';
+                            @endphp
                         @endif
 
                         <!-- Jika Next Level 1 dan Next Before Level bukan 0 dan Level bukan 0 atau Next Level 0 -->
