@@ -42,7 +42,7 @@ class TargetkomisiController extends Controller
                 'status_ajuan'
 
             );
-            $query->where('marketing_komisi_target_disposisi.id_penerima', auth()->user()->id);
+
             $query->join('marketing_komisi_target', 'marketing_komisi_target_disposisi.kode_target', '=', 'marketing_komisi_target.kode_target');
             $query->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang');
             $query->leftJoin(
@@ -61,6 +61,11 @@ class TargetkomisiController extends Controller
             $query->leftjoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
             $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
             $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_komisi_target_disposisi.id_penerima', auth()->user()->id);
+            }
             $query->orderBy('tahun', 'desc');
             $query->orderBy('bulan');
         } else {
