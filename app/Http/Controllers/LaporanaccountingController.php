@@ -1282,6 +1282,10 @@ class LaporanaccountingController extends Controller
         $penjualannetto->orderBy('marketing_penjualan.tanggal');
 
 
+
+        //Piutang Datang
+
+        //Kas Besar
         $kasbesarpiutangdagang = Historibayarpenjualan::query();
         $kasbesarpiutangdagang->select(
             'marketing_penjualan_historibayar.kode_akun',
@@ -1308,6 +1312,33 @@ class LaporanaccountingController extends Controller
         $kasbesarpiutangdagang->orderBy('marketing_penjualan_historibayar.no_bukti');
 
 
+
+        //Retur 
+        $returpenjualanpiutangdagang = Detailretur::query();
+        $returpenjualanpiutangdagang->select(
+            'marketing_retur.kode_akun_piutang_dagang',
+            'coa.jenis_akun',
+            'nama_akun',
+            'marketing_retur.tanggal',
+            DB::raw("marketing_retur.no_retur as no_bukti"),
+            DB::raw("'RETUR PENJUALAN' AS sumber"),
+            DB::raw("CONCAT(marketing_retur.no_faktur, ' - ', pelanggan.nama_pelanggan) as keterangan"),
+            DB::raw('SUM(marketing_retur_detail.subtotal) as jml_kredit'),
+            DB::raw('0 as jml_debet'),
+            DB::raw('2 as urutan')
+        );
+        $returpenjualanpiutangdagang->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $returpenjualanpiutangdagang->join('coa', 'marketing_retur.kode_akun_piutang_dagang', '=', 'coa.kode_akun');
+        $returpenjualanpiutangdagang->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $returpenjualanpiutangdagang->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $returpenjualanpiutangdagang->where('jenis_retur', 'PF');
+        $returpenjualanpiutangdagang->whereBetween('marketing_retur.tanggal', [$start_date, $request->sampai]);
+        $returpenjualanpiutangdagang->where('marketing_penjualan.status_batal', 0);
+        $returpenjualanpiutangdagang->where('marketing_penjualan.tanggal', '<', $start_date);
+
+        $returpenjualanpiutangdagang->groupBy('marketing_retur.kode_akun_piutang_dagang', 'coa.jenis_akun', 'nama_akun', 'marketing_retur.tanggal', 'marketing_retur.no_retur', 'marketing_retur.no_faktur', 'pelanggan.nama_pelanggan');
+        $returpenjualanpiutangdagang->orderBy('marketing_retur.tanggal');
+        $returpenjualanpiutangdagang->orderBy('marketing_retur.no_retur');
 
 
         $retur_penjualan = Detailretur::query();
@@ -1465,6 +1496,7 @@ class LaporanaccountingController extends Controller
             ->unionAll($penjualan_produk)
             ->unionAll($penjualannetto)
             ->unionAll($kasbesarpiutangdagang)
+            ->unionAll($returpenjualanpiutangdagang)
             ->unionAll($retur_penjualan)
             ->unionAll($potongan_penjualan)
             ->unionAll($penyesuaian_penjualan);
@@ -1544,7 +1576,7 @@ class LaporanaccountingController extends Controller
             $data['labarugi'] = Coa::leftJoinSub($rekapakun, 'rekapakun', function ($join) {
                 $join->on('coa.kode_akun', '=', 'rekapakun.kode_akun');
             })
-                ->select('coa.kode_akun', 'coa.nama_akun', 'coa.level', 'rekapakun.saldo_akhir')
+                ->select('coa.kode_akun', 'coa.nama_akun', 'coa.level', 'coa.sub_akun', 'rekapakun.saldo_akhir')
                 ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca) . ')')
                 ->whereNotIn('coa.kode_akun', $akun_jangan_ditampilkan)
                 ->where(function ($query) {
