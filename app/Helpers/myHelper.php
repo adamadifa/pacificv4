@@ -541,7 +541,7 @@ function pihakpertamacabang($cabang, $perusahaan)
         'BKI' => 'Victor Simatupang',
         'PWK' => 'M. Hirzam Purnama',
         'TSM' => 'Dade Gunawan',
-        'TGR' => 'Excel Delvara'
+        'TGR' => 'Ardi Kurniawan'
     ];
 
 
