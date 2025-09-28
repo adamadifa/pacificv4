@@ -71,6 +71,12 @@
 
                         $subtotal_level_2 = 0;
                         $level_2_name = '';
+
+                        $kode_akun_pendapatan = 4;
+                        $kode_akun_pokok_penjualan = 5;
+
+                        $subtotal_akun_pendapatan = 0;
+                        $subtotal_akun_pokok_penjualan = 0;
                     @endphp
                     @foreach ($labarugi as $index => $d)
                         @php
@@ -88,6 +94,7 @@
                             $indent = ($d->level ?? 0) * 20;
                             $next_level = $labarugi[$index + 1]->level ?? null;
                             $next_before_level = $labarugi[$index - 1]->level ?? null;
+                            $next_kode_akun = $labarugi[$index + 1]->kode_akun ?? null;
 
                             //Level 0
                             if ($d->level == 0) {
@@ -111,8 +118,14 @@
 
                             $subtotal_level_2 += $d->saldo_akhir;
 
-                            //echo $level_0_name;
+                            if (substr($d->kode_akun, 0, 1) == $kode_akun_pendapatan) {
+                                $subtotal_akun_pendapatan += $saldo_akhir;
+                            }
 
+                            if (substr($d->kode_akun, 0, 1) == $kode_akun_pokok_penjualan) {
+                                $subtotal_akun_pokok_penjualan += $saldo_akhir;
+                            }
+                            //echo $level_0_name;
                         @endphp
 
                         <tr>
@@ -190,6 +203,18 @@
                                 $subtotal_level_0 = 0;
                                 $level_0_name = '';
                             @endphp
+                        @endif
+
+
+                        @if (substr($next_kode_akun, 0, 1) == 6)
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>GROSS PROFIT</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($subtotal_akun_pendapatan) }}</b>
+                                </td>
+                            </tr>
                         @endif
                     @endforeach
                 </tbody>
