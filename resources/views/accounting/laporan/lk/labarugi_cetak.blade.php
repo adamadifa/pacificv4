@@ -95,6 +95,7 @@
                             $next_level = $labarugi[$index + 1]->level ?? null;
                             $next_before_level = $labarugi[$index - 1]->level ?? null;
                             $next_kode_akun = $labarugi[$index + 1]->kode_akun ?? null;
+                            $previous_kode_akun = $labarugi[$index - 1]->kode_akun ?? null;
 
                             //Level 0
                             if ($d->level == 0) {
@@ -176,7 +177,13 @@
                         @endif
 
                         <!-- Jika Next Level 1 dan Next Before Level bukan 0 dan Level bukan 0 atau Next Level 0 -->
-                        @if ($next_level == 1 && $next_before_level != 0 && $next_before_level != 1 && $next_level != 1 && $next_level != 0 && $d->level != 0)
+                        @if (
+                            $next_level == 1 &&
+                                $next_before_level != 0 &&
+                                $next_before_level != 1 &&
+                                $next_level != 1 &&
+                                $next_level != 0 &&
+                                $d->level != 0)
                             <tr class="subtotal-row">
                                 <td style="padding-left:20px;">
                                     <b>SUBTOTAL {{ strtoupper($level_1_name) }}</b>
@@ -208,13 +215,13 @@
                         @endif
 
 
-                        @if (substr($next_kode_akun, 0, 1) == 6)
+                        @if (substr($next_kode_akun, 0, 1) == 6 && substr($previous_kode_akun, 0, 1) == 5)
                             <tr class="subtotal-row">
                                 <td>
                                     <b>GROSS PROFIT</b>
                                 </td>
                                 <td style="text-align: right;">
-                                    <b>{{ formatAngka($subtotal_akun_pendapatan) }}</b>
+                                    <b>{{ formatAngka($subtotal_akun_pendapatan - $subtotal_akun_pokok_penjualan) }}</b>
                                 </td>
                             </tr>
                         @endif
