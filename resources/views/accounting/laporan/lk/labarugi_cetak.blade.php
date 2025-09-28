@@ -215,7 +215,7 @@
                         @endif
 
 
-                        @if (substr($next_kode_akun, 0, 1) == 6 && substr($previous_kode_akun, 0, 1) == 5)
+                        @if (substr($next_kode_akun, 0, 1) == 6 && substr($d->kode_akun, 0, 1) == 5)
                             <tr class="subtotal-row">
                                 <td>
                                     <b>GROSS PROFIT</b>
