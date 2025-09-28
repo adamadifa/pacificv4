@@ -294,7 +294,10 @@
                                     <b>OPERATING PROFIT</b>
                                 </td>
                                 <td style="text-align: right;">
-                                    <b>{{ formatAngka($gross_profit - $biaya_operasional) }}</b>
+                                    @php
+                                        $operating_profit = $gross_profit - $biaya_operasional;
+                                    @endphp
+                                    <b>{{ formatAngka($operating_profit) }}</b>
                                 </td>
                             </tr>
                         @endif
