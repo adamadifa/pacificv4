@@ -74,12 +74,16 @@
 
                         $kode_akun_pendapatan = 4;
                         $kode_akun_pokok_penjualan = 5;
+                        $kode_akun_pendapatanlain = 8;
+                        $kode_akun_biayalain = 9;
 
                         $kode_akun_biaya_penjualan = '6-1';
                         $kode_akun_biaya_adm = '6-2';
 
                         $subtotal_akun_pendapatan = 0;
                         $subtotal_akun_pokok_penjualan = 0;
+                        $subtotal_akun_pendapatanlain = 0;
+                        $subtotal_akun_biayalain = 0;
                         $subtotal_akun_biaya_penjualan = 0;
                         $subtotal_akun_biaya_adm = 0;
                     @endphp
@@ -130,6 +134,14 @@
 
                             if (substr($d->kode_akun, 0, 1) == $kode_akun_pokok_penjualan) {
                                 $subtotal_akun_pokok_penjualan += $saldo_akhir;
+                            }
+
+                            if (substr($d->kode_akun, 0, 1) == $kode_akun_pendapatanlain) {
+                                $subtotal_akun_pendapatanlain += $saldo_akhir;
+                            }
+
+                            if (substr($d->kode_akun, 0, 1) == $kode_akun_biayalain) {
+                                $subtotal_akun_biayalain += $saldo_akhir;
                             }
 
                             if (substr($d->kode_akun, 0, 3) == $kode_akun_biaya_penjualan) {
@@ -287,6 +299,18 @@
                             </tr>
                         @endif
                     @endforeach
+                    <tr class="subtotal-row">
+                        <td>
+                            <b>NET PROFIT / LOSS</b>
+                        </td>
+                        <td style="text-align: right;">
+                            @php
+                                $net_profit_loss =
+                                    $operating_profit + $subtotal_akun_pendapatanlain - $subtotal_akun_biayalain;
+                            @endphp
+                            <b>{{ formatAngka($net_profit_loss) }}</b>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
