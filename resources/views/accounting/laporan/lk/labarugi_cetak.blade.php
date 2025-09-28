@@ -76,10 +76,12 @@
                         $kode_akun_pokok_penjualan = 5;
 
                         $kode_akun_biaya_penjualan = '6-1';
+                        $kode_akun_biaya_adm = '6-2';
 
                         $subtotal_akun_pendapatan = 0;
                         $subtotal_akun_pokok_penjualan = 0;
                         $subtotal_akun_biaya_penjualan = 0;
+                        $subtotal_akun_biaya_adm = 0;
                     @endphp
                     @foreach ($labarugi as $index => $d)
                         @php
@@ -132,6 +134,10 @@
 
                             if (substr($d->kode_akun, 0, 3) == $kode_akun_biaya_penjualan) {
                                 $subtotal_akun_biaya_penjualan += $saldo_akhir;
+                            }
+
+                            if (substr($d->kode_akun, 0, 3) == $kode_akun_biaya_adm) {
+                                $subtotal_akun_biaya_adm += $saldo_akhir;
                             }
 
                             //echo $level_0_name;
@@ -223,6 +229,21 @@
                             @endphp
                         @endif
 
+
+                        @if (substr($next_kode_akun, 0, 1) == 6 && substr($d->kode_akun, 0, 1) == 5)
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>GROSS PROFIT</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    @php
+                                        $gross_profit = $subtotal_akun_pendapatan - $subtotal_akun_pokok_penjualan;
+                                    @endphp
+                                    <b>{{ formatAngka($gross_profit) }}</b>
+                                </td>
+                            </tr>
+                        @endif
+
                         @if (substr($next_kode_akun, 0, 3) == '6-2' && substr($d->kode_akun, 0, 3) == '6-1')
                             <tr class="subtotal-row">
                                 <td>
@@ -234,13 +255,34 @@
                             </tr>
                         @endif
 
-                        @if (substr($next_kode_akun, 0, 1) == 6 && substr($d->kode_akun, 0, 1) == 5)
+                        @if (substr($next_kode_akun, 0, 3) != '6-2' && substr($d->kode_akun, 0, 3) == '6-2')
                             <tr class="subtotal-row">
                                 <td>
-                                    <b>GROSS PROFIT</b>
+                                    <b>TOTAL BIAYA ADMINISTRASI</b>
                                 </td>
                                 <td style="text-align: right;">
-                                    <b>{{ formatAngka($subtotal_akun_pendapatan - $subtotal_akun_pokok_penjualan) }}</b>
+                                    <b>{{ formatAngka($subtotal_akun_biaya_adm) }}</b>
+                                </td>
+                            </tr>
+
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>TOTAL BIAYA OPERASIONAL</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    @php
+                                        $biaya_operasional = $subtotal_akun_biaya_adm + $subtotal_akun_biaya_penjualan;
+                                    @endphp
+                                    <b>{{ formatAngka($biaya_operasional) }}</b>
+                                </td>
+                            </tr>
+
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>OPERATING PROFIT</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($gross_profit - $biaya_operasional) }}</b>
                                 </td>
                             </tr>
                         @endif
