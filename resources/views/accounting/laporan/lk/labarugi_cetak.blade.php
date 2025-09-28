@@ -75,8 +75,11 @@
                         $kode_akun_pendapatan = 4;
                         $kode_akun_pokok_penjualan = 5;
 
+                        $kode_akun_biaya_penjualan = '6-1';
+
                         $subtotal_akun_pendapatan = 0;
                         $subtotal_akun_pokok_penjualan = 0;
+                        $subtotal_akun_biaya_penjualan = 0;
                     @endphp
                     @foreach ($labarugi as $index => $d)
                         @php
@@ -126,7 +129,13 @@
                             if (substr($d->kode_akun, 0, 1) == $kode_akun_pokok_penjualan) {
                                 $subtotal_akun_pokok_penjualan += $saldo_akhir;
                             }
+
+                            if (substr($d->kode_akun, 0, 3) == $kode_akun_biaya_penjualan) {
+                                $subtotal_akun_biaya_penjualan += $saldo_akhir;
+                            }
+
                             //echo $level_0_name;
+
                         @endphp
                         @if ($saldo_akhir == 0 && $d->level == 1 && $next_level == 1)
                         @else
@@ -214,6 +223,16 @@
                             @endphp
                         @endif
 
+                        @if (substr($next_kode_akun, 0, 3) == '6-2' && substr($d->kode_akun, 0, 3) == '6-1')
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>TOTAL BIAYA PENJUALAN</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($subtotal_akun_biaya_penjualan) }}</b>
+                                </td>
+                            </tr>
+                        @endif
 
                         @if (substr($next_kode_akun, 0, 1) == 6 && substr($d->kode_akun, 0, 1) == 5)
                             <tr class="subtotal-row">
