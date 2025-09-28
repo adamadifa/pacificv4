@@ -116,7 +116,7 @@
                                 $level_2_name = $d->nama_akun;
                             }
 
-                            $subtotal_level_2 += $d->saldo_akhir;
+                            $subtotal_level_2 += $saldo_akhir;
 
                             if (substr($d->kode_akun, 0, 1) == $kode_akun_pendapatan) {
                                 $subtotal_akun_pendapatan += $saldo_akhir;
@@ -127,36 +127,38 @@
                             }
                             //echo $level_0_name;
                         @endphp
-
-                        <tr>
-                            {{-- <td>
+                        @if ($saldo_akhir == 0 && $d->level == 1 && $next_level == 1)
+                        @else
+                            <tr>
+                                {{-- <td>
                                 @if ($d->level == 0 || $d->level == 1)
                                     <b>{{ $d->kode_akun }}</b>
                                 @else
                                     {{ $d->kode_akun }}
                                 @endif
                             </td> --}}
-                            <td style="padding-left: {{ $indent }}px;">
-                                @if ($d->level == 0 || $d->level == 1 || $d->level == 2)
-                                    <b>{{ $d->kode_akun }} {{ $d->nama_akun }}</b>
-                                @else
-                                    {{ $d->kode_akun }} {{ $d->nama_akun }}
-                                @endif
-                                {{-- {{ $d->level }} {{ $next_level }} {{ $next_before_level }} --}}
-                            </td>
-                            <td style="text-align: right;">
-                                {{-- {{ $test }} --}}
-                                @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ formatAngka($saldo_akhir) }}</b>
-                                @else
-                                    {{ formatAngka($saldo_akhir) }}
-                                @endif
-                            </td>
-                        </tr>
+                                <td style="padding-left: {{ $indent }}px;">
+                                    @if ($d->level == 0 || $d->level == 1 || $d->level == 2)
+                                        <b>{{ $d->kode_akun }} {{ $d->nama_akun }}</b>
+                                    @else
+                                        {{ $d->kode_akun }} {{ $d->nama_akun }}
+                                    @endif
+                                    {{-- {{ $d->level }} {{ $next_level }} {{ $next_before_level }} --}}
+                                </td>
+                                <td style="text-align: right;">
+                                    {{-- {{ $test }} --}}
+                                    @if ($d->level == 0 || $d->level == 1)
+                                        <b>{{ formatAngka($saldo_akhir) }}</b>
+                                    @else
+                                        {{ formatAngka($saldo_akhir) }}
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
                         @if (
                             ($next_level == 0 && $d->level != 1) ||
                                 ($next_level == 1 && $next_before_level == 3 && $d->level != 0) ||
-                                ($next_level == 1 && $next_before_level == 2 && $d->level != 1) ||
+                                ($next_level == 1 && $next_before_level == 2 && $d->level != 1 && $d->level != 0) ||
                                 ($next_level == 2 && $next_before_level != 1 && $d->level != 1) ||
                                 ($next_level == 2 && $next_before_level == 1 && $d->level == 2))
                             <tr class="subtotal-row">
@@ -174,7 +176,7 @@
                         @endif
 
                         <!-- Jika Next Level 1 dan Next Before Level bukan 0 dan Level bukan 0 atau Next Level 0 -->
-                        @if (($next_level == 1 && $next_before_level != 0 && $d->level != 0) || $next_level == 0)
+                        @if ($next_level == 1 && $next_before_level != 0 && $next_before_level != 1 && $next_level != 1 && $next_level != 0 && $d->level != 0)
                             <tr class="subtotal-row">
                                 <td style="padding-left:20px;">
                                     <b>SUBTOTAL {{ strtoupper($level_1_name) }}</b>

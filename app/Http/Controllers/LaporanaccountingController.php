@@ -1313,7 +1313,7 @@ class LaporanaccountingController extends Controller
 
 
 
-        //Retur 
+        //Retur
         $returpenjualanpiutangdagang = Detailretur::query();
         $returpenjualanpiutangdagang->select(
             'marketing_retur.kode_akun_piutang_dagang',
@@ -1335,7 +1335,9 @@ class LaporanaccountingController extends Controller
         $returpenjualanpiutangdagang->whereBetween('marketing_retur.tanggal', [$start_date, $request->sampai]);
         $returpenjualanpiutangdagang->where('marketing_penjualan.status_batal', 0);
         $returpenjualanpiutangdagang->where('marketing_penjualan.tanggal', '<', $start_date);
-
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $returpenjualanpiutangdagang->whereBetween('marketing_retur.kode_akun_piutang_dagang', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
         $returpenjualanpiutangdagang->groupBy('marketing_retur.kode_akun_piutang_dagang', 'coa.jenis_akun', 'nama_akun', 'marketing_retur.tanggal', 'marketing_retur.no_retur', 'marketing_retur.no_faktur', 'pelanggan.nama_pelanggan');
         $returpenjualanpiutangdagang->orderBy('marketing_retur.tanggal');
         $returpenjualanpiutangdagang->orderBy('marketing_retur.no_retur');
@@ -1479,7 +1481,41 @@ class LaporanaccountingController extends Controller
 
 
 
+        $hutangdagangdanlainnya = Pembelian::query();
+        $hutangdagangdanlainnya->select(
+            'pembelian.kode_akun',
+            'coa.jenis_akun',
+            'nama_akun',
+            'pembelian.tanggal',
+            'pembelian.no_bukti',
+            DB::raw("'PEMBELIAN' AS sumber"),
+            DB::raw("CONCAT(' Pembelian ',pembelian.no_bukti, ' - ', supplier.nama_supplier) as keterangan"),
+            DB::raw('detailpembelian.subtotal as jml_kredit'),
+            DB::raw('0 as jml_debet'),
+            DB::raw('1 as urutan')
+        );
 
+        $hutangdagangdanlainnya->join('supplier', 'pembelian.kode_supplier', '=', 'supplier.kode_supplier');
+        $hutangdagangdanlainnya->join('coa', 'pembelian.kode_akun', '=', 'coa.kode_akun');
+        $hutangdagangdanlainnya->leftJoin(
+            DB::raw('(
+                SELECT no_bukti, SUM( IF ( kode_transaksi = "PMB", ( ( jumlah * harga ) + penyesuaian ), 0 ) ) - SUM( IF ( kode_transaksi = "PNJ", ( jumlah * harga ), 0 ) ) as subtotal
+                FROM pembelian_detail
+                GROUP BY no_bukti
+            ) detailpembelian'),
+            function ($join) {
+                $join->on('pembelian.no_bukti', '=', 'detailpembelian.no_bukti');
+            }
+        );
+        $hutangdagangdanlainnya->whereBetween('pembelian.tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $hutangdagangdanlainnya->whereBetween('pembelian.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        $hutangdagangdanlainnya->orderBy('pembelian.tanggal');
+        $hutangdagangdanlainnya->orderBy('pembelian.no_bukti');
+        $hutangdagangdanlainnya->orderBy('urutan');
+
+        //dd($hutangdagangdanlainnya->get());
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
         $data['saldoawalCollection'] = $saldoawalCollection;
@@ -1499,7 +1535,8 @@ class LaporanaccountingController extends Controller
             ->unionAll($returpenjualanpiutangdagang)
             ->unionAll($retur_penjualan)
             ->unionAll($potongan_penjualan)
-            ->unionAll($penyesuaian_penjualan);
+            ->unionAll($penyesuaian_penjualan)
+            ->unionAll($hutangdagangdanlainnya);
 
         if ($request->formatlaporan == '1') {
 
