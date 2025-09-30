@@ -1594,8 +1594,20 @@ class LaporanaccountingController extends Controller
                         });
                 })
                 ->get();
-            dd($labarugi);
+            $kode_akun_pendapatan = 4;
+            $kode_akun_pokok_penjualan = 5;
+            $kode_akun_pendapatanlain = 8;
+            $kode_akun_biayalain = 9;
 
+            $kode_akun_biaya_penjualan = '6-1';
+            $kode_akun_biaya_adm = '6-2';
+
+            $subtotal_akun_pendapatan = 0;
+            $subtotal_akun_pokok_penjualan = 0;
+            $subtotal_akun_pendapatanlain = 0;
+            $subtotal_akun_biayalain = 0;
+            $subtotal_akun_biaya_penjualan = 0;
+            $subtotal_akun_biaya_adm = 0;
             foreach ($labarugi as $d) {
 
                 $kode_akun_minus = ['4-2101', '4-2201', '4-2202', '5-1202', '5-3200', '5-3400', '5-3800'];
@@ -1609,20 +1621,7 @@ class LaporanaccountingController extends Controller
                     $test = 'plus';
                 }
 
-                $kode_akun_pendapatan = 4;
-                $kode_akun_pokok_penjualan = 5;
-                $kode_akun_pendapatanlain = 8;
-                $kode_akun_biayalain = 9;
 
-                $kode_akun_biaya_penjualan = '6-1';
-                $kode_akun_biaya_adm = '6-2';
-
-                $subtotal_akun_pendapatan = 0;
-                $subtotal_akun_pokok_penjualan = 0;
-                $subtotal_akun_pendapatanlain = 0;
-                $subtotal_akun_biayalain = 0;
-                $subtotal_akun_biaya_penjualan = 0;
-                $subtotal_akun_biaya_adm = 0;
 
                 if (substr($d->kode_akun, 0, 1) == $kode_akun_pendapatan) {
                     $subtotal_akun_pendapatan += $saldo_akhir;
@@ -1648,6 +1647,7 @@ class LaporanaccountingController extends Controller
                     $subtotal_akun_biaya_adm += $saldo_akhir;
                 }
             }
+
             $gross_profit = $subtotal_akun_pendapatan - $subtotal_akun_pokok_penjualan;
             $biaya_operasional = $subtotal_akun_biaya_adm + $subtotal_akun_biaya_penjualan;
             $operating_profit = $gross_profit - $biaya_operasional;
