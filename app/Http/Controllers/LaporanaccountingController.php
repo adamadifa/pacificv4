@@ -1594,6 +1594,7 @@ class LaporanaccountingController extends Controller
                         });
                 })
                 ->get();
+            dd($labarugi);
 
             foreach ($labarugi as $d) {
 
