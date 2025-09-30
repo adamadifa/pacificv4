@@ -91,11 +91,7 @@
                             //echo $level_0_name;
 
                         @endphp
-                        @if ($d->kode_akun == '3-2000')
-                            $laba_rugi = $net_profit_loss;
-                        @else
-                            $laba_rugi = 0;
-                        @endif
+
                         <!-- Tampilkan item -->
                         <tr>
                             <td style="padding-left: {{ $indent }}px;">
@@ -106,10 +102,15 @@
                                 @endif
                             </td>
                             <td style="text-align: right;">
+                                @if ($d->kode_akun == '3-2000')
+                                    $laba_rugi = $net_profit_loss;
+                                @else
+                                    $laba_rugi = 0;
+                                @endif
 
-
+                                {{ $laba_rugi }}
                                 @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ formatAngka($d->saldo_akhir) }} </b>
+                                    <b>{{ formatAngka($d->saldo_akhir) }}</b>
                                 @else
                                     {{ formatAngka($d->saldo_akhir) }}
                                 @endif
