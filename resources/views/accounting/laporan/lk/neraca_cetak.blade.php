@@ -102,17 +102,22 @@
                                 @endif
                             </td>
                             <td style="text-align: right;">
-                                @if ($d->kode_akun == '3-2000')
-                                    $laba_rugi = $net_profit_loss;
-                                @else
-                                    $laba_rugi = 0;
-                                @endif
+                                {{-- 
+                                    Variabel $laba_rugi undefined karena di Blade, assignment variabel dengan @if ... @else ... @endif tidak akan menyimpan nilai ke variabel PHP seperti di kode biasa.
+                                    Solusi: gunakan @php ... @endphp untuk assignment, lalu tampilkan nilainya.
+                                --}}
+                                @php
+                                    if ($d->kode_akun == '3-2000') {
+                                        $laba_rugi = $net_profit_loss ?? 0;
+                                    } else {
+                                        $laba_rugi = 0;
+                                    }
+                                @endphp
 
-                                {{ $laba_rugi }}
                                 @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ formatAngka($d->saldo_akhir) }}</b>
+                                    <b>{{ formatAngka($d->saldo_akhir + $laba_rugi) }}</b>
                                 @else
-                                    {{ formatAngka($d->saldo_akhir) }}
+                                    {{ formatAngka($d->saldo_akhir + $laba_rugi) }}
                                 @endif
                             </td>
                         </tr>
