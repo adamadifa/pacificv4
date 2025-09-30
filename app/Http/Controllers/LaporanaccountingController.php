@@ -1654,7 +1654,7 @@ class LaporanaccountingController extends Controller
             $net_profit_loss = $operating_profit + $subtotal_akun_pendapatanlain - $subtotal_akun_biayalain;
 
 
-            dd($net_profit_loss);
+            $data['net_profit_loss'] = $net_profit_loss;
             //Neraca
             $neraca = array('1,2,3');
             $akun_jangan_ditampilkan = ['0-0000', '1', '2'];
