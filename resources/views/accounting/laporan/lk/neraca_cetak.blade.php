@@ -128,7 +128,6 @@
                                 ($next_level == 2 && $next_before_level == 1 && $d->level == 2) ||
                                 ($next_level == 1 && $next_before_level == 3 && $d->level != 0) ||
                                 ($next_level == 1 && $next_before_level == 2 && $d->level != 1) ||
-                                ($next_level == 1 && $next_before_level == 0 && $d->level == 1) ||
                                 ($next_level == 0 && $d->level != 1))
                             <tr class="subtotal-row">
                                 <td style="padding-left:40px;">
@@ -145,7 +144,7 @@
                         @endif
 
                         <!-- Jika Next Level 1 dan Next Before Level bukan 0 dan Level bukan 0 atau Next Level 0 -->
-                        @if (($next_level == 1 && $next_before_level != 0 && $d->level != 0) || $next_level == 0)
+                        @if (($next_level == 1 && $d->level == 1) || $next_level == 0)
                             <tr class="subtotal-row">
                                 <td style="padding-left:20px;">
                                     <b>SUBTOTAL {{ strtoupper($level_1_name) }}</b>
