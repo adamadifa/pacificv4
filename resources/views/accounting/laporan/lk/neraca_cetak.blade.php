@@ -66,12 +66,17 @@
                             $next_level = $neraca[$index + 1]->level ?? null;
                             $next_before_level = $neraca[$index - 1]->level ?? null;
 
+                            if ($d->kode_akun == '3-2000') {
+                                $saldo_akhir = $d->saldo_akhir + $net_profit_loss;
+                            } else {
+                                $saldo_akhir = $d->saldo_akhir;
+                            }
                             //Level 0
                             if ($d->level == 0) {
                                 $level_0_name = $d->nama_akun;
                             }
 
-                            $subtotal_level_0 += $d->saldo_akhir;
+                            $subtotal_level_0 += $saldo_akhir;
 
                             //Level 1
 
@@ -79,14 +84,14 @@
                                 $level_1_name = $d->nama_akun;
                             }
 
-                            $subtotal_level_1 += $d->saldo_akhir;
+                            $subtotal_level_1 += $saldo_akhir;
 
                             //Level 2
                             if ($d->level == 2) {
                                 $level_2_name = $d->nama_akun;
                             }
 
-                            $subtotal_level_2 += $d->saldo_akhir;
+                            $subtotal_level_2 += $saldo_akhir;
 
                             //echo $level_0_name;
 
@@ -106,18 +111,12 @@
                                     Variabel $laba_rugi undefined karena di Blade, assignment variabel dengan @if ... @else ... @endif tidak akan menyimpan nilai ke variabel PHP seperti di kode biasa.
                                     Solusi: gunakan @php ... @endphp untuk assignment, lalu tampilkan nilainya.
                                 --}}
-                                @php
-                                    if ($d->kode_akun == '3-2000') {
-                                        $laba_rugi = $net_profit_loss ?? 0;
-                                    } else {
-                                        $laba_rugi = 0;
-                                    }
-                                @endphp
+
 
                                 @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ formatAngka($d->saldo_akhir + $laba_rugi) }}</b>
+                                    <b>{{ formatAngka($saldo_akhir) }}</b>
                                 @else
-                                    {{ formatAngka($d->saldo_akhir + $laba_rugi) }}
+                                    {{ formatAngka($saldo_akhir) }}
                                 @endif
                             </td>
                         </tr>
