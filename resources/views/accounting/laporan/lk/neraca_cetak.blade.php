@@ -107,10 +107,11 @@
                                 @else
                                     $laba_rugi = 0;
                                 @endif
+
                                 @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ formatAngka($d->saldo_akhir + $laba_rugi) }}</b>
+                                    <b>{{ formatAngka($d->saldo_akhir + $laba_rugi) }} {{ $laba_rugi }}</b>
                                 @else
-                                    {{ formatAngka($d->saldo_akhir + $laba_rugi) }}
+                                    {{ formatAngka($d->saldo_akhir + $laba_rugi) }} {{ $laba_rugi }}
                                 @endif
                             </td>
                         </tr>
