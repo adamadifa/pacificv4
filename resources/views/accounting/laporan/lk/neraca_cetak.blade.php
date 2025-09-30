@@ -102,10 +102,15 @@
                                 @endif
                             </td>
                             <td style="text-align: right;">
-                                @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ formatAngka($d->saldo_akhir) }}</b>
+                                @if ($d->kode_akun == '3-2000')
+                                    $laba_rugi = $net_profit_loss;
                                 @else
-                                    {{ formatAngka($d->saldo_akhir) }}
+                                    $laba_rugi = 0;
+                                @endif
+                                @if ($d->level == 0 || $d->level == 1)
+                                    <b>{{ formatAngka($d->saldo_akhir + $laba_rugi) }}</b>
+                                @else
+                                    {{ formatAngka($d->saldo_akhir + $laba_rugi) }}
                                 @endif
                             </td>
                         </tr>
