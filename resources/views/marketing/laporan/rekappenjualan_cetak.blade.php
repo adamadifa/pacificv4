@@ -240,7 +240,7 @@
                         </td>
                         <td class="right">
                             {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] . '+' . $netto . '-' . $d['totalbayarpiutang'] . '=' }}
-                            {{ $d['s'] }}
+
                             {{ formatAngka($saldo_akhir_piutang) }}
                         </td>
                     </tr>
