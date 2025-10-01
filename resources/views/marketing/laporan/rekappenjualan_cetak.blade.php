@@ -239,11 +239,11 @@
                             {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] }} --}}
                         </td>
                         <td class="right">
-                            {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] . '+' . $netto . '-' . $d['totalbayarpiutang'] . '=' }}
+                            {{-- {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] . '+' . $netto . '-' . $d['totalbayarpiutang'] . '=' }} --}}
 
                             {{ formatAngka($saldo_akhir_piutang) }}
-                            <br>
-                            {{ $d['bruto'] . '-' . $d['potongan'] . '-' . $d['penyesuaian'] . '-' . $d['potongan_istimewa'] . '+' . $d['ppn'] . '-' . $d['retur'] . '=' . $netto }}
+                            {{-- <br>
+                            {{ $d['bruto'] . '-' . $d['potongan'] . '-' . $d['penyesuaian'] . '-' . $d['potongan_istimewa'] . '+' . $d['ppn'] . '-' . $d['retur'] . '=' . $netto }} --}}
                         </td>
                     </tr>
                     @if ($cbg != $d['kode_cabang'])
