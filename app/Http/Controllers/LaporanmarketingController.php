@@ -5466,7 +5466,7 @@ class LaporanmarketingController extends Controller
 
         $queryretur = Detailretur::query();
         $queryretur->select(
-            'salesman.kode_salesmand',
+            'salesman.kode_salesman',
             'salesman.nama_salesman',
             'salesman.kode_cabang',
             DB::raw('SUM(0) as potongan'),
