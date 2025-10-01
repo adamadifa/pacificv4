@@ -198,7 +198,7 @@
                         $saldo_awal_piutang =
                             $d['saldoawalpiutang'] + $d['saldopiutangpindahan'] - $d['saldopiutangpindahkesaleslain'];
                         $saldo_akhir_piutang = $saldo_awal_piutang + $netto - $d['totalbayarpiutang'];
-                        //$saldo_awal_piutang = $d['saldoawalpiutang'];
+                        $saldo_awal_piutang = $d['saldoawalpiutang'];
                         // $saldo_akhir_piutang = $d['totalbayarpiutang'];
 
                         $subtotal_saldoawal += $saldo_awal_piutang;
@@ -245,10 +245,7 @@
                             {{-- ---
                             {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] }} --}}
                         </td>
-                        <td class="right">
-                            {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] . '+' . $netto . '-' . $d['totalbayarpiutang'] }}
-
-                            {{ formatAngka($saldo_akhir_piutang) }}</td>
+                        <td class="right">{{ formatAngka($saldo_akhir_piutang) }}</td>
                     </tr>
                     @if ($cbg != $d['kode_cabang'])
                         <tr>
