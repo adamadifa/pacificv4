@@ -150,7 +150,7 @@
                         <td class="right">{{ formatAngka($d->potongan_istimewa) }}</td>
                         <td class="right">{{ formatAngka($d->ppn) }}</td>
                         <td class="right">{{ formatAngka($d->retur) }}</td>
-                        <td class="right">{{ formatAngka($d->netto) }}</td>
+                        <td class="right"></td>
                         <td class="right">{{ formatAngka($d->jmlbayar) }}</td>
                         <td class="right">{{ formatAngka($saldo_akhir) }}</td>
 
