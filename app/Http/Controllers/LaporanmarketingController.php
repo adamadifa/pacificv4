@@ -1599,7 +1599,7 @@ class LaporanmarketingController extends Controller
             DB::raw("(
                 SELECT
                     marketing_penjualan.no_faktur,
-                    'jenis_transaksi',
+                    jenis_transaksi,
                     IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
                     IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
                 FROM
