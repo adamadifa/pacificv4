@@ -1640,7 +1640,7 @@ class LaporanmarketingController extends Controller
             $queryretur->where('salesman.kode_salesman', $request->kode_salesman);
         }
 
-        dd($queryretur->get());
+        //dd($queryretur->get());
 
         $queryPotongan = Penjualan::select(
             DB::raw('SUM(potongan) as potongan_total'),
