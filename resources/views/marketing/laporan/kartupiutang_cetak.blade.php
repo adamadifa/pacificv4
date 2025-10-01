@@ -92,8 +92,7 @@
                 @endphp
                 @foreach ($kartupiutang as $d)
                     @php
-                        $penjualanbulanini =
-                            $d->bruto - $d->penyesuaian - $d->potongan - $d->potongan_istimewa + $d->ppn - $d->retur;
+                        $penjualanbulanini = $d->bruto - $d->penyesuaian - $d->potongan - $d->potongan_istimewa + $d->ppn - $d->retur;
                         $saldo_akhir = $d->saldo_awal + $penjualanbulanini - $d->jmlbayar;
 
                         $total_piutang += $d->total_piutang;

@@ -5439,7 +5439,7 @@ class LaporanmarketingController extends Controller
 
         $queryretur = Detailretur::query();
         $queryretur->select(
-            'salesman.kode_salesman',
+            'salesman.kode_salesmand',
             'salesman.nama_salesman',
             'salesman.kode_cabang',
             DB::raw('SUM(0) as potongan'),
@@ -5500,7 +5500,7 @@ class LaporanmarketingController extends Controller
         }
         $queryretur->groupBy('salesman.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
 
-
+        dd($queryretur->get());
 
         $queryhistoribayar = Historibayarpenjualan::query();
         $queryhistoribayar->select(
