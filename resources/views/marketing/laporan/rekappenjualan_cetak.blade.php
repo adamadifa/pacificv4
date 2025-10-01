@@ -161,7 +161,7 @@
                         $subtotal_retur += $d['retur'];
                         $grandtotal_retur += $d['retur'];
 
-                        $netto = $d['bruto'] - $d['potongan'] - $d['penyesuaian'] - $d['potongan_istimewa'] + $d['ppn'] - $d['retur'];
+                        $netto = $d['bruto'];
 
                         $subtotal_netto += $netto;
                         $grandtotal_netto += $netto;
