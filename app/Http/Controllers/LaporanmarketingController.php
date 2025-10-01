@@ -1594,7 +1594,7 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(subtotal) as retur_total')
         );
         $queryretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
-        //$queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $queryretur->leftJoin(
             DB::raw("(
                 SELECT
