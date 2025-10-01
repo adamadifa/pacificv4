@@ -1580,7 +1580,7 @@ class LaporanmarketingController extends Controller
             }
         }
         if (!empty($request->kode_salesman)) {
-            $query->where('salesman.kode_salesman', $request->kode_salesman);
+            $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
 
 
@@ -1637,7 +1637,7 @@ class LaporanmarketingController extends Controller
             }
         }
         if (!empty($request->kode_salesman)) {
-            $queryretur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+            $queryretur->where('salesman.kode_salesman', $request->kode_salesman);
         }
 
         dd($queryretur->get());
