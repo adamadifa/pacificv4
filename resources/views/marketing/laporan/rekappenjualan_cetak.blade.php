@@ -161,7 +161,7 @@
                         $subtotal_retur += $d['retur'];
                         $grandtotal_retur += $d['retur'];
 
-                        $netto = $d['bruto'];
+                        $netto = $d['bruto'] - $d['potongan'] - $d['penyesuaian'] - $d['potongan_istimewa'] + $d['ppn'] - $d['retur'];
 
                         $subtotal_netto += $netto;
                         $grandtotal_netto += $netto;
@@ -242,6 +242,8 @@
                             {{ $d['saldoawalpiutang'] . '+' . $d['saldopiutangpindahan'] . '-' . $d['saldopiutangpindahkesaleslain'] . '+' . $netto . '-' . $d['totalbayarpiutang'] . '=' }}
 
                             {{ formatAngka($saldo_akhir_piutang) }}
+                            <br>
+                            {{ $d['bruto'] . '-' . $d['potongan'] . '-' . $d['penyesuaian'] . '-' . $d['potongan_istimewa'] . '+' . $d['ppn'] . '-' . $d['retur'] . '=' . $netto }}
                         </td>
                     </tr>
                     @if ($cbg != $d['kode_cabang'])
