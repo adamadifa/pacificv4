@@ -3025,10 +3025,7 @@ class LaporanmarketingController extends Controller
             DB::raw("(SELECT SUM(subtotal) FROM marketing_retur_detail
             INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$request->dari' AND '$request->sampai') as retur"),
 
-            DB::raw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur)
-            - penyesuaian - potongan - potongan_istimewa + ppn - IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
-            INNER JOIN marketing_retur ON  marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$request->dari' AND '$request->sampai'),0)
-            as netto"),
+            DB::raw("((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur) - penyesuaian - potongan - potongan_istimewa + ppn) as netto"),
 
             DB::raw("(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal BETWEEN '$request->dari' AND '$request->sampai') as jmlbayar"),
 
