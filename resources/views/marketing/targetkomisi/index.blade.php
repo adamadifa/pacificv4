@@ -188,7 +188,8 @@
                                                     @can('targetkomisi.edit')
                                                         @if (
                                                             ($d->id_pengirim == auth()->user()->id && !in_array($level_user, $roles_approve_targetkomisi)) ||
-                                                                $level_user == 'super admin')
+                                                                $level_user == 'super admin' ||
+                                                                $level_user == 'regional sales manager')
                                                             <div>
                                                                 <a href="#" class="me-2 btnEdit"
                                                                     kode_target="{{ Crypt::encrypt($d->kode_target) }}">
