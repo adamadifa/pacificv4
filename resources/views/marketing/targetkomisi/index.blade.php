@@ -149,7 +149,7 @@
                                                 <div class="d-flex">
                                                     @can('targetkomisi.approve')
                                                         <div>
-                                                            @if ($d->status_disposisi == '0')
+                                                            @if ($d->status_disposisi == '0' || $level_user == 'regional sales manager')
                                                                 <a href="#" class="me-2 btnApprove"
                                                                     kode_target="{{ Crypt::encrypt($d->kode_target) }}">
                                                                     <i class="ti ti-send text-info"></i>
