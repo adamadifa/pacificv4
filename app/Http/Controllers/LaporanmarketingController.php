@@ -1594,8 +1594,34 @@ class LaporanmarketingController extends Controller
             DB::raw('SUM(subtotal) as retur_total')
         );
         $queryretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
-        $queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
-        $queryretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        //$queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $queryretur->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    jenis_transaksi,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$request->dari'  GROUP BY no_faktur)
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_retur.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+
+        $queryretur->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
         $queryretur->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $queryretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
         $queryretur->where('jenis_retur', 'PF');
@@ -1611,9 +1637,10 @@ class LaporanmarketingController extends Controller
             }
         }
         if (!empty($request->kode_salesman)) {
-            $queryretur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+            $queryretur->where('salesman.kode_salesman', $request->kode_salesman);
         }
 
+        //dd($queryretur->get());
 
         $queryPotongan = Penjualan::select(
             DB::raw('SUM(potongan) as potongan_total'),
@@ -2842,7 +2869,7 @@ class LaporanmarketingController extends Controller
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$request->dari' GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -2998,10 +3025,7 @@ class LaporanmarketingController extends Controller
             DB::raw("(SELECT SUM(subtotal) FROM marketing_retur_detail
             INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$request->dari' AND '$request->sampai') as retur"),
 
-            DB::raw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur)
-            - penyesuaian - potongan - potongan_istimewa + ppn - IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
-            INNER JOIN marketing_retur ON  marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$request->dari' AND '$request->sampai'),0)
-            as netto"),
+            DB::raw("((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur) ) as netto"),
 
             DB::raw("(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal BETWEEN '$request->dari' AND '$request->sampai') as jmlbayar"),
 
@@ -4942,7 +4966,7 @@ class LaporanmarketingController extends Controller
                 FROM
                     marketing_penjualan_movefaktur
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->tanggal'
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$request->tanggal' GROUP BY no_faktur) AND tanggal <= '$request->tanggal'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
             ) pindahfaktur"),
             function ($join) {
@@ -5500,7 +5524,7 @@ class LaporanmarketingController extends Controller
         }
         $queryretur->groupBy('salesman.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
 
-
+        //dd($queryretur->get());
 
         $queryhistoribayar = Historibayarpenjualan::query();
         $queryhistoribayar->select(
