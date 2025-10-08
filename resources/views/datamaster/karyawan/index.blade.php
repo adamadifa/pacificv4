@@ -84,7 +84,7 @@
                                                 {{ $loop->iteration + $karyawan->firstItem() - 1 }}
                                             </td>
                                             <td>{{ $d->nik }}</td>
-                                            <td>{{ textCamelCase($d->nama_karyawan) }}</td>
+                                            <td>{!! textCamelCase($d->nama_karyawan) !!}</td>
                                             <td>{{ $d->kode_dept }}</td>
                                             <td>{{ $d->nama_jabatan }}</td>
                                             <td>{{ $d->kode_perusahaan == 'MP' ? 'MP' : 'PCF' }}</td>
