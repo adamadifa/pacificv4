@@ -1561,6 +1561,11 @@ class LaporanaccountingController extends Controller
             $data['mutasiakunCollection'] = $mutasiakunCollection;
             $data['bukubesar'] = $bukubesar;
 
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Buku Besar.xls");
+            }
             return view('accounting.laporan.lk.bukubesar_cetak', $data);
         } else if ($request->formatlaporan == '2') {
 
@@ -1687,6 +1692,11 @@ class LaporanaccountingController extends Controller
 
 
 
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Neraca.xls");
+            }
             return view('accounting.laporan.lk.neraca_cetak', $data);
 
             // $rekap_akun sekarang berisi total debet dan kredit per kode_akun dari seluruh union
@@ -1719,6 +1729,11 @@ class LaporanaccountingController extends Controller
                 })
                 ->get();
 
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Laba Rugi.xls");
+            }
             return view('accounting.laporan.lk.labarugi_cetak', $data);
         }
     }
