@@ -1106,7 +1106,6 @@
 
         function hitungdiskonStick() {
             let blacklist_pelanggan = [
-
                 'BGR-06675',
                 'BGR-06827',
                 'BGR-06854',
