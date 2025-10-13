@@ -105,30 +105,32 @@
                             }
 
                         @endphp
-
-                        <!-- Tampilkan item -->
-                        <tr>
-                            <td style="padding-left: {{ $indent }}px;">
-                                @if ($d->level == 0 || $d->level == 1 || $d->level == 2)
-                                    <b>{{ $d->kode_akun }} {{ $d->nama_akun }}</b>
-                                @else
-                                    {{ $d->kode_akun }} {{ $d->nama_akun }}
-                                @endif
-                            </td>
-                            <td style="text-align: right;">
-                                {{-- 
+                        @if ($saldo_akhir == 0 && $d->level == 1 && $next_level == 1)
+                        @else
+                            <!-- Tampilkan item -->
+                            <tr>
+                                <td style="padding-left: {{ $indent }}px;">
+                                    @if ($d->level == 0 || $d->level == 1 || $d->level == 2)
+                                        <b>{{ $d->kode_akun }} {{ $d->nama_akun }}</b>
+                                    @else
+                                        {{ $d->kode_akun }} {{ $d->nama_akun }}
+                                    @endif
+                                </td>
+                                <td style="text-align: right;">
+                                    {{-- 
                                     Variabel $laba_rugi undefined karena di Blade, assignment variabel dengan @if ... @else ... @endif tidak akan menyimpan nilai ke variabel PHP seperti di kode biasa.
                                     Solusi: gunakan @php ... @endphp untuk assignment, lalu tampilkan nilainya.
                                 --}}
 
 
-                                @if ($d->level == 0 || $d->level == 1)
-                                    <b>{{ formatAngka($saldo_akhir) }}</b>
-                                @else
-                                    {{ formatAngka($saldo_akhir) }}
-                                @endif
-                            </td>
-                        </tr>
+                                    @if ($d->level == 0 || $d->level == 1)
+                                        <b>{{ formatAngka($saldo_akhir) }}</b>
+                                    @else
+                                        {{ formatAngka($saldo_akhir) }}
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
 
                         <!-- Jika Next Level 2 dan Next Before Level bukan 1 dan Level bukan 1 atau Next Level 1 -->
                         @if (
