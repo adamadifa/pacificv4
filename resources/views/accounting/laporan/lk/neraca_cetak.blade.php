@@ -185,7 +185,9 @@
                             @endphp
                         @endif
 
-                        @if (!in_array(substr($next_kode_akun, 0, 4), $kode_akun_kas_bank))
+                        @if (
+                            !in_array(substr($next_kode_akun, 0, 4), $kode_akun_kas_bank) &&
+                                in_array(substr($d->kode_akun, 0, 4), $kode_akun_kas_bank))
                             <tr class="subtotal-row">
                                 <td>
                                     <b>SUBTOTAL KAS BANK</b>
