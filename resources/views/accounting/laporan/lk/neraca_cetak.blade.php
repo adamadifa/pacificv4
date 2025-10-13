@@ -228,7 +228,7 @@
                             </tr>
                         @endif
 
-                        @if (!in_array(substr($next_kode_akun, 0, 1), $kode_akun_modal))
+                        @if (substr($next_kode_akun, 0, 1) == $kode_akun_modal)
                             <tr class="subtotal-row">
                                 <td>
                                     <b>TOTAL PASIVA</b>
