@@ -168,6 +168,7 @@
                             ($saldo_akhir == 0 && $d->level == 1 && $next_level == 1) ||
                                 ($saldo_akhir == 0 && $d->level == 2 && $next_level == 2) ||
                                 ($saldo_akhir == 0 && $d->level == 1 && $next_level == 0) ||
+                                ($saldo_akhir == 0 && $d->level == 2 && $next_level == 0) ||
                                 ($saldo_akhir == 0 && $d->level == 3))
                         @else
                             <tr>
