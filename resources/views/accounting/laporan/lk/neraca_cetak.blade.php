@@ -120,7 +120,7 @@
                                         {{ $d->kode_akun }} {{ $d->nama_akun }}
                                     @endif
 
-                                    {{ $d->level }} - {{ $next_level }}
+                                    {{-- {{ $d->level }} - {{ $next_level }} --}}
                                 </td>
                                 <td style="text-align: right;">
                                     {{-- 
