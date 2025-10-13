@@ -61,6 +61,12 @@
 
                         $kode_akun_kas_bank = ['1-11', '1-12'];
                         $subtotal_akun_kas_bank = 0;
+
+                        $kode_akun_hutang = 2;
+                        $subtotal_akun_hutang = 0;
+
+                        $kode_akun_modal = 3;
+                        $subtotal_akun_modal = 0;
                     @endphp
 
                     @foreach ($neraca as $index => $d)
@@ -102,6 +108,14 @@
 
                             if (in_array(substr($d->kode_akun, 0, 4), $kode_akun_kas_bank)) {
                                 $subtotal_akun_kas_bank += $saldo_akhir;
+                            }
+
+                            if (substr($d->kode_akun, 0, 1) == $kode_akun_hutang) {
+                                $subtotal_akun_hutang += $saldo_akhir;
+                            }
+
+                            if (substr($d->kode_akun, 0, 1) == $kode_akun_modal) {
+                                $subtotal_akun_modal += $saldo_akhir;
                             }
 
                         @endphp
@@ -210,6 +224,20 @@
                                 </td>
                                 <td style="text-align: right;">
                                     <b>{{ formatAngka($subtotal_akun_kas_bank) }}</b>
+                                </td>
+                            </tr>
+                        @endif
+
+                        @if (!in_array(substr($next_kode_akun, 0, 1), $kode_akun_modal))
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>TOTAL PASIVA</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    @php
+                                        $total_pasiva = $subtotal_akun_hutang + $subtotal_akun_modal;
+                                    @endphp
+                                    <b>{{ formatAngka($total_pasiva) }}</b>
                                 </td>
                             </tr>
                         @endif
