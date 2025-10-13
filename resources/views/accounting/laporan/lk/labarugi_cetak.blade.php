@@ -267,7 +267,7 @@
                         @endif
 
                         @if (substr($next_kode_akun, 0, 3) != '6-2' && substr($d->kode_akun, 0, 3) == '6-2')
-                            <tr class="subtotal-row">
+                            {{-- <tr class="subtotal-row">
                                 <td>
                                     <b>TOTAL BIAYA ADMINISTRASI</b>
                                 </td>
@@ -286,7 +286,7 @@
                                     @endphp
                                     <b>{{ formatAngka($biaya_operasional) }}</b>
                                 </td>
-                            </tr>
+                            </tr> --}}
 
                             <tr class="subtotal-row">
                                 <td>
@@ -294,6 +294,7 @@
                                 </td>
                                 <td style="text-align: right;">
                                     @php
+                                        $biaya_operasional = $subtotal_akun_biaya_adm + $subtotal_akun_biaya_penjualan;
                                         $operating_profit = $gross_profit - $biaya_operasional;
                                     @endphp
                                     <b>{{ formatAngka($operating_profit) }}</b>
