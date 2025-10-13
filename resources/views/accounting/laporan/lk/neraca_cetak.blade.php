@@ -58,6 +58,9 @@
 
                         $subtotal_level_2 = 0;
                         $level_2_name = '';
+
+                        $kode_akun_kas_bank = ['1-11', '1-12'];
+                        $subtotal_akun_kas_bank = 0;
                     @endphp
 
                     @foreach ($neraca as $index => $d)
@@ -65,6 +68,8 @@
                             $indent = ($d->level ?? 0) * 20;
                             $next_level = $neraca[$index + 1]->level ?? null;
                             $next_before_level = $neraca[$index - 1]->level ?? null;
+
+                            $next_kode_akun = $neraca[$index + 1]->kode_akun ?? null;
 
                             if ($d->kode_akun == '3-2000') {
                                 $saldo_akhir = $d->saldo_akhir + $net_profit_loss;
@@ -94,6 +99,10 @@
                             $subtotal_level_2 += $saldo_akhir;
 
                             //echo $level_0_name;
+
+                            if (in_array(substr($d->kode_akun, 0, 4), $kode_akun_kas_bank)) {
+                                $subtotal_akun_kas_bank += $saldo_akhir;
+                            }
 
                         @endphp
 
@@ -172,6 +181,17 @@
                                 $subtotal_level_0 = 0;
                                 $level_0_name = '';
                             @endphp
+                        @endif
+
+                        @if (!in_array(substr($next_kode_akun, 0, 4), $kode_akun_kas_bank))
+                            <tr class="subtotal-row">
+                                <td>
+                                    <b>SUBTOTAL KAS BANK</b>
+                                </td>
+                                <td style="text-align: right;">
+                                    <b>{{ formatAngka($subtotal_akun_kas_bank) }}</b>
+                                </td>
+                            </tr>
                         @endif
                     @endforeach
                 </tbody>
