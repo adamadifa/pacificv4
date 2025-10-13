@@ -227,21 +227,18 @@
                                 </td>
                             </tr>
                         @endif
-
-                        @if (substr($next_kode_akun, 0, 1) == $kode_akun_modal)
-                            <tr class="subtotal-row">
-                                <td>
-                                    <b>TOTAL PASIVA</b>
-                                </td>
-                                <td style="text-align: right;">
-                                    @php
-                                        $total_pasiva = $subtotal_akun_hutang + $subtotal_akun_modal;
-                                    @endphp
-                                    <b>{{ formatAngka($total_pasiva) }}</b>
-                                </td>
-                            </tr>
-                        @endif
                     @endforeach
+                    <tr class="subtotal-row">
+                        <td>
+                            <b>TOTAL PASIVA</b>
+                        </td>
+                        <td style="text-align: right;">
+                            @php
+                                $total_pasiva = $subtotal_akun_hutang + $subtotal_akun_modal;
+                            @endphp
+                            <b>{{ formatAngka($total_pasiva) }}</b>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
