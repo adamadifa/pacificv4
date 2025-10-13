@@ -145,7 +145,7 @@
                         @if (
                             ($subtotal_level_2 != 0 && $next_level == 2 && $d->level == 2) ||
                                 ($subtotal_level_2 != 0 && $next_level == 2 && $d->level == 3) ||
-                                ($subtotal_level_2 != 0 && $next_level == 1 && $d->level == 2))
+                                ($subtotal_level_2 != 0 && $next_level == 1 && $d->level == 3))
                             <tr class="subtotal-row">
                                 <td style="padding-left:40px;">
                                     <b>SUBTOTAL {{ strtoupper($level_2_name) }}</b>
