@@ -142,7 +142,9 @@
                                 ($next_level == 1 && $next_before_level == 3 && $d->level != 0) ||
                                 ($next_level == 1 && $next_before_level == 2 && $d->level != 1) ||
                                 ($next_level == 0 && $d->level != 1) --}}
-                        @if ($saldo_akhir != 0 && $next_level == 2 && $d->level == 2)
+                        @if (
+                            ($subtotal_level_2 != 0 && $next_level == 2 && $d->level == 2) ||
+                                ($subtotal_level_2 != 0 && $next_level == 2 && $d->level == 3))
                             <tr class="subtotal-row">
                                 <td style="padding-left:40px;">
                                     <b>SUBTOTAL {{ strtoupper($level_2_name) }}</b>
