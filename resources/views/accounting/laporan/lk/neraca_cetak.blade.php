@@ -167,7 +167,8 @@
                             ($subtotal_level_1 != 0 && $next_level == 1 && $d->level == 3) ||
                                 ($subtotal_level_1 != 0 && $next_level == 0 && $d->level == 3) ||
                                 ($subtotal_level_1 != 0 && $next_level == 1 && $d->level == 2) ||
-                                ($subtotal_level_1 != 0 && $next_level == 1 && $d->level == 1))
+                                ($subtotal_level_1 != 0 && $next_level == 1 && $d->level == 1) ||
+                                ($subtotal_level_1 != 0 && $next_level == 0 && $d->level == 1))
                             <tr class="subtotal-row">
                                 <td style="padding-left:20px;">
                                     <b>SUBTOTAL {{ strtoupper($level_1_name) }}</b>
