@@ -137,12 +137,12 @@
                         @endif
 
                         <!-- Jika Next Level 2 dan Next Before Level bukan 1 dan Level bukan 1 atau Next Level 1 -->
-                        @if (
-                            ($next_level == 2 && $next_before_level != 1 && $d->level != 1) ||
+                        {{-- ($next_level == 2 && $next_before_level != 1 && $d->level != 1) ||
                                 ($next_level == 2 && $next_before_level == 1 && $d->level == 2) ||
                                 ($next_level == 1 && $next_before_level == 3 && $d->level != 0) ||
                                 ($next_level == 1 && $next_before_level == 2 && $d->level != 1) ||
-                                ($next_level == 0 && $d->level != 1))
+                                ($next_level == 0 && $d->level != 1) --}}
+                        @if ($saldo_akhir != 0 && $next_level == 2 && $d->level == 2)
                             <tr class="subtotal-row">
                                 <td style="padding-left:40px;">
                                     <b>SUBTOTAL {{ strtoupper($level_2_name) }}</b>
