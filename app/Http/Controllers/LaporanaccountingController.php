@@ -1613,7 +1613,7 @@ class LaporanaccountingController extends Controller
             $subtotal_akun_biayalain = 0;
             $subtotal_akun_biaya_penjualan = 0;
             $subtotal_akun_biaya_adm = 0;
-            foreach ($labarugi as $index => $d)
+            foreach ($labarugi as $index => $d) {
 
                 $kode_akun_minus = ['4-2101', '4-2201', '4-2202', '5-1202', '5-3200', '5-3400', '5-3800'];
                 // Hitung indentasi berdasarkan level (misal: 20px per level)
