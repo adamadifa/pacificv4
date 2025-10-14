@@ -1,4 +1,4 @@
-<form action="{{ route('laporanmarketing.cetaklhp') }}" method="POST" id="formlhp">
+<form action="{{ route('laporanmarketing.cetaklhp') }}" method="POST" id="formlhp" target="_blank">
     @csrf
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
