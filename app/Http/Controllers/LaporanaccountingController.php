@@ -1613,7 +1613,7 @@ class LaporanaccountingController extends Controller
             $subtotal_akun_biayalain = 0;
             $subtotal_akun_biaya_penjualan = 0;
             $subtotal_akun_biaya_adm = 0;
-            foreach ($labarugi as $d) {
+            foreach ($labarugi as $index => $d)
 
                 $kode_akun_minus = ['4-2101', '4-2201', '4-2202', '5-1202', '5-3200', '5-3400', '5-3800'];
                 // Hitung indentasi berdasarkan level (misal: 20px per level)
@@ -1657,15 +1657,15 @@ class LaporanaccountingController extends Controller
             $biaya_operasional = $subtotal_akun_biaya_adm + $subtotal_akun_biaya_penjualan;
             $operating_profit = $gross_profit - $biaya_operasional;
             $net_profit_loss = $operating_profit + $subtotal_akun_pendapatanlain - $subtotal_akun_biayalain;
-            // echo "Pendapatan: " . $subtotal_akun_pendapatan . "<br>";
-            // echo "Pokok Penjualan: " . $subtotal_akun_pokok_penjualan . "<br>";
-            // echo "Gross Profit: " . $gross_profit . "<br>";
-            // echo "Biaya Operasional: " . $biaya_operasional . "<br>";
-            // echo "Operating Profit: " . $operating_profit . "<br>";
-            // echo "Pendapatan Lain: " . $subtotal_akun_pendapatanlain . "<br>";
-            // echo "Biaya Lain: " . $subtotal_akun_biayalain . "<br>";
-            // echo "Net Profit Loss: " . $net_profit_loss . "<br>";
-            // die;
+            echo "Pendapatan: " . $subtotal_akun_pendapatan . "<br>";
+            echo "Pokok Penjualan: " . $subtotal_akun_pokok_penjualan . "<br>";
+            echo "Gross Profit: " . $gross_profit . "<br>";
+            echo "Biaya Operasional: " . $biaya_operasional . "<br>";
+            echo "Operating Profit: " . $operating_profit . "<br>";
+            echo "Pendapatan Lain: " . $subtotal_akun_pendapatanlain . "<br>";
+            echo "Biaya Lain: " . $subtotal_akun_biayalain . "<br>";
+            echo "Net Profit Loss: " . $net_profit_loss . "<br>";
+            die;
 
             $data['net_profit_loss'] = $net_profit_loss;
             //Neraca
