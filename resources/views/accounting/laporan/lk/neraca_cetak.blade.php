@@ -134,7 +134,7 @@
                                         {{ $d->kode_akun }} {{ $d->nama_akun }}
                                     @endif
 
-                                    {{ $saldo_akhir . '+' . $net_profit_loss }}
+                                    {{ $d->saldo_akhir . '+' . $net_profit_loss }}
                                     {{-- {{ $d->level }} - {{ $next_level }} --}}
                                 </td>
                                 <td style="text-align: right;">
