@@ -1658,6 +1658,8 @@ class LaporanaccountingController extends Controller
             $operating_profit = $gross_profit - $biaya_operasional;
             $net_profit_loss = $operating_profit + $subtotal_akun_pendapatanlain - $subtotal_akun_biayalain;
 
+            echo "Gross Profit: " . $gross_profit . "<br>";
+            echo "Biaya Operasional: " . $biaya_operasional . "<br>";
             echo "Operating Profit: " . $operating_profit . "<br>";
             echo "Pendapatan Lain: " . $subtotal_akun_pendapatanlain . "<br>";
             echo "Biaya Lain: " . $subtotal_akun_biayalain . "<br>";
