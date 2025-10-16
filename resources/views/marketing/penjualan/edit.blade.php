@@ -23,15 +23,19 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode" value="{{ $penjualan->no_faktur }}" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date"
-                                value="{{ $penjualan->tanggal }}" />
-                            <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user" readonly="true" />
+                            <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode"
+                                value="{{ $penjualan->no_faktur }}" />
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" value="{{ $penjualan->tanggal }}" />
+                            <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user"
+                                readonly="true" />
                             <input type="hidden" id="kode_pelanggan" name="kode_pelanggan">
-                            <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user" readonly="true" />
+                            <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user"
+                                readonly="true" />
                             <input type="hidden" name="kode_salesman" id="kode_salesman">
                             <div class="form-group mb-3">
-                                <textarea name="keterangan" class="form-control" id="" cols="30" rows="5" id="keterangan" placeholder="Keterangan">{{ $penjualan->keterangan }}</textarea>
+                                <textarea name="keterangan" class="form-control" id="" cols="30" rows="5" id="keterangan"
+                                    placeholder="Keterangan">{{ $penjualan->keterangan }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -40,8 +44,8 @@
             <div class="row">
                 <div class="col">
                     <div class="card h-100">
-                        <img class="card-img-top" src="../../assets/img/elements/2.jpg" alt="Card image cap" style="height:250px; object-fit:cover"
-                            id="foto">
+                        <img class="card-img-top" src="../../assets/img/elements/2.jpg" alt="Card image cap"
+                            style="height:250px; object-fit:cover" id="foto">
                         <div class="card-body">
                             <p class="card-text" id="alamat_pelanggan">
 
@@ -103,7 +107,8 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-4 col-md-12 col-sm12">
-                                    <x-input-with-icon label="Produk" name="nama_produk" icon="ti ti-barcode" height="80px" readonly="true" />
+                                    <x-input-with-icon label="Produk" name="nama_produk" icon="ti ti-barcode"
+                                        height="80px" readonly="true" />
                                     <input type="hidden" id="kode_harga" name="kode_harga">
                                     <input type="hidden" id="kode_produk" name="kode_produk">
                                     <input type="hidden" id="isi_pcs_dus" name="isi_pcs_dus">
@@ -113,13 +118,14 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box"
+                                                align="right" money="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Harga / Dus" name="harga_dus" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                            <x-input-with-icon label="Harga / Dus" name="harga_dus"
+                                                icon="ti ti-moneybag" align="right" money="true" />
                                             <input type="hidden" id="harga_dus_produk">
                                         </div>
                                     </div>
@@ -127,13 +133,14 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box"
+                                                align="right" money="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Harga / Pack" name="harga_pack" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                            <x-input-with-icon label="Harga / Pack" name="harga_pack"
+                                                icon="ti ti-moneybag" align="right" money="true" />
                                             <input type="hidden" id="harga_pack_produk">
                                         </div>
                                     </div>
@@ -141,28 +148,30 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Pack" name="jml_pcs" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Pack" name="jml_pcs" icon="ti ti-box"
+                                                align="right" money="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Harga / Pcs" name="harga_pcs" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                            <x-input-with-icon label="Harga / Pcs" name="harga_pcs"
+                                                icon="ti ti-moneybag" align="right" money="true" />
                                             <input type="hidden" id="harga_pcs_produk">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-2">
                                     <div class="form-check mt-3 mb-3">
-                                        <input class="form-check-input status_promosi" name="status_promosi" type="checkbox" value="1"
-                                            id="status_promosi">
+                                        <input class="form-check-input status_promosi" name="status_promosi"
+                                            type="checkbox" value="1" id="status_promosi">
                                         <label class="form-check-label" for="status_promosi"> Promosi </label>
                                     </div>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <a href="#" id="tambahproduk" class="btn btn-primary w-100"><i class="ti ti-plus me-1"></i>Tambah
+                                    <a href="#" id="tambahproduk" class="btn btn-primary w-100"><i
+                                            class="ti ti-plus me-1"></i>Tambah
                                         Produk</a>
                                 </div>
                             </div>
@@ -194,7 +203,11 @@
                                                 @foreach ($detail as $d)
                                                     @php
                                                         $index = $d->kode_harga . $d->status_promosi;
-                                                        $jml = convertToduspackpcsv3($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah);
+                                                        $jml = convertToduspackpcsv3(
+                                                            $d->isi_pcs_dus,
+                                                            $d->isi_pcs_pack,
+                                                            $d->jumlah,
+                                                        );
                                                         $jml_dus = $jml[0];
                                                         $jml_pack = $jml[1];
                                                         $jml_pcs = $jml[2];
@@ -209,17 +222,22 @@
                                                     @endphp
                                                     <tr id="index_{{ $index }}" class="{{ $color_row }}">
                                                         <td>
-                                                            <input type="hidden" name="kode_harga_produk[]" value="{{ $d->kode_harga }}"
-                                                                class="kode_harga" />
-                                                            <input type="hidden" name="kode_produk_produk[]" value="{{ $d->kode_produk }}"
-                                                                class="kode_produk" />
-                                                            <input type="hidden" name="status_promosi_produk[]" class="status_promosi"
+                                                            <input type="hidden" name="kode_harga_produk[]"
+                                                                value="{{ $d->kode_harga }}" class="kode_harga" />
+                                                            <input type="hidden" name="kode_produk_produk[]"
+                                                                value="{{ $d->kode_produk }}" class="kode_produk" />
+                                                            <input type="hidden" name="status_promosi_produk[]"
+                                                                class="status_promosi"
                                                                 value="{{ $d->status_promosi }}" />
-                                                            <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon"
+                                                            <input type="hidden" name="kode_kategori_diskon[]"
+                                                                class="kode_kategori_diskon"
                                                                 value="{{ $d->kode_kategori_diskon }}" />
-                                                            <input type="hidden" name="jumlah_produk[]" value="{{ $d->jumlah }}" />
-                                                            <input type="hidden" name="isi_pcs_dus_produk[]" value="{{ $d->isi_pcs_dus }}" />
-                                                            <input type="hidden" name="isi_pcs_pack_produk[]" value="{{ $d->isi_pcs_pack }}" />
+                                                            <input type="hidden" name="jumlah_produk[]"
+                                                                value="{{ $d->jumlah }}" />
+                                                            <input type="hidden" name="isi_pcs_dus_produk[]"
+                                                                value="{{ $d->isi_pcs_dus }}" />
+                                                            <input type="hidden" name="isi_pcs_pack_produk[]"
+                                                                value="{{ $d->isi_pcs_pack }}" />
                                                             {{ $d->kode_harga }}
                                                         </td>
                                                         <td>{{ $d->nama_produk }}</td>
@@ -249,11 +267,13 @@
                                                         <td>
                                                             <div class="d-flex">
                                                                 <div>
-                                                                    <a href="#" key="{{ $index }}" class="edit me-2"><i
+                                                                    <a href="#" key="{{ $index }}"
+                                                                        class="edit me-2"><i
                                                                             class="ti ti-edit text-success"></i></a>
                                                                 </div>
                                                                 <div>
-                                                                    <a href="#" key="{{ $index }}" class="delete"><i
+                                                                    <a href="#" key="{{ $index }}"
+                                                                        class="delete"><i
                                                                             class="ti ti-trash text-danger"></i></a>
                                                                 </div>
                                                             </div>
@@ -287,14 +307,22 @@
                                     <div class="row">
                                         <div class="col">
 
-                                            <x-input-with-group label="AIDA" placeholder="Potongan AIDA" name="potongan_aida" align="right"
-                                                money="true" value="{{ formatRupiah($penjualan->potongan_aida) }}" readonly="true" />
-                                            <x-input-with-group label="SWAN" placeholder="Potongan SWAN" name="potongan_swan" align="right"
-                                                money="true" value="{{ formatRupiah($penjualan->potongan_swan) }}" readonly="true" />
-                                            <x-input-with-group label="STICK" placeholder="Potongan STICK" name="potongan_stick" align="right"
-                                                money="true" value="{{ formatRupiah($penjualan->potongan_stick) }}" readonly="true" />
-                                            <x-input-with-group label="SAMBAL" placeholder="Potongan SAMBAL" name="potongan_sambal" align="right"
-                                                money="true" value="{{ formatRupiah($penjualan->potongan_sambal) }}" readonly="true" />
+                                            <x-input-with-group label="AIDA" placeholder="Potongan AIDA"
+                                                name="potongan_aida" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->potongan_aida) }}"
+                                                readonly="true" />
+                                            <x-input-with-group label="SWAN" placeholder="Potongan SWAN"
+                                                name="potongan_swan" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->potongan_swan) }}"
+                                                readonly="true" />
+                                            <x-input-with-group label="STICK" placeholder="Potongan STICK"
+                                                name="potongan_stick" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->potongan_stick) }}"
+                                                readonly="true" />
+                                            <x-input-with-group label="SAMBAL" placeholder="Potongan SAMBAL"
+                                                name="potongan_sambal" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->potongan_sambal) }}"
+                                                readonly="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -310,12 +338,15 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-group label="AIDA" placeholder="Potongan Istimewa AIDA" name="potis_aida"
-                                                align="right" money="true" value="{{ formatRupiah($penjualan->potis_aida) }}" />
-                                            <x-input-with-group label="SWAN" placeholder="Potongan Istimewa SWAN" name="potis_swan"
-                                                align="right" money="true" value="{{ formatRupiah($penjualan->potis_swan) }}" />
-                                            <x-input-with-group label="STICK" placeholder="Potongan Istimewa STICK" name="potis_stick"
-                                                align="right" money="true" value="{{ formatRupiah($penjualan->potis_stick) }}" />
+                                            <x-input-with-group label="AIDA" placeholder="Potongan Istimewa AIDA"
+                                                name="potis_aida" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->potis_aida) }}" />
+                                            <x-input-with-group label="SWAN" placeholder="Potongan Istimewa SWAN"
+                                                name="potis_swan" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->potis_swan) }}" />
+                                            <x-input-with-group label="STICK" placeholder="Potongan Istimewa STICK"
+                                                name="potis_stick" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->potis_stick) }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -331,12 +362,15 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-group label="AIDA" placeholder="Penyesuaian AIDA" name="peny_aida" align="right"
-                                                money="true" value="{{ formatRupiah($penjualan->peny_aida) }}" />
-                                            <x-input-with-group label="SWAN" placeholder="Penyesuaian SWAN" name="peny_swan" align="right"
-                                                money="true" value="{{ formatRupiah($penjualan->peny_swan) }}" />
-                                            <x-input-with-group label="STICK" placeholder="Penyesuaian STICK" name="peny_stick" align="right"
-                                                money="true" value="{{ formatRupiah($penjualan->peny_stick) }}" />
+                                            <x-input-with-group label="AIDA" placeholder="Penyesuaian AIDA"
+                                                name="peny_aida" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->peny_aida) }}" />
+                                            <x-input-with-group label="SWAN" placeholder="Penyesuaian SWAN"
+                                                name="peny_swan" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->peny_swan) }}" />
+                                            <x-input-with-group label="STICK" placeholder="Penyesuaian STICK"
+                                                name="peny_stick" align="right" money="true"
+                                                value="{{ formatRupiah($penjualan->peny_stick) }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -353,17 +387,20 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group mb-3">
-                                                <select name="jenis_transaksi" id="jenis_transaksi" class="form-select" disabled>
+                                                <select name="jenis_transaksi" id="jenis_transaksi"
+                                                    class="form-select" disabled>
                                                     <option value="">Jenis Transaksi</option>
-                                                    <option value="T" {{ $penjualan->jenis_transaksi == 'T' ? 'selected' : '' }}>
+                                                    <option value="T"
+                                                        {{ $penjualan->jenis_transaksi == 'T' ? 'selected' : '' }}>
                                                         TUNAI
                                                     </option>
-                                                    <option value="K" {{ $penjualan->jenis_transaksi == 'K' ? 'selected' : '' }}>
+                                                    <option value="K"
+                                                        {{ $penjualan->jenis_transaksi == 'K' ? 'selected' : '' }}>
                                                         KREDIT</option>
                                                 </select>
                                             </div>
-                                            <x-input-with-icon label="Grand Total" name="grandtotal" id="grandtotal" icon="ti ti-shopping-cart"
-                                                align="right" disabled="true" />
+                                            <x-input-with-icon label="Grand Total" name="grandtotal" id="grandtotal"
+                                                icon="ti ti-shopping-cart" align="right" disabled="true" />
                                         </div>
                                     </div>
                                     <div class="row" id="jenis_bayar_tunai" disabled>
@@ -371,9 +408,11 @@
                                             <div class="form-group mb-3">
                                                 <select name="jenis_bayar" id="jenis_bayar" class="form-select">
                                                     <option value="">Jenis Bayar</option>
-                                                    <option value="TN" {{ $penjualan->jenis_bayar == 'TN' ? 'selected' : '' }}>CASH
+                                                    <option value="TN"
+                                                        {{ $penjualan->jenis_bayar == 'TN' ? 'selected' : '' }}>CASH
                                                     </option>
-                                                    <option value="TR" {{ $penjualan->jenis_bayar == 'TR' ? 'selected' : '' }}>
+                                                    <option value="TR"
+                                                        {{ $penjualan->jenis_bayar == 'TR' ? 'selected' : '' }}>
                                                         TRANSFER</option>
                                                 </select>
                                             </div>
@@ -381,20 +420,23 @@
                                     </div>
                                     <div class="row" id="titipan">
                                         <div class="col">
-                                            <x-input-with-icon icon="ti ti-moneybag" name="titipan" money="true" align="right" label="Titipan"
+                                            <x-input-with-icon icon="ti ti-moneybag" name="titipan" money="true"
+                                                align="right" label="Titipan"
                                                 value="{{ formatRupiah($titipan) }}" />
                                         </div>
                                     </div>
                                     <div class="row" id="voucher_tunai">
                                         <div class="col">
-                                            <x-input-with-icon icon="ti ti-tag" name="voucher" money="true" align="right" label="Voucher"
+                                            <x-input-with-icon icon="ti ti-tag" name="voucher" money="true"
+                                                align="right" label="Voucher"
                                                 value="{{ formatRupiah($voucher) }}" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group mb-3">
-                                                <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+                                                <button class="btn btn-primary w-100" id="btnSimpan"><i
+                                                        class="ti ti-send me-1"></i>Submit</button>
                                             </div>
                                         </div>
                                     </div>
@@ -410,7 +452,8 @@
 
 <x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
 <x-modal-form id="modaleditProduk" size="" show="loadmodaleditProduk" title="" />
-<div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+<div class="modal fade" id="modalPelanggan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -1495,7 +1538,22 @@
                 'BKI-01261',
                 'BKI-01266',
                 'BKI-01285',
-                'BKI-01294'
+                'BKI-01294',
+                'BGR-07636',
+                'BRG-07591',
+                'BRG-07480',
+                'BRG-07465',
+                'BRG-07650',
+                'BRG-07982',
+                'BRG-07984',
+                'BRG-07751',
+                'BRG-07638',
+                'BRG-07597',
+                'BRG-07643',
+                'BRG-07966',
+                'BRG-07809',
+                'BRG-07693',
+                'BRG-07784'
             ];
             let totalQuantity = calculateTotalQuantityByCategory('D009');
             let diskon = calculateDiscount(totalQuantity, 'D009');
