@@ -25,7 +25,13 @@
                  <div>Dashboard</div>
              </a>
          </li>
-         @if (in_array($level_user, ['super admin', 'direktur', 'gm administrasi', 'manager keuangan']))
+         @if (in_array($level_user, [
+                 'super admin',
+                 'direktur',
+                 'gm administrasi',
+                 'manager keuangan',
+                 'regional operation manager',
+             ]))
              <li class="menu-item {{ request()->is(['dashboard/owner']) ? 'active' : '' }}">
                  <a href="{{ route('dashboard.owner') }}" class="menu-link">
                      <i class="menu-icon tf-icons ti ti-home"></i>
