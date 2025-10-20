@@ -1210,7 +1210,8 @@
                 'BRG-07966',
                 'BRG-07809',
                 'BRG-07693',
-                'BRG-07784'
+                'BRG-07784',
+                'BKI-01390'
             ];
             let totalQuantity = calculateTotalQuantityByCategory('D009');
             let diskon = calculateDiscount(totalQuantity, 'D009');
