@@ -347,7 +347,7 @@ class PencairanprogramController extends Controller
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
             ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
             ->where('status', 1)
-            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 33")
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 31")
             // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) > 14")
             // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) > 14")
             ->where('status_batal', 0)
