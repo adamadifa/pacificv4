@@ -69,10 +69,10 @@
                             <tr>
                                 <td colspan="7" style="height: 50px;"></td>
                             </tr>
-                            <tr style="background-color:rgba(116, 170, 227, 0.465);">
-                                <th style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} -
+                            <tr>
+                                <td style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} -
                                     {{ $d->nama_akun }}
-                                </th>
+                                </td>
                             </tr>
                             <tr>
                                 <th style="font-size:12; width: 10%;">TGL</th>
