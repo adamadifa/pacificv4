@@ -55,6 +55,7 @@
                     @endphp
                     @foreach ($bukubesar as $key => $d)
                         @php
+                            //$next_akun = @$bukubesar[$key + 1]->kode_akun;
                             //$saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['jumlah'] ?? 0;
                             $mutasi_debet =
                                 optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ??
@@ -73,12 +74,12 @@
                             @php
                                 $saldo = 0;
                             @endphp
-                            {{-- <tr style="background-color:rgba(116, 170, 227, 0.465);">
+                            <tr style="background-color:rgba(116, 170, 227, 0.465);">
                                 <th style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} -
                                     {{ $d->nama_akun }}
                                 </th>
                             </tr>
-                            <tr style="background-color:rgba(116, 170, 227, 0.465);">
+                            {{-- <tr style="background-color:rgba(116, 170, 227, 0.465);">
                                 <th style="text-align: left" colspan="6">SALDO AWAL</th>
                                 <th style="text-align: right">{{ formatAngkaDesimal($saldo_awal) }}</th>
                             </tr>
