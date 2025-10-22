@@ -132,7 +132,7 @@
 
                         @if ($akun != $d->kode_akun)
                             <tr class="thead-dark">
-                                <th colspan="4">TOTAL</th>
+                                <th colspan="4">TOTAL {{ $d->kode_akun }} - {{ $d->nama_akun }}</th>
                                 <th style="text-align: right;">
                                     {{ formatAngkaDesimal($total_debet - $saldo_awal_debet) }}</th>
                                 <th style="text-align: right;">
