@@ -31,6 +31,7 @@
                  'gm administrasi',
                  'manager keuangan',
                  'regional operation manager',
+                 'spv accounting',
              ]))
              <li class="menu-item {{ request()->is(['dashboard/owner']) ? 'active' : '' }}">
                  <a href="{{ route('dashboard.owner') }}" class="menu-link">
