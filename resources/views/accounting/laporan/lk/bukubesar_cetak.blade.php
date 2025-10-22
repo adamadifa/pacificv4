@@ -70,8 +70,9 @@
                                 <td colspan="7" style="height: 50px;"></td>
                             </tr>
                             <tr>
-                                <td style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} -
-                                    {{ $d->nama_akun }}
+                                <td style="text-align: left; font-size:20px; border:none; background:none;"
+                                    colspan="7">
+                                    Akun : {{ $d->kode_akun }} - {{ $d->nama_akun }}
                                 </td>
                             </tr>
                             <tr>
