@@ -67,10 +67,10 @@
                                 $saldo = 0;
                             @endphp
                             <tr>
-                                <td colspan="7" style="height: 50px;"></td>
+                                <td colspan="7" style="height: 50px; border:none; background:none;"></td>
                             </tr>
                             <tr>
-                                <td style="text-align: left; font-size:20px; border:none; background:none;"
+                                <td style="text-align: left; font-size:20px; border:none; background:none; font-weight:bold;"
                                     colspan="7">
                                     Akun : {{ $d->kode_akun }} - {{ $d->nama_akun }}
                                 </td>
