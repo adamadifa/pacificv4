@@ -115,7 +115,7 @@ class PencairanprogramController extends Controller
             $query->orderBy('marketing_program_pencairan.status', 'asc');
             $query->orderBy('marketing_program_pencairan.bulan', 'desc');
             $query->orderBy('marketing_program_pencairan.tahun', 'desc');
-        }else if($user->hasRole('staff keuangan')){
+        } else if ($user->hasRole('staff keuangan')) {
             $query->orderBy('marketing_program_pencairan.keuangan', 'asc');
             $query->orderBy('marketing_program_pencairan.bulan', 'desc');
             $query->orderBy('marketing_program_pencairan.tahun', 'desc');
@@ -347,7 +347,7 @@ class PencairanprogramController extends Controller
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
             ->where('salesman.kode_cabang', $pencairanprogram->kode_cabang)
             ->where('status', 1)
-            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 30")
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= 33")
             // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) > 14")
             // ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) > 14")
             ->where('status_batal', 0)
