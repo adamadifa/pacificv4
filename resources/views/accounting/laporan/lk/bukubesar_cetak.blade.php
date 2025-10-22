@@ -33,17 +33,9 @@
     <div class="content">
         <div class="freeze-table">
             <table class="datatable3">
-                <thead>
-                    <tr>
-                        <th style="font-size:12; width: 10%;">TGL</th>
-                        <th style="font-size:12; width: 15%;">NO BUKTI</th>
-                        <th style="font-size:12; width: 15%;">SUMBER</th>
-                        <th style="font-size:12; width: 30%;">KETERANGAN</th>
-                        <th style="font-size:12; width: 10%;">DEBET</th>
-                        <th style="font-size:12; width: 10%;">KREDIT</th>
-                        <th style="font-size:12; width: 10%;">SALDO</th>
-                    </tr>
-                </thead>
+                {{-- <thead>
+                    
+                </thead> --}}
                 <tbody>
                     @php
                         $kode_akun = '';
@@ -78,6 +70,15 @@
                                 <th style="text-align: left" colspan="7">Akun : {{ $d->kode_akun }} -
                                     {{ $d->nama_akun }}
                                 </th>
+                            </tr>
+                            <tr>
+                                <th style="font-size:12; width: 10%;">TGL</th>
+                                <th style="font-size:12; width: 15%;">NO BUKTI</th>
+                                <th style="font-size:12; width: 15%;">SUMBER</th>
+                                <th style="font-size:12; width: 30%;">KETERANGAN</th>
+                                <th style="font-size:12; width: 10%;">DEBET</th>
+                                <th style="font-size:12; width: 10%;">KREDIT</th>
+                                <th style="font-size:12; width: 10%;">SALDO</th>
                             </tr>
                             {{-- <tr style="background-color:rgba(116, 170, 227, 0.465);">
                                 <th style="text-align: left" colspan="6">SALDO AWAL</th>
