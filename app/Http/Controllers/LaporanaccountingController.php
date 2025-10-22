@@ -1095,7 +1095,7 @@ class LaporanaccountingController extends Controller
             'nama_akun',
             'keuangan_kaskecil.tanggal',
             'keuangan_kaskecil.no_bukti',
-            DB::raw("'KAS KECIL' AS sumber"),
+            DB::raw("CONCAT('KAS KECIL ', keuangan_kaskecil.kode_cabang) AS sumber"),
             'keuangan_kaskecil.keterangan',
             DB::raw('IF(debet_kredit="D",jumlah,0) as jml_kredit'),
             DB::raw('IF(debet_kredit="K",jumlah,0) as jml_debet'),
