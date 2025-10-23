@@ -66,6 +66,8 @@ class AjuantransferdanaController extends Controller
             ]);
         }
 
+
+
         DB::beginTransaction();
         try {
             $lastajuan = Ajuantransferdana::select('no_pengajuan')
@@ -74,12 +76,14 @@ class AjuantransferdanaController extends Controller
                 ->orderBy('no_pengajuan', 'desc')
                 ->first();
 
-            dd($lastajuan);
+
             if ($lastajuan == null) {
                 $last_no_pengajuan = 'PTD' . $kode_cabang . substr(date('y'), 2, 2) . '00000';
             } else {
                 $last_no_pengajuan = $lastajuan->no_pengajuan;
             }
+
+            dd($last_no_pengajuan);
             $no_pengajuan = buatkode($last_no_pengajuan, 'PTD' . $kode_cabang . substr(date('y'), 2, 2), 5);
 
             Ajuantransferdana::create([
