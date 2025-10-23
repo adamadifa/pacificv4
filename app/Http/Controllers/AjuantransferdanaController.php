@@ -74,6 +74,7 @@ class AjuantransferdanaController extends Controller
                 ->orderBy('no_pengajuan', 'desc')
                 ->first();
 
+            dd($lastajuan);
             if ($lastajuan == null) {
                 $last_no_pengajuan = 'PTD' . $kode_cabang . substr(date('y'), 2, 2) . '00000';
             } else {
