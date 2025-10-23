@@ -85,8 +85,8 @@ class AjuantransferdanaController extends Controller
                 $last_no_pengajuan = $lastajuan->no_pengajuan;
             }
 
-            dd($last_no_pengajuan);
-            $no_pengajuan = buatkode($last_no_pengajuan, 'PTD' . $kode_cabang . substr(date('y'), 2, 2), 5);
+            //dd($last_no_pengajuan);
+            $no_pengajuan = buatkode($last_no_pengajuan, 'PTD' . $kode_cabang . substr(date('Y'), 2, 2), 5);
 
             Ajuantransferdana::create([
                 'no_pengajuan' => $no_pengajuan,
