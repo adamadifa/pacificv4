@@ -827,7 +827,7 @@
                                 {{ formatAngkaDesimal($upah_perjam) }}
                             </td>
                             <td style="font-weight: bold; text-align:center;width:2%">
-                                {{ !empty($total_overtime_1) ? $total_overtime_1 : '' }}
+                                {{ !empty($total_overtime_1) ? formatAngkaDesimal($total_overtime_1) : '' }}
                             </td>
                             <td style="font-weight: bold; text-align:right;width:2%">
                                 {{ !empty($upah_overtime_1) ? formatAngka($upah_overtime_1) : '' }}
