@@ -78,8 +78,10 @@ class AjuantransferdanaController extends Controller
 
 
             if ($lastajuan == null) {
+                echo 1;
                 $last_no_pengajuan = 'PTD' . $kode_cabang . substr(date('y'), 2, 2) . '00000';
             } else {
+                echo 2;
                 $last_no_pengajuan = $lastajuan->no_pengajuan;
             }
 
