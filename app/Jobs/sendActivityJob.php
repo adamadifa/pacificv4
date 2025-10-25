@@ -46,7 +46,7 @@ class sendActivityJob implements ShouldQueue
         // $url = "https://sfa.pedasalami.com/storage/uploads/smactivity/";
         $url = "https://app.portalmp.com/storage/uploads/aktifitas_smm/";
         $pesan = [
-            'api_key' => 'B2TSubtfeWwb3eDHdIyoa0qRXJVgq8',
+            'api_key' => 'uxlLxWx36Q4KzaPlbFMCsuCRO7MvXn',
             'sender' => '6289670444321',
             'number' => $this->id_group_wa,
             'media_type' => 'image',
