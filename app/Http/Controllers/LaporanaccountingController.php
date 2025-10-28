@@ -1012,7 +1012,7 @@ class LaporanaccountingController extends Controller
             'pembelian.tanggal',
             'pembelian.no_bukti',
             DB::raw("'PEMBELIAN' AS sumber"),
-            DB::raw('IF(pembelian_detail.kode_transaksi="PNJ",pembelian_detail.keterangan_penjualan,CONCAT(pembelian_barang.nama_barang, " - ", pembelian_detail.keterangan)) as keterangan'),
+            DB::raw('IF(pembelian_detail.kode_transaksi="PNJ",pembelian_detail.keterangan_penjualan,CONCAT(pembelian_barang.nama_barang, " - ", COALESCE(pembelian_detail.keterangan, ""))) as keterangan'),
             DB::raw('IF(pembelian_detail.kode_transaksi="PNJ",pembelian_detail.jumlah * harga + penyesuaian,0) as jml_kredit'),
             DB::raw('IF(pembelian_detail.kode_transaksi="PMB",pembelian_detail.jumlah * harga + penyesuaian,0) as jml_debet'),
             DB::raw('IF(pembelian_detail.kode_transaksi="PMB",2,1) as urutan')
