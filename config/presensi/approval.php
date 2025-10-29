@@ -23,7 +23,7 @@ return [
 
     'regional operation manager' => [
         'dept' => ['AKT'],
-        'jabatan' => ['J30'],
+        'jabatan' => ['J12'],
         'dept2' => [],
         'jabatan2' => [],
         'jabatan_filter' => true,
