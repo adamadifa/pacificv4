@@ -111,7 +111,7 @@
                                 $total_harga_lainnya += $jumlah_lainnya;
                             @endphp
                             {{ formatAngkaDesimal($jumlah_lainnya) }}
-                            {{ $d['qty_lainnya'] }} * {{ $d['harga_lainnya'] }} = {{ $jumlah_lainnya }}
+                            {{-- {{ $d['qty_lainnya'] }} * {{ $d['harga_lainnya'] }} = {{ $jumlah_lainnya }} --}}
                         </td>
 
                         <td class="right">{{ formatAngkaDesimal($d['qty_keluar']) }}</td>
