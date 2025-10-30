@@ -124,6 +124,8 @@
                                 $total_harga_keluar += $jumlah_keluar;
                             @endphp
                             {{ formatAngkaDesimal($jumlah_keluar) }}
+
+                            {{ $jumlah_keluar . '*' . $harga_keluar }}
                         </td>
 
                         <td class="right">{{ formatAngkaDesimal($d['qty_keluar_lainnya']) }}</td>
