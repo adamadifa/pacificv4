@@ -116,7 +116,7 @@
                         <td class="right">{{ formatAngkaDesimal($d['qty_keluar']) }}</td>
                         <td class="right">
 
-                            {{ formatAngka($harga_keluar) }}
+                            {{ formatAngkaDesimal($harga_keluar) }}
                         </td>
                         <td class="right">
                             @php
@@ -135,6 +135,8 @@
                                 $total_harga_keluar_lainnya += $jumlah_keluar_lainnya;
                             @endphp
                             {{ formatAngkaDesimal($jumlah_keluar_lainnya) }}
+
+
                         </td>
                         <td class="right">
                             @php
