@@ -36,18 +36,23 @@
                     <th>QTY</th>
                     <th>HARGA</th>
                     <th>JUMLAH</th>
+
                     <th>QTY</th>
                     <th>HARGA</th>
                     <th>JUMLAH</th>
+
                     <th>QTY</th>
                     <th>HARGA</th>
                     <th>JUMLAH</th>
+
                     <th>QTY</th>
                     <th>HARGA</th>
                     <th>JUMLAH</th>
+
                     <th>QTY</th>
                     <th>HARGA</th>
                     <th>JUMLAH</th>
+
                     <th>QTY</th>
                     <th>HARGA</th>
                     <th>JUMLAH</th>
@@ -75,7 +80,8 @@
                         $jumlah_pembelian = $d['qty_pembelian'] * $d['harga_pembelian'] - $d['penyesuaian'];
                         $jumlah_lainnya = $d['qty_lainnya'] * $d['harga_lainnya'];
                         $harga_keluar =
-                            ($jumlah_saldoawal + $jumlah_pembelian + $jumlah_lainnya) / ($qty_saldo_awal + $d['qty_pembelian'] + $d['qty_lainnya']);
+                            ($jumlah_saldoawal + $jumlah_pembelian + $jumlah_lainnya) /
+                            ($qty_saldo_awal + $d['qty_pembelian'] + $d['qty_lainnya']);
 
                         $total_qty_saldoawal += $qty_saldo_awal;
                         $total_qty_pembelian += $d['qty_pembelian'];
@@ -88,6 +94,7 @@
                         <td class="right">{{ formatAngkaDesimal($qty_saldo_awal) }}</td>
                         <td class="right">{{ formatAngkaDesimal($harga_saldo_awal) }}</td>
                         <td class="right">{{ formatAngkaDesimal($jumlah_saldoawal) }} </td>
+
                         <td class="right">{{ formatAngkaDesimal($d['qty_pembelian']) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d['harga_pembelian']) }}</td>
                         <td class="right">
@@ -96,6 +103,7 @@
                             @endphp
                             {{ formatAngkaDesimal($jumlah_pembelian) }}
                         </td>
+
                         <td class="right">{{ formatAngkaDesimal($d['qty_lainnya']) }}</td>
                         <td class="right">{{ formatAngkaDesimal($d['harga_lainnya']) }}</td>
                         <td class="right">
@@ -104,6 +112,7 @@
                             @endphp
                             {{ formatAngkaDesimal($jumlah_lainnya) }}
                         </td>
+
                         <td class="right">{{ formatAngkaDesimal($d['qty_keluar']) }}</td>
                         <td class="right">
 
@@ -116,8 +125,10 @@
                             @endphp
                             {{ formatAngkaDesimal($jumlah_keluar) }}
                         </td>
+
                         <td class="right">{{ formatAngkaDesimal($d['qty_keluar_lainnya']) }}</td>
-                        <td class="right">{{ !empty($d['qty_keluar_lainnya']) ? $harga_keluar : '' }}</td>
+                        <td class="right">
+                            {{ !empty($d['qty_keluar_lainnya']) ? formatAngkaDesimal($harga_keluar) : '' }}</td>
                         <td class="right">
                             @php
                                 $jumlah_keluar_lainnya = $d['qty_keluar_lainnya'] * $harga_keluar;
@@ -128,7 +139,11 @@
                         <td class="right">
                             @php
                                 $qty_saldo_akhir =
-                                    $qty_saldo_awal + $d['qty_pembelian'] + $d['qty_lainnya'] - $d['qty_keluar'] - $d['qty_keluar_lainnya'];
+                                    $qty_saldo_awal +
+                                    $d['qty_pembelian'] +
+                                    $d['qty_lainnya'] -
+                                    $d['qty_keluar'] -
+                                    $d['qty_keluar_lainnya'];
                             @endphp
                             {{ formatAngkaDesimal($qty_saldo_akhir) }}
                         </td>
