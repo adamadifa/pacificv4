@@ -18,8 +18,7 @@
                 @endcan
             </div> --}}
             <div class="card-body">
-                <form action="{{ route('saldoawalbukubesar.store') }}" method="POST" id="formCreatesaldoawal"
-                    aria-autocomplete="off">
+                <form action="{{ route('saldoawalbukubesar.store') }}" method="POST" id="formCreatesaldoawal" aria-autocomplete="off">
                     @csrf
                     <div class="row">
                         <div class="col-12">
@@ -50,7 +49,7 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-lg-6 col-md-12 col-sm-12">
                             <div class="form-group mb-3">
                                 <select name="kode_akun" id="kode_akun" class="form-select select2Kodeakun">
@@ -75,7 +74,7 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive mb-2">
@@ -175,11 +174,38 @@
         });
     })
 
+    $(document).on('click', '#getsaldo', function(e) {
+        e.preventDefault();
+        let bulan = $("#bulan").val();
+        let tahun = $("#tahun").val();
+        if (bulan == "" || tahun == "") {
+            Swal.fire({
+                title: "Oops!",
+                text: 'Bulan dan Tahun Harus Diisi !',
+            });
+            return false;
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('saldoawalbukubesar.getsaldo') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    bulan: bulan,
+                    tahun: tahun
+                },
+                cache: false,
+                success: function(respond) {
+                    $("#loaddetailsaldo").html(respond);
+                }
+            });
+        }
+    });
+
     $(document).on('submit', '#formCreatesaldoawal', function(e) {
         let bulan = $("#bulan").val();
         let tahun = $("#tahun").val();
         let jmldata = $("#loaddetailsaldo tr").length;
-        if(bulan == "" || tahun == "") {
+        if (bulan == "" || tahun == "") {
             Swal.fire({
                 title: "Oops!",
                 text: 'Bulan dan Tahun Harus Diisi !',
@@ -190,7 +216,7 @@
                 },
             });
             return false;
-        } else if(jmldata == 0) {
+        } else if (jmldata == 0) {
             Swal.fire({
                 title: "Oops!",
                 text: 'Data Saldo Harus Diisi !',
@@ -201,8 +227,8 @@
                 },
             });
             return false;
-        } 
-        
+        }
+
     })
 </script>
 @endpush

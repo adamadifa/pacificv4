@@ -76,7 +76,7 @@
                         <li class="nav-item" role="presentation">
                             <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#rekkappersediaan"
                                 aria-controls="rekappersediaan" aria-selected="false" tabindex="-1">
-                                Buku Besar
+                                Laporan Keuangan
                             </button>
                         </li>
                     @endcan

@@ -1572,7 +1572,7 @@ class LaporanaccountingController extends Controller
 
 
 
-            //Labarugi 
+            //Labarugi
             $kode_laba_rugi = array('4,5,6,7,8,9');
             $akun_jangan_ditampilkan = ['0-0000', '1', '2'];
             // Ambil hasil union sebagai subquery, lalu lakukan SUM group by kode_akun
