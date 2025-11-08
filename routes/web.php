@@ -2341,6 +2341,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/saldoawalbukubesar', 'index')->name('saldoawalbukubesar.index')->can('saldoawalbukubesar.index');
         Route::get('/saldoawalbukubesar/create', 'create')->name('saldoawalbukubesar.create')->can('saldoawalbukubesar.create');
         Route::post('/saldoawalbukubesar/store', 'store')->name('saldoawalbukubesar.store')->can('saldoawalbukubesar.store');
+        Route::get('/saldoawalbukubesar/{kode_saldo_awal}/show', 'show')->name('saldoawalbukubesar.show')->can('saldoawalbukubesar.show');
         Route::get('/saldoawalbukubesar/{kode_saldo_awal}/edit', 'edit')->name('saldoawalbukubesar.edit')->can('saldoawalbukubesar.edit');
         Route::put('/saldoawalbukubesar/{kode_saldo_awal}/update', 'update')->name('saldoawalbukubesar.update')->can('saldoawalbukubesar.update');
         Route::delete('/saldoawalbukubesar/{kode_saldo_awal}/delete', 'destroy')->name('saldoawalbukubesar.delete')->can('saldoawalbukubesar.delete');

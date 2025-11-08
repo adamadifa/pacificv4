@@ -87,7 +87,8 @@
                 @else
                     {{ $d->kode_akun }} {{ $d->nama_akun }}
                 @endif
-
+                <input type="hidden" name="kode_akun[]" value="{{ $d->kode_akun }}">
+                <input type="hidden" name="jumlah[]" value="{{ $d->saldo_akhir }}">
                 {{-- {{ $d->saldo_akhir . '+' . $net_profit_loss }} --}}
                 {{-- {{ $d->level }} - {{ $next_level }} --}}
             </td>

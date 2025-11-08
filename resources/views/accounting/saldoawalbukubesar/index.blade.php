@@ -10,8 +10,7 @@
         <div class="card">
             <div class="card-header">
                 @can('saldoawalbukubesar.create')
-                    <a href="{{ route('saldoawalbukubesar.create') }}" class="btn btn-primary"><i
-                            class="ti ti-plus me-1"></i>Buat Saldo Awal
+                    <a href="{{ route('saldoawalbukubesar.create') }}" class="btn btn-primary"><i class="ti ti-plus me-1"></i>Buat Saldo Awal
                         Buku Besar</a>
                 @endcan
             </div>
@@ -25,8 +24,8 @@
                                         <select name="bulan" id="bulan" class="form-select">
                                             <option value="">Bulan</option>
                                             @foreach ($list_bulan as $d)
-                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                    value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }} value="{{ $d['kode_bulan'] }}">
+                                                    {{ $d['nama_bulan'] }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -71,12 +70,29 @@
                                             <td>{{ $nama_bulan[$d->bulan] }}</td>
                                             <td>{{ $d->tahun }}</td>
                                             <td>
-                                            <div class="d-flex">
-                                                <a href="{{ route('saldoawalbukubesar.edit', Crypt::encrypt($d->kode_saldo_awal)) }}" >
-                                                    <i class="ti ti-edit me-1 text-success"></i>
-                                                </a>
-                                            </div>
-                                            </td
+                                                <div class="d-flex">
+                                                    @can('saldoawalbukubesar.show')
+                                                        <div>
+                                                            <a href="#" class="me-2 btnShow"
+                                                                kode_saldo_awal="{{ Crypt::encrypt($d->kode_saldo_awal) }}">
+                                                                <i class="ti ti-file-description text-info"></i>
+                                                            </a>
+                                                        </div>
+                                                    @endcan
+                                                    @can('saldoawalbukubesar.delete')
+                                                        <div>
+                                                            <form method="POST" name="deleteform" class="deleteform"
+                                                                action="{{ route('saldoawalbukubesar.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm ml-1">
+                                                                    <i class="ti ti-trash text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                        </div>
+                                                    @endcan
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -88,4 +104,18 @@
         </div>
     </div>
 </div>
+
+<x-modal-form id="modal" size="modal-lg" show="loadmodal" title="Detail Saldo Awal Buku Besar" />
 @endsection
+@push('myscript')
+<script>
+    $(function() {
+        $(".btnShow").click(function(e) {
+            var kode_saldo_awal = $(this).attr("kode_saldo_awal");
+            e.preventDefault();
+            $('#modal').modal("show");
+            $("#loadmodal").load('/saldoawalbukubesar/' + kode_saldo_awal + '/show');
+        });
+    });
+</script>
+@endpush

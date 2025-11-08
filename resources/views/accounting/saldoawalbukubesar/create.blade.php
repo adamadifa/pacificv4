@@ -41,7 +41,9 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <a href="#" class="btn btn-success w-100" id="getsaldo">
-                                        <i class="ti  ti-badges me-1"></i> Get Saldo
+                                        <i class="ti  ti-badges me-1"></i> <span id="getsaldo-text">Get Saldo</span>
+                                        <span id="getsaldo-loading" class="spinner-border spinner-border-sm d-none" role="status"
+                                            aria-hidden="true"></span>
                                     </a>
                                 </div>
                             </div>
@@ -86,6 +88,14 @@
                                         </tr>
                                     </thead>
                                     <tbody id="loaddetailsaldo">
+                                        <tr id="loading-row" class="d-none">
+                                            <td colspan="2" class="text-center py-4">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <p class="mt-2 mb-0 text-muted">Memuat saldo...</p>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -185,6 +195,12 @@
             });
             return false;
         } else {
+            // Tampilkan loading
+            $("#getsaldo").addClass('disabled').css('pointer-events', 'none');
+            $("#getsaldo-text").addClass('d-none');
+            $("#getsaldo-loading").removeClass('d-none');
+            $("#loading-row").removeClass('d-none');
+
             $.ajax({
                 type: "POST",
                 url: "{{ route('saldoawalbukubesar.getsaldo') }}",
@@ -196,6 +212,37 @@
                 cache: false,
                 success: function(respond) {
                     $("#loaddetailsaldo").html(respond);
+                },
+                error: function(xhr, status, error) {
+                    let errorMessage = 'Terjadi kesalahan saat mengambil saldo!';
+
+                    // Cek apakah response adalah JSON dengan pesan error
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.message) {
+                                errorMessage = response.message;
+                            }
+                        } catch (e) {
+                            // Jika bukan JSON, gunakan pesan default
+                        }
+                    }
+
+                    Swal.fire({
+                        title: "Oops!",
+                        text: errorMessage,
+                        icon: "error",
+                    });
+                    $("#loaddetailsaldo").html('');
+                },
+                complete: function() {
+                    // Sembunyikan loading
+                    $("#getsaldo").removeClass('disabled').css('pointer-events', 'auto');
+                    $("#getsaldo-text").removeClass('d-none');
+                    $("#getsaldo-loading").addClass('d-none');
+                    $("#loading-row").addClass('d-none');
                 }
             });
         }
