@@ -1,4 +1,10 @@
-<form action="{{ route('laporanmarketing.cetakkomisisalesman') }}" method="POST" target="_blank" id="formKomisisalesman">
+@php
+    use Jenssegers\Agent\Agent;
+    $agent = new Agent();
+    $isMobile = $agent->isMobile();
+@endphp
+
+<form action="{{ route('laporanmarketing.cetakkomisisalesman') }}" method="POST" id="formKomisisalesman" target="{{ $isMobile ? '_self' : '_blank' }}">
     @csrf
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">

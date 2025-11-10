@@ -5,8 +5,7 @@
 @endphp
 
 
-<form action="{{ route('laporanmarketing.cetaklhp') }}" method="POST" id="formlhp"
-    target="{{ $isMobile ? '_self' : '_blank' }}">
+<form action="{{ route('laporanmarketing.cetaklhp') }}" method="POST" id="formlhp" target="{{ $isMobile ? '_self' : '_blank' }}">
     @csrf
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
