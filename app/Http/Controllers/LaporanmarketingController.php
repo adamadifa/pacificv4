@@ -374,6 +374,7 @@ class LaporanmarketingController extends Controller
             'jenis_transaksi',
             'status',
             'status_batal',
+            'marketing_penjualan.status_pajak',
             ...$selectColumnkodeproduk
         );
 
@@ -438,7 +439,8 @@ class LaporanmarketingController extends Controller
             'potongan',
             'ppn',
             'jenis_transaksi',
-            'status'
+            'status',
+            'marketing_penjualan.status_pajak'
         );
 
         //dd($subqueryDetailpenjualan->first());
@@ -1445,6 +1447,7 @@ class LaporanmarketingController extends Controller
             'marketing_retur_detail.subtotal',
             'marketing_penjualan.jenis_transaksi',
             'marketing_retur.jenis_retur',
+            'marketing_retur.status_pajak',
             'marketing_retur.created_at',
             'marketing_retur.updated_at',
 
@@ -6785,5 +6788,55 @@ class LaporanmarketingController extends Controller
             header("Content-Disposition: attachment; filename=Persentase SFA.xls");
         }
         return view('marketing.laporan.persentasedatapelanggan_cetak', $data);
+    }
+
+    public function updatestatuspajak(Request $request)
+    {
+        $request->validate([
+            'no_faktur' => 'required',
+            'status_pajak' => 'required|in:0,1'
+        ]);
+
+        try {
+            $penjualan = Penjualan::findOrFail($request->no_faktur);
+            $penjualan->status_pajak = $request->status_pajak;
+            $penjualan->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status pajak berhasil diupdate',
+                'status_pajak' => $penjualan->status_pajak
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengupdate status pajak: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updatestatuspajakretur(Request $request)
+    {
+        $request->validate([
+            'no_retur' => 'required',
+            'status_pajak' => 'required|in:0,1'
+        ]);
+
+        try {
+            $retur = Retur::findOrFail($request->no_retur);
+            $retur->status_pajak = $request->status_pajak;
+            $retur->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status pajak retur berhasil diupdate',
+                'status_pajak' => $retur->status_pajak
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengupdate status pajak retur: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

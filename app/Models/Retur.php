@@ -11,7 +11,7 @@ class Retur extends Model
 {
     use HasFactory;
     protected $table = "marketing_retur";
-    protected $primaryKey = "marketing_retur_detail";
+    protected $primaryKey = "no_retur";
     protected $guarded = [];
     public $incrementing = false;
 

@@ -26,6 +26,11 @@
             background-color: #199291 !important;
             color: white !important;
         }
+
+        .bg-pajak-success {
+            background-color: green !important;
+            color: white !important;
+        }
     </style>
 </head>
 
@@ -52,6 +57,9 @@
                 <thead>
                     <tr>
                         {{-- <th rowspan="2">No</th> --}}
+                        @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                            <th rowspan="2">Pajak</th>
+                        @endif
                         <th rowspan="2">Tanggal</th>
                         <th rowspan="2">No Retur</th>
                         <th rowspan="2">No Faktur</th>
@@ -110,11 +118,28 @@
                                     $pack = 0;
                                     $pcs = 0;
                                     $bgcolor = 'red';
+                                    $textcolor = 'white';
+                                }
+
+                                // Jika status_pajak = 1, set background hijau dengan text putih (kecuali jika sudah merah)
+                                if ($bgcolor != 'red' && isset($d->status_pajak) && $d->status_pajak == 1) {
+                                    $bgcolor = 'green';
+                                    $textcolor = 'white';
+                                } elseif ($bgcolor == 'red') {
+                                    $textcolor = 'white';
+                                } else {
+                                    $textcolor = '';
                                 }
 
                             @endphp
-                            <tr>
+                            <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
                                 @if ($k == 0)
+                                    @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                                        <td class="center" rowspan="{{ count($val) }}">
+                                            <input type="checkbox" class="checkbox-pajak-retur" data-no-retur="{{ $d->no_retur }}"
+                                                {{ isset($d->status_pajak) && $d->status_pajak == 1 ? 'checked' : '' }}>
+                                        </td>
+                                    @endif
                                     <td rowspan="{{ count($val) }}">{{ formatIndo($d->tanggal) }}</td>
                                     <td rowspan="{{ count($val) }}">{{ !empty($d->no_ref) ? $d->no_ref : $d->no_retur }}</td>
                                     <td rowspan="{{ count($val) }}">{{ $d->no_faktur }}</td>
@@ -151,7 +176,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="16">Total</th>
+                        <th colspan="{{ auth()->user()->hasRole(['super admin', 'admin pajak'])? '17': '16' }}">Total</th>
                         <th class="right">{{ formatAngka($grandtotal) }}</th>
                         <th colspan="4"></th>
                     </tr>
@@ -162,6 +187,74 @@
 </body>
 
 </html>
+@if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+    <script>
+        $(document).ready(function() {
+            $('.checkbox-pajak-retur').on('change', function() {
+                const checkbox = $(this);
+                const noRetur = checkbox.data('no-retur');
+                const statusPajak = checkbox.is(':checked') ? 1 : 0;
+
+                // Disable checkbox sementara untuk mencegah multiple clicks
+                checkbox.prop('disabled', true);
+
+                $.ajax({
+                    url: '{{ route('laporanmarketing.updatestatuspajakretur') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        no_retur: noRetur,
+                        status_pajak: statusPajak
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Ubah background row menjadi hijau dengan text putih
+                            const row = checkbox.closest('tr');
+                            row.addClass('bg-pajak-success');
+                            // Ubah semua td dalam row menjadi hijau dengan text putih
+                            row.find('td').css({
+                                'background-color': 'green',
+                                'color': 'white'
+                            });
+                            // Update semua row yang di-merge (rowspan)
+                            const rowspan = row.find('td[rowspan]').first().attr('rowspan');
+                            if (rowspan) {
+                                const currentIndex = row.index();
+                                for (let i = 1; i < rowspan; i++) {
+                                    const nextRow = row.parent().find('tr').eq(currentIndex + i);
+                                    if (nextRow.length) {
+                                        nextRow.find('td').css({
+                                            'background-color': 'green',
+                                            'color': 'white'
+                                        });
+                                    }
+                                }
+                            }
+                            console.log('Status pajak retur berhasil diupdate');
+                        } else {
+                            // Revert checkbox jika gagal
+                            checkbox.prop('checked', !checkbox.is(':checked'));
+                            alert('Gagal mengupdate status pajak retur: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        // Revert checkbox jika error
+                        checkbox.prop('checked', !checkbox.is(':checked'));
+                        let errorMessage = 'Terjadi kesalahan saat mengupdate status pajak retur';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
+                    },
+                    complete: function() {
+                        // Enable checkbox kembali
+                        checkbox.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+@endif
 {{-- <script>
     $(".freeze-table").freezeTable({
         'scrollable': true,
