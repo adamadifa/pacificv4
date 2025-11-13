@@ -52,6 +52,17 @@ class SaldoawalbukubesarController extends Controller
         return view('accounting.saldoawalbukubesar.create', $data);
     }
 
+    public function show($kode_saldo_awal)
+    {
+        $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $data['nama_bulan'] = config('global.nama_bulan');
+        $data['saldoawalbukubesar'] = Saldoawalbukubesar::where('kode_saldo_awal', $kode_saldo_awal)->first();
+        $data['detailsaldoawalbukubesar'] = Detailsaldoawalbukubesar::join('coa', 'bukubesar_saldoawal_detail.kode_akun', '=', 'coa.kode_akun')->where('bukubesar_saldoawal_detail.kode_saldo_awal', $kode_saldo_awal)->get();
+        return view('accounting.saldoawalbukubesar.show', $data);
+    }
+
     public function edit($kode_saldo_awal)
     {
         $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
@@ -88,11 +99,13 @@ class SaldoawalbukubesarController extends Controller
             $jumlah = $request->jumlah;
 
             foreach ($kode_akun as $key => $value) {
-                Detailsaldoawalbukubesar::create([
-                    'kode_saldo_awal' => $kode_saldo_awal,
-                    'kode_akun' => $value,
-                    'jumlah' => toNumber($jumlah[$key]),
-                ]);
+                if ($jumlah[$key] != 0) {
+                    Detailsaldoawalbukubesar::create([
+                        'kode_saldo_awal' => $kode_saldo_awal,
+                        'kode_akun' => $value,
+                        'jumlah' => toNumber($jumlah[$key]),
+                    ]);
+                }
             }
             DB::commit();
             return redirect()->route('saldoawalbukubesar.index')->with(messageSuccess('Data berhasil disimpan'));
@@ -105,9 +118,39 @@ class SaldoawalbukubesarController extends Controller
 
     public function getsaldo(Request $request)
     {
-        $bulan = $request->bulan;
-        $tahun = $request->tahun;
+        $bulan_dipilih = $request->bulan;
+        $tahun_dipilih = $request->tahun;
+        $nama_bulan = config('global.nama_bulan');
 
+        // Mengatur agar $bulan dan $tahun menjadi bulan sebelumnya
+        $bulan_sebelumnya = $bulan_dipilih;
+        $tahun_sebelumnya = $tahun_dipilih;
+
+        if ($bulan_dipilih == 1 || $bulan_dipilih == "01") {
+            // Jika bulan Januari maka mundur ke Desember tahun sebelumnya
+            $bulan_sebelumnya = 12;
+            $tahun_sebelumnya = $tahun_dipilih - 1;
+        } else {
+            $bulan_sebelumnya = (int)$bulan_dipilih - 1;
+            // Pastikan format tetap dua digit
+            $bulan_sebelumnya = str_pad($bulan_sebelumnya, 2, "0", STR_PAD_LEFT);
+        }
+
+        // Cek apakah saldo bulan sebelumnya sudah ada
+        $cek_saldo_bulan_sebelumnya = Saldoawalbukubesar::where('bulan', $bulan_sebelumnya)
+            ->where('tahun', $tahun_sebelumnya)
+            ->count();
+
+        if ($cek_saldo_bulan_sebelumnya == 0) {
+            $nama_bulan_sebelumnya = $nama_bulan[$bulan_sebelumnya * 1];
+            return response()->json([
+                'success' => false,
+                'message' => "Saldo Awal Bulan $nama_bulan_sebelumnya $tahun_sebelumnya belum dibuat. Silakan buat saldo awal bulan sebelumnya terlebih dahulu."
+            ], 400);
+        }
+
+        $bulan = $bulan_sebelumnya;
+        $tahun = $tahun_sebelumnya;
         $start_date = $tahun . "-" . $bulan . "-01";
 
         $dari = $tahun . "-" . $bulan . "-01";
@@ -872,5 +915,22 @@ class SaldoawalbukubesarController extends Controller
             ->get();
 
         return view('accounting.saldoawalbukubesar.getsaldo', $data);
+    }
+
+    public function destroy($kode_saldo_awal)
+    {
+        $kode_saldo_awal = Crypt::decrypt($kode_saldo_awal);
+        DB::beginTransaction();
+        try {
+            // Hapus detail terlebih dahulu
+            Detailsaldoawalbukubesar::where('kode_saldo_awal', $kode_saldo_awal)->delete();
+            // Hapus saldo awal
+            Saldoawalbukubesar::where('kode_saldo_awal', $kode_saldo_awal)->delete();
+            DB::commit();
+            return redirect()->back()->with(messageSuccess('Data berhasil dihapus'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with(messageError($e->getMessage()));
+        }
     }
 }

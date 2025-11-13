@@ -26,6 +26,11 @@
             background-color: #199291 !important;
             color: white !important;
         }
+
+        .bg-pajak-success {
+            background-color: green !important;
+            color: white !important;
+        }
     </style>
 </head>
 
@@ -52,6 +57,9 @@
                 <thead>
                     <tr>
                         <th rowspan="2">No.</th>
+                        @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                            <th rowspan="2">Pajak</th>
+                        @endif
                         <th rowspan="2">Tanggal</th>
                         <th rowspan="2">No. Faktur</th>
                         <th rowspan="2">Kode</th>
@@ -130,12 +138,25 @@
 
                             if ($d->status_batal == '1') {
                                 $bgcolor = 'red';
+                                $textcolor = 'white';
                             } else {
                                 $bgcolor = '';
+                                $textcolor = '';
+                                // Jika status_pajak = 1, set background hijau dengan text putih
+                                if (isset($d->status_pajak) && $d->status_pajak == 1) {
+                                    $bgcolor = 'green';
+                                    $textcolor = 'white';
+                                }
                             }
                         @endphp
-                        <tr style="background-color: {{ $bgcolor }}">
+                        <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
                             <td>{{ $loop->iteration }}</td>
+                            @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                                <td class="center">
+                                    <input type="checkbox" class="checkbox-pajak" data-no-faktur="{{ $d->no_faktur }}"
+                                        {{ isset($d->status_pajak) && $d->status_pajak == 1 ? 'checked' : '' }}>
+                                </td>
+                            @endif
                             <td>{{ formatIndo($d->tanggal) }}</td>
                             <td>{{ $d->no_faktur }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
@@ -183,7 +204,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="9">TOTAL</th>
+                        <th colspan="{{ auth()->user()->hasRole(['super admin', 'admin pajak'])? '10': '9' }}">TOTAL</th>
                         @foreach ($produk as $p)
                             @php
                                 ${"grandtotal_$p->kode_produk"} = ${"total_$p->kode_produk"} / $p->isi_pcs_dus;
@@ -210,6 +231,60 @@
 </body>
 
 </html>
+@if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+    <script>
+        $(document).ready(function() {
+            $('.checkbox-pajak').on('change', function() {
+                const checkbox = $(this);
+                const noFaktur = checkbox.data('no-faktur');
+                const statusPajak = checkbox.is(':checked') ? 1 : 0;
+
+                // Disable checkbox sementara untuk mencegah multiple clicks
+                checkbox.prop('disabled', true);
+
+                $.ajax({
+                    url: '{{ route('laporanmarketing.updatestatuspajak') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        no_faktur: noFaktur,
+                        status_pajak: statusPajak
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Ubah background row menjadi hijau dengan text putih
+                            const row = checkbox.closest('tr');
+                            row.addClass('bg-pajak-success');
+                            // Ubah semua td dalam row menjadi hijau dengan text putih
+                            row.find('td').css({
+                                'background-color': 'green',
+                                'color': 'white'
+                            });
+                            console.log('Status pajak berhasil diupdate');
+                        } else {
+                            // Revert checkbox jika gagal
+                            checkbox.prop('checked', !checkbox.is(':checked'));
+                            alert('Gagal mengupdate status pajak: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        // Revert checkbox jika error
+                        checkbox.prop('checked', !checkbox.is(':checked'));
+                        let errorMessage = 'Terjadi kesalahan saat mengupdate status pajak';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
+                    },
+                    complete: function() {
+                        // Enable checkbox kembali
+                        checkbox.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+@endif
 {{-- <script>
     $(".freeze-table").freezeTable({
         'scrollable': true,

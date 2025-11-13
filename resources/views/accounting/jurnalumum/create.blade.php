@@ -15,8 +15,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-sm-12 col-md-12">
-                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true"
-                        icon="ti ti-moneybag" />
+                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true" icon="ti ti-moneybag" />
                 </div>
             </div>
             <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
@@ -78,8 +77,7 @@
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-3">
-                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox"
-                    value="" id="defaultCheck3">
+                <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox" value="" id="defaultCheck3">
                 <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
             </div>
             <div class="form-group" id="saveButton">
@@ -162,6 +160,29 @@
             }
         });
 
+        function numberFormat(number, decimals, dec_point, thousands_sep) {
+            number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = typeof thousands_sep === 'undefined' ? '.' : thousands_sep,
+                dec = typeof dec_point === 'undefined' ? ',' : dec_point,
+                s = '',
+                toFixedFix = function(n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+
         function calculateTotal() {
             let total_debet = 0;
             let total_kredit = 0;
@@ -177,8 +198,8 @@
             });
             total_debet_set = total_debet;
             total_kredit_set = total_kredit;
-            form.find("#total_debet").text(total_debet_set);
-            form.find("#total_kredit").text(total_kredit_set);
+            form.find("#total_debet").text(numberFormat(total_debet_set, 0, ',', '.'));
+            form.find("#total_kredit").text(numberFormat(total_kredit_set, 0, ',', '.'));
         }
 
         $("#btnTambahItem").click(function(e) {
@@ -268,24 +289,55 @@
                     },
                 })
             } else {
-                baris += 1;
-                let newRow = `<tr id="${baris}">
-                    <input type="hidden" name="tanggal_item[]" value="${tanggal}"/>
-                    <input type="hidden" name="kode_akun_item[]" value="${kode_akun}"/>
-                    <input type="hidden" name="debet_kredit_item[]" value="${debet_kredit}"/>
-                    <input type="hidden" name="jumlah_item[]" value="${jumlah}"/>
-                    <input type="hidden" name="keterangan_item[]" value="${keterangan}"/>
-                    <input type="hidden" name="kode_peruntukan_item[]" value="${kode_peruntukan}"/>
-                    <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}"/>
-                    <td>${tanggal}</td>
-                    <td>${nama_akun}</td>
-                    <td>${keterangan}</td>
-                    <td class="text-end jmldebet">${debet}</td>
-                    <td class="text-end jmlkredit">${kredit}</td>
-                    <td>${kode_peruntukan} ${kode_cabang ? '(' + kode_cabang + ')' : ''}</td>
-                    <td><a href="#" id="${baris}" class="delete"><i class="ti ti-trash text-danger"></i></a></td>
-                </tr>`;
-                form.find("#loadjurnalumum").append(newRow);
+                // Cek apakah sedang dalam mode edit
+                const editId = form.find("#btnTambahItem").data('edit-id');
+
+                if (editId) {
+                    // Update row yang sudah ada
+                    const row = form.find(`#${editId}`);
+                    row.find('input[name="tanggal_item[]"]').val(tanggal);
+                    row.find('input[name="kode_akun_item[]"]').val(kode_akun);
+                    row.find('input[name="debet_kredit_item[]"]').val(debet_kredit);
+                    row.find('input[name="jumlah_item[]"]').val(jumlah);
+                    row.find('input[name="keterangan_item[]"]').val(keterangan);
+                    row.find('input[name="kode_peruntukan_item[]"]').val(kode_peruntukan);
+                    row.find('input[name="kode_cabang_item[]"]').val(kode_cabang);
+
+                    // Update tampilan
+                    row.find('td:eq(0)').text(tanggal);
+                    row.find('td:eq(1)').text(nama_akun);
+                    row.find('td:eq(2)').text(keterangan);
+                    row.find('td:eq(3)').removeClass('jmldebet').addClass('text-end jmldebet').text(debet);
+                    row.find('td:eq(4)').removeClass('jmlkredit').addClass('text-end jmlkredit').text(kredit);
+                    row.find('td:eq(5)').text(kode_peruntukan + (kode_cabang ? ' (' + kode_cabang + ')' : ''));
+
+                    // Reset mode edit
+                    form.find("#btnTambahItem").removeData('edit-id');
+                    form.find("#btnTambahItem").html('<i class="ti ti-plus me-1"></i>Tambah Item');
+                } else {
+                    // Tambah row baru
+                    baris += 1;
+                    let newRow = `<tr id="${baris}">
+                        <input type="hidden" name="tanggal_item[]" value="${tanggal}"/>
+                        <input type="hidden" name="kode_akun_item[]" value="${kode_akun}"/>
+                        <input type="hidden" name="debet_kredit_item[]" value="${debet_kredit}"/>
+                        <input type="hidden" name="jumlah_item[]" value="${jumlah}"/>
+                        <input type="hidden" name="keterangan_item[]" value="${keterangan}"/>
+                        <input type="hidden" name="kode_peruntukan_item[]" value="${kode_peruntukan}"/>
+                        <input type="hidden" name="kode_cabang_item[]" value="${kode_cabang}"/>
+                        <td>${tanggal}</td>
+                        <td>${nama_akun}</td>
+                        <td>${keterangan}</td>
+                        <td class="text-end jmldebet">${debet}</td>
+                        <td class="text-end jmlkredit">${kredit}</td>
+                        <td>${kode_peruntukan} ${kode_cabang ? '(' + kode_cabang + ')' : ''}</td>
+                        <td>
+                            <a href="#" id="${baris}" class="edit me-2"><i class="ti ti-edit text-info"></i></a>
+                            <a href="#" id="${baris}" class="delete"><i class="ti ti-trash text-danger"></i></a>
+                        </td>
+                    </tr>`;
+                    form.find("#loadjurnalumum").append(newRow);
+                }
                 resetForm();
                 calculateTotal();
             }
@@ -308,10 +360,62 @@
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
+                    // Reset mode edit jika row yang dihapus sedang dalam mode edit
+                    const editId = form.find("#btnTambahItem").data('edit-id');
+                    if (editId == id) {
+                        form.find("#btnTambahItem").removeData('edit-id');
+                        form.find("#btnTambahItem").html('<i class="ti ti-plus me-1"></i>Tambah Item');
+                        resetForm();
+                    }
                     $(`#${id}`).remove();
                     calculateTotal();
                 }
             });
+        });
+
+        form.on('click', '.edit', function(e) {
+            e.preventDefault();
+            const id = $(this).attr("id");
+            const row = form.find(`#${id}`);
+
+            // Reset form terlebih dahulu jika ada mode edit sebelumnya
+            const currentEditId = form.find("#btnTambahItem").data('edit-id');
+            if (currentEditId && currentEditId != id) {
+                resetForm();
+            }
+
+            // Ambil data dari row
+            const tanggal = row.find('input[name="tanggal_item[]"]').val();
+            const kode_akun = row.find('input[name="kode_akun_item[]"]').val();
+            const jumlah = row.find('input[name="jumlah_item[]"]').val();
+            const keterangan = row.find('input[name="keterangan_item[]"]').val();
+            const debet_kredit = row.find('input[name="debet_kredit_item[]"]').val();
+            const kode_peruntukan = row.find('input[name="kode_peruntukan_item[]"]').val();
+            const kode_cabang = row.find('input[name="kode_cabang_item[]"]').val();
+
+            // Isi form dengan data yang akan diedit
+            form.find("#tanggal").val(tanggal);
+            form.find('.select2Kodeakun').val(kode_akun).trigger('change');
+            form.find("#jumlah").val(jumlah);
+            form.find("#keterangan").val(keterangan);
+            form.find("#debet_kredit").val(debet_kredit);
+            form.find("#kode_peruntukan").val(kode_peruntukan).trigger('change');
+
+            // Tunggu sebentar untuk memastikan select2 sudah ter-update
+            setTimeout(function() {
+                if (kode_peruntukan == 'PC' && kode_cabang) {
+                    form.find('.select2Kodecabang').val(kode_cabang).trigger('change');
+                }
+            }, 100);
+
+            // Set mode edit
+            form.find("#btnTambahItem").data('edit-id', id);
+            form.find("#btnTambahItem").html('<i class="ti ti-edit me-1"></i>Update Item');
+
+            // Scroll ke form
+            $('html, body').animate({
+                scrollTop: form.find("#tanggal").offset().top - 100
+            }, 500);
         });
 
 
@@ -323,6 +427,12 @@
             //form.find("#keterangan").val("");
             //form.find("#kode_peruntukan").val("");
             form.find('.select2Kodecabang').val('').trigger("change");
+
+            // Reset mode edit jika ada
+            if (form.find("#btnTambahItem").data('edit-id')) {
+                form.find("#btnTambahItem").removeData('edit-id');
+                form.find("#btnTambahItem").html('<i class="ti ti-plus me-1"></i>Tambah Item');
+            }
         }
 
 

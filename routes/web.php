@@ -1951,6 +1951,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/cetakkartukasbon', 'cetakkartukasbon')->name('laporankeuangan.cetakkartukasbon')->can('keu.kartukasbon');
         Route::post('/laporankeuangan/cetakkartupiutangkaryawan', 'cetakkartupiutangkaryawan')->name('laporankeuangan.cetakkartupiutangkaryawan')->can('keu.kartupiutangkaryawan');
         Route::get('/laporankeuangan/{dari}/{sampai}/{exportButton}/cetakmutasikategori', 'cetakmutasikategori')->name('laporankeuangan.cetakmutasikategori');
+        Route::post('/laporankeuangan/updatestatuspajakkaskecil', 'updatestatuspajakkaskecil')->name('laporankeuangan.updatestatuspajakkaskecil');
     });
 
     Route::controller(LaporanmarketingController::class)->group(function () {
@@ -1986,6 +1987,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetakroutingsalesman', 'cetakroutingsalesman')->name('laporanmarketing.cetakroutingsalesman')->can('mkt.routingsalesman');
         Route::post('/laporanmarketing/cetakinsentifom', 'cetakinsentifom')->name('laporanmarketing.cetakinsentifom')->can('worksheetom.insentifom');
         Route::post('/laporanmarketing/cetakratiobs', 'cetakratiobs')->name('laporanmarketing.cetakratiobs')->can('worksheetom.ratiobs');
+        Route::post('/laporanmarketing/updatestatuspajak', 'updatestatuspajak')->name('laporanmarketing.updatestatuspajak');
+        Route::post('/laporanmarketing/updatestatuspajakretur', 'updatestatuspajakretur')->name('laporanmarketing.updatestatuspajakretur');
     });
 
     Route::controller(LaporanaccountingController::class)->group(function () {
@@ -2341,6 +2344,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/saldoawalbukubesar', 'index')->name('saldoawalbukubesar.index')->can('saldoawalbukubesar.index');
         Route::get('/saldoawalbukubesar/create', 'create')->name('saldoawalbukubesar.create')->can('saldoawalbukubesar.create');
         Route::post('/saldoawalbukubesar/store', 'store')->name('saldoawalbukubesar.store')->can('saldoawalbukubesar.store');
+        Route::get('/saldoawalbukubesar/{kode_saldo_awal}/show', 'show')->name('saldoawalbukubesar.show')->can('saldoawalbukubesar.show');
         Route::get('/saldoawalbukubesar/{kode_saldo_awal}/edit', 'edit')->name('saldoawalbukubesar.edit')->can('saldoawalbukubesar.edit');
         Route::put('/saldoawalbukubesar/{kode_saldo_awal}/update', 'update')->name('saldoawalbukubesar.update')->can('saldoawalbukubesar.update');
         Route::delete('/saldoawalbukubesar/{kode_saldo_awal}/delete', 'destroy')->name('saldoawalbukubesar.delete')->can('saldoawalbukubesar.delete');

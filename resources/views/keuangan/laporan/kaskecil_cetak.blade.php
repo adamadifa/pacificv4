@@ -21,19 +21,25 @@
             color: white;
         }
     </style> --}}
+    <style>
+        .bg-pajak-success {
+            background-color: green !important;
+            color: white !important;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="header">
-        <h4 class="title">
-            KAS KECIL<br>
+    <div class="header"></div>
+    <h4 class="title">
+        KAS KECIL<br>
+    </h4>
+    <h4> PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
+    @if ($cabang != null)
+        <h4>
+            {{ $cabang->nama_cabang }}
         </h4>
-        <h4> PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
-        @if ($cabang != null)
-            <h4>
-                {{ $cabang->nama_cabang }}
-            </h4>
-        @endif
+    @endif
     </div>
     <div class="content">
         <div class="freeze-table">
@@ -41,9 +47,12 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                            <th>Pajak</th>
+                        @endif
                         <th>Tanggal</th>
                         <th>No. Bukti</th>
-                        <th>Keterangan</th>
+                        <th style="width: 400px;">Keterangan</th>
                         <th>Kode Akun</th>
                         <th>Akun</th>
                         <th>Penerimaan</th>
@@ -52,7 +61,7 @@
                         <th rowspan="2">Dibuat</th>
                     </tr>
                     <tr>
-                        <th colspan="8"><b>SALDO AWAL</b></th>
+                        <th colspan="{{ auth()->user()->hasRole(['super admin', 'admin pajak'])? '9': '8' }}"><b>SALDO AWAL</b></th>
                         <th class="right">{{ $saldoawal != null ? formatAngka($saldoawal->saldo_awal) : 0 }}</th>
                     </tr>
                 <tbody>
@@ -70,9 +79,24 @@
                             $total_penerimaan += $penerimaan;
                             $total_pengeluaran += $pengeluaran;
                             $colorklaim = !empty($d->kode_klaim) ? 'background-color: green; color: white' : '';
+
+                            // Jika status_pajak = 1, set background hijau dengan text putih (kecuali jika sudah ada warna dari klaim)
+                            if (isset($d->status_pajak) && $d->status_pajak == 1) {
+                                $bgcolor = 'green';
+                                $textcolor = 'white';
+                            } else {
+                                $bgcolor = '';
+                                $textcolor = '';
+                            }
                         @endphp
-                        <tr>
+                        <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
                             <td style="{{ $colorklaim }}">{{ $loop->iteration }}</td>
+                            @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                                <td class="center">
+                                    <input type="checkbox" class="checkbox-pajak-kaskecil" data-id="{{ $d->id }}"
+                                        {{ isset($d->status_pajak) && $d->status_pajak == 1 ? 'checked' : '' }}>
+                                </td>
+                            @endif
                             <td>{{ formatIndo($d->tanggal) }}</td>
                             <td>{{ $d->no_bukti }}</td>
                             <td>{{ $d->keterangan }}</td>
@@ -87,7 +111,7 @@
                 </tbody>
                 <tfoot class="table-dark">
                     <tr>
-                        <th colspan="6">TOTAL</th>
+                        <th colspan="{{ auth()->user()->hasRole(['super admin', 'admin pajak'])? '7': '6' }}">TOTAL</th>
                         <th class="right">{{ formatAngka($total_penerimaan) }}</th>
                         <th class="right">{{ formatAngka($total_pengeluaran) }}</th>
                         <th class="right">{{ formatAngka($saldo) }}</th>
@@ -98,3 +122,58 @@
         </div>
     </div>
 </body>
+
+@if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+    <script>
+        $(document).ready(function() {
+            $('.checkbox-pajak-kaskecil').on('change', function() {
+                const checkbox = $(this);
+                const id = checkbox.data('id');
+                const statusPajak = checkbox.is(':checked') ? 1 : 0;
+
+                // Disable checkbox sementara untuk mencegah multiple clicks
+                checkbox.prop('disabled', true);
+
+                $.ajax({
+                    url: '{{ route('laporankeuangan.updatestatuspajakkaskecil') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: id,
+                        status_pajak: statusPajak
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Ubah background row menjadi hijau dengan text putih
+                            const row = checkbox.closest('tr');
+                            row.addClass('bg-pajak-success');
+                            // Ubah semua td dalam row menjadi hijau dengan text putih
+                            row.find('td').css({
+                                'background-color': 'green',
+                                'color': 'white'
+                            });
+                            console.log('Status pajak kas kecil berhasil diupdate');
+                        } else {
+                            // Revert checkbox jika gagal
+                            checkbox.prop('checked', !checkbox.is(':checked'));
+                            alert('Gagal mengupdate status pajak kas kecil: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        // Revert checkbox jika error
+                        checkbox.prop('checked', !checkbox.is(':checked'));
+                        let errorMessage = 'Terjadi kesalahan saat mengupdate status pajak kas kecil';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
+                    },
+                    complete: function() {
+                        // Enable checkbox kembali
+                        checkbox.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+@endif

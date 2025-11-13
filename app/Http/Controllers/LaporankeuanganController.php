@@ -2038,4 +2038,29 @@ class LaporankeuanganController extends Controller
             return view('keuangan.laporan.rekapmutasikeuangan_cetak', $data);
         }
     }
+
+    public function updatestatuspajakkaskecil(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'status_pajak' => 'required|in:0,1'
+        ]);
+
+        try {
+            $kaskecil = Kaskecil::findOrFail($request->id);
+            $kaskecil->status_pajak = $request->status_pajak;
+            $kaskecil->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status pajak kas kecil berhasil diupdate',
+                'status_pajak' => $kaskecil->status_pajak
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengupdate status pajak kas kecil: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
