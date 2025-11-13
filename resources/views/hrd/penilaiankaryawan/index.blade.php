@@ -208,7 +208,7 @@
                                                                 <i class="ti ti-edit text-success"></i>
                                                             </a>
                                                         @else
-                                                            @if (in_array($level_user, ['spv presensi', 'super admin']))
+                                                            @if (in_array($level_user, ['spv presensi', 'super admin','manager hrd']))
                                                                 <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}"
                                                                     class="me-1">
                                                                     <i class="ti ti-edit text-success"></i>
