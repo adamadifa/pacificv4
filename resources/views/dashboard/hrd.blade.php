@@ -41,7 +41,7 @@
                             @include('dashboard.hrd.rekapkontrak')
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <div class="card mb-3">
+                            <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">Karyawan Cabang</h4>
                                 </div>
@@ -64,142 +64,149 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body p-4">
-                                    {{-- Header Section --}}
-                                    <div class="position-relative mb-4">
-                                        <div class="d-flex align-items-start">
-                                            <div class="rounded-3 p-2 me-3 d-flex align-items-center justify-content-center"
-                                                style="width: 48px; height: 48px; background-color: #ff9800;">
-                                                <i class="ti ti-cake text-white" style="font-size: 1.5rem;"></i>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-3">
+                                            <span class="avatar-initial rounded bg-label-warning">
+                                                <i class="ti ti-cake fs-4"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-0">Karyawan Ulang Tahun</h4>
+                                            <small class="text-muted">Selamat ulang tahun untuk karyawan yang berulang
+                                                tahun hari ini</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-label-warning rounded-pill">{{ count($karyawan_ulangtahun) }}
+                                        Karyawan</span>
+                                </div>
+                                <div class="card-body">
+                                    @if (count($karyawan_ulangtahun) > 0)
+                                        <div
+                                            class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                            <div>
+                                                <h6 class="mb-0">Kirim Ucapan Ulang Tahun</h6>
+                                                <small class="text-muted">Kirim ucapan ulang tahun ke semua karyawan
+                                                    yang berulang tahun hari ini</small>
                                             </div>
-                                            <div class="flex-grow-1">
-                                                <h4 class="mb-1 fw-bold text-dark">Karyawan Ulang Tahun</h4>
-                                                <p class="text-muted mb-0 small">
-                                                    Selamat ulang tahun untuk karyawan yang berulang tahun hari ini
-                                                </p>
+                                            <div>
+                                                <button type="button"
+                                                    class="btn btn-success btn-sm waves-effect waves-light"
+                                                    id="btnKirimUcapan">
+                                                    <i class="ti ti-brand-whatsapp me-1"></i>
+                                                    <span id="btnText">Kirim ke Semua</span>
+                                                    <span id="btnLoading"
+                                                        class="spinner-border spinner-border-sm ms-2 d-none"
+                                                        role="status"></span>
+                                                </button>
                                             </div>
                                         </div>
-                                        <span class="badge px-3 py-2 rounded-3 position-absolute"
-                                            style="font-size: 0.875rem; background-color: #ff9800; color: white; top: 0; right: 0;">
-                                            {{ count($karyawan_ulangtahun) }} Karyawan
-                                        </span>
-                                    </div>
-
-                                    @if (count($karyawan_ulangtahun) > 0)
-                                        {{-- Employee Details --}}
-                                        @foreach ($karyawan_ulangtahun as $d)
-                                            @php
-                                                $umur = hitungUmur($d->tanggal_lahir);
-                                                $tanggal_lahir_formatted = $d->tanggal_lahir
-                                                    ? date('d-m-Y', strtotime($d->tanggal_lahir))
-                                                    : '-';
-                                            @endphp
-                                            <div class="border rounded p-3 mb-3" style="background-color: #ffffff;">
-                                                {{-- Name and Age Badge --}}
-                                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                                    <h5 class="mb-0 fw-bold text-dark flex-grow-1">
-                                                        {{ formatName($d->nama_karyawan) }}
-                                                    </h5>
-                                                    @if ($umur !== null)
-                                                        <span class="badge px-2 py-1 rounded-3"
-                                                            style="font-size: 0.75rem; background-color: #b3e5fc; color: #01579b;">
-                                                            {{ $umur }} Tahun
-                                                        </span>
-                                                    @endif
-                                                </div>
-
-                                                {{-- Avatar and Info --}}
-                                                <div class="d-flex align-items-start">
-                                                    {{-- Avatar --}}
-                                                    <div class="flex-shrink-0 me-3 position-relative">
-                                                        @if (!empty($d->foto) && Storage::disk('public')->exists('/karyawan/' . $d->foto))
-                                                            <img src="{{ getfotoKaryawan($d->foto) }}" alt=""
-                                                                class="rounded-circle"
-                                                                style="width: 80px; height: 80px; object-fit: cover;">
-                                                        @else
-                                                            <div class="rounded-circle d-flex align-items-center justify-content-center"
-                                                                style="width: 80px; height: 80px; background-color: #e7d5ff;">
-                                                                @if ($d->jenis_kelamin == 'L')
-                                                                    <img src="{{ asset('assets/img/avatars/male.jpg') }}"
-                                                                        alt="" class="rounded-circle"
-                                                                        style="width: 80px; height: 80px; object-fit: cover;">
-                                                                @else
-                                                                    <img src="{{ asset('assets/img/avatars/female.jpg') }}"
-                                                                        alt="" class="rounded-circle"
-                                                                        style="width: 80px; height: 80px; object-fit: cover;">
-                                                                @endif
-                                                            </div>
-                                                        @endif
-                                                        <div class="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center"
-                                                            style="width: 24px; height: 24px; background-color: #ff9800; border: 2px solid white;">
-                                                            <i class="ti ti-cake text-white"
-                                                                style="font-size: 0.7rem;"></i>
-                                                        </div>
-                                                    </div>
-
-                                                    {{-- Employee Info --}}
-                                                    <div class="flex-grow-1">
-                                                        <div class="row g-2">
-                                                            {{-- Left Column --}}
-                                                            <div class="col-12">
-                                                                <div class="mb-2">
-                                                                    <div class="d-flex align-items-center mb-1">
-                                                                        <i class="ti ti-id me-1 text-muted"
-                                                                            style="font-size: 0.875rem;"></i>
-                                                                        <span class="text-muted"
-                                                                            style="font-size: 0.75rem;">NIK:</span>
-                                                                        <strong class="ms-1"
-                                                                            style="font-size: 0.75rem;">{{ $d->nik }}</strong>
+                                        <div class="row g-3">
+                                            @foreach ($karyawan_ulangtahun as $d)
+                                                @php
+                                                    $umur = hitungUmur($d->tanggal_lahir);
+                                                    $tanggal_lahir_formatted = $d->tanggal_lahir
+                                                        ? date('d-m-Y', strtotime($d->tanggal_lahir))
+                                                        : '-';
+                                                @endphp
+                                                <div class="col-12">
+                                                    <div class="card card-border-shadow-primary birthday-card"
+                                                        style="transition: 0.3s; cursor: pointer; transform: translateY(0px); box-shadow: none;"
+                                                        onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.15)';"
+                                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar me-3"
+                                                                    style="width: 80px; height: 80px; position: relative;">
+                                                                    @if (!empty($d->foto) && Storage::disk('public')->exists('/karyawan/' . $d->foto))
+                                                                        <img src="{{ getfotoKaryawan($d->foto) }}"
+                                                                            alt=""
+                                                                            class="rounded-circle border border-primary border-3"
+                                                                            style="width: 80px; height: 80px; object-fit: cover;">
+                                                                    @else
+                                                                        <div class="avatar-initial rounded-circle bg-label-primary d-flex align-items-center justify-content-center border border-primary border-3"
+                                                                            style="width: 80px; height: 80px; font-size: 32px;">
+                                                                            <i class="ti ti-user"></i>
+                                                                        </div>
+                                                                    @endif
+                                                                    <div class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center border border-white"
+                                                                        style="width: 28px; height: 28px; font-size: 14px; border-width: 2px !important;">
+                                                                        <i class="ti ti-cake"></i>
                                                                     </div>
                                                                 </div>
-                                                                <div class="mb-2">
-                                                                    <div class="d-flex align-items-center mb-1">
-                                                                        <i class="ti ti-calendar me-1 text-muted"
-                                                                            style="font-size: 0.875rem;"></i>
-                                                                        <span class="text-muted"
-                                                                            style="font-size: 0.75rem;">Tanggal
-                                                                            Lahir:</span>
-                                                                        <strong class="ms-1"
-                                                                            style="font-size: 0.75rem;">{{ $tanggal_lahir_formatted }}</strong>
+                                                                <div class="flex-grow-1">
+                                                                    <div
+                                                                        class="d-flex align-items-center justify-content-between mb-2">
+                                                                        <h5 class="mb-0">
+                                                                            {{ formatName($d->nama_karyawan) }}</h5>
+                                                                        @if ($umur !== null)
+                                                                            <span
+                                                                                class="badge bg-label-primary rounded-pill">{{ $umur }}
+                                                                                Tahun</span>
+                                                                        @endif
                                                                     </div>
-                                                                </div>
-                                                                <div class="mb-2">
-                                                                    <div class="d-flex align-items-center mb-1">
-                                                                        <i class="ti ti-briefcase me-1 text-muted"
-                                                                            style="font-size: 0.875rem;"></i>
-                                                                        <span class="text-muted"
-                                                                            style="font-size: 0.75rem;">Jabatan:</span>
-                                                                        <strong class="ms-1"
-                                                                            style="font-size: 0.75rem;">{{ singkatString($d->nama_jabatan) }}</strong>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="mb-2">
-                                                                    <div class="d-flex align-items-center mb-1">
-                                                                        <i class="ti ti-building me-1 text-muted"
-                                                                            style="font-size: 0.875rem;"></i>
-                                                                        <span class="text-muted"
-                                                                            style="font-size: 0.75rem;">Dept:</span>
-                                                                        <strong class="ms-1"
-                                                                            style="font-size: 0.75rem;">{{ $d->nama_dept }}</strong>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="mb-2">
-                                                                    <div class="d-flex align-items-center mb-1">
-                                                                        <i class="ti ti-map-pin me-1 text-muted"
-                                                                            style="font-size: 0.875rem;"></i>
-                                                                        <span class="text-muted"
-                                                                            style="font-size: 0.75rem;">Cabang:</span>
-                                                                        <strong class="ms-1"
-                                                                            style="font-size: 0.75rem;">{{ textUpperCase($d->nama_cabang) }}</strong>
+                                                                    <div class="row g-2">
+                                                                        <div class="col-md-6">
+                                                                            <div class="d-flex align-items-center mb-1">
+                                                                                <i
+                                                                                    class="ti ti-id me-2 text-primary"></i>
+                                                                                <small class="text-muted">NIK:</small>
+                                                                                <strong
+                                                                                    class="ms-2">{{ $d->nik }}</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="d-flex align-items-center mb-1">
+                                                                                <i
+                                                                                    class="ti ti-calendar me-2 text-primary"></i>
+                                                                                <small class="text-muted">Tanggal
+                                                                                    Lahir:</small>
+                                                                                <strong
+                                                                                    class="ms-2">{{ $tanggal_lahir_formatted }}</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="d-flex align-items-center mb-1">
+                                                                                <i
+                                                                                    class="ti ti-briefcase me-2 text-primary"></i>
+                                                                                <small
+                                                                                    class="text-muted">Jabatan:</small>
+                                                                                <strong
+                                                                                    class="ms-2">{{ $d->nama_jabatan }}</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="d-flex align-items-center mb-1">
+                                                                                <i
+                                                                                    class="ti ti-building me-2 text-primary"></i>
+                                                                                <small class="text-muted">Dept:</small>
+                                                                                <strong
+                                                                                    class="ms-2">{{ $d->nama_dept }}</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                <i
+                                                                                    class="ti ti-map-pin me-2 text-primary"></i>
+                                                                                <small
+                                                                                    class="text-muted">Cabang:</small>
+                                                                                <strong
+                                                                                    class="ms-2">{{ textUpperCase($d->nama_cabang) }}</strong>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
+                                            @endforeach
+                                        </div>
                                     @else
                                         <div class="text-center py-5">
                                             <div class="mb-3">
