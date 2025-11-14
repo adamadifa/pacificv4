@@ -775,4 +775,85 @@ class LaporanhrdController extends Controller
         }
         return view('hrd.laporan.cuti_cetak', $data);
     }
+
+    public function cetakketerlambatan(Request $request)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
+        $dept_access = json_decode($user->dept_access, true) ?? [];
+
+        $dari_tanggal = $request->dari_tanggal;
+        $sampai_tanggal = $request->sampai_tanggal;
+
+        $query = Presensi::query();
+        $query->select(
+            'hrd_presensi.tanggal',
+            'hrd_presensi.nik',
+            'hrd_karyawan.nama_karyawan',
+            'hrd_presensi.jam_in',
+            'hrd_jamkerja.jam_masuk',
+            'hrd_presensi_izinterlambat.kode_izin_terlambat',
+            'hrd_karyawan.kode_dept',
+            'hrd_karyawan.kode_jabatan',
+            'nama_cabang',
+            'nama_dept',
+            'nama_group',
+            'nama_jabatan'
+        );
+        $query->join('hrd_karyawan', 'hrd_presensi.nik', '=', 'hrd_karyawan.nik');
+        $query->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
+        $query->leftJoin('hrd_presensi_izinterlambat', 'hrd_presensi.id', '=', 'hrd_presensi_izinterlambat.id_presensi');
+        $query->leftJoin('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftJoin('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->whereBetween('hrd_presensi.tanggal', [$dari_tanggal, $sampai_tanggal]);
+        $query->whereNotNull('hrd_presensi.jam_in');
+        $query->whereNotNull('hrd_jamkerja.jam_masuk');
+        $query->whereRaw("DATE_FORMAT(hrd_presensi.jam_in, '%Y-%m-%d %H:%i') > CONCAT(hrd_presensi.tanggal, ' ', DATE_FORMAT(hrd_jamkerja.jam_masuk, '%H:%i'))");
+        $query->whereNull('hrd_presensi_izinterlambat.kode_izin_terlambat');
+        $query->where('hrd_karyawan.status_aktif_karyawan', '=', '1');
+
+        if (!empty($request->kode_cabang)) {
+            $query->where('hrd_karyawan.kode_cabang', '=', $request->kode_cabang);
+        }
+
+        if (!empty($request->kode_dept)) {
+            $query->where('hrd_karyawan.kode_dept', '=', $request->kode_dept);
+        }
+
+        if (!empty($request->kode_group)) {
+            $query->where('hrd_karyawan.kode_group', '=', $request->kode_group);
+        }
+
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan'])) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                if (auth()->user()->kode_cabang != 'PST') {
+                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    if ($user->hasRole(['staff keuangan'])) {
+                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                    } else {
+                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
+                }
+            }
+        }
+
+        $query->orderBy('hrd_presensi.tanggal');
+        $query->orderBy('hrd_karyawan.nama_karyawan');
+
+        $data['keterlambatan'] = $query->get();
+        $data['dari_tanggal'] = $dari_tanggal;
+        $data['sampai_tanggal'] = $sampai_tanggal;
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Laporan Rekap Keterlambatan.xls");
+        }
+        return view('hrd.laporan.keterlambatan_cetak', $data);
+    }
 }
