@@ -731,6 +731,17 @@ function konversiHariKeBulan($jumlahHari)
     $bulan = floor($jumlahHari / 30);
     return $bulan . ' bulan';
 }
+
+function hitungUmur($tanggal_lahir)
+{
+    if (empty($tanggal_lahir)) {
+        return null;
+    }
+    $birthDate = Carbon::parse($tanggal_lahir);
+    $today = Carbon::now();
+    $umur = $birthDate->diffInYears($today);
+    return $umur;
+}
 // function getroleuser()
 // {
 

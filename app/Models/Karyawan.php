@@ -196,4 +196,19 @@ class Karyawan extends Model
         $query->orderBy('hrd_karyawan.kode_cabang');
         return $query->get();
     }
+
+    function getKaryawanUlangTahun()
+    {
+        $query = Karyawan::query();
+        $query->select('hrd_karyawan.nik', 'hrd_karyawan.nama_karyawan', 'hrd_karyawan.tanggal_lahir', 'hrd_karyawan.foto', 'hrd_karyawan.jenis_kelamin', 'nama_jabatan', 'nama_cabang', 'hrd_karyawan.kode_dept', 'nama_dept');
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->where('status_aktif_karyawan', 1);
+        $query->whereNotNull('tanggal_lahir');
+        $query->whereRaw('DAY(tanggal_lahir) = DAY(CURDATE())');
+        $query->whereRaw('MONTH(tanggal_lahir) = MONTH(CURDATE())');
+        $query->orderBy('hrd_karyawan.nama_karyawan');
+        return $query->get();
+    }
 }
