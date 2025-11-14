@@ -48,6 +48,7 @@
                     <th>Jam Masuk</th>
                     <th>Jam In</th>
                     <th>Terlambat</th>
+                    <th>Status Izin Terlambat</th>
                     <th>Denda</th>
                 </tr>
             </thead>
@@ -94,6 +95,10 @@
                         <td>{{ $d->jam_in }}</td>
                         <td style="font-weight: bold; {{ $terlambat['status'] ? 'color: red;' : 'color: green;' }}">
                             {{ $format_terlambat }}
+                        </td>
+                        <td style="text-align: center;">
+                            {{ $d->kode_izin_terlambat }}
+                            {{ !empty($d->kode_izin_terlambat) ? 'Sudah Izin' : '-' }}
                         </td>
                         <td style="font-weight: bold; text-align: right;">
                             {{ !empty($denda['denda']) ? formatAngka($denda['denda']) : '-' }}
