@@ -58,8 +58,7 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt=""
-                                style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:80px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -200,12 +199,7 @@
                         Pihak kedua setuju menerima upah dengan rincian terlampir:
                     @else
                         @php
-                            $totalupah =
-                                $gaji->gaji_pokok +
-                                $gaji->t_jabatan +
-                                $gaji->t_tanggungjawab +
-                                $gaji->t_makan +
-                                $gaji->t_skill;
+                            $totalupah = $gaji->gaji_pokok + $gaji->t_jabatan + $gaji->t_tanggungjawab + $gaji->t_makan + $gaji->t_skill;
                         @endphp
                         @if ($kontrak->kode_jabatan == 'J19')
                             Pihak kedua setuju menerima upah berdasarkan satuan hasil dengan dasar perhitungan Rp.
@@ -482,7 +476,12 @@
                     @endif
                 </tr>
                 <tr>
-                    <td style="text-align: center; height:5rem"></td>
+                    <td style="text-align: center; height:5rem; vertical-align: top; padding-top: 0.5rem">
+                        <div
+                            style="width: 80px; height: 80px; border: 2px solid #000; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 10px;">
+                            <span>MATERAI</span>
+                        </div>
+                    </td>
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
                         <td colspan="2" style="text-align: center"></td>
                     @else
