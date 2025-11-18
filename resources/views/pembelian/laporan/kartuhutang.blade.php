@@ -1,7 +1,7 @@
 <form action="{{ route('laporanpembelian.cetakkartuhutang') }}" method="POST" id="formLapKartuHutang" target="_blank">
     @csrf
-    <x-select label="Supplier" name="kode_supplier_kartuhutang" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
-        select2="select2Kodesupplierkartuhutang" />
+    <x-select label="Supplier" name="kode_supplier_kartuhutang" :data="$supplier" key="kode_supplier"
+        textShow="nama_supplier" upperCase="true" select2="select2Kodesupplierkartuhutang" />
     <div class="form-group mb-3">
         <select name="jenis_hutang" id="jenis_hutang" class="form-select">
             <option value="">Jenis Hutang</option>
@@ -14,6 +14,13 @@
             <option value="">Jenis Laporan</option>
             <option value="1">Detail Kartu Hutang</option>
             <option value="2">Rekap Kartu Hutang</option>
+        </select>
+    </div>
+    <div class="form-group mb-3">
+        <select name="ppn" id="ppn" class="form-select">
+            <option value="">PPN / NON PPN</option>
+            <option value="1">PPN</option>
+            <option value="0">NON PPN</option>
         </select>
     </div>
     <div class="row">
