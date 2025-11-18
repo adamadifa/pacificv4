@@ -111,10 +111,11 @@ class Izinsakit extends Model
                             $query->orwhere('cabang.kode_regional', auth()->user()->kode_regional);
                         }
                     }
-                    $query->whereIn('hrd_izinsakit.kode_dept', $dept_access_2);
                     if ($user->id == 97) {
                         $query->orwhere('hrd_izinsakit.kode_cabang', 'PST');
                     }
+                    $query->whereIn('hrd_izinsakit.kode_dept', $dept_access_2);
+
 
                     if ($user->id == 97) {
                         array_push($jabatan_access_2, 'J29');
