@@ -191,10 +191,10 @@ class SaldoawalkasbesarController extends Controller
 
 
             //Saldo Sebelumnya
-            $saldo_kertas = $saldobulanlalu->uang_kertas != null ? $saldobulanlalu->uang_kertas : 0;
-            $saldo_logam  = $saldobulanlalu->uang_logam != null ? $saldobulanlalu->uang_logam : 0;
-            $saldo_giro   = $saldobulanlalu->giro != null ? $saldobulanlalu->giro : 0;
-            $saldo_transfer  = $saldobulanlalu->transfer != null ? $saldobulanlalu->transfer : 0;
+            $saldo_kertas    = isset($saldobulanlalu) && $saldobulanlalu && $saldobulanlalu->uang_kertas !== null ? $saldobulanlalu->uang_kertas : 0;
+            $saldo_logam     = isset($saldobulanlalu) && $saldobulanlalu && $saldobulanlalu->uang_logam !== null ? $saldobulanlalu->uang_logam : 0;
+            $saldo_giro      = isset($saldobulanlalu) && $saldobulanlalu && $saldobulanlalu->giro !== null ? $saldobulanlalu->giro : 0;
+            $saldo_transfer  = isset($saldobulanlalu) && $saldobulanlalu && $saldobulanlalu->transfer !== null ? $saldobulanlalu->transfer : 0;
 
 
             //Setoran Penjualan
