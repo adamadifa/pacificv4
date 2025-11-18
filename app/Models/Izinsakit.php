@@ -118,7 +118,9 @@ class Izinsakit extends Model
                     if ($cabang_access == 1) {
                         $query->where('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
                     } else if ($cabang_access == 2) {
-                        $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        if ($user->id != 97) {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
                     }
                 }
             }
