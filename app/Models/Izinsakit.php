@@ -114,7 +114,9 @@ class Izinsakit extends Model
                     if ($user->id == 97) {
                         $query->orwhere('hrd_izinsakit.kode_cabang', 'PST');
                     }
-                    $query->whereIn('hrd_izinsakit.kode_dept', $dept_access_2);
+                    if (!empty($dept_access_2)) {
+                        $query->whereIn('hrd_izinsakit.kode_dept', $dept_access_2);
+                    }
 
 
                     if ($user->id == 97) {
