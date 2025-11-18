@@ -95,6 +95,9 @@ class Izinsakit extends Model
 
                     $query->whereIn('hrd_izinsakit.kode_dept', $dept_access);
                     if ($jabatan_filter && $jabatan_access != null) {
+                        if ($user->id == 97) {
+                            array_push($jabatan_access, 'J29');
+                        }
                         $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access);
                     }
                     if ($cabang_access == 1) {
@@ -105,7 +108,10 @@ class Izinsakit extends Model
 
 
 
-                    $query->orWhereIn('hrd_izinsakit.kode_deptd', $dept_access_2);
+                    $query->orWhereIn('hrd_izinsakit.kode_dept', $dept_access_2);
+                    if ($user->id == 97) {
+                        $query->where('hrd_izinsakit.kode_cabang', 'PST');
+                    }
                     if ($jabatan_filter && $jabatan_access_2 != null) {
                         $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access_2);
                     }
