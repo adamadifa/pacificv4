@@ -316,6 +316,12 @@ class LaporanpembelianController extends Controller
         if (!empty($request->jenis_hutang)) {
             $query->where('pembelian.kode_akun', $request->jenis_hutang);
         }
+
+        if ($request->ppn === "0") {
+            $query->where('pembelian.ppn', 0);
+        } else if ($request->ppn == "1") {
+            $query->where('pembelian.ppn', 1);
+        }
         $query->orWhere('pembelian.tanggal', '<=', $request->sampai);
         $query->where('jmlbayarbulanini', '!=', 0);
         if (!empty($request->kode_supplier_kartuhutang)) {
@@ -330,7 +336,7 @@ class LaporanpembelianController extends Controller
         if ($request->ppn === "0") {
             $query->where('pembelian.ppn', 0);
         } else if ($request->ppn == "1") {
-            $query->where('pembelian.ppnd', 1);
+            $query->where('pembelian.ppn', 1);
         }
         if ($request->formatlaporan == "1") {
             $query->orderBy('pembelian.tanggal');
