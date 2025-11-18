@@ -104,10 +104,16 @@ class Izinsakit extends Model
                     }
 
 
-
-                    $query->orWhereIn('hrd_izinsakit.kode_dept', $dept_access_2);
+                    if ($cabang_access == 1) {
+                        $query->orwhere('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
+                    } else if ($cabang_access == 2) {
+                        if ($user->id != 97) {
+                            $query->orwhere('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+                    }
+                    $query->whereIn('hrd_izinsakit.kode_dept', $dept_access_2);
                     if ($user->id == 97) {
-                        $query->where('hrd_izinsakit.kode_cabang', 'PST');
+                        $query->orwhere('hrd_izinsakit.kode_cabang', 'PST');
                     }
 
                     if ($user->id == 97) {
@@ -115,13 +121,6 @@ class Izinsakit extends Model
                     }
                     if ($jabatan_filter && $jabatan_access_2 != null) {
                         $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access_2);
-                    }
-                    if ($cabang_access == 1) {
-                        $query->where('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
-                    } else if ($cabang_access == 2) {
-                        if ($user->id != 97) {
-                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-                        }
                     }
                 }
             }
