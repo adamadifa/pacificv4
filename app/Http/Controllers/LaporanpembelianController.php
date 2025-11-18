@@ -332,6 +332,8 @@ class LaporanpembelianController extends Controller
             $query->orderBy('pembelian.kode_supplier');
         }
 
+
+        dd($request->ppn);
         if ($request->ppn === "0") {
             $query->where('pembelian.ppn', 0);
         } else if ($request->ppn == "1") {
