@@ -114,6 +114,10 @@ class Izinsakit extends Model
                     } else if ($cabang_access == 2) {
                         $query->where('cabang.kode_regional', auth()->user()->kode_regional);
                     }
+
+                    if ($user->id == 97) {
+                        $query->where('hrd_izinsakit.kode_jabatan', 'J29');
+                    }
                 }
             }
 
@@ -156,8 +160,6 @@ class Izinsakit extends Model
                     }
                 }
             }
-
-            
         } else {
             if (!in_array($role, $level_hrd) && $role !== 'direktur') {
                 $query->where('hrd_izinsakit.head', '0');
