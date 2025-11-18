@@ -105,7 +105,7 @@ class Izinsakit extends Model
 
 
 
-                    $query->orWhereIn('hrd_izinsakit.kode_dept', $dept_access_2);
+                    // $query->orWhereIn('hrd_izinsakit.kode_dept', $dept_access_2);
                     if ($jabatan_filter && $jabatan_access_2 != null) {
                         $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access_2);
                     }
