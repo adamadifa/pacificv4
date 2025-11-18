@@ -325,6 +325,13 @@ class LaporanpembelianController extends Controller
         if (!empty($request->jenis_hutang)) {
             $query->where('pembelian.kode_akun', $request->jenis_hutang);
         }
+
+
+        if ($request->ppn === "0") {
+            $query->where('pembelian.ppn', 0);
+        } else if ($request->ppn == "1") {
+            $query->where('pembelian.ppnd', 1);
+        }
         if ($request->formatlaporan == "1") {
             $query->orderBy('pembelian.tanggal');
             $query->orderBy('pembelian.no_bukti');
@@ -333,12 +340,8 @@ class LaporanpembelianController extends Controller
         }
 
 
-        dd($request->ppn);
-        if ($request->ppn === "0") {
-            $query->where('pembelian.ppn', 0);
-        } else if ($request->ppn == "1") {
-            $query->where('pembelian.ppn', 1);
-        }
+
+
 
         $data['kartuhutang'] = $query->get();
         $data['dari'] = $request->dari;
