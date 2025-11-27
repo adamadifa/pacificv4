@@ -78,8 +78,13 @@
             </table>
         </div>
     </div>
-    <div class="form-group mb-3 mt-3">
-        <button class="btn btn-primary w-100" id="btnSimpan">
+    <div class="form-group mb-3 mt-3 d-flex justify-content-between gap-2">
+        @if (in_array($level_user, $level_hrd))
+            <button class="btn btn-success flex-grow-1" value="1" name="btnApprove" type="submit" id="btnApprove">
+                <i class="ti ti-thumb-up me-1"></i> Setuju
+            </button>
+        @endif
+        <button class="btn btn-primary flex-grow-1" value="0" name="btnSimpan" type="submit" id="btnSimpan">
             <i class="ti ti-thumb-up me-1"></i> Setuju,
             @if ($level_user != $end_role)
                 Teruskan ke {{ textCamelCase($nextrole) }} ({{ $userrole->name }})
@@ -97,15 +102,27 @@
 
         function buttonDisable() {
             $('#btnSimpan').prop('disabled', true);
-            $('#btnSimpan').html(`
+            $('#btnApprove').prop('disabled', true);
+            $('#btnSimpan,#btnApprove').html(`
             <div class="spinner-border spinner-border-sm text-white me-2" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
             Loading..`);
         }
 
+        // Pastikan button name terkirim saat diklik
+        $('#btnApprove, #btnSimpan').on('click', function(e) {
+            const buttonName = $(this).attr('name');
+            const buttonValue = $(this).val();
+            // Hapus hidden input sebelumnya jika ada
+            form.find('input[type="hidden"][name="btnApprove"], input[type="hidden"][name="btnSimpan"]').remove();
+            // Tambahkan hidden input untuk memastikan button name terkirim
+            form.append('<input type="hidden" name="' + buttonName + '" value="' + buttonValue + '">');
+        });
+
         form.submit(function(e) {
             buttonDisable();
+            // Biarkan form submit normal agar button name terkirim
             // return false;
         });
     });

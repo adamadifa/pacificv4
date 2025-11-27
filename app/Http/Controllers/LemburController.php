@@ -439,7 +439,8 @@ class LemburController extends Controller
                 }
             }
         }
-
+        $level_hrd = config('presensi.approval.level_hrd');
+        $data['level_hrd'] = $level_hrd;
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
@@ -456,6 +457,17 @@ class LemburController extends Controller
         $role = $user->getRoleNames()->first();
         $roles_approve = cekRoleapprovelembur($lembur->kode_dept);
         $end_role = end($roles_approve);
+
+        // Cek button mana yang ditekan
+        // if ($request->has('btnApprove') || isset($request->btnApprove)) {
+        //     // Button Approve ditekan
+        //     // Logika untuk btnApprove
+        //     dd('btnApprove');
+        // } elseif ($request->has('btnSimpan') || isset($request->btnSimpan)) {
+        //     // Button Simpan ditekan
+        //     // Logika untuk btnSimpan
+        //     dd('btnSimpan');
+        // }
 
         if ($role != $end_role) {
             $cek_index = array_search($role, $roles_approve);
@@ -490,7 +502,7 @@ class LemburController extends Controller
 
 
 
-            if ($role == $end_role) {
+            if ($role == $end_role || $request->has('btnApprove')) {
                 Lembur::where('kode_lembur', $kode_lembur)
                     ->update([
                         'status' => 1
