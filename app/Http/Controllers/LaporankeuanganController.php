@@ -1564,6 +1564,10 @@ class LaporankeuanganController extends Controller
             }
         }
 
+        if ($user->hasRole('staff keuangan')) {
+            $query->where('hrd_jabatan.kategori', 'NM');
+        }
+
         $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
         $query->groupByRaw('keuangan_pjp.nik,nama_karyawan');
         $query->orderBy('nama_karyawan');
