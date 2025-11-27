@@ -120,6 +120,11 @@ class Pjp extends Model
         } else if (auth()->user()->id == '87') {
             $query->whereNotIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
         }
+
+
+        if ($user->hasRole('staff keuangan')) {
+            $query->where('hrd_jabatan.kategori', 'NM');
+        }
         // if (!$user->hasRole($roles_access_all_pjp)) {
         //     $query->where('hrd_jabatan.kategori', 'NM');
         // }

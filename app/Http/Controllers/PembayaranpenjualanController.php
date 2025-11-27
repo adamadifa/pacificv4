@@ -124,6 +124,7 @@ class PembayaranpenjualanController extends Controller
                 'jenis_voucher' => $jenis_voucher,
                 'voucher_reward' => $voucher_reward,
                 'kode_salesman' => $request->kode_salesman,
+                'keterangan' => $request->keterangan,
                 'id_user' => auth()->user()->id
             ]);
             if (isset($request->agreementgiro)) {
@@ -241,6 +242,7 @@ class PembayaranpenjualanController extends Controller
                 'jenis_voucher' => $jenis_voucher,
                 'voucher_reward' => $jenis_voucher == '2' ? 1 : 0,
                 'kode_salesman' => $request->kode_salesman,
+                'keterangan' => $request->keterangan,
                 'id_user' => auth()->user()->id
             ]);
 

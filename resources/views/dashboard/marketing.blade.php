@@ -28,14 +28,16 @@
                                 <div class="card-body">
                                     <form action="#" id="formRekappenjualan">
                                         @hasanyrole($roles_show_cabang)
-                                            <x-select label="Cabang" name="kode_cabang_rekappenjualan" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" select2="select2Kodecabangrekappenjualan" upperCase="true" />
+                                            <x-select label="Cabang" name="kode_cabang_rekappenjualan" :data="$cabang"
+                                                key="kode_cabang" textShow="nama_cabang"
+                                                select2="select2Kodecabangrekappenjualan" upperCase="true" />
                                         @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
                                                 @foreach ($list_bulan as $d)
-                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -55,7 +57,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
+                        {{-- <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">Analisa Umur Piutang</h4>
@@ -82,7 +84,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
                             <div class="card">
                                 <div class="card-header">
@@ -91,14 +93,16 @@
                                 <div class="card-body">
                                     <form action="#" id="formDppp">
                                         @hasanyrole($roles_show_cabang)
-                                            <x-select label="Cabang" name="kode_cabang_rekapdppp" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" select2="select2Kodecabangrekapdppp" upperCase="true" />
+                                            <x-select label="Cabang" name="kode_cabang_rekapdppp" :data="$cabang"
+                                                key="kode_cabang" textShow="nama_cabang"
+                                                select2="select2Kodecabangrekapdppp" upperCase="true" />
                                         @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
                                                 @foreach ($list_bulan as $d)
-                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -111,13 +115,14 @@
                                             </select>
                                         </div>
                                         <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100" id="btnRekapdppp"><i class="ti ti-eye me-1"></i>Tampilkan</button>
+                                            <button class="btn btn-primary w-100" id="btnRekapdppp"><i
+                                                    class="ti ti-eye me-1"></i>Tampilkan</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
+                        {{-- <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">Rekap Kendaraan</h4>
@@ -151,7 +156,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-lg-9 col-md-12 col-sm-12" id="loadrekappersediaan"></div>
@@ -178,7 +183,8 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col">
-                                    <a href="{{ route('ajuanlimit.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}">
+                                    <a
+                                        href="{{ route('ajuanlimit.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}">
                                         <div class="card card-border-shadow-primary h-100">
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-2">
@@ -197,7 +203,8 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col">
-                                    <a href="{{ route('ajuanfaktur.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}">
+                                    <a
+                                        href="{{ route('ajuanfaktur.index', ['posisi_ajuan' => $level_user, 'status' => 0]) }}">
                                         <div class="card card-border-shadow-warning h-100">
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-2">
@@ -216,7 +223,8 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col">
-                                    <a href="{{ route('penilaiankaryawan.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
+                                    <a
+                                        href="{{ route('penilaiankaryawan.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
                                         <div class="card card-border-shadow-info h-100">
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-2">
@@ -235,7 +243,8 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col">
-                                    <a href="{{ route('izinabsen.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
+                                    <a
+                                        href="{{ route('izinabsen.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
                                         <div class="card card-border-shadow-info h-100">
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-2">
@@ -254,7 +263,8 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col">
-                                    <a href="{{ route('lembur.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
+                                    <a
+                                        href="{{ route('lembur.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}">
                                         <div class="card card-border-shadow-info h-100">
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-2">

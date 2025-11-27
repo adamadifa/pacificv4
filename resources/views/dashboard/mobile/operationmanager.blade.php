@@ -16,7 +16,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center mb-2">
                     <div class="avatar me-4">
-                        <span class="avatar-initial rounded bg-label-primary"><i class="ti ti-brand-shopee ti-28px"></i></span>
+                        <span class="avatar-initial rounded bg-label-primary"><i
+                                class="ti ti-brand-shopee ti-28px"></i></span>
                     </div>
                     <h4 class="mb-0">{{ formatRupiah($penjualan->total) }}</h4>
                 </div>
@@ -29,7 +30,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center mb-2">
                     <div class="avatar me-4">
-                        <span class="avatar-initial rounded bg-label-success"><i class="ti ti-brand-shopee ti-28px"></i></span>
+                        <span class="avatar-initial rounded bg-label-success"><i
+                                class="ti ti-brand-shopee ti-28px"></i></span>
                     </div>
                     <h4 class="mb-0">{{ formatRupiah($pembayaran->total) }}</h4>
                 </div>
@@ -42,7 +44,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center mb-2">
                     <div class="avatar me-4">
-                        <span class="avatar-initial rounded bg-label-info"><i class="ti ti-brand-shopee ti-28px"></i></span>
+                        <span class="avatar-initial rounded bg-label-info"><i
+                                class="ti ti-brand-shopee ti-28px"></i></span>
                     </div>
                     <h4 class="mb-0">{{ formatRupiah($jmltransaksi) }}</h4>
                 </div>

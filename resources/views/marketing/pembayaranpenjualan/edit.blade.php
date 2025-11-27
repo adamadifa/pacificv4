@@ -42,6 +42,11 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-12">
+            <x-textarea-label label="Keterangan" name="keterangan" value="{{ $historibayar->keterangan ?? '' }}" />
+        </div>
+    </div>
+    <div class="row">
         <div class="col">
             <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
         </div>
