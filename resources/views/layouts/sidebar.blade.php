@@ -111,11 +111,11 @@
                              <div>Kirim LPC</div>
                          </a>
                      </li>
-                     {{-- <li class="menu-item {{ request()->is(['tutuplaporan', 'tutuplaporan/*']) ? 'active' : '' }}">
+                     <li class="menu-item {{ request()->is(['tutuplaporan', 'tutuplaporan/*']) ? 'active' : '' }}">
                          <a href="{{ route('tutuplaporan.index') }}" class="menu-link">
                              <div>Tutup Laporan</div>
                          </a>
-                     </li> --}}
+                     </li>
                      @can('activitylog.index')
                          <li class="menu-item {{ request()->is(['activitylog', 'activitylog/*']) ? 'active' : '' }}">
                              <a href="{{ route('activitylog.index') }}" class="menu-link">
