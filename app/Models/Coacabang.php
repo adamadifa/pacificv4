@@ -11,6 +11,16 @@ class Coacabang extends Model
     protected $table = "coa_cabang";
     protected $guarded = [];
 
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'kode_cabang');
+    }
+
+    public function coa()
+    {
+        return $this->belongsTo(Coa::class, 'kode_akun');
+    }
+
     function getCoacabang()
     {
         $user = User::findorfail(auth()->user()->id);

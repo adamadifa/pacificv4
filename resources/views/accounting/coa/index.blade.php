@@ -16,11 +16,18 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <table class="table table-bordered table-hover">
+                        <style>
+                            .deleteform {
+                                display: inline-block;
+                                margin: 0;
+                                padding: 0;
+                            }
+                        </style>
+                        <table class="table table-hover">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>Kode Akun</th>
-                                    <th>Nama Akun</th>
+                                    <th>Akun</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -28,8 +35,35 @@
                                 {{-- Loop semua akun yang dikirim dari controller --}}
                                 @foreach ($allAccounts as $account)
                                     <tr>
-                                        <td>{{ $account->kode_akun }}</td>
-                                        <td>{{ $account->nama_akun }}</td>
+                                        <td>
+                                            <span style="padding-left: {{ ($account->level ?? 0) * 25 }}px;">
+                                                {{ $account->kode_akun }} - {{ $account->nama_akun }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                @can('coa.edit')
+                                                    <div>
+                                                        <a href="#" class="me-2 btnEdit"
+                                                            kode_akun="{{ Crypt::encrypt($account->kode_akun) }}">
+                                                            <i class="ti ti-edit text-success"></i>
+                                                        </a>
+                                                    </div>
+                                                @endcan
+                                                @can('coa.delete')
+                                                    <div>
+                                                        <form method="POST" name="deleteform" class="deleteform"
+                                                            action="{{ route('coa.delete', Crypt::encrypt($account->kode_akun)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a href="#" class="delete-confirm">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </a>
+                                                        </form>
+                                                    </div>
+                                                @endcan
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

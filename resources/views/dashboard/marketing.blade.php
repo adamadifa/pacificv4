@@ -122,7 +122,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
+                        <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">Rekap Kendaraan</h4>
@@ -130,14 +130,16 @@
                                 <div class="card-body">
                                     <form action="#" id="formRekapkendaraan">
                                         @hasanyrole($roles_show_cabang)
-                                            <x-select label="Cabang" name="kode_cabang_rekapkendaraan" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" select2="select2Kodecabangrekapkendaraan" upperCase="true" />
+                                            <x-select label="Cabang" name="kode_cabang_rekapkendaraan" :data="$cabang"
+                                                key="kode_cabang" textShow="nama_cabang"
+                                                select2="select2Kodecabangrekapkendaraan" upperCase="true" />
                                         @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
                                                 <option value="">Bulan</option>
                                                 @foreach ($list_bulan as $d)
-                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -156,7 +158,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-9 col-md-12 col-sm-12" id="loadrekappersediaan"></div>

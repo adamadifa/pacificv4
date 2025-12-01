@@ -29,6 +29,7 @@ use App\Http\Controllers\BpjstenagakerjaController;
 use App\Http\Controllers\BufferstokController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\CoaController;
+use App\Http\Controllers\CoaCabangController;
 use App\Http\Controllers\CostratioController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DpbController;
@@ -1489,6 +1490,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/coa/{kode_akun}/edit', 'edit')->name('coa.edit')->can('coa.edit');
         Route::put('/coa/{kode_akun}/update', 'update')->name('coa.update')->can('coa.update');
         Route::delete('/coa/{kode_akun}/delete', 'destroy')->name('coa.delete')->can('coa.delete');
+    });
+
+    Route::controller(CoaCabangController::class)->group(function () {
+        Route::get('/coacabang', 'index')->name('coacabang.index')->can('coacabang.index');
+        Route::get('/coacabang/getdata', 'getData')->name('coacabang.getdata');
+        Route::get('/coacabang/create', 'create')->name('coacabang.create')->can('coacabang.create');
+        Route::post('/coacabang/store', 'store')->name('coacabang.store')->can('coacabang.store');
+        Route::get('/coacabang/{id}/edit', 'edit')->name('coacabang.edit')->can('coacabang.edit');
+        Route::put('/coacabang/{id}/update', 'update')->name('coacabang.update')->can('coacabang.update');
+        Route::delete('/coacabang/{id}/delete', 'destroy')->name('coacabang.delete')->can('coacabang.delete');
     });
 
     Route::controller(CostratioController::class)->group(function () {

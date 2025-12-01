@@ -1,5 +1,6 @@
 @if (auth()->user()->hasAnyPermission([
             'coa.index',
+            'coacabang.index',
             'costratio.index',
             'jurnalumum.index',
             'hpp.index',
@@ -11,7 +12,7 @@
             'saldoawalbukubesar.index',
         ]))
     <li
-        class="menu-item {{ request()->is(['coa', 'costratio', 'jurnalumum', 'hpp', 'hargaawalhpp', 'laporanaccounting', 'saldoawalbukubesar', 'saldoawalbukubesar/*']) ? 'open' : '' }}">
+        class="menu-item {{ request()->is(['coa', 'coacabang', 'costratio', 'jurnalumum', 'hpp', 'hargaawalhpp', 'laporanaccounting', 'saldoawalbukubesar', 'saldoawalbukubesar/*']) ? 'open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-scale"></i>
             <div>Accounting</div>
@@ -24,8 +25,16 @@
                     </a>
                 </li>
             @endif
+            @if (auth()->user()->hasAnyPermission(['coacabang.index']))
+                <li class="menu-item {{ request()->is(['coacabang', 'coacabang/*']) ? 'active' : '' }}">
+                    <a href="{{ route('coacabang.index') }}" class="menu-link">
+                        <div>COA Cabang</div>
+                    </a>
+                </li>
+            @endif
             @if (auth()->user()->hasAnyPermission(['saldoawalbukubesar.index']))
-                <li class="menu-item {{ request()->is(['saldoawalbukubesar', 'saldoawalbukubesar/*']) ? 'active' : '' }}">
+                <li
+                    class="menu-item {{ request()->is(['saldoawalbukubesar', 'saldoawalbukubesar/*']) ? 'active' : '' }}">
                     <a href="{{ route('saldoawalbukubesar.index') }}" class="menu-link">
                         <div>Saldo Awal Buku Besar</div>
                     </a>
@@ -55,7 +64,8 @@
             @endif
 
             @if (auth()->user()->hasAnyPermission(['akt.rekapbj', 'akt.rekappersediaan', 'akt.costratio', 'akt.jurnalumum']))
-                <li class="menu-item {{ request()->is(['laporanaccounting', 'laporanaccounting/*']) ? 'active' : '' }}">
+                <li
+                    class="menu-item {{ request()->is(['laporanaccounting', 'laporanaccounting/*']) ? 'active' : '' }}">
                     <a href="{{ route('laporanaccounting.index') }}" class="menu-link">
                         <div>Laporan</div>
                     </a>
