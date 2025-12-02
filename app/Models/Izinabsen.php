@@ -85,10 +85,10 @@ class Izinabsen extends Model
                             $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                         }
                         if (!empty($request->status)) {
-                            if(!empty($request->status)){
-                                if($request->status=='pending'){
+                            if (!empty($request->status)) {
+                                if ($request->status == 'pending') {
                                     $query->where('hrd_izinabsen.status', '0');
-                                }else if($request->status=='disetujui'){
+                                } else if ($request->status == 'disetujui') {
                                     $query->where('hrd_izinabsen.status', '1');
                                 }
                             }
@@ -138,21 +138,21 @@ class Izinabsen extends Model
                     $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                 }
 
-                if($role=='direktur'){
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                if ($role == 'direktur') {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izinabsen.forward_to_direktur', '1');
                             $query->where('hrd_izinabsen.direktur', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izinabsen.forward_to_direktur', '1');
                             $query->where('hrd_izinabsen.direktur', '1');
                         }
                     }
-                }else{
-                    if(!empty($request->status)){
-                        if($request->status=='pending'){
+                } else {
+                    if (!empty($request->status)) {
+                        if ($request->status == 'pending') {
                             $query->where('hrd_izinabsen.status', '0');
-                        }else if($request->status=='disetujui'){
+                        } else if ($request->status == 'disetujui') {
                             $query->where('hrd_izinabsen.status', '1');
                         }
                     }

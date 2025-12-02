@@ -104,21 +104,17 @@ class Izinsakit extends Model
                     }
 
 
-                    if ($cabang_access == 1) {
-                        $query->orwhere('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
-                    } else if ($cabang_access == 2) {
-                        if ($user->id != 97) {
-                            $query->orwhere('cabang.kode_regional', auth()->user()->kode_regional);
-                        }
-                    }
-                    if ($user->id == 97) {
-                        $query->orwhere('hrd_izinsakit.kode_cabang', 'PST');
-                    }
-                    if (!empty($dept_access_2)) {
-                        $query->whereIn('hrd_izinsakit.kode_dept', $dept_access_2);
-                    }
-
-
+                    // if ($cabang_access == 1) {
+                    //     $query->orwhere('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
+                    // } else if ($cabang_access == 2) {
+                    //     if ($user->id != 97) {
+                    //         $query->orwhere('cabang.kode_regional', auth()->user()->kode_regional);
+                    //     }
+                    // }
+                    // if ($user->id == 97) {
+                    //     $query->orwhere('hrd_izinsakit.kode_cabang', 'PST');
+                    // }
+                    $query->orWhereIn('hrd_izinabsen.kode_dept', $dept_access_2);
                     if ($user->id == 97) {
                         array_push($jabatan_access_2, 'J29');
                     }
