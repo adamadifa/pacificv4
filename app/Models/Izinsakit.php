@@ -117,7 +117,7 @@ class Izinsakit extends Model
                     $query->orWhereIn('hrd_izinabsen.kode_dept', $dept_access_2);
 
                     if ($user->id == 97) {
-                        $query->orwhere('hrd_izinsakit.kode_cabang', 'PST');
+                        $query->where('hrd_izinsakit.kode_cabangd', 'PST');
                         array_push($jabatan_access_2, 'J29');
                     }
                     if ($jabatan_filter && $jabatan_access_2 != null) {
