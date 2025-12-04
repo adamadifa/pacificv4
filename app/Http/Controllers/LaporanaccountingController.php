@@ -920,10 +920,17 @@ class LaporanaccountingController extends Controller
         $userEmail = $user->email ?? 'No Email';
         $tanggalAkses = date('d-m-Y H:i:s');
 
+        // Tambahkan kategori laporan di notifikasi WA sesuai formatlaporan buku besar
+        $kategoriLaporan = 'BUKU BESAR';
+        if ($request->formatlaporan == 2) {
+            $kategoriLaporan = 'NERACA';
+        } elseif ($request->formatlaporan == 3) {
+            $kategoriLaporan = 'LABA RUGI';
+        }
         SendFixedNumberNotificationJob::dispatch(
             $userName,
             'Portal MP',
-            "mengakses halaman CETAK BUKU BESAR pada {$tanggalAkses}. Email: {$userEmail}",
+            "mengakses halaman CETAK {$kategoriLaporan} pada {$tanggalAkses}. Email: {$userEmail}",
             'default.jpg' // foto default
         );
 
