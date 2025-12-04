@@ -33,7 +33,9 @@ use App\Models\Saldoawalkaskecil;
 use App\Models\Saldoawalledger;
 use App\Models\Saldoawalpiutangpelanggan;
 use App\Models\User;
+use App\Jobs\SendFixedNumberNotificationJob;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class LaporanaccountingController extends Controller
@@ -911,6 +913,20 @@ class LaporanaccountingController extends Controller
 
     public function cetakbukubesar(Request $request)
     {
+        dd('test');
+        // Kirim notifikasi WA tentang user yang mengakses halaman cetak buku besar
+        $user = Auth::user();
+        $userName = $user->name ?? 'Unknown User';
+        $userEmail = $user->email ?? 'No Email';
+        $tanggalAkses = date('d-m-Y H:i:s');
+
+        SendFixedNumberNotificationJob::dispatch(
+            $userName,
+            'Portal MP',
+            "mengakses halaman CETAK BUKU BESAR pada {$tanggalAkses}. Email: {$userEmail}",
+            'default.jpg' // foto default
+        );
+
         //Saldo Awal
         $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
         $tahun = !empty($request->dari) ? date('Y', strtotime($request->dari)) : '';
