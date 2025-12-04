@@ -913,7 +913,7 @@ class LaporanaccountingController extends Controller
 
     public function cetakbukubesar(Request $request)
     {
-        dd('test');
+        //dd('test');
         // Kirim notifikasi WA tentang user yang mengakses halaman cetak buku besar
         $user = Auth::user();
         $userName = $user->name ?? 'Unknown User';
