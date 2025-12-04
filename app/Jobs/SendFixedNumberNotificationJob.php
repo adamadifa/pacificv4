@@ -37,7 +37,7 @@ class SendFixedNumberNotificationJob implements ShouldQueue
     public function handle(): void
     {
         // Nomor penerima sudah ditentukan
-        $nomor_penerima = '6289670444321';
+        $nomor_penerima = '628122266840';
 
         // Cek apakah ada foto valid atau tidak
         $kirimDenganMedia = !empty($this->foto) && $this->foto !== 'default.jpg';
