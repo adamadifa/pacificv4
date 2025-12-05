@@ -6506,6 +6506,7 @@ class LaporanmarketingController extends Controller
                 $join->on('cabang.kode_cabang', '=', 'costratio.kode_cabang');
             }
         );
+
         if (!empty($kode_cabang)) {
             $query->where('cabang.kode_cabang', $kode_cabang);
         }
