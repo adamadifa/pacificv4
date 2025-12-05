@@ -39,6 +39,8 @@ use DatePeriod;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 
 class LaporanmarketingController extends Controller
@@ -6800,15 +6802,176 @@ class LaporanmarketingController extends Controller
 
         try {
             $penjualan = Penjualan::findOrFail($request->no_faktur);
+            
+            // Ambil base URL dari .env
+            $baseUrl = env('SYNC_API_BASE_URL');
+            
+            if (empty($baseUrl)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'SYNC_API_BASE_URL tidak di-set di konfigurasi'
+                ], 500);
+            }
+            
+            // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
+            if ($request->status_pajak == 1) {
+                // Ambil detail penjualan
+                $details = Detailpenjualan::where('no_faktur', $request->no_faktur)->get();
+                
+                if ($details->isEmpty()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Detail penjualan tidak ditemukan'
+                    ], 422);
+                }
+
+                // Siapkan data sesuai format API
+                $data = [
+                    'no_faktur' => $penjualan->no_faktur,
+                    'tanggal' => $penjualan->tanggal,
+                    'kode_pelanggan' => $penjualan->kode_pelanggan,
+                    'kode_salesman' => $penjualan->kode_salesman,
+                    'kode_akun' => $penjualan->kode_akun ?? '1-1401',
+                    'kode_akun_potongan' => $penjualan->kode_akun_potongan ?? '4-2201',
+                    'kode_akun_penyesuaian' => $penjualan->kode_akun_penyesuaian ?? '4-2202',
+                    'potongan_aida' => $penjualan->potongan_aida ?? 0,
+                    'potongan_swan' => $penjualan->potongan_swan ?? 0,
+                    'potongan_stick' => $penjualan->potongan_stick ?? 0,
+                    'potongan_sp' => $penjualan->potongan_sp ?? 0,
+                    'potongan_sambal' => $penjualan->potongan_sambal ?? 0,
+                    'potongan' => $penjualan->potongan ?? 0,
+                    'potis_aida' => $penjualan->potis_aida ?? 0,
+                    'potis_swan' => $penjualan->potis_swan ?? 0,
+                    'potis_stick' => $penjualan->potis_stick ?? 0,
+                    'potongan_istimewa' => $penjualan->potongan_istimewa ?? 0,
+                    'peny_aida' => $penjualan->peny_aida ?? 0,
+                    'peny_swan' => $penjualan->peny_swan ?? 0,
+                    'peny_stick' => $penjualan->peny_stick ?? 0,
+                    'penyesuaian' => $penjualan->penyesuaian ?? 0,
+                    'ppn' => $penjualan->ppn ?? 0,
+                    'jenis_transaksi' => $penjualan->jenis_transaksi,
+                    'jenis_bayar' => $penjualan->jenis_bayar,
+                    'jatuh_tempo' => $penjualan->jatuh_tempo,
+                    'status' => $penjualan->status,
+                    'routing' => $penjualan->routing,
+                    'signature' => $penjualan->signature,
+                    'tanggal_pelunasan' => $penjualan->tanggal_pelunasan,
+                    'print' => $penjualan->print ?? 0,
+                    'id_user' => $penjualan->id_user,
+                    'keterangan' => $penjualan->keterangan ?? '',
+                    'status_batal' => $penjualan->status_batal ?? '0',
+                    'lock_print' => $penjualan->lock_print ?? '0',
+                    'detail' => []
+                ];
+
+                // Tambahkan detail penjualan
+                foreach ($details as $detail) {
+                    $data['detail'][] = [
+                        'kode_harga' => $detail->kode_harga,
+                        'harga_dus' => $detail->harga_dus ?? 0,
+                        'harga_pack' => $detail->harga_pack ?? 0,
+                        'harga_pcs' => $detail->harga_pcs ?? 0,
+                        'jumlah' => $detail->jumlah,
+                        'subtotal' => $detail->subtotal,
+                        'status_promosi' => $detail->status_promosi ?? '0'
+                    ];
+                }
+
+                // Kirim data ke API dengan timeout 30 detik
+                $response = Http::timeout(30)->post($baseUrl . '/penjualan', $data);
+
+                // Cek response dari API
+                if (!$response->successful()) {
+                    $errorMessage = 'Gagal sync ke API';
+                    
+                    if ($response->status() == 422) {
+                        $errors = $response->json('errors');
+                        if ($errors) {
+                            $errorMessage .= ': ' . json_encode($errors);
+                        } else {
+                            $errorMessage .= ': ' . $response->json('message');
+                        }
+                    } else {
+                        $errorMessage .= ' (Status: ' . $response->status() . ')';
+                        if ($response->json('message')) {
+                            $errorMessage .= ' - ' . $response->json('message');
+                        }
+                    }
+                    
+                    // Log error untuk debugging
+                    Log::error("Sync penjualan gagal: {$request->no_faktur}", [
+                        'status' => $response->status(),
+                        'response' => $response->json()
+                    ]);
+                    
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage
+                    ], 422);
+                }
+                
+                // Log success
+                Log::info("Sync penjualan berhasil: {$request->no_faktur}");
+            }
+            // Jika status_pajak = 0 (uncheck), hapus data dari API external
+            elseif ($request->status_pajak == 0 && $penjualan->status_pajak == 1) {
+                // Kirim request DELETE ke API
+                $response = Http::timeout(30)->delete($baseUrl . '/penjualan', [
+                    'no_faktur' => $request->no_faktur
+                ]);
+
+                // Cek response dari API
+                if (!$response->successful()) {
+                    $errorMessage = 'Gagal menghapus data dari API';
+                    
+                    if ($response->status() == 404) {
+                        // Data tidak ditemukan di API, tapi tetap update status_pajak = 0
+                        Log::warning("Data tidak ditemukan di API saat delete: {$request->no_faktur}");
+                    } else {
+                        $errorMessage .= ' (Status: ' . $response->status() . ')';
+                        if ($response->json('message')) {
+                            $errorMessage .= ' - ' . $response->json('message');
+                        }
+                        
+                        // Log error
+                        Log::error("Delete penjualan gagal: {$request->no_faktur}", [
+                            'status' => $response->status(),
+                            'response' => $response->json()
+                        ]);
+                        
+                        return response()->json([
+                            'success' => false,
+                            'message' => $errorMessage
+                        ], 422);
+                    }
+                }
+                
+                // Log success
+                Log::info("Delete penjualan berhasil: {$request->no_faktur}");
+            }
+
+            // Jika sampai sini berarti sync/delete berhasil, update status_pajak
             $penjualan->status_pajak = $request->status_pajak;
             $penjualan->save();
 
+            $message = 'Status pajak berhasil diupdate';
+            if ($request->status_pajak == 1) {
+                $message = 'Status pajak berhasil diupdate dan data berhasil di-sync ke API';
+            } elseif ($request->status_pajak == 0) {
+                $message = 'Status pajak berhasil diupdate dan data berhasil dihapus dari API';
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Status pajak berhasil diupdate',
+                'message' => $message,
                 'status_pajak' => $penjualan->status_pajak
             ]);
+            
         } catch (\Exception $e) {
+            Log::error("Error updatestatuspajak: {$request->no_faktur}", [
+                'error' => $e->getMessage()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal mengupdate status pajak: ' . $e->getMessage()

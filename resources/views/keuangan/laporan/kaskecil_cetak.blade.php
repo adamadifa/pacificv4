@@ -144,14 +144,27 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            // Ubah background row menjadi hijau dengan text putih
                             const row = checkbox.closest('tr');
-                            row.addClass('bg-pajak-success');
-                            // Ubah semua td dalam row menjadi hijau dengan text putih
-                            row.find('td').css({
-                                'background-color': 'green',
-                                'color': 'white'
-                            });
+
+                            if (statusPajak == 1) {
+                                // Centang: Ubah background row menjadi hijau dengan text putih
+                                // KECUALI kolom nomor (td pertama)
+                                row.addClass('bg-pajak-success');
+                                row.find('td:not(:first-child)').css({
+                                    'background-color': 'green',
+                                    'color': 'white'
+                                });
+                            } else {
+                                // Uncheck: Kembalikan background row menjadi putih/normal
+                                row.removeClass('bg-pajak-success');
+                                row.find('td:not(:first-child)').css({
+                                    'background-color': '',
+                                    'color': ''
+                                });
+                            }
+
+                            // Tampilkan pesan sukses
+                            alert(response.message);
                             console.log('Status pajak kas kecil berhasil diupdate');
                         } else {
                             // Revert checkbox jika gagal

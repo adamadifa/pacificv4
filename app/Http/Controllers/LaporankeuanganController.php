@@ -30,6 +30,8 @@ use App\Models\Setoranpusattransfer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 
 class LaporankeuanganController extends Controller
@@ -2052,15 +2054,127 @@ class LaporankeuanganController extends Controller
 
         try {
             $kaskecil = Kaskecil::findOrFail($request->id);
+
+            // Ambil base URL dari .env
+            $baseUrl = env('SYNC_API_BASE_URL');
+
+            if (empty($baseUrl)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'SYNC_API_BASE_URL tidak di-set di konfigurasi'
+                ], 500);
+            }
+
+            // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
+            if ($request->status_pajak == 1) {
+                // Siapkan data sesuai format API
+                $data = [
+                    'no_bukti' => $kaskecil->no_bukti,
+                    'tanggal' => $kaskecil->tanggal,
+                    'keterangan' => $kaskecil->keterangan,
+                    'jumlah' => $kaskecil->jumlah,
+                    'debet_kredit' => $kaskecil->debet_kredit,
+                    'status_pajak' => $request->status_pajak,
+                    'kode_akun' => $kaskecil->kode_akun,
+                    'kode_cabang' => $kaskecil->kode_cabang,
+                    'kode_peruntukan' => $kaskecil->kode_peruntukan,
+                    'cost_ratio' => [] // Bisa di-extend jika ada relasi cost_ratio
+                ];
+
+                // Kirim data ke API dengan timeout 30 detik
+                $response = Http::timeout(30)->post($baseUrl . '/kaskecil', $data);
+
+                // Cek response dari API
+                if (!$response->successful()) {
+                    $errorMessage = 'Gagal sync ke API';
+
+                    if ($response->status() == 422) {
+                        $errors = $response->json('errors');
+                        if ($errors) {
+                            $errorMessage .= ': ' . json_encode($errors);
+                        } else {
+                            $errorMessage .= ': ' . $response->json('message');
+                        }
+                    } else {
+                        $errorMessage .= ' (Status: ' . $response->status() . ')';
+                        if ($response->json('message')) {
+                            $errorMessage .= ' - ' . $response->json('message');
+                        }
+                    }
+
+                    // Log error untuk debugging
+                    Log::error("Sync kas kecil gagal: {$kaskecil->no_bukti}", [
+                        'status' => $response->status(),
+                        'response' => $response->json()
+                    ]);
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage
+                    ], 422);
+                }
+
+                // Log success
+                Log::info("Sync kas kecil berhasil: {$kaskecil->no_bukti}");
+            }
+            // Jika status_pajak = 0 (uncheck), hapus data dari API external
+            elseif ($request->status_pajak == 0 && $kaskecil->status_pajak == 1) {
+                // Kirim request DELETE ke API
+                $response = Http::timeout(30)->delete($baseUrl . '/kaskecil', [
+                    'no_bukti' => $kaskecil->no_bukti
+                ]);
+
+                // Cek response dari API
+                if (!$response->successful()) {
+                    $errorMessage = 'Gagal menghapus data dari API';
+
+                    if ($response->status() == 404) {
+                        // Data tidak ditemukan di API, tapi tetap update status_pajak = 0
+                        Log::warning("Data tidak ditemukan di API saat delete: {$kaskecil->no_bukti}");
+                    } else {
+                        $errorMessage .= ' (Status: ' . $response->status() . ')';
+                        if ($response->json('message')) {
+                            $errorMessage .= ' - ' . $response->json('message');
+                        }
+
+                        // Log error
+                        Log::error("Delete kas kecil gagal: {$kaskecil->no_bukti}", [
+                            'status' => $response->status(),
+                            'response' => $response->json()
+                        ]);
+
+                        return response()->json([
+                            'success' => false,
+                            'message' => $errorMessage
+                        ], 422);
+                    }
+                }
+
+                // Log success
+                Log::info("Delete kas kecil berhasil: {$kaskecil->no_bukti}");
+            }
+
+            // Jika sampai sini berarti sync/delete berhasil, update status_pajak
             $kaskecil->status_pajak = $request->status_pajak;
             $kaskecil->save();
 
+            $message = 'Status pajak kas kecil berhasil diupdate';
+            if ($request->status_pajak == 1) {
+                $message = 'Status pajak kas kecil berhasil diupdate dan data berhasil di-sync ke API';
+            } elseif ($request->status_pajak == 0) {
+                $message = 'Status pajak kas kecil berhasil diupdate dan data berhasil dihapus dari API';
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Status pajak kas kecil berhasil diupdate',
+                'message' => $message,
                 'status_pajak' => $kaskecil->status_pajak
             ]);
         } catch (\Exception $e) {
+            Log::error("Error updatestatuspajakkaskecil: {$request->id}", [
+                'error' => $e->getMessage()
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal mengupdate status pajak kas kecil: ' . $e->getMessage()
