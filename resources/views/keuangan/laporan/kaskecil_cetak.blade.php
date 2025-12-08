@@ -47,7 +47,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
                             <th>Pajak</th>
                         @endif
                         <th>Tanggal</th>
