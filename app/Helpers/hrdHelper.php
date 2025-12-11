@@ -29,6 +29,9 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
     } else if ($kode_dept == 'MKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') {
         //Marketing Cabang Non Manajemen
         $roles_approve =  ['sales marketing manager', 'regional sales manager', 'gm marketing', 'asst. manager hrd', 'direktur'];
+    } else if ($kode_dept == 'MKT' && $kode_cabang == 'PST' && $kategori_jabatan == 'NM' && $kode_jabatan == 'J29') {
+        //Marketing Cabang Non Manajemen
+        $roles_approve =  ['gm marketing', 'asst. manager hrd', 'direktur'];
     } else if ($kode_jabatan == 'J07') {
         //Sales Marketing Manager
         $roles_approve =  ['regional sales manager', 'gm marketing', 'asst. manager hrd', 'direktur'];

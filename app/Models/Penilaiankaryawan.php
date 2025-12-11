@@ -135,9 +135,13 @@ class Penilaiankaryawan extends Model
                 $query->orwhereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->orwhereIn('hrd_karyawan.kode_dept', ['MKT']);
-            } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
+            } else if ($user->hasRole('regional sales manager') && $user->id != 97) { //REG. SALES MANAGER
                 $query->orwhere('hrd_karyawan.kode_dept', 'MKT');
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else if ($user->id == 97) { //REG. SALES MANAGER
+                $query->orWhere('hrd_karyawan.kode_jabatan', 'J29');
+                $query->where('hrd_karyawan.kode_dept', 'MKT');
+                $query->where('cabang.kode_cabang', 'PST');
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 $query->orwhere('hrd_karyawan.kode_dept', 'AKT');
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN

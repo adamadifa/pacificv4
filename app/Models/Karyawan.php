@@ -39,10 +39,17 @@ class Karyawan extends Model
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
                 $query->whereIn('hrd_karyawan.kode_dept', ['MKT']);
                 $query->whereIn('hrd_karyawan.kode_jabatan', ['J03', 'J07']);
-            } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
+            } else if ($user->hasRole('regional sales manager') && $user->id != 97) { //REG. SALES MANAGER
                 $query->where('hrd_karyawan.kode_dept', 'MKT');
                 $query->where('hrd_karyawan.kode_jabatan', 'J07');
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else if ($user->id == 97) { //REG. SALES MANAGER
+                $query->where('hrd_karyawan.kode_dept', 'MKT');
+                $query->where('hrd_karyawan.kode_jabatan', 'J07');
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                $query->orWhere('hrd_karyawan.kode_jabatan', 'J29');
+                $query->where('hrd_karyawan.kode_dept', 'MKT');
+                $query->where('cabang.kode_cabang', 'PST');
             } else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
                 // $query->where('hrd_karyawan.kode_dept', 'AKT');
                 $query->where('hrd_karyawan.kode_jabatan', 'J08');
