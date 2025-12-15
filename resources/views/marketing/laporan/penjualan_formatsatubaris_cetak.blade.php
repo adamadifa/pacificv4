@@ -151,7 +151,7 @@
                         @endphp
                         <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
                             <td>{{ $loop->iteration }}</td>
-                            @if (auth()->user()->hasRole(['super admin', 'admin pajak','gm administrasi']))
+                            @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
                                 <td class="center">
                                     <input type="checkbox" class="checkbox-pajak" data-no-faktur="{{ $d->no_faktur }}"
                                         {{ isset($d->status_pajak) && $d->status_pajak == 1 ? 'checked' : '' }}>
