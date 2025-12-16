@@ -37,7 +37,7 @@ class Izinsakit extends Model
 
         $query = Izinsakit::query();
         $query->select(
-            'hrd_izinsakits.*',
+            'hrd_izinsakit.*',
             'hrd_karyawan.nama_karyawan',
             'hrd_karyawan.kode_jabatan',
             'hrd_karyawan.kode_dept',
@@ -58,43 +58,118 @@ class Izinsakit extends Model
         //dd($cekPending);
         if (!empty($kode_izin_sakit)) {
             $query->where('hrd_izinsakit.kode_izin_sakit', $kode_izin_sakit);
-        }
-        if (!$cekPending) {
-            if (!in_array($role, $role_access_full)) {
-                if ($user->can('izinabsen.create')) {
-                    if ($user->kode_cabang == 'PST') {
-                        $query->where('hrd_izinsakit.kode_dept', $user->kode_dept);
+        } else {
+            if (!$cekPending) {
+                if (!in_array($role, $role_access_full)) {
+                    if ($user->can('izinabsen.create')) {
+                        if ($user->kode_cabang == 'PST') {
+                            $query->where('hrd_izinsakit.kode_dept', $user->kode_dept);
+                        } else {
+                            $query->where('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
+                        }
                     } else {
-                        $query->where('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
-                    }
-                } else {
 
-                    if (!empty($request)) {
-                        if (!empty($request->dari) && !empty($request->sampai)) {
-                            $query->whereBetween('hrd_izinsakit.tanggal', [$request->dari, $request->sampai]);
-                        }
-                        if (!empty($request->kode_cabang)) {
-                            $query->where('hrd_izinsakit.kode_cabang', $request->kode_cabang);
-                        }
-                        if (!empty($request->kode_dept)) {
-                            $query->where('hrd_izinsakit.kode_dept', $request->kode_dept);
-                        }
-                        if (!empty($request->nama_karyawan)) {
-                            $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
-                        }
-                        if (!empty($request->status)) {
+                        if (!empty($request)) {
+                            if (!empty($request->dari) && !empty($request->sampai)) {
+                                $query->whereBetween('hrd_izinsakit.tanggal', [$request->dari, $request->sampai]);
+                            }
+                            if (!empty($request->kode_cabang)) {
+                                $query->where('hrd_izinsakit.kode_cabang', $request->kode_cabang);
+                            }
+                            if (!empty($request->kode_dept)) {
+                                $query->where('hrd_izinsakit.kode_dept', $request->kode_dept);
+                            }
+                            if (!empty($request->nama_karyawan)) {
+                                $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+                            }
                             if (!empty($request->status)) {
-                                if ($request->status == 'pending') {
-                                    $query->where('hrd_izinsakit.status', '0');
-                                } else if ($request->status == 'disetujui') {
-                                    $query->where('hrd_izinsakit.status', '1');
+                                if (!empty($request->status)) {
+                                    if ($request->status == 'pending') {
+                                        $query->where('hrd_izinsakit.status', '0');
+                                    } else if ($request->status == 'disetujui') {
+                                        $query->where('hrd_izinsakit.status', '1');
+                                    }
                                 }
                             }
                         }
+
+                        $query->whereIn('hrd_izinsakit.kode_dept', $dept_access);
+                        if ($jabatan_filter && $jabatan_access != null) {
+                            $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access);
+                        }
+                        if ($cabang_access == 1) {
+                            $query->where('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
+                        } else if ($cabang_access == 2) {
+                            $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                        }
+
+
+                        // if ($cabang_access == 1) {
+                        //     $query->orwhere('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
+                        // } else if ($cabang_access == 2) {
+                        //     if ($user->id != 97) {
+                        //         $query->orwhere('cabang.kode_regional', auth()->user()->kode_regional);
+                        //     }
+                        // }
+                        // if ($user->id == 97) {
+                        //     $query->orwhere('hrd_izinsakit.kode_cabang', 'PST');
+                        // }
+                        $query->orWhereIn('hrd_izinsakit.kode_dept', $dept_access_2);
+
+                        if ($user->id == 97) {
+                            $query->where('hrd_izinsakit.kode_cabang', 'PST');
+                            array_push($jabatan_access_2, 'J29');
+                        }
+                        if ($jabatan_filter && $jabatan_access_2 != null) {
+                            $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access_2);
+                        }
+                    }
+                }
+
+                if ($role == 'direktur') {
+                    $query->where('hrd_izinsakit.forward_to_direktur', '1');
+                }
+
+
+                if (!empty($request)) {
+                    if (!empty($request->dari) && !empty($request->sampai)) {
+                        $query->whereBetween('hrd_izinsakit.tanggal', [$request->dari, $request->sampai]);
+                    }
+                    if (!empty($request->kode_cabang)) {
+                        $query->where('hrd_izinsakit.kode_cabang', $request->kode_cabang);
+                    }
+                    if (!empty($request->kode_dept)) {
+                        $query->where('hrd_izinsakit.kode_dept', $request->kode_dept);
+                    }
+                    if (!empty($request->nama_karyawan)) {
+                        $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
                     }
 
+                    if ($role == 'direktur') {
+                        if (!empty($request->status)) {
+                            if ($request->status == 'pending') {
+                                $query->where('hrd_izinsakit.forward_to_direktur', '1');
+                                $query->where('hrd_izinsakit.direktur', '0');
+                            } else if ($request->status == 'disetujui') {
+                                $query->where('hrd_izinsakit.forward_to_direktur', '1');
+                                $query->where('hrd_izinsakit.direktur', '1');
+                            }
+                        }
+                    } else {
+                        if (!empty($request->status)) {
+                            if ($request->status == 'pending') {
+                                $query->where('hrd_izinsakit.status', '0');
+                            } else if ($request->status == 'disetujui') {
+                                $query->where('hrd_izinsakit.status', '1');
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (!in_array($role, $level_hrd) && $role !== 'direktur') {
+                    $query->where('hrd_izinsakit.head', '0');
                     $query->whereIn('hrd_izinsakit.kode_dept', $dept_access);
-                    if ($jabatan_filter && $jabatan_access != null) {
+                    if ($jabatan_access != null) {
                         $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access);
                     }
                     if ($cabang_access == 1) {
@@ -102,102 +177,28 @@ class Izinsakit extends Model
                     } else if ($cabang_access == 2) {
                         $query->where('cabang.kode_regional', auth()->user()->kode_regional);
                     }
-
-
-                    // if ($cabang_access == 1) {
-                    //     $query->orwhere('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
-                    // } else if ($cabang_access == 2) {
-                    //     if ($user->id != 97) {
-                    //         $query->orwhere('cabang.kode_regional', auth()->user()->kode_regional);
-                    //     }
-                    // }
-                    // if ($user->id == 97) {
-                    //     $query->orwhere('hrd_izinsakit.kode_cabang', 'PST');
-                    // }
-                    $query->orWhereIn('hrd_izinsakit.kode_dept', $dept_access_2);
-
-                    if ($user->id == 97) {
-                        $query->where('hrd_izinsakit.kode_cabang', 'PST');
-                        array_push($jabatan_access_2, 'J29');
-                    }
-                    if ($jabatan_filter && $jabatan_access_2 != null) {
+                    $query->orWhere('hrd_izinsakit.head', '0');
+                    $query->whereIn('hrd_izinsakit.kode_dept', $dept_access_2);
+                    if ($jabatan_access_2 != null) {
                         $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access_2);
                     }
+                    if ($cabang_access == 1) {
+                        $query->where('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
+                    } else if ($cabang_access == 2) {
+                        $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+                    }
                 }
-            }
 
-            if ($role == 'direktur') {
-                $query->where('hrd_izinsakit.forward_to_direktur', '1');
-            }
 
-
-            if (!empty($request)) {
-                if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_izinsakit.tanggal', [$request->dari, $request->sampai]);
-                }
-                if (!empty($request->kode_cabang)) {
-                    $query->where('hrd_izinsakit.kode_cabang', $request->kode_cabang);
-                }
-                if (!empty($request->kode_dept)) {
-                    $query->where('hrd_izinsakit.kode_dept', $request->kode_dept);
-                }
-                if (!empty($request->nama_karyawan)) {
-                    $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+                if (in_array($role, $level_hrd)) {
+                    $query->where('hrd_izinsakit.head', '1');
+                    $query->where('hrd_izinsakit.hrd', 0);
                 }
 
                 if ($role == 'direktur') {
-                    if (!empty($request->status)) {
-                        if ($request->status == 'pending') {
-                            $query->where('hrd_izinsakit.forward_to_direktur', '1');
-                            $query->where('hrd_izinsakit.direktur', '0');
-                        } else if ($request->status == 'disetujui') {
-                            $query->where('hrd_izinsakit.forward_to_direktur', '1');
-                            $query->where('hrd_izinsakit.direktur', '1');
-                        }
-                    }
-                } else {
-                    if (!empty($request->status)) {
-                        if ($request->status == 'pending') {
-                            $query->where('hrd_izinsakit.status', '0');
-                        } else if ($request->status == 'disetujui') {
-                            $query->where('hrd_izinsakit.status', '1');
-                        }
-                    }
+                    $query->where('forward_to_direktur', '1');
+                    $query->where('direktur', 0);
                 }
-            }
-        } else {
-            if (!in_array($role, $level_hrd) && $role !== 'direktur') {
-                $query->where('hrd_izinsakit.head', '0');
-                $query->whereIn('hrd_izinsakit.kode_dept', $dept_access);
-                if ($jabatan_access != null) {
-                    $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access);
-                }
-                if ($cabang_access == 1) {
-                    $query->where('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
-                } else if ($cabang_access == 2) {
-                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-                }
-                $query->orWhere('hrd_izinsakit.head', '0');
-                $query->whereIn('hrd_izinsakit.kode_dept', $dept_access_2);
-                if ($jabatan_access_2 != null) {
-                    $query->whereIn('hrd_izinsakit.kode_jabatan', $jabatan_access_2);
-                }
-                if ($cabang_access == 1) {
-                    $query->where('hrd_izinsakit.kode_cabang', auth()->user()->kode_cabang);
-                } else if ($cabang_access == 2) {
-                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-                }
-            }
-
-
-            if (in_array($role, $level_hrd)) {
-                $query->where('hrd_izinsakit.head', '1');
-                $query->where('hrd_izinsakit.hrd', 0);
-            }
-
-            if ($role == 'direktur') {
-                $query->where('forward_to_direktur', '1');
-                $query->where('direktur', 0);
             }
         }
 
