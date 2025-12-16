@@ -76,7 +76,7 @@ class IzinsakitController extends Controller
                     'doc_sid' => $sid,
                 ];
             }
-            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan=='J12' || $karyawan->kode_jabatan=='J02' ? '1' : '0';
+            $head = $karyawan->kode_dept == 'HRD' && $karyawan->kode_jabatan == 'J12' || $karyawan->kode_jabatan == 'J02' ? '1' : '0';
 
             $dataizinsakit = [
                 'kode_izin_sakit' => $kode_izin_sakit,
@@ -260,7 +260,7 @@ class IzinsakitController extends Controller
             if ($role != 'direktur') {
                 if (!in_array($role, $level_hrd)) {
                     Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)->update([
-                        'head' => 1,
+                        'headd' => 1,
                     ]);
                 } else {
                     //dd('test');
@@ -404,7 +404,7 @@ class IzinsakitController extends Controller
                     'direktur' => 0
                 ]);
             }
-            
+
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
         } catch (\Exception $e) {
