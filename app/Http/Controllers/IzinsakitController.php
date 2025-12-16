@@ -260,7 +260,7 @@ class IzinsakitController extends Controller
             if ($role != 'direktur') {
                 if (!in_array($role, $level_hrd)) {
                     Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)->update([
-                        'headd' => 1,
+                        'head' => 1,
                     ]);
                 } else {
                     //dd('test');

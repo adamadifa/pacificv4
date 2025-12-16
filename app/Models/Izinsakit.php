@@ -37,7 +37,7 @@ class Izinsakit extends Model
 
         $query = Izinsakit::query();
         $query->select(
-            'hrd_izinsakit.*',
+            'hrd_izinsakits.*',
             'hrd_karyawan.nama_karyawan',
             'hrd_karyawan.kode_jabatan',
             'hrd_karyawan.kode_dept',
