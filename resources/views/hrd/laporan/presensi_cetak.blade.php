@@ -405,13 +405,17 @@
                                             @php
 
                                                 if ($tanggal_presensi >= '2024-11-21') {
-                                                    $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
+                                                    if (!in_array($d['nik'], $privillage_karyawan)) {
+                                                        $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
+                                                    } else {
+                                                        $total_jam = $total_jam_jadwal;
+                                                    }
                                                 } else {
                                                     $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                                 }
                                                 $potongan_jam_sakit = 0;
 
-                                                if (!empty($cekdirumahkan)) {
+                                                if (!empty($cekdirumahkan) && !in_array($d['nik'], $privillage_karyawan) ) {
                                                     $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
                                                 }
 

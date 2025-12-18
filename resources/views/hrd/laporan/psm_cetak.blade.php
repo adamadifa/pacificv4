@@ -403,9 +403,14 @@
                                         @endphp
                                         @if (!empty($d[$tanggal_presensi]['doc_sid']) || $d[$tanggal_presensi]['izin_sakit_direktur'] == '1')
                                             @php
+                                                if (!in_array($d['nik'], $privillage_karyawan)) {
+                                                    $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                } else {
+                                                    $total_jam = $total_jam_jadwal;
+                                                }
                                                 $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                                 $potongan_jam_sakit = 0;
-                                                if (!empty($cekdirumahkan)) {
+                                                if (!empty($cekdirumahkan) && !in_array($d['nik'], $privillage_karyawan)) {
                                                     $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
                                                 }
                                                 $keterangan = 'SID';
