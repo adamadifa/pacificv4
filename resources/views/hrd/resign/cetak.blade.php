@@ -236,106 +236,186 @@
                     </td>
                     <td valign="top" rowspan="2">
                         <table class="datatable7">
-                            <tr>
-                                @php
-                                    $mk_kb = $masakerjakb['tahun'];
-                                    $mk_bulan = $masakerjakb['tahun'] * 12 + $masakerjakb['bulan'];
-                                    if ($mk_bulan <= 23) {
-                                        $totalupah = $gaji->gaji_pokok;
-                                        $persentase_jmk = 25;
-                                    } elseif ($mk_bulan <= 28) {
-                                        $totalupah = $gaji->gaji_pokok;
-                                        $persentase_jmk = 50;
-                                    } else {
-                                        $totalupah =
-                                            $gaji->gaji_pokok +
-                                            $gaji->t_tanggungjawab +
-                                            $gaji->t_makan +
-                                            $gaji->t_skill +
-                                            $gaji->t_jabatan;
-                                        $persentase_jmk = 100;
-                                    }
-
-                                    if ($mk_kb >= 3 && $mk_kb < 6) {
-                                        $jmlkali = 2;
-                                    } elseif ($mk_kb >= 6 && $mk_kb < 9) {
-                                        $jmlkali = 3;
-                                    } elseif ($mk_kb >= 9 && $mk_kb < 12) {
-                                        $jmlkali = 4;
-                                    } elseif ($mk_kb >= 12 && $mk_kb < 15) {
-                                        $jmlkali = 5;
-                                    } elseif ($mk_kb >= 15 && $mk_kb < 18) {
-                                        $jmlkali = 6;
-                                    } elseif ($mk_kb >= 18 && $mk_kb < 21) {
-                                        $jmlkali = 7;
-                                    } elseif ($mk_kb >= 21 && $mk_kb < 24) {
-                                        $jmlkali = 8;
-                                    } elseif ($mk_kb > 24) {
-                                        $jmlkali = 10;
-                                    } else {
-                                        $jmlkali = 1;
-                                    }
-
-                                    $grandtotal_upah =
+                            @php
+                                $jml_ujmk = 0;
+                                $grandtotal_upah = 0;
+                                $mk_kb = $masakerjakb['tahun'];
+                                $mk_bulan = $masakerjakb['tahun'] * 12 + $masakerjakb['bulan'];
+                                if ($mk_bulan <= 23) {
+                                    $totalupah = $gaji->gaji_pokok;
+                                    $persentase_jmk = 25;
+                                } elseif ($mk_bulan <= 28) {
+                                    $totalupah = $gaji->gaji_pokok;
+                                    $persentase_jmk = 50;
+                                } else {
+                                    $totalupah =
                                         $gaji->gaji_pokok +
                                         $gaji->t_tanggungjawab +
                                         $gaji->t_makan +
                                         $gaji->t_skill +
                                         $gaji->t_jabatan;
+                                    $persentase_jmk = 100;
+                                }
 
-                                    // if ($jmk != null) {
-                                    //     if ($masakerjakb['tahun'] == 1 and $masakerjakb['bulan'] >= 3) {
-                                    //         $persentasejmk = 25;
-                                    //     } else {
-                                    //         $persentasejmk = 15;
-                                    //     }
-                                    // } else {
-                                    //     $persentasejmk = 25;
-                                    // }
-                                    // $persentasejmk = 25;
-                                    //$totalpemutihan = ($persentasejmk / 100) * $totalupah;
-                                    $totaljmk = ($persentase_jmk / 100) * $totalupah * $jmlkali;
-                                    $persentase_pengganti_hak = $mk_kb >= 3 ? 15 : 0;
+                                if ($mk_kb >= 3 && $mk_kb < 6) {
+                                    $jmlkali = 2;
+                                } elseif ($mk_kb >= 6 && $mk_kb < 9) {
+                                    $jmlkali = 3;
+                                } elseif ($mk_kb >= 9 && $mk_kb < 12) {
+                                    $jmlkali = 4;
+                                } elseif ($mk_kb >= 12 && $mk_kb < 15) {
+                                    $jmlkali = 5;
+                                } elseif ($mk_kb >= 15 && $mk_kb < 18) {
+                                    $jmlkali = 6;
+                                } elseif ($mk_kb >= 18 && $mk_kb < 21) {
+                                    $jmlkali = 7;
+                                } elseif ($mk_kb >= 21 && $mk_kb < 24) {
+                                    $jmlkali = 8;
+                                } elseif ($mk_kb > 24) {
+                                    $jmlkali = 10;
+                                } else {
+                                    $jmlkali = 1;
+                                }
 
+                                $grandtotal_upah =
+                                    $gaji->gaji_pokok +
+                                    $gaji->t_tanggungjawab +
+                                    $gaji->t_makan +
+                                    $gaji->t_skill +
+                                    $gaji->t_jabatan;
+
+                                // if ($jmk != null) {
+                                //     if ($masakerjakb['tahun'] == 1 and $masakerjakb['bulan'] >= 3) {
+                                //         $persentasejmk = 25;
+                                //     } else {
+                                //         $persentasejmk = 15;
+                                //     }
+                                // } else {
+                                //     $persentasejmk = 25;
+                                // }
+                                // $persentasejmk = 25;
+                                //$totalpemutihan = ($persentasejmk / 100) * $totalupah;
+                                $totaljmk = ($persentase_jmk / 100) * $totalupah * $jmlkali;
+                                $persentase_pengganti_hak = $mk_kb >= 3 ? 15 : 0;
+                            @endphp
+
+                            @if ($resign->kode_kategori == 'JMK02')
+                                @php
+                                    // Sesuaikan dengan tabel pada gambar
+                                    if ($mk_kb < 1) {
+                                        $kali_pesangon = 1;
+                                    } elseif ($mk_kb >= 1 && $mk_kb < 2) {
+                                        $kali_pesangon = 2;
+                                    } elseif ($mk_kb >= 2 && $mk_kb < 3) {
+                                        $kali_pesangon = 3;
+                                    } elseif ($mk_kb >= 3 && $mk_kb < 4) {
+                                        $kali_pesangon = 4;
+                                    } elseif ($mk_kb >= 4 && $mk_kb < 5) {
+                                        $kali_pesangon = 5;
+                                    } elseif ($mk_kb >= 5 && $mk_kb < 6) {
+                                        $kali_pesangon = 6;
+                                    } elseif ($mk_kb >= 6 && $mk_kb < 7) {
+                                        $kali_pesangon = 7;
+                                    } elseif ($mk_kb >= 7 && $mk_kb < 8) {
+                                        $kali_pesangon = 8;
+                                    } else {
+                                        $kali_pesangon = 9;
+                                    }
+                                    $total_pesangon = $kali_pesangon * $grandtotal_upah;
                                 @endphp
-                                <td style="width: 2px">1.</td>
-                                <td>Jasa Masa Kerja </td>
-                                <td>
-                                    @if ($persentase_jmk != 100)
-                                        {{ $persentase_jmk }}%
-                                    @else
-                                        {{ $jmlkali }} x
-                                    @endif
-                                </td>
-                                <td>x</td>
-                                <td>Rp. {{ formatRupiah($totalupah) }}</td>
-                                <td>Rp.</td>
-                                <td style="text-align:right">{{ formatRupiah($totaljmk) }}</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 2px; border-bottom:1px solid black">2.</td>
-                                <td style="border-bottom:1px solid black">Uang Pengganti Hak</td>
-                                <td style="border-bottom:1px solid black">{{ $persentase_pengganti_hak }}%</td>
-                                <td style="border-bottom:1px solid black">x</td>
-                                <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totaljmk) }}</td>
-                                <td style="border-bottom:1px solid black">Rp.</td>
-                                <td style="border-bottom:1px solid black; text-align:right">
+                                <tr>
+                                    <td style="width:2px">1.</td>
+                                    <td>Pesangon</td>
+                                    <td>
+
+                                        {{ $kali_pesangon }} x
+                                    </td>
+                                    <td>x</td>
+                                    <td>Rp. {{ formatRupiah($grandtotal_upah) }}</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right">{{ formatRupiah($total_pesangon) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>2.</td>
+                                    <td >Uang Pengganti Hak</td>
+                                    <td >{{ $persentase_pengganti_hak }}%</td>
+                                    <td >x</td>
+                                    <td >Rp. {{ formatRupiah($total_pesangon) }}</td>
+                                    <td >Rp.</td>
+                                    <td ; text-align:right">
+                                        @php
+                                            $uph = ($persentase_pengganti_hak / 100) * $total_pesangon;
+                                        @endphp
+                                        {{ formatRupiah($uph) }}
+                                    </td>
+                                </tr>
+                                <tr>
                                     @php
-                                        $uph = ($persentase_pengganti_hak / 100) * $totaljmk;
+
                                     @endphp
-                                    {{ formatRupiah($uph) }}
-                                </td>
-                            </tr>
-                            <tr style="font-weight:bold">
-                                <td colspan="5">Jumlah Uang Jasa Masa Kerja</td>
-                                <td>Rp.</td>
-                                <td style="text-align:right; font-weight:bold">
+                                    <td style="style="width: 2px; border-bottom:1px solid black">3.</td>
+                                    <td style="border-bottom:1px solid black">Jasa Masa Kerja </td>
+                                    <td style="border-bottom:1px solid black">{{ $persentase_jmk }}%</td>
+                                    <td style="border-bottom:1px solid black">x</td>
+                                    <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totalupah) }}</td>
+                                    <td style="border-bottom:1px solid black">Rp.</td>
+                                    <td style="border-bottom:1px solid black; text-align:right">{{ formatRupiah($totaljmk) }}</td>
+                                </tr>
+                                <tr style="font-weight:bold">
+                                    <td colspan="5">Jumlah Uang Jasa Masa Kerja</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right; font-weight:bold">
+                                        @php
+                                            $jml_ujmk = $total_pesangon + $totaljmk + $uph;
+                                        @endphp
+                                        {{ formatRupiah($jml_ujmk) }}
+                                    </td>
+                                </tr>
+                                
+                            @else
+                                <tr>
                                     @php
-                                        $jml_ujmk = $totaljmk + $uph;
+
                                     @endphp
-                                    {{ formatRupiah($jml_ujmk) }}
-                                </td>
-                            </tr>
+                                    <td style="width: 2px">1.</td>
+                                    <td>Jasa Masa Kerja </td>
+                                    <td>
+                                        @if ($persentase_jmk != 100)
+                                            {{ $persentase_jmk }}%
+                                        @else
+                                            {{ $jmlkali }} x
+                                        @endif
+                                    </td>
+                                    <td>x</td>
+                                    <td>Rp. {{ formatRupiah($totalupah) }}</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right">{{ formatRupiah($totaljmk) }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 2px; border-bottom:1px solid black">2.</td>
+                                    <td style="border-bottom:1px solid black">Uang Pengganti Hak</td>
+                                    <td style="border-bottom:1px solid black">{{ $persentase_pengganti_hak }}%</td>
+                                    <td style="border-bottom:1px solid black">x</td>
+                                    <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totaljmk) }}</td>
+                                    <td style="border-bottom:1px solid black">Rp.</td>
+                                    <td style="border-bottom:1px solid black; text-align:right">
+                                        @php
+                                            $uph = ($persentase_pengganti_hak / 100) * $totaljmk;
+                                        @endphp
+                                        {{ formatRupiah($uph) }}
+                                    </td>
+                                </tr>
+                                <tr style="font-weight:bold">
+                                    <td colspan="5">Jumlah Uang Jasa Masa Kerja</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right; font-weight:bold">
+                                        @php
+                                            $jml_ujmk = $totaljmk + $uph;
+                                        @endphp
+                                        {{ formatRupiah($jml_ujmk) }}
+                                    </td>
+                                </tr>
+                            @endif
                             @php
                                 $totalpotongan =
                                     ($pjp->sisa_pjp ?? 0) +
