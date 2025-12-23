@@ -354,7 +354,7 @@
 
                                     @endphp
                                     <td style="style="width: 2px; border-bottom:1px solid black">3.</td>
-                                    <td style="border-bottom:1px solid black">Jasa Masa Kerja </td>
+                                    <td style="border-bottom:1px solid black">Uang Pisah</td>
                                     <td style="border-bottom:1px solid black">{{ $persentase_jmk }}%</td>
                                     <td style="border-bottom:1px solid black">x</td>
                                     <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totalupah) }}</td>
@@ -378,7 +378,7 @@
 
                                     @endphp
                                     <td style="width: 2px">1.</td>
-                                    <td>Jasa Masa Kerja </td>
+                                    <td>Uang Pisah </td>
                                     <td>
                                         @if ($persentase_jmk != 100)
                                             {{ $persentase_jmk }}%
