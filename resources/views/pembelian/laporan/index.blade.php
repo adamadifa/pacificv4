@@ -12,92 +12,104 @@
             <ul class="nav nav-tabs" role="tablist">
                 @can('pb.pembelian')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#pembelian"
-                            aria-controls="pembelian" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#pembelian" aria-controls="pembelian" aria-selected="false" tabindex="-1">
                             Pembelian
                         </button>
                     </li>
                 @endcan
                 @can('pb.pembayaran')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#pembayaran"
-                            aria-controls="pembayaran" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#pembayaran" aria-controls="pembayaran" aria-selected="false" tabindex="-1">
                             Pembayaran
                         </button>
                     </li>
                 @endcan
                 @can('pb.rekapsupplier')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapsupplier"
-                            aria-controls="rekapsupplier" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#rekapsupplier" aria-controls="rekapsupplier" aria-selected="false"
+                            tabindex="-1">
                             Rekap Pembelian Supplier
                         </button>
                     </li>
                 @endcan
                 @can('pb.rekappembelian')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekappembelian"
-                            aria-controls="rekappembelian" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#rekappembelian" aria-controls="rekappembelian" aria-selected="false"
+                            tabindex="-1">
                             Rekap Pembelian
                         </button>
                     </li>
                 @endcan
                 @can('pb.kartuhutang')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#kartuhutang"
-                            aria-controls="kartuhutang" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#kartuhutang" aria-controls="kartuhutang" aria-selected="false" tabindex="-1">
                             Kartu Hutang
                         </button>
                     </li>
                 @endcan
                 @can('pb.auh')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#auh" aria-controls="auh"
-                            aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#auh"
+                            aria-controls="auh" aria-selected="false" tabindex="-1">
                             Analisa Umur Hutang
                         </button>
                     </li>
                 @endcan
                 @can('pb.bahankemasan')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#bahankemasan"
-                            aria-controls="bahankemasan" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#bahankemasan" aria-controls="bahankemasan" aria-selected="false"
+                            tabindex="-1">
                             Bahan Kemasan
                         </button>
                     </li>
                 @endcan
                 @can('pb.rekapbahankemasan')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapbahankemasan"
-                            aria-controls="rekapbahankemasan" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#rekapbahankemasan" aria-controls="rekapbahankemasan" aria-selected="false"
+                            tabindex="-1">
                             Bahan Kemasan / Supplier
                         </button>
                     </li>
                 @endcan
                 @can('pb.jurnalkoreksi')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#jurnalkoreksi"
-                            aria-controls="jurnalkoreksi" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#jurnalkoreksi" aria-controls="jurnalkoreksi" aria-selected="false"
+                            tabindex="-1">
                             Jurnal Koreksi
                         </button>
                     </li>
                 @endcan
                 @can('pb.rekapakun')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapakun"
-                            aria-controls="rekapakun" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#rekapakun" aria-controls="rekapakun" aria-selected="false" tabindex="-1">
                             Rekap Akun
                         </button>
                     </li>
                 @endcan
                 @can('pb.rekapkontrabon')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapkontrabon"
-                            aria-controls="rekapkontrabon" aria-selected="false" tabindex="-1">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#rekapkontrabon" aria-controls="rekapkontrabon" aria-selected="false"
+                            tabindex="-1">
                             Rekap Kontrabon
                         </button>
                     </li>
                 @endcan
+                <li class="nav-item" role="presentation">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#rekappo" aria-controls="rekappo" aria-selected="false" tabindex="-1">
+                        Rekap PO
+                    </button>
+                </li>
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
@@ -158,6 +170,9 @@
                         @include('pembelian.laporan.rekapkontrabon')
                     </div>
                 @endcan
+                <div class="tab-pane fade" id="rekappo" role="tabpanel">
+                    @include('pembelian.laporan.rekappo')
+                </div>
             </div>
         </div>
     </div>

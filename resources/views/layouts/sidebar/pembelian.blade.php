@@ -3,6 +3,7 @@
             'pembelian.jatuhtempo',
             'jurnalkoreksi.index',
             'kontrabonpmb.index',
+            'po.index',
             'pb.pembelian',
             'pb.rekapsupplier',
             'pb.rekappembelian',
@@ -14,7 +15,7 @@
             'pb.rekapkontrabon',
         ]))
     <li
-        class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'jurnalkoreksi', 'kontrabonpembelian', 'kontrabonpembelian/*', 'laporanpembelian']) ? 'open' : '' }}">
+        class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'po', 'po/*', 'jurnalkoreksi', 'kontrabonpembelian', 'kontrabonpembelian/*', 'laporanpembelian']) ? 'open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
             <div>Pembelian</div>
@@ -31,6 +32,13 @@
                 <li class="menu-item {{ request()->is(['pembelian/jatuhtempo']) ? 'active' : '' }}">
                     <a href="{{ route('pembelian.jatuhtempo') }}" class="menu-link">
                         <div>Jatuh Tempo</div>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission(['po.index']))
+                <li class="menu-item {{ request()->is(['po', 'po/*']) ? 'active' : '' }}">
+                    <a href="{{ route('po.index') }}" class="menu-link">
+                        <div>PO</div>
                     </a>
                 </li>
             @endif

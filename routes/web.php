@@ -120,6 +120,7 @@ use App\Http\Controllers\Permission_groupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PiutangkaryawanController;
 use App\Http\Controllers\PjpController;
+use App\Http\Controllers\POController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
@@ -2376,6 +2377,20 @@ Route::middleware('auth')->group(function () {
         // Streaming download langsung dari database
         Route::get('/backup-database/stream-download', 'streamDownloadFromDatabase')->name('backup.database.stream.download')->can('backup.database');
         Route::get('/backup-database/stream-download-progress', 'streamDownloadWithProgress')->name('backup.database.stream.download.progress')->can('backup.database');
+    });
+
+
+    Route::controller(POController::class)->group(function () {
+        Route::get('/po', 'index')->name('po.index')->can('po.index');
+        Route::get('/po/create', 'create')->name('po.create')->can('po.create');
+        Route::get('/po/{no_bukti}/show', 'show')->name('po.show')->can('po.show');
+        Route::get('/po/{no_bukti}/edit', 'edit')->name('po.edit')->can('po.edit');
+        Route::put('/po/{no_bukti}/update', 'update')->name('po.update')->can('po.update');
+        Route::get('/po/createpotongan', 'createpotongan')->name('po.createpotongan')->can('po.edit');
+        Route::post('/po/store', 'store')->name('po.store')->can('po.store');
+        Route::delete('/po/{id}/delete', 'destroy')->name('po.delete')->can('po.delete');
+        Route::get('/po/jatuhtempo', 'jatuhtempo')->name('po.jatuhtempo')->can('po.jatuhtempo');
+        Route::post('/po/editbarang', 'editbarang')->name('po.editbarang')->can('po.edit');
     });
 });
 

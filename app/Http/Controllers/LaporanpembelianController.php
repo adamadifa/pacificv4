@@ -352,7 +352,7 @@ class LaporanpembelianController extends Controller
         $data['kartuhutang'] = $query->get();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
-        $data['jenis_hutang'] =  $request->jenis_hutang;
+        $data['jenis_hutang'] = $request->jenis_hutang;
         $data['supplier'] = Supplier::where('kode_supplier', $request->kode_supplier_kartuhutang)->first();
 
         if (isset($_POST['exportButton'])) {
@@ -769,4 +769,77 @@ class LaporanpembelianController extends Controller
         }
         return view('pembelian.laporan.rekapkontrabon_cetak', $data);
     }
+
+    public function cetakrekappo(Request $request)
+    {
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+
+        $subPembelian = DB::table('pembelian_detail')
+            ->select(
+                'pembelian.no_po',
+                'pembelian_detail.kode_barang',
+                DB::raw('SUM(pembelian_detail.jumlah) as qty_beli')
+            )
+            ->join('pembelian', 'pembelian_detail.no_bukti', '=', 'pembelian.no_bukti')
+            ->groupBy('pembelian.no_po', 'pembelian_detail.kode_barang');
+
+        $query = DB::table('po_detail');
+        $query->select(
+            'po.no_bukti',
+            'po.tanggal',
+            'po.kode_supplier',
+            'supplier.nama_supplier',
+            'pembelian_barang.kode_barang',
+            'pembelian_barang.nama_barang',
+            'po_detail.harga',
+
+            'po_detail.jumlah as qty_po',
+            DB::raw('IFNULL(sub.qty_beli,0) as qty_beli'),
+            DB::raw('(po_detail.jumlah - IFNULL(sub.qty_beli,0)) as sisa_po'),
+
+            DB::raw('
+                CASE
+                    WHEN (po_detail.jumlah - IFNULL(sub.qty_beli,0)) <= 0
+                    THEN "CLOSE"
+                    ELSE "OPEN"
+                END as status_po
+            ')
+        );
+
+        $query->join('po', 'po_detail.no_bukti', '=', 'po.no_bukti');
+        $query->join('supplier', 'po.kode_supplier', '=', 'supplier.kode_supplier');
+        $query->join('pembelian_barang', 'po_detail.kode_barang', '=', 'pembelian_barang.kode_barang');
+
+        $query->leftJoinSub($subPembelian, 'sub', function ($join) {
+            $join->on('po.no_bukti', '=', 'sub.no_po');
+            $join->on('po_detail.kode_barang', '=', 'sub.kode_barang');
+        });
+
+        $query->whereBetween('po.tanggal', [$request->dari, $request->sampai]);
+
+        $query->when($request->kode_supplier, function ($q) use ($request) {
+            $q->where('po.kode_supplier', $request->kode_supplier);
+        });
+
+        $query->orderBy('po.kode_supplier');
+        $query->orderBy('po.no_bukti');
+
+        $data['rekappo'] = $query->get()->groupBy('kode_supplier');
+
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap_PO_Detail_$request->dari-$request->sampai.xls");
+        }
+
+        return view('pembelian.laporan.rekappo_cetak', $data);
+    }
+
+
+
+
 }
