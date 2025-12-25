@@ -2199,27 +2199,19 @@ class LaporankeuanganController extends Controller
     {
         $request->validate([
             'kode_cr' => 'required',
-            'id_kaskecil' => 'required',
+            'sumber_type' => 'required|in:kaskecil,ledger',
             'status_pajak' => 'required|in:0,1'
         ]);
 
+        // Validasi conditional berdasarkan sumber_type
+        if ($request->sumber_type == 'kaskecil') {
+            $request->validate(['id_kaskecil' => 'required']);
+        } elseif ($request->sumber_type == 'ledger') {
+            $request->validate(['no_bukti_ledger' => 'required']);
+        }
+
         try {
-            // Cari data kaskecil dari id_kaskecil
-            $kaskecil = Kaskecil::findOrFail($request->id_kaskecil);
-
-            // Verifikasi bahwa kode_cr memang terkait dengan id_kaskecil ini
-            $kaskecilCostratio = Kaskecilcostratio::where('kode_cr', $request->kode_cr)
-                ->where('id', $request->id_kaskecil)
-                ->first();
-
-            if (!$kaskecilCostratio) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Data costratio tidak terkait dengan kas kecil yang dimaksud'
-                ], 422);
-            }
-
-            // Ambil base URL dari .env
+            $sumberType = $request->sumber_type;
             $baseUrl = env('SYNC_API_BASE_URL');
 
             if (empty($baseUrl)) {
@@ -2229,25 +2221,45 @@ class LaporankeuanganController extends Controller
                 ], 500);
             }
 
-            // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
-            if ($request->status_pajak == 1) {
-                // Siapkan data sesuai format API - SAMA PERSIS dengan updatestatuspajakkaskecil
-                $data = [
-                    'id' => $kaskecil->id,
-                    'no_bukti' => $kaskecil->no_bukti,
-                    'tanggal' => $kaskecil->tanggal,
-                    'keterangan' => $kaskecil->keterangan,
-                    'jumlah' => $kaskecil->jumlah,
-                    'debet_kredit' => $kaskecil->debet_kredit,
-                    'status_pajak' => $request->status_pajak,
-                    'kode_akun' => $kaskecil->kode_akun,
-                    'kode_cabang' => $kaskecil->kode_cabang,
-                    'kode_peruntukan' => $kaskecil->kode_peruntukan,
-                    'cost_ratio' => [] // Bisa di-extend jika ada relasi cost_ratio
-                ];
+            // Pastikan base URL tidak ada trailing slash
+            $baseUrl = rtrim($baseUrl, '/');
 
-                // Kirim data ke API dengan timeout 30 detik
-                $response = Http::timeout(30)->post($baseUrl . '/kaskecil', $data);
+            // Handle berdasarkan sumber type
+            if ($sumberType == 'kaskecil') {
+                // Cari data kaskecil dari id_kaskecil
+                $kaskecil = Kaskecil::findOrFail($request->id_kaskecil);
+
+                // Verifikasi bahwa kode_cr memang terkait dengan id_kaskecil ini
+                $kaskecilCostratio = Kaskecilcostratio::where('kode_cr', $request->kode_cr)
+                    ->where('id', $request->id_kaskecil)
+                    ->first();
+
+                if (!$kaskecilCostratio) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data costratio tidak terkait dengan kas kecil yang dimaksud'
+                    ], 422);
+                }
+
+                // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
+                if ($request->status_pajak == 1) {
+                    // Siapkan data sesuai format API - SAMA PERSIS dengan updatestatuspajakkaskecil
+                    $data = [
+                        'id' => $kaskecil->id,
+                        'no_bukti' => $kaskecil->no_bukti,
+                        'tanggal' => $kaskecil->tanggal,
+                        'keterangan' => $kaskecil->keterangan,
+                        'jumlah' => $kaskecil->jumlah,
+                        'debet_kredit' => $kaskecil->debet_kredit,
+                        'status_pajak' => $request->status_pajak,
+                        'kode_akun' => $kaskecil->kode_akun,
+                        'kode_cabang' => $kaskecil->kode_cabang,
+                        'kode_peruntukan' => $kaskecil->kode_peruntukan,
+                        'cost_ratio' => [] // Bisa di-extend jika ada relasi cost_ratio
+                    ];
+
+                    // Kirim data ke API dengan timeout 30 detik
+                    $response = Http::timeout(30)->post($baseUrl . '/kaskecil', $data);
 
                 // Cek response dari API
                 if (!$response->successful()) {
@@ -2327,26 +2339,185 @@ class LaporankeuanganController extends Controller
                 ]);
             }
 
-            // Jika sampai sini berarti sync/delete berhasil, update status_pajak
-            $kaskecil->status_pajak = $request->status_pajak;
-            $kaskecil->save();
+                // Jika sampai sini berarti sync/delete berhasil, update status_pajak
+                $kaskecil->status_pajak = $request->status_pajak;
+                $kaskecil->save();
 
-            $message = 'Status pajak costratio berhasil diupdate';
-            if ($request->status_pajak == 1) {
-                $message = 'Status pajak costratio berhasil diupdate dan data berhasil di-sync ke API';
-            } elseif ($request->status_pajak == 0) {
-                $message = 'Status pajak costratio berhasil diupdate dan data berhasil dihapus dari API';
+                $message = 'Status pajak costratio (kas kecil) berhasil diupdate';
+                if ($request->status_pajak == 1) {
+                    $message = 'Status pajak costratio (kas kecil) berhasil diupdate dan data berhasil di-sync ke API';
+                } elseif ($request->status_pajak == 0) {
+                    $message = 'Status pajak costratio (kas kecil) berhasil diupdate dan data berhasil dihapus dari API';
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'status_pajak' => $kaskecil->status_pajak
+                ]);
+
+            } elseif ($sumberType == 'ledger') {
+                // Cari data ledger dari no_bukti_ledger
+                $ledger = Ledger::findOrFail($request->no_bukti_ledger);
+
+                // Verifikasi bahwa kode_cr memang terkait dengan no_bukti_ledger ini
+                $ledgerCostratio = Ledgercostratio::where('kode_cr', $request->kode_cr)
+                    ->where('no_bukti', $request->no_bukti_ledger)
+                    ->first();
+
+                if (!$ledgerCostratio) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data costratio tidak terkait dengan ledger yang dimaksud'
+                    ], 422);
+                }
+
+                // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
+                if ($request->status_pajak == 1) {
+                    // Siapkan data sesuai format API (sesuai dokumentasi - tanpa cost_ratio)
+                    $data = [
+                        'no_bukti' => $ledger->no_bukti,
+                        'tanggal' => $ledger->tanggal,
+                        'pelanggan' => $ledger->pelanggan ?? '',
+                        'kode_bank' => $ledger->kode_bank,
+                        'kode_akun' => $ledger->kode_akun,
+                        'keterangan' => $ledger->keterangan,
+                        'jumlah' => $ledger->jumlah,
+                        'debet_kredit' => $ledger->debet_kredit,
+                        'kode_peruntukan' => $ledger->kode_peruntukan ?? '',
+                        'keterangan_peruntukan' => $ledger->keterangan_peruntukan ?? ''
+                    ];
+
+                    // Kirim data ke API dengan timeout 30 detik
+                    $response = Http::timeout(30)->post($baseUrl . '/ledger', $data);
+
+                    // Cek response dari API
+                    if (!$response->successful()) {
+                        $errorMessage = 'Gagal sync ke API';
+                        $statusCode = $response->status();
+                        $responseData = $response->json();
+
+                        if ($statusCode == 422) {
+                            $errors = $responseData['errors'] ?? null;
+                            if ($errors) {
+                                $errorMessage .= ': ' . json_encode($errors);
+                            } else {
+                                $errorMessage .= ': ' . ($responseData['message'] ?? 'Validasi gagal');
+                            }
+                        } elseif ($statusCode == 404) {
+                            $errorData = $responseData['error'] ?? [];
+                            $errorMessage .= ' (Status: 404)';
+                            if (isset($errorData['cause'])) {
+                                $errorMessage .= ' - ' . $errorData['cause'];
+                            }
+                            if (isset($errorData['suggestions']) && !empty($errorData['suggestions'])) {
+                                $errorMessage .= '. Saran endpoint: ' . implode(', ', $errorData['suggestions']);
+                            }
+                        } else {
+                            $errorMessage .= ' (Status: ' . $statusCode . ')';
+                            if (isset($responseData['message'])) {
+                                $errorMessage .= ' - ' . $responseData['message'];
+                            }
+                            if (isset($responseData['error'])) {
+                                $errorMessage .= ' - ' . (is_string($responseData['error']) ? $responseData['error'] : json_encode($responseData['error']));
+                            }
+                        }
+
+                        Log::error("Sync ledger dari costratio gagal: {$ledger->no_bukti}", [
+                            'kode_cr' => $request->kode_cr,
+                            'status' => $statusCode,
+                            'response' => $responseData,
+                            'request_data' => $data
+                        ]);
+
+                        return response()->json([
+                            'success' => false,
+                            'message' => $errorMessage
+                        ], 422);
+                    }
+
+                    Log::info("Sync ledger dari costratio berhasil: {$ledger->no_bukti}", [
+                        'kode_cr' => $request->kode_cr,
+                        'response' => $response->json()
+                    ]);
+                }
+                // Jika status_pajak = 0 (uncheck), hapus data dari API external
+                elseif ($request->status_pajak == 0 && $ledger->status_pajak == 1) {
+                    // Kirim request DELETE ke API berdasarkan no_bukti
+                    $response = Http::timeout(30)->delete($baseUrl . '/ledger', [
+                        'no_bukti' => $ledger->no_bukti
+                    ]);
+
+                    // Cek response dari API
+                    if (!$response->successful()) {
+                        $errorMessage = 'Gagal menghapus data dari API';
+                        $statusCode = $response->status();
+                        $responseData = $response->json();
+
+                        if ($statusCode == 404) {
+                            Log::warning("Data tidak ditemukan di API saat delete: {$ledger->no_bukti}", [
+                                'kode_cr' => $request->kode_cr,
+                                'response' => $responseData
+                            ]);
+                        } else {
+                            $errorMessage .= ' (Status: ' . $statusCode . ')';
+                            if (isset($responseData['message'])) {
+                                $errorMessage .= ' - ' . $responseData['message'];
+                            }
+                            if (isset($responseData['error'])) {
+                                $errorMessage .= ' - ' . (is_string($responseData['error']) ? $responseData['error'] : json_encode($responseData['error']));
+                            }
+
+                            Log::error("Delete ledger dari costratio gagal: {$ledger->no_bukti}", [
+                                'kode_cr' => $request->kode_cr,
+                                'status' => $statusCode,
+                                'response' => $responseData
+                            ]);
+
+                            return response()->json([
+                                'success' => false,
+                                'message' => $errorMessage
+                            ], 422);
+                        }
+                    } else {
+                        Log::info("Delete ledger dari costratio berhasil: {$ledger->no_bukti}", [
+                            'kode_cr' => $request->kode_cr,
+                            'response' => $response->json()
+                        ]);
+                    }
+                }
+
+                // Jika sampai sini berarti sync/delete berhasil, update status_pajak
+                $ledger->status_pajak = $request->status_pajak;
+                $ledger->save();
+
+                $message = 'Status pajak costratio (ledger) berhasil diupdate';
+                if ($request->status_pajak == 1) {
+                    $message = 'Status pajak costratio (ledger) berhasil diupdate dan data berhasil di-sync ke API';
+                } elseif ($request->status_pajak == 0) {
+                    $message = 'Status pajak costratio (ledger) berhasil diupdate dan data berhasil dihapus dari API';
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'status_pajak' => $ledger->status_pajak
+                ]);
             }
-
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'status_pajak' => $kaskecil->status_pajak
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Data tidak ditemukan untuk costratio: {$request->kode_cr}", [
+                'sumber_type' => $request->sumber_type ?? 'unknown',
+                'error' => $e->getMessage()
             ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
         } catch (\Exception $e) {
             Log::error("Error updatestatuspajakcostratio: {$request->kode_cr}", [
-                'id_kaskecil' => $request->id_kaskecil,
-                'error' => $e->getMessage()
+                'sumber_type' => $request->sumber_type ?? 'unknown',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([

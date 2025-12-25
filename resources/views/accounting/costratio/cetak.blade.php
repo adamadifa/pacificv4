@@ -45,10 +45,18 @@
                     @php
                         // Jika sumber = 1 (kas kecil), ambil data kaskecil
                         $kaskecil = null;
+                        $ledger = null;
                         $status_pajak = 0;
+                        $sumber_type = null; // 'kaskecil' atau 'ledger'
+
                         if ($d->kode_sumber == 1 && isset($d->id_kaskecil)) {
                             $kaskecil = $d->kaskecil;
                             $status_pajak = $kaskecil ? $kaskecil->status_pajak ?? 0 : 0;
+                            $sumber_type = 'kaskecil';
+                        } elseif ($d->kode_sumber == 2 && isset($d->no_bukti_ledger)) {
+                            $ledger = $d->ledger;
+                            $status_pajak = $ledger ? $ledger->status_pajak ?? 0 : 0;
+                            $sumber_type = 'ledger';
                         }
 
                         // Set background color jika status_pajak = 1
@@ -65,7 +73,12 @@
                             <td class="center">
                                 @if ($d->kode_sumber == 1 && isset($d->id_kaskecil))
                                     <input type="checkbox" class="checkbox-pajak-costratio" data-kode-cr="{{ $d->kode_cr }}"
-                                        data-id-kaskecil="{{ $d->id_kaskecil }}" {{ $status_pajak == 1 ? 'checked' : '' }}>
+                                        data-id-kaskecil="{{ $d->id_kaskecil }}" data-sumber-type="kaskecil"
+                                        {{ $status_pajak == 1 ? 'checked' : '' }}>
+                                @elseif ($d->kode_sumber == 2 && isset($d->no_bukti_ledger))
+                                    <input type="checkbox" class="checkbox-pajak-costratio" data-kode-cr="{{ $d->kode_cr }}"
+                                        data-no-bukti-ledger="{{ $d->no_bukti_ledger }}" data-sumber-type="ledger"
+                                        {{ $status_pajak == 1 ? 'checked' : '' }}>
                                 @else
                                     -
                                 @endif
@@ -91,21 +104,33 @@
             $('.checkbox-pajak-costratio').on('change', function() {
                 const checkbox = $(this);
                 const kodeCr = checkbox.data('kode-cr');
+                const sumberType = checkbox.data('sumber-type'); // 'kaskecil' atau 'ledger'
                 const idKaskecil = checkbox.data('id-kaskecil');
+                const noBuktiLedger = checkbox.data('no-bukti-ledger');
                 const statusPajak = checkbox.is(':checked') ? 1 : 0;
 
                 // Disable checkbox sementara untuk mencegah multiple clicks
                 checkbox.prop('disabled', true);
 
+                // Siapkan data berdasarkan sumber type
+                const ajaxData = {
+                    _token: '{{ csrf_token() }}',
+                    kode_cr: kodeCr,
+                    sumber_type: sumberType,
+                    status_pajak: statusPajak
+                };
+
+                // Tambahkan data sesuai sumber
+                if (sumberType === 'kaskecil' && idKaskecil) {
+                    ajaxData.id_kaskecil = idKaskecil;
+                } else if (sumberType === 'ledger' && noBuktiLedger) {
+                    ajaxData.no_bukti_ledger = noBuktiLedger;
+                }
+
                 $.ajax({
                     url: '{{ route('laporankeuangan.updatestatuspajakcostratio') }}',
                     method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        kode_cr: kodeCr,
-                        id_kaskecil: idKaskecil,
-                        status_pajak: statusPajak
-                    },
+                    data: ajaxData,
                     success: function(response) {
                         if (response.success) {
                             const row = checkbox.closest('tr');

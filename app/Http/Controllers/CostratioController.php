@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Costratio;
 use App\Models\Kaskecil;
+use App\Models\Ledger;
 use App\Models\Sumbercostratio;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -131,11 +132,14 @@ class CostratioController extends Controller
         }
 
         $query = Costratio::query();
-        $query->select('accounting_costratio.*', 'sumber', 'nama_cabang', 'nama_akun', 'keuangan_kaskecil_costratio.id as id_kaskecil');
+        $query->select('accounting_costratio.*', 'sumber', 'nama_cabang', 'nama_akun', 
+            'keuangan_kaskecil_costratio.id as id_kaskecil',
+            'keuangan_ledger_costratio.no_bukti as no_bukti_ledger');
         $query->join('accounting_costratio_sumber', 'accounting_costratio.kode_sumber', '=', 'accounting_costratio_sumber.kode_sumber');
         $query->join('cabang', 'accounting_costratio.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('coa', 'accounting_costratio.kode_akun', '=', 'coa.kode_akun');
         $query->leftJoin('keuangan_kaskecil_costratio', 'accounting_costratio.kode_cr', '=', 'keuangan_kaskecil_costratio.kode_cr');
+        $query->leftJoin('keuangan_ledger_costratio', 'accounting_costratio.kode_cr', '=', 'keuangan_ledger_costratio.kode_cr');
         $query->whereBetween('accounting_costratio.tanggal', [$request->dari, $request->sampai]);
 
         if (!$user->hasRole($roles_access_all_cabang)) {
@@ -157,10 +161,14 @@ class CostratioController extends Controller
         $query->orderBy('accounting_costratio.tanggal');
         $costratio = $query->get();
         
-        // Load relasi kaskecil untuk data yang memiliki id_kaskecil
+        // Load relasi kaskecil untuk data yang memiliki id_kaskecil (sumber = 1)
+        // Load relasi ledger untuk data yang memiliki no_bukti_ledger (sumber = 2)
         foreach ($costratio as $item) {
             if ($item->id_kaskecil) {
                 $item->kaskecil = Kaskecil::find($item->id_kaskecil);
+            }
+            if ($item->no_bukti_ledger) {
+                $item->ledger = Ledger::find($item->no_bukti_ledger);
             }
         }
         
