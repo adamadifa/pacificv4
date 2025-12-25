@@ -1965,6 +1965,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/cetakkartupiutangkaryawan', 'cetakkartupiutangkaryawan')->name('laporankeuangan.cetakkartupiutangkaryawan')->can('keu.kartupiutangkaryawan');
         Route::get('/laporankeuangan/{dari}/{sampai}/{exportButton}/cetakmutasikategori', 'cetakmutasikategori')->name('laporankeuangan.cetakmutasikategori');
         Route::post('/laporankeuangan/updatestatuspajakkaskecil', 'updatestatuspajakkaskecil')->name('laporankeuangan.updatestatuspajakkaskecil');
+        Route::post('/laporankeuangan/updatestatuspajakcostratio', 'updatestatuspajakcostratio')->name('laporankeuangan.updatestatuspajakcostratio');
+        Route::post('/laporankeuangan/updatestatuspajakledger', 'updatestatuspajakledger')->name('laporankeuangan.updatestatuspajakledger');
     });
 
     Route::controller(LaporanmarketingController::class)->group(function () {

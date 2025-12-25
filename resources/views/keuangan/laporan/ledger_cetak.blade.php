@@ -20,6 +20,11 @@
             background-color: red;
             color: white;
         }
+
+        .bg-pajak-success {
+            background-color: green !important;
+            color: white !important;
+        }
     </style>
 </head>
 
@@ -41,6 +46,9 @@
                 <thead>
                     <tr>
                         <th style="width: 1%">No</th>
+                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                            <th>Pajak</th>
+                        @endif
                         <th style="width: 4%">TGL</th>
                         <th style="width: 4%">No Bukti</th>
                         {{-- <th>No.Ref</th> --}}
@@ -59,8 +67,13 @@
                         @php
                             $saldoawal = $saldo_awal != null ? $saldo_awal->jumlah : 'BELUM DI SET';
                             $color_saldoawal = $saldo_awal != null ? '' : 'text-red';
+                            $colspan_saldoawal = auth()
+                                ->user()
+                                ->hasRole(['super admin', 'admin pajak', 'gm administrasi'])
+                                ? '12'
+                                : '11';
                         @endphp
-                        <th colspan='11'>SALDO AWAL</th>
+                        <th colspan='{{ $colspan_saldoawal }}'>SALDO AWAL</th>
                         <th style="text-align:right" class="{{ $color_saldoawal }}">
                             {{ $saldo_awal != null ? formatAngkaDesimal($saldoawal) : 0 }}
                         </th>
@@ -85,9 +98,30 @@
                             $totaldebet += $debet;
                             $totalkredit += $kredit;
                             $saldo = $saldo - $debet + $kredit;
+
+                            // Status pajak
+                            $status_pajak = isset($d->status_pajak) ? $d->status_pajak : 0;
+
+                            // Set background color jika status_pajak = 1
+                            if ($status_pajak == 1) {
+                                $bgcolor = 'green';
+                                $textcolor = 'white';
+                            } else {
+                                $bgcolor = '';
+                                $textcolor = '';
+                            }
+
+                            // Ambil cost ratio untuk ledger ini
+                            $cost_ratio_list = isset($d->cost_ratio_list) ? $d->cost_ratio_list : [];
                         @endphp
-                        <tr>
+                        <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
                             <td>{{ $loop->iteration }}</td>
+                            @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                                <td class="center">
+                                    <input type="checkbox" class="checkbox-pajak-ledger" data-no-bukti="{{ $d->no_bukti }}"
+                                        {{ $status_pajak == 1 ? 'checked' : '' }}>
+                                </td>
+                            @endif
                             <td>{{ formatIndo($d->tanggal) }}</td>
                             <td>{{ $d->no_bukti }}</td>
                             <td>{{ formatIndo($d->tanggal_penerimaan) }}</td>
@@ -107,7 +141,14 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="9">TOTAL</th>
+                        @php
+                            $colspan_total = auth()
+                                ->user()
+                                ->hasRole(['super admin', 'admin pajak', 'gm administrasi'])
+                                ? '10'
+                                : '9';
+                        @endphp
+                        <th colspan="{{ $colspan_total }}">TOTAL</th>
                         <th class="right">{{ formatAngka($totaldebet) }}</th>
                         <th class="right">{{ formatAngka($totalkredit) }}</th>
                         <th class="right">{{ formatAngka($saldo) }}</th>
@@ -119,6 +160,74 @@
         </div>
     </div>
 </body>
+
+@if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+    <script>
+        $(document).ready(function() {
+            $('.checkbox-pajak-ledger').on('change', function() {
+                const checkbox = $(this);
+                const noBukti = checkbox.data('no-bukti');
+                const statusPajak = checkbox.is(':checked') ? 1 : 0;
+
+                // Disable checkbox sementara untuk mencegah multiple clicks
+                checkbox.prop('disabled', true);
+
+                $.ajax({
+                    url: '{{ route('laporankeuangan.updatestatuspajakledger') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        no_bukti: noBukti,
+                        status_pajak: statusPajak
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            const row = checkbox.closest('tr');
+
+                            if (statusPajak == 1) {
+                                // Centang: Ubah background row menjadi hijau dengan text putih
+                                row.addClass('bg-pajak-success');
+                                row.css({
+                                    'background-color': 'green',
+                                    'color': 'white'
+                                });
+                            } else {
+                                // Uncheck: Kembalikan background row menjadi putih/normal
+                                row.removeClass('bg-pajak-success');
+                                row.css({
+                                    'background-color': '',
+                                    'color': ''
+                                });
+                            }
+
+                            // Tampilkan pesan sukses
+                            alert(response.message);
+                            console.log('Status pajak ledger berhasil diupdate');
+                        } else {
+                            // Revert checkbox jika gagal
+                            checkbox.prop('checked', !checkbox.is(':checked'));
+                            alert('Gagal mengupdate status pajak ledger: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        // Revert checkbox jika error
+                        checkbox.prop('checked', !checkbox.is(':checked'));
+                        let errorMessage = 'Terjadi kesalahan saat mengupdate status pajak ledger';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
+                    },
+                    complete: function() {
+                        // Enable checkbox kembali
+                        checkbox.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+@endif
+
 {{-- <script>
     $(".freeze-table").freezeTable({
         'scrollable': true,
