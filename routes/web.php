@@ -1941,6 +1941,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanpembelian/cetakjurnalkoreksi', 'cetakjurnalkoreksi')->name('laporanpembelian.cetakjurnalkoreksi')->can('pb.jurnalkoreksi');
         Route::post('/laporanpembelian/cetakrekapakun', 'cetakrekapakun')->name('laporanpembelian.cetakrekapakun')->can('pb.rekapakun');
         Route::post('/laporanpembelian/cetakrekapkontrabon', 'cetakrekapkontrabon')->name('laporanpembelian.cetakrekapkontrabon')->can('pb.rekapkontrabon');
+        Route::post('/laporanpembelian/cetakrekappo', 'cetakrekappo')->name('laporanpembelian.cetakrekappo');
     });
 
 
