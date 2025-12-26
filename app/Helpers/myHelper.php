@@ -530,7 +530,7 @@ function pihakpertamacabang($cabang, $perusahaan)
     $kepalaadmin = [
         'PWT' => 'Galuh Setiaji W',
         'BTN' => 'Anif Ardiana',
-        'BDG' => 'Mohamad Ridwan Fauzi',
+        'BDG' => 'Muhamad Adji Ramdani',
         'SKB' => 'Aceng Cahya Sugianto',
         'TGL' => 'Rosihul Iman',
         'SBY' => 'Angga Wahyu P',
