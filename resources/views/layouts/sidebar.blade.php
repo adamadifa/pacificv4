@@ -25,14 +25,7 @@
                  <div>Dashboard</div>
              </a>
          </li>
-         @if (in_array($level_user, [
-                 'super admin',
-                 'direktur',
-                 'gm administrasi',
-                 'manager keuangan',
-                 'regional operation manager',
-                 'spv accounting',
-             ]))
+         @if (in_array($level_user, ['super admin', 'direktur', 'gm administrasi', 'manager keuangan', 'regional operation manager', 'spv accounting']))
              <li class="menu-item {{ request()->is(['dashboard/owner']) ? 'active' : '' }}">
                  <a href="{{ route('dashboard.owner') }}" class="menu-link">
                      <i class="menu-icon tf-icons ti ti-home"></i>
@@ -94,8 +87,7 @@
 
          @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index']) ||
                  auth()->user()->hasRole(['super admin', 'gm administrasi']))
-             <li
-                 class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket']) ? 'open' : '' }} ">
+             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-settings"></i>
                      <div>Utilities</div>
@@ -125,8 +117,7 @@
                      @endcan
 
                      @can('backup.database')
-                         <li
-                             class="menu-item {{ request()->is(['backup-database', 'backup-database/*']) ? 'active' : '' }}">
+                         <li class="menu-item {{ request()->is(['backup-database', 'backup-database/*']) ? 'active' : '' }}">
                              <a href="{{ route('backup.database.index') }}" class="menu-link">
                                  <div>Backup Database</div>
                              </a>
@@ -166,8 +157,7 @@
                                  <div>Permission</div>
                              </a>
                          </li>
-                         <li
-                             class="menu-item  {{ request()->is(['permissiongroups', 'permissiongroups/*']) ? 'active' : '' }}">
+                         <li class="menu-item  {{ request()->is(['permissiongroups', 'permissiongroups/*']) ? 'active' : '' }}">
                              <a href="{{ route('permissiongroups.index') }}" class="menu-link">
                                  <div>Group Permission</div>
                              </a>
