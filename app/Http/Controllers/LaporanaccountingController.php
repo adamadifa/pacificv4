@@ -25,6 +25,8 @@ use App\Models\Jurnalkoreksi;
 use App\Models\Jurnalumum;
 use App\Models\Kaskecil;
 use App\Models\Ledger;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use App\Models\Pembelian;
 use App\Models\Penjualan;
 use App\Models\Produk;
@@ -1776,6 +1778,156 @@ class LaporanaccountingController extends Controller
                 header("Content-Disposition: attachment; filename=Laba Rugi.xls");
             }
             return view('accounting.laporan.lk.labarugi_cetak', $data);
+        }
+    }
+
+    public function updatestatuspajakjurnalumum(Request $request)
+    {
+        $request->validate([
+            'kode_ju' => 'required',
+            'status_pajak' => 'required|in:0,1'
+        ]);
+
+        try {
+            // Cari data jurnal umum dari kode_ju
+            $jurnalumum = Jurnalumum::findOrFail($request->kode_ju);
+            //dd($jurnalumum->kode_peruntukan);
+            // Ambil base URL dari .env
+            $baseUrl = env('SYNC_API_BASE_URL');
+
+            if (empty($baseUrl)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'SYNC_API_BASE_URL tidak di-set di konfigurasi'
+                ], 500);
+            }
+
+            // Pastikan base URL tidak ada trailing slash
+            $baseUrl = rtrim($baseUrl, '/');
+
+            // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
+            if ($request->status_pajak == 1) {
+                //dd($jurnalumum->kode_pruntukan);
+                // Siapkan data sesuai format API (sesuai dokumentasi)
+                $data = [
+                    'kode_ju' => $jurnalumum->kode_ju,
+                    'tanggal' => $jurnalumum->tanggal,
+                    'keterangan' => $jurnalumum->keterangan,
+                    'jumlah' => $jurnalumum->jumlah,
+                    'debet_kredit' => $jurnalumum->debet_kredit,
+                    'kode_akun' => $jurnalumum->kode_akun,
+                    'kode_dept' => $jurnalumum->kode_dept,
+                    'kode_peruntukan' => $jurnalumum->kode_peruntukan ?? '',
+                    'id_user' => $jurnalumum->id_user,
+                    'kode_cabang' => $jurnalumum->kode_cabang ?? ''
+                ];
+
+                //dd($jurnalumum->kode_peruntukan);
+                //dd($data);
+                // Kirim data ke API dengan timeout 30 detik
+                $response = Http::timeout(30)->post($baseUrl . '/jurnalumum', $data);
+                //dd($response->json());
+                // Cek response dari API
+                if (!$response->successful()) {
+                    $errorMessage = 'Gagal sync ke API';
+
+                    if ($response->status() == 422) {
+                        $errors = $response->json('errors');
+                        if ($errors) {
+                            $errorMessage .= ': ' . json_encode($errors);
+                        } else {
+                            $errorMessage .= ': ' . $response->json('message');
+                        }
+                    } else {
+                        $errorMessage .= ' (Status: ' . $response->status() . ')';
+                        if ($response->json('message')) {
+                            $errorMessage .= ' - ' . $response->json('message');
+                        }
+                    }
+
+                    // Log error untuk debugging
+                    Log::error("Sync jurnal umum gagal: {$jurnalumum->kode_ju}", [
+                        'status' => $response->status(),
+                        'response' => $response->json()
+                    ]);
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage
+                    ], 422);
+                }
+
+                // Log success
+                Log::info("Sync jurnal umum berhasil: {$jurnalumum->kode_ju}");
+            }
+            // Jika status_pajak = 0 (uncheck), hapus data dari API external
+            elseif ($request->status_pajak == 0 && $jurnalumum->status_pajak == 1) {
+                // Hapus data dari API
+                $response = Http::timeout(30)->delete($baseUrl . '/jurnalumum', [
+                    'kode_ju' => $jurnalumum->kode_ju
+                ]);
+
+                // Cek response dari API
+                if (!$response->successful()) {
+                    $errorMessage = 'Gagal hapus dari API';
+
+                    if ($response->status() == 404) {
+                        // Jika data tidak ditemukan di API, tetap lanjutkan update status_pajak
+                        Log::warning("Jurnal umum tidak ditemukan di API saat delete: {$jurnalumum->kode_ju}");
+                    } else {
+                        $errorMessage .= ' (Status: ' . $response->status() . ')';
+                        if ($response->json('message')) {
+                            $errorMessage .= ' - ' . $response->json('message');
+                        }
+
+                        // Log error untuk debugging
+                        Log::error("Delete jurnal umum dari API gagal: {$jurnalumum->kode_ju}", [
+                            'status' => $response->status(),
+                            'response' => $response->json()
+                        ]);
+
+                        return response()->json([
+                            'success' => false,
+                            'message' => $errorMessage
+                        ], 422);
+                    }
+                } else {
+                    Log::info("Delete jurnal umum dari API berhasil: {$jurnalumum->kode_ju}");
+                }
+            }
+
+            // Jika sampai sini berarti sync/delete berhasil, update status_pajak
+            $jurnalumum->status_pajak = $request->status_pajak;
+            $jurnalumum->save();
+
+            $message = 'Status pajak jurnal umum berhasil diupdate';
+            if ($request->status_pajak == 1) {
+                $message = 'Status pajak jurnal umum berhasil diupdate dan data berhasil di-sync ke API';
+            } elseif ($request->status_pajak == 0) {
+                $message = 'Status pajak jurnal umum berhasil diupdate dan data berhasil dihapus dari API';
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'status_pajak' => $jurnalumum->status_pajak
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Jurnal umum tidak ditemukan: {$request->kode_ju}");
+            return response()->json([
+                'success' => false,
+                'message' => 'Data jurnal umum tidak ditemukan'
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error("Error updatestatuspajakjurnalumum: {$request->kode_ju}", [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengupdate status pajak jurnal umum: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

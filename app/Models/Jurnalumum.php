@@ -12,4 +12,7 @@ class Jurnalumum extends Model
     protected $primaryKey = "kode_ju";
     protected $guarded = [];
     public $incrementing = false;
+
+    // Accessor untuk kode_peruntukan (kolom di DB adalah kode_pruntukan dengan typo)
+
 }

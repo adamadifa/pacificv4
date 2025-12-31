@@ -19,6 +19,16 @@
         .datatable3 th {
             font-size: 11px !important;
         }
+
+        .text-red {
+            background-color: red;
+            color: white;
+        }
+
+        .bg-pajak-success {
+            background-color: green !important;
+            color: white !important;
+        }
     </style>
 </head>
 
@@ -35,6 +45,9 @@
             <table class="datatable3">
                 <thead>
                     <tr>
+                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                            <th>Pajak</th>
+                        @endif
                         <th style="width: 10%;">TGL</th>
                         <th>NO BUKTI</th>
                         <th>KETERANGAN</th>
@@ -62,8 +75,26 @@
                             }
                             $total_debet += $debet;
                             $total_kredit += $kredit;
+
+                            // Status pajak
+                            $status_pajak = isset($d->status_pajak) ? $d->status_pajak : 0;
+
+                            // Set background color jika status_pajak = 1
+                            if ($status_pajak == 1) {
+                                $bgcolor = 'green';
+                                $textcolor = 'white';
+                            } else {
+                                $bgcolor = '';
+                                $textcolor = '';
+                            }
                         @endphp
-                        <tr>
+                        <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
+                            @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                                <td class="center">
+                                    <input type="checkbox" class="checkbox-pajak-jurnalumum" data-kode-ju="{{ $d->kode_ju }}"
+                                        {{ $status_pajak == 1 ? 'checked' : '' }}>
+                                </td>
+                            @endif
                             <td>{{ DateToIndo($d->tanggal) }}</td>
                             <td>{{ $d->kode_ju }}</td>
                             <td>{{ $d->keterangan }}</td>
@@ -78,7 +109,14 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="6">TOTAL</th>
+                        @php
+                            $colspan_total = auth()
+                                ->user()
+                                ->hasRole(['super admin', 'admin pajak', 'gm administrasi'])
+                                ? '7'
+                                : '6';
+                        @endphp
+                        <th colspan="{{ $colspan_total }}">TOTAL</th>
                         <th class="right">{{ formatAngka($total_debet) }}</th>
                         <th class="right">{{ formatAngka($total_kredit) }}</th>
                         <th></th>
@@ -89,3 +127,70 @@
     </div>
 
 </body>
+
+@if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+    <script>
+        $(document).ready(function() {
+            $('.checkbox-pajak-jurnalumum').on('change', function() {
+                const checkbox = $(this);
+                const kodeJu = checkbox.data('kode-ju');
+                const statusPajak = checkbox.is(':checked') ? 1 : 0;
+
+                // Disable checkbox sementara untuk mencegah multiple clicks
+                checkbox.prop('disabled', true);
+
+                $.ajax({
+                    url: '{{ route('laporanaccounting.updatestatuspajakjurnalumum') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        kode_ju: kodeJu,
+                        status_pajak: statusPajak
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            const row = checkbox.closest('tr');
+
+                            if (statusPajak == 1) {
+                                // Centang: Ubah background row menjadi hijau dengan text putih
+                                row.addClass('bg-pajak-success');
+                                row.css({
+                                    'background-color': 'green',
+                                    'color': 'white'
+                                });
+                            } else {
+                                // Uncheck: Kembalikan background row menjadi putih/normal
+                                row.removeClass('bg-pajak-success');
+                                row.css({
+                                    'background-color': '',
+                                    'color': ''
+                                });
+                            }
+
+                            // Tampilkan pesan sukses
+                            alert(response.message);
+                            console.log('Status pajak jurnal umum berhasil diupdate');
+                        } else {
+                            // Revert checkbox jika gagal
+                            checkbox.prop('checked', !checkbox.is(':checked'));
+                            alert('Gagal mengupdate status pajak jurnal umum: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        // Revert checkbox jika error
+                        checkbox.prop('checked', !checkbox.is(':checked'));
+                        let errorMessage = 'Terjadi kesalahan saat mengupdate status pajak jurnal umum';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
+                    },
+                    complete: function() {
+                        // Enable checkbox kembali
+                        checkbox.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+@endif
