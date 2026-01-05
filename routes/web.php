@@ -170,6 +170,8 @@ use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisitpelangganController;
 use App\Http\Controllers\WilayahController;
+use App\Http\Controllers\ProgrammarketingController;
+use App\Http\Controllers\ProgramIkatan2026Controller;
 use App\Http\Controllers\WorksheetomController;
 use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
@@ -803,6 +805,15 @@ Route::middleware('auth')->group(function () {
         // Route::get('/suratjalanangkutan/{kode_saldo_awal}/show', 'show')->name('suratjalanangkutan.show')->can('suratjalanangkutan.show');
 
         Route::get('/suratjalanangkutan/{kode_angkutan}/getsuratjalanbyangkutan', 'getsuratjalanbyangkutan')->name('suratjalanangkutan.getsuratjalanbyangkutan');
+    });
+
+    Route::controller(ProgrammarketingController::class)->group(function () {
+        Route::get('/programmarketing', 'index')->name('programmarketing.index')->can('programmarketing.index');
+        Route::get('/programmarketing/create', 'create')->name('programmarketing.create')->can('programmarketing.create');
+        Route::post('/programmarketing', 'store')->name('programmarketing.store')->can('programmarketing.store');
+        Route::get('/programmarketing/{kode_program}/edit', 'edit')->name('programmarketing.edit')->can('programmarketing.edit');
+        Route::put('/programmarketing/{kode_program}', 'update')->name('programmarketing.update')->can('programmarketing.update');
+        Route::delete('/programmarketing/{kode_program}', 'destroy')->name('programmarketing.delete')->can('programmarketing.delete');
     });
 
     Route::controller(LaporangudangjadiController::class)->group(function () {
@@ -2229,6 +2240,31 @@ Route::middleware('auth')->group(function () {
         Route::get('/pencairanprogramenambulan/{kode_pencairan}/upload', 'upload')->name('pencairanprogramenambulan.upload')->can('pencairanprogramenambulan.upload');
     });
 
+
+    // Program Ikatan 2026
+    Route::controller(ProgramIkatan2026Controller::class)->group(function () {
+        Route::get('/programikatan2026', 'index')->name('programikatan2026.index');
+        Route::get('/programikatan2026/create', 'create')->name('programikatan2026.create');
+        Route::post('/programikatan2026/store', 'store')->name('programikatan2026.store');
+        
+        Route::get('/programikatan2026/{no_pengajuan}/setajuanprogramikatan', 'setajuanprogramikatan')->name('programikatan2026.setajuanprogramikatan');
+        Route::delete('/programikatan2026/{no_pengajuan}/delete', 'destroy')->name('programikatan2026.delete');
+        Route::get('/programikatan2026/{no_pengajuan}/approve', 'approve')->name('programikatan2026.approve');
+        Route::post('/programikatan2026/{no_pengajuan}/storeapprove', 'storeapprove')->name('programikatan2026.storeapprove');
+        Route::get('/programikatan2026/{no_pengajuan}/cetak', 'cetak')->name('programikatan2026.cetak');
+        Route::get('/programikatan2026/{no_pengajuan}/cetakkesepakatan', 'cetakkesepakatan')->name('programikatan2026.cetakkesepakatan');
+        
+        // Detail Pelanggan Routes
+        Route::get('/programikatan2026/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('programikatan2026.tambahpelanggan');
+        Route::post('/programikatan2026/{no_pengajuan}/storepelanggan', 'storepelanggan')->name('programikatan2026.storepelanggan');
+        Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/editpelanggan', 'editpelanggan')->name('programikatan2026.editpelanggan');
+        Route::post('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('programikatan2026.updatepelanggan');
+        Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/cetakkesepakatan', 'cetakkesepakatan')->name('programikatan2026.cetakkesepakatan');
+        Route::delete('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('programikatan2026.deletepelanggan');
+        Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/detailtarget', 'detailtarget')->name('programikatan2026.detailtarget');
+        Route::get('/programikatan2026/{kode_pelanggan}/{kode_program}/getavgpelanggan', [ProgramIkatan2026Controller::class, 'getAvgpelanggan'])->name('programikatan2026.getavgpelanggan');
+        Route::get('/programikatan2026/{kode_pelanggan}/{kode_program}/gethistoripelangganprogram', [ProgramIkatan2026Controller::class, 'gethistoripelangganprogram'])->name('programikatan2026.gethistoripelangganprogram');
+    });
 
     Route::controller(AjuanprogramikatanController::class)->group(function () {
         Route::get('/ajuanprogramikatan', 'index')->name('ajuanprogramikatan.index')->can('ajuanprogramikatan.index');

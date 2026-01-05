@@ -16,6 +16,7 @@
             'pencairanprogramikt.index',
             'pencairanprogram.index',
             'ajuankumulatif.index',
+            'programikatan2026.index',
         ]))
     <li
         class="menu-item {{ request()->is([
@@ -42,6 +43,8 @@
             'pencairanprogram/*',
             'ajuankumulatif',
             'ajuankumulatif/*',
+            'programikatan2026',
+            'programikatan2026/*',
             'settingkomisidriverhelper',
         ])
             ? 'open'
@@ -127,18 +130,20 @@
                         'pencairanprogramikatan/*',
                         'ajuankumulatif',
                         'ajuankumulatif/*',
+                        'programikatan2026',
+                        'programikatan2026/*',
                     )
                         ? 'active'
                         : '' }}">
                     @if ($level_user == 'manager keuangan' || $level_user == 'staff keuangan')
-                        <a href="{{ route('pencairanprogramikatan.index') }}" class="menu-link">
+                        <a href="{{ route('programmarketing.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-box"></i>
-                            <div>Monitoring Program</div>
+                            <div>Program Marketing</div>
                         </a>
                     @else
-                        <a href="{{ route('ajuanprogramikatan.index') }}" class="menu-link">
+                        <a href="{{ route('programmarketing.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-box"></i>
-                            <div>Monitoring Program</div>
+                            <div>Program Marketing</div>
                         </a>
                     @endif
 

@@ -566,7 +566,6 @@ class PelangganController extends Controller
         $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
 
         $tahunlalu = $tahun - 1;
-
         $produk = json_decode($programikatan->produk, true) ?? [];
         $detailpenjualan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
