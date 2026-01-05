@@ -22,10 +22,12 @@
                             @endif
                         @endif
 
-                        @if ($user->hasRole('super admin','regional operation manager'))
+                        {{-- @if ($user->hasRole('super admin','regional operation manager'))
                             <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i>
                                     Tambah Pelanggan</a>
-                        @endif
+                        @endif --}}
+                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i>
+                            Tambah Pelanggan</a>
                     @endcan
                 </div>
 
