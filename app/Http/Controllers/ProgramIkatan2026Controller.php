@@ -386,7 +386,7 @@ class ProgramIkatan2026Controller extends Controller
                 $grand_total_target += $target_perbulan[$i] + $avg_perbulan[$i];
                 $detailtarget[] = [
                     'no_pengajuan' => $no_pengajuan,
-                    'kode_pelanggan' => $request->kode_pelanggan,
+                    'kode_pelanggan' => $kode_pelanggan,
                     'bulan' => $bulan[$i],
                     'tahun' => $tahun[$i],
                     'avg' => $avg_perbulan[$i],

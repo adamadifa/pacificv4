@@ -2258,7 +2258,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/programikatan2026/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('programikatan2026.tambahpelanggan');
         Route::post('/programikatan2026/{no_pengajuan}/storepelanggan', 'storepelanggan')->name('programikatan2026.storepelanggan');
         Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/editpelanggan', 'editpelanggan')->name('programikatan2026.editpelanggan');
-        Route::post('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('programikatan2026.updatepelanggan');
+        Route::put('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('programikatan2026.updatepelanggan');
         Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/cetakkesepakatan', 'cetakkesepakatan')->name('programikatan2026.cetakkesepakatan');
         Route::delete('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('programikatan2026.deletepelanggan');
         Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/detailtarget', 'detailtarget')->name('programikatan2026.detailtarget');
