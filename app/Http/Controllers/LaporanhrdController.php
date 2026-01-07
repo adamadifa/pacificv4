@@ -776,6 +776,57 @@ class LaporanhrdController extends Controller
         return view('hrd.laporan.cuti_cetak', $data);
     }
 
+    public function cetakpelanggaran(Request $request)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
+
+        $query = DB::table('hrd_suratperingatan');
+        $query->select(
+            'hrd_suratperingatan.nik',
+            'nama_karyawan',
+            'nama_jabatan',
+            'nama_dept',
+            'nama_cabang',
+            DB::raw('GROUP_CONCAT(IF(jenis_sp="ST", DATE_FORMAT(sampai, "%d-%m-%Y"), NULL) SEPARATOR ", ") as stt'),
+            DB::raw('GROUP_CONCAT(IF(jenis_sp="SP1", DATE_FORMAT(sampai, "%d-%m-%Y"), NULL) SEPARATOR ", ") as sp1'),
+            DB::raw('GROUP_CONCAT(IF(jenis_sp="SP2", DATE_FORMAT(sampai, "%d-%m-%Y"), NULL) SEPARATOR ", ") as sp2'),
+            DB::raw('GROUP_CONCAT(IF(jenis_sp="SP3", DATE_FORMAT(sampai, "%d-%m-%Y"), NULL) SEPARATOR ", ") as sp3'),
+            DB::raw('COUNT(hrd_suratperingatan.nik) as jumlah')
+        );
+        $query->join('hrd_karyawan', 'hrd_suratperingatan.nik', '=', 'hrd_karyawan.nik');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->whereRaw('YEAR(hrd_suratperingatan.tanggal)="' . $request->tahun . '"');
+        
+        if (!$user->hasRole($roles_access_all_karyawan)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
+        $query->groupBy(
+            'hrd_suratperingatan.nik',
+            'nama_karyawan',
+            'nama_jabatan',
+            'nama_dept',
+            'nama_cabang'
+        );
+        $query->orderBy('hrd_suratperingatan.nik', 'asc');
+
+        $data['pelanggaran'] = $query->get();
+        $data['tahun'] = $request->tahun;
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Laporan Pelanggaran.xls");
+        }
+        return view('hrd.laporan.pelanggaran_cetak', $data);
+    }
+    
     public function cetakketerlambatan(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);

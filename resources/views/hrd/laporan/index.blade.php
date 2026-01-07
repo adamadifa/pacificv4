@@ -42,6 +42,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('hrd.pelanggaran')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#pelanggaran"
+                            aria-controls="pelanggaran" aria-selected="false" tabindex="-1">
+                            Pelanggaran
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content">
                 <!-- Laporan Persediaan-->
@@ -63,6 +71,11 @@
                 @can('hrd.presensi')
                     <div class="tab-pane fade" id="keterlambatan" role="tabpanel">
                         @include('hrd.laporan.keterlambatan')
+                    </div>
+                @endcan
+                @can('hrd.pelanggaran')
+                    <div class="tab-pane fade" id="pelanggaran" role="tabpanel">
+                        @include('hrd.laporan.pelanggaran')
                     </div>
                 @endcan
             </div>

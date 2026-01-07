@@ -12,6 +12,7 @@
                     <th class="text-center" colspan="5" rowspan="2">Total</th>
                     <th rowspan="3"><i class="ti ti-file-dollar"></i></th>
                     <th rowspan="3"><i class="ti ti-square-check"></i></th>
+                    <th rowspan="3">Nama Pelanggan</th>
                 </tr>
                 <tr>
                     @for ($i = date('m', strtotime($start_date)); $i <= date('m', strtotime($end_date)); $i++)
