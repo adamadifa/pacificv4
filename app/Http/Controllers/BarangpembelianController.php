@@ -165,7 +165,7 @@ class BarangpembelianController extends Controller
                 $query->where('pembelian_barang.kode_group', $kode_group);
             }
 
-            $query->where('pembelian_barang.kode_group', $kode_group);
+            //$query->where('pembelian_barang.kode_group', $kode_group);
             $query->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori');
             $barang = $query;
             return DataTables::of($barang)
