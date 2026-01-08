@@ -549,7 +549,7 @@ function pihakpertamacabang($cabang, $perusahaan)
         'PWT' => 'Yeni Listiana S',
         'TGR' => 'Robertus David',
         'BDG' => 'Dasep Reski Soejani',
-        'SKB' => 'Asep Yusuf',
+        'SKB' => 'Muhamad Yusuf Saefudin',
         'TGL' => 'Imam Syafangat',
         'SBY' => 'Angga Wahyu',
         'SMR' => 'Muhammad Luthfi Amri',
