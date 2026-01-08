@@ -161,6 +161,10 @@ class BarangpembelianController extends Controller
                 'pembelian_barang.*',
                 'nama_kategori'
             );
+            if ($kode_group != "000") {
+                $query->where('pembelian_barang.kode_group', $kode_group);
+            }
+
             $query->where('pembelian_barang.kode_group', $kode_group);
             $query->join('pembelian_barang_kategori', 'pembelian_barang.kode_kategori', '=', 'pembelian_barang_kategori.kode_kategori');
             $barang = $query;
