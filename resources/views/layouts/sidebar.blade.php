@@ -3,10 +3,9 @@
  <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
      <div class="app-brand demo">
          <a href="index.html" class="app-brand-link">
-             <span class="app-brand-logo demo">
-                 <img src="{{ asset('assets/img/logo/logoportal64.png') }}" alt="" width="64">
-             </span>
-             <span class="app-brand-text demo menu-text fw-bold">ortal</span>
+            <span class="app-brand-logo demo">
+                <img src="{{ asset('assets/img/logo/logoportal64.png') }}" alt="" width="64">
+            </span>
          </a>
 
          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">

@@ -81,7 +81,8 @@
                             $colorklaim = !empty($d->kode_klaim) ? 'background-color: green; color: white' : '';
 
                             // Jika status_pajak = 1, set background hijau dengan text putih (kecuali jika sudah ada warna dari klaim)
-                            if (isset($d->status_pajak) && $d->status_pajak == 1) {
+                            // Logic ini hanya berlaku untuk role tertentu: admin pajak, regional operation manager, super admin, gm administrasi
+                            if (isset($d->status_pajak) && $d->status_pajak == 1 && auth()->user()->hasRole(['admin pajak', 'regional operation manager', 'super admin', 'gm administrasi'])) {
                                 $bgcolor = 'green';
                                 $textcolor = 'white';
                             } else {

@@ -103,7 +103,7 @@
                             $status_pajak = isset($d->status_pajak) ? $d->status_pajak : 0;
 
                             // Set background color jika status_pajak = 1
-                            if ($status_pajak == 1) {
+                            if ($status_pajak == 1 && auth()->user()->hasRole(['admin pajak', 'regional operation manager', 'super admin', 'gm administrasi'])) {
                                 $bgcolor = 'green';
                                 $textcolor = 'white';
                             } else {

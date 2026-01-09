@@ -60,7 +60,7 @@
                         }
 
                         // Set background color jika status_pajak = 1
-                        if ($status_pajak == 1) {
+                        if ($status_pajak == 1 && auth()->user()->hasRole(['admin pajak', 'regional operation manager', 'super admin', 'gm administrasi'])) {
                             $bgcolor = 'green';
                             $textcolor = 'white';
                         } else {
