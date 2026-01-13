@@ -8,8 +8,8 @@
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
-            {{-- @include('layouts.navigation_monitoringprogram') --}}
-            {{-- @include('layouts.navigation_program_ikatan') --}}
+            @include('layouts.navigation_marketing_2026_main')
+            @include('layouts.navigation_program_marketing_2026')
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     @can('programikatan2026.create')
@@ -64,154 +64,168 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th rowspan="2">No.</th>
-                                            <th rowspan="2">No Pengajuan</th>
-                                            {{-- <th rowspan="2">No. Dok</th> --}}
-                                            <th rowspan="2">Tanggal</th>
-                                            <th rowspan="2">Program</th>
-                                            <th rowspan="2">Cabang</th>
-                                            <th rowspan="2">Periode</th>
-                                            <th colspan="4">Persetujuan</th>
-                                            <th rowspan="2">Status</th>
-                                            <th rowspan="2">#</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-center">OM</th>
-                                            <th class="text-center">RSM</th>
-                                            <th class="text-center">GM</th>
-                                            <th class="text-center">Direktur</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($ajuanprogramikatan as $d)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $d->no_pengajuan }}</td>
-                                                {{-- <td>{{ $d->nomor_dokumen }}</td> --}}
-                                                <td>{{ formatIndo($d->tanggal) }}</td>
-                                                <td>{{ $d->nama_program }}</td>
-                                                <td>{{ strtoUpper($d->nama_cabang) }}</td>
-                                                <td>{{ date('m', strtotime($d->periode_dari)) }}/{{ date('y', strtotime($d->periode_dari)) }} -
-                                                    {{ date('m', strtotime($d->periode_sampai)) }}/{{ date('y', strtotime($d->periode_sampai)) }}
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->om))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->rsm))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        @if (empty($d->gm) && $d->status == '2')
-                                                            <i class="ti ti-square-x text-danger"></i>
-                                                        @else
-                                                            <i class="ti ti-check text-success"></i>
-                                                        @endif
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->gm))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        @if (empty($d->direktur) && $d->status == '2')
-                                                            <i class="ti ti-square-x text-danger"></i>
-                                                        @else
-                                                            <i class="ti ti-check text-success"></i>
-                                                        @endif
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->direktur))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        @if ($d->status == '2')
-                                                            <i class="ti ti-square-x text-danger"></i>
-                                                        @else
-                                                            <i class="ti ti-check text-success"></i>
-                                                        @endif
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($d->status == '0')
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @elseif ($d->status == '1')
-                                                        <i class="ti ti-checks text-success"></i>
-                                                    @elseif($d->status == '2')
-                                                        <span class="badge bg-danger">Ditolak</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex">
-                                                        @can('programikatan2026.approve')
-                                                            {{-- {{ $d->rsm }} {{ auth()->user()->hasRole('operation manager') }} --}}
-                                                            {{-- {{ dd($user->hasRole('operation manager')) }} --}}
-                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif($user->hasRole(['super admin', 'direktur']))
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @endif
-                                                        @endcan
-                                                        @can('programikatan2026.show')
-                                                            <a href="{{ route('programikatan2026.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
-                                                                target="_blank">
-                                                                <i class="ti ti-printer text-success"></i>
-                                                            </a>
-                                                        @endcan
-                                                        @can('programikatan2026.edit')
-                                                            <a href="{{ route('programikatan2026.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"
-                                                                class="me-1">
-                                                                <i class="ti ti-settings text-primary"></i>
-                                                            </a>
-                                                        @endcan
-
-
-                                                        @can('programikatan2026.delete')
-                                                            @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
-                                                                <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('programikatan2026.delete', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            @endif
-                                                        @endcan
-
-
+                        @foreach ($ajuanprogramikatan as $d)
+                            <div class="col-12 mb-3">
+                                <div class="card card-hover shadow-sm border" style="transition: all 0.2s ease-in-out;">
+                                    <div class="card-body p-3">
+                                        <div class="row align-items-center gx-3">
+                                            {{-- ID & Tanggal (Expanded to col-2) --}}
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-2 mb-md-0">
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-bold text-primary fs-5">#{{ $d->no_pengajuan }}</span>
+                                                    <div class="d-flex align-items-center text-muted">
+                                                        <i class="ti ti-calendar me-1" style="font-size: 0.8rem;"></i>
+                                                        <small class="text-nowrap">{{ formatIndo($d->tanggal) }}</small>
                                                     </div>
-                                                </td>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                                </div>
+                                            </div>
+
+                                            {{-- Program & Cabang --}}
+                                            <div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 mb-2 mb-md-0">
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-bold text-dark text-truncate" style="font-size: 1rem;" title="{{ $d->nama_program }}">{{ $d->nama_program }}</span>
+                                                    <small class="text-secondary text-uppercase fw-semibold">{{ $d->nama_cabang }}</small>
+                                                    <div class="d-flex align-items-center mt-1 text-muted d-md-none flex-wrap gap-1">
+                                                         {{-- Mobile only period check --}}
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="ti ti-clock me-1" style="font-size: 0.8rem;"></i>
+                                                            <small>{{ date('m/y', strtotime($d->periode_dari)) }} - {{ date('m/y', strtotime($d->periode_sampai)) }}</small>
+                                                        </div>
+                                                        @if(!empty($d->semester))
+                                                            <small class="badge bg-label-info p-1" style="font-size: 0.7rem;">Sem {{ $d->semester }}</small>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Periode (Hidden on very small, visible on lg) --}}
+                                            <div class="col-xl-2 col-lg-2 d-none d-lg-block mb-2 mb-md-0">
+                                                <div class="d-flex align-items-center text-secondary bg-label-secondary px-2 py-1 rounded" style="width: fit-content;">
+                                                    <i class="ti ti-clock me-2"></i>
+                                                    <small class="fw-bold text-nowrap">
+                                                        {{ date('m/y', strtotime($d->periode_dari)) }} - {{ date('m/y', strtotime($d->periode_sampai)) }}
+                                                    </small>
+                                                </div>
+                                                @if(!empty($d->semester))
+                                                    <span class="badge bg-label-info mt-1" style="width: fit-content;">Semester {{ $d->semester }}</span>
+                                                @endif
+                                            </div>
+
+                                            {{-- Approval (Expanded to col-3) --}}
+                                            <div class="col-xl-3 col-lg-2 col-md-4 col-sm-12 mb-2 mb-md-0">
+                                                <div class="d-flex justify-content-start align-items-center gap-3">
+                                                    {{-- OM --}}
+                                                    <div class="text-center position-relative">
+                                                        <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">OM</small>
+                                                        @if (empty($d->om)) 
+                                                            <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty"></i></span></div>
+                                                        @else 
+                                                            <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check"></i></span></div>
+                                                        @endif
+                                                    </div>
+                                                    {{-- RSM --}}
+                                                    <div class="text-center position-relative">
+                                                        <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">RSM</small>
+                                                        @if (empty($d->rsm)) 
+                                                            <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty"></i></span></div>
+                                                        @else 
+                                                            @if (empty($d->gm) && $d->status == '2') 
+                                                                <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-danger text-white"><i class="ti ti-x"></i></span></div>
+                                                            @else 
+                                                                <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check"></i></span></div>
+                                                            @endif
+                                                        @endif
+                                                    </div>
+                                                    {{-- GM --}}
+                                                    <div class="text-center position-relative">
+                                                        <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">GM</small>
+                                                        @if (empty($d->gm)) 
+                                                             <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty"></i></span></div>
+                                                        @else
+                                                            @if (empty($d->direktur) && $d->status == '2') 
+                                                                <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-danger text-white"><i class="ti ti-x"></i></span></div>
+                                                            @else 
+                                                                <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check"></i></span></div>
+                                                            @endif
+                                                        @endif
+                                                    </div>
+                                                    {{-- DIR --}}
+                                                    <div class="text-center position-relative">
+                                                        <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">DIR</small>
+                                                        @if (empty($d->direktur)) 
+                                                             <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty"></i></span></div>
+                                                        @else
+                                                            @if ($d->status == '2') 
+                                                                <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-danger text-white"><i class="ti ti-x"></i></span></div>
+                                                            @else 
+                                                                <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check"></i></span></div>
+                                                            @endif
+                                                        @endif
+                                                    </div>
+
+                                                    {{-- Status Badge Inline --}}
+                                                     <div class="ms-2 border-start ps-3 d-flex align-items-center">
+                                                        @if ($d->status == '0')
+                                                            <span class="badge bg-label-warning text-warning d-flex align-items-center gap-1 px-2 py-1"><i class="ti ti-hourglass-empty fs-6"></i> Pending</span>
+                                                        @elseif ($d->status == '1')
+                                                            <span class="badge bg-success d-flex align-items-center gap-1 px-2 py-1"><i class="ti ti-check fs-6"></i> Disetujui</span>
+                                                        @elseif($d->status == '2')
+                                                            <span class="badge bg-danger d-flex align-items-center gap-1 px-2 py-1"><i class="ti ti-ban fs-6"></i> Ditolak</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Actions --}}
+                                            <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 mt-2 mt-lg-0">
+                                                <div class="d-flex justify-content-lg-end justify-content-start gap-1">
+                                                    @can('programikatan2026.approve')
+                                                        @if (($user->hasRole('operation manager') && $d->rsm == null) ||
+                                                            ($user->hasRole('regional sales manager') && $d->gm == null) ||
+                                                            ($user->hasRole('gm marketing') && $d->direktur == null) ||
+                                                            ($user->hasRole(['super admin', 'direktur'])))
+                                                            <a href="#" class="btn btn-icon btn-label-success btnApprove"
+                                                                no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" data-bs-toggle="tooltip" title="Approve">
+                                                                <i class="ti ti-external-link"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endcan
+                                                    
+                                                    @can('programikatan2026.show')
+                                                        <a href="{{ route('programikatan2026.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
+                                                            target="_blank" class="btn btn-icon btn-label-secondary" data-bs-toggle="tooltip" title="Cetak">
+                                                            <i class="ti ti-printer"></i>
+                                                        </a>
+                                                    @endcan
+
+                                                    @can('programikatan2026.edit')
+                                                        <a href="{{ route('programikatan2026.setajuanprogramikatan', Crypt::encrypt($d->no_pengajuan)) }}"
+                                                            class="btn btn-icon btn-label-primary" data-bs-toggle="tooltip" title="Atur">
+                                                            <i class="ti ti-settings"></i>
+                                                        </a>
+                                                    @endcan
+
+                                                    @can('programikatan2026.delete')
+                                                        @if ($user->hasRole(['operation manager', 'sales marketing manager','super admin']) && $d->rsm == null)
+                                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                                action="{{ route('programikatan2026.delete', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-icon btn-label-danger delete-confirm" data-bs-toggle="tooltip" title="Hapus">
+                                                                    <i class="ti ti-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    @endcan
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div style="float: right;">
-                                {{ $ajuanprogramikatan->links() }}
-                            </div>
+                        @endforeach
+                        <div class="col-12 mt-4">
+                             {{ $ajuanprogramikatan->links() }}
                         </div>
                     </div>
                 </div>

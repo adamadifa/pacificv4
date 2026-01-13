@@ -915,6 +915,9 @@ class LaporanaccountingController extends Controller
 
     public function cetakbukubesar(Request $request)
     {
+        if (in_array($request->formatlaporan, ['2', '3']) && !Auth::user()->hasRole(['super admin', 'direktur', 'gm administrasi'])) {
+            abort(403, 'Anda tidak memiliki akses untuk mencetak laporan ini.');
+        }
         //dd('test');
         // Kirim notifikasi WA tentang user yang mengakses halaman cetak buku besar
         $user = Auth::user();

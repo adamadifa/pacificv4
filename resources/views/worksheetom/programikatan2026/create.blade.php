@@ -20,6 +20,13 @@
             @endforeach
         </select>
     </div>
+    <div class="form-group mb-3">
+        <select name="pilih_semester" id="pilih_semester" class="form-select">
+            <option value="">Pilih Semester</option>
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+        </select>
+    </div>
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
             <div class="form-group">
@@ -46,7 +53,7 @@
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
             <div class="form-group">
-                <select name="bulan_sampai" id="bulan_sampai" class="form-select">
+                <select name="bulan_sampai" id="bulan_sampai" class="form-select" style="pointer-events: none; background-color: #e9ecef" tabindex="-1" aria-disabled="true">
                     <option value="">Bulan</option>
                     @foreach ($list_bulan as $d)
                         <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
@@ -74,6 +81,30 @@
 </form>
 <script>
     $(document).ready(function() {
+        $("#pilih_semester").change(function() {
+            var semester = $(this).val();
+            $("#bulan_dari").val("");
+            $("#bulan_dari option").prop('disabled', false).show();
+
+            if (semester == 1) {
+                $("#bulan_sampai").val(6);
+                $("#bulan_dari option").each(function() {
+                    var val = parseInt($(this).val());
+                    if (val > 6) {
+                        $(this).prop('disabled', true).hide();
+                    }
+                });
+            } else if (semester == 2) {
+                $("#bulan_sampai").val(12);
+                $("#bulan_dari option").each(function() {
+                    var val = parseInt($(this).val());
+                    if (val <= 6 && !isNaN(val)) {
+                        $(this).prop('disabled', true).hide();
+                    }
+                });
+            }
+        });
+
         const select2Kodecabangsearch = $('.select2Kodecabangsearch');
         if (select2Kodecabangsearch.length) {
             select2Kodecabangsearch.each(function() {

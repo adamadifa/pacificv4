@@ -110,6 +110,7 @@ use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PencairanprogramController;
 use App\Http\Controllers\PencairanprogramenambulanController;
 use App\Http\Controllers\PencairanprogramikatanController;
+use App\Http\Controllers\PencairanProgramIkatan2026Controller;
 use App\Http\Controllers\PenilaiankaryawanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
@@ -2254,6 +2255,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/programikatan2026/{no_pengajuan}/storeapprove', 'storeapprove')->name('programikatan2026.storeapprove');
         Route::get('/programikatan2026/{no_pengajuan}/cetak', 'cetak')->name('programikatan2026.cetak');
         Route::get('/programikatan2026/{no_pengajuan}/cetakkesepakatan', 'cetakkesepakatan')->name('programikatan2026.cetakkesepakatan');
+        Route::get('/programikatan2026/{no_pengajuan}/getpelangganjson', 'getPelangganJson')->name('programikatan2026.getpelangganjson');
         
         // Detail Pelanggan Routes
         Route::get('/programikatan2026/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('programikatan2026.tambahpelanggan');
@@ -2265,6 +2267,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/detailtarget', 'detailtarget')->name('programikatan2026.detailtarget');
         Route::get('/programikatan2026/{kode_pelanggan}/{kode_program}/getavgpelanggan', [ProgramIkatan2026Controller::class, 'getAvgpelanggan'])->name('programikatan2026.getavgpelanggan');
         Route::get('/programikatan2026/{kode_pelanggan}/{kode_program}/gethistoripelangganprogram', [ProgramIkatan2026Controller::class, 'gethistoripelangganprogram'])->name('programikatan2026.gethistoripelangganprogram');
+    });
+
+    // Pencairan Program Ikatan 2026
+    Route::controller(PencairanProgramIkatan2026Controller::class)->group(function () {
+        Route::get('/pencairanprogramikatan2026', 'index')->name('pencairanprogramikatan2026.index')->can('pencairanprogramikatan2026.index');
+        Route::get('/pencairanprogramikatan2026/create', 'create')->name('pencairanprogramikatan2026.create')->can('pencairanprogramikatan2026.create');
+        Route::post('/pencairanprogramikatan2026/store', 'store')->name('pencairanprogramikatan2026.store')->can('pencairanprogramikatan2026.store');
+        Route::delete('/pencairanprogramikatan2026/{kode_pencairan}/delete', 'destroy')->name('pencairanprogramikatan2026.delete')->can('pencairanprogramikatan2026.delete');
     });
 
     Route::controller(AjuanprogramikatanController::class)->group(function () {

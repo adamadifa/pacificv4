@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProgramIkatan2026Controller extends Controller
 {
@@ -138,6 +139,7 @@ class ProgramIkatan2026Controller extends Controller
                 'tahun_dari' => 'required',
                 'bulan_sampai' => 'required',
                 'tahun_sampai' => 'required',
+                'pilih_semester' => 'required',
             ]);
         } else {
             $request->validate([
@@ -149,6 +151,7 @@ class ProgramIkatan2026Controller extends Controller
                 'tahun_dari' => 'required',
                 'bulan_sampai' => 'required',
                 'tahun_sampai' => 'required',
+                'pilih_semester' => 'required',
             ]);
             $kode_cabang = $request->kode_cabang;
         }
@@ -171,6 +174,7 @@ class ProgramIkatan2026Controller extends Controller
                 'kode_cabang' => $kode_cabang,
                 'periode_dari' => $periode_dari,
                 'periode_sampai' => $periode_sampai,
+                'semester' => $request->pilih_semester,
             ]);
             return Redirect::route('programikatan2026.index')->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
@@ -231,8 +235,19 @@ class ProgramIkatan2026Controller extends Controller
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $ajuanprogramikatan = MktIkatan2026::where('no_pengajuan', $no_pengajuan)->first();
         $data['ajuanprogramikatan'] = $ajuanprogramikatan;
+        $tahun = date('Y', strtotime($ajuanprogramikatan->tanggal));
+        $semester = $ajuanprogramikatan->semester;
 
-        $pelanggan = Pelanggan::where('kode_cabang', $ajuanprogramikatan->kode_cabang)->get();
+        $pelanggan = Pelanggan::where('kode_cabang', $ajuanprogramikatan->kode_cabang)
+            ->whereNotIn('kode_pelanggan', function ($query) use ($semester, $tahun) {
+                $query->select('kode_pelanggan')
+                    ->from('mkt_ikatan_detail_2026')
+                    ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+                    ->where('semester', $semester)
+                    ->whereRaw('YEAR(tanggal) = ?', [$tahun])
+                    ->where('mkt_ikatan_2026.status', '!=', 2);
+            })
+            ->get();
         $data['pelanggan'] = $pelanggan;
 
         return view('worksheetom.programikatan2026.tambahpelanggan', $data);
@@ -432,6 +447,10 @@ class ProgramIkatan2026Controller extends Controller
                 ->where('kode_pelanggan', $kode_pelanggan)
                 ->delete();
 
+            MktIkatanTarget2026::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->delete();
+
             $destination_foto_path = "/public/programikatan2026";
             if ($detail->file_doc) {
                 Storage::delete($destination_foto_path . "/" . $detail->file_doc);
@@ -513,26 +532,35 @@ class ProgramIkatan2026Controller extends Controller
             $field = 'direktur';
         }
 
-        if (isset($_POST['decline'])) {
-            $status  = 2;
-        } else {
-            $status = $user->hasRole('direktur') || $user->hasRole('super admin') ? 1 : 0;
-        }
-
-        $no_pengajuan = Crypt::decrypt($no_pengajuan);
-        try {
-            if ($user->hasRole('super admin')) {
-                MktIkatan2026::where('no_pengajuan', $no_pengajuan)
-                    ->update([
-                        'status' => $status
-                    ]);
+            if (isset($_POST['decline'])) {
+                $status  = 2;
+            } else if (isset($_POST['cancel'])) {
+                $status = 0;
             } else {
-                MktIkatan2026::where('no_pengajuan', $no_pengajuan)
-                    ->update([
-                        $field => auth()->user()->id,
-                        'status' => $status
-                    ]);
+                $status = $user->hasRole('direktur') || $user->hasRole('super admin') ? 1 : 0;
             }
+
+            $no_pengajuan = Crypt::decrypt($no_pengajuan);
+            try {
+                if ($user->hasRole('super admin')) {
+                    MktIkatan2026::where('no_pengajuan', $no_pengajuan)
+                        ->update([
+                            'status' => $status
+                        ]);
+                } else {
+                    $updateData = [
+                        'status' => $status
+                    ];
+
+                    if (isset($_POST['cancel'])) {
+                        $updateData[$field] = null;
+                    } else {
+                        $updateData[$field] = auth()->user()->id;
+                    }
+
+                    MktIkatan2026::where('no_pengajuan', $no_pengajuan)
+                        ->update($updateData);
+                }
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));
         } catch (\Exception $e) {
@@ -730,5 +758,50 @@ class ProgramIkatan2026Controller extends Controller
             ->get();
 
         return view('datamaster.pelanggan.gethistoripelangganprogram', compact('detailpenjualan'));
+    
+}
+
+    public function getPelangganJson(Request $request, $no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $programikatan = MktIkatan2026::where('no_pengajuan', $no_pengajuan)->first();
+        $kode_cabang = $programikatan->kode_cabang;
+        $tahun = date('Y', strtotime($programikatan->tanggal));
+        $semester = $programikatan->semester;
+
+        if ($request->ajax()) {
+            $query = Pelanggan::query();
+            $query->select(
+                'pelanggan.*',
+                'wilayah.nama_wilayah',
+                'salesman.nama_salesman',
+                DB::raw("IF(status_aktif_pelanggan=1,'Aktif','NonAktif') as status_pelanggan")
+            );
+            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+            $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+            $query->where('pelanggan.kode_cabang', $kode_cabang);
+            $query->where('status_aktif_pelanggan', 1);
+
+            $query->whereNotIn('pelanggan.kode_pelanggan', function ($q) use ($semester, $tahun) {
+                $q->select('kode_pelanggan')
+                    ->from('mkt_ikatan_detail_2026')
+                    ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+                    ->where('semester', $semester)
+                    ->whereRaw('YEAR(tanggal) = ?', [$tahun])
+                    ->where('mkt_ikatan_2026.status', '!=', 2);
+            });
+
+
+            $pelanggan = $query;
+            return DataTables::of($pelanggan)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" nama_pelanggan="' . $row->nama_pelanggan . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 }

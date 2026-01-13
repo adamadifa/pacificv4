@@ -7,210 +7,158 @@
 @endsection
 
 <div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between">
-                    <a href="{{ route('programikatan2026.index') }}" class="me-1 btn btn-danger">
-                        <i class="fa fa-arrow-left me-2"></i> Kembali
-                    </a>
-                    @can('programikatan2026.create')
-                        @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $programikatan->rsm == null)
-                            @if ($programikatan->status == 0)
-                                <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i>
-                                    Tambah Pelanggan</a>
-                            @endif
-                        @endif
+    <div class="col-12">
+        {{-- Toolbar & Header --}}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="{{ route('programikatan2026.index') }}" class="btn btn-label-danger">
+                <i class="ti ti-arrow-left me-1"></i> Kembali
+            </a>
+            @can('programikatan2026.create')
+                @if (($user->hasRole(['operation manager', 'sales marketing manager']) && $programikatan->rsm == null) || $user->hasRole(['super admin', 'regional operation manager']))
+                     @if ($programikatan->status == 0)
+                        <a href="#" id="btnCreate" class="btn btn-primary shadow-sm">
+                            <i class="ti ti-user-plus me-1"></i> Tambah Pelanggan
+                        </a>
+                    @endif
+                @endif
+            @endcan
+        </div>
 
-                        {{-- @if ($user->hasRole('super admin','regional operation manager'))
-                            <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i>
-                                    Tambah Pelanggan</a>
-                        @endif --}}
-                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i>
-                            Tambah Pelanggan</a>
-                    @endcan
-                </div>
-
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <table class="table">
-                            <tr>
-                                <th>No. Pengajuan</th>
-                                <td class="text-end">{{ $programikatan->no_pengajuan }}</td>
-                            </tr>
-                            <tr>
-                                <th>No. Dokumen</th>
-                                <td class="text-end">{{ $programikatan->nomor_dokumen }}</td>
-                            </tr>
-                            <tr>
-                                <th>Tanggal</th>
-                                <td class="text-end">{{ DateToIndo($programikatan->tanggal) }}</td>
-                            </tr>
-                            <tr>
-                                <th>Periode Penjualan</th>
-                                <td class="text-end">{{ DateToIndo($programikatan->periode_dari) }} s.d
-                                    {{ DateToIndo($programikatan->periode_sampai) }}</td>
-                            </tr>
-                            <tr>
-                                <th>Program</th>
-                                <td class="text-end">{{ $programikatan->nama_program }}</td>
-                            </tr>
-                            <tr>
-                                <th>Cabang</th>
-                                <td class="text-end">{{ $programikatan->kode_cabang }}</td>
-                            </tr>
-
-                        </table>
+        {{-- Info Card --}}
+        <div class="card shadow-sm border mb-4">
+            <div class="card-body p-4">
+                <div class="row g-4 text-nowrap">
+                    <div class="col-md-4 border-end">
+                        <div class="d-flex align-items-start">
+                            <i class="ti ti-file-description fs-2 text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block mb-1">No. Pengajuan</small>
+                                <h6 class="mb-0 fw-bold">{{ $programikatan->no_pengajuan }}</h6>
+                                <small class="text-secondary">{{ $programikatan->nomor_dokumen }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 border-end">
+                        <div class="d-flex align-items-start">
+                            <i class="ti ti-files fs-2 text-info me-3"></i>
+                            <div>
+                                <small class="text-muted d-block mb-1">Program & Cabang</small>
+                                <h6 class="mb-0 fw-bold text-truncate" title="{{ $programikatan->nama_program }}">{{ $programikatan->nama_program }}</h6>
+                                <span class="badge bg-label-info mt-1">{{ $programikatan->kode_cabang }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-start">
+                             <i class="ti ti-calendar-event fs-2 text-warning me-3"></i>
+                            <div>
+                                <small class="text-muted d-block mb-1">Periode</small>
+                                <h6 class="mb-0 fw-bold">{{ DateToIndo($programikatan->periode_dari) }} - {{ DateToIndo($programikatan->periode_sampai) }}</h6>
+                                <small class="text-muted">Tanggal: {{ DateToIndo($programikatan->tanggal) }}</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <table class="table table-bordered table-striped">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th rowspan="2">No.</th>
-                                    <th rowspan="2">Kode</th>
-                                    <th rowspan="2" style="width: 15%">Nama </th>
-                                    <th rowspan="2" class="text-center">TOTAL<br>PENJUALAN </th>
-                                    <th rowspan="2" class="text-center">Target</th>
-                                    <th rowspan="2" class="text-center">%</th>
-                                    {{-- <th rowspan="2">Reward</th> --}}
-                                    <th rowspan="2">TOP</th>
-                                    {{-- <th colspan="3">Budget</th> --}}
-                                    <th rowspan="2">PMB</th>
-                                    <th rowspan="2">Pencairan</th>
-                                    <th rowspan="2">Doc</th>
-                                    <th rowspan="2">#</th>
-                                </tr>
-                                {{-- <tr>
-                                    <th>SMM</th>
-                                    <th>RSM</th>
-                                    <th>GM</th>
-                                </tr> --}}
-                            </thead>
-                            <tbody>
-                                @php
-                                    $metode_pembayaran = [
-                                        'TN' => 'Tunai',
-                                        'TF' => 'Transfer',
-                                        'VC' => 'Voucher',
-                                    ];
-                                @endphp
-                                @foreach ($detail as $d)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $d->kode_pelanggan }}</td>
-                                        <td>{{ $d->nama_pelanggan }}</td>
-                                        <td class="text-center">{{ formatAngka($d->qty_rata_rata) }} </td>
-                                        <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                                        <td class="text-end">
-                                            @php
-                                                $kenaikan = $d->qty_target - ROUND($d->qty_rata_rata);
-                                                $persentase =
-                                                    $d->qty_rata_rata == 0
-                                                        ? 0
-                                                        : ($kenaikan / ROUND($d->qty_rata_rata)) * 100;
-                                                $persentase = formatAngkaDesimal($persentase);
-                                            @endphp
-                                            {{ $persentase }}%
-                                        </td>
-                                        {{-- <td class="text-end">{{ formatAngka($d->reward) }}</td> --}}
-                                        <td class="text-end">{{ $d->top }}</td>
-                                        {{-- <td class="text-end">{{ formatAngka($d->budget_smm) }}</td>
-                                        <td class="text-end">{{ formatAngka($d->budget_rsm) }}</td>
-                                        <td class="text-end">{{ formatAngka($d->budget_gm) }}</td> --}}
-                                        <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
-                                        <td class="text-end">{{ formatAngka($d->periode_pencairan) }} Bulan</td>
-                                        {{-- <td>{{ $d->no_rekening }}</td>
-                                        <td>{{ $d->pemilik_rekening }}</td>
-                                        <td>{{ $d->bank }}</td> --}}
-                                        <td>
-                                            @if ($d->file_doc != null)
-                                                <a href="{{ asset('storage/programikatan2026/' . $d->file_doc) }}"
-                                                    target="_blank">
-                                                    <i class="ti ti-file-text" class="me-1"></i>
+            </div>
+        </div>
+
+        {{-- Data Table Card --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65;">
+                <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Daftar Pelanggan</h6>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover">
+                    <thead class="text-white" style="background-color: #002e65;">
+                        <tr>
+                            <th class="fw-bold text-white">No</th>
+                            <th class="fw-bold text-white">Kode</th>
+                            <th class="fw-bold text-white">Nama Pelanggan</th>
+                            <th class="fw-bold text-white text-center">Rata-Rata</th>
+                            <th class="fw-bold text-white text-center">Target</th>
+                            <th class="fw-bold text-white text-end">Ach (%)</th>
+                            <th class="fw-bold text-white text-end">TOP</th>
+                            <th class="fw-bold text-white">Metode</th>
+                            <th class="fw-bold text-white text-end">Pencairan</th>
+                            <th class="fw-bold text-white text-center">Doc</th>
+                            <th class="fw-bold text-white text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @php
+                            $metode_pembayaran = [
+                                'TN' => 'Tunai',
+                                'TF' => 'Transfer',
+                                'VC' => 'Voucher',
+                            ];
+                        @endphp
+                        @foreach ($detail as $d)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td><span class="fw-semibold">{{ $d->kode_pelanggan }}</span></td>
+                                <td>{{ $d->nama_pelanggan }}</td>
+                                <td class="text-center">{{ formatAngka($d->qty_rata_rata) }}</td>
+                                <td class="text-center"><span class="badge bg-label-primary">{{ formatAngka($d->qty_target) }}</span></td>
+                                <td class="text-end">
+                                    @php
+                                        $kenaikan = $d->qty_target - ROUND($d->qty_rata_rata);
+                                        $persentase = $d->qty_rata_rata == 0 ? 0 : ($kenaikan / ROUND($d->qty_rata_rata)) * 100;
+                                        $persentase = formatAngkaDesimal($persentase);
+                                        $color = $persentase >= 0 ? 'success' : 'danger';
+                                    @endphp
+                                    <span class="text-{{ $color }} fw-bold">{{ $persentase }}%</span>
+                                </td>
+                                <td class="text-end">{{ $d->top }}</td>
+                                <td>{{ $metode_pembayaran[$d->metode_pembayaran] ?? $d->metode_pembayaran }}</td>
+                                <td class="text-end">{{ formatAngka($d->periode_pencairan) }} Bulan</td>
+                                <td class="text-center">
+                                    @if ($d->file_doc != null)
+                                        <a href="{{ asset('storage/programikatan2026/' . $d->file_doc) }}" target="_blank" class="text-info" data-bs-toggle="tooltip" title="Lihat Dokumen">
+                                            <i class="ti ti-file-text fs-4"></i>
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('programikatan2026.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
+                                            target="_blank" class="text-secondary" data-bs-toggle="tooltip" title="Cetak Kesepakatan">
+                                            <i class="ti ti-printer"></i>
+                                        </a>
+                                        
+                                        @can('programikatan2026.edit')
+                                            @if ($programikatan->status == 0)
+                                                <a href="#" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit text-primary" data-bs-toggle="tooltip" title="Edit">
+                                                    <i class="ti ti-pencil"></i>
                                                 </a>
                                             @endif
-                                        </td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <a href="{{ route('programikatan2026.cetakkesepakatan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}"
-                                                    target="_blank" class="me-1">
-                                                    <i class="ti ti-printer text-primary"></i>
-                                                </a>
-                                                @can('programikatan2026.edit')
-                                                    @if ($programikatan->status == 0)
-                                                        <a href="#"
-                                                            kode_pelanggan = "{{ Crypt::encrypt($d->kode_pelanggan) }}"
-                                                            class="btnEdit me-1">
-                                                            <i class="ti ti-edit text-success"></i>
-                                                        </a>
-                                                    @endif
-                                                @endcan
-                                                @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
-                                                    @if ($programikatan->status == 0)
-                                                        @can('programikatan2026.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('programikatan2026.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        @endcan
-                                                    @endif
-                                                @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
-                                                    @if ($programikatan->status == 0)
-                                                        @can('programikatan2026.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('programikatan2026.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        @endcan
-                                                    @endif
-                                                @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
-                                                    @if ($programikatan->status == 0)
-                                                        @can('programikatan2026.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('programikatan2026.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        @endcan
-                                                    @endif
-                                                @elseif($user->hasRole(['super admin', 'direktur', 'regional sales manager', 'gm marketing']))
-                                                    @if ($programikatan->status == 0)
-                                                        @can('programikatan2026.delete')
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('programikatan2026.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        @endcan
-                                                    @endif
-                                                @endif
+                                        @endcan
 
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                        @if ($programikatan->status == 0)
+                                            @can('programikatan2026.delete')
+                                                @if (($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null) ||
+                                                    ($user->hasRole('regional sales manager') && $d->gm == null) ||
+                                                    ($user->hasRole('gm marketing') && $d->direktur == null) ||
+                                                    ($user->hasRole(['super admin', 'direktur'])))
+                                                    
+                                                    <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                        action="{{ route('programikatan2026.deletepelanggan', [Crypt::encrypt($d->no_pengajuan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Hapus">
+                                                            <i class="ti ti-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endcan
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -296,7 +244,7 @@
             order: [
                 [2, 'asc']
             ],
-            ajax: "{{ route('pelanggan.getpelanggancabangjson', $programikatan->kode_cabang) }}",
+            ajax: "{{ route('programikatan2026.getpelangganjson', Crypt::encrypt($programikatan->no_pengajuan)) }}",
             bAutoWidth: false,
             columns: [{
                     data: 'DT_RowIndex',
