@@ -9,6 +9,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\MktIkatan2026;
+use App\Models\MktIkatanDetail2026;
+use App\Models\MktIkatanTarget2026;
+use App\Models\DetailPencairanProgramIkatan2026;
+use App\Models\Detailpenjualan;
+use Illuminate\Support\Facades\Crypt;
 
 class PencairanProgramIkatan2026Controller extends Controller
 {
@@ -84,7 +90,9 @@ class PencairanProgramIkatan2026Controller extends Controller
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         $data['roles_show_cabang'] = config('global.roles_show_cabang');
         return view('worksheetom.pencairanprogramikatan2026.create', $data);
-        public function destroy($kode_pencairan)
+    }
+
+    public function destroy($kode_pencairan)
     {
         $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
         try {
@@ -97,7 +105,6 @@ class PencairanProgramIkatan2026Controller extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
-}
 
     public function store(Request $request)
     {
@@ -107,7 +114,7 @@ class PencairanProgramIkatan2026Controller extends Controller
             $request->validate([
                 'tanggal' => 'required',
                 'kode_program' => 'required',
-                'bulan' => 'required',
+                'semester' => 'required',
                 'tahun' => 'required',
                 'keterangan' => 'required'
             ]);
@@ -116,7 +123,7 @@ class PencairanProgramIkatan2026Controller extends Controller
                 'tanggal' => 'required',
                 'kode_program' => 'required',
                 'kode_cabang' => 'required',
-                'bulan' => 'required',
+                'semester' => 'required',
                 'tahun' => 'required',
                 'keterangan' => 'required'
             ]);
@@ -132,12 +139,10 @@ class PencairanProgramIkatan2026Controller extends Controller
             $kode_cabang = $request->kode_cabang;
         }
 
-        $bulan = $request->bulan;
+        $semester = $request->semester;
         $tahun = $request->tahun;
 
-        $lastpencairan = PencairanProgramIkatan2026::select('kode_pencairan')->orderBy('kode_pencairan', 'desc')
-            ->whereRaw('LEFT(kode_pencairan,4) = "PC' . $tahunlalu . '"')
-            ->first();
+
             
         // Use standard code generation logic, assuming PC<YY><CAB><XXXX> or similar?
         // Let's check the old controller logic: `PC` . substr($tahun, 2, 2) . $kode_cabang . $format
@@ -158,7 +163,8 @@ class PencairanProgramIkatan2026Controller extends Controller
                 'tanggal' => $request->tanggal,
                 'kode_program' => $request->kode_program,
                 'kode_cabang' => $kode_cabang,
-                'bulan' => $bulan,
+                'bulan' => NULL,
+                'semester' => $semester,
                 'tahun' => $tahun,
                 'keterangan' => $request->keterangan,
                 'status' => '0'
@@ -170,4 +176,256 @@ class PencairanProgramIkatan2026Controller extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    public function setpencairan($kode_pencairan)
+    {
+        $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
+        $query = PencairanProgramIkatan2026::query();
+        $query->select(
+            'marketing_pencairan_ikatan_2026.*',
+            'cabang.nama_cabang',
+            'nama_program',
+        );
+        $query->join('cabang', 'marketing_pencairan_ikatan_2026.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program');
+        $query->orderBy('marketing_pencairan_ikatan_2026.tanggal', 'desc');
+        $query->where('kode_pencairan', $kode_pencairan);
+        $pencairanprogramikatan = $query->first();
+
+
+        $pelangganprogram = \App\Models\MktIkatanDetail2026::select(
+            'mkt_ikatan_detail_2026.kode_pelanggan',
+            'mkt_ikatan_detail_2026.top',
+            'mkt_ikatan_detail_2026.metode_pembayaran',
+            'mkt_ikatan_detail_2026.qty_target',
+            'mkt_ikatan_detail_2026.reward',
+            'mkt_ikatan_detail_2026.tipe_reward',
+            'mkt_ikatan_detail_2026.budget_smm',
+            'mkt_ikatan_detail_2026.budget_rsm',
+            'mkt_ikatan_detail_2026.budget_gm'
+        )
+            ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+            ->where('mkt_ikatan_2026.status', 1)
+            ->where('mkt_ikatan_2026.kode_program', $pencairanprogramikatan->kode_program)
+            ->where('mkt_ikatan_2026.semester', $pencairanprogramikatan->semester)
+            ->where('mkt_ikatan_2026.kode_cabang', $pencairanprogramikatan->kode_cabang);
+
+
+        $detail = \App\Models\DetailPencairanProgramIkatan2026::join('pelanggan', 'marketing_pencairan_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_pencairan_ikatan_2026', 'marketing_pencairan_ikatan_detail_2026.kode_pencairan', '=', 'marketing_pencairan_ikatan_2026.kode_pencairan')
+            ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
+                $join->on('marketing_pencairan_ikatan_detail_2026.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
+            })
+            ->select(
+                'marketing_pencairan_ikatan_detail_2026.*',
+                'pelanggan.nama_pelanggan',
+                'top',
+                'metode_pembayaran',
+                'qty_target',
+                'reward',
+                'tipe_reward',
+                'budget_smm',
+                'budget_rsm',
+                'budget_gm',
+                'kode_program'
+            )
+            ->where('marketing_pencairan_ikatan_detail_2026.kode_pencairan', $kode_pencairan)
+            ->orderBy('pelangganprogram.metode_pembayaran')
+            ->get();
+            
+        $data['pencairanprogram'] = $pencairanprogramikatan;
+        $data['detail'] = $detail;
+        $data['user'] = User::find(auth()->user()->id);
+        return view('worksheetom.pencairanprogramikatan2026.setpencairan', $data);
+    }
+
+    public function tambahpelanggan($kode_pencairan)
+    {
+        $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
+        $data['kode_pencairan'] = $kode_pencairan;
+        return view('worksheetom.pencairanprogramikatan2026.tambahpelanggan', $data);
+    }
+
+    public function getpelanggan(Request $request)
+    {
+        $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($request->kode_pencairan);
+        $pencairanprogram = PencairanProgramIkatan2026::where('kode_pencairan', $kode_pencairan)
+            ->join('cabang', 'marketing_pencairan_ikatan_2026.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('program_ikatan', 'marketing_pencairan_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+
+        $pelanggansudahdicairkan = DetailPencairanProgramIkatan2026::join('marketing_pencairan_ikatan_2026', 'marketing_pencairan_ikatan_detail_2026.kode_pencairan', '=', 'marketing_pencairan_ikatan_2026.kode_pencairan')
+            ->select('kode_pelanggan')
+            ->where('marketing_pencairan_ikatan_2026.semester', $pencairanprogram->semester)
+            ->where('marketing_pencairan_ikatan_2026.tahun', $pencairanprogram->tahun)
+            ->where('marketing_pencairan_ikatan_2026.kode_program', $pencairanprogram->kode_program)
+            ->where('marketing_pencairan_ikatan_2026.kode_cabang', $pencairanprogram->kode_cabang);
+
+
+        $listpelangganikatan = MktIkatanDetail2026::select(
+            'mkt_ikatan_detail_2026.kode_pelanggan',
+            'mkt_ikatan_detail_2026.top',
+            'mkt_ikatan_detail_2026.reward',
+            'mkt_ikatan_detail_2026.tipe_reward',
+            'mkt_ikatan_detail_2026.budget_smm',
+            'mkt_ikatan_detail_2026.budget_rsm',
+            'mkt_ikatan_detail_2026.budget_gm',
+            'mkt_ikatan_detail_2026.qty_target'
+        )
+            ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+            ->where('mkt_ikatan_2026.status', 1)
+            ->where('mkt_ikatan_2026.kode_program', $pencairanprogram->kode_program)
+            ->where('mkt_ikatan_2026.semester', $pencairanprogram->semester)
+            ->where('mkt_ikatan_2026.kode_cabang', $pencairanprogram->kode_cabang)
+             ->whereNotIn('mkt_ikatan_detail_2026.kode_pelanggan', $pelanggansudahdicairkan);
+
+        if ($pencairanprogram->semester == 1) {
+             $start_date = $pencairanprogram->tahun . '-01-01';
+             $end_date = $pencairanprogram->tahun . '-06-30';
+        } else {
+             $start_date = $pencairanprogram->tahun . '-07-01';
+             $end_date = $pencairanprogram->tahun . '-12-31';
+        }
+        $produk = json_decode($pencairanprogram->produk, true) ?? [];
+
+        $detailpenjualan = Detailpenjualan::select(
+            'marketing_penjualan.kode_pelanggan',
+            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as jml_dus'),
+            DB::raw('SUM(IF(jenis_transaksi = "T", floor(jumlah/isi_pcs_dus), 0)) as jml_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi = "K", floor(jumlah/isi_pcs_dus), 0)) as jml_kredit'),
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->joinSub($listpelangganikatan, 'listpelangganikatan', function ($join) {
+                $join->on('marketing_penjualan.kode_pelanggan', '=', 'listpelangganikatan.kode_pelanggan');
+            })
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+             ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3")
+            ->where('status_batal', 0)
+            ->whereIn('produk_harga.kode_produk', $produk)
+            ->groupBy('marketing_penjualan.kode_pelanggan');
+
+
+        $data['peserta'] = MktIkatanDetail2026::select(
+            'mkt_ikatan_detail_2026.kode_pelanggan',
+            'mkt_ikatan_detail_2026.top',
+            'pelanggan.nama_pelanggan',
+            'mkt_ikatan_detail_2026.reward',
+            'mkt_ikatan_detail_2026.tipe_reward',
+            'mkt_ikatan_detail_2026.budget_smm',
+            'mkt_ikatan_detail_2026.budget_rsm',
+            'mkt_ikatan_detail_2026.budget_gm',
+             'mkt_ikatan_detail_2026.qty_target',
+            'detailpenjualan.jml_dus',
+            'detailpenjualan.jml_tunai',
+            'detailpenjualan.jml_kredit',
+            'mkt_ikatan_2026.kode_program'
+        )
+            ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+            ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
+                 $join->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'detailpenjualan.kode_pelanggan');
+            })
+            ->where('mkt_ikatan_2026.status', 1)
+            ->where('mkt_ikatan_2026.kode_program', $pencairanprogram->kode_program)
+            ->where('mkt_ikatan_2026.semester', $pencairanprogram->semester)
+             ->where('mkt_ikatan_2026.kode_cabang', $pencairanprogram->kode_cabang)
+             ->whereNotIn('mkt_ikatan_detail_2026.kode_pelanggan', $pelanggansudahdicairkan)
+             ->get();
+
+        return view('worksheetom.pencairanprogramikatan2026.getpelanggan', $data);
+    }
+
+    public function storepelanggan(Request $request, $kode_pencairan)
+    {
+        $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
+        $kode_pelanggan = $request->kode_pelanggan;
+        $jumlah = $request->jumlah;
+        $status = $request->status;
+        $status_pencairan = $request->status_pencairan;
+
+        DB::beginTransaction();
+        try {
+            $checkpelanggan = $request->input('checkpelanggan', []);
+            foreach ($checkpelanggan as $index => $value) {
+
+                if ($status[$index] == 1) {
+                    DetailPencairanProgramIkatan2026::create([
+                        'kode_pencairan' => $kode_pencairan,
+                        'kode_pelanggan' => $kode_pelanggan[$index],
+                        'jumlah' => toNumber($jumlah[$index]),
+                        'qty_tunai' => toNumber($request->qty_tunai[$index]),
+                        'qty_kredit' => toNumber($request->qty_kredit[$index]),
+                        'reward_tunai' => toNumber($request->reward_tunai[$index]),
+                        'reward_kredit' => toNumber($request->reward_kredit[$index]),
+                        'total_reward' => toNumber($request->total_reward[$index]),
+                        'status_pencairan' => $status_pencairan[$index]
+                    ]);
+                     
+                } 
+            }
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Pelanggan Berhasil Di Proses'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function deletepelanggan($kode_pencairan, $kode_pelanggan)
+    {
+        $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
+        $kode_pelanggan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pelanggan);
+        try {
+            DetailPencairanProgramIkatan2026::where('kode_pencairan', $kode_pencairan)->where('kode_pelanggan', $kode_pelanggan)->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function detailfaktur($kode_pelanggan, $kode_pencairan)
+    {
+        $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
+        $pencairanprogram = PencairanProgramIkatan2026::where('kode_pencairan', $kode_pencairan)
+            ->join('program_ikatan', 'marketing_pencairan_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->first();
+            
+        if ($pencairanprogram->semester == 1) {
+             $start_date = $pencairanprogram->tahun . '-01-01';
+             $end_date = $pencairanprogram->tahun . '-06-30';
+        } else {
+             $start_date = $pencairanprogram->tahun . '-07-01';
+             $end_date = $pencairanprogram->tahun . '-12-31';
+        }
+        $produk = json_decode($pencairanprogram->produk, true) ?? [];
+
+        $detailpenjualan = Detailpenjualan::select(
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.tanggal_pelunasan',
+            'marketing_penjualan.jenis_transaksi',
+            'marketing_penjualan.kode_pelanggan',
+            'nama_pelanggan',
+            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            ->where('status_batal', 0)
+            ->whereIn('produk_harga.kode_produk', $produk)
+            ->get();
+
+         return view('worksheetom.pencairanprogramikatan.detailfaktur', compact('detailpenjualan'));
+    }
 }
+

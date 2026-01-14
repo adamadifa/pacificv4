@@ -21,11 +21,10 @@
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
             <div class="form-group">
-                <select name="bulan" id="bulan" class="form-select">
-                    <option value="">Bulan</option>
-                    @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                    @endforeach
+                <select name="semester" id="semester" class="form-select">
+                    <option value="">Semester</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
                 </select>
             </div>
 
@@ -67,7 +66,7 @@
         $("#formPencairanProgramikatan").submit(function(e) {
             let tanggal = $(this).find('input[name="tanggal"]').val();
             let keterangan = $(this).find('textarea[name="keterangan"]').val();
-            let bulan = $(this).find('select[name="bulan"]').val();
+            let semester = $(this).find('select[name="semester"]').val();
             let tahun = $(this).find('select[name="tahun"]').val();
             let kode_program = $(this).find('select[name="kode_program"]').val();
             let kode_cabang = $(this).find('select[name="kode_cabang"]').val();
@@ -105,14 +104,14 @@
                     }
                 });
                 return false;
-            } else if (bulan == "") {
+            } else if (semester == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Bulan harus diisi !",
+                    text: "Semester harus diisi !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        $(this).find("#bulan").focus();
+                        $(this).find("#semester").focus();
                     }
                 });
                 return false;

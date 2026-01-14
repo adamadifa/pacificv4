@@ -2274,6 +2274,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/pencairanprogramikatan2026', 'index')->name('pencairanprogramikatan2026.index')->can('pencairanprogramikatan2026.index');
         Route::get('/pencairanprogramikatan2026/create', 'create')->name('pencairanprogramikatan2026.create')->can('pencairanprogramikatan2026.create');
         Route::post('/pencairanprogramikatan2026/store', 'store')->name('pencairanprogramikatan2026.store')->can('pencairanprogramikatan2026.store');
+        Route::get('/pencairanprogramikatan2026/{kode_pencairan}/setpencairan', 'setpencairan')->name('pencairanprogramikatan2026.setpencairan')->can('pencairanprogramikatan2026.edit');
+        Route::get('/pencairanprogramikatan2026/{kode_pencairan}/tambahpelanggan', 'tambahpelanggan')->name('pencairanprogramikatan2026.tambahpelanggan')->can('pencairanprogramikatan2026.create');
+        Route::post('/pencairanprogramikatan2026/getpelanggan', 'getpelanggan')->name('pencairanprogramikatan2026.getpelanggan')->can('pencairanprogramikatan2026.create');
+        Route::post('/pencairanprogramikatan2026/{kode_pencairan}/storepelanggan', 'storepelanggan')->name('pencairanprogramikatan2026.storepelanggan')->can('pencairanprogramikatan2026.create');
+        Route::delete('/pencairanprogramikatan2026/{kode_pencairan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('pencairanprogramikatan2026.deletepelanggan')->can('pencairanprogramikatan2026.delete');
+        Route::get('/pencairanprogramikatan2026/{kode_pelanggan}/{kode_pencairan}/detailfaktur', 'detailfaktur')->name('pencairanprogramikatan2026.detailfaktur')->can('pencairanprogramikatan2026.index');
+
         Route::delete('/pencairanprogramikatan2026/{kode_pencairan}/delete', 'destroy')->name('pencairanprogramikatan2026.delete')->can('pencairanprogramikatan2026.delete');
     });
 

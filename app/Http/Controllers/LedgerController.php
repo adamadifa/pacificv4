@@ -19,10 +19,12 @@ class LedgerController extends Controller
 {
     public function index(Request $request)
     {
+
+        $staff_keuangan_cabang = ['52','88'];
         $user = User::findorfail(auth()->user()->id);
         $lg = new Ledger();
         $data['ledger'] = $lg->getLedger(request: $request)->get();
-        if ($user->hasRole('admin pusat')) {
+        if ($user->hasRole('admin pusat') || in_array($user->id, $staff_keuangan_cabang)) {
             $data['bank'] = Bank::where('kode_cabang', '!=', 'PST')->orderBy('nama_bank')->get();
         } else {
 
@@ -54,7 +56,14 @@ class LedgerController extends Controller
 
     public function create()
     {
-        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        $staff_keuangan_cabang = ['52','88'];
+        $user = User::findorfail(auth()->user()->id);
+        if(in_array($user->id, $staff_keuangan_cabang)){
+            $data['bank'] = Bank::where('kode_cabang', '!=', 'PST')->orderBy('nama_bank')->get();
+        }else{
+            $data['bank'] = Bank::orderBy('nama_bank')->get();
+        }
+        //$data['bank'] = Bank::orderBy('nama_bank')->get();
         $data['coa'] = Coa::orderby('kode_akun')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         return view('keuangan.ledger.create', $data);
@@ -147,10 +156,16 @@ class LedgerController extends Controller
     public function edit($no_bukti)
     {
 
+        $staff_keuangan_cabang = ['52','88'];
+        $user = User::findorfail(auth()->user()->id);
         $no_bukti = Crypt::decrypt($no_bukti);
         $lg = new Ledger();
         $data['ledger'] =  $lg->getLedger(no_bukti: $no_bukti)->first();
-        $data['bank'] = Bank::orderBy('nama_bank')->get();
+        if(in_array($user->id, $staff_keuangan_cabang)){
+            $data['bank'] = Bank::where('kode_cabang', '!=', 'PST')->orderBy('nama_bank')->get();
+        }else{
+            $data['bank'] = Bank::orderBy('nama_bank')->get();
+        }
         $data['coa'] = Coa::orderby('kode_akun')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
 

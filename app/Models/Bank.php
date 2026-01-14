@@ -59,8 +59,12 @@ class Bank extends Model
 
     function getMutasibank()
     {
+
+        $staff_keuangan_cabang = ['52','88'];
+
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        
 
         $query = Bank::query();
         $query->join('cabang', 'bank.kode_cabang', '=', 'cabang.kode_cabang');
@@ -69,10 +73,14 @@ class Bank extends Model
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else if ($user->hasRole('admin pusat')) {
                 $query->where('bank.kode_cabang', '!=', 'PST');
-            } else {
+            }else {
                 $query->where('bank.kode_cabang', auth()->user()->kode_cabang);
                 $query->where('nama_bank', 'not like', '%giro%');
             }
+        }else{
+            if(in_array($user->id,$staff_keuangan_cabang)){
+                $query->where('bank.kode_cabang', '!=', 'PST');
+            } 
         }
 
         $query->orderBy('kode_bank');

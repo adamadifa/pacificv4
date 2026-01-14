@@ -13,7 +13,7 @@
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     @can('pencairanprogramikatan2026.create')
-                        <a href="{{ route('pencairanprogramikatan2026.create') }}" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
+                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
                             Buat Pencairan</a>
                     @endcan
                     <div class="row mt-2">
@@ -75,7 +75,7 @@
                                                     <small class="text-secondary text-uppercase fw-semibold">{{ $d->nama_cabang }}</small>
                                                     <div class="d-flex align-items-center mt-1 text-muted d-md-none">
                                                         <i class="ti ti-calendar-event me-1" style="font-size: 0.8rem;"></i>
-                                                        <small>{{ $d->nama_bulan }} {{ $d->tahun }}</small>
+                                                        <small>Semester {{ $d->semester }} {{ $d->tahun }}</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -85,7 +85,7 @@
                                                 <div class="d-flex align-items-center text-secondary bg-label-secondary px-2 py-1 rounded" style="width: fit-content;">
                                                     <i class="ti ti-calendar-event me-2"></i>
                                                     <small class="fw-bold text-nowrap">
-                                                       {{ $list_bulan[$d->bulan - 1]['nama_bulan'] ?? '' }} {{ $d->tahun }}
+                                                       Semester {{ $d->semester }} {{ $d->tahun }}
                                                     </small>
                                                 </div>
                                             </div>
@@ -106,6 +106,12 @@
                                             {{-- Actions --}}
                                             <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 mt-2 mt-lg-0">
                                                 <div class="d-flex justify-content-lg-end justify-content-start gap-1">
+                                                    @can('pencairanprogramikatan2026.edit')
+                                                        <a href="{{ route('pencairanprogramikatan2026.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                            class="btn btn-icon btn-label-primary me-1" data-bs-toggle="tooltip" title="Set Pencairan">
+                                                            <i class="ti ti-settings"></i>
+                                                        </a>
+                                                    @endcan
                                                     @can('pencairanprogramikatan2026.delete')
                                                        @if ($d->status == '0')
                                                             <form method="POST" name="deleteform" class="deleteform d-inline"
@@ -134,10 +140,16 @@
         </div>
     </div>
 </div>
+<x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 <script>
     $(function() {
+        $("#btnCreate").click(function() {
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text("Buat Pencairan Program Ikatan");
+            $("#loadmodal").load("/pencairanprogramikatan2026/create");
+        });
         const select2Kodecabang = $(".select2Kodecabang");
          if (select2Kodecabang.length) {
             select2Kodecabang.each(function() {

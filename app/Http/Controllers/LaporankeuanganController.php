@@ -65,10 +65,13 @@ class LaporankeuanganController extends Controller
     public function cetakledger(Request $request)
     {
 
+
         $user = User::findorfail(auth()->user()->id);
         if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'rom'])) {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
+
+        $staff_keuangan_cabang = ['52','88'];
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
         $data['bank'] = Bank::where('kode_bank', $request->kode_bank_ledger)->first();
@@ -110,6 +113,10 @@ class LaporankeuanganController extends Controller
             if ($user->hasRole(['admin pajak', 'rom'])) {
                 $query->whereIn(DB::raw('LEFT(keuangan_ledger.kode_akun, 2)'), ['5-', '6-', '7-', '8-', '9-']);
             }
+
+            if(in_array($user->id,$staff_keuangan_cabang)){
+                $query->where('bank.kode_cabang', '!=', 'PST');
+            }
             $ledger = $query->get();
 
             // Load cost ratio untuk setiap ledger
@@ -143,6 +150,7 @@ class LaporankeuanganController extends Controller
             );
 
             $query->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
+            $query->join('bank','keuangan_ledger.kode_bank','=','bank.kode_bank');
             $query->orderBy('keuangan_ledger.kode_akun');
             $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
             if (!empty($request->kode_bank_ledger)) {
@@ -150,6 +158,10 @@ class LaporankeuanganController extends Controller
             }
             if ($user->hasRole(['admin pajak', 'rom'])) {
                 $query->whereIn(DB::raw('LEFT(keuangan_ledger.kode_akun, 2)'), ['5-', '6-', '7-', '8-', '9-']);
+            }
+
+            if(in_array($user->id,$staff_keuangan_cabang)){
+                $query->where('bank.kode_cabang', '!=', 'PST');
             }
             $query->groupBy('keuangan_ledger.kode_akun', 'nama_akun');
             $data['ledger'] = $query->get();

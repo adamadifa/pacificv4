@@ -214,7 +214,7 @@
             }
         @endphp
 
-        @if($showCancel)
+        @if($showCancel || $user->hasRole('super admin'))
         <div class="col">
             <button class="btn btn-warning w-100" id="btnCancel" name="cancel" value="1"><i
                     class="ti ti-rotate-clockwise-2 me-1"></i>Batalkan</button></button>
