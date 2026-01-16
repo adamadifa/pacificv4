@@ -308,6 +308,8 @@
                                                     <td class="text-end">{{ formatAngkaDesimal($subtotal_potongan) }}</td>
                                                     <td>
                                                         @if ($cekhistoribayar === 0)
+                                                            <a href="#" id="index_{{ $no_potongan }}" class="editpotongan me-1"><i
+                                                                    class="ti ti-edit text-success"></i></a>
                                                             <a href="#" id="index_{{ $no_potongan }}" class="deletepotongan"><i
                                                                     class="ti ti-trash text-danger"></i></a>
                                                         @endif
@@ -969,6 +971,7 @@
                     <td class='text-end'>${harga}</td>
                     <td class='text-end'>${total_potongan}</td>
                     <td>
+                        <a href="#" id="index_${barisPotongan}" class="editpotongan me-1"><i class="ti ti-edit text-success"></i></a>
                         <a href="#" id="index_${barisPotongan}" class="deletepotongan"><i class="ti ti-trash text-danger"></i></a>
                     </td>
                 </tr>
@@ -1403,6 +1406,120 @@
             }
             // $('.hapussplit').addClass('delete');
 
+        });
+
+        let currentRowPotongan;
+        $(document).on('click', '.editpotongan', function(e) {
+            e.preventDefault();
+            currentRowPotongan = $(this).closest('tr');
+            let keterangan = currentRowPotongan.find('td:eq(0)').text();
+            let kode_akun = currentRowPotongan.find('input[name="kode_akun_potongan_item[]"]').val();
+            let jumlah = currentRowPotongan.find('input[name="jumlah_potongan_item[]"]').val();
+            let harga = currentRowPotongan.find('input[name="harga_potongan_item[]"]').val();
+            let total = currentRowPotongan.find('td:eq(4)').text();
+
+            let datapotongan = {
+                'keterangan': keterangan,
+                'kode_akun': kode_akun,
+                'jumlah': jumlah,
+                'harga': harga,
+                'total': total
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/pembelian/editpotongan',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    datapotongan: datapotongan
+                },
+                cache: false,
+                success: function(respond) {
+                    $("#modal").modal("show");
+                    $("#modal").find(".modal-title").text("Edit Potongan");
+                    $("#loadmodal").html(respond);
+                    $("#modal").find(".modal-dialog").removeClass("modal-xxl");
+                }
+            });
+        });
+
+        $(document).on('submit', '#formEditPotongan', function(e) {
+            e.preventDefault();
+            const keterangan = $(this).find("#keterangan_potongan").val();
+            const jumlah = $(this).find("#jumlah_potongan").val();
+            const harga = $(this).find("#harga_potongan").val();
+            const total_potongan = $(this).find("#total_potongan").val();
+            const dataAkun = $(this).find("#kode_akun_potongan :selected").select2(this.data);
+            const kode_akun = $(dataAkun).val();
+            const nama_akun = $(dataAkun).text();
+
+            if (keterangan == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Keterangan harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#keterangan_potongan").focus();
+                    },
+                });
+
+                return false;
+            } else if (jumlah == "" || jumlah === "0") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Qty Tidak Boleh Kosong!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#jumlah_potongan").focus();
+                    },
+                });
+
+                return false;
+            } else if (harga == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Harga harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#harga_potongan").focus();
+                    },
+                });
+
+                return false;
+            } else if (kode_akun == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Kode Akun harus diisi!",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        $(this).find("#kode_akun_potongan").focus();
+                    },
+                });
+
+                return false;
+            } else {
+                let potongan = `
+                    <input type="hidden" name="keterangan_potongan_item[]" value="${keterangan}" />
+                    <input type="hidden" name="kode_akun_potongan_item[]" value="${kode_akun}" />
+                    <input type="hidden" name="jumlah_potongan_item[]" value="${jumlah}" />
+                    <input type="hidden" name="harga_potongan_item[]" value="${harga}" />
+                    <td>${keterangan}</td>
+                    <td>${nama_akun}</td>
+                    <td>${jumlah}</td>
+                    <td class='text-end'>${harga}</td>
+                    <td class='text-end'>${total_potongan}</td>
+                    <td>
+                        <a href="#" id="index_${barisPotongan}" class="editpotongan me-1"><i class="ti ti-edit text-success"></i></a>
+                        <a href="#" id="index_${barisPotongan}" class="deletepotongan"><i class="ti ti-trash text-danger"></i></a>
+                    </td>
+                `;
+                currentRowPotongan.html(potongan);
+                $("#modal").modal("hide");
+            }
         });
     });
 </script>

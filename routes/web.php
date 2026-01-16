@@ -1442,6 +1442,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembelian/{no_bukti}/edit', 'edit')->name('pembelian.edit')->can('pembelian.edit');
         Route::put('/pembelian/{no_bukti}/update', 'update')->name('pembelian.update')->can('pembelian.update');
         Route::get('/pembelian/createpotongan', 'createpotongan')->name('pembelian.createpotongan')->can('pembelian.edit');
+        Route::post('/pembelian/editpotongan', 'editpotongan')->name('pembelian.editpotongan')->can('pembelian.edit');
         Route::post('/pembelian/store', 'store')->name('pembelian.store')->can('pembelian.store');
         Route::delete('/pembelian/{id}/delete', 'destroy')->name('pembelian.delete')->can('pembelian.delete');
         Route::get('/pembelian/jatuhtempo', 'jatuhtempo')->name('pembelian.jatuhtempo')->can('pembelian.jatuhtempo');
@@ -1457,6 +1458,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/jurnalkoreksi', 'index')->name('jurnalkoreksi.index')->can('jurnalkoreksi.index');
         Route::get('/jurnalkoreksi/create', 'create')->name('jurnalkoreksi.create')->can('jurnalkoreksi.create');
         Route::post('/jurnalkoreksi/store', 'store')->name('jurnalkoreksi.store')->can('jurnalkoreksi.store');
+        Route::get('/jurnalkoreksi/{kode_jurnalkoreksi}/edit', 'edit')->name('jurnalkoreksi.edit')->can('jurnalkoreksi.create');
+        Route::put('/jurnalkoreksi/{kode_jurnalkoreksi}/update', 'update')->name('jurnalkoreksi.update')->can('jurnalkoreksi.create');
         Route::delete('/jurnalkoreksi/{kode_jurnalkoreksi}/delete', 'destroy')->name('jurnalkoreksi.delete')->can('jurnalkoreksi.delete');
     });
 

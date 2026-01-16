@@ -31,7 +31,7 @@
             @endforeach
         </select>
     </div>
-    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" value="{{ $databarang['keterangan'] }}"/>
     <x-select label="Cabang" name="kode_cabang_editBarang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
         select2="select2Kodecabangeditbarang" selected="{{ $databarang['kode_cabang'] }}" />
     <div class="form-group mb-3">

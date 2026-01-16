@@ -118,6 +118,130 @@ class JurnalkoreksiController extends Controller
         }
     }
 
+
+    public function edit($kode_jurnalkoreksi)
+    {
+        $kode_jurnalkoreksi = Crypt::decrypt($kode_jurnalkoreksi);
+        $jurnalkoreksi = Jurnalkoreksi::where('kode_jurnalkoreksi', $kode_jurnalkoreksi)
+            ->join('pembelian_barang', 'pembelian_jurnalkoreksi.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->first();
+
+        $pembelian = Pembelian::where('no_bukti', $jurnalkoreksi->no_bukti)->first();
+
+
+        $other_jurnalkoreksi = Jurnalkoreksi::where('no_bukti', $jurnalkoreksi->no_bukti)
+            ->where('kode_barang', $jurnalkoreksi->kode_barang)
+            ->where('keterangan', $jurnalkoreksi->keterangan)
+            ->where('jumlah', $jurnalkoreksi->jumlah)
+            ->where('harga', $jurnalkoreksi->harga)
+            ->where('tanggal', $jurnalkoreksi->tanggal)
+            ->where('kode_jurnalkoreksi', '!=', $kode_jurnalkoreksi)
+            ->first();
+
+        if ($jurnalkoreksi->debet_kredit == 'D') {
+            $kode_akun_debet = $jurnalkoreksi->kode_akun;
+            $kode_akun_kredit = $other_jurnalkoreksi != null ? $other_jurnalkoreksi->kode_akun : '';
+        } else {
+            $kode_akun_debet = $other_jurnalkoreksi != null ? $other_jurnalkoreksi->kode_akun : '';
+            $kode_akun_kredit = $jurnalkoreksi->kode_akun;
+        }
+
+        $data['jurnalkoreksi'] = $jurnalkoreksi;
+        $data['pembelian'] = $pembelian;
+        $data['kode_akun_debet'] = $kode_akun_debet;
+        $data['kode_akun_kredit'] = $kode_akun_kredit;
+        $data['supplier'] = Supplier::orderBy('nama_supplier')->get();
+        $data['coa'] = Coadepartemen::where('kode_dept', 'PMB')
+            ->join('coa', 'coa_departemen.kode_akun', '=', 'coa.kode_akun')
+            ->orderBy('coa_departemen.kode_akun')
+            ->get();
+        return view('pembelian.jurnalkoreksi.edit', $data);
+    }
+
+    public function update(Request $request, $kode_jurnalkoreksi)
+    {
+        $kode_jurnalkoreksi = Crypt::decrypt($kode_jurnalkoreksi);
+        $request->validate([
+            'tanggal' => 'required|date',
+            'kode_supplier' => 'required',
+            'no_bukti' => 'required',
+            'kode_barang' => 'required',
+            'keterangan' => 'required',
+            'jumlah' => 'required',
+            'harga' => 'required',
+            'kode_akun_debet' => 'required',
+            'kode_akun_kredit' => 'required',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "pembelian");
+            if ($cektutuplaporan > 0) {
+                return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
+            }
+
+            //Get Original Data to find Partner
+            $jurnalkoreksi_old = Jurnalkoreksi::where('kode_jurnalkoreksi', $kode_jurnalkoreksi)->first();
+            $other_jurnalkoreksi = Jurnalkoreksi::where('no_bukti', $jurnalkoreksi_old->no_bukti)
+                ->where('kode_barang', $jurnalkoreksi_old->kode_barang)
+                ->where('keterangan', $jurnalkoreksi_old->keterangan)
+                ->where('jumlah', $jurnalkoreksi_old->jumlah)
+                ->where('harga', $jurnalkoreksi_old->harga)
+                // ->where('tanggal', $jurnalkoreksi_old->tanggal)
+                ->where('kode_jurnalkoreksi', '!=', $kode_jurnalkoreksi)
+                ->first();
+
+
+            //Delete Old Data
+            $jurnalkoreksi_old->delete();
+            if ($other_jurnalkoreksi) {
+                $other_jurnalkoreksi->delete();
+            }
+
+            //Create New Data (Same Logic as Store)
+            $lastjurnalkoreksi = Jurnalkoreksi::select('kode_jurnalkoreksi')
+                ->whereRaw('LEFT(kode_jurnalkoreksi,6)="JK' . date('ym', strtotime($request->tanggal)) . '"')
+                ->orderBy('kode_jurnalkoreksi', 'desc')
+                ->first();
+            $last_kode_jurnalkoreksi = $lastjurnalkoreksi != null ? $lastjurnalkoreksi->kode_jurnalkoreksi : '';
+
+            $kode_jk_debet = buatkode($last_kode_jurnalkoreksi, 'JK' . date('y', strtotime($request->tanggal)) . date('m', strtotime($request->tanggal)), 3);
+            $kode_jk_kredit = buatkode($kode_jk_debet, 'JK' . date('y', strtotime($request->tanggal)) . date('m', strtotime($request->tanggal)), 3);
+
+            //Insert Debet
+            Jurnalkoreksi::create([
+                'kode_jurnalkoreksi' => $kode_jk_debet,
+                'tanggal' => $request->tanggal,
+                'no_bukti' => $request->no_bukti,
+                'kode_barang' => $request->kode_barang,
+                'keterangan' => $request->keterangan,
+                'jumlah' => toNumber($request->jumlah),
+                'harga' => toNumber($request->harga),
+                'debet_kredit' => 'D',
+                'kode_akun' => $request->kode_akun_debet
+            ]);
+
+            //Insert Kredit
+            Jurnalkoreksi::create([
+                'kode_jurnalkoreksi' => $kode_jk_kredit,
+                'tanggal' => $request->tanggal,
+                'no_bukti' => $request->no_bukti,
+                'kode_barang' => $request->kode_barang,
+                'keterangan' => $request->keterangan,
+                'jumlah' => toNumber($request->jumlah),
+                'harga' => toNumber($request->harga),
+                'debet_kredit' => 'K',
+                'kode_akun' => $request->kode_akun_kredit
+            ]);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
     public function destroy($kode_jurnalkoreksi)
     {
         DB::beginTransaction();

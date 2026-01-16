@@ -83,6 +83,12 @@
                                             <td class="text-end">{{ formatAngkaDesimal($debet) }}</td>
                                             <td class="text-end">{{ formatAngkaDesimal($kredit) }}</td>
                                             <td>
+                                                @can('jurnalkoreksi.create')
+                                                    <a href="#" class="btnEdit me-1"
+                                                        kode_jurnalkoreksi="{{ Crypt::encrypt($d->kode_jurnalkoreksi) }}">
+                                                        <i class="ti ti-edit text-success"></i>
+                                                    </a>
+                                                @endcan
                                                 @can('jurnalkoreksi.delete')
                                                     <form method="POST" name="deleteform" class="deleteform"
                                                         action="{{ route('jurnalkoreksi.delete', Crypt::encrypt($d->kode_jurnalkoreksi)) }}">
@@ -132,6 +138,15 @@
             $("#modal").modal("show");
             $(".modal-title").text("Input Jurnal Koreksi");
             $("#loadmodal").load(`/jurnalkoreksi/create`);
+        });
+
+        $(".btnEdit").click(function(e) {
+            e.preventDefault();
+            loading();
+            var kode_jurnalkoreksi = $(this).attr("kode_jurnalkoreksi");
+            $("#modal").modal("show");
+            $(".modal-title").text("Edit Jurnal Koreksi");
+            $("#loadmodal").load(`/jurnalkoreksi/${kode_jurnalkoreksi}/edit`);
         });
     });
 </script>
