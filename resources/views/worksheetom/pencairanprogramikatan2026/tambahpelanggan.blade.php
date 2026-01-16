@@ -2,29 +2,9 @@
     id="formprosesPelanggan" method="POST">
 
     @csrf
-    <table class="table table-bordered ">
-        <thead class="table-dark">
-            <tr>
-                <th rowspan="2">No</th>
-                <th rowspan="2">Kode Pelanggan</th>
-                <th rowspan="2">Nama Pelanggan</th>
-                <th class="text-center" colspan="3">Target</th>
-                <th rowspan="2" class="text-center">Realisasi</th>
-                <th rowspan="2" class="text-center">Reward</th>
-                <th rowspan="2"><i class="ti ti-file-dollar"></i></th>
-                <th rowspan="2"><i class="ti ti-square-check"></i></th>
-            </tr>
-            <tr>
-                <th>AVG</th>
-                <th>Target</th>
-                <th>Total</th>
-            </tr>
+    <div class="row" id="loadpenjualanpelanggan">
 
-        </thead>
-        <tbody id="loadpenjualanpelanggan">
-
-        </tbody>
-    </table>
+    </div>
 
     <div class="row mt-3">
         <div class="col">
@@ -39,7 +19,7 @@
     $(document).ready(function() {
         function loadpenjualanpelanggan() {
             let kode_pencairan = "{{ Crypt::encrypt($kode_pencairan) }}";
-            $("#loadpenjualanpelanggan").html("<tr class='text-center'><td colspan='8'>Loading...</td></tr>");
+            $("#loadpenjualanpelanggan").html("<div class='col-12 text-center'>Loading...</div>");
             $.ajax({
                 type: 'POST',
                 url: '/pencairanprogramikatan2026/getpelanggan',

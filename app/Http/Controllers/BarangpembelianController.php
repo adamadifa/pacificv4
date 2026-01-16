@@ -171,7 +171,7 @@ class BarangpembelianController extends Controller
             return DataTables::of($barang)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="#" kode_barang="' . $row->kode_barang . '" nama_barang="' . $row->nama_barang . '" class="pilihBarang"><i class="ti ti-external-link"></i></a>';
+                    $btn = '<a href="#" kode_barang="' . $row->kode_barang . '" nama_barang="' . $row->nama_barang . '" kode_jenis_barang="' . $row->kode_jenis_barang . '" class="pilihBarang"><i class="ti ti-external-link"></i></a>';
                     return $btn;
                 })
 

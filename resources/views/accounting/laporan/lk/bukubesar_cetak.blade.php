@@ -145,6 +145,8 @@
                                 <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</th>
                             </tr>
                             @php
+                                $saldo_awal_debet = 0;
+                                $saldo_awal_kredit = 0;
                                 $total_debet = 0;
                                 $total_kredit = 0;
                             @endphp

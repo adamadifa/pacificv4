@@ -212,6 +212,22 @@ class PencairanProgramIkatan2026Controller extends Controller
             ->where('mkt_ikatan_2026.kode_cabang', $pencairanprogramikatan->kode_cabang);
 
 
+        $target_ikatan = MktIkatanTarget2026::select(
+            'no_pengajuan',
+            'kode_pelanggan',
+            DB::raw('SUM(avg) as avg'),
+            DB::raw('SUM(target_perbulan) as target_perbulan')
+        )
+            ->groupBy('no_pengajuan', 'kode_pelanggan');
+
+        $pelangganprogram->leftJoinSub($target_ikatan, 'target_ikatan', function ($join) {
+            $join->on('mkt_ikatan_detail_2026.no_pengajuan', '=', 'target_ikatan.no_pengajuan');
+            $join->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'target_ikatan.kode_pelanggan');
+        });
+        
+        $pelangganprogram->addSelect('target_ikatan.avg', 'target_ikatan.target_perbulan');
+
+
         $detail = \App\Models\DetailPencairanProgramIkatan2026::join('pelanggan', 'marketing_pencairan_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('marketing_pencairan_ikatan_2026', 'marketing_pencairan_ikatan_detail_2026.kode_pencairan', '=', 'marketing_pencairan_ikatan_2026.kode_pencairan')
             ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
@@ -223,16 +239,26 @@ class PencairanProgramIkatan2026Controller extends Controller
                 'top',
                 'metode_pembayaran',
                 'qty_target',
-                'reward',
+                // 'reward', // Ambiguous and covered by marketing_pencairan_ikatan_detail_2026.reward
                 'tipe_reward',
                 'budget_smm',
                 'budget_rsm',
                 'budget_gm',
-                'kode_program'
+                'budget_rsm',
+                'budget_gm',
+                'kode_program',
+                'avg',
+                'target_perbulan'
             )
             ->where('marketing_pencairan_ikatan_detail_2026.kode_pencairan', $kode_pencairan)
             ->orderBy('pelangganprogram.metode_pembayaran')
             ->get();
+
+        $detail->transform(function ($item) {
+            $item->kenaikan_per_bulan = ($item->target_perbulan ?? 0) / 6;
+            // Map new columns to old names if view not updated yet? No, plan is to update view.
+            return $item;
+        });
             
         $data['pencairanprogram'] = $pencairanprogramikatan;
         $data['detail'] = $detail;
@@ -311,6 +337,14 @@ class PencairanProgramIkatan2026Controller extends Controller
             ->groupBy('marketing_penjualan.kode_pelanggan');
 
 
+        $target_ikatan = MktIkatanTarget2026::select(
+            'no_pengajuan',
+            'kode_pelanggan',
+            DB::raw('SUM(avg) as avg'),
+            DB::raw('SUM(target_perbulan) as target_perbulan')
+        )
+            ->groupBy('no_pengajuan', 'kode_pelanggan');
+
         $data['peserta'] = MktIkatanDetail2026::select(
             'mkt_ikatan_detail_2026.kode_pelanggan',
             'mkt_ikatan_detail_2026.top',
@@ -321,6 +355,8 @@ class PencairanProgramIkatan2026Controller extends Controller
             'mkt_ikatan_detail_2026.budget_rsm',
             'mkt_ikatan_detail_2026.budget_gm',
              'mkt_ikatan_detail_2026.qty_target',
+             'target_ikatan.avg',
+             'target_ikatan.target_perbulan',
             'detailpenjualan.jml_dus',
             'detailpenjualan.jml_tunai',
             'detailpenjualan.jml_kredit',
@@ -328,6 +364,10 @@ class PencairanProgramIkatan2026Controller extends Controller
         )
             ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+            ->leftJoinSub($target_ikatan, 'target_ikatan', function($join){
+                $join->on('mkt_ikatan_detail_2026.no_pengajuan', '=', 'target_ikatan.no_pengajuan');
+                $join->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'target_ikatan.kode_pelanggan');
+            })
             ->leftJoinSub($detailpenjualan, 'detailpenjualan', function ($join) {
                  $join->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'detailpenjualan.kode_pelanggan');
             })
@@ -337,6 +377,41 @@ class PencairanProgramIkatan2026Controller extends Controller
              ->where('mkt_ikatan_2026.kode_cabang', $pencairanprogram->kode_cabang)
              ->whereNotIn('mkt_ikatan_detail_2026.kode_pelanggan', $pelanggansudahdicairkan)
              ->get();
+
+        $reward_program = \App\Models\MktRewardProgram2026::with('details')->where('kode_program', $pencairanprogram->kode_program)->first();
+        $reward_details = $reward_program ? $reward_program->details : collect([]);
+
+        $data['peserta']->transform(function ($item) use ($reward_details) {
+            $avg = $item->avg ?? 0;
+            $target_perbulan = $item->target_perbulan ?? 0;
+            $jml_dus = $item->jml_dus ?? 0;
+            $total_target_pencapaian = $avg + $target_perbulan;
+            $item->kenaikan_per_bulan = $target_perbulan / 6;
+
+            // Find Reward Tier based on Kenaikan Per Bulan (previously AVG)
+            $kenaikan_per_bulan = $item->kenaikan_per_bulan;
+            $tier = $reward_details->first(function ($detail) use ($kenaikan_per_bulan) {
+                return $kenaikan_per_bulan >= $detail->qty_dari && $kenaikan_per_bulan <= $detail->qty_sampai;
+            });
+
+            $rate = 0;
+            if ($tier) {
+                if ($jml_dus >= $total_target_pencapaian) {
+                    $rate = $tier->reward_ach_target;
+                } elseif ($jml_dus >= $avg) {
+                    $rate = $tier->reward_tidak_minus;
+                } elseif ($jml_dus >= ($avg * 0.9)) {
+                    $rate = $tier->reward_minus;
+                }
+            }
+
+            $item->reward_rate = $rate;
+            $item->calculated_reward_tunai = ($item->jml_tunai ?? 0) * $rate;
+            $item->calculated_reward_kredit = ($item->jml_kredit ?? 0) * $rate;
+            $item->calculated_reward_total = $jml_dus * $rate;
+
+            return $item;
+        });
 
         return view('worksheetom.pencairanprogramikatan2026.getpelanggan', $data);
     }
@@ -358,12 +433,8 @@ class PencairanProgramIkatan2026Controller extends Controller
                     DetailPencairanProgramIkatan2026::create([
                         'kode_pencairan' => $kode_pencairan,
                         'kode_pelanggan' => $kode_pelanggan[$index],
-                        'jumlah' => toNumber($jumlah[$index]),
-                        'qty_tunai' => toNumber($request->qty_tunai[$index]),
-                        'qty_kredit' => toNumber($request->qty_kredit[$index]),
-                        'reward_tunai' => toNumber($request->reward_tunai[$index]),
-                        'reward_kredit' => toNumber($request->reward_kredit[$index]),
-                        'total_reward' => toNumber($request->total_reward[$index]),
+                        'realisasi' => toNumber($jumlah[$index]),
+                        'reward' => toNumber($request->total_reward[$index]),
                         'status_pencairan' => $status_pencairan[$index]
                     ]);
                      

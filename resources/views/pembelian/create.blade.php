@@ -378,6 +378,19 @@
             e.preventDefault();
             const kode_barang = $(this).attr('kode_barang');
             const nama_barang = $(this).attr('nama_barang');
+            const kode_jenis_barang = $(this).attr('kode_jenis_barang');
+            //alert(kode_jenis_barang);
+            if(kode_jenis_barang == 'BB'){
+                
+            // Agar select kode_akun memilih akun 1-1104
+            form.find("#kode_akun").val('5-1101').trigger('change');
+            }else if(kode_jenis_barang == 'BT'){
+                form.find("#kode_akun").val('5-1102').trigger('change');
+            } else if(kode_jenis_barang == 'KM'){
+                form.find("#kode_akun").val('5-1103').trigger('change');
+            } else{
+                form.find("#kode_akun").val('');
+            }
             form.find("#kode_barang").val(kode_barang);
             form.find("#nama_barang").val(nama_barang);
             $("#modalBarang").modal("hide");

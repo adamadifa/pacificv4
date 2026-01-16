@@ -77,23 +77,25 @@
                             <th rowspan="2" class="text-white">No.</th>
                             <th rowspan="2" class="text-white">Kode</th>
                             <th rowspan="2" class="text-white">Nama Pelanggan</th>
-                            <th class="text-center text-white" colspan="3">Target</th>
-                            <th class="text-center text-white" rowspan="2">Realisasi</th>
-                            <th class="text-center text-white" rowspan="2">Reward</th>
+                            <th class="text-center text-white" colspan="4">Target</th>
+                            <th class="text-center text-white" rowspan="2"><i class="ti ti-chart-bar me-1"></i>Realisasi</th>
+                            <th class="text-center text-white" rowspan="2"><i class="ti ti-gift me-1"></i>Reward</th>
 
-                            <th rowspan="2" class="text-white">Pembayaran</th>
-                            <th rowspan="2" class="text-white">No. Rekening</th>
-                            <th rowspan="2" class="text-white">Pemilik</th>
-                            <th rowspan="2" class="text-white">Bank</th>
+                            <th rowspan="2" class="text-white"><i class="ti ti-wallet me-1"></i>Pembayaran</th>
+                            <th rowspan="2" class="text-white"><i class="ti ti-credit-card me-1"></i>No. Rekening</th>
+                            <th rowspan="2" class="text-white"><i class="ti ti-user me-1"></i>Pemilik</th>
+                            <th rowspan="2" class="text-white"><i class="ti ti-building-bank me-1"></i>Bank</th>
                             <th rowspan="2" class="text-white"><i class="ti ti-file-description"></i></th>
-                            <th rowspan="2" class="text-white"><i class="ti ti-moneybag"></i></th>
                             <th rowspan="2" class="text-white">#</th>
                         </tr>
                         <tr>
-                            <th class="text-white text-center">AVG</th>
-                            <th class="text-white text-center">Target</th>
-                            <th class="text-white text-center">Total</th>
+                            <th class="text-white text-center"><i class="ti ti-sigma me-1"></i>AVG</th>
+                            <th class="text-white text-center"><i class="ti ti-sigma me-1"></i>Target</th>
+                            <th class="text-white text-center"><i class="ti ti-sigma me-1"></i>Total</th>
+                            <th class="text-white text-center"><i class="ti ti-trending-up me-1"></i>Incr</th>
                         </tr>
+
+                    </thead>
 
                     </thead>
                     <tbody id="loaddetailpencairan">
@@ -103,36 +105,30 @@
                                 'TF' => 'Transfer',
                                 'VC' => 'Voucher',
                             ];
-                            $subtotal_reward = 0;
-                            $grandtotal_reward = 0;
                             $bb_dep = ['PRIK004', 'PRIK001'];
                         @endphp
                         @foreach ($detail as $key => $d)
                             @php
-                                $next_metode_pembayaran = @$detail[$key + 1]->metode_pembayaran;
                                 $total_reward =
-                                    $d->total_reward > 1000000 && !in_array($d->kode_program, $bb_dep)
+                                    $d->reward > 1000000 && !in_array($d->kode_program, $bb_dep)
                                         ? 1000000
-                                        : $d->total_reward;
-                                $subtotal_reward += $total_reward;
-                                $grandtotal_reward += $total_reward;
+                                        : $d->reward;
                             @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $d->kode_pelanggan }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
-                                <td class="text-center">{{ formatAngka($d->qty_rata_rata ?? 0) }}</td>
-                                <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                                <td class="text-center">{{ formatAngka($d->total_target ?? 0) }}</td>
+                                <td class="text-center">{{ formatAngka($d->avg ?? 0) }}</td>
+                                <td class="text-center">{{ formatAngka($d->target_perbulan ?? 0) }}</td>
+                                <td class="text-center">{{ formatAngka(($d->avg ?? 0) + ($d->target_perbulan ?? 0)) }}</td>
+                                <td class="text-center">{{ formatAngka($d->kenaikan_per_bulan) }}</td>
 
                                 <td class="text-center">
                                     <a href="#" class="btnDetailfaktur"
                                         kode_pelanggan="{{ $d['kode_pelanggan'] }}">
-                                        {{ formatAngka($d->jumlah) }}
+                                        {{ formatAngka($d->realisasi) }}
                                     </a>
                                 </td>
-                                {{-- <td class="text-end">{{ formatAngka($d->reward_tunai) }}</td>
-                                <td class="text-end">{{ formatAngka($d->reward_kredit) }}</td> --}}
                                 <td class="text-end">{{ formatAngka($total_reward) }}</td>
                                 <td>{{ $d->metode_pembayaran }}</td>
 
@@ -151,23 +147,8 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if ($d->status_pencairan == '1')
-                                        <i class="ti ti-checks text-success"></i>
-                                    @else
-                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                    @endif
-                                </td>
-                                <td>
                                     <div class="d-flex">
-                                        {{-- <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}">
-                                        <i class="ti ti-file-description"></i>
-                                    </a> --}}
-                                        {{-- @can('pencairanprogramikatan2026.upload')
-                                            <a href="#" kode_pencairan="{{ Crypt::encrypt($pencairanprogram->kode_pencairan) }}"
-                                                kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload">
-                                                <i class="ti ti-upload text-primary"></i>
-                                            </a>
-                                        @endcan --}}
+                                        {{-- <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}"> --}}
                                         @can('pencairanprogramikatan2026.delete')
                                             @if ($pencairanprogram->status == '0')
                                                 <form method="POST" name="deleteform" class="deleteform"
@@ -183,25 +164,8 @@
                                     </div>
                                 </td>
                             </tr>
-                            {{-- @if ($d->metode_pembayaran != $next_metode_pembayaran)
-                                <tr class="table-dark">
-                                    <td colspan="12">TOTAL REWARD </td>
-                                    <td class="text-end">{{ formatAngka($subtotal_reward) }}</td>
-                                    <td colspan="8"></td>
-                                </tr>
-                                @php
-                                    $subtotal_reward = 0;
-                                @endphp
-                            @endif --}}
                         @endforeach
                     </tbody>
-                    {{-- <tfoot class="table-dark">
-                        <tr>
-                            <td colspan="12">GRAND TOTAL REWARD </td>
-                            <td class="text-end">{{ formatAngka($grandtotal_reward) }}</td>
-                            <td colspan="8"></td>
-                        </tr>
-                    </tfoot> --}}
                 </table>
             </div>
         </div>

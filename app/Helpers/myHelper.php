@@ -379,7 +379,7 @@ function getAkunkaskecil($kode_cabang)
     $akun = [
         'BDG' => '1-1102',
         'BGR' => '1-1103',
-        'PST' => '1-1111',
+        'PST' => '1-1104',
         'TSM' => '1-1112',
         'SKB' => '1-1113',
         'PWT' => '1-1114',

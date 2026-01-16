@@ -13,4 +13,7 @@ class Programikatan extends Model
     protected $primaryKey = 'kode_program';
     public $incrementing = false;
     protected $guarded = [];
+    protected $casts = [
+        'status' => 'boolean'
+    ];
 }
