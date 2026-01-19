@@ -47,7 +47,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
                             <th>Pajak</th>
                         @endif
                         <th>Tanggal</th>
@@ -61,7 +61,7 @@
                         <th rowspan="2">Dibuat</th>
                     </tr>
                     <tr>
-                        <th colspan="{{ auth()->user()->hasRole(['super admin', 'admin pajak'])? '9': '8' }}"><b>SALDO AWAL</b></th>
+                        <th colspan="{{ auth()->user()->hasRole(config('global.roles_show_status_pajak'))? '9': '8' }}"><b>SALDO AWAL</b></th>
                         <th class="right">{{ $saldoawal != null ? formatAngka($saldoawal->saldo_awal) : 0 }}</th>
                     </tr>
                 <tbody>
@@ -82,7 +82,7 @@
 
                             // Jika status_pajak = 1, set background hijau dengan text putih (kecuali jika sudah ada warna dari klaim)
                             // Logic ini hanya berlaku untuk role tertentu: admin pajak, regional operation manager, super admin, gm administrasi
-                            if (isset($d->status_pajak) && $d->status_pajak == 1 && auth()->user()->hasRole(['admin pajak', 'regional operation manager', 'super admin', 'gm administrasi'])) {
+                            if (isset($d->status_pajak) && $d->status_pajak == 1 && auth()->user()->hasRole(config('global.roles_show_status_pajak'))) {
                                 $bgcolor = 'green';
                                 $textcolor = 'white';
                             } else {
@@ -92,7 +92,7 @@
                         @endphp
                         <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
                             <td style="{{ $colorklaim }}">{{ $loop->iteration }}</td>
-                            @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                            @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
                                 <td class="center">
                                     <input type="checkbox" class="checkbox-pajak-kaskecil" data-id="{{ $d->id }}"
                                         {{ isset($d->status_pajak) && $d->status_pajak == 1 ? 'checked' : '' }}>
@@ -112,7 +112,7 @@
                 </tbody>
                 <tfoot class="table-dark">
                     <tr>
-                        <th colspan="{{ auth()->user()->hasRole(['super admin', 'admin pajak'])? '7': '6' }}">TOTAL</th>
+                        <th colspan="{{ auth()->user()->hasRole(config('global.roles_show_status_pajak'))? '7': '6' }}">TOTAL</th>
                         <th class="right">{{ formatAngka($total_penerimaan) }}</th>
                         <th class="right">{{ formatAngka($total_pengeluaran) }}</th>
                         <th class="right">{{ formatAngka($saldo) }}</th>
@@ -124,7 +124,7 @@
     </div>
 </body>
 
-@if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+@if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
     <script>
         $(document).ready(function() {
             $('.checkbox-pajak-kaskecil').on('change', function() {

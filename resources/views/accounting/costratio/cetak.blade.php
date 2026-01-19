@@ -27,7 +27,7 @@
             <thead>
                 <tr>
                 <tr>
-                    @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                    @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
                         <th>Pajak</th>
                     @endif
                     <th style="width: 10%">Kode CR</th>
@@ -60,7 +60,7 @@
                         }
 
                         // Set background color jika status_pajak = 1
-                        if ($status_pajak == 1 && auth()->user()->hasRole(['admin pajak', 'regional operation manager', 'super admin', 'gm administrasi'])) {
+                        if ($status_pajak == 1 && auth()->user()->hasRole(config('global.roles_show_status_pajak'))) {
                             $bgcolor = 'green';
                             $textcolor = 'white';
                         } else {
@@ -69,7 +69,7 @@
                         }
                     @endphp
                     <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
-                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
                             <td class="center">
                                 @if ($d->kode_sumber == 1 && isset($d->id_kaskecil))
                                     <input type="checkbox" class="checkbox-pajak-costratio" data-kode-cr="{{ $d->kode_cr }}"
@@ -98,7 +98,7 @@
     </div>
 </body>
 
-@if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+@if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
     <script>
         $(document).ready(function() {
             $('.checkbox-pajak-costratio').on('change', function() {

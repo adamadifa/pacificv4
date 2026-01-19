@@ -46,7 +46,7 @@
                 <thead>
                     <tr>
                         <th style="width: 1%">No</th>
-                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
                             <th>Pajak</th>
                         @endif
                         <th style="width: 4%">TGL</th>
@@ -69,7 +69,7 @@
                             $color_saldoawal = $saldo_awal != null ? '' : 'text-red';
                             $colspan_saldoawal = auth()
                                 ->user()
-                                ->hasRole(['super admin', 'admin pajak', 'gm administrasi'])
+                                ->hasRole(config('global.roles_show_status_pajak'))
                                 ? '12'
                                 : '11';
                         @endphp
@@ -103,7 +103,7 @@
                             $status_pajak = isset($d->status_pajak) ? $d->status_pajak : 0;
 
                             // Set background color jika status_pajak = 1
-                            if ($status_pajak == 1 && auth()->user()->hasRole(['admin pajak', 'regional operation manager', 'super admin', 'gm administrasi'])) {
+                            if ($status_pajak == 1 && auth()->user()->hasRole(config('global.roles_show_status_pajak'))) {
                                 $bgcolor = 'green';
                                 $textcolor = 'white';
                             } else {
@@ -116,7 +116,7 @@
                         @endphp
                         <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
                             <td>{{ $loop->iteration }}</td>
-                            @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                            @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
                                 <td class="center">
                                     <input type="checkbox" class="checkbox-pajak-ledger" data-no-bukti="{{ $d->no_bukti }}"
                                         {{ $status_pajak == 1 ? 'checked' : '' }}>
@@ -144,7 +144,7 @@
                         @php
                             $colspan_total = auth()
                                 ->user()
-                                ->hasRole(['super admin', 'admin pajak', 'gm administrasi'])
+                                ->hasRole(config('global.roles_show_status_pajak'))
                                 ? '10'
                                 : '9';
                         @endphp
@@ -161,7 +161,7 @@
     </div>
 </body>
 
-@if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+@if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
     <script>
         $(document).ready(function() {
             $('.checkbox-pajak-ledger').on('change', function() {
