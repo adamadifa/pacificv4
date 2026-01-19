@@ -15,6 +15,16 @@
             </div>
         </div>
     </div>
+    <div class="row" id="formatcetak_container">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="form-group mb-3">
+                <select name="formatcetak" id="formatcetak" class="form-select">
+                    <option value="1">Format Kolom Terpisah</option>
+                    <option value="2">Format Laporan Keuangan</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <div class="row" id="coa">
         <div class="col-lg-6 col-sm-12 col-md-12">
             <div class="form-group mb-3">
@@ -71,11 +81,16 @@
                 const formatlaporan = formLedger.find("#formatlaporan").val();
                 if (formatlaporan == '1') {
                     $("#coa").show();
-                } else {
+                    $("#formatcetak_container").hide();
+                } else if(formatlaporan == '2' || formatlaporan == '3'){
                     $("#coa").hide();
+                    $("#formatcetak_container").show();
                     // Reset value COA ke kosong
                     formLedger.find("#kode_akun_dari").val("").trigger('change');
                     formLedger.find("#kode_akun_sampai").val("").trigger('change');
+                } else {
+                    $("#coa").hide();
+                    $("#formatcetak_container").hide();
                 }
             }
 

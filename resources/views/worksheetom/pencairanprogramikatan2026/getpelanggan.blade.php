@@ -6,7 +6,15 @@
 @foreach ($peserta as $d)
     @php
         $total_target_pencapaian = ($d->avg + $d->target_perbulan);
-        $color_reward = $d->jml_dus >= $total_target_pencapaian ? 'bg-success text-white' : ($d->reward_rate > 0 ? 'bg-warning text-dark' : 'bg-danger text-white');
+        if ($d->jml_dus >= $total_target_pencapaian) {
+            $color_reward = 'bg-success text-white';
+        } elseif ($d->jml_dus >= $d->avg) {
+            $color_reward = 'bg-primary text-white';
+        } elseif ($d->jml_dus >= ($d->avg - ($d->avg * 0.10))) {
+            $color_reward = 'bg-warning text-dark';
+        } else {
+            $color_reward = 'bg-danger text-white';
+        }
         
         $reward_tunai = $d->calculated_reward_tunai;
         $reward_kredit = $d->calculated_reward_kredit;
@@ -26,6 +34,7 @@
                 <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="0">
                 <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="0">
                 <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $reward }}">
+                <input type="hidden" name="rate[{{ $loop->index }}]" value="{{ $d->reward_rate }}">
                 <input type="hidden" name="status_pencairan[{{ $loop->index }}]" value="{{ $reward >= 100000 ? 1 : 0 }}">
                 
                  {{-- Pelanggan --}}
@@ -78,6 +87,7 @@
                         <i class="ti ti-gift me-1"></i>Reward
                     </small>
                     <h6 class="mb-0 fw-bold {{ $color_reward ? 'text-white' : 'text-success' }}">{{ empty($reward) ? '0' : formatAngka($reward) }}</h6>
+                    <small class="{{ $color_reward ? 'text-white' : 'text-muted' }}" style="font-size: 0.7rem;">Rate: {{ formatAngka($d->reward_rate) }}</small>
                 </div>
 
                 {{-- Checkbox --}}

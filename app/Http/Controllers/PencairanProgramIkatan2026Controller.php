@@ -236,9 +236,11 @@ class PencairanProgramIkatan2026Controller extends Controller
             ->select(
                 'marketing_pencairan_ikatan_detail_2026.*',
                 'pelanggan.nama_pelanggan',
+                'pelanggan.foto',
                 'top',
                 'metode_pembayaran',
                 'qty_target',
+                'marketing_pencairan_ikatan_detail_2026.rate',
                 // 'reward', // Ambiguous and covered by marketing_pencairan_ikatan_detail_2026.reward
                 'tipe_reward',
                 'budget_smm',
@@ -400,15 +402,26 @@ class PencairanProgramIkatan2026Controller extends Controller
                     $rate = $tier->reward_ach_target;
                 } elseif ($jml_dus >= $avg) {
                     $rate = $tier->reward_tidak_minus;
-                } elseif ($jml_dus >= ($avg * 0.9)) {
+                } elseif ($jml_dus >= $avg - ($avg * 0.10)) {
                     $rate = $tier->reward_minus;
                 }
             }
 
+            $is_flat = $tier->is_flat ?? 0;
             $item->reward_rate = $rate;
-            $item->calculated_reward_tunai = ($item->jml_tunai ?? 0) * $rate;
-            $item->calculated_reward_kredit = ($item->jml_kredit ?? 0) * $rate;
-            $item->calculated_reward_total = $jml_dus * $rate;
+
+            if ($is_flat == 1) {
+                // If flat, rate is the total reward
+                $item->calculated_reward_tunai = 0; // Or distribute proportionally if needed, but for now assuming 0 split or handle differently? 
+                // Wait, logic below used rate * jml_tunai.
+                // Assuming flat reward applies to total quantity, not per dus.
+                // If flat, the total reward IS the rate.
+                $item->calculated_reward_total = $rate;
+            } else {
+                $item->calculated_reward_tunai = ($item->jml_tunai ?? 0) * $rate;
+                $item->calculated_reward_kredit = ($item->jml_kredit ?? 0) * $rate;
+                $item->calculated_reward_total = $jml_dus * $rate;
+            }
 
             return $item;
         });
@@ -427,6 +440,7 @@ class PencairanProgramIkatan2026Controller extends Controller
         DB::beginTransaction();
         try {
             $checkpelanggan = $request->input('checkpelanggan', []);
+            $rate = $request->rate;
             foreach ($checkpelanggan as $index => $value) {
 
                 if ($status[$index] == 1) {
@@ -435,6 +449,7 @@ class PencairanProgramIkatan2026Controller extends Controller
                         'kode_pelanggan' => $kode_pelanggan[$index],
                         'realisasi' => toNumber($jumlah[$index]),
                         'reward' => toNumber($request->total_reward[$index]),
+                        'rate' => toNumber($rate[$index]),
                         'status_pencairan' => $status_pencairan[$index]
                     ]);
                      

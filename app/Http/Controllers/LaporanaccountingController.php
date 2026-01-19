@@ -1743,6 +1743,9 @@ class LaporanaccountingController extends Controller
                 // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
                 header("Content-Disposition: attachment; filename=Neraca.xls");
             }
+            if ($request->formatcetak == '1') {
+                return view('accounting.laporan.lk.neraca_cetak_export', $data);
+            }
             return view('accounting.laporan.lk.neraca_cetak', $data);
 
             // $rekap_akun sekarang berisi total debet dan kredit per kode_akun dari seluruh union
@@ -1779,6 +1782,9 @@ class LaporanaccountingController extends Controller
                 header("Content-type: application/vnd-ms-excel");
                 // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
                 header("Content-Disposition: attachment; filename=Laba Rugi.xls");
+            }
+            if ($request->formatcetak == '1') {
+                return view('accounting.laporan.lk.labarugi_cetak_export', $data);
             }
             return view('accounting.laporan.lk.labarugi_cetak', $data);
         }

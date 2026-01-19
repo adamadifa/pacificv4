@@ -65,109 +65,130 @@
             </div>
         </div>
 
-        {{-- Data Table Card --}}
-        <div class="card shadow-sm border">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65;">
-                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Daftar Pelanggan</h6>
-            </div>
-            <div class="table-responsive text-nowrap">
-                <table class="table table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th rowspan="2" class="text-white">No.</th>
-                            <th rowspan="2" class="text-white">Kode</th>
-                            <th rowspan="2" class="text-white">Nama Pelanggan</th>
-                            <th class="text-center text-white" colspan="4">Target</th>
-                            <th class="text-center text-white" rowspan="2"><i class="ti ti-chart-bar me-1"></i>Realisasi</th>
-                            <th class="text-center text-white" rowspan="2"><i class="ti ti-gift me-1"></i>Reward</th>
+        {{-- Data List Cards --}}
+        <div class="row" id="loaddetailpencairan">
+            @php
+                $metode_pembayaran = [
+                    'TN' => 'Tunai',
+                    'TF' => 'Transfer',
+                    'VC' => 'Voucher',
+                ];
+                $bb_dep = ['PRIK004', 'PRIK001'];
+            @endphp
+            @foreach ($detail as $key => $d)
+                @php
+                    $total_reward =
+                        $d->reward > 1000000 && !in_array($d->kode_program, $bb_dep)
+                            ? 1000000
+                            : $d->reward;
+                @endphp
+                <div class="col-12 mb-2">
+                    <div class="card shadow-sm border">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                {{-- 1. Pelanggan Info --}}
+                                <div style="min-width: 200px;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-2">
+                                            @if (!empty($d->foto))
+                                                <img src="{{ asset('storage/pelanggan/' . $d->foto) }}" alt="Avatar" class="rounded-circle"
+                                                    style="width: 40px; height: 40px; object-fit: cover;"
+                                                    onerror="this.onerror=null;this.src='{{ asset('assets/img/avatars/No_Image_Available.jpg') }}';">
+                                            @else
+                                                <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="Avatar" class="rounded-circle"
+                                                    style="width: 40px; height: 40px; object-fit: cover;">
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-secondary mb-1">{{ $d->kode_pelanggan }}</span>
+                                            <h6 class="mb-0 fw-bold text-wrap" style="max-width: 250px;">{{ $d->nama_pelanggan }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <th rowspan="2" class="text-white"><i class="ti ti-wallet me-1"></i>Pembayaran</th>
-                            <th rowspan="2" class="text-white"><i class="ti ti-credit-card me-1"></i>No. Rekening</th>
-                            <th rowspan="2" class="text-white"><i class="ti ti-user me-1"></i>Pemilik</th>
-                            <th rowspan="2" class="text-white"><i class="ti ti-building-bank me-1"></i>Bank</th>
-                            <th rowspan="2" class="text-white"><i class="ti ti-file-description"></i></th>
-                            <th rowspan="2" class="text-white">#</th>
-                        </tr>
-                        <tr>
-                            <th class="text-white text-center"><i class="ti ti-sigma me-1"></i>AVG</th>
-                            <th class="text-white text-center"><i class="ti ti-sigma me-1"></i>Target</th>
-                            <th class="text-white text-center"><i class="ti ti-sigma me-1"></i>Total</th>
-                            <th class="text-white text-center"><i class="ti ti-trending-up me-1"></i>Incr</th>
-                        </tr>
+                                {{-- 2. Target Stats --}}
+                                <div class="d-flex gap-3 text-center border-end pe-3">
+                                    <div>
+                                        <span class="d-block fw-bold text-dark">{{ formatAngka($d->avg ?? 0) }}</span>
+                                        <small class="text-muted" style="font-size: 0.7rem;">AVG</small>
+                                    </div>
+                                    <div>
+                                        <span class="d-block fw-bold text-dark">{{ formatAngka($d->target_perbulan ?? 0) }}</span>
+                                        <small class="text-muted" style="font-size: 0.7rem;">TARGET</small>
+                                    </div>
+                                    <div>
+                                        <span class="d-block fw-bold text-primary">{{ formatAngka(($d->avg ?? 0) + ($d->target_perbulan ?? 0)) }}</span>
+                                        <small class="text-muted" style="font-size: 0.7rem;">TOTAL</small>
+                                    </div>
+                                    <div>
+                                        <span class="d-block fw-bold text-info">{{ formatAngka($d->kenaikan_per_bulan) }}</span>
+                                        <small class="text-muted" style="font-size: 0.7rem;">INCR</small>
+                                    </div>
+                                </div>
 
-                    </thead>
+                                {{-- 3. Realisasi & Reward --}}
+                                <div class="d-flex gap-4 border-end pe-3">
+                                    <div class="text-center">
+                                        <h6 class="mb-0 fw-bold text-warning cursor-pointer btnDetailfaktur"
+                                            kode_pelanggan="{{ $d['kode_pelanggan'] }}">{{ formatAngka($d->realisasi) }}</h6>
+                                        <small class="text-muted" style="font-size: 0.7rem;">REALISASI</small>
+                                    </div>
+                                    <div class="text-center">
+                                         <h6 class="mb-0 fw-bold text-info">{{ formatAngka($d->rate) }}</h6>
+                                         <small class="text-muted" style="font-size: 0.7rem;">RATE</small>
+                                    </div>
+                                    <div class="text-center">
+                                        <h6 class="mb-0 fw-bold text-success">{{ formatAngka($total_reward) }}</h6>
+                                        <small class="text-muted" style="font-size: 0.7rem;">REWARD</small>
+                                    </div>
+                                </div>
 
-                    </thead>
-                    <tbody id="loaddetailpencairan">
-                        @php
-                            $metode_pembayaran = [
-                                'TN' => 'Tunai',
-                                'TF' => 'Transfer',
-                                'VC' => 'Voucher',
-                            ];
-                            $bb_dep = ['PRIK004', 'PRIK001'];
-                        @endphp
-                        @foreach ($detail as $key => $d)
-                            @php
-                                $total_reward =
-                                    $d->reward > 1000000 && !in_array($d->kode_program, $bb_dep)
-                                        ? 1000000
-                                        : $d->reward;
-                            @endphp
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $d->kode_pelanggan }}</td>
-                                <td>{{ $d->nama_pelanggan }}</td>
-                                <td class="text-center">{{ formatAngka($d->avg ?? 0) }}</td>
-                                <td class="text-center">{{ formatAngka($d->target_perbulan ?? 0) }}</td>
-                                <td class="text-center">{{ formatAngka(($d->avg ?? 0) + ($d->target_perbulan ?? 0)) }}</td>
-                                <td class="text-center">{{ formatAngka($d->kenaikan_per_bulan) }}</td>
+                                {{-- 4. Payment Info --}}
+                                <div class="" style="min-width: 250px; font-size: 0.85rem;">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <i class="ti ti-building-bank me-2 text-secondary"></i>
+                                        <span class="fw-bold">{{ $d->bank }}</span>
+                                        <span class="mx-1">-</span>
+                                        <span>{{ $d->no_rekening }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="ti ti-user me-2 text-secondary"></i>
+                                        <span class="text-truncate me-2" style="max-width: 150px;"
+                                            title="{{ $d->pemilik_rekening }}">{{ $d->pemilik_rekening }}</span>
+                                        <span class="badge bg-label-primary">{{ $d->metode_pembayaran }}</span>
+                                    </div>
+                                </div>
 
-                                <td class="text-center">
-                                    <a href="#" class="btnDetailfaktur"
-                                        kode_pelanggan="{{ $d['kode_pelanggan'] }}">
-                                        {{ formatAngka($d->realisasi) }}
-                                    </a>
-                                </td>
-                                <td class="text-end">{{ formatAngka($total_reward) }}</td>
-                                <td>{{ $d->metode_pembayaran }}</td>
-
-                                <td>{{ $d->no_rekening }}</td>
-                                <td>{{ $d->pemilik_rekening }}</td>
-                                <td>{{ $d->bank }}</td>
-
-
-                                <td>
+                                {{-- 5. Actions --}}
+                                <div class="d-flex align-items-center gap-2">
                                     @if (!empty($d->bukti_transfer))
-                                        <a href="{{ url($d->bukti_transfer) }}" target="_blank">
-                                            <i class="ti ti-receipt text-success"></i>
+                                        <a href="{{ url($d->bukti_transfer) }}" target="_blank"
+                                            class="btn btn-icon btn-label-success btn-sm" title="Bukti Transfer">
+                                            <i class="ti ti-receipt"></i>
                                         </a>
                                     @else
-                                        <i class="ti ti-hourglass-empty text-warning"></i>
+                                        <span class="btn btn-icon btn-label-warning btn-sm" title="Belum Ada Bukti"><i
+                                                class="ti ti-hourglass-empty"></i></span>
                                     @endif
-                                </td>
-                                <td>
-                                    <div class="d-flex">
-                                        {{-- <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d['kode_pelanggan'] }}"> --}}
-                                        @can('pencairanprogramikatan2026.delete')
-                                            @if ($pencairanprogram->status == '0')
-                                                <form method="POST" name="deleteform" class="deleteform"
-                                                    action="{{ route('pencairanprogramikatan2026.deletepelanggan', [Crypt::encrypt($pencairanprogram->kode_pencairan), Crypt::encrypt($d->kode_pelanggan)]) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <a href="#" class="delete-confirm ml-1">
-                                                        <i class="ti ti-trash text-danger"></i>
-                                                     </a>
-                                                </form>
-                                            @endif
-                                        @endcan
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+
+                                    @can('pencairanprogramikatan2026.delete')
+                                        @if ($pencairanprogram->status == '0')
+                                            <form method="POST" name="deleteform" class="deleteform"
+                                                action="{{ route('pencairanprogramikatan2026.deletepelanggan', [Crypt::encrypt($pencairanprogram->kode_pencairan), Crypt::encrypt($d->kode_pelanggan)]) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <a href="#" class="delete-confirm btn btn-icon btn-label-danger btn-sm">
+                                                    <i class="ti ti-trash"></i>
+                                                </a>
+                                            </form>
+                                        @endif
+                                    @endcan
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 </div>
