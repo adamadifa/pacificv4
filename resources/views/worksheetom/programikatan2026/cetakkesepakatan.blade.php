@@ -140,17 +140,19 @@
             <p>
                 Adapun hak dan kewajiban antara Pihak Ke-1 dan Pihak Ke-2 yang harus disepakati bersama dalam surat kesepakatan ini antara lain :
             <ol>
-                <li>Pihak Ke-2 Memilih target penjualan sebanyak {{ formatAngka($kesepakatan->qty_target) }} {{ $kesepakatan->nama_program }}
-                    dengan rincian target per bulan terlampir</li>
-                <li>Dengan hadiah berupa Cashback sebesar Rp.{{ $kesepakatan->reward }}
-                    {{ $kesepakatan->tipe_reward == '2' ? 'Flat' : '/Dus/Ball' }}</li>
-                <li>Periode Program dimulai dari {{ $namabulan[date('m', strtotime($kesepakatan->periode_dari)) * 1] }} s/d
+                <li>Pihak Ke-2 Memilih target penjualan sebanyak {{ formatAngka($kesepakatan->qty_target) }} dus/ball selama satu semester</li>
+                <li>Periode Program dimulai dari bulan {{ $namabulan[date('m', strtotime($kesepakatan->periode_dari)) * 1] }} s/d
                     {{ $namabulan[date('m', strtotime($kesepakatan->periode_sampai)) * 1] }}
                     {{ date('Y', strtotime($kesepakatan->periode_sampai)) }}
                 </li>
+                <li>Dengan hadiah berupa Cashback sebesar Rp.{{ $kesepakatan->reward }}
+                    {{ $kesepakatan->tipe_reward == '2' ? 'Flat' : '/Dus/Ball' }}</li>
                 <li>
-                    Pihak Ke2 bersedia mengambil barang dengan kuantitas yang stabil sesuai dengan ksesepakatan target bulanan (diperbolehkan lebih
-                    tetapi tidak boleh <b>KURANG</b>)
+                    Pihak Ke2 bersedia membeli barang sesuai dengan kesepakatan target satu semester
+                </li>
+                <li>
+                    Khusus transaksi kredit Pihak Ke-2 bersedia melakukan pelunasan maksimal {{ $kesepakatan->top }} hari dari tanggal awal
+                    transaksi, jika tidak terpenuhi maka faktur tersebut tidak diperhitungkan dalam hitungan program.
                 </li>
                 <li>
                     Pihak Ke-2 bersedia melampirkan fotocopy KTP
@@ -159,22 +161,17 @@
                     Pihak Ke-1 dan Pihak Ke-2 bersedia melengkapi seluruh data yang ada pada surat kesepakatan ini
                 </li>
                 <li>
-                    Sebagai upaya mempercepat proses realisasi hadiah untuk pelanggan perusahan, Pihak Ke-2 bersedia <b>Melunasi seluruh faktur yang
-                        ada</b> (Paling lambat {{ $kesepakatan->top }} hari dari berakhirnya masa program)
-                </li>
-                <li>
-                    Pengembalian produk oleh Pihak Ke-2 tidak dapat dilakukan dengan cara potong faktur maupun diluangkan. Pengembalian produk hanya
+                    Pengembalian produk oleh Pihak Ke-2 tidak dapat dilakukan dengan cara potong faktur maupun diuangkan. Pengembalian produk hanya
                     dapat dilakukan dengan cara tukar barang dengan produk sejenis.
                 </li>
                 <li>
                     Pihak Ke-1 tidak menerima pengembalian barang yang diakibatkan expired masa produk.
                 </li>
                 <li>
-                    Apabila dalam realisasinya pihak Ke-2 mampu melebihi target yang telah disepakati maka Pihak Ke-2 berhak mendapatkan hadiah
-                    yang lebih besar sesuai grade yang tercapai
+                    Pihak Ke-2 tidak diperkenankan turun target dari target yang telah disepakati
                 </li>
                 <li>
-                    Pihak Ke-2 tidak diperkenankan turun target dari target yang telah disepakati
+                    Pencairan reward akan dilakukan oleh Pihak ke-1 maksimal satu bulan dari periode program berakhir.
                 </li>
             </ol>
             </p>

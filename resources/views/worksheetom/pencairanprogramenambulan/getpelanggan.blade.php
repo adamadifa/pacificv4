@@ -56,7 +56,7 @@
 
                 {{ formatAngka($reward) }}
             </td>
-            <td>{{ $d->nama_pelanggan }}</td>
+            <!-- <td>{{ $d->nama_pelanggan }}</td> -->
         @endfor
       
         <td class="text-center bg-info text-white">{{ formatAngka($d->total_qty_target) }}</td>

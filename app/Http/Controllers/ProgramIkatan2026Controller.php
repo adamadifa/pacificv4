@@ -629,6 +629,29 @@ class ProgramIkatan2026Controller extends Controller
         $data['detailtarget'] = MktIkatanTarget2026::where('no_pengajuan', $no_pengajuan)
             ->where('kode_pelanggan', $kode_pelanggan)
             ->get();
+
+        // Calculate Reward based on Avg Target Per Month
+        $jml_bulan = count($data['detailtarget']);
+        $total_target = $data['detailtarget']->sum('target_perbulan');
+        $avg_target = $jml_bulan > 0 ? $total_target / $jml_bulan : 0;
+
+        $reward_program = MktRewardProgram2026::where('kode_program', $data['kesepakatan']->kode_program)->first();
+        if ($reward_program) {
+            $reward_detail = MktRewardProgramDetail2026::where('reward_id', $reward_program->id)
+                ->where('qty_dari', '<=', $avg_target)
+                ->where('qty_sampai', '>=', $avg_target)
+                ->first();
+            
+            if ($reward_detail) {
+                // If is_flat is true, the reward itself might be the rate or handled differently. 
+                // Assuming typical case where we display the per-unit rate.
+                // User requirement: "ambil dari rate rata target_perbulannya yang bukan di jumlahkan dengan avg"
+                // Usually implies standard rate (tidak minus).
+                $data['kesepakatan']->reward = $reward_detail->reward_tidak_minus;
+                $data['kesepakatan']->tipe_reward = $reward_detail->is_flat ? '2' : '1'; 
+            }
+        }
+
         return view('worksheetom.programikatan2026.cetakkesepakatan', $data);
     }
 
