@@ -57,7 +57,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2">No.</th>
-                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi','regional operation manager']))
+                        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
                             <th rowspan="2">Pajak</th>
                         @endif
                         <th rowspan="2">Tanggal</th>
@@ -143,7 +143,7 @@
                                 $bgcolor = '';
                                 $textcolor = '';
                                 // Jika status_pajak = 1, set background hijau dengan text putih
-                                if (isset($d->status_pajak) && $d->status_pajak == 1 && auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi', 'regional operation manager'])) {
+                                if (isset($d->status_pajak) && $d->status_pajak == 1 && auth()->user()->hasRole(config('global.roles_show_status_pajak'))) {
                                     $bgcolor = 'green';
                                     $textcolor = 'white';
                                 }
@@ -231,7 +231,7 @@
 </body>
 
 </html>
-@if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+@if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
     <script>
         $(document).ready(function() {
             $('.checkbox-pajak').on('change', function() {

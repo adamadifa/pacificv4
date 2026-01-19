@@ -159,4 +159,11 @@ return  [
     'roles_aprove_ajuanfakturkredit' => ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'],
     'roles_maker_ajuanlimitkredit' => ['salesman', 'operation manager', 'sales marketing manager'],
 
+    'roles_show_status_pajak' => [
+        'super admin',
+        'admin pajak',
+        'gm administrasi',
+        'regional operation manager'
+    ],
+
 ];
