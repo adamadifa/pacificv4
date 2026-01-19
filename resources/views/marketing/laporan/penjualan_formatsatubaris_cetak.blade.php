@@ -57,7 +57,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2">No.</th>
-                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi','regional operation manager']))
                             <th rowspan="2">Pajak</th>
                         @endif
                         <th rowspan="2">Tanggal</th>
@@ -143,7 +143,7 @@
                                 $bgcolor = '';
                                 $textcolor = '';
                                 // Jika status_pajak = 1, set background hijau dengan text putih
-                                if (isset($d->status_pajak) && $d->status_pajak == 1) {
+                                if (isset($d->status_pajak) && $d->status_pajak == 1 && auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi', 'regional operation manager'])) {
                                     $bgcolor = 'green';
                                     $textcolor = 'white';
                                 }
