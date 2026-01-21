@@ -277,5 +277,28 @@
         // $("#budget_smm, #budget_rsm, #budget_gm").on('keyup', function() {
         //     calculateReward();
         // });
+
+        $("#formEditpelanggan").submit(function(e) {
+            let isValid = true;
+            $(".total-input").each(function() {
+                let val = $(this).val().replace(/\./g, '');
+                let intVal = val == "" ? 0 : parseInt(val);
+                if (intVal < 5) {
+                    isValid = false;
+                    return false;
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Total target setiap bulan minimal harus 5 !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                });
+                return false;
+            }
+        });
     });
 </script>
