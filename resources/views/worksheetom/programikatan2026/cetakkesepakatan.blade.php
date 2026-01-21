@@ -145,7 +145,7 @@
                     {{ $namabulan[date('m', strtotime($kesepakatan->periode_sampai)) * 1] }}
                     {{ date('Y', strtotime($kesepakatan->periode_sampai)) }}
                 </li>
-                <li>Dengan hadiah berupa Cashback sebesar Rp.{{ $kesepakatan->reward }}
+                <li>Dengan hadiah berupa Cashback sebesar Rp.{{ formatAngka($rate) }}
                     {{ $kesepakatan->tipe_reward == '2' ? 'Flat' : '/Dus/Ball' }}</li>
                 <li>
                     Pihak Ke2 bersedia membeli barang sesuai dengan kesepakatan target satu semester
@@ -228,12 +228,13 @@
                     @endphp
                     @foreach ($detailtarget as $d)
                         @php
-                            $total_target += $d->target_perbulan;
+                            $target = $d->target_perbulan + $d->avg;
+                            $total_target += $target;
                         @endphp
                         <tr>
                             <td>{{ getMonthName($d->bulan) }}</td>
                             <td>{{ $d->tahun }}</td>
-                            <td style="text-align: right">{{ formatAngka($d->target_perbulan) }}</td>
+                            <td style="text-align: right">{{ formatAngka($target) }}</td>
                         </tr>
                     @endforeach
                 </tbody>

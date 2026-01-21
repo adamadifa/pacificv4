@@ -7,6 +7,7 @@ use App\Models\Detailpenjualan;
 use App\Models\MktIkatan2026;
 use App\Models\MktIkatanDetail2026;
 use App\Models\MktIkatanTarget2026;
+use App\Models\MktRewardProgram2026;
 use App\Models\Pelanggan;
 use App\Models\Programikatan;
 use App\Models\User;
@@ -638,9 +639,30 @@ class ProgramIkatan2026Controller extends Controller
             ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
             ->join('cabang', 'mkt_ikatan_2026.kode_cabang', '=', 'cabang.kode_cabang')
             ->first();
-        $data['detailtarget'] = MktIkatanTarget2026::where('no_pengajuan', $no_pengajuan)
+        $detailtarget = MktIkatanTarget2026::where('no_pengajuan', $no_pengajuan)
             ->where('kode_pelanggan', $kode_pelanggan)
             ->get();
+
+        $total_target = 0;
+        foreach ($detailtarget as $d) {
+            $total_target += $d->target_perbulan;
+        }
+
+        $jml_bulan = count($detailtarget) > 0 ? count($detailtarget) : 1;
+        $rata_rata_target = $total_target / $jml_bulan;
+
+        $reward_program = MktRewardProgram2026::with('details')->where('kode_program', $data['kesepakatan']->kode_program)->first();
+        $reward_details = $reward_program ? $reward_program->details : collect([]);
+
+        $tier = $reward_details->first(function ($detail) use ($rata_rata_target) {
+            return $rata_rata_target >= $detail->qty_dari && $rata_rata_target <= $detail->qty_sampai;
+        });
+
+        $rate = $tier ? $tier->reward_ach_target : 0;
+        
+        $data['detailtarget'] = $detailtarget;
+        $data['rate'] = $rate;
+
         return view('worksheetom.programikatan2026.cetakkesepakatan', $data);
     }
 
