@@ -685,6 +685,8 @@ class GlobalProvider extends ServiceProvider
                 'laporangudanglogistik',
                 'laporangudanglogistik/*',
                 'pembeliangudang',
+                'bpb',
+                'bpb/*',
             ];
 
 
@@ -713,7 +715,7 @@ class GlobalProvider extends ServiceProvider
                 'gl.persediaan',
                 'gl.persediaanopname',
             ];
-            $gudang_logistik_permission = array_merge($gudang_logistik_mutasi_permission, $gudang_logistik_laporan_permission);
+            $gudang_logistik_permission = array_merge($gudang_logistik_mutasi_permission, $gudang_logistik_laporan_permission, ['bpb.index']);
 
             //Gudang Cabang
             $gudang_cabang_request = [

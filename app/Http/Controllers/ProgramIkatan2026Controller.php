@@ -27,6 +27,7 @@ class ProgramIkatan2026Controller extends Controller
         $query->join('cabang', 'mkt_ikatan_2026.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program');
         $query->orderBy('mkt_ikatan_2026.no_pengajuan', 'desc');
+        $query->select('mkt_ikatan_2026.*', 'cabang.nama_cabang', 'program_ikatan.nama_program');
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
@@ -58,9 +59,9 @@ class ProgramIkatan2026Controller extends Controller
                 $query->whereNull('mkt_ikatan_2026.rsm');
             } else if ($request->status == 'approved') {
                 $query->whereNotnull('mkt_ikatan_2026.rsm');
-                $query->where('status', 0);
+                $query->where('mkt_ikatan_2026.status', 0);
             } else if ($request->status == 'rejected') {
-                $query->where('status', 2);
+                $query->where('mkt_ikatan_2026.status', 2);
             }
         } else if ($user->hasRole('gm marketing')) {
              if ($request->status == 'pending') {
@@ -68,27 +69,27 @@ class ProgramIkatan2026Controller extends Controller
                 $query->whereNull('mkt_ikatan_2026.gm');
             } else if ($request->status == 'approved') {
                 $query->whereNotnull('mkt_ikatan_2026.gm');
-                $query->where('status', 0);
+                $query->where('mkt_ikatan_2026.status', 0);
             } else if ($request->status == 'rejected') {
-                $query->where('status', 2);
+                $query->where('mkt_ikatan_2026.status', 2);
             }
         } else if ($user->hasRole('direktur')) {
              if ($request->status == 'pending') {
                 $query->whereNotnull('mkt_ikatan_2026.gm');
                 $query->whereNull('mkt_ikatan_2026.direktur');
-                $query->where('status', 0);
+                $query->where('mkt_ikatan_2026.status', 0);
             } else if ($request->status == 'approved') {
-                $query->where('status', 1);
+                $query->where('mkt_ikatan_2026.status', 1);
             } else if ($request->status == 'rejected') {
-                $query->where('status', 2);
+                $query->where('mkt_ikatan_2026.status', 2);
             }
         } else {
             if ($request->status == 'pending') {
-                $query->where('status', 0);
+                $query->where('mkt_ikatan_2026.status', 0);
             } else if ($request->status == 'approved') {
-                $query->where('status', 1);
+                $query->where('mkt_ikatan_2026.status', 1);
             } else if ($request->status == 'rejected') {
-                $query->where('status', 2);
+                $query->where('mkt_ikatan_2026.status', 2);
             }
         }
 
@@ -112,7 +113,7 @@ class ProgramIkatan2026Controller extends Controller
         $data['cabang'] = $cabang;
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
-        $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
+        $data['programikatan'] = Programikatan::where('status', 1)->orderBy('kode_program')->get();
         $data['roles_access_all_cabang'] = config('global.roles_access_all_cabang');
         return view('worksheetom.programikatan2026.create', $data);
     }
@@ -187,6 +188,7 @@ class ProgramIkatan2026Controller extends Controller
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $programikatan = MktIkatan2026::where('no_pengajuan', $no_pengajuan)
             ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->select('mkt_ikatan_2026.*', 'program_ikatan.nama_program')
             ->first();
         $list_pelanggan = MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
             ->select('mkt_ikatan_detail_2026.kode_pelanggan')
@@ -270,11 +272,14 @@ class ProgramIkatan2026Controller extends Controller
             ->where('kode_pelanggan', $kode_pelanggan)
             ->get();
         $array_target = [];
+        $array_avg = [];
         foreach ($detailtarget as $d) {
             $array_target[$d->bulan . $d->tahun] = $d->target_perbulan;
+            $array_avg[$d->bulan . $d->tahun] = $d->avg;
         }
 
         $data['array_target'] = $array_target;
+        $data['array_avg'] = $array_avg;
         return view('worksheetom.programikatan2026.editpelanggan', $data);
     }
 
@@ -316,11 +321,13 @@ class ProgramIkatan2026Controller extends Controller
                 $file = null;
             }
 
-            $grand_total_target = 0;
+            $sum_target = 0;
+            $sum_avg = 0;
             for ($i = 0; $i < count($bulan); $i++) {
                 $target_perbulan[$i] = toNumber($target_perbulan[$i]);
                 $avg_perbulan[$i] = toNumber($avg_perbulan[$i]);
-                $grand_total_target += $target_perbulan[$i] + $avg_perbulan[$i];
+                $sum_target += $target_perbulan[$i];
+                $sum_avg += $avg_perbulan[$i];
                 $detailtarget[] = [
                     'no_pengajuan' => $no_pengajuan,
                     'kode_pelanggan' => $request->kode_pelanggan,
@@ -334,8 +341,8 @@ class ProgramIkatan2026Controller extends Controller
             MktIkatanDetail2026::create([
                 'no_pengajuan' => $no_pengajuan,
                 'kode_pelanggan' => $request->kode_pelanggan,
-                'qty_target' => $grand_total_target,
-                'qty_avg' => !empty($request->qty_avg) ? toNumber($request->qty_avg) : 0,
+                'qty_target' => $sum_target,
+                'qty_avg' => $sum_avg,
                 'reward' => 0,
                 'tipe_reward' => 0,
                 'budget_smm' => 0,
@@ -394,11 +401,13 @@ class ProgramIkatan2026Controller extends Controller
                 $file = $detail->file_doc;
             }
 
-            $grand_total_target = 0;
+            $sum_target = 0;
+            $sum_avg = 0;
             for ($i = 0; $i < count($bulan); $i++) {
                 $target_perbulan[$i] = toNumber($target_perbulan[$i]);
                 $avg_perbulan[$i] = toNumber($avg_perbulan[$i]);
-                $grand_total_target += $target_perbulan[$i] + $avg_perbulan[$i];
+                $sum_target += $target_perbulan[$i];
+                $sum_avg += $avg_perbulan[$i];
                 $detailtarget[] = [
                     'no_pengajuan' => $no_pengajuan,
                     'kode_pelanggan' => $kode_pelanggan,
@@ -412,7 +421,8 @@ class ProgramIkatan2026Controller extends Controller
             MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
                 ->where('kode_pelanggan', $kode_pelanggan)
                 ->update([
-                    'qty_target' => $grand_total_target,
+                    'qty_target' => $sum_target,
+                    'qty_avg' => $sum_avg,
                     'reward' => 0,
                     'tipe_reward' => 0,
                     'budget_smm' => 0,
@@ -478,6 +488,7 @@ class ProgramIkatan2026Controller extends Controller
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $programikatan = MktIkatan2026::where('no_pengajuan', $no_pengajuan)
             ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->select('mkt_ikatan_2026.*', 'program_ikatan.nama_program')
             ->first();
         $list_pelanggan = MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
             ->select('mkt_ikatan_detail_2026.kode_pelanggan')
@@ -573,6 +584,7 @@ class ProgramIkatan2026Controller extends Controller
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $programikatan = MktIkatan2026::where('no_pengajuan', $no_pengajuan)
             ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->select('mkt_ikatan_2026.*', 'program_ikatan.nama_program')
             ->first();
         $list_pelanggan = MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
             ->select('mkt_ikatan_detail_2026.kode_pelanggan')
@@ -629,29 +641,6 @@ class ProgramIkatan2026Controller extends Controller
         $data['detailtarget'] = MktIkatanTarget2026::where('no_pengajuan', $no_pengajuan)
             ->where('kode_pelanggan', $kode_pelanggan)
             ->get();
-
-        // Calculate Reward based on Avg Target Per Month
-        $jml_bulan = count($data['detailtarget']);
-        $total_target = $data['detailtarget']->sum('target_perbulan');
-        $avg_target = $jml_bulan > 0 ? $total_target / $jml_bulan : 0;
-
-        $reward_program = MktRewardProgram2026::where('kode_program', $data['kesepakatan']->kode_program)->first();
-        if ($reward_program) {
-            $reward_detail = MktRewardProgramDetail2026::where('reward_id', $reward_program->id)
-                ->where('qty_dari', '<=', $avg_target)
-                ->where('qty_sampai', '>=', $avg_target)
-                ->first();
-            
-            if ($reward_detail) {
-                // If is_flat is true, the reward itself might be the rate or handled differently. 
-                // Assuming typical case where we display the per-unit rate.
-                // User requirement: "ambil dari rate rata target_perbulannya yang bukan di jumlahkan dengan avg"
-                // Usually implies standard rate (tidak minus).
-                $data['kesepakatan']->reward = $reward_detail->reward_tidak_minus;
-                $data['kesepakatan']->tipe_reward = $reward_detail->is_flat ? '2' : '1'; 
-            }
-        }
-
         return view('worksheetom.programikatan2026.cetakkesepakatan', $data);
     }
 
@@ -662,6 +651,7 @@ class ProgramIkatan2026Controller extends Controller
 
         $data['programikatan'] = MktIkatan2026::where('no_pengajuan', $no_pengajuan)
             ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->select('mkt_ikatan_2026.*', 'program_ikatan.nama_program')
             ->first();
         $data['detailtarget'] = MktIkatanTarget2026::where('no_pengajuan', $no_pengajuan)
             ->where('kode_pelanggan', $kode_pelanggan)
@@ -791,6 +781,7 @@ class ProgramIkatan2026Controller extends Controller
         $kode_cabang = $programikatan->kode_cabang;
         $tahun = date('Y', strtotime($programikatan->tanggal));
         $semester = $programikatan->semester;
+        $kode_program = $programikatan->kode_program;
 
         if ($request->ajax()) {
             $query = Pelanggan::query();
@@ -806,12 +797,13 @@ class ProgramIkatan2026Controller extends Controller
             $query->where('pelanggan.kode_cabang', $kode_cabang);
             $query->where('status_aktif_pelanggan', 1);
 
-            $query->whereNotIn('pelanggan.kode_pelanggan', function ($q) use ($semester, $tahun) {
+            $query->whereNotIn('pelanggan.kode_pelanggan', function ($q) use ($semester, $tahun, $kode_program) {
                 $q->select('kode_pelanggan')
                     ->from('mkt_ikatan_detail_2026')
                     ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
                     ->where('semester', $semester)
                     ->whereRaw('YEAR(tanggal) = ?', [$tahun])
+                    ->where('kode_program', $kode_program)
                     ->where('mkt_ikatan_2026.status', '!=', 2);
             });
 

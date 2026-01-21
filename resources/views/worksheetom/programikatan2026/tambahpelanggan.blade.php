@@ -68,7 +68,8 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3">TOTAL</td>
+                <td colspan="2">TOTAL</td>
+                <td class="text-end" id="totalAvg"></td>
                 <td class="text-end" id="grandTotaltargetpenambah"></td>
                 <td class="text-end" id="gradTotaltarget"></td>
             </tr>
@@ -203,6 +204,16 @@
             grandTotaltarget = total;
             $('#gradTotaltarget').text(convertToRupiah(total));
             $('#grandTotaltargetpenambah').text(convertToRupiah(totalpenambah));
+
+            let totalAvg = 0;
+             $('.avg-input').each(function() {
+                let value = $(this).val().replace(/\./g, '');
+                if (!isNaN(value) && value.length != 0) {
+                    totalAvg += parseFloat(value);
+                }
+            });
+            $('#totalAvg').text(convertToRupiah(totalAvg));
+            $('input[name="qty_avg"]').val(convertToRupiah(totalAvg));
         }
 
         $('#target').on('keyup keydown change', function() {
@@ -236,9 +247,10 @@
         }
 
         // Trigger calculation when avg input changes (e.g. from AJAX)
-        $(document).on('change', '.avg-input', function() {
+        $(document).on('change keyup', '.avg-input', function() {
             let row = $(this).closest('tr');
             calculateRowTotal(row);
+            calculateTotalTarget();
         });
 
 

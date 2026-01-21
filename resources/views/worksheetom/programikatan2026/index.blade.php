@@ -165,6 +165,7 @@
 
                                                     {{-- Status Badge Inline --}}
                                                      <div class="ms-2 border-start ps-3 d-flex align-items-center">
+                                                        
                                                         @if ($d->status == '0')
                                                             <span class="badge bg-label-warning text-warning d-flex align-items-center gap-1 px-2 py-1"><i class="ti ti-hourglass-empty fs-6"></i> Pending</span>
                                                         @elseif ($d->status == '1')

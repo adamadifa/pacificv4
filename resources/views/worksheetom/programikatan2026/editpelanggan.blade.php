@@ -49,12 +49,12 @@
                         {{ date('Y', strtotime($current_date)) }}
                     </td>
                     <td>
-                        <input type="text" name="avg_perbulan[]" class="noborder-form avg-input" readonly style="text-align: right" value="{{ formatAngka($detail->qty_avg) }}">
-                    </td>
-                    <td>
                         @php
                             $keytarget = date('m', strtotime($current_date)) * 1 . date('Y', strtotime($current_date));
                         @endphp
+                        <input type="text" name="avg_perbulan[]" class="noborder-form avg-input" readonly style="text-align: right" value="{{ isset($array_avg[$keytarget]) ? formatAngka($array_avg[$keytarget]) : 0 }}">
+                    </td>
+                    <td>
                         <input type="text" name="target_perbulan[]"
                             value="{{ isset($array_target[$keytarget]) ? formatAngka($array_target[$keytarget]) : '' }}" style="text-align: right"
                             class="noborder-form number-separator">
@@ -70,7 +70,8 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3">TOTAL</td>
+                <td colspan="2">TOTAL</td>
+                <td class="text-end" id="totalAvg"></td>
                 <td class="text-end" id="grandTotaltargetpenambah"></td>
                 <td class="text-end" id="gradTotaltarget"></td>
             </tr>
@@ -195,7 +196,16 @@
             $('#gradTotaltarget').text(convertToRupiah(total));
             $('#grandTotaltargetpenambah').text(convertToRupiah(totalpenambah));
             grandTotaltarget = total;
-
+            
+            let totalAvg = 0;
+            $('.avg-input').each(function() {
+                let value = $(this).val().replace(/\./g, '');
+                if (!isNaN(value) && value.length != 0) {
+                    totalAvg += parseFloat(value);
+                }
+            });
+            $('#totalAvg').text(convertToRupiah(totalAvg));
+            $('input[name="qty_avg"]').val(convertToRupiah(totalAvg));
         }
 
         // $('#target').on('keyup keydown', function() {

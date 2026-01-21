@@ -13,6 +13,13 @@
                     </a>
                 </li>
             @endif
+            @if (auth()->user()->can('bpb.index'))
+                <li class="menu-item {{ request()->is(['bpb', 'bpb/*']) ? 'active' : '' }}">
+                    <a href="{{ route('bpb.index') }}" class="menu-link">
+                        <div>BPB</div>
+                    </a>
+                </li>
+            @endif
             @if (auth()->user()->hasAnyPermission($gudang_logistik_laporan_permission))
                 <li class="menu-item {{ request()->is(['laporangudanglogistik', 'laporangudanglogistik/*']) ? 'active' : '' }}">
                     <a href="{{ route('laporangudanglogistik.index') }}" class="menu-link">

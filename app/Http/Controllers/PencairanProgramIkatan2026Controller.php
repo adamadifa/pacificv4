@@ -397,13 +397,27 @@ class PencairanProgramIkatan2026Controller extends Controller
             });
 
             $rate = 0;
+            $cap = null;
             if ($tier) {
-                if ($jml_dus >= $total_target_pencapaian) {
-                    $rate = $tier->reward_ach_target;
-                } elseif ($jml_dus >= $avg) {
-                    $rate = $tier->reward_tidak_minus;
-                } elseif ($jml_dus >= $avg - ($avg * 0.10)) {
-                    $rate = $tier->reward_minus;
+                if ($item->kode_program == 'PRIK003') {
+                    if ($jml_dus >= $total_target_pencapaian) {
+                        $rate = $tier->reward_ach_target;
+                        $cap = 1200000;
+                    } elseif ($jml_dus >= $avg) {
+                        $rate = $tier->reward_tidak_minus;
+                        $cap = 800000;
+                    } elseif ($jml_dus >= $avg - ($avg * 0.05)) {
+                        $rate = $tier->reward_minus;
+                        $cap = 400000;
+                    }
+                } else {
+                    if ($jml_dus >= $total_target_pencapaian) {
+                        $rate = $tier->reward_ach_target;
+                    } elseif ($jml_dus >= $avg) {
+                        $rate = $tier->reward_tidak_minus;
+                    } elseif ($jml_dus >= $avg - ($avg * 0.10)) {
+                        $rate = $tier->reward_minus;
+                    }
                 }
             }
 
@@ -411,16 +425,15 @@ class PencairanProgramIkatan2026Controller extends Controller
             $item->reward_rate = $rate;
 
             if ($is_flat == 1) {
-                // If flat, rate is the total reward
-                $item->calculated_reward_tunai = 0; // Or distribute proportionally if needed, but for now assuming 0 split or handle differently? 
-                // Wait, logic below used rate * jml_tunai.
-                // Assuming flat reward applies to total quantity, not per dus.
-                // If flat, the total reward IS the rate.
                 $item->calculated_reward_total = $rate;
             } else {
                 $item->calculated_reward_tunai = ($item->jml_tunai ?? 0) * $rate;
                 $item->calculated_reward_kredit = ($item->jml_kredit ?? 0) * $rate;
                 $item->calculated_reward_total = $jml_dus * $rate;
+            }
+
+            if ($cap != null && $item->calculated_reward_total > $cap) {
+                $item->calculated_reward_total = $cap;
             }
 
             return $item;

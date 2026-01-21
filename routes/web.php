@@ -174,6 +174,7 @@ use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\ProgrammarketingController;
 use App\Http\Controllers\ProgramIkatan2026Controller;
 use App\Http\Controllers\WorksheetomController;
+use App\Http\Controllers\BPBController;
 use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
 use App\Models\Kontrabonpembelian;
@@ -2452,6 +2453,21 @@ Route::middleware('auth')->group(function () {
         Route::delete('/po/{id}/delete', 'destroy')->name('po.delete')->can('po.delete');
         Route::get('/po/jatuhtempo', 'jatuhtempo')->name('po.jatuhtempo')->can('po.jatuhtempo');
         Route::post('/po/editbarang', 'editbarang')->name('po.editbarang')->can('po.edit');
+    });
+
+
+    Route::controller(BPBController::class)->group(function () {
+        Route::get('/bpb', 'index')->name('bpb.index');
+        Route::get('/bpb/create', 'create')->name('bpb.create');
+        Route::get('/bpb/{no_bukti}/edit', 'edit')->name('bpb.edit');
+        Route::put('/bpb/{no_bukti}/update', 'update')->name('bpb.update');
+        Route::post('/bpb', 'store')->name('bpb.store');
+        Route::delete('/bpb/{no_bukti}', 'destroy')->name('bpb.delete');
+        Route::get('/bpb/{no_bukti}/show', 'show')->name('bpb.show');
+        Route::post('/bpb/{no_bukti}/storeapprove', 'storeapprove')->name('bpb.storeapprove');
+        Route::post('/bpb/serahterimabpbstore', 'serahterimabpbstore')->name('bpb.serahterimabpbstore');
+        Route::post('/bpb/serahterima/update', 'updateSerahTerima')->name('bpb.updateSerahTerima');
+        Route::post('/bpb/serahterima/delete', 'deleteSerahTerima')->name('bpb.deleteSerahTerima');
     });
 });
 
