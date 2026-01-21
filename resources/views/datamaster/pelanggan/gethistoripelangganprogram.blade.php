@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <th colspan="3">TOTAL PENJUALAN 1 TAHUN</th>
-                    <td class="text-end">{{ formatAngka(ROUND($total_qty)) }}</td>
+                    <td class="text-end">{{ formatAngka(FLOOR($total_qty)) }}</td>
                 </tr>
             </tfoot>
         </table>
