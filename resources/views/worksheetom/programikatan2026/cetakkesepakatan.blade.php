@@ -140,7 +140,7 @@
             <p>
                 Adapun hak dan kewajiban antara Pihak Ke-1 dan Pihak Ke-2 yang harus disepakati bersama dalam surat kesepakatan ini antara lain :
             <ol>
-                <li>Pihak Ke-2 Memilih target penjualan sebanyak {{ formatAngka($kesepakatan->qty_target) }} dus/ball selama satu semester</li>
+                <li>Pihak Ke-2 Memilih target penjualan sebanyak {{ formatAngka($kesepakatan->qty_target + $kesepakatan->qty_avg) }} dus/ball selama satu semester</li>
                 <li>Periode Program dimulai dari bulan {{ $namabulan[date('m', strtotime($kesepakatan->periode_dari)) * 1] }} s/d
                     {{ $namabulan[date('m', strtotime($kesepakatan->periode_sampai)) * 1] }}
                     {{ date('Y', strtotime($kesepakatan->periode_sampai)) }}
