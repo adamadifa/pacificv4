@@ -6861,6 +6861,8 @@ class LaporanmarketingController extends Controller
                     'keterangan' => $penjualan->keterangan ?? '',
                     'status_batal' => $penjualan->status_batal ?? '0',
                     'lock_print' => $penjualan->lock_print ?? '0',
+                    'salesman' => Salesman::where('kode_salesman', $penjualan->kode_salesman)->first(),
+                    'pelanggan' => Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first(),
                     'detail' => []
                 ];
 
@@ -6879,6 +6881,7 @@ class LaporanmarketingController extends Controller
 
                 // Kirim data ke API dengan timeout 30 detik
                 $response = Http::timeout(30)->post($baseUrl . '/penjualan', $data);
+                //dd($response->json());
 
                 // Cek response dari API
                 if (!$response->successful()) {

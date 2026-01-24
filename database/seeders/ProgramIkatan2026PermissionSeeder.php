@@ -12,9 +12,12 @@ class ProgramIkatan2026PermissionSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $permissiongroup = Permission_group::create([
+        $permissiongroup = Permission_group::firstOrCreate([
             'name' => 'Program Ikatan 2026'
         ]);
 
@@ -30,15 +33,25 @@ class ProgramIkatan2026PermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create([
+            Permission::firstOrCreate([
                 'name' => $permission,
                 'id_permission_group' => $permissiongroup->id
             ]);
         }
 
-        $createdPermissions = Permission::where('id_permission_group', $permissiongroup->id)->get();
-        $roleID = 1; // Super Admin
-        $role = Role::findById($roleID);
-        $role->givePermissionTo($createdPermissions);
+        $roles = [
+            'super admin',
+            'operation manager',
+            'regional sales manager',
+            'gm marketing',
+            'direktur'
+        ];
+
+        foreach ($roles as $roleName) {
+            $role = Role::where('name', $roleName)->first();
+            if ($role) {
+                $role->givePermissionTo($permissions);
+            }
+        }
     }
 }

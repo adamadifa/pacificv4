@@ -644,8 +644,10 @@ class ProgramIkatan2026Controller extends Controller
             ->get();
 
         $total_target = 0;
+        $total_rata_rata = 0;
         foreach ($detailtarget as $d) {
             $total_target += $d->target_perbulan;
+            $total_rata_rata += $d->avg;
         }
 
         $jml_bulan = count($detailtarget) > 0 ? count($detailtarget) : 1;
@@ -658,7 +660,11 @@ class ProgramIkatan2026Controller extends Controller
             return $rata_rata_target >= $detail->qty_dari && $rata_rata_target <= $detail->qty_sampai;
         });
 
-        $rate = $tier ? $tier->reward_ach_target : 0;
+        if ($total_rata_rata == 0) {
+            $rate = $tier ? $tier->reward_tidak_minus : 0;
+        } else {
+            $rate = $tier ? $tier->reward_ach_target : 0;
+        }
         
         $data['detailtarget'] = $detailtarget;
         $data['rate'] = $rate;

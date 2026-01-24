@@ -15,43 +15,55 @@ class ProgrammarketingPermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissiongroup = Permission_group::create([
+        $permissiongroup = Permission_group::firstOrCreate([
             'name' => 'Program Marketing'
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'programmarketing.index',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'programmarketing.create',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'programmarketing.edit',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'programmarketing.store',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'programmarketing.update',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'programmarketing.delete',
             'id_permission_group' => $permissiongroup->id
         ]);
 
         $permissions = Permission::where('id_permission_group', $permissiongroup->id)->get();
-        $roleID = 1;
-        $role = Role::findById($roleID);
-        $role->givePermissionTo($permissions);
+        
+        $roles = [
+            'super admin',
+            'operation manager',
+            'regional sales manager',
+            'gm marketing',
+            'direktur'
+        ];
+
+        foreach ($roles as $roleName) {
+            $role = Role::where('name', $roleName)->first();
+            if ($role) {
+                $role->givePermissionTo($permissions);
+            }
+        }
     }
 }

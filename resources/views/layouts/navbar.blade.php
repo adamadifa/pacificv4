@@ -192,7 +192,7 @@
 
                                     </span>
 
-                                    <a href="{{ route('ajuanprogramikatan.index') }}?status=pending"
+                                    <a href="{{ route('programikatan2026.index') }}?status=pending"
                                         class="stretched-link">Ajuan</a>
                                     <small class="text-muted mb-0">Program Ikatan</small>
                                 </div>
@@ -204,7 +204,7 @@
                                                 style="position: absolute; right: 50px; top:20px">{{ $notifikasi_pencairanprogramikatan }}</span>
                                         @endif
                                     </span>
-                                    <a href="{{ route('pencairanprogramikatan.index') }}"
+                                    <a href="{{ route('pencairanprogramikatan2026.index') }}"
                                         class="stretched-link">Pencairan</a>
                                     <small class="text-muted mb-0">Program Ikatan</small>
                                 </div>

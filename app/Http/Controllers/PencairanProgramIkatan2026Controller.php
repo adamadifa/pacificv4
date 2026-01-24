@@ -399,24 +399,35 @@ class PencairanProgramIkatan2026Controller extends Controller
             $rate = 0;
             $cap = null;
             if ($tier) {
-                if ($item->kode_program == 'PRIK003') {
+                if ($avg == 0) {
                     if ($jml_dus >= $total_target_pencapaian) {
-                        $rate = $tier->reward_ach_target;
-                        $cap = 1200000;
-                    } elseif ($jml_dus >= $avg) {
                         $rate = $tier->reward_tidak_minus;
-                        $cap = 800000;
-                    } elseif ($jml_dus >= $avg - ($avg * 0.05)) {
-                        $rate = $tier->reward_minus;
-                        $cap = 400000;
+                        if ($item->kode_program == 'PRIK003') {
+                            $cap = 800000;
+                        }
+                    } else {
+                        $rate = 0;
                     }
                 } else {
-                    if ($jml_dus >= $total_target_pencapaian) {
-                        $rate = $tier->reward_ach_target;
-                    } elseif ($jml_dus >= $avg) {
-                        $rate = $tier->reward_tidak_minus;
-                    } elseif ($jml_dus >= $avg - ($avg * 0.10)) {
-                        $rate = $tier->reward_minus;
+                    if ($item->kode_program == 'PRIK003') {
+                        if ($jml_dus >= $total_target_pencapaian) {
+                            $rate = $tier->reward_ach_target;
+                            $cap = 1200000;
+                        } elseif ($jml_dus >= $avg) {
+                            $rate = $tier->reward_tidak_minus;
+                            $cap = 800000;
+                        } elseif ($jml_dus >= $avg - ($avg * 0.05)) {
+                            $rate = $tier->reward_minus;
+                            $cap = 400000;
+                        }
+                    } else {
+                        if ($jml_dus >= $total_target_pencapaian) {
+                            $rate = $tier->reward_ach_target;
+                        } elseif ($jml_dus >= $avg) {
+                            $rate = $tier->reward_tidak_minus;
+                        } elseif ($jml_dus >= $avg - ($avg * 0.10)) {
+                            $rate = $tier->reward_minus;
+                        }
                     }
                 }
             }

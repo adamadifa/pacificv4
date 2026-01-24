@@ -15,54 +15,64 @@ class PencairanProgramIkatan2026PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissiongroup = Permission_group::create([
+        $permissiongroup = Permission_group::firstOrCreate([
             'name' => 'Pencairan Program Ikatan 2026'
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'pencairanprogramikatan2026.index',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'pencairanprogramikatan2026.create',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'pencairanprogramikatan2026.edit',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'pencairanprogramikatan2026.store',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'pencairanprogramikatan2026.update',
             'id_permission_group' => $permissiongroup->id
         ]);
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'pencairanprogramikatan2026.show',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'pencairanprogramikatan2026.upload',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-        Permission::create([
+        Permission::firstOrCreate([
             'name' => 'pencairanprogramikatan2026.delete',
             'id_permission_group' => $permissiongroup->id
         ]);
 
-
-
         $permissions = Permission::where('id_permission_group', $permissiongroup->id)->get();
-        $roleID = 1;
-        $role = Role::findById($roleID);
-        $role->givePermissionTo($permissions);
+        
+        $roles = [
+            'super admin',
+            'operation manager',
+            'regional sales manager',
+            'gm marketing',
+            'direktur'
+        ];
+
+        foreach ($roles as $roleName) {
+            $role = Role::where('name', $roleName)->first();
+            if ($role) {
+                $role->givePermissionTo($permissions);
+            }
+        }
     }
 }
