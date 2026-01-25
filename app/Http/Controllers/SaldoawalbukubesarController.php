@@ -28,10 +28,10 @@ class SaldoawalbukubesarController extends Controller
         $data['nama_bulan'] = config('global.nama_bulan');
         $data['start_year'] = config('global.start_year');
         $query = Saldoawalbukubesar::query();
-        if ($request->has('bulan')) {
+        if (!empty($request->bulan)) {
             $query->where('bulan', $request->bulan);
         }
-        if ($request->has('tahun')) {
+       if(!empty($request->tahun)){
             $query->where('tahun', $request->tahun);
         } else {
             $query->where('tahun', date('Y'));
@@ -601,7 +601,7 @@ class SaldoawalbukubesarController extends Controller
         $retur_penjualan->join('coa', 'marketing_retur.kode_akun', '=', 'coa.kode_akun');
         $retur_penjualan->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $retur_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $retur_penjualan->whereBetween('marketing_retur.tanggal', [$request->dari, $sampai]);
+        $retur_penjualan->whereBetween('marketing_retur.tanggal', [$start_date, $sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $retur_penjualan->whereBetween('marketing_retur.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
@@ -626,7 +626,7 @@ class SaldoawalbukubesarController extends Controller
         );
         $potongan_penjualan->join('coa', 'marketing_penjualan.kode_akun_potongan', '=', 'coa.kode_akun');
         $potongan_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $potongan_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $sampai]);
+        $potongan_penjualan->whereBetween('marketing_penjualan.tanggal', [$start_date, $sampai]);
         $potongan_penjualan->where('marketing_penjualan.status_batal', 0);
         $potongan_penjualan->orderBy('marketing_penjualan.tanggal');
         $potongan_penjualan->orderBy('marketing_penjualan.no_faktur');
@@ -653,7 +653,7 @@ class SaldoawalbukubesarController extends Controller
         );
         $penyesuaian_penjualan->join('coa', 'marketing_penjualan.kode_akun_penyesuaian', '=', 'coa.kode_akun');
         $penyesuaian_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $penyesuaian_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $sampai]);
+        $penyesuaian_penjualan->whereBetween('marketing_penjualan.tanggal', [$start_date, $sampai]);
         $penyesuaian_penjualan->where('marketing_penjualan.status_batal', 0);
         $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
         $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
@@ -747,7 +747,7 @@ class SaldoawalbukubesarController extends Controller
                 $join->on('pembelian.no_bukti', '=', 'detailpembelian.no_bukti');
             }
         );
-        $hutangdagangdanlainnya->whereBetween('pembelian.tanggal', [$request->dari, $sampai]);
+        $hutangdagangdanlainnya->whereBetween('pembelian.tanggal', [$start_date, $sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $hutangdagangdanlainnya->whereBetween('pembelian.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
