@@ -146,7 +146,11 @@
                     {{ date('Y', strtotime($kesepakatan->periode_sampai)) }}
                 </li>
                 <li>Dengan hadiah berupa Cashback sebesar Rp.{{ formatAngka($rate) }}
-                    {{ $kesepakatan->tipe_reward == '2' ? 'Flat' : '/Dus/Ball' }}</li>
+                    {{ $kesepakatan->tipe_reward == '2' ? 'Flat' : '/Dus/Ball' }}
+                    @if ($kesepakatan->kode_program == 'PRIK003')
+                        atau maksimal Cashback sebesar Rp 1.200.000,-
+                    @endif
+                </li>
                 <li>
                     Pihak Ke2 bersedia membeli barang sesuai dengan kesepakatan target satu semester
                 </li>
