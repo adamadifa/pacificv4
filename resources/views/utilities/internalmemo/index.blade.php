@@ -19,12 +19,12 @@
                 <form method="GET" class="row g-2 mb-3" autocomplete="off">
 
                     <div class="col-md-3">
-                        <input type="text" name="no_im" value="{{ request('no_im') }}" class="form-control"
+                        <input type="text" name="no_im_search" value="{{ request('no_im_search') }}" class="form-control"
                             placeholder="No IM">
                     </div>
 
                     <div class="col-md-3">
-                        <input type="text" name="judul" value="{{ request('judul') }}" class="form-control"
+                        <input type="text" name="judul_search" value="{{ request('judul_search') }}" class="form-control"
                             placeholder="Judul Memo">
                     </div>
 
