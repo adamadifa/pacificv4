@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
-class BPBController extends Controller
+class BPBControllder extends Controller
 {
     public function index(Request $request)
     {
@@ -21,6 +21,13 @@ class BPBController extends Controller
         $id = Auth::user()->id;
         $dept = Auth::user()->kode_dept;
 
+        $cabangList = DB::table('cabang')
+            ->orderBy('nama_cabang')
+            ->get();
+
+        $deptList = DB::table('hrd_departemen')
+            ->orderBy('nama_dept')
+            ->get();
         $bpb = BPB::query()
             ->select(
                 'bpb.*',
@@ -57,32 +64,34 @@ class BPBController extends Controller
                 $q->where('bpb.kode_cabang', $cabang)
                     ->where('bpb.kode_dept', $dept);
             })
-
             // Filter tanggal
             ->when($request->filled('dari') && $request->filled('sampai'), function ($q) use ($request) {
                 $q->whereBetween('bpb.tanggal', [$request->dari, $request->sampai]);
             })
-
             // Filter no BPB
             ->when($request->filled('no_bpb_search'), function ($q) use ($request) {
                 $q->where('bpb.no_bpb', $request->no_bpb_search);
             })
-
             // 🔥 FILTER STATUS
             ->when($request->status == 'selesai', function ($q) {
                 $q->havingRaw('total_serah_terima = total_bpb');
             })
-
             ->when($request->status == 'proses', function ($q) {
                 $q->havingRaw('(total_serah_terima < total_bpb OR total_serah_terima IS NULL)');
             })
-
+            ->when($request->filled('kode_cabang'), function ($q) use ($request) {
+                $q->where('bpb.kode_cabang', $request->kode_cabang);
+            })
+            // Filter departemen
+            ->when($request->filled('kode_dept'), function ($q) use ($request) {
+                $q->where('bpb.kode_dept', $request->kode_dept);
+            })
             ->orderBy('bpb.tanggal', 'desc')
             ->orderBy('bpb.created_at', 'desc')
             ->simplePaginate(20)
             ->appends($request->all());
 
-        return view('gudanglogistik.bpb.index', compact('bpb'));
+        return view('gudanglogistik.bpb.index', compact('bpb', 'cabangList', 'deptList'));
     }
 
 

@@ -8,7 +8,7 @@
                 </a>
             </li>
         @endcan
-        @can('programikatan2026.index')
+        @can('programikatan2026.monitoring')
             <li class="nav-item" role="presentation">
                 <a href="{{ route('programikatan2026.monitoring') }}"
                     class="nav-link {{ request()->is(['programikatan2026/monitoring']) ? 'active' : '' }}">
