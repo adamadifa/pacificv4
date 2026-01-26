@@ -175,6 +175,7 @@ use App\Http\Controllers\ProgrammarketingController;
 use App\Http\Controllers\ProgramIkatan2026Controller;
 use App\Http\Controllers\WorksheetomController;
 use App\Http\Controllers\BPBController;
+use App\Http\Controllers\InternalMemoController;
 use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
 use App\Models\Kontrabonpembelian;
@@ -2471,6 +2472,20 @@ Route::middleware('auth')->group(function () {
         Route::post('/bpb/serahterimabpbstore', 'serahterimabpbstore')->name('bpb.serahterimabpbstore');
         Route::post('/bpb/serahterima/update', 'updateSerahTerima')->name('bpb.updateSerahTerima');
         Route::post('/bpb/serahterima/delete', 'deleteSerahTerima')->name('bpb.deleteSerahTerima');
+    });
+
+    
+    
+    Route::controller(InternalMemoController::class)->group(function () {
+        Route::get('internalmemo', 'index')->name('internalmemo.index');
+        Route::get('internalmemocreate', 'create')->name('internalmemo.create');
+        Route::post('internalmemo', 'store')->name('internalmemo.store');
+        Route::get('internalmemo{id}show', 'show')->name('internalmemo.show');
+        Route::get('internalmemo{id}edit', 'edit')->name('internalmemo.edit');
+        Route::put('internalmemo{id}update', 'update')->name('internalmemo.update');
+        Route::delete('internalmemo{id}', 'destroy')->name('internalmemo.delete');
+        Route::post('internalmemo{id}aktifkan', 'aktifkan')->name('internalmemo.aktifkan');
+        Route::post('internalmemo{id}nonaktifkan', 'nonaktifkan')->name('internalmemo.nonaktifkan');
     });
 });
 
