@@ -847,4 +847,170 @@ class ProgramIkatan2026Controller extends Controller
                 ->make(true);
         }
     }
+    public function monitoring(Request $request)
+    {
+        $user = User::find(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        $query = MktIkatanDetail2026::query();
+        $query->select(
+            'mkt_ikatan_detail_2026.*',
+            'mkt_ikatan_2026.tanggal',
+            'mkt_ikatan_2026.no_pengajuan',
+            'mkt_ikatan_2026.nomor_dokumen',
+            'mkt_ikatan_2026.periode_dari',
+            'mkt_ikatan_2026.periode_sampai',
+            'program_ikatan.nama_program',
+            'program_ikatan.produk',
+            'mkt_ikatan_2026.kode_program',
+            'cabang.nama_cabang',
+            'pelanggan.nama_pelanggan',
+            'salesman.nama_salesman',
+            'target_ikatan.total_target',
+            'target_ikatan.avg_target'
+        );
+
+        $query->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan');
+        $query->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program');
+        $query->join('cabang', 'mkt_ikatan_2026.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+
+        $target_ikatan = MktIkatanTarget2026::select(
+            'no_pengajuan',
+            'kode_pelanggan',
+            DB::raw('SUM(avg + target_perbulan) as total_target'),
+            DB::raw('SUM(avg) as avg_target')
+        )
+            ->groupBy('no_pengajuan', 'kode_pelanggan');
+
+        $query->leftJoinSub($target_ikatan, 'target_ikatan', function ($join) {
+            $join->on('mkt_ikatan_detail_2026.no_pengajuan', '=', 'target_ikatan.no_pengajuan');
+            $join->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'target_ikatan.kode_pelanggan');
+        });
+
+        $query->where('mkt_ikatan_2026.status', 1);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('mkt_ikatan_2026.kode_cabang', auth()->user()->kode_cabang);
+            }
+        }
+
+        if (!empty($request->kode_cabang)) {
+            $query->where('mkt_ikatan_2026.kode_cabang', $request->kode_cabang);
+        }
+
+        if (!empty($request->kode_program)) {
+            $query->where('mkt_ikatan_2026.kode_program', $request->kode_program);
+        }
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('mkt_ikatan_2026.tanggal', [$request->dari, $request->sampai]);
+        }
+
+        if (!empty($request->nama_pelanggan)) {
+            $query->where('pelanggan.nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
+        }
+
+
+
+        $monitoring_data = $query->paginate(15);
+        $monitoring_data->appends(request()->all());
+
+        // Optimize: Fetch all unique programs in the result to batch load rewards
+        $kode_programs = $monitoring_data->pluck('kode_program')->unique();
+        $rewards = MktRewardProgram2026::with('details')->whereIn('kode_program', $kode_programs)->get()->keyBy('kode_program');
+
+        foreach ($monitoring_data as $d) {
+            $produk = json_decode($d->produk, true) ?? [];
+            $realisasi = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+                ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                ->whereIn('produk_harga.kode_produk', $produk)
+                ->whereBetween('marketing_penjualan.tanggal', [$d->periode_dari, $d->periode_sampai])
+                ->where('marketing_penjualan.kode_pelanggan', $d->kode_pelanggan)
+                ->where('status_promosi', 0)
+                ->where('status_batal', 0)
+                ->sum(DB::raw('FLOOR(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus)'));
+
+            $d->realisasi = $realisasi;
+
+            // Reward Calculation
+            $avg = $d->avg_target ?? 0;
+            $total_target = $d->total_target ?? 0; // Sum of avg + target_perbulan
+            $target_perbulan = $total_target - $avg; // Deduce target_perbulan
+            $kenaikan_per_bulan = $target_perbulan / 6;
+            
+            $jml_dus = $realisasi;
+            $total_target_pencapaian = $total_target;
+
+            $reward_program = $rewards[$d->kode_program] ?? null;
+            $reward_details = $reward_program ? $reward_program->details : collect([]);
+
+            $tier = $reward_details->first(function ($detail) use ($kenaikan_per_bulan) {
+                return $kenaikan_per_bulan >= $detail->qty_dari && $kenaikan_per_bulan <= $detail->qty_sampai;
+            });
+
+            $rate = 0;
+            $cap = null;
+            if ($tier) {
+                if ($avg == 0) {
+                    if ($jml_dus >= $total_target_pencapaian) {
+                        $rate = $tier->reward_tidak_minus;
+                        if ($d->kode_program == 'PRIK003') {
+                            $cap = 800000;
+                        }
+                    } else {
+                        $rate = 0;
+                    }
+                } else {
+                    if ($d->kode_program == 'PRIK003') {
+                        if ($jml_dus >= $total_target_pencapaian) {
+                            $rate = $tier->reward_ach_target;
+                            $cap = 1200000;
+                        } elseif ($jml_dus >= $avg) {
+                            $rate = $tier->reward_tidak_minus;
+                            $cap = 800000;
+                        } elseif ($jml_dus >= $avg - ($avg * 0.05)) {
+                            $rate = $tier->reward_minus;
+                            $cap = 400000;
+                        }
+                    } else {
+                        if ($jml_dus >= $total_target_pencapaian) {
+                            $rate = $tier->reward_ach_target;
+                        } elseif ($jml_dus >= $avg) {
+                            $rate = $tier->reward_tidak_minus;
+                        } elseif ($jml_dus >= $avg - ($avg * 0.10)) {
+                            $rate = $tier->reward_minus;
+                        }
+                    }
+                }
+            }
+
+            $is_flat = $tier->is_flat ?? 0;
+            $d->reward_rate = $rate;
+
+            if ($is_flat == 1) {
+                $d->calculated_reward_total = $rate;
+            } else {
+                 $d->calculated_reward_total = $jml_dus * $rate;
+            }
+
+            if ($cap != null && $d->calculated_reward_total > $cap) {
+                $d->calculated_reward_total = $cap;
+            }
+        }
+
+        $cbg = new Cabang();
+        $data['user'] = $user;
+        $data['cabang'] = $cbg->getCabang();
+        $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
+        $data['monitoring_data'] = $monitoring_data;
+        $data['roles_access_all_cabang'] = $roles_access_all_cabang;
+
+        return view('worksheetom.programikatan2026.monitoring', $data);
+    }
 }

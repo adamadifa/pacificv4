@@ -2252,6 +2252,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/programikatan2026', 'index')->name('programikatan2026.index');
         Route::get('/programikatan2026/create', 'create')->name('programikatan2026.create');
         Route::post('/programikatan2026/store', 'store')->name('programikatan2026.store');
+        Route::get('/programikatan2026/monitoring', 'monitoring')->name('programikatan2026.monitoring');
         
         Route::get('/programikatan2026/{no_pengajuan}/setajuanprogramikatan', 'setajuanprogramikatan')->name('programikatan2026.setajuanprogramikatan');
         Route::delete('/programikatan2026/{no_pengajuan}/delete', 'destroy')->name('programikatan2026.delete');
