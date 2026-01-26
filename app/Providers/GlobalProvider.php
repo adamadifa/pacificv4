@@ -39,6 +39,7 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Activitylog\Models\Activity;
+use Illuminate\Support\Facades\DB;
 
 class GlobalProvider extends ServiceProvider
 {
@@ -383,6 +384,18 @@ class GlobalProvider extends ServiceProvider
                 } else {
                     $notifikasi_ticket = 0;
                 }
+
+
+                $notifIM = DB::table('internal_memo')
+                    ->where('internal_memo.status', 1)
+                    ->whereDate('internal_memo.berlaku_dari', '<=', now())
+                    ->whereNotExists(function ($q) {
+                        $q->select(DB::raw(1))
+                            ->from('internal_memo_log_baca')
+                            ->whereColumn('internal_memo_log_baca.internal_memo_id', 'internal_memo.id')
+                            ->where('internal_memo_log_baca.user_id', auth()->id());
+                    })
+                    ->count();
             } else {
                 $level_user = '';
                 $notifikasiajuantransferdana = 0;
@@ -429,6 +442,8 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_ticket = 0;
                 //$notifikasi_log = 0;
                 $notifikasi_update_data = 0;
+
+                $notifIM = 0;
             }
 
             if ($level_user == "gm administrasi") {
@@ -855,6 +870,8 @@ class GlobalProvider extends ServiceProvider
                 'notifikasi_izinsakit_presensi' => $notifikasi_izinsakit_presensi,
                 'notifikasi_izinkoreksi_presensi' => $notifikasi_izinkoreksi_presensi,
                 'notifikasi_izindinas_presensi' => $notifikasi_izindinas_presensi,
+
+                'notifIM' => $notifIM,
 
 
                 'users' => $users
