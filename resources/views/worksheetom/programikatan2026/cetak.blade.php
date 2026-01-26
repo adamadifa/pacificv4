@@ -93,18 +93,16 @@
             <table class="datatable3" style="width: 100%">
                 <thead style="background-color: #055b90; color:white">
                     <tr>
-                        <td>No.</td>
-                        <td>Kode</td>
-                        <td>Pelanggan</td>
-                        <td class="text-center">TOTAL<br>PENJUALAN</td>
-                        <td class="text-center">Target</td>
-                        <td class="text-center">%</td>
-                        <td>Reward</td>
-                        <td>Budget</td>
-                        <td>T/TF/V</td>
-                        <td>Rekening</td>
-                        <td>Pemilik</td>
-                        <td>Bank</td>
+                        <th>No.</th>
+                        <th>Kode</th>
+                        <th>Nama Pelanggan</th>
+                        <th class="text-center">Rata-Rata</th>
+                        <th class="text-center">Target<br>(Tambahan)</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-end">Ach (%)</th>
+                        <th class="text-end">TOP</th>
+                        <th>Metode</th>
+                        <th class="text-end">Pencairan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -120,22 +118,20 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
-                            <td class="text-center">{{ formatAngka($d->qty_rata_rata) }}</td>
+                            <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
                             <td class="text-center">{{ formatAngka($d->qty_target) }}</td>
-                            <td class="text-center">
+                            <td class="text-center">{{ formatAngka($d->qty_avg + $d->qty_target) }}</td>
+                            <td class="text-end">
                                 @php
-                                    $kenaikan = $d->qty_target - $d->qty_rata_rata;
-                                    $persentase = $d->qty_rata_rata == 0 ? 0 : ($kenaikan / $d->qty_rata_rata) * 100;
-                                    $persentase = number_format($persentase, 2);
+                                    $kenaikan = $d->qty_target;
+                                    $persentase = $d->qty_avg == 0 ? 0 : ($kenaikan / $d->qty_avg) * 100;
+                                    $persentase = formatAngkaDesimal($persentase);
                                 @endphp
                                 {{ $persentase }}%
                             </td>
-                            <td class="text-end">{{ formatAngka($d->reward) }}</td>
-                            <td>{{ $d->budget }}</td>
-                            <td>{{ $metode_pembayaran[$d->metode_pembayaran] }}</td>
-                            <td>{{ $d->no_rekening }}</td>
-                            <td></td>
-                            <td></td>
+                            <td class="text-end">{{ $d->top }}</td>
+                            <td>{{ $metode_pembayaran[$d->metode_pembayaran] ?? $d->metode_pembayaran }}</td>
+                            <td class="text-end">{{ formatAngka($d->periode_pencairan) }} Bulan</td>
                         </tr>
                     @endforeach
                 </tbody>
