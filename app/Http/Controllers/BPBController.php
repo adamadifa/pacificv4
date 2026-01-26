@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
-class BPBControllder extends Controller
+class BPBController extends Controller
 {
     public function index(Request $request)
     {
