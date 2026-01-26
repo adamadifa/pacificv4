@@ -119,6 +119,7 @@ class PembelianController extends Controller
         $kode_akun = $request->kode_akun_item;
         $keterangan = $request->keterangan_item;
         $kode_cabang = $request->kode_cabang_item;
+        $no_po = $request->no_po;
         $kode_akun_cr = ['6-1', '6-2'];
         DB::beginTransaction();
         try {
@@ -197,6 +198,7 @@ class PembelianController extends Controller
                 'ppn' => $request->ppn,
                 'kategori_transaksi' => $request->kategori_transaksi,
                 'kode_akun' => $request->kode_asal_pengajuan == 'GDB' ? '2-1200' : '2-1300',
+                'no_po' => $no_po,
                 'id_user' => auth()->user()->id
             ]);
 
