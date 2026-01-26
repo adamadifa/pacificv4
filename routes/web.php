@@ -1453,6 +1453,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembelian/{kode_supplier}/getpembelianbysupplier', 'getpembelianbysupplier')->name('pembelian.getpembelianbysupplier');
         Route::get('/pembelian/{kode_supplier}/getpembelianbysupplierjson', 'getpembelianbysupplierjson')->name('pembelian.getpembelianbysupplierjson');
         Route::post('/pembelian/getbarangpembelian', 'getbarangpembelian')->name('pembelian.getbarangpembelian');
+
+        Route::get('/po/by-supplier/{kode_supplier}', 'getPoBySupplier')->name('getPoBySupplier');
     });
 
     Route::controller(JurnalkoreksiController::class)->group(function () {

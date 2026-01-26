@@ -41,6 +41,11 @@
                             </div>
                             <x-input-with-icon label="Jatuh Tempo" name="jatuh_tempo" icon="ti ti-calendar" datepicker="flatpickr-datepmb" />
                             <div class="form-group mb-3">
+                                <select name="no_po" id="no_po" class="form-select select2PO">
+                                    <option value="">No PO</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
                                 <small class="text-light fw-medium d-block mb-2 mt-2">PPN</small>
                                 <div class="form-check form-check-inline ">
                                     <input class="form-check-input" type="radio" name="ppn" id="ppn1" value="1">
@@ -266,6 +271,17 @@
             });
         }
 
+const select2PO = $('.select2PO');
+        if (select2PO.length) {
+            select2PO.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'No PO',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
         const select2Kodeakun = $('.select2Kodeakun');
         if (select2Kodeakun.length) {
             select2Kodeakun.each(function() {
@@ -683,6 +699,32 @@
                 buttonDisable();
             }
         });
+
+        $('#kode_supplier').on('change', function() {
+            let kode_supplier = $(this).val();
+
+            $('#no_po').val(null).trigger('change');
+
+            if (kode_supplier === '') {
+                return;
+            }
+
+            $('#no_po').select2({
+                placeholder: 'Pilih No PO',
+                allowClear: true,
+                ajax: {
+                    url: `/po/by-supplier/${kode_supplier}`,
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    }
+                }
+            });
+        });
+
 
     });
 </script>

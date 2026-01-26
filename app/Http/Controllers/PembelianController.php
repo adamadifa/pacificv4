@@ -910,4 +910,24 @@ class PembelianController extends Controller
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }
+
+    
+    public function getPoBySupplier($kode_supplier)
+    {
+        $po = DB::table('po')
+            ->where('kode_supplier', $kode_supplier)
+            ->orderBy('tanggal', 'desc')
+            ->limit(20)
+            ->get();
+
+        $data = [];
+        foreach ($po as $p) {
+            $data[] = [
+                'id' => $p->no_bukti,
+                'text' => $p->no_bukti . ' | ' . $p->tanggal
+            ];
+        }
+
+        return response()->json($data);
+    }
 }
