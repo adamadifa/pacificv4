@@ -73,7 +73,7 @@
                     $total_harga_keluar = 0;
                     $total_harga_keluar_lainnya = 0;
                 @endphp
-                @foreach ($rekapbahanbakar as $d)
+                @forelse ($rekapbahanbakar as $d)
                     @php
                         $jumlah_saldoawal = $qty_saldo_awal * $harga_saldo_awal;
                         $cek = $qty_saldo_awal . '*' . $harga_saldo_awal;
@@ -164,7 +164,46 @@
                         $qty_saldo_awal = $qty_saldo_akhir;
                         $harga_saldo_awal = $harga_keluar;
                     @endphp
-                @endforeach
+                @empty
+                    <tr>
+                        <td>{{ formatIndo($d['tanggal']) }}</td>
+                        <td class="right">{{ formatAngkaDesimal($qty_saldo_awal) }}</td>
+                        <td class="right">{{ formatAngkaDesimal($harga_saldo_awal) }}</td>
+                        <td class="right">{{ formatAngkaDesimal($jumlah_saldoawal) }} </td>
+
+                        <td class="right"></td>
+                        <td class="right"></td>
+                        <td class="right"></td>
+
+                        <td class="right"></td>
+                        <td class="right"></td>
+                        <td class="right"></td>
+
+                        <td class="right"></td>
+                        <td class="right"></td>
+                        <td class="right"></td>
+
+                        <td class="right"></td>
+                        <td class="right"></td>
+                        <td class="right"></td>
+
+
+                        </td>
+                        <td class="right">
+                            @php
+                                $qty_saldo_akhir =$qty_saldo_awal;
+                            @endphp
+                            {{ formatAngkaDesimal($qty_saldo_akhir) }}
+                        </td>
+                        <td class="right">{{ formatAngkaDesimal($harga_saldo_awal) }}</td>
+                        <td class="right">
+                            @php
+                                $jumlah_saldo_akhir = $qty_saldo_akhir * $harga_saldo_awal;
+                            @endphp
+                            {{ formatAngkaDesimal($jumlah_saldo_akhir) }}
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
             <tfoot>
                 <tr>
