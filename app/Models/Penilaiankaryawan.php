@@ -101,7 +101,7 @@ class Penilaiankaryawan extends Model
                     $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
                     $query->where('hrd_jabatan.kategori', 'NM');
                 } else {
-                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_karyawan.kode_cabangd', auth()->user()->kode_cabang);
                     $query->where('hrd_jabatan.kategori', 'NM');
                 }
             }
