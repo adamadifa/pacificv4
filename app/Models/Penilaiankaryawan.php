@@ -78,11 +78,11 @@ class Penilaiankaryawan extends Model
 
         if (!$user->hasRole('super admin') && !$user->hasRole('asst. manager hrd') && !$user->hasRole('direktur') && !$user->hasRole('spv presensi')) {
             if ($user->hasRole('gm operasional')) {
-                $query->whereIn('hrd_karyawan.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
+                $query->whereIn('hrd_penilaian.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
-                $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                $query->whereIn('hrd_penilaian.kode_dept', ['AKT', 'KEU']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
-                $query->whereIn('hrd_karyawan.kode_dept', ['MKT']);
+                $query->whereIn('hrd_penilaian.kode_dept', ['MKT']);
             } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
                 $query->where('hrd_karyawan.kode_dept', 'MKT');
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
@@ -97,11 +97,11 @@ class Penilaiankaryawan extends Model
                 $query->where('hrd_jabatan.kode_jabatan', '!=', 'J12');
             } else {
                 if (auth()->user()->kode_cabang == 'PST') {
-                    $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                    $query->where('hrd_penilaian.kode_dept', auth()->user()->kode_dept);
+                    $query->where('hrd_penilaian.kode_cabang', auth()->user()->kode_cabang);
                     $query->where('hrd_jabatan.kategori', 'NM');
                 } else {
-                    $query->where('hrd_karyawan.kode_cabangd', auth()->user()->kode_cabang);
+                    $query->where('hrd_penilaian.kode_cabang', auth()->user()->kode_cabang);
                     $query->where('hrd_jabatan.kategori', 'NM');
                 }
             }
@@ -130,13 +130,13 @@ class Penilaiankaryawan extends Model
 
             $query->where('hrd_penilaian.status', '1');
             if ($user->hasRole('gm operasional')) {
-                $query->orwhereIn('hrd_karyawan.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
+                $query->orwhereIn('hrd_penilaian.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
             } else if ($user->hasRole('gm administrasi')) { //GM ADMINISTRASI
-                $query->orwhereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                $query->orwhereIn('hrd_penilaian.kode_dept', ['AKT', 'KEU']);
             } elseif ($user->hasRole('gm marketing')) { //GM MARKETING
-                $query->orwhereIn('hrd_karyawan.kode_dept', ['MKT']);
+                $query->orwhereIn('hrd_penilaian.kode_dept', ['MKT']);
             } else if ($user->hasRole('regional sales manager')) { //REG. SALES MANAGER
-                $query->orwhere('hrd_karyawan.kode_dept', 'MKT');
+                $query->orwhere('hrd_penilaian.kode_dept', 'MKT');
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             }
             // else if ($user->id == 97) { //REG. SALES MANAGER
@@ -145,17 +145,17 @@ class Penilaiankaryawan extends Model
             //     $query->where('cabang.kode_cabang', 'PST');
             // }
             else if ($user->hasRole('regional operation manager')) { //REG. OPERATION MANAGER
-                $query->orwhere('hrd_karyawan.kode_dept', 'AKT');
+                $query->orwhere('hrd_penilaian.kode_dept', 'AKT');
             } else if ($user->hasRole('manager keuangan')) { //MANAGER KEUANGAN
-                $query->orwhereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                $query->orwhereIn('hrd_penilaian.kode_dept', ['AKT', 'KEU']);
             } else if ($user->hasRole('spv produksi')) {
-                $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                $query->where('hrd_penilaian.kode_dept', auth()->user()->kode_dept);
+                $query->where('hrd_penilaian.kode_cabang', auth()->user()->kode_cabang);
                 $query->where('hrd_jabatan.kategori', 'NM');
                 $query->where('hrd_jabatan.kode_jabatan', '!=', 'J12');
             } else {
-                $query->orwhere('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                $query->orwhere('hrd_penilaian.kode_dept', auth()->user()->kode_dept);
+                $query->where('hrd_penilaian.kode_cabang', auth()->user()->kode_cabang);
                 $query->where('hrd_jabatan.kategori', 'NM');
             }
             if (auth()->user()->kode_cabang == 'PST') {
