@@ -165,6 +165,9 @@
                         $harga_saldo_awal = $harga_keluar;
                     @endphp
                 @empty
+                @php
+                    $jumlah_saldoawal = $qty_saldo_awal * $harga_saldo_awal;
+                @endphp
                     <tr>
                         <td>{{ date('d-m-Y', strtotime($dari)) }}</td>
                         <td class="right">{{ formatAngkaDesimal($qty_saldo_awal) }}</td>
