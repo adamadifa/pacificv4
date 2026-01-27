@@ -22,7 +22,7 @@
         <!-- /Search -->
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
-            <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
+            <!-- <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                 <a class="nav-link" href="{{ route('internalmemo.index') }}">
                     <i class="ti ti-file-text ti-md"></i>
 
@@ -32,7 +32,7 @@
                         </span>
                     @endif
                 </a>
-            </li>
+            </li> -->
             @if (Cookie::get('kodepelanggan') != null && $level_user == 'salesman')
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                     <a class="btn btn-sm btn-primary mt-1"
