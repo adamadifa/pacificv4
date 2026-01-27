@@ -272,7 +272,7 @@
                             }
 
                             // Tampilkan pesan sukses
-                            alert(response.message);
+                            //alert(response.message);
                             console.log('Status pajak berhasil diupdate');
                         } else {
                             // Revert checkbox jika gagal
