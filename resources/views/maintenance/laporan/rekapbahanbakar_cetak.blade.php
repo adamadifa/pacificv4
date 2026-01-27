@@ -166,7 +166,7 @@
                     @endphp
                 @empty
                     <tr>
-                        <td>{{ formatIndo($d['tanggal']) }}</td>
+                        <td>{{ date('d-m-Y', strtotime($dari)) }}</td>
                         <td class="right">{{ formatAngkaDesimal($qty_saldo_awal) }}</td>
                         <td class="right">{{ formatAngkaDesimal($harga_saldo_awal) }}</td>
                         <td class="right">{{ formatAngkaDesimal($jumlah_saldoawal) }} </td>
