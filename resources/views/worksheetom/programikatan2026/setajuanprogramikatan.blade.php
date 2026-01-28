@@ -136,8 +136,12 @@
                                                 <a href="#" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit text-primary" data-bs-toggle="tooltip" title="Edit">
                                                     <i class="ti ti-pencil"></i>
                                                 </a>
+                                                 
                                             @endif
                                         @endcan
+                                        <a href="#" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnUpload text-success" data-bs-toggle="tooltip" title="Upload Dokumen">
+                                                    <i class="ti ti-upload"></i>
+                                                </a>
 
                                         @if ($programikatan->status == 0)
                                             @can('programikatan2026.delete')
@@ -549,6 +553,23 @@
             $("#loadmodal").load("/programikatan2026/" + no_pengajuan + "/" + kode_pelanggan +
                 "/editpelanggan");
 
+        });
+
+        $(".btnUpload").click(function(e) {
+            e.preventDefault();
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            let no_pengajuan = "{{ Crypt::encrypt($programikatan->no_pengajuan) }}";
+            $("#modal").modal("show");
+            $("#modal").find(".modal-title").text("Upload Dokumen Kesepakatan");
+            $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
+                <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
+                </div>`);
+            $("#loadmodal").load("/programikatan2026/" + no_pengajuan + "/" + kode_pelanggan +
+                "/uploadfile");
         });
     });
 </script>

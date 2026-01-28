@@ -386,16 +386,17 @@ class GlobalProvider extends ServiceProvider
                 }
 
 
-                $notifIM = DB::table('internal_memo')
-                    ->where('internal_memo.status', 1)
-                    ->whereDate('internal_memo.berlaku_dari', '<=', now())
-                    ->whereNotExists(function ($q) {
-                        $q->select(DB::raw(1))
-                            ->from('internal_memo_log_baca')
-                            ->whereColumn('internal_memo_log_baca.internal_memo_id', 'internal_memo.id')
-                            ->where('internal_memo_log_baca.user_id', auth()->id());
-                    })
-                    ->count();
+                // $notifIM = DB::table('internal_memo')
+                //     ->where('internal_memo.status', 1)
+                //     ->whereDate('internal_memo.berlaku_dari', '<=', now())
+                //     ->whereNotExists(function ($q) {
+                //         $q->select(DB::raw(1))
+                //             ->from('internal_memo_log_baca')
+                //             ->whereColumn('internal_memo_log_baca.internal_memo_id', 'internal_memo.id')
+                //             ->where('internal_memo_log_baca.user_id', auth()->id());
+                //     })
+                //     ->count();
+                $notifIM = 0;
             } else {
                 $level_user = '';
                 $notifikasiajuantransferdana = 0;

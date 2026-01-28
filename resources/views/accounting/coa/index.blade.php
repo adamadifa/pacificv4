@@ -12,6 +12,7 @@
                 @can('coa.create')
                     <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i>Tambah Akun</a>
                 @endcan
+                <a href="{{ route('coa.export') }}" class="btn btn-success"><i class="ti ti-download me-1"></i>Export Excel</a>
             </div>
             <div class="card-body">
                 <div class="row">

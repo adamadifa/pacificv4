@@ -378,7 +378,6 @@ class ProgramIkatan2026Controller extends Controller
             'target' => 'required',
             // 'reward' => 'required',
             'metode_pembayaran' => 'required',
-            'file_doc' => 'file|mimes:pdf|max:2048',
         ]);
         $bulan = $request->bulan;
         $tahun = $request->tahun;
@@ -386,22 +385,6 @@ class ProgramIkatan2026Controller extends Controller
         $avg_perbulan = $request->avg_perbulan;
         DB::beginTransaction();
         try {
-            $detail = MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
-                ->where('kode_pelanggan', $kode_pelanggan)
-                ->first();
-
-            if ($request->file('file_doc')) {
-                $file_name =  $no_pengajuan . "-" . $request->kode_pelanggan . "." . $request->file('file_doc')->getClientOriginalExtension();
-                $destination_foto_path = "/public/programikatan2026";
-                $file = $file_name;
-                if ($detail->file_doc) {
-                    Storage::delete($destination_foto_path . "/" . $detail->file_doc);
-                }
-                $request->file('file_doc')->storeAs($destination_foto_path, $file_name);
-            } else {
-                $file = $detail->file_doc;
-            }
-
             $sum_target = 0;
             $sum_avg = 0;
             for ($i = 0; $i < count($bulan); $i++) {
@@ -431,7 +414,6 @@ class ProgramIkatan2026Controller extends Controller
                     'budget_gm' => 0,
                     'metode_pembayaran' => $request->metode_pembayaran,
                     'periode_pencairan' => $request->periode_pencairan,
-                    'file_doc' => $file,
                 ]);
 
             DB::commit();
@@ -442,6 +424,51 @@ class ProgramIkatan2026Controller extends Controller
             return Redirect::back()->with(messageSuccess('Data Berhasil Di Update'));
         } catch (\Exception $e) {
             DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function uploadfile($no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $data['detail'] = MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->first();
+        return view('worksheetom.programikatan2026.uploadfile', $data);
+    }
+
+    public function updatefile(Request $request, $no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $request->validate([
+            'file_doc' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        try {
+            $detail = MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->first();
+
+            if ($request->file('file_doc')) {
+                $file_name =  $no_pengajuan . "-" . $request->kode_pelanggan . "." . $request->file('file_doc')->getClientOriginalExtension();
+                $destination_foto_path = "/public/programikatan2026";
+                $file = $file_name;
+                if ($detail->file_doc) {
+                    Storage::delete($destination_foto_path . "/" . $detail->file_doc);
+                }
+                $request->file('file_doc')->storeAs($destination_foto_path, $file_name);
+            }
+
+            MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_pelanggan', $kode_pelanggan)
+                ->update([
+                    'file_doc' => $file,
+                ]);
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Update'));
+        } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }

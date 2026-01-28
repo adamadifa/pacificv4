@@ -1,5 +1,5 @@
 <form action="{{ route('programikatan2026.updatepelanggan', [Crypt::encrypt($detail->no_pengajuan), Crypt::encrypt($detail->kode_pelanggan)]) }}"
-    method="POST" id="formAddpelanggan" enctype="multipart/form-data">
+    method="POST" id="formAddpelanggan">
     @csrf
     @method('PUT')
     {{-- <div class="form-group">
@@ -119,7 +119,7 @@
             {{-- <option value="12" @selected($detail->periode_pencairan == '12')>12 Bulan</option> --}}
         </select>
     </div>
-    <x-input-file name="file_doc" label="Dokumen Kesepakatan" />
+
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

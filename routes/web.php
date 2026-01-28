@@ -1505,6 +1505,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(CoaController::class)->group(function () {
         Route::get('/coa', 'index')->name('coa.index')->can('coa.index');
+        Route::get('/coa/export', 'export')->name('coa.export')->can('coa.index');
         Route::get('/coa/create', 'create')->name('coa.create')->can('coa.create');
         Route::post('/coa/store', 'store')->name('coa.store')->can('coa.store');
         Route::get('/coa/{kode_akun}/edit', 'edit')->name('coa.edit')->can('coa.edit');
@@ -2270,6 +2271,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/programikatan2026/{no_pengajuan}/storepelanggan', 'storepelanggan')->name('programikatan2026.storepelanggan');
         Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/editpelanggan', 'editpelanggan')->name('programikatan2026.editpelanggan');
         Route::put('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('programikatan2026.updatepelanggan');
+        Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/uploadfile', 'uploadfile')->name('programikatan2026.uploadfile');
+        Route::put('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/updatefile', 'updatefile')->name('programikatan2026.updatefile');
         Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/cetakkesepakatan', 'cetakkesepakatan')->name('programikatan2026.cetakkesepakatan');
         Route::delete('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/deletepelanggan', 'deletepelanggan')->name('programikatan2026.deletepelanggan');
         Route::get('/programikatan2026/{no_pengajuan}/{kode_pelanggan}/detailtarget', 'detailtarget')->name('programikatan2026.detailtarget');

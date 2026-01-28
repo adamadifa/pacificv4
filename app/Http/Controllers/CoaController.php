@@ -7,6 +7,8 @@ use App\Models\Coakategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
+use App\Exports\CoaExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CoaController extends Controller
 {
@@ -137,5 +139,9 @@ class CoaController extends Controller
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+    public function export()
+    {
+        return Excel::download(new CoaExport, 'coa.xlsx');
     }
 }
