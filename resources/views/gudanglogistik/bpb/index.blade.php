@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
-            @include('layouts.navigation_mutasigudanglogistik')
+            <!-- @include('layouts.navigation_mutasigudanglogistik') -->
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
                     {{-- @can('bpb.create') --}}
