@@ -355,7 +355,7 @@
                                     @endphp
                                     <td style="style="width: 2px; border-bottom:1px solid black">3.</td>
                                     <td style="border-bottom:1px solid black">Uang Pisah</td>
-                                    <td style="border-bottom:1px solid black">{{ $persentase_jmk == 100 ? $jmlkali." x " : $persentase_jmk." %" }}</td>
+                                    <td style="border-bottom:1px solid black">{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
                                     <td style="border-bottom:1px solid black">x</td>
                                     <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totalupah) }}</td>
                                     <td style="border-bottom:1px solid black">Rp.</td>
