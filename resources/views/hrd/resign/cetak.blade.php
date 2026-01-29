@@ -339,7 +339,7 @@
                                     @php
 
                                     @endphp
-                                    <td style="style="width: 2px; border-bottom:1px solid black">2.</td>
+                                    <td >2.</td>
                                     <td style="border-bottom:1px solid black">Uang Pisah</td>
                                     <td style="border-bottom:1px solid black">{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
                                     <td style="border-bottom:1px solid black">x</td>
@@ -348,13 +348,13 @@
                                     <td style="border-bottom:1px solid black; text-align:right">{{ formatRupiah($totaljmk) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>3.</td>
+                                    <td style="style="width: 2px; border-bottom:1px solid black">3.</td>
                                     <td >Uang Pengganti Hak</td>
                                     <td >{{ $persentase_pengganti_hak }}%</td>
                                     <td >x</td>
                                     <td >Rp. {{ formatRupiah($total_pesangon) }}</td>
                                     <td >Rp.</td>
-                                    <td ; text-align:right">
+                                    <td style="text-align:right">
                                         @php
                                             $uph = ($persentase_pengganti_hak / 100) * $total_pesangon;
                                         @endphp
