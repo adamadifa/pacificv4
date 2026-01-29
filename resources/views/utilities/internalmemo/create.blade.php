@@ -98,6 +98,27 @@
         </div>
     </div>
 
+
+    <div class="form-group mt-2">
+        <label class="form-check-label">
+            Departemen yang buat
+        </label>
+        <select name="kode_dept" class="form-select">
+            <option value="">- Pilih Departemen -</option>
+            <option value="ADT">AUDIT</option>
+            <option value="AKT">AKUNTING</option>
+            <option value="GAF">GENERAL AFFAIR</option>
+            <option value="GDG">GUDANG</option>
+            <option value="HRD">HRD</option>
+            <option value="KEU">KEUANGAN</option>
+            <option value="MKT">MARKETING</option>
+            <option value="MTC">MAINTENANCE</option>
+            <option value="PDQ">PDQC</option>
+            <option value="PMB">PEMBELIAN</option>
+            <option value="PRD">PRODUKSI</option>
+        </select>
+    </div>
+
     <div class="form-group mt-2">
         <label class="form-label">File Internal Memo (PDF)</label>
         <input type="file" name="file_im" class="form-control" accept="application/pdf">

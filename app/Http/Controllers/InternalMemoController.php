@@ -14,6 +14,8 @@ class InternalMemoController extends Controller
     public function index()
     {
         $user = Auth::user();
+        //Selpira, Adam, Jemmy, Jazz, Eiko, Ridwan Nugraha
+        $superUser = ['74', '1', '22', '29', '194', '20', '196'];
 
         $query = DB::table('internal_memo')
             ->leftJoin('internal_memo_tujuan_dept as td', 'internal_memo.id', '=', 'td.internal_memo_id')
@@ -22,31 +24,46 @@ class InternalMemoController extends Controller
             ->leftJoin('internal_memo_log_baca as lb', function ($join) use ($user) {
                 $join->on('internal_memo.id', '=', 'lb.internal_memo_id')
                     ->where('lb.user_id', $user->id);
-            })
-            ->where(function ($query) use ($user) {
-                $query->where('td.kode_dept', $user->kode_dept)
-                    ->orWhere('tc.kode_cabang', $user->kode_cabang)
-                    ->orWhere('tr.kode_jabatan', $user->kode_jabatan);
             });
 
-        /* ================= FILTER ================= */
-
-        // Filter No IM
-        if (request('no_im')) {
-            $query->where('internal_memo.no_im', 'like', '%' . request('no_im') . '%');
+        /* ============ FILTER AKSES ============ */
+        if (!in_array($user->id, $superUser)) {
+            $query->where(function ($q) use ($user) {
+                $q->where('td.kode_dept', $user->kode_dept)
+                    ->where('tc.kode_cabang', $user->kode_cabang)
+                    ->whereNotNull('tr.kode_jabatan')
+                    ->where('tr.kode_jabatan', $user->kode_jabatan);
+            });
         }
 
-        // Filter Judul
-        if (request('judul')) {
-            $query->where('internal_memo.judul', 'like', '%' . request('judul') . '%');
+        /* ============ FILTER INPUT ============ */
+
+        if (request('no_im_search')) {
+            $query->where('internal_memo.no_im', 'like', '%' . request('no_im_search') . '%');
         }
 
-        // Filter Status
-        if (request('status')) {
-            $query->where('internal_memo.status', request('status'));
+        if (request('judul_search')) {
+            $query->where('internal_memo.judul', 'like', '%' . request('judul_search') . '%');
         }
 
-        // Filter Dibaca
+        if (request('status') === 'aktif') {
+            $query->where('internal_memo.status', 'aktif')
+                ->where(function ($q) {
+                    $q->whereNull('internal_memo.berlaku_sampai')
+                        ->orWhere('internal_memo.berlaku_sampai', '>=', date('Y-m-d'));
+                });
+        }
+
+        if (request('status') === 'nonaktif') {
+            $query->where('internal_memo.status', 'nonaktif');
+        }
+
+        if (request('status') === 'expired') {
+            $query->where('internal_memo.status', 'aktif')
+                ->whereNotNull('internal_memo.berlaku_sampai')
+                ->where('internal_memo.berlaku_sampai', '<', date('Y-m-d'));
+        }
+
         if (request('dibaca') == 'sudah') {
             $query->whereNotNull('lb.dibaca_pada');
         }
@@ -55,7 +72,7 @@ class InternalMemoController extends Controller
             $query->whereNull('lb.dibaca_pada');
         }
 
-        /* ========================================== */
+        /* ============ FINAL ============ */
 
         $internalMemos = $query
             ->select(
@@ -64,6 +81,7 @@ class InternalMemoController extends Controller
                 'internal_memo.judul',
                 'internal_memo.tanggal_im',
                 'internal_memo.berlaku_dari',
+                'internal_memo.kode_dept',
                 'internal_memo.berlaku_sampai',
                 'internal_memo.file_im',
                 'internal_memo.keterangan',
@@ -76,17 +94,21 @@ class InternalMemoController extends Controller
                 'internal_memo.judul',
                 'internal_memo.tanggal_im',
                 'internal_memo.berlaku_dari',
+                'internal_memo.kode_dept',
                 'internal_memo.berlaku_sampai',
                 'internal_memo.file_im',
                 'internal_memo.keterangan',
                 'internal_memo.status'
             )
-            ->orderBy('internal_memo.tanggal_im', 'desc')
+            ->orderBy('internal_memo.created_at', 'desc')
             ->paginate(10)
-            ->withQueryString(); // ⬅️ penting agar filter ikut pagination
-
-        return view('utilities.internalmemo.index', compact('internalMemos'));
+            ->withQueryString();
+        $acks = DB::table('internal_memo_ack')
+            ->where('user_id', $user->id)
+            ->pluck('status', 'internal_memo_id');
+        return view('utilities.internalmemo.index', compact('internalMemos', 'acks'));
     }
+
 
 
 
@@ -155,6 +177,7 @@ class InternalMemoController extends Controller
                 'berlaku_sampai' => $request->berlaku_sampai,
                 'file_im' => $fileName,
                 'keterangan' => $request->keterangan,
+                'kode_dept' => $request->kode_dept,
                 'dibuat_oleh' => Auth::id(),
                 'status' => 'aktif',
                 'created_at' => now(),
@@ -230,23 +253,22 @@ class InternalMemoController extends Controller
             abort(403);
 
         // log baca
-        $cekBaca = DB::table('internal_memo_log_baca')
-            ->where('internal_memo_id', $id)
-            ->where('user_id', $user->id)
-            ->first();
+        // $cekBaca = DB::table('internal_memo_log_baca')
+        //     ->where('internal_memo_id', $id)
+        //     ->where('user_id', $user->id)
+        //     ->first();
 
-        if (!$cekBaca) {
-            DB::table('internal_memo_log_baca')->updateOrInsert(
-                [
-                    'internal_memo_id' => $id,
-                    'user_id' => Auth::id()
-                ],
-                [
-                    'dibaca_pada' => now()
-                ]
-            );
-        }
-
+        // if (!$cekBaca) {
+        DB::table('internal_memo_log_baca')->updateOrInsert(
+            [
+                'internal_memo_id' => $id,
+                'user_id' => Auth::id()
+            ],
+            [
+                'dibaca_pada' => now()
+            ]
+        );
+        // }
 
 
         return view('utilities.internalmemo.show', compact('memo'));
@@ -333,6 +355,7 @@ class InternalMemoController extends Controller
                 'berlaku_sampai' => $request->berlaku_sampai,
                 'file_im' => $fileName,
                 'keterangan' => $request->keterangan,
+                'kode_dept' => $request->kode_dept,
                 'updated_at' => now(),
             ]);
 
@@ -417,5 +440,61 @@ class InternalMemoController extends Controller
         ]);
 
         return back()->with('success', 'Internal Memo dinonaktifkan');
+    }
+
+    public function paham($id)
+    {
+        DB::table('internal_memo_ack')->updateOrInsert(
+            [
+                'internal_memo_id' => $id,
+                'user_id' => auth()->id()
+            ],
+            [
+                'status' => 'paham',
+                'updated_at' => now()
+            ]
+        );
+
+        return response()->json(['success' => true]);
+    }
+
+    public function diskusi($id)
+    {
+        $chats = DB::table('internal_memo_chat as c')
+            ->join('users as u', 'u.id', '=', 'c.user_id')
+            ->where('c.internal_memo_id', $id)
+            ->orderBy('c.created_at', 'asc')
+            ->select(
+                'c.*',
+                'u.name as user_name'
+            )
+            ->get();
+
+        return view('utilities.internalmemo.diskusi', compact('id', 'chats'));
+    }
+
+    public function kirimDiskusi(Request $request, $id)
+    {
+        $request->validate(['message' => 'required']);
+
+        DB::table('internal_memo_ack')->updateOrInsert(
+            [
+                'internal_memo_id' => $id,
+                'user_id' => auth()->id()
+            ],
+            [
+                'status' => 'belum',
+                'updated_at' => now()
+            ]
+        );
+
+        DB::table('internal_memo_chat')->insert([
+            'internal_memo_id' => $id,
+            'user_id' => auth()->id(),
+            'message' => $request->message,
+            'created_at' => now()
+        ]);
+
+        return response()->json(['success' => true]);
     }
 }

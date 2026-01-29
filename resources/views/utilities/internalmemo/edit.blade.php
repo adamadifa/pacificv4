@@ -24,16 +24,21 @@
 
     {{-- ================= DEPARTEMEN ================= --}}
     <div class="form-group mt-2">
-        <label class="form-label">Tujuan Departemen</label>
+        <div class="d-flex justify-content-between align-items-center">
+            <label class="form-label mb-0">Tujuan Departemen</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkAllDept">
+                <label class="form-check-label">Pilih Semua</label>
+            </div>
+        </div>
+
         <div class="row mt-1">
             @foreach ($deptList as $d)
-                <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="col-lg-2 col-md-3 col-sm-6">
                     <div class="form-check">
                         <input class="form-check-input tujuan-dept" type="checkbox" name="tujuan[]"
                             value="{{ $d->kode_dept }}" {{ in_array($d->kode_dept, $selectedDept) ? 'checked' : '' }}>
-                        <label class="form-check-label">
-                            {{ $d->nama_dept }}
-                        </label>
+                        <label class="form-check-label">{{ $d->nama_dept }}</label>
                     </div>
                 </div>
             @endforeach
@@ -42,17 +47,22 @@
 
     {{-- ================= CABANG ================= --}}
     <div class="form-group mt-2">
-        <label class="form-label">Tujuan Cabang</label>
+        <div class="d-flex justify-content-between align-items-center">
+            <label class="form-label mb-0">Tujuan Cabang</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkAllCabang">
+                <label class="form-check-label">Pilih Semua</label>
+            </div>
+        </div>
+
         <div class="row mt-1">
             @foreach ($cabangList as $c)
-                <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="col-lg-2 col-md-3 col-sm-6">
                     <div class="form-check">
                         <input class="form-check-input tujuan-cabang" type="checkbox" name="tujuan_cabang[]"
                             value="{{ $c->kode_cabang }}"
                             {{ in_array($c->kode_cabang, $selectedCabang) ? 'checked' : '' }}>
-                        <label class="form-check-label">
-                            {{ $c->nama_cabang }}
-                        </label>
+                        <label class="form-check-label">{{ $c->nama_cabang }}</label>
                     </div>
                 </div>
             @endforeach
@@ -61,29 +71,60 @@
 
     {{-- ================= JABATAN ================= --}}
     <div class="form-group mt-2">
-        <label class="form-label">Tujuan Jabatan</label>
+        <div class="d-flex justify-content-between align-items-center">
+            <label class="form-label mb-0">Tujuan Jabatan</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkAllJabatan">
+                <label class="form-check-label">Pilih Semua</label>
+            </div>
+        </div>
+
         <div class="row mt-1">
             @foreach ($jabatanList as $j)
-                <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="col-lg-2 col-md-3 col-sm-6">
                     <div class="form-check">
                         <input class="form-check-input tujuan-jabatan" type="checkbox" name="tujuan_jabatan[]"
                             value="{{ $j->kode_jabatan }}"
                             {{ in_array($j->kode_jabatan, $selectedJabatan) ? 'checked' : '' }}>
-                        <label class="form-check-label">
-                            {{ $j->alias }}
-                        </label>
+                        <label class="form-check-label">{{ $j->alias }}</label>
                     </div>
                 </div>
             @endforeach
         </div>
     </div>
+    @php
+        $departemen = [
+            'ADT' => 'AUDIT',
+            'AKT' => 'AKUNTING',
+            'GAF' => 'GENERAL AFFAIR',
+            'GDG' => 'GUDANG',
+            'HRD' => 'HRD',
+            'KEU' => 'KEUANGAN',
+            'MKT' => 'MARKETING',
+            'MTC' => 'MAINTENANCE',
+            'PDQ' => 'PDQC',
+            'PMB' => 'PEMBELIAN',
+            'PRD' => 'PRODUKSI',
+        ];
+    @endphp
 
+    <div class="form-group mt-2">
+        <label class="form-check-label">Departemen yang buat</label>
+        <select name="kode_dept" class="form-select" required>
+            <option value="">- Pilih Departemen -</option>
+            @foreach ($departemen as $kode => $nama)
+                <option value="{{ $kode }}" {{ $memo->kode_dept == $kode ? 'selected' : '' }}>
+                    {{ $nama }}
+                </option>
+            @endforeach
+        </select>
+    </div>
     {{-- FILE --}}
     <div class="form-group mt-2">
         <label class="form-label">File Internal Memo (PDF)</label>
-        <input type="file" name="file_im" class="form-control">
+        <input type="file" name="file_im" class="form-control" accept="application/pdf">
         @if ($memo->file_im)
-            <small>
+            <small class="text-muted">
                 File lama:
                 <a href="{{ asset('storage/internal_memo/' . $memo->file_im) }}" target="_blank">
                     Lihat PDF
@@ -97,7 +138,7 @@
 
     <div class="form-group mt-3">
         <button class="btn btn-warning w-100" type="submit">
-            <ion-icon name="save-outline"></ion-icon>
+            <ion-icon name="save-outline" class="me-1"></ion-icon>
             Update Internal Memo
         </button>
     </div>
@@ -105,34 +146,50 @@
 <script>
     $(function() {
 
-        const formIM = $("#formCreateIM");
+        const formIM = $("#formEditIM");
 
-        // Date Picker
+        // Flatpickr
         $(".flatpickr-date").flatpickr({
             dateFormat: "Y-m-d"
         });
 
-        // Select2 Tujuan
-        $('.select2Tujuan').select2({
-            placeholder: 'Pilih Tujuan',
-            allowClear: true,
-            width: '100%'
+        // ================= CHECK ALL =================
+        function syncCheckAll(selector, checkAllId) {
+            $(checkAllId).prop(
+                'checked',
+                $(selector + ':checked').length === $(selector).length
+            );
+        }
+
+        $('#checkAllDept').on('change', function() {
+            $('.tujuan-dept').prop('checked', this.checked);
+        });
+        $('.tujuan-dept').on('change', function() {
+            syncCheckAll('.tujuan-dept', '#checkAllDept');
         });
 
-        // Hide tombol simpan awal
-        formIM.find("#saveButton").hide();
-
-        // Agreement checkbox
-        formIM.find('.agreement').change(function() {
-            if (this.checked) {
-                formIM.find("#saveButton").show();
-            } else {
-                formIM.find("#saveButton").hide();
-            }
+        $('#checkAllCabang').on('change', function() {
+            $('.tujuan-cabang').prop('checked', this.checked);
+        });
+        $('.tujuan-cabang').on('change', function() {
+            syncCheckAll('.tujuan-cabang', '#checkAllCabang');
         });
 
-        // Validasi submit
-        formIM.submit(function() {
+        $('#checkAllJabatan').on('change', function() {
+            $('.tujuan-jabatan').prop('checked', this.checked);
+        });
+        $('.tujuan-jabatan').on('change', function() {
+            syncCheckAll('.tujuan-jabatan', '#checkAllJabatan');
+        });
+
+        // Initial sync
+        syncCheckAll('.tujuan-dept', '#checkAllDept');
+        syncCheckAll('.tujuan-cabang', '#checkAllCabang');
+        syncCheckAll('.tujuan-jabatan', '#checkAllJabatan');
+
+        // ================= VALIDASI =================
+        formIM.on('submit', function() {
+
             if ($("input[name=no_im]").val() === "") {
                 Swal.fire("Oops!", "No Internal Memo wajib diisi", "warning");
                 return false;
@@ -143,58 +200,17 @@
                 return false;
             }
 
-            if ($("select[name='tujuan[]']").val().length === 0) {
-                Swal.fire("Oops!", "Tujuan memo wajib dipilih", "warning");
+            if (
+                $('.tujuan-dept:checked').length === 0 &&
+                $('.tujuan-cabang:checked').length === 0 &&
+                $('.tujuan-jabatan:checked').length === 0
+            ) {
+                Swal.fire("Oops!", "Minimal satu tujuan harus dipilih", "warning");
                 return false;
             }
+
+            return true;
         });
-
-        $('#checkAllDept').on('change', function() {
-            $('.tujuan-dept').prop('checked', this.checked);
-        });
-
-        $('.tujuan-dept').on('change', function() {
-            $('#checkAllDept').prop(
-                'checked',
-                $('.tujuan-dept:checked').length === $('.tujuan-dept').length
-            );
-        });
-
-        // === CABANG ===
-        $('#checkAllCabang').on('change', function() {
-            $('.tujuan-cabang').prop('checked', this.checked);
-        });
-
-        $('.tujuan-cabang').on('change', function() {
-            $('#checkAllCabang').prop(
-                'checked',
-                $('.tujuan-cabang:checked').length === $('.tujuan-cabang').length
-            );
-        });
-
-        $('#checkAllJabatan').on('change', function() {
-            $('.tujuan-jabatan').prop('checked', this.checked);
-        });
-
-        // SINKRON STATUS CHECK ALL
-        $('.tujuan-jabatan').on('change', function() {
-            $('#checkAllJabatan').prop(
-                'checked',
-                $('.tujuan-jabatan:checked').length === $('.tujuan-jabatan').length
-            );
-        });
-
-        if ($('.tujuan-jabatan').length === $('.tujuan-jabatan:checked').length) {
-            $('#checkAllJabatan').prop('checked', true);
-        }
-
-        if ($('.tujuan-dept').length === $('.tujuan-dept:checked').length) {
-            $('#checkAllDept').prop('checked', true);
-        }
-
-        if ($('.tujuan-cabang').length === $('.tujuan-cabang:checked').length) {
-            $('#checkAllCabang').prop('checked', true);
-        }
 
     });
 </script>
