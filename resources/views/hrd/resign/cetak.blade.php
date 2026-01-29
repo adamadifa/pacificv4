@@ -325,7 +325,7 @@
                                 @endphp
                                 <tr>
                                     <td style="width:2px">1.</td>
-                                    <td>Pesangon</td>
+                                    <td>Uang Pesangon</td>
                                     <td>
 
                                         {{ $kali_pesangon }} x
@@ -336,7 +336,19 @@
                                     <td style="text-align:right">{{ formatRupiah($total_pesangon) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>2.</td>
+                                    @php
+
+                                    @endphp
+                                    <td style="style="width: 2px; border-bottom:1px solid black">2.</td>
+                                    <td style="border-bottom:1px solid black">Uang Pisah</td>
+                                    <td style="border-bottom:1px solid black">{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
+                                    <td style="border-bottom:1px solid black">x</td>
+                                    <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totalupah) }}</td>
+                                    <td style="border-bottom:1px solid black">Rp.</td>
+                                    <td style="border-bottom:1px solid black; text-align:right">{{ formatRupiah($totaljmk) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>3.</td>
                                     <td >Uang Pengganti Hak</td>
                                     <td >{{ $persentase_pengganti_hak }}%</td>
                                     <td >x</td>
@@ -349,18 +361,7 @@
                                         {{ formatRupiah($uph) }}
                                     </td>
                                 </tr>
-                                <tr>
-                                    @php
-
-                                    @endphp
-                                    <td style="style="width: 2px; border-bottom:1px solid black">3.</td>
-                                    <td style="border-bottom:1px solid black">Uang Pisah</td>
-                                    <td style="border-bottom:1px solid black">{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
-                                    <td style="border-bottom:1px solid black">x</td>
-                                    <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totalupah) }}</td>
-                                    <td style="border-bottom:1px solid black">Rp.</td>
-                                    <td style="border-bottom:1px solid black; text-align:right">{{ formatRupiah($totaljmk) }}</td>
-                                </tr>
+                                
                                 <tr style="font-weight:bold">
                                     <td colspan="5">Jumlah Uang Jasa Masa Kerja</td>
                                     <td>Rp.</td>
