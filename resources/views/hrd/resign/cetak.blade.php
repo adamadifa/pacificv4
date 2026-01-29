@@ -321,6 +321,8 @@
                                     } else {
                                         $kali_pesangon = 9;
                                     }
+
+                                    $kali_pesangon = 2 * $kali_pesangon;
                                     $total_pesangon = $kali_pesangon * $grandtotal_upah;
                                 @endphp
                                 <tr>
