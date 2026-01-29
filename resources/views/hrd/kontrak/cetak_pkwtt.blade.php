@@ -285,10 +285,19 @@
                 <li>Pihak kedua wajib mengganti kerugian apabila pihak kedua merusak barang atau peralatan lainnya baik
                     disengaja ataupun tidak disengaja milik perusahaan sehingga menyebabkan kerugian bagi perusahaan.
                 </li>
-                <li>Pihak kedua akan dituntut secara hukum apabila pihak kedua melakukan pencurian milik perusahaan baik
-                    dilakukan secara individu atau bekerjasama dengan pihak lain atau pihak ketiga.</li>
-                <li>Pihak kedaua akan di scorsing sesuai dengan peraturan perusahaan yang berlaku, yaitu PKB (Perjanjian
+                <li>Pihak kedua akan di scorsing sesuai dengan peraturan perusahaan yang berlaku, yaitu PKB (Perjanjian
                     Kerja Bersama) apabila pihak kedua mangkir dari tugas dan tanggungjawabnya.</li>
+                <li>Pihak kedua akan dituntut secara hukum apabila pihak kedua melakukan pencurian milik perusahaan baik
+                    dilakukan secara individu atau bekerjasama dengan pihak lain atau pihak ketiga.
+                </li>
+                <li>Pihak kedua akan dituntut secara hukum apabila menyalin dan / atau mengambil database yang menjadi
+                    rahasia perusahaan apabila
+                    hubungan kerja dengan perusahaan berakhir dengan sebab apapun
+                </li>
+                <li>Pihak kedua bersedia tidak bekerja di perusahaan sejenis dan / atau kompetitior produk perusahaan
+                    dalam hal hubungan kerjanya
+                    berakhir dengan sebab apapun
+                </li>
             </ol>
             </p>
             <p>
