@@ -374,7 +374,80 @@
                                         {{ formatRupiah($jml_ujmk) }}
                                     </td>
                                 </tr>
+                            @elseif($resign->kode_kategori == 'JMK05')
+                                @php
+                                    // Sesuaikan dengan tabel pada gambar
+                                    if ($mk_kb < 1) {
+                                        $kali_pesangon = 1;
+                                    } elseif ($mk_kb >= 1 && $mk_kb < 2) {
+                                        $kali_pesangon = 2;
+                                    } elseif ($mk_kb >= 2 && $mk_kb < 3) {
+                                        $kali_pesangon = 3;
+                                    } elseif ($mk_kb >= 3 && $mk_kb < 4) {
+                                        $kali_pesangon = 4;
+                                    } elseif ($mk_kb >= 4 && $mk_kb < 5) {
+                                        $kali_pesangon = 5;
+                                    } elseif ($mk_kb >= 5 && $mk_kb < 6) {
+                                        $kali_pesangon = 6;
+                                    } elseif ($mk_kb >= 6 && $mk_kb < 7) {
+                                        $kali_pesangon = 7;
+                                    } elseif ($mk_kb >= 7 && $mk_kb < 8) {
+                                        $kali_pesangon = 8;
+                                    } else {
+                                        $kali_pesangon = 9;
+                                    }
+
+                                    $total_pesangon = $kali_pesangon * $grandtotal_upah;
+                                @endphp
+                                <tr>
+                                    <td style="width:2px">1.</td>
+                                    <td>Uang Pesangon</td>
+                                    <td>
+
+                                        {{ $kali_pesangon }} x
+                                    </td>
+                                    <td>x</td>
+                                    <td>Rp. {{ formatRupiah($grandtotal_upah) }}</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right">{{ formatRupiah($total_pesangon) }}</td>
+                                </tr>
+                                <tr>
+                                    @php
+
+                                    @endphp
+                                    <td >2.</td>
+                                    <td>Uang Pisah</td>
+                                    <td>{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
+                                    <td>x</td>
+                                    <td>Rp. {{ formatRupiah($totalupah) }}</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right">{{ formatRupiah($totaljmk) }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 2px; border-bottom:1px solid black">3.</td>
+                                    <td style="border-bottom:1px solid black">Uang Pengganti Hak</td>
+                                    <td style="border-bottom:1px solid black">{{ $persentase_pengganti_hak }}%</td>
+                                    <td style="border-bottom:1px solid black">x</td>
+                                    <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($total_pesangon) }}</td>
+                                    <td style="border-bottom:1px solid black">Rp.</td>
+                                    <td style="border-bottom:1px solid black; text-align:right">
+                                        @php
+                                            $uph = ($persentase_pengganti_hak / 100) * ($total_pesangon);
+                                        @endphp
+                                        {{ formatRupiah($uph) }}
+                                    </td>
+                                </tr>
                                 
+                                <tr style="font-weight:bold">
+                                    <td colspan="5">Jumlah Uang Jasa Masa Kerja</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right; font-weight:bold">
+                                        @php
+                                            $jml_ujmk = $total_pesangon + $totaljmk + $uph;
+                                        @endphp
+                                        {{ formatRupiah($jml_ujmk) }}
+                                    </td>
+                                </tr>
                             @else
                                 <tr>
                                     @php
