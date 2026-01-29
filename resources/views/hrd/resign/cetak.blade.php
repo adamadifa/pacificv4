@@ -340,21 +340,21 @@
 
                                     @endphp
                                     <td >2.</td>
-                                    <td style="border-bottom:1px solid black">Uang Pisah</td>
-                                    <td style="border-bottom:1px solid black">{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
-                                    <td style="border-bottom:1px solid black">x</td>
-                                    <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($totalupah) }}</td>
-                                    <td style="border-bottom:1px solid black">Rp.</td>
-                                    <td style="border-bottom:1px solid black; text-align:right">{{ formatRupiah($totaljmk) }}</td>
+                                    <td>Uang Pisah</td>
+                                    <td>{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
+                                    <td>x</td>
+                                    <td>Rp. {{ formatRupiah($totalupah) }}</td>
+                                    <td>Rp.</td>
+                                    <td style="text-align:right">{{ formatRupiah($totaljmk) }}</td>
                                 </tr>
                                 <tr>
-                                    <td style="style="width: 2px; border-bottom:1px solid black">3.</td>
-                                    <td >Uang Pengganti Hak</td>
-                                    <td >{{ $persentase_pengganti_hak }}%</td>
-                                    <td >x</td>
-                                    <td >Rp. {{ formatRupiah($total_pesangon) }}</td>
-                                    <td >Rp.</td>
-                                    <td style="text-align:right">
+                                    <td style="width: 2px; border-bottom:1px solid black">3.</td>
+                                    <td style="border-bottom:1px solid black">Uang Pengganti Hak</td>
+                                    <td style="border-bottom:1px solid black">{{ $persentase_pengganti_hak }}%</td>
+                                    <td style="border-bottom:1px solid black">x</td>
+                                    <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($total_pesangon) }}</td>
+                                    <td style="border-bottom:1px solid black">Rp.</td>
+                                    <td style="border-bottom:1px solid black; text-align:right">
                                         @php
                                             $uph = ($persentase_pengganti_hak / 100) * $total_pesangon;
                                         @endphp
