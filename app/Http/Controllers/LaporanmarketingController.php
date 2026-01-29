@@ -6863,7 +6863,8 @@ class LaporanmarketingController extends Controller
                     'lock_print' => $penjualan->lock_print ?? '0',
                     'salesman' => Salesman::where('kode_salesman', $penjualan->kode_salesman)->first(),
                     'pelanggan' => Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first(),
-                    'detail' => []
+                    'detail' => [],
+                    'historibayar' => []
                 ];
 
                 // Tambahkan detail penjualan
@@ -6876,6 +6877,24 @@ class LaporanmarketingController extends Controller
                         'jumlah' => $detail->jumlah,
                         'subtotal' => $detail->subtotal,
                         'status_promosi' => $detail->status_promosi ?? '0'
+                    ];
+                }
+
+                // Tambahkan histori bayar
+                $historibayar = Historibayarpenjualan::where('no_faktur', $request->no_faktur)->get();
+                foreach ($historibayar as $bayar) {
+                    $data['historibayar'][] = [
+                        'no_bukti' => $bayar->no_bukti,
+                        'tanggal' => $bayar->tanggal,
+                        'kode_salesman' => $bayar->kode_salesman,
+                        'jenis_bayar' => $bayar->jenis_bayar,
+                        'jumlah' => $bayar->jumlah,
+                        'voucher' => $bayar->voucher,
+                        'jenis_voucher' => $bayar->jenis_voucher,
+                        'kode_lhp' => $bayar->kode_lhp,
+                        'kode_akun' => $bayar->kode_akun,
+                        'keterangan' => $bayar->keterangan,
+                        'id_user' => $bayar->id_user
                     ];
                 }
 
