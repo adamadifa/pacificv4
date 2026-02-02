@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="nav-align-top nav-tabs-shadow mb-4">
-            @include('layouts.navigation_monitoringprogram')
+            @include('layouts.navigation_marketing_2026_main')
             @include('layouts.navigation_program_kumulatif')
 
             <div class="tab-content">
