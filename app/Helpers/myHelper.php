@@ -560,7 +560,7 @@ function pihakpertamacabang($cabang, $perusahaan)
         'PWK' => 'M. Ridwan Nugraha',
         'TSM' => 'Aceng Saepul Anwar',
         'BTN' => 'Mauldy',
-        'CRB' => 'Ari Ricardo'
+        'CRB' => 'Asep Ramdani'
     ];
 
     if ($perusahaan == "MP") {
