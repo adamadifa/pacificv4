@@ -6977,10 +6977,10 @@ class LaporanmarketingController extends Controller
             $penjualan->save();
 
             $message = 'Status pajak berhasil diupdate';
-            if ($request->status_pajak == 1) {
-                $message = 'Status pajak berhasil diupdate dan data berhasil di-sync ke API';
-            } elseif ($request->status_pajak == 0) {
-                $message = 'Status pajak berhasil diupdate dan data berhasil dihapus dari API';
+            if ($request->status_pajak == 1 && isset($response) && $response->successful()) {
+                $message .= ' dan data berhasil disync ke API';
+            } elseif ($request->status_pajak == 0 && isset($response) && $response->successful()) {
+                $message .= ' dan data berhasil dihapus dari API';
             }
 
             return response()->json([
@@ -6998,6 +6998,191 @@ class LaporanmarketingController extends Controller
                 'success' => false,
                 'message' => 'Gagal mengupdate status pajak: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function syncAllPajak(Request $request)
+    {
+        set_time_limit(0); 
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        try {
+            // 1. Get List of Invoices to Sync
+            $query = Penjualan::query();
+            $query->select('marketing_penjualan.no_faktur')
+                ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai])
+                ->where('marketing_penjualan.status_pajak', 1) // Only those marked as Pajak
+                ->where('marketing_penjualan.status_batal', 0); // Only active invoices
+
+             if (!empty($kode_cabang)) {
+                $query->where('salesman.kode_cabang', $kode_cabang);
+            }
+
+            if (!empty($request->kode_salesman)) {
+                $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+            }
+
+            if (!empty($request->kode_pelanggan)) {
+                $query->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+            }
+
+            if (!empty($request->jenis_transaksi)) {
+                $query->where('marketing_penjualan.jenis_transaksi', $request->jenis_transaksi);
+            }
+            
+            $fakturs = $query->get();
+            
+            $baseUrl = env('SYNC_API_BASE_URL');
+            if (empty($baseUrl)) {
+                 return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
+            }
+
+            $successCount = 0;
+            $failCount = 0;
+            $errors = [];
+
+            foreach ($fakturs as $faktur) {
+                $penjualan = Penjualan::find($faktur->no_faktur);
+                if(!$penjualan) continue;
+
+                 // Prepare Payload (Same as multipleStatusPajak)
+                $details = Detailpenjualan::where('no_faktur', $penjualan->no_faktur)->get();
+                if ($details->isEmpty()) continue;
+
+                $data = [
+                    'no_faktur' => $penjualan->no_faktur,
+                    'tanggal' => $penjualan->tanggal,
+                    'kode_pelanggan' => $penjualan->kode_pelanggan,
+                    'kode_salesman' => $penjualan->kode_salesman,
+                    'kode_akun' => $penjualan->kode_akun ?? '1-1401',
+                    'kode_akun_potongan' => $penjualan->kode_akun_potongan ?? '4-2201',
+                    'kode_akun_penyesuaian' => $penjualan->kode_akun_penyesuaian ?? '4-2202',
+                    'potongan_aida' => $penjualan->potongan_aida ?? 0,
+                    'potongan_swan' => $penjualan->potongan_swan ?? 0,
+                    'potongan_stick' => $penjualan->potongan_stick ?? 0,
+                    'potongan_sp' => $penjualan->potongan_sp ?? 0,
+                    'potongan_sambal' => $penjualan->potongan_sambal ?? 0,
+                    'potongan' => $penjualan->potongan ?? 0,
+                    'potis_aida' => $penjualan->potis_aida ?? 0,
+                    'potis_swan' => $penjualan->potis_swan ?? 0,
+                    'potis_stick' => $penjualan->potis_stick ?? 0,
+                    'potongan_istimewa' => $penjualan->potongan_istimewa ?? 0,
+                    'peny_aida' => $penjualan->peny_aida ?? 0,
+                    'peny_swan' => $penjualan->peny_swan ?? 0,
+                    'peny_stick' => $penjualan->peny_stick ?? 0,
+                    'penyesuaian' => $penjualan->penyesuaian ?? 0,
+                    'ppn' => $penjualan->ppn ?? 0,
+                    'jenis_transaksi' => $penjualan->jenis_transaksi,
+                    'jenis_bayar' => $penjualan->jenis_bayar,
+                    'jatuh_tempo' => $penjualan->jatuh_tempo,
+                    'status' => $penjualan->status,
+                    'routing' => $penjualan->routing,
+                    'signature' => $penjualan->signature,
+                    'tanggal_pelunasan' => $penjualan->tanggal_pelunasan,
+                    'print' => $penjualan->print ?? 0,
+                    'id_user' => $penjualan->id_user,
+                    'keterangan' => $penjualan->keterangan ?? '',
+                    'status_batal' => $penjualan->status_batal ?? '0',
+                    'lock_print' => $penjualan->lock_print ?? '0',
+                    'salesman' => Salesman::where('kode_salesman', $penjualan->kode_salesman)->first(),
+                    'pelanggan' => Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first(),
+                    'detail' => [],
+                    'historibayar' => []
+                ];
+
+                foreach ($details as $detail) {
+                    $data['detail'][] = [
+                        'kode_harga' => $detail->kode_harga,
+                        'harga_dus' => $detail->harga_dus ?? 0,
+                        'harga_pack' => $detail->harga_pack ?? 0,
+                        'harga_pcs' => $detail->harga_pcs ?? 0,
+                        'jumlah' => $detail->jumlah,
+                        'subtotal' => $detail->subtotal,
+                        'status_promosi' => $detail->status_promosi ?? '0'
+                    ];
+                }
+
+                $historibayar = Historibayarpenjualan::where('no_faktur', $penjualan->no_faktur)->get();
+                foreach ($historibayar as $bayar) {
+                    $data['historibayar'][] = [
+                        'no_bukti' => $bayar->no_bukti,
+                        'tanggal' => $bayar->tanggal,
+                        'kode_salesman' => $bayar->kode_salesman,
+                        'jenis_bayar' => $bayar->jenis_bayar,
+                        'jumlah' => $bayar->jumlah,
+                        'voucher' => $bayar->voucher,
+                        'jenis_voucher' => $bayar->jenis_voucher,
+                        'kode_lhp' => $bayar->kode_lhp,
+                        'kode_akun' => $bayar->kode_akun,
+                        'keterangan' => $bayar->keterangan,
+                        'id_user' => $bayar->id_user
+                    ];
+                }
+
+                // Send to API
+                try {
+                     $response = Http::timeout(30)->post($baseUrl . '/penjualan', $data);
+                     if ($response->successful()) {
+                         $successCount++;
+                     } else {
+                         // Optional: Log specific failures
+                         $errorMsg = $response->body();
+                         // Try to parse json error if possible to keep it short
+                         $jsonError = $response->json();
+                         if(isset($jsonError['message'])) {
+                             $errorMsg = $jsonError['message'];
+                         }
+
+                         // Extract detailed validation errors if available (Standard Laravel format)
+                         if (isset($jsonError['errors']) && is_array($jsonError['errors'])) {
+                             $details = [];
+                             foreach ($jsonError['errors'] as $field => $messages) {
+                                 $msgStr = is_array($messages) ? implode(', ', $messages) : $messages;
+                                 $details[] = "$field: $msgStr";
+                             }
+                             if (!empty($details)) {
+                                 $errorMsg .= " (" . implode('; ', $details) . ")";
+                             }
+                         }
+
+                         Log::error("Sync All failed for " . $penjualan->no_faktur . ": " . $errorMsg);
+                         $errors[] = $penjualan->no_faktur . ": " . $errorMsg;
+                         $failCount++;
+                     }
+                } catch (\Exception $e) {
+                    Log::error("Sync All exception for " . $penjualan->no_faktur . ": " . $e->getMessage());
+                    $errors[] = $penjualan->no_faktur . ": " . $e->getMessage();
+                    $failCount++;
+                }
+            }
+
+            $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
+            if(count($errors) > 0) {
+                $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10)); // Show max 10 errors
+                if(count($errors) > 10) {
+                    $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ]);
+
+        } catch (\Exception $e) {
+             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 

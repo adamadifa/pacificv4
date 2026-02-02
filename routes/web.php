@@ -1985,6 +1985,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/cetakkartupiutangkaryawan', 'cetakkartupiutangkaryawan')->name('laporankeuangan.cetakkartupiutangkaryawan')->can('keu.kartupiutangkaryawan');
         Route::get('/laporankeuangan/{dari}/{sampai}/{exportButton}/cetakmutasikategori', 'cetakmutasikategori')->name('laporankeuangan.cetakmutasikategori');
         Route::post('/laporankeuangan/updatestatuspajakkaskecil', 'updatestatuspajakkaskecil')->name('laporankeuangan.updatestatuspajakkaskecil');
+        Route::post('/laporankeuangan/syncallpajakkaskecil', 'syncAllPajakKasKecil')->name('laporankeuangan.syncallpajakkaskecil');
         Route::post('/laporankeuangan/updatestatuspajakcostratio', 'updatestatuspajakcostratio')->name('laporankeuangan.updatestatuspajakcostratio');
         Route::post('/laporankeuangan/updatestatuspajakledger', 'updatestatuspajakledger')->name('laporankeuangan.updatestatuspajakledger');
     });
@@ -2023,6 +2024,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetakinsentifom', 'cetakinsentifom')->name('laporanmarketing.cetakinsentifom')->can('worksheetom.insentifom');
         Route::post('/laporanmarketing/cetakratiobs', 'cetakratiobs')->name('laporanmarketing.cetakratiobs')->can('worksheetom.ratiobs');
         Route::post('/laporanmarketing/updatestatuspajak', 'updatestatuspajak')->name('laporanmarketing.updatestatuspajak');
+        Route::post('/laporanmarketing/syncallpajak', 'syncAllPajak')->name('laporanmarketing.syncallpajak');
         Route::post('/laporanmarketing/updatestatuspajakretur', 'updatestatuspajakretur')->name('laporanmarketing.updatestatuspajakretur');
     });
 

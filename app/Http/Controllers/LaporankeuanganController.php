@@ -2207,11 +2207,116 @@ class LaporankeuanganController extends Controller
         }
     }
 
+    public function syncAllPajakKasKecil(Request $request)
+    {
+        set_time_limit(0);
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        // Logic Query SAMA dengan format laporan 1 di cetakkaskecil
+        $query = Kaskecil::query();
+        $query->select('keuangan_kaskecil.*', 'nama_akun', 'kode_klaim');
+        $query->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
+        $query->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id');
+        
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager') || $user->hasRole('admin pusat')) {
+                $query->where('kode_cabang', $request->kode_cabang);
+            } else {
+                $query->where('kode_cabang', auth()->user()->kode_cabang);
+            }
+        } else {
+            if (!empty($request->kode_cabang)) {
+                $query->where('kode_cabang', $request->kode_cabang);
+            }
+        }
+
+        $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
+            $query->whereBetween('keuangan_kaskecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
+        }
+        
+        // Filter HANYA yang status_pajak = 1
+        $query->where('keuangan_kaskecil.status_pajak', 1);
+
+        $kaskecilList = $query->get();
+
+        $baseUrl = env('SYNC_API_BASE_URL');
+        if (empty($baseUrl)) {
+            return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
+        }
+
+        $successCount = 0;
+        $failCount = 0;
+        $errors = [];
+
+        foreach ($kaskecilList as $kaskecil) {
+            $data = [
+                'id' => $kaskecil->id,
+                'no_bukti' => $kaskecil->no_bukti,
+                'tanggal' => $kaskecil->tanggal,
+                'keterangan' => $kaskecil->keterangan,
+                'jumlah' => $kaskecil->jumlah,
+                'debet_kredit' => $kaskecil->debet_kredit,
+                'status_pajak' => $kaskecil->status_pajak,
+                'kode_akun' => $kaskecil->kode_akun,
+                'kode_cabang' => $kaskecil->kode_cabang,
+                'kode_peruntukan' => $kaskecil->kode_peruntukan,
+                'cost_ratio' => [] 
+            ];
+
+            try {
+                $response = Http::timeout(30)->post($baseUrl . '/kaskecil', $data);
+                if ($response->successful()) {
+                    $successCount++;
+                } else {
+                    $errorMsg = $response->body();
+                    $jsonError = $response->json();
+                    if(isset($jsonError['message'])) {
+                        $errorMsg = $jsonError['message'];
+                    }
+                    
+                    if (isset($jsonError['errors']) && is_array($jsonError['errors'])) {
+                         $details = [];
+                         foreach ($jsonError['errors'] as $field => $messages) {
+                             $msgStr = is_array($messages) ? implode(', ', $messages) : $messages;
+                             $details[] = "$field: $msgStr";
+                         }
+                         if (!empty($details)) {
+                             $errorMsg .= " (" . implode('; ', $details) . ")";
+                         }
+                     }
+
+                    Log::error("Sync All Kas Kecil failed for " . $kaskecil->no_bukti . ": " . $errorMsg);
+                    $errors[] = $kaskecil->no_bukti . ": " . $errorMsg;
+                    $failCount++;
+                }
+            } catch (\Exception $e) {
+                Log::error("Sync All Kas Kecil exception for " . $kaskecil->no_bukti . ": " . $e->getMessage());
+                $errors[] = $kaskecil->no_bukti . ": " . $e->getMessage();
+                $failCount++;
+            }
+        }
+
+        $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
+        if(count($errors) > 0) {
+            $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10)); 
+            if(count($errors) > 10) {
+                $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ]);
+    }
+
     public function updatestatuspajakcostratio(Request $request)
     {
         $request->validate([
             'kode_cr' => 'required',
-            'sumber_type' => 'required|in:kaskecil,ledger',
+            'sumber_type' => 'required|in:kaskecil,ledger,jurnalumum',
             'status_pajak' => 'required|in:0,1'
         ]);
 
@@ -2220,6 +2325,8 @@ class LaporankeuanganController extends Controller
             $request->validate(['id_kaskecil' => 'required']);
         } elseif ($request->sumber_type == 'ledger') {
             $request->validate(['no_bukti_ledger' => 'required']);
+        } elseif ($request->sumber_type == 'jurnalumum') {
+            $request->validate(['kode_ju_jurnalumum' => 'required']);
         }
 
         try {
@@ -2514,6 +2621,139 @@ class LaporankeuanganController extends Controller
                     'success' => true,
                     'message' => $message,
                     'status_pajak' => $ledger->status_pajak
+                ]);
+            } elseif ($sumberType == 'jurnalumum') {
+                // Cari data jurnalumum dari kode_ju_jurnalumum
+                $jurnalumum = \App\Models\Jurnalumum::findOrFail($request->kode_ju_jurnalumum);
+
+                // Verifikasi bahwa kode_cr memang terkait dengan kode_ju_jurnalumum ini
+                $jurnalumumCostratio = \App\Models\Jurnalumumcostratio::where('kode_cr', $request->kode_cr)
+                    ->where('kode_ju', $request->kode_ju_jurnalumum)
+                    ->first();
+
+                if (!$jurnalumumCostratio) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data costratio tidak terkait dengan jurnal umum yang dimaksud'
+                    ], 422);
+                }
+
+                // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
+                if ($request->status_pajak == 1) {
+                    // Siapkan data sesuai format API
+                    $data = [
+                        'kode_ju' => $jurnalumum->kode_ju,
+                        'tanggal' => $jurnalumum->tanggal,
+                        'kode_akun' => $jurnalumum->kode_akun,
+                        'keterangan' => $jurnalumum->keterangan,
+                        'debet_kredit' => $jurnalumum->debet_kredit,
+                        'kode_peruntukan' => $jurnalumum->kode_peruntukan,
+                        'kode_cabang' => $jurnalumum->kode_cabang,
+                        'kode_dept' => $jurnalumum->kode_dept,
+                        'jumlah' => $jurnalumum->jumlah,
+                        'status_pajak' => $request->status_pajak,
+                        'cost_ratio' => []
+                    ];
+
+                    // Kirim data ke API dengan timeout 30 detik
+                    $response = Http::timeout(30)->post($baseUrl . '/jurnalumum', $data);
+
+                    // Cek response dari API
+                    if (!$response->successful()) {
+                        $errorMessage = 'Gagal sync ke API';
+                        $statusCode = $response->status();
+                        $responseData = $response->json();
+
+                        if ($statusCode == 422) {
+                            $errors = $responseData['errors'] ?? null;
+                            if ($errors) {
+                                $errorMessage .= ': ' . json_encode($errors);
+                            } else {
+                                $errorMessage .= ': ' . ($responseData['message'] ?? 'Validasi gagal');
+                            }
+                        } else {
+                            $errorMessage .= ' (Status: ' . $statusCode . ')';
+                            if (isset($responseData['message'])) {
+                                $errorMessage .= ' - ' . $responseData['message'];
+                            }
+                        }
+
+                        Log::error("Sync jurnal umum dari costratio gagal: {$jurnalumum->kode_ju}", [
+                            'kode_cr' => $request->kode_cr,
+                            'status' => $statusCode,
+                            'response' => $responseData,
+                            'request_data' => $data
+                        ]);
+
+                        return response()->json([
+                            'success' => false,
+                            'message' => $errorMessage
+                        ], 422);
+                    }
+
+                    Log::info("Sync jurnal umum dari costratio berhasil: {$jurnalumum->kode_ju}", [
+                        'kode_cr' => $request->kode_cr,
+                        'response' => $response->json()
+                    ]);
+                }
+                // Jika status_pajak = 0 (uncheck), hapus data dari API external
+                elseif ($request->status_pajak == 0 && $jurnalumum->status_pajak == 1) {
+                    // Kirim request DELETE ke API berdasarkan kode_ju
+                    $response = Http::timeout(30)->delete($baseUrl . '/jurnalumum', [
+                        'kode_ju' => $jurnalumum->kode_ju
+                    ]);
+
+                    // Cek response dari API
+                    if (!$response->successful()) {
+                        $errorMessage = 'Gagal menghapus data dari API';
+                        $statusCode = $response->status();
+                        $responseData = $response->json();
+
+                        if ($statusCode == 404) {
+                            Log::warning("Data tidak ditemukan di API saat delete: {$jurnalumum->kode_ju}", [
+                                'kode_cr' => $request->kode_cr,
+                                'response' => $responseData
+                            ]);
+                        } else {
+                            $errorMessage .= ' (Status: ' . $statusCode . ')';
+                            if (isset($responseData['message'])) {
+                                $errorMessage .= ' - ' . $responseData['message'];
+                            }
+
+                            Log::error("Delete jurnal umum dari costratio gagal: {$jurnalumum->kode_ju}", [
+                                'kode_cr' => $request->kode_cr,
+                                'status' => $statusCode,
+                                'response' => $responseData
+                            ]);
+
+                            return response()->json([
+                                'success' => false,
+                                'message' => $errorMessage
+                            ], 422);
+                        }
+                    } else {
+                        Log::info("Delete jurnal umum dari costratio berhasil: {$jurnalumum->kode_ju}", [
+                            'kode_cr' => $request->kode_cr,
+                            'response' => $response->json()
+                        ]);
+                    }
+                }
+
+                // Jika sampai sini berarti sync/delete berhasil, update status_pajak
+                $jurnalumum->status_pajak = $request->status_pajak;
+                $jurnalumum->save();
+
+                $message = 'Status pajak costratio (jurnal umum) berhasil diupdate';
+                if ($request->status_pajak == 1) {
+                    $message = 'Status pajak costratio (jurnal umum) berhasil diupdate dan data berhasil di-sync ke API';
+                } elseif ($request->status_pajak == 0) {
+                    $message = 'Status pajak costratio (jurnal umum) berhasil diupdate dan data berhasil dihapus dari API';
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'status_pajak' => $jurnalumum->status_pajak
                 ]);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

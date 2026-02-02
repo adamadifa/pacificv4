@@ -39,6 +39,9 @@
         <h4 class="title">
             LAPORAN PENJUALAN <br>
         </h4>
+        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+            <button id="btnSyncAll" class="btn btn-primary" style="margin-bottom: 5px;">Sync All Pajak</button>
+        @endif
         <h4>PERIODE : {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
         @if ($cabang != null)
             <h4>
@@ -234,64 +237,70 @@
 @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
     <script>
         $(document).ready(function() {
-            $('.checkbox-pajak').on('change', function() {
-                const checkbox = $(this);
-                const noFaktur = checkbox.data('no-faktur');
-                const statusPajak = checkbox.is(':checked') ? 1 : 0;
-
-                // Disable checkbox sementara untuk mencegah multiple clicks
-                checkbox.prop('disabled', true);
+            $('.checkbox-pajak').change(function() {
+                var no_faktur = $(this).data('no-faktur');
+                var status_pajak = $(this).is(':checked') ? 1 : 0;
+                var checkbox = $(this);
 
                 $.ajax({
+                    type: 'POST',
                     url: '{{ route('laporanmarketing.updatestatuspajak') }}',
-                    method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
-                        no_faktur: noFaktur,
-                        status_pajak: statusPajak
+                        no_faktur: no_faktur,
+                        status_pajak: status_pajak
                     },
                     success: function(response) {
-                        if (response.success) {
-                            const row = checkbox.closest('tr');
-
-                            if (statusPajak == 1) {
-                                // Centang: Ubah background row menjadi hijau dengan text putih
-                                // KECUALI kolom nomor (td pertama)
-                                row.addClass('bg-pajak-success');
-                                row.find('td:not(:first-child)').css({
-                                    'background-color': 'green',
-                                    'color': 'white'
-                                });
-                            } else {
-                                // Uncheck: Kembalikan background row menjadi putih/normal
-                                row.removeClass('bg-pajak-success');
-                                row.find('td:not(:first-child)').css({
-                                    'background-color': '',
-                                    'color': ''
-                                });
-                            }
-
-                            // Tampilkan pesan sukses
-                            //alert(response.message);
-                            console.log('Status pajak berhasil diupdate');
-                        } else {
-                            // Revert checkbox jika gagal
-                            checkbox.prop('checked', !checkbox.is(':checked'));
-                            alert('Gagal mengupdate status pajak: ' + response.message);
+                        // alert(response.message);
+                        if(response.status_pajak == 1){
+                          checkbox.closest('tr').css('background-color', 'green');
+                          checkbox.closest('tr').css('color', 'white');
+                          checkbox.closest('tr').find('td').css('color', 'white');
+                        }else{
+                            checkbox.closest('tr').css('background-color', '');
+                            checkbox.closest('tr').css('color', '');
+                            checkbox.closest('tr').find('td').css('color', '');
                         }
                     },
                     error: function(xhr) {
-                        // Revert checkbox jika error
-                        checkbox.prop('checked', !checkbox.is(':checked'));
-                        let errorMessage = 'Terjadi kesalahan saat mengupdate status pajak';
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        }
-                        alert(errorMessage);
+                        alert('Gagal: ' + xhr.responseJSON.message);
+                        checkbox.prop('checked', !status_pajak); // Revert checkbox
+                    }
+                });
+            });
+
+            $('#btnSyncAll').click(function(e) {
+                e.preventDefault();
+                if(!confirm('Apakah anda yakin ingin melakukan sinkronisasi ulang semua data status pajak sesuai filter yang aktif?')) return;
+                
+                var btn = $(this);
+                var originalText = btn.text();
+                btn.prop('disabled', true).text('Syncing...');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("laporanmarketing.syncallpajak") }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        dari: '{{ $dari }}',
+                        sampai: '{{ $sampai }}',
+                        kode_cabang: '{{ $cabang->kode_cabang ?? "" }}',
+                        kode_salesman: '{{ $salesman->kode_salesman ?? "" }}',
+                        kode_pelanggan: '{{ request("kode_pelanggan") }}',
+                        jenis_transaksi: '{{ request("jenis_transaksi") }}',
+                        status_penjualan: '{{ request("status_penjualan") }}'
                     },
-                    complete: function() {
-                        // Enable checkbox kembali
-                        checkbox.prop('disabled', false);
+                    success: function(response) {
+                        btn.prop('disabled', false).text(originalText);
+                        alert(response.message);
+                    },
+                    error: function(xhr) {
+                         btn.prop('disabled', false).text(originalText);
+                         var msg = 'Gagal';
+                         if(xhr.responseJSON && xhr.responseJSON.message) {
+                             msg += ': ' + xhr.responseJSON.message;
+                         }
+                         alert(msg);
                     }
                 });
             });

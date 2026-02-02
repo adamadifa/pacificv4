@@ -46,6 +46,7 @@
                         // Jika sumber = 1 (kas kecil), ambil data kaskecil
                         $kaskecil = null;
                         $ledger = null;
+                        $jurnalumum = null;
                         $status_pajak = 0;
                         $sumber_type = null; // 'kaskecil' atau 'ledger'
 
@@ -57,6 +58,10 @@
                             $ledger = $d->ledger;
                             $status_pajak = $ledger ? $ledger->status_pajak ?? 0 : 0;
                             $sumber_type = 'ledger';
+                        } elseif ($d->kode_sumber == 5 && isset($d->kode_ju_jurnalumum)) {
+                            $jurnalumum = $d->jurnalumum;
+                            $status_pajak = $jurnalumum ? $jurnalumum->status_pajak ?? 0 : 0;
+                            $sumber_type = 'jurnalumum';
                         }
 
                         // Set background color jika status_pajak = 1
@@ -78,6 +83,10 @@
                                 @elseif ($d->kode_sumber == 2 && isset($d->no_bukti_ledger))
                                     <input type="checkbox" class="checkbox-pajak-costratio" data-kode-cr="{{ $d->kode_cr }}"
                                         data-no-bukti-ledger="{{ $d->no_bukti_ledger }}" data-sumber-type="ledger"
+                                        {{ $status_pajak == 1 ? 'checked' : '' }}>
+                                @elseif ($d->kode_sumber == 5 && isset($d->kode_ju_jurnalumum))
+                                    <input type="checkbox" class="checkbox-pajak-costratio" data-kode-cr="{{ $d->kode_cr }}"
+                                        data-kode-ju-jurnalumum="{{ $d->kode_ju_jurnalumum }}" data-sumber-type="jurnalumum"
                                         {{ $status_pajak == 1 ? 'checked' : '' }}>
                                 @else
                                     -
@@ -107,6 +116,7 @@
                 const sumberType = checkbox.data('sumber-type'); // 'kaskecil' atau 'ledger'
                 const idKaskecil = checkbox.data('id-kaskecil');
                 const noBuktiLedger = checkbox.data('no-bukti-ledger');
+                const kodeJuJurnalumum = checkbox.data('kode-ju-jurnalumum');
                 const statusPajak = checkbox.is(':checked') ? 1 : 0;
 
                 // Disable checkbox sementara untuk mencegah multiple clicks
@@ -125,6 +135,8 @@
                     ajaxData.id_kaskecil = idKaskecil;
                 } else if (sumberType === 'ledger' && noBuktiLedger) {
                     ajaxData.no_bukti_ledger = noBuktiLedger;
+                } else if (sumberType === 'jurnalumum' && kodeJuJurnalumum) {
+                    ajaxData.kode_ju_jurnalumum = kodeJuJurnalumum;
                 }
 
                 $.ajax({

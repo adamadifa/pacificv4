@@ -126,21 +126,21 @@
                     <table class="table table-hover">
                         <thead class="text-white" style="background-color: #002e65;">
                             <tr>
-                                <th class="text-white">No.</th>
-                                <th class="text-white">Kode</th>
-                                <th class="text-white" style="width: 15%">Nama </th>
-                                <th class="text-white text-center">Avg </th>
-                                <th class="text-white text-center">Target</th>
-                                <th class="text-white text-center">%</th>
-                                {{-- <th rowspan="2">Reward</th> --}}
-                                <th class="text-white text-end">TOP</th>
-                                <th class="text-white">PMB</th>
-                                <th class="text-white text-end">Pencairan</th>
-                                <th class="text-white text-center">Doc</th>
-                                <th class="text-white text-center">#</th>
+                                <th class="fw-bold text-white">No</th>
+                                <th class="fw-bold text-white">Kode</th>
+                                <th class="fw-bold text-white">Nama Pelanggan</th>
+                                <th class="fw-bold text-white text-center">Rata-Rata</th>
+                                <th class="fw-bold text-white text-center">Target (Tambahan)</th>
+                                <th class="fw-bold text-white text-center">Total</th>
+                                <th class="fw-bold text-white text-end">Ach (%)</th>
+                                <th class="fw-bold text-white text-end">TOP</th>
+                                <th class="fw-bold text-white">Metode</th>
+                                <th class="fw-bold text-white text-end">Pencairan</th>
+                                <th class="fw-bold text-white text-center">Doc</th>
+                                <th class="fw-bold text-white text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody style="font-size: 14px !important">
+                        <tbody class="table-border-bottom-0">
                             @php
                                 $metode_pembayaran = [
                                     'TN' => 'Tunai',
@@ -153,18 +153,18 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td><span class="fw-semibold">{{ $d->kode_pelanggan }}</span></td>
                                     <td>{{ $d->nama_pelanggan }}</td>
-                                    <td class="text-center">{{ formatAngka($d->qty_rata_rata) }}</td>
+                                    <td class="text-center">{{ formatAngka($d->qty_avg) }}</td>
                                     <td class="text-center"><span class="badge bg-label-primary">{{ formatAngka($d->qty_target) }}</span></td>
+                                    <td class="text-center">{{ formatAngka($d->qty_avg + $d->qty_target) }}</td>
                                     <td class="text-end">
                                         @php
-                                            $kenaikan = $d->qty_target - ROUND($d->qty_rata_rata);
-                                            $persentase = $d->qty_rata_rata == 0 ? 0 : ($kenaikan / ROUND($d->qty_rata_rata)) * 100;
+                                            $kenaikan = $d->qty_target;
+                                            $persentase = $d->qty_avg == 0 ? 0 : ($kenaikan / $d->qty_avg) * 100;
                                             $persentase = formatAngkaDesimal($persentase);
                                             $color = $persentase >= 0 ? 'success' : 'danger';
                                         @endphp
                                         <span class="text-{{ $color }} fw-bold">{{ $persentase }}%</span>
                                     </td>
-                                    {{-- <td class="text-end">{{ formatAngka($d->reward) }}</td> --}}
                                     <td class="text-end">{{ $d->top }}</td>
                                     <td>{{ $metode_pembayaran[$d->metode_pembayaran] ?? $d->metode_pembayaran }}</td>
                                     <td class="text-end">{{ formatAngka($d->periode_pencairan) }} Bulan</td>
