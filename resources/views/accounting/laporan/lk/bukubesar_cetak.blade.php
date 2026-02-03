@@ -86,10 +86,10 @@
                             </tr>
                             {{-- <tr style="background-color:rgba(116, 170, 227, 0.465);">
                                 <th style="text-align: left" colspan="6">SALDO AWAL</th>
-                                <th style="text-align: right">{{ formatAngkaDesimal($saldo_awal) }}</th>
+                                <th style="text-align: right">{{ formatAngkaDesimal(abs($saldo_awal)) }}</th>
                             </tr>
                             @php
-                                $saldo = $saldo_awal;
+                                $saldo = abs($saldo_awal);
                             @endphp --}}
                         @endif
                         @php
