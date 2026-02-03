@@ -52,6 +52,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2">Tgl</th>
+                        <th rowspan="2">No Bukti</th>
                         <th rowspan="2">No Faktur</th>
                         <th rowspan="2">JT</th>
                         <th rowspan="2">Tgl Faktur</th>
@@ -149,6 +150,7 @@
                         @endphp
                         <tr>
                             <td>{{ formatIndo($d->tglbayar) }}</td>
+                            <td>{{ $d->no_bukti }}</td>
                             <td>{{ $d->no_faktur }}</td>
                             <td>{{ $d->jenis_transaksi == 'T' ? 'TUNAI' : 'KREDIT' }}</td>
                             <td>{{ formatIndo($d->tgltransaksi) }}</td>
@@ -175,7 +177,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="10">TOTAL</th>
+                        <th colspan="11">TOTAL</th>
                         <th class="right">{{ formatAngka($total_tunai) }}</th>
                         <th class="right">{{ formatAngka($total_titipan) }}</th>
                         <th class="right">{{ formatAngka($total_tagihan) }}</th>
