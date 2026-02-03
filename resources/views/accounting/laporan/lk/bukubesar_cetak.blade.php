@@ -116,7 +116,7 @@
                             @endif
                             <tr class="thead-dark">
                                 <th colspan="6">SALDO AWAL</th>
-                                <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}
+                                <th style="text-align: right;">{{ formatAngkaDesimal(abs($saldo)) }}
 
 
                                     {{-- {{ 'Saldo Awal Debet' }} {{ $saldo_awal_debet }}
