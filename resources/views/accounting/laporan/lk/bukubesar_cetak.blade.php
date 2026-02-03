@@ -105,13 +105,13 @@
                         @if ($d->sumber == 'SALDO AWAL')
                             @if ($d->jenis_akun == '1')
                                 @php
-                                    $saldo_awal_kredit = abs($saldo);
+                                    $saldo_awal_kredit = $saldo;
                                     $saldo_awal_debet = 0;
                                 @endphp
                             @else
                                 @php
                                     $saldo_awal_kredit = 0;
-                                    $saldo_awal_debet = abs($saldo);
+                                    $saldo_awal_debet = $saldo;
                                 @endphp
                             @endif
                             <tr class="thead-dark">
