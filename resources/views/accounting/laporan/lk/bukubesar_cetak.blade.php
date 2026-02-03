@@ -131,7 +131,7 @@
                                 <td>{{ textCamelCase($d->keterangan) }}</td>
                                 <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_debet) }}</td>
                                 <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_kredit) }}</td>
-                                <td style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</td>
+                                <td style="text-align: right;">{{ formatAngkaDesimal(abs($saldo)) }}</td>
                             </tr>
                         @endif
 
@@ -142,7 +142,7 @@
                                     {{ formatAngkaDesimal($total_debet - $saldo_awal_debet) }}</th>
                                 <th style="text-align: right;">
                                     {{ formatAngkaDesimal($total_kredit - $saldo_awal_kredit) }}</th>
-                                <th style="text-align: right;">{{ formatAngkaDesimal($saldo) }}</th>
+                                <th style="text-align: right;">{{ formatAngkaDesimal(abs($saldo)) }}</th>
                             </tr>
                             @php
                                 $saldo_awal_debet = 0;
