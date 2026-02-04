@@ -81,8 +81,12 @@
 </form>
 <script>
     $(document).ready(function() {
-        $("#pilih_semester").change(function() {
-            var semester = $(this).val();
+        function checkBulan() {
+            var semester = $("#pilih_semester").val();
+            var tahun = $("#tahun_dari").val();
+            var currentYear = new Date().getFullYear();
+            var currentMonth = new Date().getMonth() + 1;
+
             $("#bulan_dari").val("");
             $("#bulan_dari option").prop('disabled', false).show();
 
@@ -103,6 +107,19 @@
                     }
                 });
             }
+
+            if (tahun == currentYear) {
+                $("#bulan_dari option").each(function() {
+                    var val = parseInt($(this).val());
+                    if (val < currentMonth && !isNaN(val)) {
+                        $(this).prop('disabled', true).hide();
+                    }
+                });
+            }
+        }
+
+        $("#pilih_semester, #tahun_dari").change(function() {
+            checkBulan();
         });
 
         const select2Kodecabangsearch = $('.select2Kodecabangsearch');
