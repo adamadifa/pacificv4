@@ -3015,7 +3015,7 @@ class LaporankeuanganController extends Controller
             // Jika status_pajak = 0 (uncheck), hapus data dari API external
             elseif ($request->status_pajak == 0 && $ledger->status_pajak == 1) {
                 // Kirim request DELETE ke API berdasarkan no_bukti
-                $response = Http::timeout(30)->delete($baseUrl . '/api/sync/ledger', [
+                $response = Http::timeout(30)->delete($baseUrl . '/ledger', [
                     'no_bukti' => $ledger->no_bukti
                 ]);
 

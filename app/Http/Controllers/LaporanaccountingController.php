@@ -1997,14 +1997,9 @@ class LaporanaccountingController extends Controller
         foreach ($jurnalumumList as $ju) {
             $kode_cabang = $ju->kode_cabang;
              if(empty($kode_cabang)){
-                 // Fallback logic, misalnya ambil dari user login jika null
-                 // Atau biarkan validation API menangani jika required
-                 // Di sini misal kita set manual PST jika null, atau ambil dari relasi
-                 // Namun sesuai dokumentasi kode_cabang optional (X) tetapi baiknya dikirim
-                 $kode_cabang = 'PST'; // Default atau logic lain
+                 $kode_cabang = 'PST'; 
              }
              
-             // Mapping data sesuai request body API batch
             $data = [
                 'kode_ju' => $ju->kode_ju,
                 'tanggal' => $ju->tanggal,
@@ -2015,7 +2010,7 @@ class LaporanaccountingController extends Controller
                 'kode_dept' => $ju->kode_dept,
                 'kode_peruntukan' => $ju->kode_peruntukan,
                 'kode_cabang' => $kode_cabang,
-                'id_user' => $user->id // Kirim ID user yg melakukan sync
+                'id_user' => $user->id 
             ];
             $batchData[] = $data;
         }
@@ -2029,8 +2024,8 @@ class LaporanaccountingController extends Controller
 
 
         // Process Batches (Chunk data to avoid payload too large)
-        // Adjust chunk size if necessary
         $chunks = array_chunk($batchData, 50);
+        $errors = [];
 
         foreach ($chunks as $chunk) {
             try {
@@ -2041,21 +2036,42 @@ class LaporanaccountingController extends Controller
                     $result = $response->json();
                     $successCount += $result['summary']['success'] ?? 0;
                     $failedCount += $result['summary']['failed'] ?? 0;
+
+                    if (isset($result['results'])) {
+                        foreach ($result['results'] as $res) {
+                            if (isset($res['status']) && $res['status'] === 'failed') {
+                                $errors[] = "{$res['kode_ju']}: " . ($res['message'] ?? 'Unknown error');
+                            }
+                        }
+                    }
+
                 } else {
                      // Jika batch request gagal total (misal 500), anggap semua failed
                      $failedCount += count($chunk);
+                     $errorMsg = $response->json('message') ?? $response->body();
+                     $errors[] = "Batch Request Failed (Status {$response->status()}): {$errorMsg}";
                      Log::error('Batch sync jurnal umum failed', ['status' => $response->status(), 'response' => $response->body()]);
                 }
             } catch (\Exception $e) {
                 // Handle exception
                 $failedCount += count($chunk);
+                $errors[] = "Exception: " . $e->getMessage();
                  Log::error('Batch sync jurnal umum exception', ['error' => $e->getMessage()]);
+            }
+        }
+
+        $message = "Sync selesai. Sukses: {$successCount}, Gagal: {$failedCount}";
+        
+        if (!empty($errors)) {
+            $message .= "\n\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10));
+            if (count($errors) > 10) {
+                $message .= "\n...dan " . (count($errors) - 10) . " error lainnya.";
             }
         }
 
         return response()->json([
             'success' => true,
-            'message' => "Sync selesai. Sukses: {$successCount}, Gagal: {$failedCount}"
+            'message' => $message
         ]);
     }
 }
