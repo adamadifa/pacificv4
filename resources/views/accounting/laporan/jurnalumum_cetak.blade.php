@@ -194,7 +194,7 @@
                     }
                 });
             });
-            });
+
 
             $('#btnSyncAll').click(function(e) {
                 e.preventDefault();
