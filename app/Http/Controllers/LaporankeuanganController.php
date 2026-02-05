@@ -2219,17 +2219,17 @@ class LaporankeuanganController extends Controller
         $query = Ledger::query();
         $query->select('keuangan_ledger.*', 'nama_akun', 'nama_bank', 'no_rekening');
         $query->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
-        $query->join('master_bank', 'keuangan_ledger.kode_bank', '=', 'master_bank.kode_bank');
+        $query->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
-                $query->where('master_bank.kode_cabang', $request->kode_cabang);
+                $query->where('bank.kode_cabang', $request->kode_cabang);
             } else {
-                $query->where('master_bank.kode_cabang', $user->kode_cabang);
+                $query->where('bank.kode_cabang', $user->kode_cabang);
             }
         } else {
              if (!empty($request->kode_cabang)) {
-                $query->where('master_bank.kode_cabang', $request->kode_cabang);
+                $query->where('bank.kode_cabang', $request->kode_cabang);
             }
         }
 
