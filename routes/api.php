@@ -34,4 +34,7 @@ Route::prefix('sync')->group(function () {
 
     // API Sync Penjualan
     Route::post('/penjualan/batch', [App\Http\Controllers\Api\SyncPenjualanController::class, 'batchStore']);
+
+    // API Sync Kas Kecil
+    Route::post('/kaskecil/batch', [App\Http\Controllers\Api\SyncKaskecilController::class, 'batchStore']);
 });

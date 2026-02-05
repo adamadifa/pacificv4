@@ -2241,75 +2241,92 @@ class LaporankeuanganController extends Controller
 
         $kaskecilList = $query->get();
 
-        $baseUrl = env('SYNC_API_BASE_URL');
-        if (empty($baseUrl)) {
-            return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
-        }
+    $baseUrl = env('SYNC_API_BASE_URL');
+    if (empty($baseUrl)) {
+        return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
+    }
 
-        $successCount = 0;
-        $failCount = 0;
-        $errors = [];
+    $successCount = 0;
+    $failCount = 0;
+    $errors = [];
+    $batchData = [];
 
-        foreach ($kaskecilList as $kaskecil) {
-            $data = [
-                'id' => $kaskecil->id,
-                'no_bukti' => $kaskecil->no_bukti,
-                'tanggal' => $kaskecil->tanggal,
-                'keterangan' => $kaskecil->keterangan,
-                'jumlah' => $kaskecil->jumlah,
-                'debet_kredit' => $kaskecil->debet_kredit,
-                'status_pajak' => $kaskecil->status_pajak,
-                'kode_akun' => $kaskecil->kode_akun,
-                'kode_cabang' => $kaskecil->kode_cabang,
-                'kode_peruntukan' => $kaskecil->kode_peruntukan,
-                'cost_ratio' => [] 
-            ];
+    foreach ($kaskecilList as $kaskecil) {
+        $costRatio = [];
+        // Attempt to fetch cost ratio if relation exists (optional enhancement based on needs)
+        // if (method_exists($kaskecil, 'costratio')) {
+        //     $costRatio = $kaskecil->costratio->pluck('kode_cr')->toArray();
+        // }
 
-            try {
-                $response = Http::timeout(30)->post($baseUrl . '/kaskecil', $data);
-                if ($response->successful()) {
-                    $successCount++;
+        $data = [
+            'id' => $kaskecil->id,
+            'no_bukti' => $kaskecil->no_bukti,
+            'tanggal' => $kaskecil->tanggal,
+            'keterangan' => $kaskecil->keterangan,
+            'jumlah' => $kaskecil->jumlah,
+            'debet_kredit' => $kaskecil->debet_kredit,
+            'status_pajak' => $kaskecil->status_pajak,
+            'kode_akun' => $kaskecil->kode_akun,
+            'kode_cabang' => $kaskecil->kode_cabang,
+            'kode_peruntukan' => $kaskecil->kode_peruntukan,
+            'cost_ratio' => $costRatio 
+        ];
+        
+        $batchData[] = $data;
+    }
+
+    // Process Batches
+    $chunks = array_chunk($batchData, 50);
+
+    foreach ($chunks as $chunk) {
+        try {
+            $response = Http::timeout(60)->post($baseUrl . '/kaskecil/batch', ['data' => $chunk]);
+            
+            if ($response->successful()) {
+                $result = $response->json();
+                if (isset($result['summary'])) {
+                    $successCount += $result['summary']['success'];
+                    $failCount += $result['summary']['failed'];
                 } else {
-                    $errorMsg = $response->body();
-                    $jsonError = $response->json();
-                    if(isset($jsonError['message'])) {
-                        $errorMsg = $jsonError['message'];
-                    }
-                    
-                    if (isset($jsonError['errors']) && is_array($jsonError['errors'])) {
-                         $details = [];
-                         foreach ($jsonError['errors'] as $field => $messages) {
-                             $msgStr = is_array($messages) ? implode(', ', $messages) : $messages;
-                             $details[] = "$field: $msgStr";
-                         }
-                         if (!empty($details)) {
-                             $errorMsg .= " (" . implode('; ', $details) . ")";
-                         }
-                     }
-
-                    Log::error("Sync All Kas Kecil failed for " . $kaskecil->no_bukti . ": " . $errorMsg);
-                    $errors[] = $kaskecil->no_bukti . ": " . $errorMsg;
-                    $failCount++;
+                    $successCount += count($chunk);
                 }
-            } catch (\Exception $e) {
-                Log::error("Sync All Kas Kecil exception for " . $kaskecil->no_bukti . ": " . $e->getMessage());
-                $errors[] = $kaskecil->no_bukti . ": " . $e->getMessage();
-                $failCount++;
-            }
-        }
 
-        $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
-        if(count($errors) > 0) {
-            $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10)); 
-            if(count($errors) > 10) {
-                $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
+                if (isset($result['results'])) {
+                    foreach ($result['results'] as $res) {
+                        if (isset($res['status']) && $res['status'] === 'failed') {
+                            $errors[] = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                        }
+                    }
+                }
+            } else {
+                $failCount += count($chunk);
+                $errorMsg = $response->body();
+                $jsonError = $response->json();
+                if(isset($jsonError['message'])) {
+                    $errorMsg = $jsonError['message'];
+                }
+                $errors[] = "Batch Failed: " . $errorMsg;
+                Log::error("Batch sync kas kecil failed: " . $errorMsg);
             }
+        } catch (\Exception $e) {
+            $failCount += count($chunk);
+            $errors[] = "Batch Exception: " . $e->getMessage();
+            Log::error("Batch sync kas kecil exception: " . $e->getMessage());
         }
+    }
 
-        return response()->json([
-            'success' => true,
-            'message' => $message
-        ]);
+    $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
+    if(count($errors) > 0) {
+        $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10)); 
+        if(count($errors) > 10) {
+            $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => $message
+    ]);
     }
 
     public function updatestatuspajakcostratio(Request $request)
