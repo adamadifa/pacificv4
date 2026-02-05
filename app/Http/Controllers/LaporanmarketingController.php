@@ -7052,6 +7052,7 @@ class LaporanmarketingController extends Controller
             $successCount = 0;
             $failCount = 0;
             $errors = [];
+            $batchData = [];
 
             foreach ($fakturs as $faktur) {
                 $penjualan = Penjualan::find($faktur->no_faktur);
@@ -7130,41 +7131,52 @@ class LaporanmarketingController extends Controller
                         'id_user' => $bayar->id_user
                     ];
                 }
+                
+                $batchData[] = $data;
+            }
 
-                // Send to API
+            // Process Batches (Chunk data to avoid payload too large)
+            $chunks = array_chunk($batchData, 50); 
+
+            foreach ($chunks as $chunk) {
                 try {
-                     $response = Http::timeout(30)->post($baseUrl . '/penjualan', $data);
+                     // Use the new Batch Endpoint
+                     $response = Http::timeout(60)->post($baseUrl . '/penjualan/batch', ['data' => $chunk]);
+                     
                      if ($response->successful()) {
-                         $successCount++;
+                         $result = $response->json();
+                         if (isset($result['summary'])) {
+                             $successCount += $result['summary']['success'];
+                             $failCount += $result['summary']['failed'];
+                         } else {
+                             // Fallback assumes all success if 200 OK and no summary
+                             $successCount += count($chunk);
+                         }
+
+                         if (isset($result['results'])) {
+                             foreach ($result['results'] as $res) {
+                                 if (isset($res['status']) && $res['status'] === 'failed') {
+                                     $errors[] = ($res['no_faktur'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                 }
+                             }
+                         }
                      } else {
-                         // Optional: Log specific failures
+                         // Batch Request Failed
+                         $failCount += count($chunk);
                          $errorMsg = $response->body();
-                         // Try to parse json error if possible to keep it short
+                         // Try to parse json error
                          $jsonError = $response->json();
                          if(isset($jsonError['message'])) {
                              $errorMsg = $jsonError['message'];
                          }
-
-                         // Extract detailed validation errors if available (Standard Laravel format)
-                         if (isset($jsonError['errors']) && is_array($jsonError['errors'])) {
-                             $details = [];
-                             foreach ($jsonError['errors'] as $field => $messages) {
-                                 $msgStr = is_array($messages) ? implode(', ', $messages) : $messages;
-                                 $details[] = "$field: $msgStr";
-                             }
-                             if (!empty($details)) {
-                                 $errorMsg .= " (" . implode('; ', $details) . ")";
-                             }
-                         }
-
-                         Log::error("Sync All failed for " . $penjualan->no_faktur . ": " . $errorMsg);
-                         $errors[] = $penjualan->no_faktur . ": " . $errorMsg;
-                         $failCount++;
+                         
+                         $errors[] = "Batch Failed: " . $errorMsg;
+                         Log::error("Batch sync failed: " . $errorMsg);
                      }
                 } catch (\Exception $e) {
-                    Log::error("Sync All exception for " . $penjualan->no_faktur . ": " . $e->getMessage());
-                    $errors[] = $penjualan->no_faktur . ": " . $e->getMessage();
-                    $failCount++;
+                    $failCount += count($chunk);
+                    $errors[] = "Batch Exception: " . $e->getMessage();
+                    Log::error("Batch sync exception: " . $e->getMessage());
                 }
             }
 

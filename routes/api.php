@@ -31,4 +31,7 @@ Route::prefix('sync')->group(function () {
     Route::post('/jurnalumum/check', [App\Http\Controllers\Api\SyncJurnalumumController::class, 'check']);
     Route::post('/jurnalumum/batch', [App\Http\Controllers\Api\SyncJurnalumumController::class, 'syncBatch']);
     Route::delete('/jurnalumum/batch', [App\Http\Controllers\Api\SyncJurnalumumController::class, 'deleteBatch']);
+
+    // API Sync Penjualan
+    Route::post('/penjualan/batch', [App\Http\Controllers\Api\SyncPenjualanController::class, 'batchStore']);
 });
