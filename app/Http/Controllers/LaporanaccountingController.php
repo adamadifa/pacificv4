@@ -1963,4 +1963,99 @@ class LaporanaccountingController extends Controller
             ], 500);
         }
     }
+    
+
+    public function syncAllPajakJurnalUmum(Request $request) {
+        $user = User::findOrFail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        $query = Jurnalumum::query();
+        $query->join('coa', 'accounting_jurnalumum.kode_akun', '=', 'coa.kode_akun');
+        $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+
+        if ($user->hasRole('general affair') || $user->hasRole('manager general affair')) {
+            $query->where('kode_dept', 'GAF');
+        }
+
+        // Hanya yang status_pajak = 1 (sudah dicentang/aktif)
+        $query->where('status_pajak', 1);
+
+        $jurnalumumList = $query->get();
+
+        $baseUrl = env('SYNC_API_BASE_URL');
+        if (empty($baseUrl)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'SYNC_API_BASE_URL belum dikonfigurasi di .env'
+            ], 500);
+        }
+
+        $successCount = 0;
+        $failedCount = 0;
+        $batchData = [];
+
+        foreach ($jurnalumumList as $ju) {
+            $kode_cabang = $ju->kode_cabang;
+             if(empty($kode_cabang)){
+                 // Fallback logic, misalnya ambil dari user login jika null
+                 // Atau biarkan validation API menangani jika required
+                 // Di sini misal kita set manual PST jika null, atau ambil dari relasi
+                 // Namun sesuai dokumentasi kode_cabang optional (X) tetapi baiknya dikirim
+                 $kode_cabang = 'PST'; // Default atau logic lain
+             }
+             
+             // Mapping data sesuai request body API batch
+            $data = [
+                'kode_ju' => $ju->kode_ju,
+                'tanggal' => $ju->tanggal,
+                'keterangan' => $ju->keterangan,
+                'jumlah' => $ju->jumlah,
+                'debet_kredit' => $ju->debet_kredit,
+                'kode_akun' => $ju->kode_akun,
+                'kode_dept' => $ju->kode_dept,
+                'kode_peruntukan' => $ju->kode_peruntukan,
+                'kode_cabang' => $kode_cabang,
+                'id_user' => $user->id // Kirim ID user yg melakukan sync
+            ];
+            $batchData[] = $data;
+        }
+
+        if (empty($batchData)) {
+             return response()->json([
+                'success' => true,
+                'message' => 'Tidak ada data jurnal umum (status pajak aktif) yang perlu disync.'
+            ]);
+        }
+
+
+        // Process Batches (Chunk data to avoid payload too large)
+        // Adjust chunk size if necessary
+        $chunks = array_chunk($batchData, 50);
+
+        foreach ($chunks as $chunk) {
+            try {
+                // Use the new Batch Endpoint
+                $response = Http::timeout(60)->post($baseUrl . '/jurnalumum/batch', ['data' => $chunk]);
+
+                if ($response->successful()) {
+                    $result = $response->json();
+                    $successCount += $result['summary']['success'] ?? 0;
+                    $failedCount += $result['summary']['failed'] ?? 0;
+                } else {
+                     // Jika batch request gagal total (misal 500), anggap semua failed
+                     $failedCount += count($chunk);
+                     Log::error('Batch sync jurnal umum failed', ['status' => $response->status(), 'response' => $response->body()]);
+                }
+            } catch (\Exception $e) {
+                // Handle exception
+                $failedCount += count($chunk);
+                 Log::error('Batch sync jurnal umum exception', ['error' => $e->getMessage()]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Sync selesai. Sukses: {$successCount}, Gagal: {$failedCount}"
+        ]);
+    }
 }

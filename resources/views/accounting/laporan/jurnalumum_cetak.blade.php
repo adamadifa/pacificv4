@@ -37,6 +37,9 @@
         <h4 class="title">
             JURNAL UMUM <br>
         </h4>
+        @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+            <button id="btnSyncAll" class="btn btn-primary" style="margin-bottom: 5px;">Sync All Pajak</button>
+        @endif
         <h4>PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
 
     </div>
@@ -188,6 +191,38 @@
                     complete: function() {
                         // Enable checkbox kembali
                         checkbox.prop('disabled', false);
+                    }
+                });
+            });
+            });
+
+            $('#btnSyncAll').click(function(e) {
+                e.preventDefault();
+                if(!confirm('Apakah anda yakin ingin melakukan sinkronisasi ulang semua data status pajak jurnal umum sesuai filter yang aktif?')) return;
+                
+                var btn = $(this);
+                var originalText = btn.text();
+                btn.prop('disabled', true).text('Syncing...');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("laporanaccounting.syncallpajakjurnalumum") }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        dari: '{{ $dari }}',
+                        sampai: '{{ $sampai }}'
+                    },
+                    success: function(response) {
+                        btn.prop('disabled', false).text(originalText);
+                        alert(response.message);
+                    },
+                    error: function(xhr) {
+                         btn.prop('disabled', false).text(originalText);
+                         var msg = 'Gagal';
+                         if(xhr.responseJSON && xhr.responseJSON.message) {
+                             msg += ': ' + xhr.responseJSON.message;
+                         }
+                         alert(msg);
                     }
                 });
             });
