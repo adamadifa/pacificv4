@@ -2207,6 +2207,123 @@ class LaporankeuanganController extends Controller
         }
     }
 
+
+
+    public function syncAllPajakLedger(Request $request)
+    {
+        set_time_limit(0);
+        $user = User::findOrFail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        // Logic Query sesuaikan dengan cetakledger
+        $query = Ledger::query();
+        $query->select('keuangan_ledger.*', 'nama_akun', 'nama_bank', 'no_rekening');
+        $query->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
+        $query->join('master_bank', 'keuangan_ledger.kode_bank', '=', 'master_bank.kode_bank');
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('master_bank.kode_cabang', $request->kode_cabang);
+            } else {
+                $query->where('master_bank.kode_cabang', $user->kode_cabang);
+            }
+        } else {
+             if (!empty($request->kode_cabang)) {
+                $query->where('master_bank.kode_cabang', $request->kode_cabang);
+            }
+        }
+
+        $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+        if (!empty($request->kode_bank)) {
+            $query->where('keuangan_ledger.kode_bank', $request->kode_bank);
+        }
+
+        // Filter HANYA yang status_pajak = 1
+        $query->where('keuangan_ledger.status_pajak', 1);
+
+        $ledgerList = $query->get();
+
+        $baseUrl = env('SYNC_API_BASE_URL');
+        if (empty($baseUrl)) {
+            return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
+        }
+
+        $successCount = 0;
+        $failCount = 0;
+        $errors = [];
+        $batchData = [];
+
+        foreach ($ledgerList as $ledger) {
+            $data = [
+                'no_bukti' => $ledger->no_bukti,
+                'tanggal' => $ledger->tanggal,
+                'pelanggan' => $ledger->pelanggan,
+                'kode_bank' => $ledger->kode_bank,
+                'kode_akun' => $ledger->kode_akun,
+                'keterangan' => $ledger->keterangan,
+                'jumlah' => $ledger->jumlah,
+                'debet_kredit' => $ledger->debet_kredit,
+                'kode_peruntukan' => $ledger->kode_peruntukan,
+                'keterangan_peruntukan' => $ledger->keterangan_peruntukan
+            ];
+            
+            $batchData[] = $data;
+        }
+
+        // Process Batches
+        $chunks = array_chunk($batchData, 50);
+
+        foreach ($chunks as $chunk) {
+            try {
+                $response = Http::timeout(60)->post($baseUrl . '/ledger/batch', ['data' => $chunk]);
+                
+                if ($response->successful()) {
+                    $result = $response->json();
+                    if (isset($result['summary'])) {
+                        $successCount += $result['summary']['success'];
+                        $failCount += $result['summary']['failed'];
+                    } else {
+                        $successCount += count($chunk);
+                    }
+
+                    if (isset($result['results'])) {
+                        foreach ($result['results'] as $res) {
+                            if (isset($res['status']) && $res['status'] === 'failed') {
+                                $errors[] = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                            }
+                        }
+                    }
+                } else {
+                    $failCount += count($chunk);
+                    $errorMsg = $response->body();
+                    $jsonError = $response->json();
+                    if(isset($jsonError['message'])) {
+                        $errorMsg = $jsonError['message'];
+                    }
+                    $errors[] = "Batch Failed: " . $errorMsg;
+                    Log::error("Batch sync ledger failed: " . $errorMsg);
+                }
+            } catch (\Exception $e) {
+                $failCount += count($chunk);
+                $errors[] = "Batch Exception: " . $e->getMessage();
+                Log::error("Batch sync ledger exception: " . $e->getMessage());
+            }
+        }
+
+        $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
+        if(count($errors) > 0) {
+            $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10)); 
+            if(count($errors) > 10) {
+                $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ]);
+    }
+
     public function syncAllPajakKasKecil(Request $request)
     {
         set_time_limit(0);

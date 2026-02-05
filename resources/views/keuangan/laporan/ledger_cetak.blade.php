@@ -33,6 +33,9 @@
         <h4 class="title">
             LEDGER<br>
         </h4>
+        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+            <button id="btnSyncAll" class="btn btn-primary" style="margin-bottom: 5px;">Sync All Pajak</button>
+        @endif
         <h4> PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
         @if ($bank != null)
             <h4>
@@ -221,6 +224,40 @@
                     complete: function() {
                         // Enable checkbox kembali
                         checkbox.prop('disabled', false);
+                    }
+                });
+            });
+            });
+
+            $('#btnSyncAll').click(function(e) {
+                e.preventDefault();
+                if(!confirm('Apakah anda yakin ingin melakukan sinkronisasi ulang semua data status pajak ledger sesuai filter yang aktif?')) return;
+                
+                var btn = $(this);
+                var originalText = btn.text();
+                btn.prop('disabled', true).text('Syncing...');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("laporankeuangan.syncallpajakledger") }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        dari: '{{ $dari }}',
+                        sampai: '{{ $sampai }}',
+                        kode_cabang: '{{ request("kode_cabang") }}',
+                        kode_bank: '{{ request("kode_bank_ledger") }}'
+                    },
+                    success: function(response) {
+                        btn.prop('disabled', false).text(originalText);
+                        alert(response.message);
+                    },
+                    error: function(xhr) {
+                         btn.prop('disabled', false).text(originalText);
+                         var msg = 'Gagal';
+                         if(xhr.responseJSON && xhr.responseJSON.message) {
+                             msg += ': ' + xhr.responseJSON.message;
+                         }
+                         alert(msg);
                     }
                 });
             });

@@ -1988,6 +1988,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/syncallpajakkaskecil', 'syncAllPajakKasKecil')->name('laporankeuangan.syncallpajakkaskecil');
         Route::post('/laporankeuangan/updatestatuspajakcostratio', 'updatestatuspajakcostratio')->name('laporankeuangan.updatestatuspajakcostratio');
         Route::post('/laporankeuangan/updatestatuspajakledger', 'updatestatuspajakledger')->name('laporankeuangan.updatestatuspajakledger');
+        Route::post('/laporankeuangan/syncallpajakledger', 'syncAllPajakLedger')->name('laporankeuangan.syncallpajakledger');
     });
 
     Route::controller(LaporanmarketingController::class)->group(function () {
