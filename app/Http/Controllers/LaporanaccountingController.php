@@ -967,6 +967,23 @@ class LaporanaccountingController extends Controller
             )
             ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca_prefixes) . ')')
             ->whereNotIn('coa.kode_akun', $excluded_accounts)
+            ->where(function ($q) {
+                $q->where('coa.level', '!=', 3)
+                ->orWhereRaw('(
+                    COALESCE(pivot.januari,0) + 
+                    COALESCE(pivot.februari,0) + 
+                    COALESCE(pivot.maret,0) + 
+                    COALESCE(pivot.april,0) + 
+                    COALESCE(pivot.mei,0) + 
+                    COALESCE(pivot.juni,0) + 
+                    COALESCE(pivot.juli,0) + 
+                    COALESCE(pivot.agustus,0) + 
+                    COALESCE(pivot.september,0) + 
+                    COALESCE(pivot.oktober,0) + 
+                    COALESCE(pivot.november,0) + 
+                    COALESCE(pivot.desember,0)
+                ) != 0');
+            })
             ->orderBy('coa.kode_akun')
             ->get();
 
@@ -1038,6 +1055,23 @@ class LaporanaccountingController extends Controller
             )
             ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $labarugi_prefixes) . ')')
             ->whereNotIn('coa.kode_akun', $excluded_accounts)
+            ->where(function ($q) {
+                $q->where('coa.level', '!=', 3)
+                ->orWhereRaw('(
+                    COALESCE(pivot.januari,0) + 
+                    COALESCE(pivot.februari,0) + 
+                    COALESCE(pivot.maret,0) + 
+                    COALESCE(pivot.april,0) + 
+                    COALESCE(pivot.mei,0) + 
+                    COALESCE(pivot.juni,0) + 
+                    COALESCE(pivot.juli,0) + 
+                    COALESCE(pivot.agustus,0) + 
+                    COALESCE(pivot.september,0) + 
+                    COALESCE(pivot.oktober,0) + 
+                    COALESCE(pivot.november,0) + 
+                    COALESCE(pivot.desember,0)
+                ) != 0');
+            })
             ->orderBy('coa.kode_akun')
             ->get();
 
