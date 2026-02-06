@@ -1085,6 +1085,10 @@ class LaporanaccountingController extends Controller
             $kategoriLaporan = 'NERACA PERBANDINGAN';
         } elseif ($request->formatlaporan == 5) {
             $kategoriLaporan = 'LABA RUGI PERBANDINGAN';
+        } elseif ($request->formatlaporan == 4) {
+            $kategoriLaporan = 'NERACA PERBANDINGAN';
+        } elseif ($request->formatlaporan == 5) {
+            $kategoriLaporan = 'LABA RUGI PERBANDINGAN';
         }
         // SendFixedNumberNotificationJob::dispatch(
         //     $userName,
@@ -1774,7 +1778,7 @@ class LaporanaccountingController extends Controller
                 header("Content-Disposition: attachment; filename=Buku Besar.xls");
             }
             return view('accounting.laporan.lk.bukubesar_cetak', $data);
-        } else if ($request->formatlaporan == '2' || $request->formatlaporan == '4') {
+        } else if ($request->formatlaporan == '2' || $request->formatlaporan == '4' || $request->formatlaporan == '3' || $request->formatlaporan == '5') {
 
 
 
@@ -1916,6 +1920,18 @@ class LaporanaccountingController extends Controller
 
 
 
+            $data['labarugi'] = $labarugi;
+            if ($request->formatlaporan == '3' || $request->formatlaporan == '5') {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    header("Content-Disposition: attachment; filename=Laba Rugi.xls");
+                }
+                if ($request->formatcetak == '1') {
+                    return view('accounting.laporan.lk.labarugi_cetak_export', $data);
+                }
+                return view('accounting.laporan.lk.labarugi_cetak', $data);
+            }
+
             if (isset($_POST['exportButton'])) {
                 header("Content-type: application/vnd-ms-excel");
                 // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
@@ -1924,6 +1940,7 @@ class LaporanaccountingController extends Controller
             if ($request->formatcetak == '1') {
                 return view('accounting.laporan.lk.neraca_cetak_export', $data);
             }
+            return view('accounting.laporan.lk.neraca_cetak', $data);
 
         } 
     }
