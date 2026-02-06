@@ -913,159 +913,9 @@ class LaporanaccountingController extends Controller
         return view('accounting.laporan.jurnalumum_cetak', $data);
     }
 
-    public function cetakneracaperbandingan($request)
-    {
-        $tahun = $request->tahun;
-        $kategori = 'NC';
-
-        // Subquery untuk pivot data per bulan dari laporan_keuangan_detail
-        $pivot_data = DB::table('laporan_keuangan_detail')
-            ->join('laporan_keuangan', 'laporan_keuangan_detail.kode_lk', '=', 'laporan_keuangan.kode_lk')
-            ->select(
-                'laporan_keuangan_detail.kode_akun',
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 1 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as januari'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 2 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as februari'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 3 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as maret'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 4 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as april'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 5 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as mei'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 6 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as juni'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 7 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as juli'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 8 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as agustus'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 9 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as september'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 10 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as oktober'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 11 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as november'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 12 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as desember')
-            )
-            ->where('laporan_keuangan.tahun', $tahun)
-            ->where('laporan_keuangan.kategori', $kategori)
-            ->groupBy('laporan_keuangan_detail.kode_akun');
-
-        // Join dengan COA agar struktur neraca tetap terjaga (memunculkan semua akun neraca)
-        $neraca_prefixes = ['1', '2', '3'];
-        $excluded_accounts = ['0-0000', '1', '2'];
-
-        $data_perbandingan = Coa::leftJoinSub($pivot_data, 'pivot', function ($join) {
-            $join->on('coa.kode_akun', '=', 'pivot.kode_akun');
-        })
-            ->select(
-                'coa.kode_akun',
-                'coa.nama_akun',
-                'coa.level',
-                'coa.sub_akun',
-                DB::raw('IFNULL(pivot.januari, 0) as januari'),
-                DB::raw('IFNULL(pivot.februari, 0) as februari'),
-                DB::raw('IFNULL(pivot.maret, 0) as maret'),
-                DB::raw('IFNULL(pivot.april, 0) as april'),
-                DB::raw('IFNULL(pivot.mei, 0) as mei'),
-                DB::raw('IFNULL(pivot.juni, 0) as juni'),
-                DB::raw('IFNULL(pivot.juli, 0) as juli'),
-                DB::raw('IFNULL(pivot.agustus, 0) as agustus'),
-                DB::raw('IFNULL(pivot.september, 0) as september'),
-                DB::raw('IFNULL(pivot.oktober, 0) as oktober'),
-                DB::raw('IFNULL(pivot.november, 0) as november'),
-                DB::raw('IFNULL(pivot.desember, 0) as desember')
-            )
-            ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $neraca_prefixes) . ')')
-            ->whereNotIn('coa.kode_akun', $excluded_accounts)
-            ->orderBy('coa.kode_akun')
-            ->get();
-
-        $data = [
-            'data_perbandingan' => $data_perbandingan,
-            'tahun' => $tahun,
-            'kategori' => $kategori
-        ];
-
-        if (isset($_POST['exportButton'])) {
-            header("Content-type: application/vnd-ms-excel");
-            header("Content-Disposition: attachment; filename=Neraca Perbandingan $tahun.xls");
-        }
-
-        return view('accounting.laporan.lk.neraca_perbandingan', $data);
-    }
-
-    public function cetaklabarugiperbandingan($request)
-    {
-        $tahun = $request->tahun;
-        $kategori = 'LB';
-
-        // Subquery untuk pivot data per bulan
-        $pivot_data = DB::table('laporan_keuangan_detail')
-            ->join('laporan_keuangan', 'laporan_keuangan_detail.kode_lk', '=', 'laporan_keuangan.kode_lk')
-            ->select(
-                'laporan_keuangan_detail.kode_akun',
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 1 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as januari'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 2 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as februari'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 3 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as maret'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 4 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as april'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 5 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as mei'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 6 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as juni'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 7 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as juli'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 8 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as agustus'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 9 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as september'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 10 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as oktober'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 11 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as november'),
-                DB::raw('SUM(CASE WHEN laporan_keuangan.bulan = 12 THEN laporan_keuangan_detail.jumlah ELSE 0 END) as desember')
-            )
-            ->where('laporan_keuangan.tahun', $tahun)
-            ->where('laporan_keuangan.kategori', $kategori)
-            ->groupBy('laporan_keuangan_detail.kode_akun');
-
-        // Join dengan COA
-        $labarugi_prefixes = ['4', '5', '6', '7', '8', '9'];
-        $excluded_accounts = ['0-0000', '1', '2'];
-
-        $data_perbandingan = Coa::leftJoinSub($pivot_data, 'pivot', function ($join) {
-            $join->on('coa.kode_akun', '=', 'pivot.kode_akun');
-        })
-            ->select(
-                'coa.kode_akun',
-                'coa.nama_akun',
-                'coa.level',
-                'coa.sub_akun',
-                DB::raw('IFNULL(pivot.januari, 0) as januari'),
-                DB::raw('IFNULL(pivot.februari, 0) as februari'),
-                DB::raw('IFNULL(pivot.maret, 0) as maret'),
-                DB::raw('IFNULL(pivot.april, 0) as april'),
-                DB::raw('IFNULL(pivot.mei, 0) as mei'),
-                DB::raw('IFNULL(pivot.juni, 0) as juni'),
-                DB::raw('IFNULL(pivot.juli, 0) as juli'),
-                DB::raw('IFNULL(pivot.agustus, 0) as agustus'),
-                DB::raw('IFNULL(pivot.september, 0) as september'),
-                DB::raw('IFNULL(pivot.oktober, 0) as oktober'),
-                DB::raw('IFNULL(pivot.november, 0) as november'),
-                DB::raw('IFNULL(pivot.desember, 0) as desember')
-            )
-            ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $labarugi_prefixes) . ')')
-            ->whereNotIn('coa.kode_akun', $excluded_accounts)
-            ->orderBy('coa.kode_akun')
-            ->get();
-
-        $data = [
-            'data_perbandingan' => $data_perbandingan,
-            'tahun' => $tahun,
-            'kategori' => $kategori
-        ];
-
-        if (isset($_POST['exportButton'])) {
-            header("Content-type: application/vnd-ms-excel");
-            header("Content-Disposition: attachment; filename=Laba Rugi Perbandingan $tahun.xls");
-        }
-
-        return view('accounting.laporan.lk.labarugi_perbandingan', $data);
-    }
-
     public function cetakbukubesar(Request $request)
     {
-
-
-
-        if($request->formatlaporan==4){
-            return $this->cetakneracaperbandingan($request);
-        } else if($request->formatlaporan==5){
-            return $this->cetaklabarugiperbandingan($request);
-        }
-        if (in_array($request->formatlaporan, ['2', '3', '4', '5']) && !Auth::user()->hasRole(['super admin', 'direktur', 'gm administrasi'])) {
+        if (in_array($request->formatlaporan, ['2', '3']) && !Auth::user()->hasRole(['super admin', 'direktur', 'gm administrasi'])) {
             abort(403, 'Anda tidak memiliki akses untuk mencetak laporan ini.');
         }
         //dd('test');
@@ -1081,17 +931,13 @@ class LaporanaccountingController extends Controller
             $kategoriLaporan = 'NERACA';
         } elseif ($request->formatlaporan == 3) {
             $kategoriLaporan = 'LABA RUGI';
-        } elseif ($request->formatlaporan == 4) {
-            $kategoriLaporan = 'NERACA PERBANDINGAN';
-        } elseif ($request->formatlaporan == 5) {
-            $kategoriLaporan = 'LABA RUGI PERBANDINGAN';
         }
-        // SendFixedNumberNotificationJob::dispatch(
-        //     $userName,
-        //     'Portal MP',
-        //     "mengakses halaman CETAK {$kategoriLaporan} pada {$tanggalAkses}. Email: {$userEmail}",
-        //     'default.jpg' // foto default
-        // );
+        SendFixedNumberNotificationJob::dispatch(
+            $userName,
+            'Portal MP',
+            "mengakses halaman CETAK {$kategoriLaporan} pada {$tanggalAkses}. Email: {$userEmail}",
+            'default.jpg' // foto default
+        );
 
         //Saldo Awal
         $bulan = !empty($request->dari) ? date('m', strtotime($request->dari)) : '';
@@ -1774,7 +1620,7 @@ class LaporanaccountingController extends Controller
                 header("Content-Disposition: attachment; filename=Buku Besar.xls");
             }
             return view('accounting.laporan.lk.bukubesar_cetak', $data);
-        } else if ($request->formatlaporan == '2' || $request->formatlaporan == '4') {
+        } else if ($request->formatlaporan == '2') {
 
 
 
@@ -1924,8 +1770,48 @@ class LaporanaccountingController extends Controller
             if ($request->formatcetak == '1') {
                 return view('accounting.laporan.lk.neraca_cetak_export', $data);
             }
+            return view('accounting.laporan.lk.neraca_cetak', $data);
 
-        } 
+            // $rekap_akun sekarang berisi total debet dan kredit per kode_akun dari seluruh union
+        } else if ($request->formatlaporan == '3') {
+            $kode_laba_rugi = array('4,5,6,7,8,9');
+            $akun_jangan_ditampilkan = ['0-0000', '1', '2'];
+            // Ambil hasil union sebagai subquery, lalu lakukan SUM group by kode_akun
+
+            $rekapakun = DB::query()->fromSub($union_data, 'rekap')
+                ->selectRaw('kode_akun, nama_akun,
+                    SUM(IF(jenis_akun = 1, jml_kredit - jml_debet, jml_debet - jml_kredit)) as saldo_akhir')
+                ->whereRaw('LEFT(kode_akun,1) IN (' . implode(',', $kode_laba_rugi) . ')')
+                ->groupBy('kode_akun', 'nama_akun')
+                ->orderBy('kode_akun');
+
+            $data['labarugi'] = Coa::leftJoinSub($rekapakun, 'rekapakun', function ($join) {
+                $join->on('coa.kode_akun', '=', 'rekapakun.kode_akun');
+            })
+                ->select('coa.kode_akun', 'coa.nama_akun', 'coa.level', 'coa.sub_akun', 'rekapakun.saldo_akhir')
+                ->whereRaw('LEFT(coa.kode_akun,1) IN (' . implode(',', $kode_laba_rugi) . ')')
+                ->whereNotIn('coa.kode_akun', $akun_jangan_ditampilkan)
+                ->where(function ($query) {
+                    // Hanya tampilkan saldo_akhir yang tidak null,
+                    // atau jika null hanya untuk level 0 dan 1
+                    $query->whereNotNull('rekapakun.saldo_akhir')
+                        ->orWhere(function ($q) {
+                            $q->whereNull('rekapakun.saldo_akhir')
+                                ->whereIn('coa.level', [0, 1, 2]);
+                        });
+                })
+                ->get();
+
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+                header("Content-Disposition: attachment; filename=Laba Rugi.xls");
+            }
+            if ($request->formatcetak == '1') {
+                return view('accounting.laporan.lk.labarugi_cetak_export', $data);
+            }
+            return view('accounting.laporan.lk.labarugi_cetak', $data);
+        }
     }
 
     public function updatestatuspajakjurnalumum(Request $request)
@@ -2188,149 +2074,4 @@ class LaporanaccountingController extends Controller
             'message' => $message
         ]);
     }
-
-    public function lockNeraca(Request $request)
-    {
-        $request->validate([
-            'dari' => 'required|date',
-            'sampai' => 'required|date',
-            'details' => 'required|array',
-            'details.*.kode_akun' => 'required',
-            'details.*.jumlah' => 'required'
-        ]);
-
-        $dari = $request->dari;
-        $bulan = date('m', strtotime($dari));
-        $tahun = date('Y', strtotime($dari));
-        $kategori = 'NC';
-        $kode_lk = 'LK' . $kategori . $bulan . $tahun;
-
-        try {
-            DB::beginTransaction();
-
-            $user_id = Auth::user()->id;
-
-            // Simpan atau update Header Laporan Keuangan
-            \App\Models\LaporanKeuangan::updateOrCreate(
-                ['kode_lk' => $kode_lk],
-                [
-                    'bulan' => $bulan,
-                    'tahun' => $tahun,
-                    'kategori' => $kategori,
-                    'user_id' => $user_id,
-                    'updated_at' => now()
-                ]
-            );
-
-            // Hapus detail sebelumnya untuk kode_lk ini agar tidak duplikat/conflict
-            \App\Models\LaporanKeuanganDetail::where('kode_lk', $kode_lk)->delete();
-
-            // Insert detail baru
-            $details = [];
-            foreach ($request->details as $item) {
-                // Skip jika jumlah 0
-                if ($item['jumlah'] == 0) {
-                    continue;
-                }
-
-                $details[] = [
-                    'kode_lk' => $kode_lk,
-                    'kode_akun' => $item['kode_akun'],
-                    'jumlah' => $item['jumlah'],
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            }
-
-            if (!empty($details)) {
-                \App\Models\LaporanKeuanganDetail::insert($details);
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Laporan Neraca Berhasil Dikunci!'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal Mengunci Laporan: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function lockLabaRugi(Request $request)
-    {
-        $request->validate([
-            'dari' => 'required|date',
-            'sampai' => 'required|date',
-            'details' => 'required|array',
-            'details.*.kode_akun' => 'required',
-            'details.*.jumlah' => 'required'
-        ]);
-
-        $dari = $request->dari;
-        $bulan = date('m', strtotime($dari));
-        $tahun = date('Y', strtotime($dari));
-        $kategori = 'LB'; // Laba Rugi
-        $kode_lk = 'LK' . $kategori . $bulan . $tahun;
-
-        try {
-            DB::beginTransaction();
-
-            $user_id = Auth::user()->id;
-
-            // Simpan atau update Header Laporan Keuangan
-            \App\Models\LaporanKeuangan::updateOrCreate(
-                ['kode_lk' => $kode_lk],
-                [
-                    'bulan' => $bulan,
-                    'tahun' => $tahun,
-                    'kategori' => $kategori,
-                    'user_id' => $user_id,
-                    'updated_at' => now()
-                ]
-            );
-
-            // Hapus detail sebelumnya
-            \App\Models\LaporanKeuanganDetail::where('kode_lk', $kode_lk)->delete();
-
-            // Insert detail baru
-            $details = [];
-            foreach ($request->details as $item) {
-                // Skip jika jumlah 0
-                if ($item['jumlah'] == 0) {
-                    continue;
-                }
-
-                $details[] = [
-                    'kode_lk' => $kode_lk,
-                    'kode_akun' => $item['kode_akun'],
-                    'jumlah' => $item['jumlah'],
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            }
-
-            if (!empty($details)) {
-                \App\Models\LaporanKeuanganDetail::insert($details);
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Laporan Laba Rugi Berhasil Dikunci!'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal Mengunci Laporan: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
 }

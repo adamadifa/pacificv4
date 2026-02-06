@@ -2037,6 +2037,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanaccounting/cetakjurnalumum', 'cetakjurnalumum')->name('laporanaccounting.cetakjurnalumum')->can('akt.jurnalumum');
         Route::post('/laporanaccounting/updatestatuspajakjurnalumum', 'updatestatuspajakjurnalumum')->name('laporanaccounting.updatestatuspajakjurnalumum');
         Route::post('/laporanaccounting/syncallpajakjurnalumum', 'syncAllPajakJurnalUmum')->name('laporanaccounting.syncallpajakjurnalumum');
+        Route::post('/laporanaccounting/lockneraca', 'lockNeraca')->name('laporanaccounting.lockneraca');
+        Route::post('/laporanaccounting/locklabarugi', 'lockLabaRugi')->name('laporanaccounting.locklabarugi');
 
         //Laporan Keuangan
         Route::post('/laporanaccounting/cetakbukubesar', 'cetakbukubesar')->name('laporanaccounting.cetakbukubesar')->can('lk.bukubesar');

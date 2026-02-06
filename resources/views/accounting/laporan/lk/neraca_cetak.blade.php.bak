@@ -33,15 +33,6 @@
             NERACA<br>
         </h4>
         <h4> PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
-        <div id="alert-container"></div>
-        <form id="formLockNeraca">
-            @csrf
-            <input type="hidden" name="dari" value="{{ $dari }}">
-            <input type="hidden" name="sampai" value="{{ $sampai }}">
-            <input type="hidden" name="formatlaporan" value="{{ request('formatlaporan', '2') }}">
-            <input type="hidden" name="kode_akun_dari" value="{{ request('kode_akun_dari') }}">
-            <input type="hidden" name="kode_akun_sampai" value="{{ request('kode_akun_sampai') }}">
-            <button type="button" id="btnLock" class="btn btn-primary">Kunci Laporan</button>
     </div>
     <div class="content">
         <div class="freeze-table">
@@ -58,7 +49,7 @@
                         // $subtotalAmount = 0;
                         // $level2Items = [];
                         // $currentLevel2Name = '';
-                        $index_item = 0;
+
                         $subtotal_level_0 = 0;
                         $level_0_name = '';
 
@@ -137,10 +128,6 @@
                             <!-- Tampilkan item -->
                             <tr>
                                 <td style="padding-left: {{ $indent }}px;">
-                                    <input type="hidden" name="details[{{ $index_item }}][kode_akun]" value="{{ $d->kode_akun }}">
-                                    <input type="hidden" name="details[{{ $index_item }}][jumlah]" value="{{ $saldo_akhir ?? 0 }}">
-                                    @php $index_item++; @endphp
-
                                     @if ($d->level == 0 || $d->level == 1 || $d->level == 2)
                                         <b>{{ $d->kode_akun }} {{ $d->nama_akun }}</b>
                                     @else
@@ -255,67 +242,7 @@
                 </tbody>
             </table>
         </div>
-        </form>
     </div>
-
-    <!-- Script AJAX -->
-    <script>
-        $(document).ready(function() {
-            $('#btnLock').click(function(e) {
-                e.preventDefault();
-                
-                if (!confirm('Apakah anda yakin ingin mengunci laporan ini?')) {
-                    return;
-                }
-
-                var btn = $(this);
-                var originalText = btn.html();
-                
-                // Disable button and show loading state
-                btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Proses...');
-
-                $.ajax({
-                    url: "{{ route('laporanaccounting.lockneraca') }}",
-                    type: "POST",
-                    data: $('#formLockNeraca').serialize(),
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.success) {
-                            $('#alert-container').html(`
-                                <div style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 10px; border: 1px solid #c3e6cb; border-radius: 4px; text-align: center;">
-                                    ${response.message}
-                                </div>
-                            `);
-                        } else {
-                            $('#alert-container').html(`
-                                <div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border: 1px solid #f5c6cb; border-radius: 4px; text-align: center;">
-                                    ${response.message}
-                                </div>
-                            `);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        var errorMessage = "Terjadi kesalahan saat mengunci laporan.";
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        }
-                        
-                        $('#alert-container').html(`
-                            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 10px; border: 1px solid #f5c6cb; border-radius: 4px; text-align: center;">
-                                ${errorMessage}
-                            </div>
-                        `);
-                    },
-                    complete: function() {
-                        // Restore button state
-                        btn.prop('disabled', false).html(originalText);
-                        
-                        // Scroll to top to see alert
-                        $('html, body').animate({ scrollTop: 0 }, 'fast');
-                    }
-                });
-            });
-        });
-    </script>body>
+</body>
 
 </html>

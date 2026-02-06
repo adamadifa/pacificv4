@@ -10,6 +10,8 @@
                     @if (auth()->user()->hasRole(['super admin', 'direktur', 'gm administrasi']))
                         <option value="2">Neraca</option>
                         <option value="3">Laba Rugi</option>
+                        <option value="4">Neraca Perbandingan</option>
+                        <option value="5">Laba Rugi Perbandingan</option>
                     @endif
                 </select>
             </div>
@@ -50,12 +52,29 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" id="row_periode">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+        </div>
+    </div>
+    <div class="row" id="row_tahun">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group mb-3">
+                <select name="tahun" id="tahun" class="form-select">
+                    <option value="">Pilih Tahun</option>
+                    @php
+                        $tahun_mulai = 2024;
+                        $tahun_skrg = date('Y');
+                    @endphp
+                    @for ($t = $tahun_mulai; $t <= $tahun_skrg + 1; $t++)
+                        <option value="{{ $t }}" {{ $t == $tahun_skrg ? 'selected' : '' }}>{{ $t }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -82,15 +101,29 @@
                 if (formatlaporan == '1') {
                     $("#coa").show();
                     $("#formatcetak_container").hide();
+                    $("#row_periode").show();
+                    $("#row_tahun").hide();
                 } else if(formatlaporan == '2' || formatlaporan == '3'){
                     $("#coa").hide();
                     $("#formatcetak_container").show();
                     // Reset value COA ke kosong
                     formLedger.find("#kode_akun_dari").val("").trigger('change');
                     formLedger.find("#kode_akun_sampai").val("").trigger('change');
+                    $("#row_periode").show();
+                    $("#row_tahun").hide();
+                } else if (formatlaporan == '4' || formatlaporan == '5') {
+                    $("#coa").hide();
+                    $("#formatcetak_container").hide();
+                    $("#row_periode").hide();
+                    $("#row_tahun").show();
+                     
+                    formLedger.find("#kode_akun_dari").val("").trigger('change');
+                    formLedger.find("#kode_akun_sampai").val("").trigger('change');
                 } else {
                     $("#coa").hide();
                     $("#formatcetak_container").hide();
+                    $("#row_periode").show();
+                    $("#row_tahun").hide();
                 }
             }
 
@@ -131,6 +164,7 @@
                 const formatlaporan = formLedger.find("#formatlaporan").val();
                 const dari = formLedger.find("#dari").val();
                 const sampai = formLedger.find("#sampai").val();
+                const tahun = formLedger.find("#tahun").val();
                 const start = new Date(dari);
                 const end = new Date(sampai);
                 if (formatlaporan == "") {
@@ -144,39 +178,56 @@
                         },
                     });
                     return false;
-                } else if (dari == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Periode Dari Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            formLedger.find("#dari").focus();
-                        },
-                    });
-                    return false;
-                } else if (sampai == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Periode Sampai Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            formLedger.find("#sampai").focus();
-                        },
-                    });
-                    return false;
-                } else if (start > end) {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Periode Tidak Valid !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            formLedger.find("#sampai").focus();
-                        },
-                    });
-                    return false;
+                } 
+                
+                if (formatlaporan == '4' || formatlaporan == '5') {
+                    if (tahun == "") {
+                         Swal.fire({
+                            title: "Oops!",
+                            text: 'Tahun Harus Diisi !',
+                            icon: "warning",
+                            showConfirmButton: true,
+                            didClose: (e) => {
+                                formLedger.find("#tahun").focus();
+                            },
+                        });
+                        return false;
+                    }
+                } else {
+                    if (dari == "") {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: 'Periode Dari Harus Diisi !',
+                            icon: "warning",
+                            showConfirmButton: true,
+                            didClose: (e) => {
+                                formLedger.find("#dari").focus();
+                            },
+                        });
+                        return false;
+                    } else if (sampai == "") {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: 'Periode Sampai Harus Diisi !',
+                            icon: "warning",
+                            showConfirmButton: true,
+                            didClose: (e) => {
+                                formLedger.find("#sampai").focus();
+                            },
+                        });
+                        return false;
+                    } else if (start > end) {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: 'Periode Tidak Valid !',
+                            icon: "warning",
+                            showConfirmButton: true,
+                            didClose: (e) => {
+                                formLedger.find("#sampai").focus();
+                            },
+                        });
+                        return false;
+                    }
                 }
             });
 
