@@ -29,12 +29,12 @@
 
                 <form method="GET" class="row g-2 mb-3" autocomplete="off">
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <input type="text" name="no_im_search" value="{{ request('no_im_search') }}"
                             class="form-control" placeholder="No IM">
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <input type="text" name="judul_search" value="{{ request('judul_search') }}"
                             class="form-control" placeholder="Judul Memo">
                     </div>
@@ -65,7 +65,17 @@
                             </option>
                         </select>
                     </div>
-
+                    <div class="col-md-2">
+                        <select name="dept" class="form-select">
+                            <option value="">- Dept -</option>
+                            @foreach ($deptList as $dept)
+                                <option value="{{ $dept->kode_dept }}"
+                                    {{ request('dept') == $dept->kode_dept ? 'selected' : '' }}>
+                                    {{ $dept->nama_dept }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="col-md-2 d-flex gap-1">
                         <button class="btn btn-primary w-100">
                             <i class="ti ti-search"></i>
@@ -142,7 +152,7 @@
                                     <td>
                                         <div class="fw-semibold">{{ $row->kode_dept }}</div>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center" id="dibaca-{{ $row->id }}">
                                         @if ($row->dibaca_pada)
                                             <span class="btn btn-sm btn-success">
                                                 <i class="ti ti-eye"></i>
@@ -327,8 +337,18 @@
         // SHOW
         $(".btnShow").click(function(e) {
             e.preventDefault();
+
             const id = $(this).data('id');
+
+            // buka modal + load konten
             openModal(`/internalmemo/${id}/show`);
+
+            // ubah status dibaca langsung (UI)
+            $('#dibaca-' + id).html(`
+                <span class="btn btn-sm btn-success">
+                    <i class="ti ti-eye"></i>
+                </span>
+            `);
         });
 
         // EDIT

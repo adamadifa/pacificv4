@@ -16,7 +16,9 @@ class InternalMemoController extends Controller
         $user = Auth::user();
         //Selpira, Adam, Jemmy, Jazz, Eiko, Ridwan Nugraha
         $superUser = ['74', '1', '22', '29', '194', '20', '196'];
-
+        $deptList = DB::table('hrd_departemen')
+            ->orderBy('nama_dept')
+            ->get();
         $query = DB::table('internal_memo')
             ->leftJoin('internal_memo_tujuan_dept as td', 'internal_memo.id', '=', 'td.internal_memo_id')
             ->leftJoin('internal_memo_tujuan_cabang as tc', 'internal_memo.id', '=', 'tc.internal_memo_id')
@@ -52,6 +54,10 @@ class InternalMemoController extends Controller
                     $q->whereNull('internal_memo.berlaku_sampai')
                         ->orWhere('internal_memo.berlaku_sampai', '>=', date('Y-m-d'));
                 });
+        }
+
+        if (request('dept')) {
+            $query->where('internal_memo.kode_dept', request('dept'));
         }
 
         if (request('status') === 'nonaktif') {
@@ -106,10 +112,8 @@ class InternalMemoController extends Controller
         $acks = DB::table('internal_memo_ack')
             ->where('user_id', $user->id)
             ->pluck('status', 'internal_memo_id');
-        return view('utilities.internalmemo.index', compact('internalMemos', 'acks'));
+        return view('utilities.internalmemo.index', compact('internalMemos', 'deptList', 'acks'));
     }
-
-
 
 
     public function create()
