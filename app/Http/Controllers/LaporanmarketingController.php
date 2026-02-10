@@ -6815,6 +6815,23 @@ class LaporanmarketingController extends Controller
             
             // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
             if ($request->status_pajak == 1) {
+
+                // Cek Kode Cabang PKP Pelanggan
+                $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
+                if ($pelanggan != null && !empty($pelanggan->kode_cabang_pkp) && $pelanggan->kode_cabang_pkp != NULL) {
+                    $salesman = Salesman::where('kode_cabang', $pelanggan->kode_cabang_pkp)
+                        ->where(function ($query) {
+                            $query->where('nama_salesman', 'LIKE', '%Non Sales%')
+                                ->orWhere('nama_salesman', 'LIKE', '%Nonsales%');
+                        })->first();
+
+                    if ($salesman != null) {
+                        $penjualan->update([
+                            'kode_salesman' => $salesman->kode_salesman
+                        ]);
+                        $penjualan->kode_salesman = $salesman->kode_salesman;
+                    }
+                }
                 // Ambil detail penjualan
                 $details = Detailpenjualan::where('no_faktur', $request->no_faktur)->get();
                 
