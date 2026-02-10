@@ -6815,6 +6815,8 @@ class LaporanmarketingController extends Controller
             
             // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
             if ($request->status_pajak == 1) {
+                
+                $kode_salesman_to_send = $penjualan->kode_salesman;
 
                 // Cek Kode Cabang PKP Pelanggan
                 $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
@@ -6826,10 +6828,7 @@ class LaporanmarketingController extends Controller
                         })->first();
 
                     if ($salesman != null) {
-                        $penjualan->update([
-                            'kode_salesman' => $salesman->kode_salesman
-                        ]);
-                        $penjualan->kode_salesman = $salesman->kode_salesman;
+                        $kode_salesman_to_send = $salesman->kode_salesman;
                     }
                 }
                 // Ambil detail penjualan
@@ -6847,7 +6846,7 @@ class LaporanmarketingController extends Controller
                     'no_faktur' => $penjualan->no_faktur,
                     'tanggal' => $penjualan->tanggal,
                     'kode_pelanggan' => $penjualan->kode_pelanggan,
-                    'kode_salesman' => $penjualan->kode_salesman,
+                    'kode_salesman' => $kode_salesman_to_send,
                     'kode_akun' => $penjualan->kode_akun ?? '1-1401',
                     'kode_akun_potongan' => $penjualan->kode_akun_potongan ?? '4-2201',
                     'kode_akun_penyesuaian' => $penjualan->kode_akun_penyesuaian ?? '4-2202',
