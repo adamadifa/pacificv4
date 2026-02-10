@@ -154,7 +154,7 @@
                         @endphp
                         <tr style="background-color: {{ $bgcolor }}; {{ !empty($textcolor) ? 'color: ' . $textcolor . ';' : '' }}">
                             <td>{{ $loop->iteration }}</td>
-                            @if (auth()->user()->hasRole(['super admin', 'admin pajak', 'gm administrasi']))
+                            @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
                                 <td class="center">
                                     <input type="checkbox" class="checkbox-pajak" data-no-faktur="{{ $d->no_faktur }}"
                                         {{ isset($d->status_pajak) && $d->status_pajak == 1 ? 'checked' : '' }}>
@@ -207,7 +207,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="{{ auth()->user()->hasRole(['super admin', 'admin pajak'])? '10': '9' }}">TOTAL</th>
+                        <th colspan="{{ auth()->user()->hasRole(config('global.roles_show_status_pajak'))? '10': '9' }}">TOTAL</th>
                         @foreach ($produk as $p)
                             @php
                                 ${"grandtotal_$p->kode_produk"} = ${"total_$p->kode_produk"} / $p->isi_pcs_dus;
