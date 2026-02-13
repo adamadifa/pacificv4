@@ -7025,6 +7025,7 @@ class LaporanmarketingController extends Controller
 
     public function syncAllPajak(Request $request)
     {
+        
         set_time_limit(0); 
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
