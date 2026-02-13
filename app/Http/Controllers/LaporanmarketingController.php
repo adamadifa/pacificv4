@@ -7187,6 +7187,7 @@ class LaporanmarketingController extends Controller
                      
                      if ($response->successful()) {
                          $result = $response->json();
+                         $debugInfo = $response->json('debug');
                          if (isset($result['summary'])) {
                              $successCount += $result['summary']['success'];
                              $failCount += $result['summary']['failed'];
@@ -7198,7 +7199,11 @@ class LaporanmarketingController extends Controller
                          if (isset($result['results'])) {
                              foreach ($result['results'] as $res) {
                                  if (isset($res['status']) && $res['status'] === 'failed') {
-                                     $errors[] = ($res['no_faktur'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                     $errorMsg = ($res['no_faktur'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                     if (!empty($debugInfo)) {
+                                         $errorMsg .= ' | Debug: ' . json_encode($debugInfo);
+                                     }
+                                     $errors[] = $errorMsg;
                                  }
                              }
                          }
@@ -7208,8 +7213,12 @@ class LaporanmarketingController extends Controller
                          $errorMsg = $response->body();
                          // Try to parse json error
                          $jsonError = $response->json();
+                         $debugInfo = $response->json('debug');
                          if(isset($jsonError['message'])) {
                              $errorMsg = $jsonError['message'];
+                         }
+                         if (!empty($debugInfo)) {
+                             $errorMsg .= ' | Debug: ' . json_encode($debugInfo);
                          }
                          
                          $errors[] = "Batch Failed: " . $errorMsg;
@@ -7232,7 +7241,8 @@ class LaporanmarketingController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => $message
+                'message' => $message,
+                'debug' => $debugInfo ?? null
             ]);
 
         } catch (\Exception $e) {
