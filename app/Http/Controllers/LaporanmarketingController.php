@@ -6817,18 +6817,24 @@ class LaporanmarketingController extends Controller
             if ($request->status_pajak == 1) {
                 
                 $kode_salesman_to_send = $penjualan->kode_salesman;
+                
 
                 // Cek Kode Cabang PKP Pelanggan
                 $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
-                if ($pelanggan != null && !empty($pelanggan->kode_cabang_pkp) && $pelanggan->kode_cabang_pkp != NULL) {
-                    $salesman = Salesman::where('kode_cabang', $pelanggan->kode_cabang_pkp)
-                        ->where(function ($query) {
-                            $query->where('nama_salesman', 'LIKE', '%Non Sales%')
-                                ->orWhere('nama_salesman', 'LIKE', '%Nonsales%');
-                        })->first();
+                $salesmanAsal = Salesman::where('kode_salesman', $penjualan->kode_salesman)->first();
 
-                    if ($salesman != null) {
-                        $kode_salesman_to_send = $salesman->kode_salesman;
+                if ($pelanggan != null && !empty($pelanggan->kode_cabang_pkp) && $pelanggan->kode_cabang_pkp != NULL) {
+                    // Jika kode_cabang_pkp sama dengan cabang asal, jangan ubah salesman
+                    if ($salesmanAsal != null && $pelanggan->kode_cabang_pkp != $salesmanAsal->kode_cabang) {
+                        $salesman = Salesman::where('kode_cabang', $pelanggan->kode_cabang_pkp)
+                            ->where(function ($query) {
+                                $query->where('nama_salesman', 'LIKE', '%Non Sales%')
+                                    ->orWhere('nama_salesman', 'LIKE', '%Nonsales%');
+                            })->first();
+
+                        if ($salesman != null) {
+                            $kode_salesman_to_send = $salesman->kode_salesman;
+                        }
                     }
                 }
                 // Ambil detail penjualan
@@ -7081,15 +7087,20 @@ class LaporanmarketingController extends Controller
                 // Cek Kode Cabang PKP Pelanggan - hanya ubah kode_salesman yang dikirim ke API
                 $kode_salesman_to_send = $penjualan->kode_salesman;
                 $pelangganPkp = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
-                if ($pelangganPkp != null && !empty($pelangganPkp->kode_cabang_pkp) && $pelangganPkp->kode_cabang_pkp != NULL) {
-                    $salesmanNonSales = Salesman::where('kode_cabang', $pelangganPkp->kode_cabang_pkp)
-                        ->where(function ($query) {
-                            $query->where('nama_salesman', 'LIKE', '%Non Sales%')
-                                ->orWhere('nama_salesman', 'LIKE', '%Nonsales%');
-                        })->first();
+                $salesmanAsal = Salesman::where('kode_salesman', $penjualan->kode_salesman)->first();
 
-                    if ($salesmanNonSales != null) {
-                        $kode_salesman_to_send = $salesmanNonSales->kode_salesman;
+                if ($pelangganPkp != null && !empty($pelangganPkp->kode_cabang_pkp) && $pelangganPkp->kode_cabang_pkp != NULL) {
+                     // Jika kode_cabang_pkp sama dengan cabang asal, jangan ubah salesman
+                     if ($salesmanAsal != null && $pelangganPkp->kode_cabang_pkp != $salesmanAsal->kode_cabang) {
+                        $salesmanNonSales = Salesman::where('kode_cabang', $pelangganPkp->kode_cabang_pkp)
+                            ->where(function ($query) {
+                                $query->where('nama_salesman', 'LIKE', '%Non Sales%')
+                                    ->orWhere('nama_salesman', 'LIKE', '%Nonsales%');
+                            })->first();
+
+                        if ($salesmanNonSales != null) {
+                            $kode_salesman_to_send = $salesmanNonSales->kode_salesman;
+                        }
                     }
                 }
 
