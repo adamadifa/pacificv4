@@ -7078,11 +7078,26 @@ class LaporanmarketingController extends Controller
                 $details = Detailpenjualan::where('no_faktur', $penjualan->no_faktur)->get();
                 if ($details->isEmpty()) continue;
 
+                // Cek Kode Cabang PKP Pelanggan - hanya ubah kode_salesman yang dikirim ke API
+                $kode_salesman_to_send = $penjualan->kode_salesman;
+                $pelangganPkp = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
+                if ($pelangganPkp != null && !empty($pelangganPkp->kode_cabang_pkp) && $pelangganPkp->kode_cabang_pkp != NULL) {
+                    $salesmanNonSales = Salesman::where('kode_cabang', $pelangganPkp->kode_cabang_pkp)
+                        ->where(function ($query) {
+                            $query->where('nama_salesman', 'LIKE', '%Non Sales%')
+                                ->orWhere('nama_salesman', 'LIKE', '%Nonsales%');
+                        })->first();
+
+                    if ($salesmanNonSales != null) {
+                        $kode_salesman_to_send = $salesmanNonSales->kode_salesman;
+                    }
+                }
+
                 $data = [
                     'no_faktur' => $penjualan->no_faktur,
                     'tanggal' => $penjualan->tanggal,
                     'kode_pelanggan' => $penjualan->kode_pelanggan,
-                    'kode_salesman' => $penjualan->kode_salesman,
+                    'kode_salesman' => $kode_salesman_to_send,
                     'kode_akun' => $penjualan->kode_akun ?? '1-1401',
                     'kode_akun_potongan' => $penjualan->kode_akun_potongan ?? '4-2201',
                     'kode_akun_penyesuaian' => $penjualan->kode_akun_penyesuaian ?? '4-2202',
