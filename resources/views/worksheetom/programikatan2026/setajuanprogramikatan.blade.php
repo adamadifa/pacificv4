@@ -132,7 +132,7 @@
                                         </a>
                                         
                                         @can('programikatan2026.edit')
-                                            @if ($programikatan->status == 0)
+                                            @if ($programikatan->status == 0 || auth()->user()->hasRole(['super admin', 'direktur']))
                                                 <a href="#" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" class="btnEdit text-primary" data-bs-toggle="tooltip" title="Edit">
                                                     <i class="ti ti-pencil"></i>
                                                 </a>
