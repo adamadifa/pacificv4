@@ -86,6 +86,8 @@
                         <th rowspan="2" style="background-color: #df1b38; color:white;">TOTAL<br>POTONGAN</th>
                         <th rowspan="2" style="background-color: #007b21; color:white;">PENAMBAH</th>
                         <th rowspan="2">JML BERSIH</th>
+                        <th rowspan="2" style="background-color: #1b6fdf; color:white;">TAHAP 1</th>
+                        <th rowspan="2" style="background-color: #8b1bdf; color:white;">TAHAP 2</th>
                     @endif
 
                 </tr>
@@ -207,6 +209,9 @@
                     $grandtotal_all_total_potongan = 0;
                     $grandtotal_all_penambahan = 0;
                     $grandtotal_all_jmlbersih = 0;
+                    $grandtotal_all_tahap1 = 0;
+                    $grandtotal_all_tahap2 = 0;
+                    $umr = 2980336;
 
                 @endphp
                 @foreach ($presensi as $d)
@@ -957,6 +962,14 @@
                                 {{ !empty($jml_penambah) ? formatAngka($jml_penambah) : '' }}</td>
                             <td style="text-align:right; width:2%">
                                 {{ !empty($jmlbersih) ? formatAngka($jmlbersih) : '' }}</td>
+                            @php
+                                $tahap1 = $jmlbersih > $umr ? $umr : $jmlbersih;
+                                $tahap2 = $jmlbersih > $umr ? $jmlbersih - $umr : 0;
+                            @endphp
+                            <td style="text-align:right; width:2%; font-weight:bold;">
+                                {{ $tahap1 > 0 ? formatAngka($tahap1) : '' }}</td>
+                            <td style="text-align:right; width:2%; font-weight:bold;">
+                                {{ $tahap2 > 0 ? formatAngka($tahap2) : '' }}</td>
                         @endif
                     </tr>
 
@@ -1045,6 +1058,10 @@
                         //Jumlah Bersih
                         $grandtotal_all_jmlbersih += $jmlbersih;
 
+                        //Tahap 1 & 2
+                        $grandtotal_all_tahap1 += $tahap1;
+                        $grandtotal_all_tahap2 += $tahap2;
+
                     @endphp
                 @endforeach
             </tbody>
@@ -1096,6 +1113,8 @@
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_total_potongan) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_penambahan) }}</th>
                         <th style="text-align:right;">{{ formatAngka($grandtotal_all_jmlbersih) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_tahap1) }}</th>
+                        <th style="text-align:right;">{{ formatAngka($grandtotal_all_tahap2) }}</th>
                     @else
                         <th colspan="3">TOTAL</th>
 

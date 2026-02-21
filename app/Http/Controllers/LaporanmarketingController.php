@@ -7072,6 +7072,36 @@ class LaporanmarketingController extends Controller
                  return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
             }
 
+            // Pre-Delete: Hapus data lama di server sebelum batch sync
+            $preDeletePayload = [];
+            if (!empty($kode_cabang)) {
+                $preDeletePayload['kode_cabang'] = $kode_cabang;
+            }
+            if (!empty($request->kode_salesman)) {
+                $preDeletePayload['kode_salesman'] = $request->kode_salesman;
+            }
+            if (!empty($request->dari)) {
+                $preDeletePayload['dari'] = $request->dari;
+            }
+            if (!empty($request->sampai)) {
+                $preDeletePayload['sampai'] = $request->sampai;
+            }
+
+            if (!empty($preDeletePayload)) {
+                $preDeleteResponse = Http::timeout(60)->post($baseUrl . '/penjualan/pre-delete', $preDeletePayload);
+                
+                if (!$preDeleteResponse->successful()) {
+                    $preDeleteError = $preDeleteResponse->json('message') ?? $preDeleteResponse->body();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Pre-delete gagal: ' . $preDeleteError,
+                        'debug' => $preDeleteResponse->json('debug')
+                    ], 500);
+                }
+
+                Log::info('Pre-delete sync berhasil', $preDeleteResponse->json());
+            }
+
             $successCount = 0;
             $failCount = 0;
             $errors = [];
