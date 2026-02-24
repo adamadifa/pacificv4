@@ -963,8 +963,13 @@
                             <td style="text-align:right; width:2%">
                                 {{ !empty($jmlbersih) ? formatAngka($jmlbersih) : '' }}</td>
                             @php
-                                $tahap1 = $jmlbersih > $umr ? $umr : $jmlbersih;
-                                $tahap2 = $jmlbersih > $umr ? $jmlbersih - $umr : 0;
+                                if ($d['kode_cabang'] == 'PST') {
+                                    $tahap1 = $jmlbersih > $umr ? $umr : $jmlbersih;
+                                    $tahap2 = $jmlbersih > $umr ? $jmlbersih - $umr : 0;
+                                } else {
+                                    $tahap1 = $jmlbersih;
+                                    $tahap2 = 0;
+                                }
                             @endphp
                             <td style="text-align:right; width:2%; font-weight:bold;">
                                 {{ $tahap1 > 0 ? formatAngka($tahap1) : '' }}</td>
