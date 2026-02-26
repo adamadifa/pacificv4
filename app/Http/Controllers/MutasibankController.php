@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bank;
+use App\Models\Cabang;
 use App\Models\Coa;
 use App\Models\Coacabang;
 use App\Models\Ledger;
 use App\Models\Saldoawalledger;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +41,10 @@ class MutasibankController extends Controller
         } else {
             $data['mutasi'] = null;
         }
+
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['roles_show_cabang'] = config('global.roles_show_cabang');
 
         return view('keuangan.mutasibank.index', $data);
     }

@@ -1811,7 +1811,12 @@ class LaporanaccountingController extends Controller
                 // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
                 header("Content-Disposition: attachment; filename=Buku Besar.xls");
             }
-            return view('accounting.laporan.lk.bukubesar_cetak', $data);
+            
+            if ($request->jenis_laporan == '2') {
+                return view('accounting.laporan.lk.bukubesar_rekap_cetak', $data);
+            } else {
+                return view('accounting.laporan.lk.bukubesar_cetak', $data);
+            }
         } else if ($request->formatlaporan == '2' || $request->formatlaporan == '4' || $request->formatlaporan == '3' || $request->formatlaporan == '5') {
 
 

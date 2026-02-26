@@ -28,7 +28,17 @@ class Ledger extends Model
         $query->leftJoin('keuangan_ledger_costratio', 'keuangan_ledger.no_bukti', '=', 'keuangan_ledger_costratio.no_bukti');
         if (empty($no_bukti)) {
             $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
-            $query->where('keuangan_ledger.kode_bank', $request->kode_bank_search);
+            if (!empty($request->kode_bank_search)) {
+                $query->where('keuangan_ledger.kode_bank', $request->kode_bank_search);
+            }
+
+            if (!empty($request->no_bukti_search)) {
+                $query->where('keuangan_ledger.no_bukti', 'like', '%' . $request->no_bukti_search . '%');
+            }
+
+            if (!empty($request->kode_cabang_search)) {
+                $query->where('bank.kode_cabang', $request->kode_cabang_search);
+            }
         } else {
             $query->where('keuangan_ledger.no_bukti', $no_bukti);
         }

@@ -75,6 +75,7 @@ class KaryawanController extends Controller
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
         $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
         if (!$user->hasRole($roles_access_all_karyawan)) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);

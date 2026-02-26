@@ -125,10 +125,12 @@
 
                                             //Jadwal SPG
                                             //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
-                                            $jam_mulai = in_array($d->kode_jabatan, ['J22', 'J23'])
+                                            $is_spg_spm = in_array($d->kode_jabatan, ['J22', 'J23']) || (in_array($d->kode_jabatan, ['J31', 'J32']) && $tanggal >= '2026-02-21');
+                                            
+                                            $jam_mulai = $is_spg_spm
                                                 ? $jam_in
                                                 : $j_mulai;
-                                            $jam_selesai = in_array($d->kode_jabatan, ['J22', 'J23'])
+                                            $jam_selesai = $is_spg_spm
                                                 ? $jam_out
                                                 : $j_selesai;
 

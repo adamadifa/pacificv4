@@ -85,9 +85,10 @@
                                             $j_mulai = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_mulai));
                                             $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
 
-                                            //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
-                                            $jam_mulai = $d->kode_jabatan == 'J22' ? $d->jam_in : $j_mulai;
-                                            $jam_selesai = $d->kode_jabatan == 'J22' ? $d->jam_out : $j_selesai;
+                                            //Jika SPG/SPB/SPM Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
+                                            $is_spg_spm = in_array($d->kode_jabatan, ['J22', 'J23']) || (in_array($d->kode_jabatan, ['J31', 'J32']) && $d->tanggal >= '2026-02-21');
+                                            $jam_mulai = $is_spg_spm ? $jam_in : $j_mulai;
+                                            $jam_selesai = $is_spg_spm ? $jam_out : $j_selesai;
 
                                             // Jam Istirahat
                                             if ($d->istirahat == '1') {
