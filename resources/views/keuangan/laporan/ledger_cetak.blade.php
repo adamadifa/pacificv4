@@ -249,7 +249,7 @@
                     },
                     success: function(response) {
                         btn.prop('disabled', false).text(originalText);
-                        alert(response.message);
+                        //alert(response.message);
                     },
                     error: function(xhr) {
                          btn.prop('disabled', false).text(originalText);
