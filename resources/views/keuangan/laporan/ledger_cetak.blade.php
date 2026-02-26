@@ -204,7 +204,7 @@
                             }
 
                             // Tampilkan pesan sukses
-                            alert(response.message);
+                            //alert(response.message);
                             console.log('Status pajak ledger berhasil diupdate');
                         } else {
                             // Revert checkbox jika gagal
