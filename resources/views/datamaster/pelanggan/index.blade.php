@@ -151,108 +151,101 @@
                         </form>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th class="text-center" style="width: 1%">No.</th>
-                                        <th>Kode</th>
-                                        <th>Nama Pelanggan</th>
-                                        <th>Wilayah/Rute</th>
-                                        <th>Limit</th>
-                                        <th>Foto</th>
-                                        <th>Salesman</th>
-                                        <th>Cabang</th>
-                                        <th>Tgl Register</th>
-                                        <th>Status</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($pelanggan as $d)
-                                        <tr>
-                                            <td class="text-center">
-                                                {{ $loop->iteration + $pelanggan->firstItem() - 1 }}
-                                            </td>
-                                            <td>{{ $d->kode_pelanggan }}</td>
-                                            <td>{{ textCamelCase($d->nama_pelanggan) }}</td>
-                                            <td>{{ textCamelCase($d->nama_wilayah) }}</td>
-                                            <td class="text-end">
+                <div class="row" id="pelanggan-list">
+                    @foreach ($pelanggan as $d)
+                        <div class="col-12 mb-3">
+                            <div class="card shadow-none border {{ $d->status_aktif_pelanggan == '0' ? 'bg-label-danger border-danger' : '' }}">
+                                <div class="card-body p-2">
+                                    <div class="row align-items-center">
+                                        <!-- Bagian 1: Identitas (Left) -->
+                                        <div class="col-md-5 border-end">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-lg">
+                                                        @if (!empty($d->foto))
+                                                            @if (Storage::disk('public')->exists('/pelanggan/' . $d->foto))
+                                                                <img src="{{ getfotoPelanggan($d->foto) }}" alt="Avatar" class="rounded-circle">
+                                                            @else
+                                                                <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="Avatar" class="rounded-circle">
+                                                            @endif
+                                                        @else
+                                                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="Avatar" class="rounded-circle">
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">
+                                                        {!! textCamelCase($d->nama_pelanggan) !!}
+                                                        <span class="text-muted" style="font-size: 0.75rem;">({{ $d->kode_pelanggan }})</span>
+                                                    </div>
+                                                    <div class="d-flex flex-wrap gap-1">
+                                                        <span class="badge border text-primary bg-label-primary" style="font-size: 0.65rem;">{{ textCamelCase($d->nama_wilayah) }}</span>
+                                                        <span class="badge border text-info bg-label-info" style="font-size: 0.65rem;">{{ textCamelCase($d->nama_salesman) }}</span>
+                                                        <span class="badge border text-warning bg-label-warning" style="font-size: 0.65rem;">{{ $d->kode_cabang }}</span>
+                                                        @if (!empty($d->klasifikasi))
+                                                            <span class="badge border text-dark bg-label-secondary" style="font-size: 0.65rem;">{{ $d->klasifikasi }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Bagian 2: Info (Center) -->
+                                        <div class="col-md-3 border-end text-center d-flex flex-column align-items-center justify-content-center">
+                                            <div class="text-muted" style="font-size: 0.75rem;">Reg: {{ date('d-m-Y', strtotime($d->tanggal_register)) }}</div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.85rem;">
+                                                Lmt:
                                                 @if (empty($d->limit_pelanggan))
-                                                    <i class="ti ti-clipboard-x text-danger"></i>
+                                                    <span class="text-danger">None</span>
                                                 @else
                                                     {{ formatRupiah($d->limit_pelanggan) }}
                                                 @endif
-                                            </td>
-                                            <td>
-                                                @if (!empty($d->foto))
-                                                    @if (Storage::disk('public')->exists('/pelanggan/' . $d->foto))
-                                                        <div class="avatar avatar-xs me-2">
-                                                            <img src="{{ getfotoPelanggan($d->foto) }}" alt="" class="rounded-circle">
-                                                        </div>
-                                                    @else
-                                                        <div class="avatar avatar-xs me-2">
-                                                            <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt=""
-                                                                class="rounded-circle">
-                                                        </div>
-                                                    @endif
-                                                @else
-                                                    <div class="avatar avatar-xs me-2">
-                                                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt=""
-                                                            class="rounded-circle">
-                                                    </div>
-                                                @endif
+                                            </div>
+                                        </div>
 
-                                            </td>
-                                            <td>{{ textCamelCase($d->nama_salesman) }}</td>
-                                            <td>{{ $d->kode_cabang }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($d->tanggal_register)) }}</td>
-                                            <td>
-                                                @if ($d->status_aktif_pelanggan == 1)
-                                                    <span class="badge bg-success">Aktif</span>
-                                                @else
-                                                    <span class="badge bg-danger">Nonaktif</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="d-flex">
+                                        <!-- Bagian 3: Status -->
+                                        <div class="col-md-2 border-end text-center d-flex flex-column align-items-center justify-content-center">
+                                            @if ($d->status_aktif_pelanggan == 1)
+                                                <span class="badge bg-success px-3">Aktif</span>
+                                            @else
+                                                <span class="badge bg-danger px-3">Non-Aktif</span>
+                                            @endif
+                                        </div>
+
+                                        <!-- Bagian 4: Actions (Right) -->
+                                        <div class="col-md-2">
+                                            <div class="d-flex justify-content-end align-items-center h-100">
+                                                <div class="btn-group">
                                                     @can('pelanggan.edit')
-                                                        <div>
-                                                            <a href="#" class="me-2 editPelanggan"
-                                                                kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}">
-                                                                <i class="ti ti-edit text-success"></i>
-                                                            </a>
-                                                        </div>
+                                                        <a href="#" class="btn btn-icon btn-outline-success editPelanggan" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" title="Edit">
+                                                            <i class="ti ti-edit text-success"></i>
+                                                        </a>
                                                     @endcan
                                                     @can('pelanggan.show')
-                                                        <div>
-                                                            <a href="{{ route('pelanggan.show', Crypt::encrypt($d->kode_pelanggan)) }}" class="me-2">
-                                                                <i class="ti ti-file-description text-info"></i>
-                                                            </a>
-                                                        </div>
+                                                        <a href="{{ route('pelanggan.show', Crypt::encrypt($d->kode_pelanggan)) }}" class="btn btn-icon btn-outline-info" style="margin-left: -1px; border-radius: 0 !important;" title="Detail">
+                                                            <i class="ti ti-file-description text-info"></i>
+                                                        </a>
                                                     @endcan
                                                     @can('pelanggan.delete')
-                                                        <div>
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('pelanggan.delete', Crypt::encrypt($d->kode_pelanggan)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        </div>
+                                                        <form method="POST" name="deleteform" class="deleteform m-0" style="margin-left: -1px;" action="{{ route('pelanggan.delete', Crypt::encrypt($d->kode_pelanggan)) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-icon btn-outline-danger delete-confirm" style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;" title="Delete">
+                                                                <i class="ti ti-trash text-danger"></i>
+                                                            </button>
+                                                        </form>
                                                     @endcan
-
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    @endforeach
+                </div>
+                <div class="row">
+                    <div class="col-12">
                         <div style="float: right;">
                             {{ $pelanggan->links() }}
                         </div>

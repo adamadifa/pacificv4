@@ -3,87 +3,93 @@
 
 @section('content')
 @section('navigasi')
-    <span>Kategori Produk</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Kategori Produk</h4>
+            <small class="text-muted">Mengelola pengelompokan kategori produk.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Data Master</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-category me-1"></i>Kategori Produk</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
 <div class="row">
-    <div class="col-lg-6 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                @can('kategoriproduk.create')
-                    <a href="#" class="btn btn-primary" id="btncreateKategoriproduk"><i class="fa fa-plus me-2"></i>
-                        Tambah Kategori Produk
-                    </a>
-                @endcan
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="{{ route('kategoriproduk.index') }}">
-                            <div class="row">
-                                <div class="col-lg-10 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Kategori Produk"
-                                        value="{{ Request('nama_kategori_produk') }}" name="nama_kategori_produk"
-                                        icon="ti ti-search" />
-                                </div>
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i
-                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
-                                </div>
-                            </div>
-
-                        </form>
+    <div class="col-lg-6 col-md-12">
+        {{-- Filter Section (No Card) --}}
+        <form action="{{ route('kategoriproduk.index') }}">
+            <div class="row g-2 mb-3 align-items-end">
+                <div class="col-lg-10 col-md-10 col-sm-12">
+                    <x-input-with-icon label="Cari Kategori Produk" value="{{ Request('nama_kategori_produk') }}" name="nama_kategori_produk"
+                        icon="ti ti-search" />
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Kode</th>
-                                        <th>Nama Kategori</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($kategoriproduk as $d)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $d->kode_kategori_produk }}</td>
-                                            <td>{{ $d->nama_kategori_produk }}</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    @can('kategoriproduk.edit')
-                                                        <div>
-                                                            <a href="#" class="me-2 editKategoriproduk"
-                                                                kode_kategori_produk="{{ Crypt::encrypt($d->kode_kategori_produk) }}">
-                                                                <i class="ti ti-edit text-success"></i>
-                                                            </a>
-                                                        </div>
-                                                    @endcan
-                                                    @can('kategoriproduk.delete')
-                                                        <div>
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('kategoriproduk.delete', Crypt::encrypt($d->kode_kategori_produk)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        </div>
-                                                    @endcan
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="float: right;">
-                            {{-- {{ $produk->links() }} --}}
-                        </div>
-                    </div>
+            </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-category me-2"></i>Data Kategori Produk</h6>
+                    @can('kategoriproduk.create')
+                        <a href="#" class="btn btn-primary btn-sm" id="btncreateKategoriproduk"><i class="ti ti-plus me-1"></i> Tambah</a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead class="text-white">
+                        <tr style="background-color: #002e65;">
+                            <th class="text-white">No.</th>
+                            <th class="text-white">Kode</th>
+                            <th class="text-white">Nama Kategori</th>
+                            <th class="text-white text-center">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($kategoriproduk as $d)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td><span class="fw-semibold">{{ $d->kode_kategori_produk }}</span></td>
+                                <td>{{ $d->nama_kategori_produk }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('kategoriproduk.edit')
+                                            <a href="#" class="editKategoriproduk text-primary" data-bs-toggle="tooltip" title="Edit"
+                                                kode_kategori_produk="{{ Crypt::encrypt($d->kode_kategori_produk) }}">
+                                                <i class="ti ti-pencil"></i>
+                                            </a>
+                                        @endcan
+                                        @can('kategoriproduk.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                action="{{ route('kategoriproduk.delete', Crypt::encrypt($d->kode_kategori_produk)) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0"
+                                                    data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{-- {{ $kategoriproduk->links() }} --}}
                 </div>
             </div>
         </div>

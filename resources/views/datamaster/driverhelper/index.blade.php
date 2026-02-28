@@ -3,100 +3,107 @@
 
 @section('content')
 @section('navigasi')
-   <span>Driver Helper</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Driver Helper</h4>
+            <small class="text-muted">Mengelola daftar driver dan helper.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Data Master</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-users me-1"></i>Driver Helper</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
 <div class="row">
-   <div class="col-lg-6 col-sm-12 col-xs-12">
-      <div class="card">
-         <div class="card-header">
-            @can('driverhelper.create')
-               <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Tambah Driver Helper</a>
-            @endcan
-         </div>
-         <div class="card-body">
-            <div class="row">
-               <div class="col-12">
-                  <form action="{{ route('driverhelper.index') }}">
-                     <div class="row">
-                        <div class="col-lg-6 col-sm-12 col-md-12">
-                           <x-input-with-icon label="Cari Driver Helper" value="{{ Request('nama_driver_helper') }}"
-                              name="nama_driver_helper" icon="ti ti-search" />
-                        </div>
-                        @hasanyrole($roles_show_cabang)
-                           <div class="col-lg-4 col-sm-12 col-md-12">
-                              <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                 textShow="nama_cabang" select2="select2Kodecabangsearch" selected="{{ Request('kode_cabang_search') }}" upperCase="true" />
-                           </div>
-                        @endhasanyrole
-                        <div class="col-lg-2 col-sm-12 col-md-12">
-                           <button class="btn btn-primary"><i
-                                 class="ti ti-icons ti-search me-1"></i>Cari</button>
-                        </div>
-                     </div>
-                  </form>
-               </div>
+    <div class="col-lg-6 col-md-12">
+        {{-- Filter Section (No Card) --}}
+        <form action="{{ route('driverhelper.index') }}">
+            <div class="row g-2 mb-3 align-items-end">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Cari Nama" value="{{ Request('nama_driver_helper') }}" name="nama_driver_helper"
+                        icon="ti ti-search" />
+                </div>
+                @hasanyrole($roles_show_cabang)
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                            select2="select2Kodecabangsearch" selected="{{ Request('kode_cabang_search') }}" upperCase="true" />
+                    </div>
+                @endhasanyrole
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-               <div class="col-12">
-                  <div class="table-responsive mb-2">
-                     <table class="table">
-                        <thead class="table-dark">
-                           <tr>
-                              <th>No.</th>
-                              <th>Kode</th>
-                              <th>Nama Driver / Helper</th>
-                              <th>Cabang</th>
-                              <th>#</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           @foreach ($driverhelper as $d)
-                              <tr>
-                                 <td> {{ $loop->iteration }}</td>
-                                 <td>{{ $d->kode_driver_helper }}</td>
-                                 <td>{{ $d->nama_driver_helper }}</td>
-                                 <td>{{ textUpperCase($d->nama_cabang) }}</td>
-                                 <td>
-                                    <div class="d-flex">
-                                       @can('driverhelper.edit')
-                                          <div>
-                                             <a href="#" class="me-2 btnEdit"
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Data Driver Helper</h6>
+                    @can('driverhelper.create')
+                        <a href="#" class="btn btn-primary btn-sm" id="btnCreate"><i class="ti ti-plus me-1"></i> Tambah</a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead class="text-white">
+                        <tr style="background-color: #002e65;">
+                            <th class="text-white">No.</th>
+                            <th class="text-white">Kode</th>
+                            <th class="text-white">Nama Driver / Helper</th>
+                            <th class="text-white">Cabang</th>
+                            <th class="text-white text-center">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($driverhelper as $d)
+                            <tr>
+                                <td> {{ $loop->iteration + $driverhelper->firstItem() - 1 }}</td>
+                                <td><span class="fw-semibold">{{ $d->kode_driver_helper }}</span></td>
+                                <td>{{ $d->nama_driver_helper }}</td>
+                                <td>{{ textUpperCase($d->nama_cabang) }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('driverhelper.edit')
+                                            <a href="#" class="btnEdit text-primary" data-bs-toggle="tooltip" title="Edit"
                                                 kode_driver_helper="{{ Crypt::encrypt($d->kode_driver_helper) }}">
-                                                <i class="ti ti-edit text-success"></i>
-                                             </a>
-                                          </div>
-                                       @endcan
-                                       @can('driverhelper.delete')
-                                          <div>
-                                             <form method="POST" name="deleteform" class="deleteform"
+                                                <i class="ti ti-pencil"></i>
+                                            </a>
+                                        @endcan
+                                        @can('driverhelper.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
                                                 action="{{ route('driverhelper.delete', Crypt::encrypt($d->kode_driver_helper)) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <a href="#" class="delete-confirm ml-1">
-                                                   <i class="ti ti-trash text-danger"></i>
-                                                </a>
-                                             </form>
-                                          </div>
-                                       @endcan
-
+                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0"
+                                                    data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
-                                 </td>
-                              </tr>
-                           @endforeach
-                        </tbody>
-                     </table>
-                  </div>
-                  <div style="float: right;">
-                     {{ $driverhelper->links() }}
-                  </div>
-               </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-         </div>
-      </div>
-   </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $driverhelper->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
-
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}

@@ -3,130 +3,132 @@
 
 @section('content')
 @section('navigasi')
-    <span>Kendaraan</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Kendaraan</h4>
+            <small class="text-muted">Mengelola armada kendaraan perusahaan.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Data Master</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-truck me-1"></i>Kendaraan</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
 <div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                @can('kendaraan.create')
-                    <a href="#" class="btn btn-primary" id="btncreateKendaraan"><i class="fa fa-plus me-2"></i> Tambah
-                        Kendaraan</a>
-                @endcan
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="{{ route('kendaraan.index') }}">
-                            <div class="row">
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari No. Polisi" value="{{ Request('no_polisi') }}"
-                                        name="no_polisi" icon="ti ti-barcode" />
-                                </div>
-                                @hasanyrole($roles_show_cabang)
-                                    <div class="col-lg-4 col-sm-12 col-md-12">
-                                        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
-                                    </div>
-                                @endhasanyrole
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i
-                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
-                                </div>
-                            </div>
-
-                        </form>
+    <div class="col-lg-12 col-md-12">
+        {{-- Filter Section (No Card) --}}
+        <form action="{{ route('kendaraan.index') }}">
+            <div class="row g-2 mb-3 align-items-end">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Cari No. Polisi" value="{{ Request('no_polisi') }}" name="no_polisi" icon="ti ti-barcode" />
+                </div>
+                @hasanyrole($roles_show_cabang)
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                            selected="{{ Request('kode_cabang') }}" select2="select2Kodecabang" />
+                    </div>
+                @endhasanyrole
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Kode</th>
-                                        <th>No. Polisi</th>
-                                        <th>Merk</th>
-                                        <th>Type</th>
-                                        <th>Tahun</th>
-                                        <th>KIR</th>
-                                        <th>Pajak 1 Th</th>
-                                        <th>Pajak 5 Th</th>
-                                        <th>Cabang</th>
-                                        <th>Kapasitas</th>
-                                        <th>Status</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($kendaraan as $d)
-                                        <tr>
-                                            <td>{{ $loop->iteration + $kendaraan->firstItem() - 1 }}</td>
-                                            <td>{{ $d->kode_kendaraan }}</td>
-                                            <td>{{ $d->no_polisi }}</td>
-                                            <td>{{ $d->merek }}</td>
-                                            <td>{{ $d->tipe_kendaraan }}</td>
+            </div>
+        </form>
 
-                                            <td>{{ $d->tahun_pembuatan }}</td>
-                                            <td>{{ !empty($d->jatuhtempo_kir) ? date('d-m-Y', strtotime($d->jatuhtempo_kir)) : '' }}
-                                            </td>
-                                            <td>{{ !empty($d->jatuhtempo_pajak_satutahun) ? date('d-m-Y', strtotime($d->jatuhtempo_pajak_satutahun)) : '' }}
-                                            </td>
-                                            <td>{{ !empty($d->jatuhtempo_pajak_limatahun) ? date('d-m-Y', strtotime($d->jatuhtempo_pajak_limatahun)) : '' }}
-                                            </td>
-                                            <td>{{ $d->kode_cabang }}</td>
-                                            <td>{{ formatRupiah($d->kapasitas) }}</td>
-                                            <td>
-                                                @if ($d->status_aktif_kendaraan == 1)
-                                                    <span class="badge bg-success">Aktif</span>
-                                                @else
-                                                    <span class="badge bg-danger">Nonaktif</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    @can('kendaraan.edit')
-                                                        <div>
-                                                            <a href="#" class="me-2 editKendaraan"
-                                                                kode_kendaraan="{{ Crypt::encrypt($d->kode_kendaraan) }}">
-                                                                <i class="ti ti-edit text-success"></i>
-                                                            </a>
-                                                        </div>
-                                                    @endcan
-                                                    @can('kendaraan.show')
-                                                        <div>
-                                                            <a href="{{ route('kendaraan.show', Crypt::encrypt($d->kode_kendaraan)) }}"
-                                                                class="me-2">
-                                                                <i class="ti ti-file-description text-info"></i>
-                                                            </a>
-                                                        </div>
-                                                    @endcan
-                                                    @can('kendaraan.delete')
-                                                        <div>
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('kendaraan.delete', Crypt::encrypt($d->kode_kendaraan)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        </div>
-                                                    @endcan
-
-
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="float: right;">
-                            {{ $kendaraan->links() }}
-                        </div>
-                    </div>
+        {{-- Data Card --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-truck me-2"></i>Data Kendaraan</h6>
+                    @can('kendaraan.create')
+                        <a href="#" class="btn btn-primary btn-sm" id="btncreateKendaraan"><i class="ti ti-plus me-1"></i> Tambah</a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead class="text-white">
+                        <tr style="background-color: #002e65;">
+                            <th class="text-white">No.</th>
+                            <th class="text-white">Kode</th>
+                            <th class="text-white">No. Polisi</th>
+                            <th class="text-white">Merk</th>
+                            <th class="text-white">Type</th>
+                            <th class="text-white">Tahun</th>
+                            <th class="text-white text-center">KIR</th>
+                            <th class="text-white text-center">Pajak 1 Th</th>
+                            <th class="text-white text-center">Pajak 5 Th</th>
+                            <th class="text-white">Cabang</th>
+                            <th class="text-white text-end">Kapasitas</th>
+                            <th class="text-white text-center">Status</th>
+                            <th class="text-white text-center">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($kendaraan as $d)
+                            <tr>
+                                <td>{{ $loop->iteration + $kendaraan->firstItem() - 1 }}</td>
+                                <td><span class="fw-semibold">{{ $d->kode_kendaraan }}</span></td>
+                                <td>{{ $d->no_polisi }}</td>
+                                <td>{{ $d->merek }}</td>
+                                <td>{{ $d->tipe_kendaraan }}</td>
+                                <td>{{ $d->tahun_pembuatan }}</td>
+                                <td class="text-center">{{ !empty($d->jatuhtempo_kir) ? date('d-m-Y', strtotime($d->jatuhtempo_kir)) : '' }}</td>
+                                <td class="text-center">
+                                    {{ !empty($d->jatuhtempo_pajak_satutahun) ? date('d-m-Y', strtotime($d->jatuhtempo_pajak_satutahun)) : '' }}
+                                </td>
+                                <td class="text-center">
+                                    {{ !empty($d->jatuhtempo_pajak_limatahun) ? date('d-m-Y', strtotime($d->jatuhtempo_pajak_limatahun)) : '' }}
+                                </td>
+                                <td>{{ $d->kode_cabang }}</td>
+                                <td class="text-end">{{ formatRupiah($d->kapasitas) }}</td>
+                                <td class="text-center">
+                                    @if ($d->status_aktif_kendaraan == 1)
+                                        <span class="badge bg-success">Aktif</span>
+                                    @else
+                                        <span class="badge bg-danger">Nonaktif</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('kendaraan.edit')
+                                            <a href="#" class="editKendaraan text-primary" data-bs-toggle="tooltip" title="Edit"
+                                                kode_kendaraan="{{ Crypt::encrypt($d->kode_kendaraan) }}">
+                                                <i class="ti ti-pencil"></i>
+                                            </a>
+                                        @endcan
+                                        @can('kendaraan.show')
+                                            <a href="{{ route('kendaraan.show', Crypt::encrypt($d->kode_kendaraan)) }}"
+                                                text-info" data-bs-toggle="tooltip" title="Detail">
+                                                <i class="ti ti-file-description"></i>
+                                            </a>
+                                        @endcan
+                                        @can('kendaraan.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                action="{{ route('kendaraan.delete', Crypt::encrypt($d->kode_kendaraan)) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0"
+                                                    data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $kendaraan->links() }}
                 </div>
             </div>
         </div>

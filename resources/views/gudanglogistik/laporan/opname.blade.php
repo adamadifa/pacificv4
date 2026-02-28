@@ -1,7 +1,7 @@
 <form action="{{ route('laporangudanglogistik.cetakpersediaanopname') }}" method="POST" id="frmPersediaanopname" target="_blank">
     @csrf
     <div class="row">
-        <div class="col">
+        <div class="col-lg-6 col-md-12 col-sm-12">
             <div class="form-group mb-3">
                 <select name="bulan" id="bulan" class="form-select">
                     <option value="">Bulan</option>
@@ -11,10 +11,7 @@
                 </select>
             </div>
         </div>
-
-    </div>
-    <div class="row">
-        <div class="co">
+        <div class="col-lg-6 col-md-12 col-sm-12">
             <div class="form-group mb-3">
                 <select name="tahun" id="tahun" class="form-select">
                     <option value="">Tahun</option>
@@ -39,7 +36,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-lg-10 col-md-12 col-sm-12">
             <button type="submit" class="btn btn-primary w-100">
                 <i class="ti ti-printer me-1"></i> Cetak
@@ -52,38 +49,3 @@
         </div>
     </div>
 </form>
-@push('myscript')
-    <script>
-        $(function() {
-            $("#frmPersediaanopname").submit(function() {
-                const bulan = $(this).find("#bulan").val();
-                const tahun = $(this).find("#tahun").val();
-
-
-                if (bulan == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Bulan Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#bulan").focus();
-                        },
-                    });
-                    return false;
-                } else if (tahun == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Tahun Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#tahun").focus();
-                        },
-                    });
-                    return false;
-                }
-            });
-        });
-    </script>
-@endpush

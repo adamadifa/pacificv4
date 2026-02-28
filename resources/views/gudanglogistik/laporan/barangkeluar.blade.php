@@ -39,7 +39,6 @@
                     <option value="">Semua Barang</option>
                 </select>
             </div>
-
         </div>
     </div>
 
@@ -52,7 +51,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-lg-10 col-md-12 col-sm-12">
             <button type="submit" name="submitButton" class="btn btn-primary w-100" id="submitButton">
                 <i class="ti ti-printer me-1"></i> Cetak
@@ -71,9 +70,7 @@
             const form = $("#frmLaporanbarangkeluar");
 
             function getbarangbykategori() {
-
                 var kode_kategori = form.find("#kode_kategori").val();
-                //alert(selected);
                 $.ajax({
                     type: 'POST',
                     url: '/barangpembelian/getbarangbykategori',
@@ -83,24 +80,20 @@
                     },
                     cache: false,
                     success: function(respond) {
-                        console.log(respond);
                         form.find("#kode_barang_keluar").html(respond);
                     }
                 });
             }
 
-
             form.find("#kode_kategori").change(function() {
                 getbarangbykategori();
             });
-
 
             const select2Kodebarangkeluar = $('.select2Kodebarangkeluar');
             if (select2Kodebarangkeluar.length) {
                 select2Kodebarangkeluar.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
-                        // placeholder: 'Semua Barang',
                         dropdownParent: $this.parent(),
                         placeholder: 'Semua Barang',
                         allowClear: true,
@@ -113,55 +106,12 @@
                 Select2Kodecabang.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
-                        // placeholder: 'Semua Barang',
                         dropdownParent: $this.parent(),
                         placeholder: 'Semua Cabang',
                         allowClear: true,
                     });
                 });
             }
-
-
-            form.submit(function() {
-                const dari = $(this).find("#dari").val();
-                const sampai = $(this).find("#sampai").val();
-                var start = new Date(dari);
-                var end = new Date(sampai);
-                if (dari == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Periode Dari Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#dari").focus();
-                        },
-                    });
-                    return false;
-                } else if (sampai == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Periode Sampai Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#sampai").focus();
-                        },
-                    });
-                    return false;
-                } else if (start.getTime() > end.getTime()) {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Periode Tidak Valid !, Periode Sampai Harus Lebih Akhir dari Periode Dari',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            $(this).find("#sampai").focus();
-                        },
-                    });
-                    return false;
-                }
-            });
         });
     </script>
 @endpush

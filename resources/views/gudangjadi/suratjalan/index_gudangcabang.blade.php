@@ -3,35 +3,49 @@
 
 @section('content')
 @section('navigasi')
-   <span>Surat Jalan</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Surat Jalan Cabang</h4>
+            <small class="text-muted">Penerimaan surat jalan dari gudang pusat ke cabang.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Gudang Jadi</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-truck me-1"></i>Surat Jalan</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
-   <div class="col-lg-10 col-sm-12 col-xs-12">
-      @can('suratjalan.approve')
-         <div class="alert alert-info alert-dismissible d-flex align-items-baseline" role="alert">
-            <span class="alert-icon alert-icon-lg text-info me-2">
-               <i class="ti ti-info-circle ti-sm"></i>
-            </span>
-            <div class="d-flex flex-column ps-1">
-               <h5 class="alert-heading mb-2">Informasi</h5>
-               <p class="mb-0">
-                  Silahkan Gunakan Icon <i class="ti ti-external-link text-primary me-1 ms-1"></i> Untuk Melakukan
-                  Penerimaan Data Surat Jalan
-               </p>
-               <p class="mb-0">
-                  Silahkan Gunakan Icon <i class="ti ti-square-rounded-minus text-warning me-1 ms-1"></i> Untuk
-                  Membatalkan Penerimaan Surat Jalan !
-               </p>
-               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="col-lg-12 col-md-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
+            @include('layouts.navigation_mutasigudangcabang')
+        </div>
+        @can('suratjalan.approve')
+            <div class="alert alert-info alert-dismissible d-flex align-items-baseline" role="alert">
+                <span class="alert-icon alert-icon-lg text-info me-2">
+                    <i class="ti ti-info-circle ti-sm"></i>
+                </span>
+                <div class="d-flex flex-column ps-1">
+                    <h5 class="alert-heading mb-2">Informasi</h5>
+                    <p class="mb-0">
+                        Silahkan Gunakan Icon <i class="ti ti-external-link text-primary me-1 ms-1"></i> Untuk Melakukan
+                        Penerimaan Data Surat Jalan
+                    </p>
+                    <p class="mb-0">
+                        Silahkan Gunakan Icon <i class="ti ti-square-rounded-minus text-warning me-1 ms-1"></i> Untuk
+                        Membatalkan Penerimaan Surat Jalan !
+                    </p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
-         </div>
-      @endcan
-      <div class="card">
-         <div class="card-body">
-            @include('gudangjadi.suratjalan.index')
-         </div>
-      </div>
-   </div>
+        @endcan
+        @include('gudangjadi.suratjalan.index')
+    </div>
 </div>
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection

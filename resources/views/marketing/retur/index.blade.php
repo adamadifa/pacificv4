@@ -3,146 +3,148 @@
 
 @section('content')
 @section('navigasi')
-    <span>Retur</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Retur</h4>
+            <small class="text-muted">Kelola data transaksi retur barang.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Marketing</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-receipt-refund me-1"></i>Retur</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
 <div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between">
-                @can('retur.create')
-                    <a href="{{ route('retur.create') }}" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Retur</a>
-                @endcan
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{-- Filter Section --}}
+        <form action="{{ route('retur.index') }}" id="formSearch">
+            <div class="row g-2 mb-1">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                        datepicker="flatpickr-date" />
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                        datepicker="flatpickr-date" />
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="{{ route('retur.index') }}">
-                            <div class="row">
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
-                                </div>
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
-                                </div>
-                            </div>
-                            @hasanyrole($roles_show_cabang)
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                                            select2="select2Kodecabangsearch" />
-                                    </div>
-                                </div>
-                            @endrole
-
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-12 col-md-12">
-                                    <div class="form-group mb-3">
-                                        <select name="kode_salesman_search" id="kode_salesman_search" class="form-select select2Kodesalesmansearch">
-                                            <option value="">Salesman</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search"
-                                        icon="ti ti-barcode" />
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}"
-                                        name="kode_pelanggan_search" icon="ti ti-barcode" />
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}"
-                                        name="nama_pelanggan_search" icon="ti ti-users" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
-                                            Data</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </form>
+            @hasanyrole($roles_show_cabang)
+                <div class="row g-2 mb-1">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                            textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                            select2="select2Kodecabangsearch" />
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table table-bordered ">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>No. Retur</th>
-                                        <th>Tanggal</th>
-                                        <th>No. Faktur</th>
-                                        <th>Nama Pelanggan</th>
-                                        <th>Nama Cabang</th>
-                                        <th>Salesman</th>
-                                        <th>Jenis Retur</th>
-                                        <th>Total</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($retur as $d)
-                                        <tr>
-                                            <td>{{ $d->no_retur }}</td>
-                                            <td>{{ DateToIndo($d->tanggal) }}</td>
-                                            <td>{{ $d->no_faktur }}</td>
-                                            <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
-                                            <td>{{ textUpperCase($d->nama_cabang) }}</td>
-                                            <td>{{ textUpperCase($d->nama_salesman) }}</td>
-                                            <td>
-                                                @if ($d->jenis_retur == 'GB')
-                                                    <span class="badge bg-success">Ganti Barang</span>
-                                                @else
-                                                    <span class="badge bg-danger">Potong Faktur</span>
-                                                @endif
-                                            </td>
-                                            <td class="text-end">{{ formatRupiah($d->total_retur) }}</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    {{-- @can('retur.edit')
-                                          <div>
-                                             <a class="me-1"
-                                                href="{{ route('retur.edit', Crypt::encrypt($d->no_retur)) }}"><i
-                                                   class="ti ti-edit text-success"></i></a>
-                                          </div>
-                                       @endcan --}}
-                                                    @can('retur.show')
-                                                        <div>
-                                                            <a class="btnShow me-1" href="#" no_retur = "{{ Crypt::encrypt($d->no_retur) }}">
-                                                                <i class="ti ti-file-description text-info"></i>
-                                                            </a>
-                                                        </div>
-                                                    @endcan
-                                                    @can('retur.delete')
-                                                        <div>
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('retur.delete', Crypt::encrypt($d->no_retur)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm me-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        </div>
-                                                    @endcan
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="float: right;">
-                            {{ $retur->links() }}
-                        </div>
+            @endrole
+
+            <div class="row g-2 mb-1">
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <div class="form-group mb-1">
+                        <select name="kode_salesman_search" id="kode_salesman_search" class="form-select select2Kodesalesmansearch">
+                            <option value="">Salesman</option>
+                        </select>
                     </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search" icon="ti ti-barcode" />
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}" name="kode_pelanggan_search" icon="ti ti-barcode" />
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12">
+                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" name="nama_pelanggan_search" icon="ti ti-users" />
+                </div>
+            </div>
+            <div class="row g-2 mb-2">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group mb-1">
+                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari Data</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {{-- Card Data --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-receipt-refund me-2"></i>Data Retur</h6>
+                    <div class="d-flex gap-2">
+                        @can('retur.create')
+                            <a href="{{ route('retur.create') }}" class="btn btn-primary btn-sm" id="btnCreate"><i class="ti ti-plus me-1"></i> Input Retur</a>
+                        @endcan
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-bordered">
+                    <thead style="background-color: #002e65;">
+                        <tr>
+                            <th class="text-white">No. Retur</th>
+                            <th class="text-white">Tanggal</th>
+                            <th class="text-white">No. Faktur</th>
+                            <th class="text-white">Nama Pelanggan</th>
+                            <th class="text-white">Nama Cabang</th>
+                            <th class="text-white">Salesman</th>
+                            <th class="text-white">Jenis Retur</th>
+                            <th class="text-white text-end">Total</th>
+                            <th class="text-white text-center" style="position: sticky; right: 0; background-color: #002e65; z-index: 10; width: 10%;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($retur as $d)
+                            <tr>
+                                <td><span class="fw-bold">{{ $d->no_retur }}</span></td>
+                                <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
+                                <td>{{ $d->no_faktur }}</td>
+                                <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
+                                <td>{{ textUpperCase($d->nama_cabang) }}</td>
+                                <td>{{ textUpperCase($d->nama_salesman) }}</td>
+                                <td>
+                                    @if ($d->jenis_retur == 'GB')
+                                        <span class="badge bg-success shadow-sm">Ganti Barang</span>
+                                    @else
+                                        <span class="badge bg-danger shadow-sm">Potong Faktur</span>
+                                    @endif
+                                </td>
+                                <td class="text-end fw-bold">{{ formatRupiah($d->total_retur) }}</td>
+                                <td style="position: sticky; right: 0; background-color: #fff; z-index: 9;">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        {{-- @can('retur.edit')
+                                            <a class="text-success" href="{{ route('retur.edit', Crypt::encrypt($d->no_retur)) }}" data-bs-toggle="tooltip" title="Edit">
+                                                <i class="ti ti-edit fs-5"></i>
+                                            </a>
+                                        @endcan --}}
+                                        @can('retur.show')
+                                            <a class="btnShow text-info" href="#" no_retur="{{ Crypt::encrypt($d->no_retur) }}" data-bs-toggle="tooltip" title="Detail">
+                                                <i class="ti ti-file-description fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('retur.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('retur.delete', Crypt::encrypt($d->no_retur)) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash fs-5"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $retur->links() }}
                 </div>
             </div>
         </div>

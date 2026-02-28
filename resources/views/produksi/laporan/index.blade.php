@@ -6,9 +6,9 @@
 @section('navigasi')
     <span>Laporan Produksi</span>
 @endsection
+
 <div class="row">
-    <div class="col-xl-6 col-md-12 col-sm-12">
-        <h6 class="text-muted">Mutasi Produksi</h6>
+    <div class="col-lg-8 col-md-10 col-12">
         <div class="nav-align-left nav-tabs-shadow mb-4">
             <ul class="nav nav-tabs" role="tablist">
                 @can('prd.mutasiproduksi')
@@ -16,7 +16,7 @@
                         <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                             data-bs-target="#mutasiproduksi" aria-controls="mutasiproduksi" aria-selected="false"
                             tabindex="-1">
-                            Laporan Mutasi Produksi
+                            <i class="ti ti-refresh me-1"></i> Mutasi Produksi
                         </button>
                     </li>
                 @endcan
@@ -24,38 +24,15 @@
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                             data-bs-target="#rekapmutasiproduksi" aria-controls="rekapmutasiproduksi" aria-selected="true">
-                            Rekap Mutasi Produksi
+                            <i class="ti ti-file-analytics me-1"></i> Rekap Mutasi
                         </button>
                     </li>
                 @endcan
-
-            </ul>
-            <div class="tab-content">
-                <!-- Laporan Mutasi Produksi-->
-                @can('prd.mutasiproduksi')
-                    <div class="tab-pane fade active show" id="mutasiproduksi" role="tabpanel">
-                        @include('produksi.laporan.mutasiproduksi')
-                    </div>
-                @endcan
-                <!-- Rekap Mutasi Produksi-->
-                @can('prd.rekapmutasi')
-                    <div class="tab-pane fade " id="rekapmutasiproduksi" role="tabpanel">
-                        @include('produksi.laporan.rekapmutasiproduksi')
-                    </div>
-                @endcan
-
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 col-md-12 col-sm-12">
-        <h6 class="text-muted">Mutasi Barang Produksi</h6>
-        <div class="nav-align-left nav-tabs-shadow mb-4">
-            <ul class="nav nav-tabs" role="tablist">
                 @can('prd.pemasukan')
                     <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                             data-bs-target="#barangmasuk" aria-controls="barangmasuk" aria-selected="false" tabindex="-1">
-                            Laporan Barang Masuk
+                            <i class="ti ti-arrow-bar-to-down me-1"></i> Barang Masuk
                         </button>
                     </li>
                 @endcan
@@ -63,37 +40,45 @@
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                             data-bs-target="#barangkeluar" aria-controls="barangkeluar" aria-selected="true">
-                            Laporan Barang Keluar
+                            <i class="ti ti-arrow-bar-to-up me-1"></i> Barang Keluar
                         </button>
                     </li>
                 @endcan
                 @can('prd.rekappersediaan')
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                            data-bs-target="#rekappersediaanbarang" aria-controls="rekappersediaanbarang"
-                            aria-selected="true">
-                            Rekap Persediaan
+                            data-bs-target="#rekappersediaanbarang" aria-controls="rekappersediaanbarang" aria-selected="true">
+                            <i class="ti ti-box me-1"></i> Rekap Persediaan
                         </button>
                     </li>
                 @endcan
-
             </ul>
             <div class="tab-content">
-                <!-- Laporan Barang masuk-->
+                @can('prd.mutasiproduksi')
+                    <div class="tab-pane fade active show" id="mutasiproduksi" role="tabpanel">
+                        @include('produksi.laporan.mutasiproduksi')
+                    </div>
+                @endcan
+                @can('prd.rekapmutasi')
+                    <div class="tab-pane fade" id="rekapmutasiproduksi" role="tabpanel">
+                        @include('produksi.laporan.rekapmutasiproduksi')
+                    </div>
+                @endcan
                 @can('prd.pemasukan')
-                    <div class="tab-pane fade active show" id="barangmasuk" role="tabpanel">
+                    <div class="tab-pane fade" id="barangmasuk" role="tabpanel">
                         @include('produksi.laporan.barangmasuk')
                     </div>
                 @endcan
-                <!-- Laporan Barang keluar-->
                 @can('prd.pengeluaran')
-                    <div class="tab-pane fade " id="barangkeluar" role="tabpanel">
+                    <div class="tab-pane fade" id="barangkeluar" role="tabpanel">
                         @include('produksi.laporan.barangkeluar')
                     </div>
                 @endcan
-                <div class="tab-pane fade " id="rekappersediaanbarang" role="tabpanel">
-                    @include('produksi.laporan.rekappersediaanbarang')
-                </div>
+                @can('prd.rekappersediaan')
+                    <div class="tab-pane fade" id="rekappersediaanbarang" role="tabpanel">
+                        @include('produksi.laporan.rekappersediaanbarang')
+                    </div>
+                @endcan
             </div>
         </div>
     </div>

@@ -3,119 +3,129 @@
 
 @section('content')
 @section('navigasi')
-   <span>Repack</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Repack</h4>
+            <small class="text-muted">Kelola data repack barang cabang.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Gudang Cabang</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-package me-1"></i>Repack</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
-   <div class="col-lg-8 col-sm-12 col-xs-12">
-      <div class="card">
-         <div class="card-header">
-            @can('repackcbg.create')
-               <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Tambah Data Repack</a>
-            @endcan
-         </div>
-         <div class="card-body">
-            <div class="row mt-2">
-               <div class="col-12">
-                  <form action="{{ route('repackcbg.index') }}" id="formSearch">
-                     <div class="row">
-                        <div class="col-lg-6 col-sm-12 col-md-12">
-                           <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
-                              icon="ti ti-calendar" datepicker="flatpickr-date" />
-                        </div>
-                        <div class="col-lg-6 col-sm-12 col-md-12">
-                           <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
-                              icon="ti ti-calendar" datepicker="flatpickr-date" />
-                        </div>
-                     </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
+            @include('layouts.navigation_mutasigudangcabang')
+        </div>
 
-                     @hasanyrole($roles_show_cabang)
-                        <div class="row">
-                           <div class="col-lg-12 col-md-12 col-sm-12">
-                              <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
-                                 key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                                 selected="{{ Request('kode_cabang_search') }}"
-                                 select2="select2Kodecabangsearch" />
-                           </div>
+        {{-- Filter Section --}}
+        <form action="{{ route('repackcbg.index') }}" id="formSearch">
+            <div class="card shadow-none border-0 bg-transparent mb-3">
+                <div class="card-body p-0">
+                    <div class="row g-2">
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
                         </div>
-                     @endrole
-
-                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                           <div class="form-group mb-3">
-                              <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
-                                 Data</button>
-                           </div>
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
                         </div>
-                     </div>
-                  </form>
-               </div>
+                        @hasanyrole($roles_show_cabang)
+                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                    textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                    select2="select2Kodecabangsearch" />
+                            </div>
+                        @endrole
+                        <div class="{{ auth()->user()->hasAnyRole($roles_show_cabang) ? 'col-lg-2 col-md-2' : 'col-lg-6 col-md-4' }} col-sm-12">
+                            {{-- Spacer --}}
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12 text-end">
+                            <div class="form-group mb-1">
+                                <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-               <div class="col-12">
-                  <div class="table-responsive mb-2">
-                     <table class="table table-striped table-hover table-bordered">
-                        <thead class="table-dark">
-                           <tr>
-                              <th>No. Mutasi</th>
-                              <th>Tanggal</th>
-                              <th>Cabang</th>
-                              <th>Keterangan</th>
-                              <th>#</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           @foreach ($repack as $d)
-                              <tr>
-                                 <td>{{ $d->no_mutasi }}</td>
-                                 <td>{{ DateToIndo($d->tanggal) }}</td>
-                                 <td>{{ textUpperCase($d->nama_cabang) }}</td>
-                                 <td>{{ $d->keterangan }}</td>
-                                 <td>
-                                    <div class="d-flex">
-                                       @can('repackcbg.edit')
-                                          <div>
-                                             <a href="#" class="me-2 btnEdit"
-                                                no_mutasi="{{ Crypt::encrypt($d->no_mutasi) }}">
-                                                <i class="ti ti-edit text-success"></i>
-                                             </a>
-                                          </div>
-                                       @endcan
-                                       @can('repackcbg.show')
-                                          <div>
-                                             <a href="#" class="me-2 btnShow"
-                                                no_mutasi="{{ Crypt::encrypt($d->no_mutasi) }}">
-                                                <i class="ti ti-file-description text-info"></i>
-                                             </a>
-                                          </div>
-                                       @endcan
+        </form>
 
-                                       @can('repackcbg.delete')
-                                          <div>
-                                             <form method="POST" name="deleteform" class="deleteform"
-                                                action="{{ route('reject.delete', Crypt::encrypt($d->no_mutasi)) }}">
+        {{-- Data Card --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-package me-2"></i>Data Repack</h6>
+                    @can('repackcbg.create')
+                        <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate"><i class="ti ti-plus me-1"></i> Tambah Data</a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-white" style="background-color: #002e65 !important;">NO. MUTASI</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">CABANG</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">KETERANGAN</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($repack as $d)
+                            <tr>
+                                <td><span class="fw-bold text-primary">{{ $d->no_mutasi }}</span></td>
+                                <td>{{ DateToIndo($d->tanggal) }}</td>
+                                <td>{{ textUpperCase($d->nama_cabang) }}</td>
+                                <td>{{ $d->keterangan }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('repackcbg.edit')
+                                            <a href="#" class="btnEdit text-success" data-bs-toggle="tooltip" title="Edit"
+                                                no_mutasi="{{ Crypt::encrypt($d->no_mutasi) }}">
+                                                <i class="ti ti-edit fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('repackcbg.show')
+                                            <a href="#" class="btnShow text-info" data-bs-toggle="tooltip" title="Detail"
+                                                no_mutasi="{{ Crypt::encrypt($d->no_mutasi) }}">
+                                                <i class="ti ti-file-description fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('repackcbg.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                action="{{ route('repackcbg.delete', Crypt::encrypt($d->no_mutasi)) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <a href="#" class="delete-confirm me-1">
-                                                   <i class="ti ti-trash text-danger"></i>
-                                                </a>
-                                             </form>
-                                          </div>
-                                       @endcan
+                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0"
+                                                    data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash fs-5"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
-                                 </td>
-                              </tr>
-                           @endforeach
-                        </tbody>
-                     </table>
-                  </div>
-                  <div style="float: right;">
-                     {{ $repack->links() }}
-                  </div>
-               </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-         </div>
-      </div>
-   </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $repack->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
 @endsection

@@ -2,111 +2,130 @@
 @section('titlepage', 'Saldo Awal Barang Produksi')
 
 @section('content')
+@section('content')
 @section('navigasi')
-    <span>Saldo Awal Barang Produksi</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Saldo Awal Barang Produksi</h4>
+            <small class="text-muted">Mengelola data saldo awal barang produksi.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Produksi</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-file-description me-1"></i>Saldo Awal Barang</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
-<div class="row">
-    <div class="col-lg-6 col-md-12 col-sm-12">
-        <div class="nav-align-top nav-tabs-shadow mb-4">
-            @include('layouts.navigation_mutasibarangproduksi')
-            <div class="tab-content">
-                <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('sabarangproduksi.create')
-                        <a href="{{ route('sabarangproduksi.create') }}" class="btn btn-primary"><i
-                                class="fa fa-plus me-2"></i>
-                            Buat Saldo Awal</a>
-                    @endcan
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <form action="{{ route('sabarangproduksi.index') }}">
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="bulan" id="bulan" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                        value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="tahun" id="tahun" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option
-                                                        @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
-                                                        @else
-                                                        {{ date('Y') == $t ? 'selected' : '' }} @endif
-                                                        value="{{ $t }}">{{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-sm-12 col-md-12">
-                                        <button class="btn btn-primary"><i
-                                                class="ti ti-icons ti-search me-1"></i></button>
-                                    </div>
-                                </div>
 
-                            </form>
-                        </div>
+<div class="row">
+    <div class="col-lg-7 col-md-12 col-sm-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
+            @include('layouts.navigation_mutasibarangproduksi')
+        </div>
+
+        {{-- Filter Section (Below Navigation) --}}
+        <form action="{{ route('sabarangproduksi.index') }}">
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <select name="bulan" id="bulan" class="form-select">
+                            <option value="">Bulan</option>
+                            @foreach ($list_bulan as $d)
+                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                    value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Kode</th>
-                                            <th>Bulan</th>
-                                            <th>Tahun</th>
-                                            <th>Tanggal</th>
-                                            <th>#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($saldo_awal as $d)
-                                            <tr>
-                                                <td>{{ $d->kode_saldo_awal }}</td>
-                                                <td>{{ $nama_bulan[$d->bulan] }}</td>
-                                                <td>{{ $d->tahun }}</td>
-                                                <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
-                                                <td>
-                                                    <div class="d-flex">
-                                                        @can('sabarangproduksi.show')
-                                                            <div>
-                                                                <a href="#" class="me-2 showSaldoawal"
-                                                                    kode_saldo_awal="{{ Crypt::encrypt($d->kode_saldo_awal) }}">
-                                                                    <i class="ti ti-file-description text-info"></i>
-                                                                </a>
-                                                            </div>
-                                                        @endcan
-                                                        @can('sabarangproduksi.delete')
-                                                            <div>
-                                                                <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('sabarangproduksi.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            </div>
-                                                        @endcan
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-group mb-3">
+                        <select name="tahun" id="tahun" class="form-select">
+                            <option value="">Tahun</option>
+                            @for ($t = $start_year; $t <= date('Y'); $t++)
+                                <option
+                                    @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
+                                    @else
+                                    {{ date('Y') == $t ? 'selected' : '' }} @endif
+                                    value="{{ $t }}">{{ $t }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
                     </div>
                 </div>
             </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-database me-2"></i>Data Saldo Awal</h6>
+                    @can('sabarangproduksi.create')
+                        <a href="{{ route('sabarangproduksi.create') }}" class="btn btn-primary btn-sm shadow-sm">
+                            <i class="ti ti-plus me-1"></i> Buat Saldo Awal
+                        </a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-white" style="background-color: #002e65 !important;">KODE</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">BULAN</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">TAHUN</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($saldo_awal as $d)
+                            <tr>
+                                <td><span class="fw-bold text-primary">{{ $d->kode_saldo_awal }}</span></td>
+                                <td>{{ $nama_bulan[$d->bulan] }}</td>
+                                <td>{{ $d->tahun }}</td>
+                                <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('sabarangproduksi.show')
+                                            <a href="#" class="showSaldoawal text-info" data-bs-toggle="tooltip" title="Detail"
+                                                kode_saldo_awal="{{ Crypt::encrypt($d->kode_saldo_awal) }}">
+                                                <i class="ti ti-file-description fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('sabarangproduksi.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                action="{{ route('sabarangproduksi.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0"
+                                                    data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash fs-5"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @if ($saldo_awal instanceof \Illuminate\Pagination\LengthAwarePaginator || $saldo_awal instanceof \Illuminate\Pagination\Paginator)
+                <div class="card-footer py-2">
+                    <div style="float: right;">
+                        {{ $saldo_awal->links() }}
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </div>

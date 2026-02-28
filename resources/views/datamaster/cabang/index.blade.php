@@ -6,100 +6,122 @@
     <span>Cabang</span>
 @endsection
 <div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                @can('cabang.create')
-                    <a href="#" class="btn btn-primary" id="btncreateCabang"><i class="fa fa-plus me-2"></i> Tambah
-                        Cabang</a>
-                @endcan
+    <div class="col-12">
+        <div class="card shadow-sm border mb-3">
+            <div class="card-body py-3">
+                <form action="{{ route('cabang.index') }}">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-lg-10 col-md-10 col-sm-12">
+                            <x-input-with-icon label="Cari Nama Cabang" value="{{ Request('nama_cabang') }}" name="nama_cabang"
+                                icon="ti ti-search" />
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="{{ route('cabang.index') }}">
-                            <div class="row">
-                                <div class="col-lg-10 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Cabang" value="{{ Request('nama_cabang') }}" name="nama_cabang"
-                                        icon="ti ti-search" />
+        </div>
+
+        <div class="row">
+            @foreach ($cabang as $d)
+                <div class="col-12 mb-3">
+                    <div class="card shadow-none border">
+                        <div class="card-body p-2">
+                            <div class="row align-items-center">
+                                <!-- Bagian 1: Identitas (Left) -->
+                                <div class="col-md-5 border-end">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="avatar avatar-md">
+                                                <span class="avatar-initial rounded-circle bg-label-primary shadow-sm">
+                                                    <i class="ti ti-building ti-sm"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="mb-1 fw-bold text-dark" style="font-size: 0.95rem;">
+                                                {{ textUpperCase($d->nama_cabang) }}
+                                                <span class="text-muted fw-normal" style="font-size: 0.8rem;">({{ $d->kode_cabang }})</span>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <span class="badge border text-primary bg-label-primary" style="font-size: 0.65rem;">
+                                                    <i class="ti ti-topology-ring-3 me-1" style="font-size: 0.75rem;"></i>{{ $d->nama_regional }}
+                                                </span>
+                                                <span class="badge border text-info bg-label-info" style="font-size: 0.65rem;">
+                                                    <i class="ti ti-building-skyscraper me-1" style="font-size: 0.75rem;"></i>{{ $d->nama_pt }} ({{ $d->kode_pt }})
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
+
+                                <!-- Bagian 2: Info (Center) -->
+                                <div class="col-md-4 border-end">
+                                    <div class="ps-md-2">
+                                        <div class="d-flex align-items-start mb-1">
+                                            <i class="ti ti-map-pin me-2 mt-1 text-muted" style="font-size: 0.9rem;"></i>
+                                            <span class="text-muted text-truncate-2" style="font-size: 0.75rem; line-height: 1.2;">{{ $d->alamat_cabang }}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="d-flex align-items-center text-muted" style="font-size: 0.75rem;">
+                                                <i class="ti ti-phone me-1 text-info" style="font-size: 0.85rem;"></i>
+                                                {{ $d->telepon_cabang }}
+                                            </div>
+                                            <div class="d-flex align-items-center text-muted" style="font-size: 0.75rem;">
+                                                <i class="ti ti-access-point me-1 text-warning" style="font-size: 0.85rem;"></i>
+                                                {{ $d->radius_cabang }}m
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bagian 3: Actions (Right) -->
+                                <div class="col-md-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="ms-3 d-flex flex-column align-items-center">
+                                            <span class="badge rounded-pill p-2 mb-1 shadow-sm" style="background-color:{{ $d->color_marker }}; min-width: 40px;">
+                                                <i class="ti ti-point text-white"></i>
+                                            </span>
+                                            <small class="text-muted" style="font-size: 0.65rem;">Marker</small>
+                                        </div>
+                                        <div class="d-flex flex-column align-items-end">
+                                            <div class="btn-group shadow-sm">
+                                                @can('cabang.edit')
+                                                    <a href="#" class="btn btn-icon btn-outline-primary editCabang"
+                                                        kode_cabang="{{ Crypt::encrypt($d->kode_cabang) }}" title="Edit">
+                                                        <i class="ti ti-pencil"></i>
+                                                    </a>
+                                                @endcan
+                                                @can('cabang.delete')
+                                                    <form method="POST" name="deleteform" class="deleteform m-0"
+                                                        action="{{ route('cabang.delete', Crypt::encrypt($d->kode_cabang)) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-icon btn-outline-danger delete-confirm"
+                                                            style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;"
+                                                            title="Delete">
+                                                            <i class="ti ti-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                @endcan
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                        </form>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Kode</th>
-                                        <th>Nama Cabang</th>
-                                        <th style="width: 18%">Alamat</th>
-                                        <th>Telepon</th>
-                                        <th>Radius</th>
-                                        <th>Regional</th>
-                                        <th>Color</th>
-                                        <th>Kode PT</th>
-                                        <th style="width: 20%">Nama PT</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($cabang as $d)
-                                        <tr>
-                                            <td> {{ $loop->iteration + $cabang->firstItem() - 1 }}</td>
-                                            <td>{{ $d->kode_cabang }}</td>
-                                            <td>{{ textUpperCase($d->nama_cabang) }}</td>
-                                            <td>{{ $d->alamat_cabang }}</td>
-                                            <td>{{ $d->telepon_cabang }}</td>
-                                            <td>{{ $d->radius_cabang }}</td>
-                                            <td>{{ $d->nama_regional }}</td>
-                                            <td>
-                                                <span class="badge" style="background-color:{{ $d->color_marker }}">{{ $d->color_marker }}</span>
-                                            </td>
-                                            <td>{{ $d->kode_pt }}</td>
-                                            <td>{{ $d->nama_pt }}</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    @can('cabang.edit')
-                                                        <div>
-                                                            <a href="#" class="me-2 editCabang"
-                                                                kode_cabang="{{ Crypt::encrypt($d->kode_cabang) }}">
-                                                                <i class="ti ti-edit text-success"></i>
-                                                            </a>
-                                                        </div>
-                                                    @endcan
-                                                    @can('cabang.delete')
-                                                        <div>
-                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                action="{{ route('cabang.delete', Crypt::encrypt($d->kode_cabang)) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a href="#" class="delete-confirm ml-1">
-                                                                    <i class="ti ti-trash text-danger"></i>
-                                                                </a>
-                                                            </form>
-                                                        </div>
-                                                    @endcan
+            @endforeach
+        </div>
 
-
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="float: right;">
-                            {{ $cabang->links() }}
-                        </div>
-                    </div>
+        <div class="row">
+            <div class="col-12 mt-2">
+                <div style="float: right;">
+                    {{ $cabang->links() }}
                 </div>
             </div>
         </div>

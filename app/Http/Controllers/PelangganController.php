@@ -37,9 +37,11 @@ class PelangganController extends Controller
 
 
         $query = Pelanggan::query();
+        $query->select('pelanggan.*', 'wilayah.nama_wilayah', 'salesman.nama_salesman', 'cabang.nama_cabang', 'marketing_klasifikasi_outlet.klasifikasi');
         $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'pelanggan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftJoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);

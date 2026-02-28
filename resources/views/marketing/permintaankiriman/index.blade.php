@@ -3,245 +3,203 @@
 
 @section('content')
 @section('navigasi')
-   <span>Permintaan Kiriman</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Permintaan Kiriman</h4>
+            <small class="text-muted">Kelola data permintaan kiriman barang ke cabang.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Marketing</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-package me-1"></i>Permintaan Kiriman</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
-   <div class="col-lg-10 col-sm-12 col-xs-12">
-
-      <div class="alert alert-info alert-dismissible d-flex align-items-baseline" role="alert">
-         <span class="alert-icon alert-icon-lg text-info me-2">
-            <i class="ti ti-info-circle ti-sm"></i>
-         </span>
-         <div class="d-flex flex-column ps-1">
-            <h5 class="alert-heading mb-2">Informasi</h5>
-            <p class="mb-0">
-               Silahkan Gunakan Icon <i class="ti ti-external-link text-primary me-1 ms-1"></i> Untuk membuat Surat
-               Jalan !
-            </p>
-            <p class="mb-0">
-               Silahkan Gunakan Icon <i class="ti ti-square-rounded-minus text-warning me-1 ms-1"></i> Untuk
-               Membatalkan
-               Surat Jalan !
-            </p>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-         </div>
-      </div>
-      <div class="card">
-         <div class="card-header">
-            @can('permintaankiriman.create')
-               <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Buat
-                  Permintaan</a>
-            @endcan
-         </div>
-         <div class="card-body">
-            <div class="row">
-               <div class="col-12">
-                  <form action="{{ route('permintaankiriman.index') }}">
-                     <div class="row">
-                        <div class="col-lg-6 col-sm-12 col-md-12">
-                           <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
-                              icon="ti ti-calendar" datepicker="flatpickr-date" />
-                        </div>
-                        <div class="col-lg-6 col-sm-12 col-md-12">
-                           <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
-                              icon="ti ti-calendar" datepicker="flatpickr-date" />
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                           <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
-                              key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                              selected="{{ Request('kode_cabang_search') }}" />
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                           <div class="form-group mb-3">
-                              <select name="status_search" id="status_search" class="form-select">
-                                 <option value="">Smua Status</option>
-                                 <option {{ Request('status_search') == '0|pk' ? 'selected' : '' }}
-                                    value="0|pk">Belum Di Proses</option>
-                                 <option {{ Request('status_search') == '1|pk' ? 'selected' : '' }}
-                                    value="1|pk">Sudah Di Proses Gudang</option>
-                                 <option {{ Request('status_search') == '0|sj' ? 'selected' : '' }}
-                                    value="0|sj">
-                                    Belum Diterima Cabang</option>
-                                 <option {{ Request('status_search') == '1|sj' ? 'selected' : '' }}
-                                    value="1|sj">Sudah Diterima Cabang</option>
-                                 <option {{ Request('status_search') == '2|sj' ? 'selected' : '' }}
-                                    value="2|sj">Transit Out</option>
-                              </select>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                           <div class="form-group mb-3">
-                              <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
-                                 Data</button>
-                           </div>
-                        </div>
-                     </div>
-                  </form>
-               </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="alert alert-info alert-dismissible d-flex align-items-baseline shadow-sm" role="alert">
+            <span class="alert-icon alert-icon-lg text-info me-2">
+                <i class="ti ti-info-circle ti-sm"></i>
+            </span>
+            <div class="d-flex flex-column ps-1">
+                <h5 class="alert-heading mb-2">Informasi</h5>
+                <p class="mb-0">
+                    Silahkan Gunakan Icon <i class="ti ti-external-link text-primary me-1 ms-1"></i> Untuk membuat Surat Jalan !
+                </p>
+                <p class="mb-0">
+                    Silahkan Gunakan Icon <i class="ti ti-square-rounded-minus text-warning me-1 ms-1"></i> Untuk Membatalkan Surat Jalan !
+                </p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <div class="row">
-               <div class="col-12">
-                  <div class="table-responsive mb-2">
-                     <table class="table">
-                        <thead class="table-dark">
-                           <tr>
-                              <th>No. Permintaan</th>
-                              <th>Tanggal</th>
-                              <th>Cabang</th>
-                              <th>Keterangan</th>
-                              <th>Status</th>
-                              <th>Salesman</th>
-                              {{-- <th>No. SJ</th>
-                                        <th>No. Dok</th>
-                                        <th>Tanggal SJ</th> --}}
-                              <th>Status SJ</th>
-                              <th>#</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           @foreach ($pk as $d)
-                              <tr>
-                                 <td>{{ $d->no_permintaan }}</td>
-                                 <td>
-                                    {{ date('d-m-Y', strtotime($d->tanggal)) }}
-                                 </td>
-                                 <td>{{ $d->kode_cabang }}</td>
-                                 <td>{{ $d->keterangan }}</td>
-                                 <td>
-                                    @if ($d->status == 1)
-                                       <span class="badge badge-sm bg-success">
-                                          {{ $d->no_mutasi }}
-                                       </span>
-                                    @else
-                                       <span class="badge badge bg-danger">
-                                          Belum Di Proses
-                                       </span>
-                                    @endif
-                                 </td>
-                                 <td>
+        </div>
 
+        {{-- Filter Section --}}
+        <form action="{{ route('permintaankiriman.index') }}" id="formSearch">
+            <div class="row g-2 mb-2">
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                        datepicker="flatpickr-date" />
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                        datepicker="flatpickr-date" />
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                        textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                        select2="select2Kodecabangsearch" />
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <div class="form-group mb-1">
+                        <select name="status_search" id="status_search" class="form-select select2Statussearch">
+                            <option value="">Semua Status</option>
+                            <option {{ Request('status_search') == '0|pk' ? 'selected' : '' }} value="0|pk">Belum Di Proses</option>
+                            <option {{ Request('status_search') == '1|pk' ? 'selected' : '' }} value="1|pk">Sudah Di Proses Gudang</option>
+                            <option {{ Request('status_search') == '0|sj' ? 'selected' : '' }} value="0|sj">Belum Diterima Cabang</option>
+                            <option {{ Request('status_search') == '1|sj' ? 'selected' : '' }} value="1|sj">Sudah Diterima Cabang</option>
+                            <option {{ Request('status_search') == '2|sj' ? 'selected' : '' }} value="2|sj">Transit Out</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-auto col-md-2 col-sm-12 d-flex align-items-end">
+                    <div class="form-group mb-1">
+                        <button class="btn btn-primary"><i class="ti ti-search me-1"></i>Cari</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-package me-2"></i>Data Permintaan Kiriman</h6>
+                    @can('permintaankiriman.create')
+                        <a href="#" class="btn btn-primary btn-sm" id="btnCreate"><i class="ti ti-plus me-1"></i> Buat Permintaan</a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead style="background-color: #002e65;">
+                        <tr>
+                            <th class="text-white">No. Permintaan</th>
+                            <th class="text-white">Tanggal</th>
+                            <th class="text-white">Cabang</th>
+                            <th class="text-white">Keterangan</th>
+                            <th class="text-white">Status PK</th>
+                            <th class="text-white">Salesman</th>
+                            <th class="text-white">Status SJ</th>
+                            <th class="text-white text-center">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($pk as $d)
+                            <tr>
+                                <td><span class="fw-bold text-primary">{{ $d->no_permintaan }}</span></td>
+                                <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
+                                <td>{{ textUpperCase($d->kode_cabang) }}</td>
+                                <td>{{ $d->keterangan }}</td>
+                                <td>
+                                    @if ($d->status == 1)
+                                        <span class="badge bg-success shadow-sm">
+                                            <i class="ti ti-check me-1"></i>{{ $d->no_mutasi }}
+                                        </span>
+                                    @else
+                                        <span class="badge bg-danger shadow-sm">
+                                            <i class="ti ti-clock me-1"></i>Belum Di Proses
+                                        </span>
+                                    @endif
+                                </td>
+                                <td>
                                     @php
-                                       $nama_sales = explode(' ', $d->nama_salesman);
+                                        $nama_sales = explode(' ', $d->nama_salesman);
                                     @endphp
                                     {{ $nama_sales[0] }}
-                                 </td>
-                                 {{-- <td>
-                                                @if (!empty($d->no_mutasi))
-                                                    {{ $d->no_mutasi }}
-                                                @else
-                                                    <i class="ti ti-refresh text-warning"></i>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if (!empty($d->no_dok))
-                                                    {{ $d->no_dok }}
-                                                @else
-                                                    <i class="ti ti-refresh text-warning"></i>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if (!empty($d->no_mutasi))
-                                                    {{ date('d-m-Y', strtotime($d->tanggal_surat_jalan)) }}
-                                                @else
-                                                    <i class="ti ti-refresh text-warning"></i>
-                                                @endif
-                                            </td> --}}
-                                 <td>
+                                </td>
+                                <td>
                                     @if ($d->status == 1)
-                                       @if ($d->status_surat_jalan == 0)
-                                          <span class="badge bg-danger">Belum Diterima Cabang</span>
-                                       @elseif($d->status_surat_jalan == 1)
-                                          <span class="badge bg-success">Sudah Diterima Cabang</span>
-                                       @elseif($d->status_surat_jalan == 2)
-                                          <span class="badge bg-info">Transit Out</span>
-                                       @endif
+                                        @if ($d->status_surat_jalan == 0)
+                                            <span class="badge bg-danger shadow-sm">Belum Diterima</span>
+                                        @elseif($d->status_surat_jalan == 1)
+                                            <span class="badge bg-success shadow-sm">Sudah Diterima</span>
+                                        @elseif($d->status_surat_jalan == 2)
+                                            <span class="badge bg-info shadow-sm">Transit Out</span>
+                                        @endif
                                     @else
-                                       <i class="ti ti-refresh text-warning"></i>
+                                        <i class="ti ti-refresh text-warning ti-spin"></i>
                                     @endif
-                                 </td>
-                                 <td>
-                                    <div class="d-flex">
-                                       @can('permintaankiriman.edit')
-                                          @if ($d->status == 0)
-                                             <div>
-                                                <a href="#" class="me-2 btnEdit"
-                                                   no_permintaan="{{ Crypt::encrypt($d->no_permintaan) }}">
-                                                   <i class="ti ti-edit text-success"></i>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('permintaankiriman.edit')
+                                            @if ($d->status == 0)
+                                                <a href="#" class="btnEdit text-success" data-bs-toggle="tooltip" title="Edit"
+                                                    no_permintaan="{{ Crypt::encrypt($d->no_permintaan) }}">
+                                                    <i class="ti ti-edit fs-5"></i>
                                                 </a>
-                                             </div>
-                                          @endif
-                                       @endcan
-                                       @can('permintaankiriman.show')
-                                          <div>
-                                             <a href="#" class="me-2 btnShow"
+                                            @endif
+                                        @endcan
+                                        @can('permintaankiriman.show')
+                                            <a href="#" class="btnShow text-info" data-bs-toggle="tooltip" title="Detail"
                                                 no_permintaan="{{ Crypt::encrypt($d->no_permintaan) }}">
-                                                <i class="ti ti-file-description text-info"></i>
-                                             </a>
-                                          </div>
-                                       @endcan
-                                       @can('permintaankiriman.delete')
-                                          @if ($d->status == 0)
-                                             <div>
-                                                <form method="POST" name="deleteform" class="deleteform"
-                                                   action="{{ route('permintaankiriman.delete', Crypt::encrypt($d->no_permintaan)) }}">
-                                                   @csrf
-                                                   @method('DELETE')
-                                                   <a href="#" class="delete-confirm me-1">
-                                                      <i class="ti ti-trash text-danger"></i>
-                                                   </a>
+                                                <i class="ti ti-file-description fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('permintaankiriman.delete')
+                                            @if ($d->status == 0)
+                                                <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                    action="{{ route('permintaankiriman.delete', Crypt::encrypt($d->no_permintaan)) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0"
+                                                        data-bs-toggle="tooltip" title="Hapus">
+                                                        <i class="ti ti-trash fs-5"></i>
+                                                    </button>
                                                 </form>
-                                             </div>
-                                          @endif
-                                       @endcan
+                                            @endif
+                                        @endcan
 
-                                       @can('suratjalan.create')
-                                          @if ($d->status === '0')
-                                             <div>
-                                                <a href="#" alt="Buat Surat Jalan"
-                                                   no_permintaan="{{ Crypt::encrypt($d->no_permintaan) }}"
-                                                   class="btnCreateSuratjalan">
-                                                   <i class="ti ti-external-link primary "></i>
+                                        @can('suratjalan.create')
+                                            @if ($d->status === '0')
+                                                <a href="#" class="btnCreateSuratjalan text-primary" data-bs-toggle="tooltip"
+                                                    title="Buat Surat Jalan" no_permintaan="{{ Crypt::encrypt($d->no_permintaan) }}">
+                                                    <i class="ti ti-external-link fs-5"></i>
                                                 </a>
-                                             </div>
-                                          @endif
-                                       @endcan
+                                            @endif
+                                        @endcan
 
-                                       @can('suratjalan.delete')
-                                          @if ($d->status == '1' && $d->status_surat_jalan === '0')
-                                             <div>
-                                                <form method="POST" name="deleteform" class="deleteform"
-                                                   action="{{ route('suratjalan.delete', Crypt::encrypt($d->no_mutasi)) }}">
-                                                   @csrf
-                                                   @method('DELETE')
-                                                   <a href="#" class="delete-confirm me-1">
-                                                      <i
-                                                         class="ti ti-square-rounded-minus text-warning"></i>
-                                                   </a>
+                                        @can('suratjalan.delete')
+                                            @if ($d->status == '1' && $d->status_surat_jalan === '0')
+                                                <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                    action="{{ route('suratjalan.delete', Crypt::encrypt($d->no_mutasi)) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="delete-confirm bg-transparent border-0 text-warning p-0"
+                                                        data-bs-toggle="tooltip" title="Batalkan Surat Jalan">
+                                                        <i class="ti ti-square-rounded-minus fs-5"></i>
+                                                    </button>
                                                 </form>
-                                             </div>
-                                          @endif
-                                       @endcan
+                                            @endif
+                                        @endcan
                                     </div>
-                                 </td>
-                              </tr>
-                           @endforeach
-                        </tbody>
-                     </table>
-                  </div>
-                  <div style="float: right;">
-                     {{ $pk->links() }}
-                  </div>
-               </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-         </div>
-      </div>
-   </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $pk->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <x-modal-form id="mdlCreate" show="loadCreate" title="Buat Permintaan" />
 <x-modal-form id="mdlEdit" show="loadEdit" title="Edit Permintaan" />

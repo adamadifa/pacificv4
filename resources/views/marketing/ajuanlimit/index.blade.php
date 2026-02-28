@@ -3,367 +3,286 @@
 
 @section('content')
 @section('navigasi')
-    <span>Ajuan Limit Kredit</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Ajuan Limit Kredit</h4>
+            <small class="text-muted">Kelola data transaksi pengajuan limit kredit pelanggan.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Marketing</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-credit-card me-1"></i>Ajuan Limit Kredit</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
 <div class="row">
-    <div class="col-lg-12">
-        <div class="nav-align-top nav-tabs-shadow mb-4">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
             @include('layouts.navigation_ajuanmarketing')
-            <div class="tab-content">
-                <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('ajuanlimit.create')
-                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                            Ajukan Limit Kredit
-                        </a>
-                    @endcan
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <form action="{{ route('ajuanlimit.index') }}">
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
-                                    </div>
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
-                                    </div>
-                                </div>
-                                @hasanyrole($roles_show_cabang)
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                                                select2="select2Kodecabangsearch" />
-                                        </div>
-                                    </div>
-                                @endrole
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <div class="form-grou mb-3">
-                                            <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
-                                                <option value="">Poisi Ajuan</option>
-                                                @foreach ($roles_approve_ajuanlimitkredit as $role)
-                                                    <option value="{{ $role }}" {{ Request('posisi_ajuan') == $role ? 'selected' : '' }}>
-                                                        {{ textUpperCase($role) }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 co-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="status" id="status" class="form-select">
-                                                <option value="">Status</option>
-                                                <option value="0" {{ Request('status') === '0' ? 'selected' : '' }}>
-                                                    Pending</option>
-                                                <option value="1" {{ Request('status') === '1' ? 'selected' : '' }}>
-                                                    Disetujui</option>
-                                                <option value="2" {{ Request('status') === '2' ? 'selected' : '' }}>
-                                                    Ditolak</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i class="ti ti-search me-2"></i>Cari
-                                                Data</button>
-                                        </div>
+        </div>
 
-                                    </div>
-                                </div>
-                            </form>
+        {{-- Filter Section --}}
+        <form action="{{ route('ajuanlimit.index') }}" id="formSearch">
+            <div class="card shadow-none border-0 bg-transparent mb-3">
+                <div class="card-body p-0">
+                    <div class="row g-2 mb-1">
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>No. Pengajuan</th>
-                                            <th style="width: 8%">Tanggal</th>
-                                            <th>Pelanggan</th>
-                                            <th style="width: 13%">Jumlah</th>
-                                            <th style="width: 7%">LJT</th>
-                                            <th style="width: 7%" class="text-center"><i class="ti ti-adjustments me-1"></i></th>
-                                            <th class="text-center">Skor</th>
-                                            <th>Ket</th>
-                                            <th>Posisi</th>
-                                            <th class="text-center">Status</th>
-                                            <th>#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($ajuanlimit as $d)
-                                            @php
-                                                if ($level_user == 'sales marketing manager') {
-                                                    $nextlevel = 'regional sales manager';
-                                                } elseif ($level_user == 'regional sales manager') {
-                                                    $nextlevel = 'gm marketing';
-                                                } elseif ($level_user == 'gm marketing') {
-                                                    $nextlevel = 'direktur';
-                                                } else {
-                                                    $nextlevel = '';
-                                                }
-                                            @endphp
-                                            <tr>
-                                                <td>{{ $d->no_pengajuan }}</td>
-                                                <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
-                                                <td>{{ $d->nama_pelanggan }}</td>
-                                                <td class="text-end">
-                                                    @if (!empty($d->jumlah_rekomendasi))
-                                                        <span style="text-decoration: line-through red;">{{ formatAngka($d->jumlah) }}</span>
-                                                        /
-                                                        {{ formatAngka($d->jumlah_rekomendasi) }}
-                                                    @else
-                                                        {{ formatAngka($d->jumlah) }}
-                                                    @endif
-
-                                                </td>
-                                                <td>{{ $d->ljt }} Hari</td>
-                                                <td class="text-center">
-                                                    @php
-                                                        $selisih = $d->jumlah - $d->jumlah_rekomendasi;
-                                                        $selisih = $selisih < 0 ? $selisih * -1 : $selisih;
-                                                        $persentase = !empty($d->jumlah) ? ($selisih / $d->jumlah) * 100 : 0;
-                                                    @endphp
-                                                    @can('ajuanlimit.adjust')
-                                                        @if (empty($d->jumlah_rekomendasi))
-                                                            <a href="#" class="adjustlimit" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                <i class="ti ti-adjustments text-warning"></i>
-                                                            </a>
-                                                        @else
-                                                            @if ($d->status != '2')
-                                                                <a href="#" class="adjustlimit"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    @if ($d->jumlah_rekomendasi < $d->jumlah)
-                                                                        <span class="text-danger"><i class="ti ti-trending-down me-1"></i>
-                                                                            {{ ROUND($persentase) }} %</span>
-                                                                    @else
-                                                                        <span class="text-success"><i class="ti ti-trending-up me-1"></i>
-                                                                            {{ ROUND($persentase) }} %</span>
-                                                                    @endif
-                                                                </a>
-                                                            @else
-                                                                @if ($d->jumlah_rekomendasi < $d->jumlah)
-                                                                    <span class="text-danger"><i class="ti ti-trending-down me-1"></i>
-                                                                        {{ ROUND($persentase) }} %</span>
-                                                                @else
-                                                                    <span class="text-success"><i class="ti ti-trending-up me-1"></i>
-                                                                        {{ ROUND($persentase) }} %</span>
-                                                                @endif
-                                                            @endif
-                                                        @endif
-                                                    @else
-                                                        @if (!empty($d->jumlah_rekomendasi))
-                                                            @if ($d->jumlah_rekomendasi < $d->jumlah)
-                                                                <span class="text-danger"><i class="ti ti-trending-down me-1"></i>
-                                                                    {{ ROUND($persentase) }} %</span>
-                                                            @else
-                                                                <span class="text-success"><i class="ti ti-trending-up me-1"></i>
-                                                                    {{ ROUND($persentase) }} %</span>
-                                                            @endif
-                                                        @endif
-                                                    @endcan
-
-                                                </td>
-                                                <td class="text-center">{{ formatAngkaDesimal($d->skor) }}</td>
-                                                <td>
-
-                                                    @php
-                                                        if ($d->skor <= 2) {
-                                                            $rekomendasi = 'TL';
-                                                        } elseif ($d->skor > 2 && $d->skor <= 4) {
-                                                            $rekomendasi = 'TD';
-                                                        } elseif ($d->skor > 4 && $d->skor <= 6) {
-                                                            $rekomendasi = 'B';
-                                                        } elseif ($d->skor > 6 && $d->skor <= 8.5) {
-                                                            $rekomendasi = 'LDP';
-                                                        } elseif ($d->skor > 8.5 && $d->skor <= 10) {
-                                                            $rekomendasi = 'L';
-                                                        } else {
-                                                            $rekomendasi = '';
-                                                        }
-
-                                                        if ($d->skor <= 4) {
-                                                            $bg = 'danger';
-                                                        } elseif ($d->skor <= 6) {
-                                                            $bg = 'warning';
-                                                        } else {
-                                                            $bg = 'success';
-                                                        }
-                                                    @endphp
-                                                    <span class="badge bg-{{ $bg }}">
-                                                        {{ $rekomendasi }}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    @if ($d->role == 'sales marketing manager')
-                                                        @php
-                                                            $color = 'bg-warning';
-                                                            $text_role = 'SMM';
-                                                        @endphp
-                                                    @elseif ($d->role == 'regional sales manager')
-                                                        @php
-                                                            $color = 'bg-info';
-                                                            $text_role = 'RSM';
-                                                        @endphp
-                                                    @elseif($d->role == 'gm marketing')
-                                                        @php
-                                                            $color = 'bg-primary';
-                                                            $text_role = 'GM Marketing';
-                                                        @endphp
-                                                    @elseif($d->role == 'direktur')
-                                                        @php
-                                                            $color = 'bg-success';
-                                                            $text_role = 'Direktur';
-                                                        @endphp
-                                                    @else
-                                                        @php
-                                                            $text_role = '';
-                                                            $color = '';
-                                                        @endphp
-                                                    @endif
-
-                                                    <span class="badge {{ $color }}">
-                                                        {{ $text_role }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($d->status === '0')
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @elseif($d->status == '1')
-                                                        <i class="ti ti-checks text-success"></i>
-                                                    @elseif($d->status == '2')
-                                                        <span class="badge bg-danger">Ditolak</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex">
-
-                                                        @can('ajuanlimit.approve')
-                                                            <div>
-                                                                @if ($d->status_disposisi != null)
-                                                                    @if ($d->status_disposisi == '0')
-                                                                        <a href="#" class="me-2 btnApprove"
-                                                                            no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                            <i class="ti ti-send text-info"></i>
-                                                                        </a>
-                                                                    @else
-                                                                        <!-- Proses Cancel -->
-                                                                        @if ($level_user == 'direktur')
-                                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                                action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                                @csrf
-                                                                                @method('DELETE')
-                                                                                <a href="#" class="cancel-confirm me-1">
-                                                                                    <i class="ti ti-square-rounded-x text-danger"></i>
-
-                                                                                </a>
-                                                                            </form>
-                                                                        @elseif (($d->status_ajuan == '0' && $d->role == $nextlevel) || $d->role == $level_user)
-                                                                            <form method="POST" name="deleteform" class="deleteform"
-                                                                                action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                                @csrf
-                                                                                @method('DELETE')
-                                                                                <a href="#" class="cancel-confirm me-1">
-                                                                                    <i class="ti ti-square-rounded-x text-danger"></i>
-                                                                                </a>
-                                                                            </form>
-                                                                        @endif
-                                                                    @endif
-                                                                @else
-                                                                    @if ($d->role == 'sales marketing manager' && $level_user == 'operation manager' && $d->status_ajuan == '0')
-                                                                        <a href="#" class="me-2 btnApprove"
-                                                                            no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                            <i class="ti ti-send text-info"></i>
-                                                                        </a>
-                                                                    @elseif(($d->status_ajuan == '0' && $d->role == 'regional sales manager') || $d->role == 'sales marketing manager')
-                                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                                            action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                            @csrf
-                                                                            @method('DELETE')
-                                                                            <a href="#" class="cancel-confirm me-1">
-                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
-                                                                            </a>
-                                                                        </form>
-                                                                    @endif
-                                                                @endif
-                                                            </div>
-                                                        @endcan
-                                                        {{-- @can('ajuanlimit.edit')
-                                                            @if ($d->id_pengirim == auth()->user()->id && !in_array($level_user, $roles_approve_ajuanlimitkredit) && $d->status == '0')
-                                                                <div>
-                                                                    <a href="#" class="me-2 btnEdit"
-                                                                        no_pengajuan ="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                        <i class="ti ti-edit text-success"></i>
-                                                                    </a>
-                                                                </div>
-                                                            @elseif (
-                                                                //Jika Level User Memiliki Hak Akses Approve dan Status Disposisi 0
-                                                                //Atau Jika Level User Memilik Hak Akse Approve dan id Pengirim == User Aktif dan Status Ajuan 0
-
-                                                                (in_array($level_user, $roles_approve_ajuanlimitkredit) && $d->status_disposisi == '0') ||
-                                                                    (in_array($level_user, $roles_approve_ajuanlimitkredit) &&
-                                                                        $d->id_pengirim == auth()->user()->id &&
-                                                                        $d->status_ajuan == '0'))
-                                                                <div>
-                                                                    <a href="#" class="me-2 btnEdit"
-                                                                        no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                        <i class="ti ti-edit text-success"></i>
-                                                                    </a>
-                                                                </div>
-                                                            @endif
-                                                        @endcan --}}
-
-                                                        @can('ajuanlimit.show')
-                                                            <div>
-                                                                <a href="#" class="me-2 btnShow"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-file-description text-info"></i>
-                                                                </a>
-                                                            </div>
-                                                            <div>
-                                                                <a href="{{ route('ajuanlimit.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
-                                                                    class="me-2" target="_blank">
-                                                                    <i class="ti ti-printer text-info"></i>
-                                                                </a>
-                                                            </div>
-                                                        @endcan
-
-
-                                                        @can('ajuanlimit.delete')
-                                                            {{-- {{ $d->status_ajuan }} --}}
-                                                            @if (($d->id_pengirim == auth()->user()->id && $d->status == '0') || ($level_user == 'operation manager' && $d->status_ajuan == '0'))
-                                                                <div>
-                                                                    <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('ajuanlimit.delete', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <a href="#" class="delete-confirm ml-1">
-                                                                            <i class="ti ti-trash text-danger"></i>
-                                                                        </a>
-                                                                    </form>
-                                                                </div>
-                                                            @endif
-                                                        @endcan
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
+                        </div>
+                        @hasanyrole($roles_show_cabang)
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                                <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                    textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                    select2="select2Kodecabangsearch" />
                             </div>
-                            <div style="float: right;">
-                                {{ $ajuanlimit->links() }}
+                        @endhasanyrole
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
+                                    <option value="">Posisi Ajuan</option>
+                                    @foreach ($roles_approve_ajuanlimitkredit as $role)
+                                        <option value="{{ $role }}" {{ Request('posisi_ajuan') == $role ? 'selected' : '' }}>
+                                            {{ textUpperCase($role) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">Status</option>
+                                    <option value="0" {{ Request('status') === '0' ? 'selected' : '' }}>Pending</option>
+                                    <option value="1" {{ Request('status') === '1' ? 'selected' : '' }}>Disetujui</option>
+                                    <option value="2" {{ Request('status') === '2' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-md-4 col-sm-12">
+                            <div class="form-group mb-1">
+                                <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
+
+        {{-- Card Data --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-credit-card me-2"></i>Data Ajuan Limit</h6>
+                    <div class="d-flex gap-2">
+                        @can('ajuanlimit.create')
+                            <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate"><i class="ti ti-plus me-1"></i> Ajukan Limit</a>
+                        @endcan
+                    </div>
+                </div>
+            </div>
+
+                        <style>
+                            .freeze-first { position: sticky; left: 0; background-color: #002e65 !important; z-index: 10; border-right: 2px solid #dee2e6 !important; }
+                            .freeze-last { position: sticky; right: 0; background-color: #002e65 !important; z-index: 10; border-left: 2px solid #dee2e6 !important; }
+                            .table-hover tbody tr:hover .freeze-cell-first { background-color: #f5f5f5 !important; }
+                            .table-hover tbody tr:hover .freeze-cell-last { background-color: #f5f5f5 !important; }
+                            .freeze-cell-first { position: sticky; left: 0; background-color: #fff !important; z-index: 9; border-right: 2px solid #dee2e6 !important; }
+                            .freeze-cell-last { position: sticky; right: 0; background-color: #fff !important; z-index: 9; border-left: 2px solid #dee2e6 !important; }
+                        </style>
+
+                        <div class="table-responsive text-nowrap">
+                            <table class="table table-hover table-bordered">
+                                <thead style="background-color: #002e65;">
+                                    <tr>
+                                        <th class="text-white freeze-first">No. Pengajuan</th>
+                                        <th class="text-white">Tanggal</th>
+                                        <th class="text-white">Pelanggan</th>
+                                        <th class="text-white text-end">Jumlah</th>
+                                        <th class="text-white">LJT</th>
+                                        <th class="text-white text-center"><i class="ti ti-adjustments"></i></th>
+                                        <th class="text-white text-center">Skor</th>
+                                        <th class="text-white">Ket</th>
+                                        <th class="text-white">Posisi</th>
+                                        <th class="text-white text-center">Status</th>
+                                        <th class="text-white text-center freeze-last" style="width: 10%">#</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-border-bottom-0">
+                                    @foreach ($ajuanlimit as $d)
+                                        @php
+                                            if ($level_user == 'sales marketing manager') {
+                                                $nextlevel = 'regional sales manager';
+                                            } elseif ($level_user == 'regional sales manager') {
+                                                $nextlevel = 'gm marketing';
+                                            } elseif ($level_user == 'gm marketing') {
+                                                $nextlevel = 'direktur';
+                                            } else {
+                                                $nextlevel = '';
+                                            }
+                                        @endphp
+                                        <tr>
+                                            <td class="freeze-cell-first"><span class="fw-bold">{{ $d->no_pengajuan }}</span></td>
+                                            <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
+                                            <td>{{ $d->nama_pelanggan }}</td>
+                                            <td class="text-end fw-bold">
+                                                @if (!empty($d->jumlah_rekomendasi))
+                                                    <span class="text-muted text-decoration-line-through me-1" style="font-size: 11px">{{ formatAngka($d->jumlah) }}</span>
+                                                    <span class="text-primary">{{ formatAngka($d->jumlah_rekomendasi) }}</span>
+                                                @else
+                                                    {{ formatAngka($d->jumlah) }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $d->ljt }} Hari</td>
+                                            <td class="text-center">
+                                                @php
+                                                    $selisih = $d->jumlah - $d->jumlah_rekomendasi;
+                                                    $selisih = $selisih < 0 ? $selisih * -1 : $selisih;
+                                                    $persentase = !empty($d->jumlah) ? ($selisih / $d->jumlah) * 100 : 0;
+                                                @endphp
+                                                @can('ajuanlimit.adjust')
+                                                    @if (empty($d->jumlah_rekomendasi))
+                                                        <a href="#" class="adjustlimit" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                            <i class="ti ti-adjustments text-warning fs-4"></i>
+                                                        </a>
+                                                    @else
+                                                        @if ($d->status != '2')
+                                                            <a href="#" class="adjustlimit" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
+                                                                @if ($d->jumlah_rekomendasi < $d->jumlah)
+                                                                    <span class="text-danger fw-bold"><i class="ti ti-trending-down me-1"></i>{{ ROUND($persentase) }}%</span>
+                                                                @else
+                                                                    <span class="text-success fw-bold"><i class="ti ti-trending-up me-1"></i>{{ ROUND($persentase) }}%</span>
+                                                                @endif
+                                                            </a>
+                                                        @else
+                                                                @if ($d->jumlah_rekomendasi < $d->jumlah)
+                                                                    <span class="text-danger fw-bold"><i class="ti ti-trending-down me-1"></i>{{ ROUND($persentase) }}%</span>
+                                                                @else
+                                                                    <span class="text-success fw-bold"><i class="ti ti-trending-up me-1"></i>{{ ROUND($persentase) }}%</span>
+                                                                @endif
+                                                        @endif
+                                                    @endif
+                                                @else
+                                                    @if (!empty($d->jumlah_rekomendasi))
+                                                        @if ($d->jumlah_rekomendasi < $d->jumlah)
+                                                            <span class="text-danger fw-bold"><i class="ti ti-trending-down me-1"></i>{{ ROUND($persentase) }}%</span>
+                                                        @else
+                                                            <span class="text-success fw-bold"><i class="ti ti-trending-up me-1"></i>{{ ROUND($persentase) }}%</span>
+                                                        @endif
+                                                    @endif
+                                                @endcan
+                                            </td>
+                                            <td class="text-center fw-bold">{{ formatAngkaDesimal($d->skor) }}</td>
+                                            <td class="text-center">
+                                                @php
+                                                    if ($d->skor <= 2) { $rekomendasi = 'TL'; $bg = 'danger'; }
+                                                    elseif ($d->skor <= 4) { $rekomendasi = 'TD'; $bg = 'danger'; }
+                                                    elseif ($d->skor <= 6) { $rekomendasi = 'B'; $bg = 'warning'; }
+                                                    elseif ($d->skor <= 8.5) { $rekomendasi = 'LDP'; $bg = 'success'; }
+                                                    elseif ($d->skor <= 10) { $rekomendasi = 'L'; $bg = 'success'; }
+                                                    else { $rekomendasi = ''; $bg = 'secondary'; }
+                                                @endphp
+                                                <span class="badge bg-{{ $bg }} shadow-sm">
+                                                    {{ $rekomendasi }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                @php
+                                                    if ($d->role == 'sales marketing manager') { $color = 'bg-warning'; $text_role = 'SMM'; }
+                                                    elseif ($d->role == 'regional sales manager') { $color = 'bg-info'; $text_role = 'RSM'; }
+                                                    elseif ($d->role == 'gm marketing') { $color = 'bg-primary'; $text_role = 'GM'; }
+                                                    elseif ($d->role == 'direktur') { $color = 'bg-success'; $text_role = 'DIR'; }
+                                                    else { $text_role = '-'; $color = 'bg-secondary'; }
+                                                @endphp
+                                                <span class="badge {{ $color }} shadow-sm">
+                                                    {{ $text_role }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                @if ($d->status === '0')
+                                                    <span class="badge bg-label-warning"><i class="ti ti-hourglass-empty me-1"></i>Pending</span>
+                                                @elseif($d->status == '1')
+                                                    <span class="badge bg-label-success"><i class="ti ti-checks me-1"></i>Approved</span>
+                                                @elseif($d->status == '2')
+                                                    <span class="badge bg-label-danger"><i class="ti ti-x me-1"></i>Rejected</span>
+                                                @endif
+                                            </td>
+                                            <td class="freeze-cell-last">
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    @can('ajuanlimit.approve')
+                                                        @if ($d->status_disposisi != null)
+                                                            @if ($d->status_disposisi == '0')
+                                                                <a href="#" class="btnApprove text-info" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" data-bs-toggle="tooltip" title="Approve">
+                                                                    <i class="ti ti-send fs-5"></i>
+                                                                </a>
+                                                            @else
+                                                                @if ($level_user == 'direktur' || ($d->status_ajuan == '0' && $d->role == $nextlevel) || $d->role == $level_user)
+                                                                    <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="cancel-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Cancel">
+                                                                            <i class="ti ti-square-rounded-x fs-5"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
+                                                            @endif
+                                                        @else
+                                                            @if ($d->role == 'sales marketing manager' && $level_user == 'operation manager' && $d->status_ajuan == '0')
+                                                                <a href="#" class="btnApprove text-info" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" data-bs-toggle="tooltip" title="Approve">
+                                                                    <i class="ti ti-send fs-5"></i>
+                                                                </a>
+                                                            @elseif(($d->status_ajuan == '0' && $d->role == 'regional sales manager') || $d->role == 'sales marketing manager')
+                                                                <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="cancel-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Cancel">
+                                                                        <i class="ti ti-square-rounded-x fs-5"></i>
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                        @endif
+                                                    @endcan
+
+                                                    @can('ajuanlimit.show')
+                                                        <a href="#" class="btnShow text-info" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" data-bs-toggle="tooltip" title="Detail">
+                                                            <i class="ti ti-file-description fs-5"></i>
+                                                        </a>
+                                                        <a href="{{ route('ajuanlimit.cetak', Crypt::encrypt($d->no_pengajuan)) }}" class="text-secondary" target="_blank" data-bs-toggle="tooltip" title="Cetak">
+                                                            <i class="ti ti-printer fs-5"></i>
+                                                        </a>
+                                                    @endcan
+
+                                                    @can('ajuanlimit.delete')
+                                                        @if (($d->id_pengirim == auth()->user()->id && $d->status == '0') || ($level_user == 'operation manager' && $d->status_ajuan == '0'))
+                                                            <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('ajuanlimit.delete', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Hapus">
+                                                                    <i class="ti ti-trash fs-5"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    @endcan
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer py-2">
+                            <div style="float: right;">
+                                {{ $ajuanlimit->links() }}
+                            </div>
+                        </div>
+                    </div>
     </div>
 </div>
 

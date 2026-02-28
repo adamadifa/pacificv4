@@ -6,90 +6,82 @@
    <span>Wilayah</span>
 @endsection
 <div class="row">
-   <div class="col-lg-6 col-sm-12 col-xs-12">
-      <div class="card">
-         <div class="card-header">
-            @can('wilayah.create')
-               <a href="#" class="btn btn-primary" id="btncreateWilayah"><i class="fa fa-plus me-2"></i> Tambah
-                  Wilayah</a>
-            @endcan
-
-         </div>
-         <div class="card-body">
-            <div class="row">
-               <div class="col-12">
-                  <form action="{{ route('wilayah.index') }}">
-                     <div class="row">
-                        <div class="col-lg-6 col-sm-12 col-md-12">
-                           <x-input-with-icon label="Cari Wilayah / Rute" value="{{ Request('nama_wilayah') }}"
-                              name="nama_wilayah" icon="ti ti-search" />
-                        </div>
-                        @hasanyrole($roles_show_cabang)
-                           <div class="col-lg-4 col-sm-12 col-md-12">
-                              <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                                 textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
-                           </div>
-                        @endhasanyrole
-                        <div class="col-lg-2 col-sm-12 col-md-12">
-                           <button class="btn btn-primary"><i
-                                 class="ti ti-icons ti-search me-1"></i>Cari</button>
-                        </div>
-                     </div>
-                  </form>
+   <div class="col-lg-6 col-md-12">
+      {{-- Filter Section (No Card) --}}
+      <form action="{{ route('wilayah.index') }}">
+         <div class="row g-2 mb-3">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+               <x-input-with-icon label="Cari Wilayah / Rute" value="{{ Request('nama_wilayah') }}"
+                  name="nama_wilayah" icon="ti ti-search" />
+            </div>
+            @hasanyrole($roles_show_cabang)
+               <div class="col-lg-4 col-md-4 col-sm-12">
+                  <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
+                     textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
+               </div>
+            @endhasanyrole
+            <div class="col-lg-2 col-md-2 col-sm-12">
+               <div class="form-group mb-3">
+                  <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
                </div>
             </div>
-            <div class="row">
-               <div class="col-12">
-                  <div class="table-responsive mb-2">
-                     <table class="table">
-                        <thead class="table-dark">
-                           <tr>
-                              <th>No.</th>
-                              <th>Kode Wilayah</th>
-                              <th>Nama Wilayah</th>
-                              <th>#</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           @foreach ($wilayah as $d)
-                              <tr>
-                                 <td> {{ $loop->iteration }}</td>
-                                 <td>{{ $d->kode_wilayah }}</td>
-                                 <td>{{ $d->nama_wilayah }}</td>
-                                 <td>
-                                    <div class="d-flex">
-                                       @can('wilayah.edit')
-                                          <div>
-                                             <a href="#" class="me-2 editWilayah"
-                                                kode_wilayah="{{ Crypt::encrypt($d->kode_wilayah) }}">
-                                                <i class="ti ti-edit text-success"></i>
-                                             </a>
-                                          </div>
-                                       @endcan
-                                       @can('wilayah.delete')
-                                          <div>
-                                             <form method="POST" name="deleteform" class="deleteform"
-                                                action="{{ route('wilayah.delete', Crypt::encrypt($d->kode_wilayah)) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <a href="#" class="delete-confirm ml-1">
-                                                   <i class="ti ti-trash text-danger"></i>
-                                                </a>
-                                             </form>
-                                          </div>
-                                       @endcan
+         </div>
+      </form>
 
-                                    </div>
-                                 </td>
-                              </tr>
-                           @endforeach
-                        </tbody>
-                     </table>
-                  </div>
-                  <div style="float: right;">
-                     {{ $wilayah->links() }}
-                  </div>
-               </div>
+      {{-- Data Card --}}
+      <div class="card shadow-sm border mt-2">
+         <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="d-flex justify-content-between align-items-center">
+               <h6 class="m-0 fw-bold text-white"><i class="ti ti-map-pin me-2"></i>Data Wilayah / Rute</h6>
+               @can('wilayah.create')
+                  <a href="#" class="btn btn-primary btn-sm" id="btncreateWilayah"><i class="ti ti-plus me-1"></i> Tambah</a>
+               @endcan
+            </div>
+         </div>
+         <div class="table-responsive text-nowrap">
+            <table class="table table-hover">
+               <thead class="text-white" style="background-color: #002e65;">
+                  <tr>
+                     <th class="text-white">No.</th>
+                     <th class="text-white">Kode Wilayah</th>
+                     <th class="text-white">Nama Wilayah</th>
+                     <th class="text-white text-center">Aksi</th>
+                  </tr>
+               </thead>
+               <tbody class="table-border-bottom-0">
+                  @foreach ($wilayah as $d)
+                     <tr>
+                        <td> {{ $loop->iteration + $wilayah->firstItem() - 1 }}</td>
+                        <td><span class="fw-semibold">{{ $d->kode_wilayah }}</span></td>
+                        <td>{{ $d->nama_wilayah }}</td>
+                        <td>
+                           <div class="d-flex justify-content-center gap-2">
+                              @can('wilayah.edit')
+                                 <a href="#" class="editWilayah text-primary" data-bs-toggle="tooltip" title="Edit"
+                                    kode_wilayah="{{ Crypt::encrypt($d->kode_wilayah) }}">
+                                    <i class="ti ti-pencil"></i>
+                                 </a>
+                              @endcan
+                              @can('wilayah.delete')
+                                 <form method="POST" name="deleteform" class="deleteform d-inline"
+                                    action="{{ route('wilayah.delete', Crypt::encrypt($d->kode_wilayah)) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Hapus">
+                                       <i class="ti ti-trash"></i>
+                                    </button>
+                                 </form>
+                              @endcan
+                           </div>
+                        </td>
+                     </tr>
+                  @endforeach
+               </tbody>
+            </table>
+         </div>
+         <div class="card-footer py-2">
+            <div style="float: right;">
+               {{ $wilayah->links() }}
             </div>
          </div>
       </div>
