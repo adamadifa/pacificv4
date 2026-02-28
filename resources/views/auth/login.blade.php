@@ -257,6 +257,7 @@
             function resetCharacter() {
                 charContainer.className = "state-idle";
                 charImg.style.transform = "rotate(0deg)";
+                charImg.src = "{{ asset('karakter.png') }}";
             }
 
             // ID User Input - Look around as user types
@@ -273,9 +274,10 @@
                 charImg.style.transform = `rotate(${rotation}deg) scale(1.05)`;
             });
 
-            // Password Input - Removed hiding effect as requested
+            // Password Input - Change to covering eyes image
             passwordInput.addEventListener("focus", () => {
                 charContainer.className = "state-typing";
+                charImg.src = "{{ asset('karaktertutupmata.png') }}";
             });
 
             passwordInput.addEventListener("blur", resetCharacter);
