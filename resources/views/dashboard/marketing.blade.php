@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
+                        <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">Analisa Umur Piutang</h4>
@@ -84,7 +84,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>  
                         <div class="col-lg-3 col-sm-12 col-md-12 mb-3">
                             <div class="card">
                                 <div class="card-header">
@@ -163,23 +163,71 @@
                     <div class="row">
                         <div class="col-lg-9 col-md-12 col-sm-12" id="loadrekappersediaan"></div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <td></td>
-                                                <td>STOK AMAN</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="bg-danger"></td>
-                                                <td>Stok Kurang Dari Buffer</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="bg-info"></td>
-                                                <td>Stok Lebih dari Max. Stok</td>
-                                            </tr>
-                                        </table>
+                            <style>
+                                .status-legend-card {
+                                    border: 1px solid rgba(0, 0, 0, 0.08);
+                                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                                    border-radius: 12px;
+                                }
+
+                                .status-indicator-item {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 12px;
+                                    padding: 10px 0;
+                                    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+                                }
+
+                                .status-indicator-item:last-child {
+                                    border-bottom: none;
+                                }
+
+                                .status-dot {
+                                    width: 12px;
+                                    height: 12px;
+                                    border-radius: 50%;
+                                    flex-shrink: 0;
+                                }
+
+                                .dot-safe {
+                                    background-color: #28c76f;
+                                    box-shadow: 0 0 8px rgba(40, 199, 111, 0.4);
+                                }
+
+                                .dot-danger {
+                                    background-color: #ea5455;
+                                    box-shadow: 0 0 8px rgba(234, 84, 85, 0.4);
+                                }
+
+                                .dot-info {
+                                    background-color: #00cfe8;
+                                    box-shadow: 0 0 8px rgba(0, 207, 232, 0.4);
+                                }
+
+                                .status-text {
+                                    font-size: 0.85rem;
+                                    font-weight: 500;
+                                    color: #5e5873;
+                                }
+                            </style>
+                            <div class="card status-legend-card mb-3">
+                                <div class="card-header pb-2">
+                                    <h6 class="card-title mb-0 d-flex align-items-center">
+                                        <i class="ti ti-info-circle me-2 text-primary"></i>Status Persediaan
+                                    </h6>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="status-indicator-item">
+                                        <div class="status-dot dot-safe"></div>
+                                        <div class="status-text">Stok Aman</div>
+                                    </div>
+                                    <div class="status-indicator-item">
+                                        <div class="status-dot dot-danger"></div>
+                                        <div class="status-text">Stok < Buffer (Kritis)</div>
+                                    </div>
+                                    <div class="status-indicator-item">
+                                        <div class="status-dot dot-info"></div>
+                                        <div class="status-text">Stok > Max (Overstock)</div>
                                     </div>
                                 </div>
                             </div>

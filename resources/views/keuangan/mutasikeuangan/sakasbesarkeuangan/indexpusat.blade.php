@@ -3,92 +3,103 @@
 
 @section('content')
 @section('navigasi')
-    <span>Saldo Kas Besar</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Saldo Kas Besar Pusat</h4>
+            <small class="text-muted">Manajemen saldo kas besar keuangan pusat.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-wallet me-1"></i>Saldo Kas Besar Pusat</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
     <div class="col-lg-12">
-        <div class="nav-align-top nav-tabs-shadow mb-4">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
             @include('layouts.navigation_mutasikeuangan')
-            <div class="tab-content">
-                <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('sakasbesarkeuangan.create')
-                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                            Input Saldo Kas Besar
-                        </a>
-                    @endcan
+        </div>
 
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <form action="{{ route('sakasbesarkeuangan.index') }}">
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
-                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
-                                    </div>
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
-                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
-                                    </div>
-                                </div>
-                               
-
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i class="ti ti-search me-2"></i>Cari
-                                                Data</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+        {{-- Filter Section --}}
+        <form action="{{ route('sakasbesarkeuangan.index') }}">
+            <div class="card shadow-none border-0 bg-transparent mb-3">
+                <div class="card-body p-0">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-lg-4 col-md-6">
+                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
+                                icon="ti ti-calendar" datepicker="flatpickr-date" />
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table  table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Tanggal</th>
-                                            <th>Keterangan</th>
-                                            <th>DEBET</th>
-                                            <th>KREDIT</th>
-                                            <th>#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($saldokasbesar as $d)
-                                        @php
-                                            $debet = $d->debet_kredit == 'D' ? $d->jumlah : 0;
-                                            $kredit = $d->debet_kredit == 'K' ? $d->jumlah : 0;
-                                        @endphp
-                                            <tr>
-                                                <td>{{ DateToIndo($d->tanggal) }}</td>
-                                                <td>{{ $d->keterangan }}</td>
-                                                <td class="text-end">
-                                                    {{ formatAngkaDesimal($debet) }}
-                                                </td>
-                                                <td class="text-end">
-                                                    {{ formatAngkaDesimal($kredit) }}
-                                                </td>
-                                                <td>
-                                                    <form method="POST" name="deleteform" class="deleteform"
-                                                        action="{{ route('sakasbesarkeuangan.delete', Crypt::encrypt($d->id)) }}">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <a href="#" class="delete-confirm ml-1">
-                                                            <i class="ti ti-trash text-danger"></i>
-                                                        </a>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                        <div class="col-lg-4 col-md-6">
+                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
+                                icon="ti ti-calendar" datepicker="flatpickr-date" />
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary"><i class="ti ti-search me-1"></i>Cari</button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3"
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-wallet me-2"></i>Data Saldo Kas Besar Pusat</h6>
+                    @can('sakasbesarkeuangan.create')
+                        <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate">
+                            <i class="ti ti-plus me-1"></i> Input Saldo Kas Besar
+                        </a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 10%; white-space: nowrap;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">KETERANGAN</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 1%; white-space: nowrap;">DEBET</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 1%; white-space: nowrap;">KREDIT</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 1%; white-space: nowrap;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($saldokasbesar as $d)
+                            @php
+                                $debet = $d->debet_kredit == 'D' ? $d->jumlah : 0;
+                                $kredit = $d->debet_kredit == 'K' ? $d->jumlah : 0;
+                            @endphp
+                            <tr>
+                                <td>{{ DateToIndo($d->tanggal) }}</td>
+                                <td>{{ $d->keterangan }}</td>
+                                <td class="text-end fw-bold text-success">{{ formatAngkaDesimal($debet) }}</td>
+                                <td class="text-end fw-bold text-danger">{{ formatAngkaDesimal($kredit) }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <form method="POST" name="deleteform" class="deleteform d-inline"
+                                            action="{{ route('sakasbesarkeuangan.delete', Crypt::encrypt($d->id)) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <a href="#" class="delete-confirm text-danger" data-bs-toggle="tooltip" title="Hapus">
+                                                <i class="ti ti-trash fs-4"></i>
+                                            </a>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

@@ -3,172 +3,176 @@
 
 @section('content')
 @section('navigasi')
-    <span>Pembayaran Transfer</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Pembayaran Transfer</h4>
+            <small class="text-muted">Mengelola data pembayaran transfer pelanggan.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-file-description me-1"></i>Marketing</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-arrows-transfer-down me-1"></i>Transfer</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
-    <div class="col-lg-12">
-        <div class="nav-align-top nav-tabs-shadow mb-4">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
             @include('layouts.navigation_girotransfer')
-            <div class="tab-content">
-                <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
+        </div>
+
+        {{-- Filter Section --}}
+        <form action="{{ route('pembayarantransfer.index') }}">
+            <div class="card shadow-none border-0 bg-transparent mb-3">
+                <div class="card-body p-0">
+                    <div class="row g-2">
+                        <div class="col-lg-3 col-md-6 col-sm-12">
+                            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari"
+                                datepicker="flatpickr-date" value="{{ Request('dari') }}" />
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12">
+                            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai"
+                                datepicker="flatpickr-date" value="{{ Request('sampai') }}" />
+                        </div>
+                        @hasanyrole($roles_show_cabang)
+                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                    textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                    select2="select2Kodecabangsearch" />
+                            </div>
+                        @endrole
+                    </div>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" icon="ti ti-user"
+                                name="nama_pelanggan_search" />
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12">
+                            <div class="form-group mb-3">
+                                <select name="kode_salesman_search" id="kode_salesman_search"
+                                    class="form-select select2Kodesalesmansearch">
+                                    <option value="">Semua Salesman</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12">
+                            <div class="form-group mb-3">
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">Status</option>
+                                    <option value="0" {{ Request('status') === '0' ? 'selected' : '' }}>Pending</option>
+                                    <option value="1" {{ Request('status') === '1' ? 'selected' : '' }}>Disetujui</option>
+                                    <option value="2" {{ Request('status') === '2' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-sm-12">
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i> Cari</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3"
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-arrows-transfer-down me-2"></i>Data Pembayaran Transfer</h6>
                     @can('pembayarantransfer.create')
-                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                            Input Pembayaran Transfer
+                        <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate">
+                            <i class="ti ti-plus me-1"></i> Input Pembayaran Transfer
                         </a>
                     @endcan
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <form action="{{ route('pembayarantransfer.index') }}">
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-white" style="background-color: #002e65 !important;">KODE TRANSFER</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">PELANGGAN</th>
+                            <th class="text-white text-end" style="background-color: #002e65 !important;">JUMLAH</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">PENGIRIM</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">PENERIMA</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">JATUH TEMPO</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">STATUS</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($transfer as $d)
+                            <tr>
+                                <td><span class="fw-bold text-primary">{{ $d->kode_transfer }}</span></td>
+                                <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
+                                <td style="width: 20%">{{ $d->nama_pelanggan }}</td>
+                                <td class="text-end fw-bold">{{ formatAngka($d->total) }}</td>
+                                <td>{{ textUpperCase($d->bank_pengirim) }}</td>
+                                <td>{{ !empty($d->nama_bank_alias) ? $d->nama_bank_alias : $d->nama_bank }}</td>
+                                <td>{{ date('d-m-y', strtotime($d->jatuh_tempo)) }}</td>
+                                <td class="text-center">
+                                    @if ($d->status == '1')
+                                        <span class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="{{ $d->no_bukti }}">{{ date('d-m-y', strtotime($d->tanggal_diterima)) }}</span>
+                                    @elseif($d->status == '2')
+                                        <i class="ti ti-square-rounded-x text-danger fs-4"></i>
+                                    @else
+                                        <i class="ti ti-hourglass-empty text-warning fs-4"></i>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('pembayarantransfer.approve')
+                                            @if (auth()->user()->kode_cabang != 'PST')
+                                                @if ($d->status === '0')
+                                                    <a href="#" class="btnApprove text-success"
+                                                        kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}" data-bs-toggle="tooltip" title="Approve">
+                                                        <i class="ti ti-external-link fs-4"></i>
+                                                    </a>
+                                                @endif
+                                            @else
+                                                <a href="#" class="btnApprove text-success"
+                                                    kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}" data-bs-toggle="tooltip" title="Approve">
+                                                    <i class="ti ti-external-link fs-4"></i>
+                                                </a>
+                                            @endif
+                                        @endcan
+                                        @can('pembayarantransfer.show')
+                                            <a href="#" class="btnShow text-info"
+                                                kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}" data-bs-toggle="tooltip" title="Detail">
+                                                <i class="ti ti-file-description fs-4"></i>
+                                            </a>
+                                        @endcan
+                                        @can('pembayarantransfer.delete')
+                                            @if ($d->status === '0')
+                                                <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                    action="/pembayarantransfer/{{ Crypt::encrypt($d->kode_transfer) }}/deletetransfer">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="#" class="delete-confirm text-danger">
+                                                        <i class="ti ti-trash fs-4"></i>
+                                                    </a>
+                                                </form>
+                                            @endif
+                                        @endcan
                                     </div>
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
-                                    </div>
-                                </div>
-                                @hasanyrole($roles_show_cabang)
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                                textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                                                select2="select2Kodecabangsearch" />
-                                        </div>
-                                    </div>
-                                @endrole
-                                <div class="row">
-
-                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                        <div class="form-group mb-3">
-                                            <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" icon="ti ti-user"
-                                                name="nama_pelanggan_search" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-12 col-sm-12">
-                                        <div class="form-group mb-3">
-                                            <select name="kode_salesman_search" id="kode_salesman_search"
-                                                class="form-select select2Kodesalesmansearch">
-                                                <option value="">Semua Salesman</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group mb-3">
-                                            <select name="status" id="status" class="form-select">
-                                                <option value="">Status</option>
-                                                <option value="0" {{ Request('status') === '0' ? 'selected' : '' }}>
-                                                    Pending</option>
-                                                <option value="1" {{ Request('status') === '1' ? 'selected' : '' }}>
-                                                    Disetujui</option>
-                                                <option value="2" {{ Request('status') === '2' ? 'selected' : '' }}>
-                                                    Ditolak</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i class="ti ti-search me-2"></i>Cari
-                                                Data</button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Kode Transfer</th>
-                                            <th>Tanggal</th>
-                                            <th>Pelanggan</th>
-                                            <th>Jumlah</th>
-                                            <th>Bank Pengirim</th>
-                                            <th>Bank Penerima</th>
-                                            <th>Jatuh Tempo</th>
-                                            <th class="text-center">Status</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($transfer as $d)
-                                            <tr>
-                                                <td>{{ $d->kode_transfer }}</td>
-                                                <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
-                                                <td style="width: 20%">{{ $d->nama_pelanggan }}</td>
-                                                <td class="text-end fw-bold">{{ formatAngka($d->total) }}</td>
-                                                <td>{{ textUpperCase($d->bank_pengirim) }}</td>
-                                                <td>{{ !empty($d->nama_bank_alias) ? $d->nama_bank_alias : $d->nama_bank }}
-                                                </td>
-                                                <td>{{ date('d-m-y', strtotime($d->jatuh_tempo)) }}</td>
-                                                <td class="text-center">
-                                                    @if ($d->status == '1')
-                                                        <span class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                            data-bs-custom-class="tooltip-primary"
-                                                            data-bs-original-title="{{ $d->no_bukti }}">{{ date('d-m-y', strtotime($d->tanggal_diterima)) }}</span>
-                                                    @elseif($d->status == '2')
-                                                        <i class="ti ti-square-rounded-x text-danger"></i>
-                                                    @else
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex">
-                                                        @can('pembayarantransfer.approve')
-                                                            @if (auth()->user()->kode_cabang != 'PST')
-                                                                @if ($d->status === '0')
-                                                                    <div>
-                                                                        <a href="#" class="btnApprove me-2"
-                                                                            kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}"><i
-                                                                                class="ti ti-external-link text-success"></i></a>
-                                                                    </div>
-                                                                @endif
-                                                            @else
-                                                                <div>
-                                                                    <a href="#" class="btnApprove me-2"
-                                                                        kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}"><i
-                                                                            class="ti ti-external-link text-success"></i></a>
-                                                                </div>
-                                                            @endif
-                                                        @endcan
-                                                        @can('pembayarantransfer.show')
-                                                            <div>
-                                                                <a href="#" class="btnShow"
-                                                                    kode_transfer="{{ Crypt::encrypt($d->kode_transfer) }}"><i
-                                                                        class="ti ti-file-description text-info"></i></a>
-                                                            </div>
-                                                        @endcan
-                                                        @can('pembayarantransfer.delete')
-                                                            @if ($d->status === '0')
-                                                                <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="/pembayarantransfer/{{ Crypt::encrypt($d->kode_transfer) }}/deletetransfer">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm me-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            @endif
-                                                        @endcan
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div style="float: right;">
-                                {{ $transfer->links() }}
-                            </div>
-                        </div>
-                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $transfer->links() }}
                 </div>
             </div>
         </div>

@@ -13,14 +13,13 @@
         <div class="col">
             <div class="form-group mb-3">
                 <select name="formatlaporan" id="formatlaporan" class="form-select">
-                    {{-- <option value="">Format Laporan</option> --}}
                     <option value="1">Per Bulan</option>
                     <option value="2">Per Tahun</option>
                 </select>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="bulan_container">
         <div class="col">
             <div class="form-group mb-3">
                 <select name="bulan" id="bulan" class="form-select">
@@ -31,7 +30,6 @@
                 </select>
             </div>
         </div>
-
     </div>
     <div class="row">
         <div class="col">
@@ -47,12 +45,12 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-10 col-md-12 col-sm-12">
+        <div class="col-lg-10 col-md-10 col-sm-12 pe-1">
             <button type="submit" class="btn btn-primary w-100">
                 <i class="ti ti-printer me-1"></i> Cetak
             </button>
         </div>
-        <div class="col-lg-2 col-md-12 col-sm-12">
+        <div class="col-lg-2 col-md-2 col-sm-12 ps-0">
             <button type="submit" name="exportButton" class="btn btn-success w-100">
                 <i class="ti ti-download"></i>
             </button>

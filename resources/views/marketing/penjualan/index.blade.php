@@ -125,9 +125,9 @@
                 </div>
             </div>
             <div class="row g-2 mb-2">
-                <div class="col-lg-12 col-md-12 col-sm-12">
-                    <div class="form-group mb-1">
-                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari Data</button>
+                <div class="col-auto">
+                    <div class="form-group mb-1 text-end">
+                        <button class="btn btn-primary btn-sm"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
                 </div>
             </div>

@@ -3,113 +3,129 @@
 
 @section('content')
 @section('navigasi')
-    <span>Jurnal Umum</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Jurnal Umum</h4>
+            <small class="text-muted">Manajemen posting jurnal umum (Accounting).</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-settings me-1"></i>Accounting</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-book me-1"></i>Jurnal Umum</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                @can('jurnalumum.create')
-                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Jurnal Umum</a>
-                @endcan
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{-- Filter Section --}}
+        <form action="{{ route('jurnalumum.index') }}" id="formSearch">
+            <div class="row g-2 mb-1">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                        datepicker="flatpickr-date" />
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                        datepicker="flatpickr-date" />
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <form action="{{ route('jurnalumum.index') }}" id="formSearch">
-                            <div class="row">
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
-                                </div>
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                        upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
-                                </div>
-                            </div>
+            <div class="row g-2 mb-3 align-items-end">
+                <div class="col-lg-10 col-md-9 col-sm-12">
+                    <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                        upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
+                </div>
+                <div class="col-auto">
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary btn-sm"><i class="ti ti-search me-1"></i>Cari</button>
+                    </div>
+                </div>
+            </div>
+        </form>
 
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
-                                            Data</button>
+        {{-- Card Data --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-book me-2"></i>Data Jurnal Umum</h6>
+                    @can('jurnalumum.create')
+                        <a href="#" class="btn btn-primary btn-sm" id="btnCreate"><i class="ti ti-plus me-1"></i> Input Jurnal Umum</a>
+                    @endcan
+                </div>
+            </div>
+            
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover">
+                    <thead style="background-color: #002e65;">
+                        <tr>
+                            <th class="text-white py-3">KODE JU</th>
+                            <th class="text-white py-3">TANGGAL</th>
+                            <th class="text-white py-3">KETERANGAN</th>
+                            <th class="text-white py-3">AKUN</th>
+                            <th class="text-white py-3">PERUNTUKAN</th>
+                            <th class="text-white py-3 text-end">DEBET</th>
+                            <th class="text-white py-3 text-end">KREDIT</th>
+                            <th class="text-white py-3">DEPT</th>
+                            <th class="text-white text-center py-3" style="width: 80px;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @forelse ($jurnalumum as $d)
+                            @php
+                                $debet = $d->debet_kredit == 'D' ? $d->jumlah : 0;
+                                $kredit = $d->debet_kredit == 'K' ? $d->jumlah : 0;
+                                $color_cr = !empty($d->kode_cr) ? 'table-primary text-primary' : '';
+                            @endphp
+                            <tr class="{{ $color_cr }}">
+                                <td class="py-2"><span class="fw-bold">{{ $d->kode_ju }}</span></td>
+                                <td class="py-2">{{ formatIndo($d->tanggal) }}</td>
+                                <td class="py-2">{{ $d->keterangan }}</td>
+                                <td class="py-2">{{ $d->kode_akun }} - {{ $d->nama_akun }}</td>
+                                <td class="py-2">{{ $d->kode_peruntukan }} {{ !empty($d->kode_cabang) ? '(' . $d->kode_cabang . ')' : '' }}</td>
+                                <td class="py-2 text-end fw-semibold">{{ formatAngkaDesimal($debet) }}</td>
+                                <td class="py-2 text-end fw-semibold">{{ formatAngkaDesimal($kredit) }}</td>
+                                <td class="py-2">{{ $d->kode_dept }}</td>
+                                <td class="py-2">
+                                    <div class="d-flex justify-content-center gap-1">
+                                        @can('jurnalumum.edit')
+                                            <a href="#" class="btnEdit text-success" kode_ju="{{ Crypt::encrypt($d->kode_ju) }}" data-bs-toggle="tooltip" title="Edit">
+                                                <i class="ti ti-edit fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('jurnalumum.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                action="{{ route('jurnalumum.delete', Crypt::encrypt($d->kode_ju)) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0"
+                                                    data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash fs-5"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table  table-hover table-bordered">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th style="width: 10%">Kode JU</th>
-                                        <th style="width: 10%">Tanggal</th>
-                                        <th style="width: 25%">Keterangan</th>
-                                        <th style="width: 20%">Akun</th>
-                                        <th style="width: 8%">Peruntukan</th>
-                                        <th>Debet</th>
-                                        <th>Kredit</th>
-                                        <th>Dept</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($jurnalumum as $d)
-                                        @php
-                                            $debet = $d->debet_kredit == 'D' ? $d->jumlah : 0;
-                                            $kredit = $d->debet_kredit == 'K' ? $d->jumlah : 0;
-                                            $color_cr = !empty($d->kode_cr) ? 'bg-primary text-white' : '';
-                                        @endphp
-                                        <tr class="{{ $color_cr }}">
-                                            <td>{{ $d->kode_ju }}</td>
-                                            <td>{{ formatIndo($d->tanggal) }}</td>
-                                            <td>{{ $d->keterangan }}</td>
-                                            <td>{{ $d->kode_akun }} - {{ $d->nama_akun }}</td>
-                                            <td>{{ $d->kode_peruntukan }} {{ !empty($d->kode_cabang) ? '(' . $d->kode_cabang . ')' : '' }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($debet) }}</td>
-                                            <td class="text-end">{{ formatAngkaDesimal($kredit) }}</td>
-                                            <td>{{ $d->kode_dept }}</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    @can('jurnalumum.edit')
-                                                        <a href="#" class="btnEdit me-1" kode_ju="{{ Crypt::encrypt($d->kode_ju) }}"><i
-                                                                class="ti ti-edit text-success"></i></a>
-                                                    @endcan
-                                                    @can('jurnalumum.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('jurnalumum.delete', Crypt::encrypt($d->kode_ju)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm me-1">
-                                                                <i class="ti ti-trash text-danger"></i>
-                                                            </a>
-                                                        </form>
-                                                    @endcan
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="text-center py-4 text-muted">
+                                    <i class="ti ti-database-off d-block mb-1 fs-2"></i>
+                                    Tidak ada data ditemukan
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 <x-modal-form id="modal" show="loadmodal" title="" />
 @endsection
+
 @push('myscript')
 <script>
     $(function() {
@@ -118,7 +134,7 @@
             select2Kodecabangsearch.each(function() {
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
-                    placeholder: 'Semua  Cabang',
+                    placeholder: 'Semua Cabang',
                     allowClear: true,
                     dropdownParent: $this.parent()
                 });
@@ -144,7 +160,6 @@
             $("#modal").find(".modal-dialog").addClass("modal-xl");
         });
 
-
         $(".btnEdit").click(function(e) {
             e.preventDefault();
             loading();
@@ -154,7 +169,6 @@
             $("#modal").find("#loadmodal").load(`/jurnalumum/${kode_ju}/edit`);
             $("#modal").find(".modal-dialog").removeClass("modal-xl");
         });
-
     });
 </script>
 @endpush

@@ -1,7 +1,5 @@
 <form method="POST" action="{{ route('laporanaccounting.cetakrekappersediaan') }}" id="frmRekappersediaan" target="_blank">
     @csrf
-<form method="POST" action="{{ route('laporanaccounting.cetakrekappersediaan') }}" id="frmRekappersediaan" target="_blank">
-    @csrf
     <div class="form-group mb-3">
         <select name="bulan" id="bulan" class="form-select">
             <option value="">Bulan</option>
@@ -31,37 +29,3 @@
         </div>
     </div>
 </form>
-@push('myscript')
-    <script>
-        $(function() {
-            $("#frmRekappersediaan").submit(function(e) {
-                // e.preventDefault();
-                const bulan = $("#frmRekappersediaan").find('#bulan').val();
-                const tahun = $("#frmRekappersediaan").find('#tahun').val();
-                if (bulan == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Bulan Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            $("#frmRekappersediaan").find('#bulan').focus();
-                        },
-                    });
-                    return false;
-                } else if (tahun == "") {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: 'Tahun Harus Diisi !',
-                        icon: "warning",
-                        showConfirmButton: true,
-                        didClose: (e) => {
-                            $("#frmRekappersediaan").find('#tahun').focus();
-                        },
-                    });
-                    return false;
-                }
-            });
-        });
-    </script>
-@endpush

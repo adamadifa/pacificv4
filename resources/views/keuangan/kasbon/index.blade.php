@@ -3,175 +3,190 @@
 
 @section('content')
 @section('navigasi')
-    <span>Kasbon</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Kasbon Karyawan</h4>
+            <small class="text-muted">Manajemen pengajuan dan data kasbon karyawan.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-file-description me-1"></i>Kasbon</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
+<style>
+    .badge {
+        padding: 0.25rem 0.4rem !important;
+    }
+</style>
+
 <div class="row">
-    <div class="col-lg-12">
-        <div class="nav-align-top nav-tabs-shadow mb-4">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
             @include('layouts.navigation_kasbon')
-            <div class="tab-content">
-                <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('kasbon.create')
-                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                            Input Kasbon
-                        </a>
-                    @endcan
+        </div>
 
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <form action="{{ route('kasbon.index') }}">
-                                {{-- {{ auth()->user()->roles->pluck('name')[0] }} --}}
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
-                                    </div>
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
-                                    </div>
-                                </div>
-                                @hasanyrole($roles_show_cabang_pjp)
-                                    <div class="row">
-                                        <div class="col-lg-12 col-sm-12 col-md-12">
-                                            <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                                selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" />
-                                        </div>
-                                    </div>
-                                @endhasanyrole
-                                <div class="row">
-                                    <div class="col-lg-12 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan_search') }}"
-                                            name="nama_karyawan_search" icon="ti ti-user" />
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <button class="btn btn-primary w-100"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
-                                    </div>
-                                </div>
-                            </form>
+        {{-- Filter Section --}}
+        <form action="{{ route('kasbon.index') }}">
+            <div class="card shadow-none border-0 bg-transparent mb-3">
+                <div class="card-body p-0">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-lg-2 col-md-6 col-sm-12">
+                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table  table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>No. Kasbon</th>
-                                            <th>Tanggal</th>
-                                            <th>NIK</th>
-                                            <th>Nama Karyawan</th>
-                                            <th>Kantor</th>
-                                            {{-- <th>Jabatan</th> --}}
-                                            <th>Jumlah</th>
-                                            <th>Bayar</th>
-                                            <th>Sisa Tagihan</th>
-                                            <th>JT</th>
-                                            <th>Ket</th>
-                                            <th class="text-center">Status</th>
-                                            <th>#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($kasbon as $d)
-                                            @php
-                                                $sisatagihan = $d->jumlah - $d->totalpembayaran;
-                                                if ($loop->iteration % 2) {
-                                                    $position = 'right';
-                                                } else {
-                                                    $position = 'left';
-                                                }
-                                            @endphp
-                                            <tr>
-                                                <td>{{ $d->no_kasbon }}</td>
-                                                <td>{{ formatIndo($d->tanggal) }}</td>
-                                                <td>{{ $d->nik }}</td>
-                                                <td style="width: 15%">{{ $d->nama_karyawan }}</td>
-                                                <td>{{ textUpperCase($d->kode_cabang) }}</td>
-                                                {{-- <td style="width: 10%">{{ $d->nama_jabatan }}</td> --}}
-                                                <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
-                                                <td class="text-end">{{ formatRupiah($d->totalpembayaran) }}</td>
-                                                <td class="text-end">{{ formatRupiah($sisatagihan) }}</td>
-                                                <td>{{ formatIndo($d->jatuh_tempo) }}</td>
-                                                @if ($sisatagihan == 0)
-                                                    <td class="cursor-pointer" data-bs-toggle="popover" data-bs-placement="{{ $position }}"
-                                                        data-bs-html="true" data-bs-content="{{ DateToIndo($d->tanggal_bayar) }}" title="Pembayaran"
-                                                        data-bs-custom-class="popover-info"><span class="badge bg-success">L</span></td>
-                                                @else
-                                                    <td><span class="badge bg-danger">BL</span></td>
-                                                @endif
-
-                                                <td class="text-center">
-                                                    @if ($d->status == 0)
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <span class="badge bg-success">{{ formatIndo($d->tanggal_proses) }}</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex">
-
-
-                                                        @can('kasbon.approve')
-                                                            @if ($d->status === '0')
-                                                                <div>
-                                                                    <a href="#" class="btnApprove" no_kasbon="{{ Crypt::encrypt($d->no_kasbon) }}">
-                                                                        <i class="ti ti-external-link text-success me-1"></i>
-                                                                    </a>
-                                                                </div>
-                                                            @else
-                                                                <div>
-                                                                    <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('kasbon.cancel', Crypt::encrypt($d->no_kasbon)) }}">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <a href="#" class="cancel-confirm me-1">
-                                                                            <i class="ti ti-square-rounded-x text-danger"></i>
-
-                                                                        </a>
-                                                                    </form>
-                                                                </div>
-                                                            @endif
-                                                        @endcan
-                                                        @can('pjp.show')
-                                                            <div>
-                                                                <a href="{{ route('kasbon.cetak', Crypt::encrypt($d->no_kasbon)) }}" target="_blank"><i
-                                                                        class="ti ti-printer text-primary me-1"></i></a>
-                                                            </div>
-                                                        @endcan
-                                                        @can('kasbon.delete')
-                                                            @if ($d->status === '0')
-                                                                <div>
-                                                                    <form method="POST" name="deleteform" class="deleteform"
-                                                                        action="{{ route('kasbon.delete', Crypt::encrypt($d->no_kasbon)) }}">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <a href="#" class="delete-confirm ml-1">
-                                                                            <i class="ti ti-trash text-danger"></i>
-                                                                        </a>
-                                                                    </form>
-                                                                </div>
-                                                            @endif
-                                                        @endcan
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                        <div class="col-lg-2 col-md-6 col-sm-12">
+                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
+                        </div>
+                        @hasanyrole($roles_show_cabang_pjp)
+                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                    selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" />
                             </div>
-                            <div style="float: right;">
-                                {{ $kasbon->links() }}
+                        @endhasanyrole
+                        <div class="{{ auth()->user()->hasAnyRole($roles_show_cabang_pjp) ? 'col-lg-4' : 'col-lg-7' }} col-md-12 col-sm-12">
+                            <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan_search') }}"
+                                name="nama_karyawan_search" icon="ti ti-user" />
+                        </div>
+                        <div class="col-lg-1 col-md-12 col-sm-12 text-end">
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3"
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-file-description me-2"></i>Data Kasbon Karyawan</h6>
+                    @can('kasbon.create')
+                        <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate">
+                            <i class="ti ti-plus me-1"></i> Input Kasbon
+                        </a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-bordered table-striped align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">NO. KASBON</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">NIK</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 15%">NAMA KARYAWAN</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">KANTOR</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">JUMLAH</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">BAYAR</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">SISA TAGIHAN</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">JT</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">KET</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">STATUS</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 5%;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($kasbon as $d)
+                            @php
+                                $sisatagihan = $d->jumlah - $d->totalpembayaran;
+                                if ($loop->iteration % 2) {
+                                    $position = 'right';
+                                } else {
+                                    $position = 'left';
+                                }
+                            @endphp
+                            <tr>
+                                <td class="text-center fw-bold">{{ $d->no_kasbon }}</td>
+                                <td class="text-center">{{ formatIndo($d->tanggal) }}</td>
+                                <td class="text-center">{{ $d->nik }}</td>
+                                <td>{{ $d->nama_karyawan }}</td>
+                                <td class="text-center">{{ textUpperCase($d->kode_cabang) }}</td>
+                                <td class="text-end fw-bold">{{ formatAngka($d->jumlah) }}</td>
+                                <td class="text-end fw-bold text-success">{{ formatRupiah($d->totalpembayaran) }}</td>
+                                <td class="text-end fw-bold text-danger">{{ formatRupiah($sisatagihan) }}</td>
+                                <td class="text-center">{{ formatIndo($d->jatuh_tempo) }}</td>
+                                <td class="text-center">
+                                    @if ($sisatagihan == 0)
+                                        <span class="badge bg-success cursor-pointer" data-bs-toggle="popover" data-bs-placement="{{ $position }}"
+                                            data-bs-html="true" data-bs-content="{{ DateToIndo($d->tanggal_bayar) }}" title="Pembayaran"
+                                            data-bs-custom-class="popover-info">Lunas</span>
+                                    @else
+                                        <span class="badge bg-danger">Belum Lunas</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if ($d->status == 0)
+                                        <i class="ti ti-hourglass-empty text-warning fs-5" data-bs-toggle="tooltip" title="Menunggu"></i>
+                                    @else
+                                        <span class="badge bg-success" data-bs-toggle="tooltip" title="Selesai Di Proses">
+                                            <i class="ti ti-check me-1"></i>{{ formatIndo($d->tanggal_proses) }}
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-1">
+                                        @can('kasbon.approve')
+                                            @if ($d->status === '0')
+                                                <a href="#" class="btnApprove text-success"
+                                                    no_kasbon="{{ Crypt::encrypt($d->no_kasbon) }}" data-bs-toggle="tooltip" title="Approve">
+                                                    <i class="ti ti-square-rounded-check fs-5"></i>
+                                                </a>
+                                            @else
+                                                <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                    action="{{ route('kasbon.cancel', Crypt::encrypt($d->no_kasbon)) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="#" class="cancel-confirm text-danger" data-bs-toggle="tooltip" title="Batal Approve">
+                                                        <i class="ti ti-square-rounded-x fs-5"></i>
+                                                    </a>
+                                                </form>
+                                            @endif
+                                        @endcan
+                                        @can('kasbon.show')
+                                            <a href="{{ route('kasbon.cetak', Crypt::encrypt($d->no_kasbon) ) }}" target="_blank"
+                                                class="text-primary" data-bs-toggle="tooltip" title="Cetak">
+                                                <i class="ti ti-printer fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('kasbon.delete')
+                                            @if ($d->status === '0')
+                                                <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                    action="{{ route('kasbon.delete', Crypt::encrypt($d->no_kasbon)) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="#" class="delete-confirm text-danger" data-bs-toggle="tooltip" title="Hapus">
+                                                        <i class="ti ti-trash fs-5"></i>
+                                                    </a>
+                                                </form>
+                                            @endif
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer py-2">
+                <div class="float-end">
+                    {{ $kasbon->links() }}
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 <x-modal-form id="modalShow" size="modal-xl" show="loadmodal" title="" />
 <div class="modal fade" id="modalKaryawan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
@@ -204,6 +219,7 @@
 </div>
 
 @endsection
+
 @push('myscript')
 <script>
     $(function() {
@@ -246,31 +262,6 @@
             $("#modal").modal("show");
             $("#modal").find(".modal-title").text('Approve Kasbon');
             $("#loadmodal").load(`/kasbon/${no_kasbon}/approve`);
-        });
-
-
-        $(".btnShow").click(function(e) {
-            e.preventDefault();
-            loading();
-            const no_pinjaman = $(this).attr('no_pinjaman');
-            $("#modalShow").modal("show");
-            $("#modalShow").find(".modal-title").text('Detail PJP');
-            $("#modalShow").find("#loadmodal").load(`/pjp/${no_pinjaman}/show`);
-        });
-
-        $(document).on('click', '#nik_search', function(e) {
-            $("#modalKaryawan").modal("show");
-
-        });
-
-
-        $(document).on('click', '#btnBayar', function(e) {
-            e.preventDefault();
-            const no_pinjaman = $(this).attr('no_pinjaman');
-            loadingBayar();
-            $("#modalBayar").modal("show");
-            $("#modalBayar").find(".modal-title").text('Input Pembayaran PJP');
-            $("#modalBayar").find("#loadmodalBayar").load(`/pembayaranpjp/${no_pinjaman}/create`);
         });
 
         $('#tabelkaryawan').DataTable({

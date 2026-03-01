@@ -3,74 +3,83 @@
 
 @section('content')
 @section('navigasi')
-    <span>Chart of Account (COA)</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Chart of Account (COA)</h4>
+            <small class="text-muted">Manajemen kode akun dan struktur laporan keuangan.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Accounting</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-settings me-1"></i>COA</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
-<div class="row">
-    <div class="col-lg-6 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                @can('coa.create')
-                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i>Tambah Akun</a>
-                @endcan
-                <a href="{{ route('coa.export') }}" class="btn btn-success"><i class="ti ti-download me-1"></i>Export Excel</a>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <style>
-                            .deleteform {
-                                display: inline-block;
-                                margin: 0;
-                                padding: 0;
-                            }
-                        </style>
-                        <table class="table table-hover">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Akun</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- Memulai perulangan untuk menampilkan setiap baris akun --}}
-                                {{-- Loop semua akun yang dikirim dari controller --}}
-                                @foreach ($allAccounts as $account)
-                                    <tr>
-                                        <td>
-                                            <span style="padding-left: {{ ($account->level ?? 0) * 25 }}px;">
-                                                {{ $account->kode_akun }} - {{ $account->nama_akun }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex">
-                                                @can('coa.edit')
-                                                    <div>
-                                                        <a href="#" class="me-2 btnEdit"
-                                                            kode_akun="{{ Crypt::encrypt($account->kode_akun) }}">
-                                                            <i class="ti ti-edit text-success"></i>
-                                                        </a>
-                                                    </div>
-                                                @endcan
-                                                @can('coa.delete')
-                                                    <div>
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('coa.delete', Crypt::encrypt($account->kode_akun)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm">
-                                                                <i class="ti ti-trash text-danger"></i>
-                                                            </a>
-                                                        </form>
-                                                    </div>
-                                                @endcan
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
 
-                    </div>
+<div class="row">
+    <div class="col-lg-8 col-md-12 col-12">
+        <div class="card shadow-none border">
+            <div class="card-header border-bottom py-3 d-flex justify-content-between align-items-center"
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <h6 class="m-0 fw-bold text-white"><i class="ti ti-list me-2"></i>Daftar Akun</h6>
+                <div>
+                    @can('coa.create')
+                        <a href="#" class="btn btn-primary btn-sm" id="btnCreate"><i class="ti ti-plus me-1"></i>Tambah</a>
+                    @endcan
+                    <a href="{{ route('coa.export') }}" class="btn btn-success btn-sm"><i class="ti ti-download me-1"></i>Excel</a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <style>
+                    .deleteform {
+                        display: inline-block;
+                        margin: 0;
+                        padding: 0;
+                    }
+                </style>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead style="background-color: #f8f9fa;">
+                            <tr>
+                                <th class="py-3">KODE & NAMA AKUN</th>
+                                <th class="py-3 text-center" style="width: 100px;">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($allAccounts as $account)
+                                <tr>
+                                    <td>
+                                        <span style="padding-left: {{ ($account->level ?? 0) * 25 }}px;" class="fw-medium">
+                                            {{ $account->kode_akun }} - {{ $account->nama_akun }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            @can('coa.edit')
+                                                <a href="#" class="me-2 btnEdit"
+                                                    kode_akun="{{ Crypt::encrypt($account->kode_akun) }}">
+                                                    <i class="ti ti-edit text-success fs-5"></i>
+                                                </a>
+                                            @endcan
+                                            @can('coa.delete')
+                                                <form method="POST" name="deleteform" class="deleteform"
+                                                    action="{{ route('coa.delete', Crypt::encrypt($account->kode_akun)) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="#" class="delete-confirm">
+                                                        <i class="ti ti-trash text-danger fs-5"></i>
+                                                    </a>
+                                                </form>
+                                            @endcan
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

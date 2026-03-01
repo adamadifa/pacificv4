@@ -3,457 +3,249 @@
 
 @section('content')
 @section('navigasi')
-    <span>Monitoring Presensi</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Monitoring Presensi</h4>
+            <small class="text-muted">Pantau kehadiran karyawan secara real-time.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Human Resources</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-calendar-check me-1"></i>Presensi</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
+    <div class="col-12">
+        {{-- Data Cards Heading --}}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0 fw-bold"><i class="ti ti-list me-2"></i>Daftar Kehadiran ({{ $karyawan->total() }})</h5>
+            <div class="badge bg-label-primary fs-6">Tanggal: {{ formatIndo($tanggal) }}</div>
+        </div>
+
+        {{-- Filter Section --}}
+        <form action="{{ route('presensi.index') }}" class="mb-3">
+            <div class="row g-2">
+                <div class="col-lg-2 col-md-4">
+                    <x-input-with-icon label="Tanggal" value="{{ Request('tanggal') }}" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                </div>
+                @hasanyrole($roles_access_all_karyawan)
+                    <div class="col-lg-2 col-md-4">
+                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" />
+                    </div>
+                @endhasanyrole
+                <div class="col-lg-2 col-md-4">
+                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true" select2="select2Kodedeptsearch" />
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group" selected="{{ Request('kode_group') }}" upperCase="true" />
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <x-input-with-icon label="Cari Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan" icon="ti ti-user" />
+                </div>
+                <div class="col-lg-1 col-md-6">
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="{{ route('presensi.index') }}">
-                            <x-input-with-icon label="Tanggal" value="{{ Request('tanggal') }}" name="tanggal"
-                                icon="ti ti-calendar" datepicker="flatpickr-date" />
-                            @hasanyrole($roles_access_all_karyawan)
-                                <div class="row">
-                                    <div class="col-lg-12 col-sm-12 col-md-12">
-                                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang"
-                                            key="kode_cabang" textShow="nama_cabang"
-                                            selected="{{ Request('kode_cabang_search') }}" upperCase="true"
-                                            select2="select2Kodecabangsearch" />
+        </form>
+
+        {{-- Grid of Cards --}}
+        <div class="row g-3">
+            @foreach ($karyawan as $d)
+                @php
+                    $search = ['nik' => $d->nik, 'tanggal' => $tanggal];
+                    $cekliburnasional = ceklibur($dataliburnasional, $search);
+                    $cekdirumahkan = ceklibur($datadirumahkan, $search);
+                    $cekliburpengganti = ceklibur($dataliburpengganti, $search);
+                    $cektanggallimajam = ceklibur($datatanggallimajam, $search);
+
+                    $tanggal_selesai = $d->lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($d->tanggal))) : $d->tanggal;
+                    $jam_in = !empty($d->jam_in) ? date('H:i', strtotime($d->jam_in)) : null;
+                    $jam_out = !empty($d->jam_out) ? date('H:i', strtotime($d->jam_out)) : null;
+
+                    $j_mulai = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_mulai));
+                    $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
+
+                    $is_spg_spm = in_array($d->kode_jabatan, ['J22', 'J23']) || (in_array($d->kode_jabatan, ['J31', 'J32']) && $tanggal >= '2026-02-21');
+                    $jam_mulai_jadwal = $is_spg_spm ? (!empty($d->jam_in) ? date('H:i', strtotime($d->jam_in)) : date('H:i', strtotime($j_mulai))) : date('H:i', strtotime($j_mulai));
+                    $jam_selesai_jadwal = $is_spg_spm ? (!empty($d->jam_out) ? date('H:i', strtotime($d->jam_out)) : date('H:i', strtotime($j_selesai))) : date('H:i', strtotime($j_selesai));
+
+                    $terlambat = hitungjamterlambat($d->jam_in, $d->tanggal . ' ' . $d->jam_mulai, $d->kode_izin_terlambat);
+
+                    // Avatar Background Color based on status
+                    $avatar_bg = 'bg-label-secondary';
+                    if($d->status_kehadiran == 'h') $avatar_bg = 'bg-label-success';
+                    elseif($d->status_kehadiran == 'a') $avatar_bg = 'bg-label-danger';
+                    elseif($d->status_kehadiran == 'i' || $d->status_kehadiran == 's') $avatar_bg = 'bg-label-info';
+                    elseif($d->status_kehadiran == 'c') $avatar_bg = 'bg-label-primary';
+                @endphp
+
+                <div class="col-12">
+                    <div class="card shadow-none border mb-2 card-hover-shadow overflow-hidden">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-column flex-md-row align-items-stretch">
+                                {{-- Section 1: Employee Avatar & Identity --}}
+                                <div class="p-3 border-end-md d-flex align-items-center" style="min-width: 250px; background-color: #002e65;">
+                                    <div class="avatar avatar-lg me-3 border border-2 border-white-50 rounded-circle">
+                                        @if (!empty($d->foto) && file_exists(public_path('storage/karyawan/' . $d->foto)))
+                                            <img src="{{ asset('storage/karyawan/' . $d->foto) }}" alt="Avatar" class="rounded-circle">
+                                        @else
+                                            <span class="avatar-initial rounded-circle {{ $avatar_bg }} fw-bold" style="font-size: 1.4rem;">
+                                                {{ getInitials($d->nama_karyawan) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <h6 class="mb-0 text-truncate fw-bold text-white">{{ formatName($d->nama_karyawan) }}</h6>
+                                        <div class="small text-white-50">{{ $d->nik }}</div>
+                                        <div class="small fw-medium text-white-50">{{ $d->kode_dept }} • {{ $d->kode_cabang }}</div>
                                     </div>
                                 </div>
-                            @endhasanyrole
-                            <div class="row">
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}"
-                                        name="nama_karyawan" icon="ti ti-search" />
-                                </div>
 
-                                <div class="col-lg-4 col-sm-12 col-md-12">
-                                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept"
-                                        textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true"
-                                        select2="select2Kodedeptsearch" />
-                                </div>
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group"
-                                        textShow="nama_group" selected="{{ Request('kode_group') }}" upperCase="true" />
-                                </div>
-
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <button class="btn btn-primary w-100"><i
-                                            class="ti ti-icons ti-search me-1"></i>Cari</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table table-bordered">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>NIK</th>
-                                        <th>Nama Karyawan</th>
-                                        <th>Dept</th>
-                                        <th>Cbg</th>
-                                        <th>Jadwal</th>
-                                        <th class="text-center">Jam Masuk</th>
-                                        <th class="text-center">Jam Pulang</th>
-                                        <th class="text-center">Status</th>
-                                        <th class="text-center">Keluar</th>
-                                        <th class="text-center">Terlambat</th>
-                                        <th class="text-center">Total</th>
-                                        <th class="text-center">#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $total_jam_libur = 0;
-                                    @endphp
-                                    @foreach ($karyawan as $d)
-
-                                        @php
-                                            $potongan_pc = 0;
-                                            $potongan_jamkeluar = 0;
-                                            $potongan_terlambat = 0;
-                                            $potongan_sakit = 0;
-                                            $potongan_izin = 0;
-                                            $total_jam_kerja = $d->total_jam;
-
-                                            $search = [
-                                                'nik' => $d->nik,
-                                                'tanggal' => $tanggal,
-                                            ];
-
-                                            $search_minggumasuk = [
-                                                'nik' => $d->nik,
-                                                'tanggal' => $tanggal,
-                                            ];
-
-                                            //Cek Hari Libur , Dirumahkan , Lbur  Pengganti, atau Tanggal 5 Jam
-                                            $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
-                                            $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
-                                            $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
-                                            $cektanggallimajam = ceklibur($datatanggallimajam, $search);
-                                            $cekminggumasuk = ceklibur($dataminggumasuk, $search_minggumasuk);
-                                            //Tanggal Selesai Jam Kerja Jika Lintas Hari Maka Tanggal Presensi + 1 Hari
-                                            $tanggal_selesai =
-                                                $d->lintashari == '1'
-                                                    ? date('Y-m-d', strtotime('+1 day', strtotime($d->tanggal)))
-                                                    : $d->tanggal;
-
-                                            //Jam Absen Masuk dan Pulang
-                                            $jam_in = !empty($d->jam_in)
-                                                ? date('Y-m-d H:i', strtotime($d->jam_in))
-                                                : '';
-                                            $jam_out = !empty($d->jam_out)
-                                                ? date('Y-m-d H:i', strtotime($d->jam_out))
-                                                : '';
-
-                                            //Jadwal Jam Kerja
-                                            $j_mulai = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_mulai));
-                                            $j_selesai = date(
-                                                'Y-m-d H:i',
-                                                strtotime($tanggal_selesai . ' ' . $d->jam_selesai),
-                                            );
-
-                                            //Jadwal SPG
-                                            //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
-                                            $is_spg_spm = in_array($d->kode_jabatan, ['J22', 'J23']) || (in_array($d->kode_jabatan, ['J31', 'J32']) && $tanggal >= '2026-02-21');
-                                            
-                                            $jam_mulai = $is_spg_spm
-                                                ? $jam_in
-                                                : $j_mulai;
-                                            $jam_selesai = $is_spg_spm
-                                                ? $jam_out
-                                                : $j_selesai;
-
-                                            if (getNamahari($tanggal) == 'Minggu') {
-                                                if ($d->kode_jabatan != 'J20') {
-                                                    $jam_mulai = $jam_in;
-                                                    $jam_selesai = $jam_out;
-                                                }
-                                            }
-
-                                            // Jam Istirahat
-                                            if ($d->istirahat == '1') {
-                                                if ($d->lintashari == '0') {
-                                                    $jam_awal_istirahat = date(
-                                                        'Y-m-d H:i',
-                                                        strtotime($d->tanggal . ' ' . $d->jam_awal_istirahat),
-                                                    );
-                                                    $jam_akhir_istirahat = date(
-                                                        'Y-m-d H:i',
-                                                        strtotime($d->tanggal . ' ' . $d->jam_akhir_istirahat),
-                                                    );
-                                                } else {
-                                                    $jam_awal_istirahat = date(
-                                                        'Y-m-d H:i',
-                                                        strtotime($tanggal_selesai . ' ' . $d->jam_awal_istirahat),
-                                                    );
-                                                    $jam_akhir_istirahat = date(
-                                                        'Y-m-d H:i',
-                                                        strtotime($tanggal_selesai . ' ' . $d->jam_akhir_istirahat),
-                                                    );
-                                                }
-                                            } else {
-                                                $jam_awal_istirahat = null;
-                                                $jam_akhir_istirahat = null;
-                                            }
-
-                                        @endphp
-                                        <tr>
-                                            <td>{{ $d->nik }} </td>
-                                            <td>{{ formatName($d->nama_karyawan) }}</td>
-                                            <td>{{ $d->kode_dept }}</td>
-                                            <td>{{ $d->kode_cabang }}</td>
-                                            <td>
-
-                                                <!--Jika Jadwal Tidak Kosong Tampilkan Nama Jadawal dan Jadwal Masuk dan Jadwal Pulang-->
-                                                @if (!empty($d->kode_jadwal))
-                                                    @php
-                                                        $total_jam_libur = 0;
-                                                    @endphp
-                                                    {{ $d->nama_jadwal }}
-                                                    ({{ date('H:i', strtotime($jam_mulai)) }} -
-                                                    {{ date('H:i', strtotime($jam_selesai)) }})
-                                                @else
-                                                    <!-- Jika Jadwal Kosong Maka Cek Apakah tanggal Tersebut Libur-->
-                                                    @if (!empty($cekliburnasional))
-                                                        @php
-                                                            //Jika Libur Nasional Cek Nama Hari Jika Hari Sabtu Maka Total Jam Kerja 5 Jam Selain Itu 7 jam
-                                                            $total_jam_libur = 7;
-                                                        @endphp
-                                                        <span class="badge bg-success">Libur Nasional</span>
-                                                    @elseif(!empty($cekdirumahkan))
-                                                        @php
-                                                            //Jika Dirumahkan
-                                                            if (getNamahari($tanggal) == 'Sabtu') {
-                                                                //Jika Hari Sabtu Maka Total Jam adalah 2.5 Jam
-                                                                $total_jam_libur = 2.5;
-                                                            } else {
-                                                                //Jika Bukan Hari Sabtu, Maka Cek Apakah Tanggal Tersebut Adalah Tanggal Yang Di Ubah Menjadi 5 Jam Karena Besoknya Libur Nasional
-                                                                if (!empty($cektanggallimajam)) {
-                                                                    //Jika Tanggal Yang di  Ubah Menjadi 5 Jam Kerja Maka Total Jam Menjadi 2.5
-                                                                    $total_jam_libur = 2.5;
-                                                                } else {
-                                                                    $total_jam_libur = 3.5;
-                                                                }
-                                                            }
-                                                        @endphp
-                                                        <span class="badge bg-info">Dirumahkan
-                                                            {{ $total_jam_libur }}</span>
-                                                    @elseif(!empty($cekliburpengganti))
-                                                        @php
-                                                            //Jika Hari ini Libur , menggantikan Libur hari Minggu Maka Total Jam adalah 0
-                                                            $total_jam_libur = 0;
-                                                        @endphp
-                                                        <span class="badge bg-info">Libur Pengganti Tgl
-                                                            {{ formatIndo($cekliburpengganti[0]['tanggal_diganti']) }}</span>
-                                                    @else
-                                                        @php
-                                                            $total_jam_libur = 0;
-                                                        @endphp
-                                                        <span class="badge bg-danger">Belum Absen</span>
-                                                    @endif
-                                                @endif
-                                                {{-- {{ $total_jam_libur }} --}}
-                                            </td>
-                                            <td class="text-center">
-                                                @if (!empty($d->kode_jadwal) && $d->status_kehadiran == 'h' && !empty($d->jam_in))
-                                                    <a href="#" class="btnShowpresensi_in"
-                                                        id="{{ $d->id }}" status="in">
-                                                        {{ date('H:i', strtotime($d->jam_in)) }}
-                                                    </a>
-                                                @else
-                                                    <i class="ti ti-hourglass-empty text-danger"></i>
-                                                @endif
-                                            </td>
-                                            <td class="text-center">
-                                                @if (!empty($d->kode_jadwal) && $d->status_kehadiran == 'h' && !empty($d->jam_out))
-                                                    <a href="#" class="btnShowpresensi_out"
-                                                        id="{{ $d->id }}" status="out">
-                                                        {{ date('H:i', strtotime($d->jam_out)) }}
-                                                    </a>
-                                                @else
-                                                    <i class="ti ti-hourglass-empty text-danger"></i>
-                                                @endif
-
-                                                @if (!empty($jam_out) && $jam_out < $jam_selesai)
-                                                    @php
-                                                        $pc = hitungpulangcepat(
-                                                            $jam_out,
-                                                            $jam_selesai,
-                                                            $jam_awal_istirahat,
-                                                            $jam_akhir_istirahat,
-                                                        );
-                                                    @endphp
-                                                    @if (!empty($d->kode_izin_pulang) && $d->izin_pulang_direktur == '1')
-                                                        @php
-                                                            $potongan_pc = 0;
-                                                        @endphp
-                                                        <span class="text-success">(PC :
-                                                            {{ $pc['desimal_pulangcepat'] }})</span>
-                                                    @else
-                                                        @php
-                                                            $potongan_pc = $pc['desimal_pulangcepat'];
-                                                        @endphp
-                                                        <span class="text-danger">(PC :
-                                                            {{ $pc['desimal_pulangcepat'] }})</span>
-                                                    @endif
-                                                @endif
-                                            </td>
-                                            <td class="text-center">
-                                                @if (!empty($d->kode_jadwal))
-                                                    @if ($d->status_kehadiran == 'h')
-                                                        <span class="badge bg-success">H</span>
-                                                    @elseif ($d->status_kehadiran == 'i')
-                                                        @if ($d->izin_absen_direktur == '1')
-                                                            @php
-                                                                $potongan_izin = 0;
-                                                            @endphp
-                                                            <span class="badge bg-info">I(D)</span>
-                                                        @else
-                                                            @php
-                                                                $potongan_izin = $d->total_jam;
-                                                            @endphp
-                                                            <span class="badge bg-info">I</span>
-                                                        @endif
-                                                    @elseif ($d->status_kehadiran == 's')
-                                                        @if (!empty($d->doc_sid))
-                                                            <span class="badge bg-info">SID</span>
-                                                        @else
-                                                            @if ($d->izin_sakit_direktur == '1')
-                                                                @php
-                                                                    $potongan_sakit = 0;
-                                                                @endphp
-                                                                <span class="badge bg-warning">S(D)</span>
-                                                            @else
-                                                                @php
-                                                                    $potongan_sakit = $d->total_jam;
-                                                                @endphp
-                                                                <span class="badge bg-warning">S</span>
-                                                            @endif
-                                                        @endif
-                                                    @elseif ($d->status_kehadiran == 'a')
-                                                        <span class="badge bg-danger">A</span>
-                                                    @elseif ($d->status_kehadiran == 'c')
-                                                        <span class="badge bg-primary">C</span>
-                                                    @endif
-                                                @else
-                                                    <i class="ti ti-hourglass-empty text-danger"></i>
-                                                @endif
-                                            </td>
-                                            <td class="text-center">
-                                                @if (!empty($d->kode_izin_keluar))
-                                                    @php
-                                                        $jam_keluar = date('Y-m-d H:i', strtotime($d->jam_keluar));
-                                                        $jam_kembali = !empty($d->jam_kembali)
-                                                            ? date('Y-m-d H:i', strtotime($d->jam_kembali))
-                                                            : '';
-
-                                                        $keluarkantor = hitungjamkeluarkantor(
-                                                            $jam_keluar,
-                                                            $jam_kembali,
-                                                            $jam_selesai,
-                                                            $jam_out,
-                                                            $d->total_jam,
-                                                            $d->istirahat,
-                                                            $jam_awal_istirahat,
-                                                            $jam_akhir_istirahat,
-                                                        );
-                                                    @endphp
-                                                    @if ($d->izin_keluar_direktur == '1')
-                                                        <span class="text-success">
-                                                            {{ $keluarkantor['totaljamkeluar'] }}
-                                                            ({{ $keluarkantor['desimaljamkeluar'] }})
-                                                        </span>
-                                                        @php
-                                                            $potongan_jamkeluar = 0;
-                                                        @endphp
-                                                    @else
-                                                        @if ($d->keperluan == 'K')
-                                                            <span class="text-success">
-                                                                {{ $keluarkantor['totaljamkeluar'] }}
-                                                                ({{ $keluarkantor['desimaljamkeluar'] }})
-                                                            </span>
-                                                            @php
-                                                                $potongan_jamkeluar = 0;
-                                                            @endphp
-                                                        @else
-                                                            @php
-                                                                $potongan_jamkeluar = $keluarkantor['desimaljamkeluar'];
-                                                            @endphp
-                                                            {{-- {{ $jam_kembali }} --}}
-                                                            <span class="{{ $keluarkantor['color'] }}">
-                                                                {{ $keluarkantor['totaljamkeluar'] }}
-                                                                ({{ $keluarkantor['desimaljamkeluar'] }})
-                                                            </span>
-                                                        @endif
-                                                    @endif
-                                                @endif
-                                            </td>
-                                            <td class="text-center">
-                                                @php
-                                                    $terlambat = hitungjamterlambat(
-                                                        $jam_in,
-                                                        $jam_mulai,
-                                                        $d->kode_izin_terlambat,
-                                                    );
-                                                @endphp
-                                                @if (!empty($d->jam_in))
-                                                    @if (!empty($terlambat))
-                                                        @if (!empty($d->kode_izin_terlambat) && $d->izin_terlambat_direktur == '1')
-                                                            @php
-                                                                $potongan_terlambat = 0;
-                                                                $potongan_denda = 0;
-                                                            @endphp
-                                                            <span class="text-success">
-                                                                {{ $terlambat['keterangan_terlambat'] }}
-                                                                {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
-                                                                {{-- {{ '(' . formatAngka($potongan_denda) . ')' }} --}}
-                                                            </span>
-                                                        @else
-                                                            @php
-                                                                $denda = hitungdenda(
-                                                                    $terlambat['jamterlambat'],
-                                                                    $terlambat['menitterlambat'],
-                                                                    $d->kode_izin_terlambat,
-                                                                    $d->kode_dept,
-                                                                    $d->kode_jabatan,
-                                                                );
-                                                                $potongan_terlambat = $terlambat['desimal_terlambat'];
-                                                            @endphp
-                                                            <span class="{{ $terlambat['color_terlambat'] }}">
-                                                                {{ $terlambat['keterangan_terlambat'] }}
-                                                                {{ !empty($terlambat['desimal_terlambat']) ? '(' . $terlambat['desimal_terlambat'] . ')' : '' }}
-                                                                {{ !empty($denda['denda']) ? '(' . formatAngka($denda['denda']) . ')' : '' }}
-                                                            </span>
-                                                        @endif
-                                                    @else
-                                                        <span class="badge bg-success">Tepat Waktu</span>
-                                                    @endif
-                                                @endif
-
-                                            </td>
-                                            <td class="text-center">
-                                                {{-- {{ $total_jam_libur }} --}}
-                                                @php
-                                                    $total_jam =
-                                                        $d->total_jam +
-                                                        $total_jam_libur -
-                                                        $potongan_jamkeluar -
-                                                        $potongan_terlambat -
-                                                        $potongan_pc -
-                                                        $potongan_sakit -
-                                                        $potongan_izin;
-                                                    if (
-                                                        ($d->status_kehadiran == 'h' && empty($d->jam_out)) ||
-                                                        ($d->status_kehadiran == 'h' && empty($d->jam_in))
-                                                    ) {
-                                                        $total_jam = 0;
-                                                    }
-                                                @endphp
-                                                {{ $total_jam }}
-                                            </td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    @if ($d->status_kehadiran == 'h')
-                                                        <a href="#" class="btnKoreksi" nik="{{ $d->nik }}"
-                                                            tanggal="{{ !empty(Request('tanggal')) ? Request('tanggal') : date('Y-m-d') }}">
-                                                            <i class="ti ti-edit text-success"></i>
-                                                        </a>
-                                                    @endif
-
-
-                                                    <a href="#" class="btngetDatamesin"
-                                                        pin="{{ $d->pin }}"
-                                                        tanggal="{{ !empty(Request('tanggal')) ? Request('tanggal') : date('Y-m-d') }}"
-                                                        kode_jadwal="{{ $d->kode_jadwal }}">
-                                                        <i class="ti ti-device-desktop text-primary"></i>
-                                                    </a>
+                                {{-- Section 2: Attendance Status & Schedule --}}
+                                <div class="p-3 border-end-md flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="small fw-bold text-muted text-uppercase tracking-wider">Status & Jadwal</div>
+                                        <div class="ms-2">
+                                            @if ($d->status_kehadiran == 'h')
+                                                <span class="badge bg-label-success">Hadir</span>
+                                            @elseif ($d->status_kehadiran == 'i')
+                                                <span class="badge bg-label-info">Izin</span>
+                                            @elseif ($d->status_kehadiran == 's')
+                                                <span class="badge bg-label-warning">Sakit</span>
+                                            @elseif ($d->status_kehadiran == 'a')
+                                                <span class="badge bg-label-danger">Alfa</span>
+                                            @elseif ($d->status_kehadiran == 'c')
+                                                <span class="badge bg-label-primary">Cuti</span>
+                                            @else
+                                                <span class="badge bg-label-danger">Belum Absen</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @if (!empty($d->status_kehadiran))
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <div class="badge bg-label-primary p-2 rounded">
+                                                    <i class="ti ti-clock-play fs-4"></i>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="float: right;">
-                            {{ $karyawan->links() }}
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold text-dark">{{ $d->nama_jadwal ?: 'Non-Shift' }}</div>
+                                                <div class="small text-muted">{{ $jam_mulai_jadwal }} - {{ $jam_selesai_jadwal }}</div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="text-center py-2 text-muted fst-italic small">
+                                            <i class="ti ti-info-circle me-1"></i> Menunggu Presensi
+                                        </div>
+                                    @endif
+                                </div>
+
+                                {{-- Section 3: Check In / Out Times --}}
+                                <div class="p-3 border-end-md d-flex align-items-center justify-content-around bg-white" style="min-width: 300px;">
+                                    <div class="text-center px-2">
+                                        <small class="text-muted d-block text-uppercase small-caps mb-1">Masuk</small>
+                                        @if ($jam_in)
+                                            <a href="#" class="btnShowpresensi_in fw-black text-success h4 mb-0 d-block" id="{{ $d->id }}" status="in">{{ $jam_in }}</a>
+                                        @else
+                                            <span class="text-muted h4 mb-0 d-block">--:--</span>
+                                        @endif
+                                    </div>
+                                    <div class="border-start h-50 mx-2"></div>
+                                    <div class="text-center px-2">
+                                        <small class="text-muted d-block text-uppercase small-caps mb-1">Pulang</small>
+                                        @if ($jam_out)
+                                            <a href="#" class="btnShowpresensi_out fw-black text-danger h4 mb-0 d-block" id="{{ $d->id }}" status="out">{{ $jam_out }}</a>
+                                        @else
+                                            <span class="text-muted h4 mb-0 d-block">--:--</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                {{-- Section 4: Metrics (Late, Hours) --}}
+                                <div class="p-3 border-end-md" style="min-width: 180px;">
+                                    @if ($jam_in)
+                                        <div class="mb-2">
+                                            <small class="text-muted d-block mb-1 small-caps">Keterlambatan</small>
+                                            @if (!empty($terlambat))
+                                                <span class="text-danger fw-bold"><i class="ti ti-alert-triangle me-1"></i>{{ $terlambat['keterangan_terlambat'] }}</span>
+                                            @else
+                                                <span class="text-success fw-bold"><i class="ti ti-circle-check me-1"></i>Tepat Waktu</span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                    @if($d->status_kehadiran == 'h' && $jam_in && $jam_out)
+                                        <div>
+                                            <small class="text-muted d-block mb-1 small-caps">Durasi Kerja</small>
+                                            <span class="fw-bold text-dark"><i class="ti ti-hourglass me-1 text-primary"></i>{{ $d->total_jam }} Jam</span>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                {{-- Section 5: Actions --}}
+                                <div class="p-3 bg-light d-flex flex-row flex-md-column justify-content-center align-items-center gap-2" style="min-width: 100px;">
+                                    @if ($d->status_kehadiran == 'h')
+                                        <button class="btn btn-sm btn-label-success btn-icon btnKoreksi" nik="{{ $d->nik }}" tanggal="{{ $tanggal }}" title="Koreksi Presensi">
+                                            <i class="ti ti-edit fs-5"></i>
+                                        </button>
+                                    @endif
+                                    <button class="btn btn-sm btn-label-primary btn-icon btngetDatamesin" pin="{{ $d->pin }}" tanggal="{{ $tanggal }}" kode_jadwal="{{ $d->kode_jadwal }}" title="Get Data Mesin">
+                                        <i class="ti ti-device-desktop fs-5"></i>
+                                    </button>
+                                    <div class="mt-md-auto">
+                                        <small class="text-muted" style="font-size: 10px;">ID: {{ $d->pin }}</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endforeach
+        </div>
+
+        {{-- Pagination --}}
+        <div class="mt-4">
+            {{ $karyawan->links() }}
         </div>
     </div>
 </div>
+<style>
+    .card-hover-shadow {
+        transition: all 0.3s ease;
+    }
+    .card-hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        border-color: #002e65 !important;
+    }
+    .small-caps {
+        font-variant: all-small-caps;
+        letter-spacing: 1px;
+    }
+    .fw-black {
+        font-weight: 900;
+    }
+    @media (min-width: 768px) {
+        .border-end-md {
+            border-right: 1px solid #e6e6e6 !important;
+        }
+    }
+    .btn-icon {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+</style>
+
 <x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
 @endsection
 @push('myscript')

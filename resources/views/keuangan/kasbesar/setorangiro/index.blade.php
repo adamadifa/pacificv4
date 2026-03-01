@@ -3,174 +3,184 @@
 
 @section('content')
 @section('navigasi')
-    <span>Setoran Giro</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Setoran Giro</h4>
+            <small class="text-muted">Manajemen setoran dari giro pelanggan.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-file-dollar me-1"></i>Setoran Giro</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
     <div class="col-lg-12">
-        <div class="alert alert-info alert-dismissible d-flex align-items-baseline" role="alert">
-            <span class="alert-icon alert-icon-lg text-info me-2">
+        {{-- Information Alert --}}
+        <div class="alert alert-primary alert-dismissible d-flex align-items-baseline" role="alert">
+            <span class="alert-icon alert-icon-lg text-primary me-2">
                 <i class="ti ti-info-circle ti-sm"></i>
             </span>
             <div class="d-flex flex-column ps-1">
-                <h5 class="alert-heading mb-2">Informasi</h5>
+                <h5 class="alert-heading mb-2">Petunjuk Penggunaan</h5>
                 <p class="mb-0">
-                    Silahkan Gunakan Icon <i class="ti ti-external-link text-success me-1 ms-1"></i> Untuk Melakukan
-                    Setoran !
+                    Klik icon <i class="ti ti-external-link text-success mx-1"></i> untuk melakukan setoran hasil giro pelanggan.
                 </p>
                 <p class="mb-0">
-                    Silahkan Gunakan Icon <i class="ti ti-square-rounded-x text-danger me-1 ms-1"></i> Untuk Membatalkan Setoran
+                    Klik icon <i class="ti ti-square-rounded-x text-danger mx-1"></i> untuk membatalkan setoran yang sudah diinput.
                 </p>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
-        <div class="nav-align-top nav-tabs-shadow mb-4">
+
+        {{-- Navigation --}}
+        <div class="mb-3">
             @include('layouts.navigation_kasbesar')
+        </div>
 
-            <div class="tab-content">
-                <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <form action="{{ route('setorangiro.index') }}">
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
-                                    </div>
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
-                                    </div>
-                                </div>
-                                @hasanyrole($roles_show_cabang)
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                                                selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
-                                        </div>
-                                    </div>
-                                @endrole
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-12 col-sm-12">
-                                        <div class="form-group mb-3">
-                                            <x-input-with-icon label="No. Giro" icon="ti ti-barcode" name="no_giro" value="{{ Request('no_giro') }}" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-12 col-sm-12">
-                                        <div class="form-group mb-3">
-                                            <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" icon="ti ti-user" name="nama_pelanggan_search" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-12 col-sm-12">
-                                        <div class="form-group mb-3">
-                                            <select name="kode_salesman_search" id="kode_salesman_search" class="form-select select2Kodesalesmansearch">
-                                                <option value="">Semua Salesman</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group mb-3">
-                                            <select name="status" id="status" class="form-select">
-                                                <option value="">Status</option>
-                                                <option value="0" {{ Request('status') === '0' ? 'selected' : '' }}>
-                                                    Pending</option>
-                                                <option value="1" {{ Request('status') === '1' ? 'selected' : '' }}>
-                                                    Disetujui</option>
-                                                <option value="2" {{ Request('status') === '2' ? 'selected' : '' }}>
-                                                    Ditolak</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i class="ti ti-search me-2"></i>Cari
-                                                Data</button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </form>
+        {{-- Filter Section --}}
+        <div class="card shadow-none border-0 bg-transparent mb-4">
+            <div class="card-body p-0">
+                <form action="{{ route('setorangiro.index') }}">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-lg-6 col-md-6">
+                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>No. Giro</th>
-                                            <th>Tanggal</th>
-                                            <th>Pelanggan</th>
-                                            <th>Jumlah</th>
-                                            <th>Bank Pengirim</th>
-                                            <th>Bank Penerima</th>
-                                            <th>Jatuh Tempo</th>
-                                            <th class="text-center">Status</th>
-                                            <th>Disetorkan</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($giro as $d)
-                                            <tr>
-                                                <td>{{ $d->no_giro }}</td>
-                                                <td>{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
-                                                <td style="width: 20%">{{ $d->nama_pelanggan }}</td>
-                                                <td class="text-end fw-bold">{{ formatAngka($d->total) }}</td>
-                                                <td>{{ textUpperCase($d->bank_pengirim) }}</td>
-                                                <td>{{ !empty($d->nama_bank_alias) ? $d->nama_bank_alias : $d->nama_bank }}
-                                                </td>
-                                                <td>{{ date('d-m-y', strtotime($d->jatuh_tempo)) }}</td>
-                                                <td class="text-center">
-                                                    @if ($d->status == '1')
-                                                        <span class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="tooltip-primary"
-                                                            data-bs-original-title="{{ $d->no_bukti }}">{{ date('d-m-y', strtotime($d->tanggal_diterima)) }}</span>
-                                                    @elseif($d->status == '2')
-                                                        <i class="ti ti-square-rounded-x text-danger"></i>
-                                                    @else
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if (!empty($d->tanggal_disetorkan))
-                                                        <span class="badge bg-success">{{ date('d-m-y', strtotime($d->tanggal_disetorkan)) }}</span>
-                                                    @else
-                                                        <span class="badge bg-danger">Belum Setor</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex">
-                                                        @can('setorangiro.create')
-                                                            @if (empty($d->tanggal_disetorkan))
-                                                                <div>
-                                                                    <a href="#" class="btnCreate me-2" kode_giro="{{ Crypt::encrypt($d->kode_giro) }}"><i
-                                                                            class="ti ti-external-link text-success"></i></a>
-                                                                </div>
-                                                            @else
-                                                                @can('setorangiro.delete')
-                                                                    <div>
-                                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                                            action="{{ route('setorangiro.delete', Crypt::encrypt($d->kode_setoran)) }}">
-                                                                            @csrf
-                                                                            @method('DELETE')
-                                                                            <a href="#" class="delete-confirm me-1">
-                                                                                <i class="ti ti-square-rounded-x text-danger"></i>
-                                                                            </a>
-                                                                        </form>
-                                                                    </div>
-                                                                @endcan
-                                                            @endif
-                                                        @endcan
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                    <div class="row g-2 align-items-end">
+                        @hasanyrole($roles_show_cabang)
+                            <div class="col-lg col-md-6">
+                                <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                    textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                    select2="select2Kodecabangsearch" />
                             </div>
-                            <div style="float: right;">
-                                {{ $giro->links() }}
+                        @endrole
+                        <div class="col-lg col-md-6">
+                            <x-input-with-icon label="No. Giro" icon="ti ti-barcode" name="no_giro" value="{{ Request('no_giro') }}" />
+                        </div>
+                        <div class="col-lg col-md-6">
+                            <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" icon="ti ti-user"
+                                name="nama_pelanggan_search" />
+                        </div>
+                        <div class="col-lg col-md-6">
+                            <div class="form-group mb-3">
+                                <select name="kode_salesman_search" id="kode_salesman_search"
+                                    class="form-select select2Kodesalesmansearch">
+                                    <option value="">Semua Salesman</option>
+                                </select>
                             </div>
                         </div>
+                        <div class="col-lg col-md-6">
+                            <div class="form-group mb-3">
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">Status</option>
+                                    <option value="0" {{ Request('status') === '0' ? 'selected' : '' }}>Pending</option>
+                                    <option value="1" {{ Request('status') === '1' ? 'selected' : '' }}>Disetujui</option>
+                                    <option value="2" {{ Request('status') === '2' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg col-md-12">
+                            <div class="form-group mb-3">
+                                <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- Data Table Section --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3"
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <h6 class="m-0 fw-bold text-white"><i class="ti ti-table me-2"></i>Data Setoran Giro</h6>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-bordered table-striped text-center align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-white text-start" style="background-color: #002e65 !important;">NO. GIRO</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">PELANGGAN</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">JUMLAH</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">BANK PENGIRIM</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">BANK PENERIMA</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">JATUH TEMPO</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">STATUS</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">DISETORKAN</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($giro as $d)
+                            <tr>
+                                <td class="text-start"><span class="fw-bold">{{ $d->no_giro }}</span></td>
+                                <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
+                                <td class="text-start" style="max-width: 200px; white-space: normal;">{{ $d->nama_pelanggan }}</td>
+                                <td class="text-end fw-bold text-primary">{{ formatAngka($d->total) }}</td>
+                                <td>{{ textUpperCase($d->bank_pengirim) }}</td>
+                                <td>{{ !empty($d->nama_bank_alias) ? $d->nama_bank_alias : $d->nama_bank }}</td>
+                                <td>{{ date('d-m-Y', strtotime($d->jatuh_tempo)) }}</td>
+                                <td>
+                                    @if ($d->status == '1')
+                                        <span class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="{{ $d->no_bukti }}">{{ date('d-m-y', strtotime($d->tanggal_diterima)) }}</span>
+                                    @elseif($d->status == '2')
+                                        <span class="badge bg-danger"><i class="ti ti-x"></i></span>
+                                    @else
+                                        <span class="badge bg-warning"><i class="ti ti-hourglass-empty"></i></span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if (!empty($d->tanggal_disetorkan))
+                                        <span class="badge bg-info">{{ date('d-m-Y', strtotime($d->tanggal_disetorkan)) }}</span>
+                                    @else
+                                        <span class="badge bg-secondary">Belum Setor</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('setorangiro.create')
+                                            @if (empty($d->tanggal_disetorkan))
+                                                <a href="#" class="btnCreate text-success"
+                                                    kode_giro="{{ Crypt::encrypt($d->kode_giro) }}">
+                                                    <i class="ti ti-external-link fs-4"></i>
+                                                </a>
+                                            @else
+                                                @can('setorangiro.delete')
+                                                    <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                        action="{{ route('setorangiro.delete', Crypt::encrypt($d->kode_setoran)) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <a href="#" class="delete-confirm text-danger">
+                                                            <i class="ti ti-square-rounded-x fs-4"></i>
+                                                        </a>
+                                                    </form>
+                                                @endcan
+                                            @endif
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer border-top py-3">
+                <div class="row align-items-center">
+                    <div class="col-sm-12 col-md-12 d-flex justify-content-end">
+                        {{ $giro->links() }}
                     </div>
                 </div>
             </div>

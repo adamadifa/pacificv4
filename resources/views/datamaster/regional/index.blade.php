@@ -27,9 +27,9 @@
                     <x-input-with-icon label="Cari Regional" value="{{ Request('nama_regional') }}" name="nama_regional"
                         icon="ti ti-search" />
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-12">
+                <div class="col-auto">
                     <div class="form-group mb-3">
-                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
+                        <button class="btn btn-primary btn-sm"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
                 </div>
             </div>

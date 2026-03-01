@@ -16,7 +16,7 @@
     @endif
     <div class="divider text-start">
         <div class="divider-text">
-            <i class="ti ti-file-description me-2"></i>
+            <i class="ti ti-file-description me-1"></i> Informasi Mutasi
         </div>
     </div>
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
@@ -42,8 +42,7 @@
 
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
-            <ion-icon name="send-outline" class="me-1"></ion-icon>
-            Submit
+            <i class="ti ti-send me-1"></i> Submit
         </button>
     </div>
 </form>

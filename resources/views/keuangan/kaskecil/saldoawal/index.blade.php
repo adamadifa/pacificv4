@@ -2,116 +2,136 @@
 @section('titlepage', 'Saldo Awal Kas Kecil')
 @section('content')
 @section('navigasi')
-    <span>Saldo Awal Kas Kecil</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Saldo Awal Kas Kecil</h4>
+            <small class="text-muted">Manajemen saldo awal kas kecil bulanan.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-database-import me-1"></i>Saldo Awal</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
-<div class="row">
-    <div class="col-lg-10">
-        <div class="nav-align-top nav-tabs-shadow mb-4">
-            @include('layouts.navigation_kaskecil')
-            <div class="tab-content">
-                <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('sakaskecil.create')
-                        <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-plus me-2"></i>
-                            Buat Saldo Awal
-                        </a>
-                    @endcan
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <form action="{{ URL::current() }}">
-                                <div class="row">
-                                    <div class="col-lg-5 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="kode_cabang_search" id="kode_cabang_search"
-                                                class="form-select select2Kodecabangsearch">
-                                                <option value="">Pilih Cabang</option>
-                                                @foreach ($cabang as $d)
-                                                    <option
-                                                        {{ Request('kode_cabang_search') == $d->kode_cabang ? 'selected' : '' }}
-                                                        value="{{ $d->kode_cabang }}">{{ $d->nama_cabang }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="bulan" id="bulan" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                        value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="tahun" id="tahun" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option
-                                                        @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
-                                                        @else
-                                                        {{ date('Y') == $t ? 'selected' : '' }} @endif
-                                                        value="{{ $t }}">{{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-sm-12 col-md-12">
-                                        <button class="btn btn-primary"><i
-                                                class="ti ti-icons ti-search me-1"></i></button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Kode</th>
-                                            <th>Tanggal</th>
-                                            <th>Bulan</th>
-                                            <th>Tahun</th>
-                                            <th>Bank</th>
-                                            <th>Jumlah</th>
-                                            <th>#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($saldo_awal as $d)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $d->kode_saldo_awal }}</td>
-                                                <td>{{ formatIndo($d->tanggal) }}</td>
-                                                <td>{{ $nama_bulan[$d->bulan] }}</td>
-                                                <td>{{ $d->tahun }}</td>
-                                                <td>{{ $d->nama_cabang }}</td>
-                                                <td class="text-end fw-bold">{{ formatAngka($d->jumlah) }}</td>
-                                                <td>
-                                                    @can('sakaskecil.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('sakaskecil.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="cancel-confirm me-1">
-                                                                <i class="ti ti-trash text-danger"></i>
 
-                                                            </a>
-                                                        </form>
-                                                    @endcan
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+<style>
+    .badge {
+        padding: 0.25rem 0.4rem !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
+            @include('layouts.navigation_kaskecil')
+        </div>
+
+        {{-- Filter Section --}}
+        <form action="{{ URL::current() }}">
+            <div class="card shadow-none border-0 bg-transparent mb-3">
+                <div class="card-body p-0">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                select2="select2Kodecabangsearch" />
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Bulan</label>
+                                <select name="bulan" id="bulan" class="form-select">
+                                    <option value="">Bulan</option>
+                                    @foreach ($list_bulan as $d)
+                                        <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                            value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Tahun</label>
+                                <select name="tahun" id="tahun" class="form-select">
+                                    <option value="">Tahun</option>
+                                    @for ($t = $start_year; $t <= date('Y'); $t++)
+                                        <option
+                                            @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
+                                            @else
+                                            {{ date('Y') == $t ? 'selected' : '' }} @endif
+                                            value="{{ $t }}">{{ $t }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-md-1 col-sm-12">
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3"
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-database-import me-2"></i>Data Saldo Awal Kas Kecil</h6>
+                    @can('sakaskecil.create')
+                        <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate">
+                            <i class="ti ti-plus me-1"></i> Buat Saldo Awal
+                        </a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-bordered table-striped align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 5%;">NO</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">KODE</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">BULAN</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">TAHUN</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">CABANG</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">JUMLAH</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 5%;">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($saldo_awal as $d)
+                            <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center fw-bold">{{ $d->kode_saldo_awal }}</td>
+                                <td class="text-center">{{ formatIndo($d->tanggal) }}</td>
+                                <td class="text-center">{{ $nama_bulan[$d->bulan] }}</td>
+                                <td class="text-center">{{ $d->tahun }}</td>
+                                <td>{{ $d->nama_cabang }}</td>
+                                <td class="text-end fw-bold text-primary">{{ formatAngka($d->jumlah) }}</td>
+                                <td class="text-center">
+                                    @can('sakaskecil.delete')
+                                        <form method="POST" name="deleteform" class="deleteform d-inline"
+                                            action="{{ route('sakaskecil.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <a href="#" class="cancel-confirm text-danger" data-bs-toggle="tooltip"
+                                                title="Hapus">
+                                                <i class="ti ti-trash fs-5"></i>
+                                            </a>
+                                        </form>
+                                    @endcan
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

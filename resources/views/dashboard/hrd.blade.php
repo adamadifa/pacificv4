@@ -41,27 +41,62 @@
                             @include('dashboard.hrd.rekapkontrak')
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Karyawan Cabang</h4>
+                            <style>
+                                .branch-list-item {
+                                    transition: all 0.2s ease;
+                                    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+                                    margin-bottom: 8px;
+                                    border-radius: 10px !important;
+                                }
+
+                                .branch-list-item:hover {
+                                    background-color: rgba(0, 46, 101, 0.03);
+                                    transform: translateX(5px);
+                                    border-color: #002e65 !important;
+                                }
+
+                                .branch-icon-wrapper {
+                                    width: 35px;
+                                    height: 35px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border-radius: 8px;
+                                    background-color: rgba(0, 46, 101, 0.1);
+                                    color: #002e65;
+                                }
+
+                                .branch-badge {
+                                    background-color: #002e65;
+                                    color: white;
+                                    font-weight: 600;
+                                    padding: 0.4em 0.8em;
+                                    border-radius: 6px;
+                                }
+                            </style>
+                            <div class="card h-100 shadow-none border">
+                                <div class="card-header d-flex align-items-center justify-content-between pb-3">
+                                    <div class="card-title mb-0">
+                                        <h5 class="m-0 me-2"><i class="ti ti-building-community me-2 text-primary"></i>Karyawan Cabang</h5>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <table class="table table-bordered table-striped">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th>Cabang</th>
-                                                <th>Jumlah</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($karyawancabang as $d)
-                                                <tr>
-                                                    <td>{{ textUpperCase($d->nama_cabang) }}</td>
-                                                    <td class="text-center">{{ $d->jml_karyawancabang }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                <div class="card-body pt-0">
+                                    <div class="list-group list-group-flush border-0">
+                                        @foreach ($karyawancabang as $d)
+                                            <div class="list-group-item branch-list-item d-flex align-items-center justify-content-between py-2 px-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="branch-icon-wrapper me-3">
+                                                        <i class="ti ti-building fs-4"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold" style="font-size: 0.85rem;">{{ textUpperCase($d->nama_cabang) }}</h6>
+                                                        <small class="text-muted" style="font-size: 0.75rem;">Total Karyawan</small>
+                                                    </div>
+                                                </div>
+                                                <span class="branch-badge">{{ $d->jml_karyawancabang }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         </div>

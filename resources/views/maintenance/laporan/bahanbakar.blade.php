@@ -1,7 +1,7 @@
 <form action="{{ route('laporanmtc.cetakbahanbakar') }}" method="POST" id="formLapBahanBakar" target="_blank">
     @csrf
     <div class="row">
-        <div class="col">
+        <div class="col-12">
             <div class="form-group mb-3">
                 <select name="kode_barang" id="kode_barang" class="form-select">
                     <option value="">Pilih Barang</option>
@@ -12,8 +12,8 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
+    <div class="row mt-2">
+        <div class="col-12">
             <div class="form-group mb-3">
                 <select name="bulan" id="bulan" class="form-select">
                     <option value="">Bulan</option>
@@ -23,10 +23,9 @@
                 </select>
             </div>
         </div>
-
     </div>
-    <div class="row">
-        <div class="col">
+    <div class="row mt-2">
+        <div class="col-12">
             <div class="form-group mb-3">
                 <select name="tahun" id="tahun" class="form-select">
                     <option value="">Tahun</option>
@@ -38,13 +37,13 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-10 col-md-12 col-sm-12">
+    <div class="row mt-4">
+        <div class="col-10 pe-1">
             <button type="submit" class="btn btn-primary w-100">
                 <i class="ti ti-printer me-1"></i> Cetak
             </button>
         </div>
-        <div class="col-lg-2 col-md-12 col-sm-12">
+        <div class="col-2 ps-0">
             <button type="submit" name="exportButton" class="btn btn-success w-100">
                 <i class="ti ti-download"></i>
             </button>

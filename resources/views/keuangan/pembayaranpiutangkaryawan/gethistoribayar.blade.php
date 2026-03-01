@@ -29,9 +29,9 @@
                 Lainnya
             @endif
         </td>
-        <td>
-            <a href="#" class="btnDeletebayar" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}">
-                <i class="ti ti-trash text-danger"></i>
+        <td class="text-center">
+            <a href="#" class="btnDeletebayar text-danger" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}" data-bs-toggle="tooltip" title="Hapus">
+                <i class="ti ti-trash fs-5"></i>
             </a>
         </td>
     </tr>

@@ -3,114 +3,132 @@
 
 @section('content')
 @section('navigasi')
-    <span>Pembayaran Kasbon</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Pembayaran Kasbon</h4>
+            <small class="text-muted">Riwayat dan manajemen pembayaran kasbon karyawan.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-report-money me-1"></i>Pembayaran Kasbon</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
-<div class="row">
-    <div class="col-lg-6">
-        <div class="nav-align-top nav-tabs-shadow mb-4">
-            @include('layouts.navigation_kasbon')
-            <div class="tab-content">
-                <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                    @can('pembayarankasbon.create')
-                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
-                            Input Pembayaran Kasbon
-                        </a>
-                    @endcan
 
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <form action="{{ route('pembayarankasbon.index') }}">
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="bulan" id="bulan" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                        value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="tahun" id="tahun" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option
-                                                        @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
-                                                        @else
-                                                        {{ date('Y') == $t ? 'selected' : '' }} @endif
-                                                        value="{{ $t }}">{{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-sm-12 col-md-12">
-                                        <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i></button>
-                                    </div>
-                                </div>
-                            </form>
+<div class="row">
+    <div class="col-lg-6 col-md-12 col-sm-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
+            @include('layouts.navigation_kasbon')
+        </div>
+
+        {{-- Filter Section --}}
+        <form action="{{ route('pembayarankasbon.index') }}">
+            <div class="card shadow-none border-0 bg-transparent mb-3">
+                <div class="card-body p-0">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-lg-5 col-md-6 col-sm-12">
+                            <div class="form-group mb-3">
+                                <select name="bulan" id="bulan" class="form-select">
+                                    <option value="">Semua Bulan</option>
+                                    @foreach ($list_bulan as $d)
+                                        <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                            value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table  table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Kode</th>
-                                            <th>Bulan</th>
-                                            <th>Tahun</th>
-                                            <th>Jumlah</th>
-                                            <th>#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($historibayar as $d)
-                                            <tr>
-                                                <td>{{ $d->kode_potongan }}</td>
-                                                <td>{{ $namabulan[$d->bulan] }}</td>
-                                                <td>{{ $d->tahun }}</td>
-                                                <td class="text-end fw-bold">{{ formatRupiah($d->totalpembayaran) }}</td>
-                                                <td>
-                                                    <div class="d-flex">
-                                                        @can('pembayarankasbon.show')
-                                                            <div>
-                                                                <a href="#" class="btnShow"
-                                                                    kode_potongan="{{ Crypt::encrypt($d->kode_potongan) }}">
-                                                                    <i class="ti ti-file-description text-info me-1"></i>
-                                                                </a>
-                                                            </div>
-                                                        @endcan
-                                                        @can('pembayarankasbon.delete')
-                                                            <div>
-                                                                <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('pembayarankasbon.deletegenerate', Crypt::encrypt($d->kode_potongan)) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            </div>
-                                                        @endcan
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                        <div class="col-lg-5 col-md-6 col-sm-12">
+                            <div class="form-group mb-3">
+                                <select name="tahun" id="tahun" class="form-select">
+                                    <option value="">Semua Tahun</option>
+                                    @for ($t = $start_year; $t <= date('Y'); $t++)
+                                        <option
+                                            @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
+                                            @else
+                                            {{ date('Y') == $t ? 'selected' : '' }} @endif
+                                            value="{{ $t }}">{{ $t }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-sm-12 text-end">
+                            <div class="form-group mb-3">
+                                <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3"
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-report-money me-2"></i>Data Pembayaran Kasbon</h6>
+                    @can('pembayarankasbon.create')
+                        <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate">
+                            <i class="ti ti-plus me-1"></i> Input Pembayaran
+                        </a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-bordered table-striped align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">KODE</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">BULAN</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">TAHUN</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">JUMLAH</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 5%;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($historibayar as $d)
+                            <tr>
+                                <td class="text-center fw-bold">{{ $d->kode_potongan }}</td>
+                                <td class="text-center">{{ $namabulan[$d->bulan] }}</td>
+                                <td class="text-center">{{ $d->tahun }}</td>
+                                <td class="text-end fw-bold">{{ formatRupiah($d->totalpembayaran) }}</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-1">
+                                        @can('pembayarankasbon.show')
+                                            <a href="#" class="btnShow text-info"
+                                                kode_potongan="{{ Crypt::encrypt($d->kode_potongan) }}" data-bs-toggle="tooltip" title="Detail">
+                                                <i class="ti ti-file-description fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('pembayarankasbon.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                action="{{ route('pembayarankasbon.deletegenerate', Crypt::encrypt($d->kode_potongan)) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <a href="#" class="delete-confirm text-danger" data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash fs-5"></i>
+                                                </a>
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection
+
 @push('myscript')
 <script>
     $(function() {

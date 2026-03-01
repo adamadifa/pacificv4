@@ -1,20 +1,51 @@
 @if (auth()->user()->hasAnyPermission(['ledger.index', 'saledger.index']))
-    <ul class="nav nav-tabs" role="tablist">
+    <style>
+        .nav-pills-custom .nav-link {
+            color: #5d596c;
+            border-radius: 0;
+            padding: 0.85rem 1.25rem;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.2s ease;
+        }
 
-        @can('saledger.index')
-            <li class="nav-item" role="presentation">
-                <a href="{{ route('saledger.index') }}" class="nav-link {{ request()->is(['saledger']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Saldo Awal
-                </a>
-            </li>
-        @endcan
+        .nav-pills-custom .nav-link.active {
+            color: #002e65 !important;
+            background-color: transparent !important;
+        }
 
-        @can('ledger.index')
-            <li class="nav-item" role="presentation">
-                <a href="{{ route('ledger.index') }}" class="nav-link {{ request()->is(['ledger']) ? 'active' : '' }}">
-                    <i class="tf-icons ti ti-file-description ti-md me-1"></i> Ledger
-                </a>
-            </li>
-        @endcan
-    </ul>
+        .nav-pills-custom .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #002e65;
+        }
+
+        .nav-pills-custom .nav-link:hover {
+            color: #002e65;
+        }
+    </style>
+    <div class="nav-align-top mb-1">
+        <ul class="nav nav-pills nav-pills-custom border-bottom" role="tablist">
+
+            @can('saledger.index')
+                <li class="nav-item">
+                    <a href="{{ route('saledger.index') }}" class="nav-link {{ request()->is(['saledger']) ? 'active' : '' }}">
+                        <i class="tf-icons ti ti-database-import ti-sm me-1"></i> Saldo Awal
+                    </a>
+                </li>
+            @endcan
+
+            @can('ledger.index')
+                <li class="nav-item">
+                    <a href="{{ route('ledger.index') }}" class="nav-link {{ request()->is(['ledger']) ? 'active' : '' }}">
+                        <i class="tf-icons ti ti-book ti-sm me-1"></i> Ledger
+                    </a>
+                </li>
+            @endcan
+        </ul>
+    </div>
 @endif

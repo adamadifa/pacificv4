@@ -3,100 +3,109 @@
 
 @section('content')
 @section('navigasi')
-    <span>Bad Stok</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Bad Stok</h4>
+            <small class="text-muted">Mengelola data produk bad stok.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>General Affair</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-package-off me-1"></i>Bad Stok</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
-    <div class="col-lg-5 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                @can('badstokga.create')
-                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i> Input Bad Stok</a>
-                @endcan
+    <div class="col-lg-5 col-md-12 col-sm-12">
+        {{-- Filter Section --}}
+        <form action="{{ route('badstokga.index') }}">
+            <div class="row g-2 mb-1">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="{{ route('badstokga.index') }}">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
-                                </div>
-                                <div class="col-lg-6 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <select name="kode_asal_bs_search" id="" class="form-select select2Kodeasalbssearch">
-                                            <option value="">Asal Bad Stok</option>
-                                            <option value="GDG" {{ Request('kode_asal_bs_search') == 'GDG' ? 'selected' : '' }}>GUDANG</option>
-                                            @foreach ($asalbadstok as $d)
-                                                <option {{ Request('kode_asal_bs_search') == $d->kode_cabang ? 'selected' : '' }}
-                                                    value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group mb-3">
-                                        <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari Data</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+            <div class="row g-2 mb-2 align-items-end">
+                <div class="col-lg-9 col-md-9 col-sm-12">
+                    <div class="form-group mb-2">
+                        <select name="kode_asal_bs_search" id="kode_asal_bs_search" class="form-select select2Kodeasalbssearch">
+                            <option value="">Asal Bad Stok</option>
+                            <option value="GDG" {{ Request('kode_asal_bs_search') == 'GDG' ? 'selected' : '' }}>GUDANG</option>
+                            @foreach ($asalbadstok as $d)
+                                <option {{ Request('kode_asal_bs_search') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                                    {{ textUpperCase($d->nama_cabang) }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Kode BS</th>
-                                        <th>Tanggal</th>
-                                        <th>Asal Badstok</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($badstok as $d)
-                                        <tr>
-                                            <td>{{ $d->kode_bs }}</td>
-                                            <td>{{ DateToIndo($d->tanggal) }}</td>
-                                            <td>{{ $d->kode_asal_bs }}</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    @can('badstokga.show')
-                                                        <a href="#" class="btnShow" kode_bs="{{ Crypt::encrypt($d->kode_bs) }}">
-                                                            <i class="ti ti-file-description text-info"></i>
-                                                        </a>
-                                                    @endcan
-                                                    @can('badstokga.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="{{ route('badstokga.delete', Crypt::encrypt($d->kode_bs)) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm me-1">
-                                                                <i class="ti ti-trash text-danger"></i>
-                                                            </a>
-                                                        </form>
-                                                    @endcan
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="float: right;">
-                            {{ $badstok->links() }}
-                        </div>
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="form-group mb-2">
+                        <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
                     </div>
+                </div>
+            </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-package-off me-2"></i>Data Bad Stok</h6>
+                    @can('badstokga.create')
+                        <a href="#" class="btn btn-primary btn-sm" id="btnCreate"><i class="ti ti-plus me-1"></i> Input Bad Stok</a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-white" style="background-color: #002e65 !important;">KODE BS</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">ASAL BAD STOK</th>
+                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($badstok as $d)
+                            <tr>
+                                <td><span class="fw-bold">{{ $d->kode_bs }}</span></td>
+                                <td>{{ DateToIndo($d->tanggal) }}</td>
+                                <td>{{ $d->kode_asal_bs }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @can('badstokga.show')
+                                            <a href="#" class="btnShow text-info" kode_bs="{{ Crypt::encrypt($d->kode_bs) }}" title="Detail">
+                                                <i class="ti ti-file-description fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('badstokga.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                action="{{ route('badstokga.delete', Crypt::encrypt($d->kode_bs)) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <a href="#" class="delete-confirm text-danger">
+                                                    <i class="ti ti-trash fs-5"></i>
+                                                </a>
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $badstok->links() }}
                 </div>
             </div>
         </div>
@@ -104,34 +113,36 @@
 </div>
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
 @endsection
+
 @push('myscript')
-{{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
 <script>
     $(function() {
-
-        const select2Kodeasalbssearch = $('.select2Kodeasalbssearch');
-        if (select2Kodeasalbssearch.length) {
-            select2Kodeasalbssearch.each(function() {
-                var $this = $(this);
-                $this.wrap('<div class="position-relative"></div>').select2({
-                    placeholder: 'Asal Bad Stok',
-                    allowClear: true,
-                    dropdownParent: $this.parent()
+        const setupSelect2 = (selector, placeholder) => {
+            const $el = $(selector);
+            if ($el.length) {
+                $el.each(function() {
+                    const $this = $(this);
+                    $this.wrap('<div class="position-relative"></div>').select2({
+                        placeholder: placeholder,
+                        allowClear: true,
+                        dropdownParent: $this.parent()
+                    });
                 });
-            });
-        }
+            }
+        };
 
+        setupSelect2(".select2Kodeasalbssearch", 'Asal Bad Stok');
 
-
-        function loading() {
+        const loading = () => {
             $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
-            <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
+                <div class="sk-wave-rect"></div>
             </div>`);
         };
+
         $("#btnCreate").click(function(e) {
             e.preventDefault();
             loading();
@@ -141,43 +152,12 @@
         });
 
         $(".btnShow").click(function(e) {
-            var kode_bs = $(this).attr("kode_bs");
             e.preventDefault();
-            $('#modal').modal("show");
+            const kode_bs = $(this).attr("kode_bs");
             loading();
-            $("#modal").find(".modal-title").text("Detail Bad Stok");
-            $("#loadmodal").load('/badstokga/' + kode_bs + '/show');
-        });
-
-        $(document).on('submit', '#formBadStok', function(e) {
-            const tanggal = $(this).find("#tanggal").val();
-            const kode_asal_bs = $(this).find("#kode_asal_bs").val();
-            if (tanggal == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Tanggal harus diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        $(this).find("#tanggal").focus();
-                    },
-                });
-                return false;
-            } else if (kode_asal_bs == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Asal Bad Stok harus diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: (e) => {
-                        $(this).find("#kode_asal_bs").focus();
-                    },
-                });
-                return false;
-            } else {
-                buttonDisabled();
-                return true;
-            }
+            $("#modal").modal("show");
+            $(".modal-title").text("Detail Bad Stok");
+            $("#loadmodal").load(`/badstokga/${kode_bs}/show`);
         });
     });
 </script>
