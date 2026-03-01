@@ -226,7 +226,7 @@
                                                 <a href="#" class="dropdown-toggle waves-effect waves-light hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="ti ti-printer text-primary fs-5"></i>
                                                 </a>
-                                                <ul class="dropdown-menu">
+                                                <ul class="dropdown-menu dropdown-menu-end">
                                                     @can('penjualan.cetakfaktur')
                                                         <li>
                                                             <a class="dropdown-item" target="_blank" href="{{ route('penjualan.cetakfaktur', Crypt::encrypt($d->no_faktur)) }}">
@@ -295,10 +295,34 @@
     </div>
 </div>
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
+<style>
+    /* Fix sticky column overlap when dropdown is open */
+    .tr-dropdown-active {
+        z-index: 9999 !important;
+        position: relative;
+    }
+    .td-dropdown-active {
+        z-index: 9999 !important;
+    }
+    .table-responsive-dropdown-active {
+        padding-bottom: 120px;
+    }
+</style>
 @endsection
 @push('myscript')
 <script>
     $(function() {
+        // Fix for dropdown getting hidden under next row's frozen column
+        $('.table-responsive').on('show.bs.dropdown', function (e) {
+            $(this).addClass('table-responsive-dropdown-active');
+            $(e.target).closest('tr').addClass('tr-dropdown-active');
+            $(e.target).closest('td.freeze-last').addClass('td-dropdown-active');
+        });
+        $('.table-responsive').on('hide.bs.dropdown', function (e) {
+            $(this).removeClass('table-responsive-dropdown-active');
+            $(e.target).closest('tr').removeClass('tr-dropdown-active');
+            $(e.target).closest('td.freeze-last').removeClass('td-dropdown-active');
+        });
         function loading() {
             $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
             <div class="sk-wave-rect"></div>
