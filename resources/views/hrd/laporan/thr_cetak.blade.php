@@ -238,7 +238,7 @@
                         $bulankerja = $masakerja['bulan'];
                     @endphp
                     <tr>
-                        <td style="width:1%">{{ $loop->iteration }}</td>
+                        <td style="width:1%">{{ $loop->iteration }} {{$d['tanggal_masuk']}} - {{$enddate}}</td>
                         <td style="width:2%">
                             @php
                                 $nik = $d['nik'];
