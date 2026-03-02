@@ -890,6 +890,14 @@
                                 $spip;
 
                             $jmlbersih = $bruto - $jml_potongan_upah + $jml_penambah;
+
+                            if ($d['kode_cabang'] == 'PST') {
+                                $tahap1 = $jmlbersih > $umr ? $umr : $jmlbersih;
+                                $tahap2 = $jmlbersih > $umr ? $jmlbersih - $umr : 0;
+                            } else {
+                                $tahap1 = $jmlbersih;
+                                $tahap2 = 0;
+                            }
                         @endphp
                         @if ($format_laporan != 3)
                             <td style="font-weight: bold; text-align:center; width:2%">
@@ -964,15 +972,6 @@
                                 {{ !empty($jml_penambah) ? formatAngka($jml_penambah) : '' }}</td>
                             <td style="text-align:right; width:2%">
                                 {{ !empty($jmlbersih) ? formatAngka($jmlbersih) : '' }}</td>
-                            @php
-                                if ($d['kode_cabang'] == 'PST') {
-                                    $tahap1 = $jmlbersih > $umr ? $umr : $jmlbersih;
-                                    $tahap2 = $jmlbersih > $umr ? $jmlbersih - $umr : 0;
-                                } else {
-                                    $tahap1 = $jmlbersih;
-                                    $tahap2 = 0;
-                                }
-                            @endphp
                             <td style="text-align:right; width:2%; font-weight:bold;">
                                 {{ $tahap1 > 0 ? formatAngka($tahap1) : '' }}</td>
                             <td style="text-align:right; width:2%; font-weight:bold;">
