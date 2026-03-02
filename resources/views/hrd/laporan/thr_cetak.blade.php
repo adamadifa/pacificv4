@@ -232,13 +232,13 @@
                         $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
                         $jumlah_insentif = $insentif + $insentif_manager;
                         $startdate = date('Y-m', strtotime($end_date)) . '-01';
-                        $enddate = date('Y-m-t', strtotime($end_date));
+                        $enddate = date('Y-m', strtotime($end_date)) . '-21';
                         $masakerja = hitungMasakerja($d['tanggal_masuk'], $enddate);
                         $tahunkerja = $masakerja['tahun'];
                         $bulankerja = $masakerja['bulan'];
                     @endphp
                     <tr>
-                        <td style="width:1%">{{ $loop->iteration }} {{$d['tanggal_masuk']}} - {{$enddate}}</td>
+                        <td style="width:1%">{{ $loop->iteration }}</td>
                         <td style="width:2%">
                             @php
                                 $nik = $d['nik'];
