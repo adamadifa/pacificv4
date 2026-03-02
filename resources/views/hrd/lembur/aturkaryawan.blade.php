@@ -20,13 +20,13 @@
     <div class="row">
         <div class="col">
             <table class="table table-bordered table-striped table-hover" id="tabelkaryawan">
-                <thead class="table-dark">
+                <thead style="background-color: #002e65;">
                     <tr>
-                        <th>No.</th>
-                        <th>NIK</th>
-                        <th>Nama Karyawan</th>
-                        <th>Group</th>
-                        <th>#</th>
+                        <th class="text-white">No.</th>
+                        <th class="text-white">NIK</th>
+                        <th class="text-white">Nama Karyawan</th>
+                        <th class="text-white">Group</th>
+                        <th class="text-white text-center">#</th>
                     </tr>
                 </thead>
                 <tbody id="loadkaryawan">

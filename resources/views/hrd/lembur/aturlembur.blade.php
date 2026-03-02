@@ -3,17 +3,36 @@
 
 @section('content')
 @section('navigasi')
-    <span>Atur Lembur</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Atur Lembur</h4>
+            <small class="text-muted">Mengatur karyawan untuk rencana lembur.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>HRD</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('lembur.index') }}"><i class="ti ti-clipboard-list me-1"></i>Lembur</a>
+                </li>
+                <li class="breadcrumb-item active">Atur Lembur</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
 
 <div class="row">
     <div class="col-lg-6 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                @can('lembur.setlembur')
-                    <a href="#" id="btnCreate" class="btn btn-primary"><i class="fa fa-user-plus me-2"></i> Tambah
-                        Karyawan</a>
-                @endcan
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-settings-cog me-2"></i>Detail Lembur</h6>
+                    @can('lembur.setlembur')
+                        <a href="#" id="btnCreate" class="btn btn-primary btn-sm"><i class="ti ti-user-plus me-1"></i> Tambah
+                            Karyawan</a>
+                    @endcan
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -67,20 +86,22 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <table class="table table-bordered table-striped">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Nik</th>
-                                    <th>Nama Karyawan</th>
-                                    <th>Dept</th>
-                                    <th>Grup</th>
-                                    <th>#</th>
-                                </tr>
-                            </thead>
-                            <tbody id="loadlemburkaryawan">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped border">
+                                <thead style="background-color: #002e65;">
+                                    <tr>
+                                        <th class="text-white">Nik</th>
+                                        <th class="text-white">Nama Karyawan</th>
+                                        <th class="text-white">Dept</th>
+                                        <th class="text-white">Grup</th>
+                                        <th class="text-white text-center">#</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="loadlemburkaryawan">
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

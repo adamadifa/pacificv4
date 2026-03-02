@@ -59,11 +59,11 @@
     <div class="row">
         <div class="table-modal">
             <table class="table table-bordered table-striped">
-                <thead class="table-dark">
+                <thead style="background-color: #002e65;">
                     <tr>
-                        <th>No.</th>
-                        <th>Nik</th>
-                        <th>Nama Karyawan</th>
+                        <th class="text-white">No.</th>
+                        <th class="text-white">Nik</th>
+                        <th class="text-white">Nama Karyawan</th>
                     </tr>
                 </thead>
                 <tbody>

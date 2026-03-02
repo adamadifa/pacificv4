@@ -10,8 +10,11 @@
             <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$jadwalshift->sampai" />
         </div>
     </div>
-    <div class="form-group mb-3">
-        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+    <div class="form-group mb-0">
+        <button class="btn btn-primary w-100" id="btnSimpan" type="submit" name="submitButton">
+            <ion-icon name="send-outline" class="me-1"></ion-icon>
+            Update
+        </button>
     </div>
 </form>
 

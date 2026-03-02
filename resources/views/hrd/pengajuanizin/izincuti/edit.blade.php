@@ -46,7 +46,10 @@
         </div>
     </div>
     <div class="form-group mb-3">
-        <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
+        <button class="btn btn-primary w-100" id="btnSimpan">
+            <ion-icon name="send-outline" class="me-1"></ion-icon>
+            Submit
+        </button>
     </div>
 </form>
 <script>

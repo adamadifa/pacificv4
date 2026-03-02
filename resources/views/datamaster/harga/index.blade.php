@@ -87,7 +87,7 @@
     <div class="col-12">
         {{-- Filter Section (No Card) --}}
         <form action="{{ route('harga.index') }}">
-            <div class="row g-2 mb-3 align-items-end">
+            <div class="row g-2 mb-1 align-items-end">
                 <div class="col-lg-4 col-md-4 col-sm-12">
                     <x-input-with-icon label="Cari Nama Produk" value="{{ Request('nama_produk') }}" name="nama_produk"
                         icon="ti ti-search" />
@@ -98,13 +98,13 @@
                             selected="{{ Request('kode_cabang') }}" />
                     </div>
                 @endhasanyrole
-                <div class="col-lg-3 col-md-3 col-sm-12">
+                <div class="col">
                     <x-select label="Kategori" name="kode_kategori_salesman" :data="$kategorisalesman" key="kode_kategori_salesman"
                         textShow="nama_kategori_salesman" selected="{{ Request('kode_kategori_salesman') }}" />
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-12">
-                    <div class="form-group mb-3">
-                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
+                <div class="col-auto">
+                    <div class="form-group mb-1">
+                        <button class="btn btn-primary"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
                 </div>
             </div>

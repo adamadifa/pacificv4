@@ -38,11 +38,48 @@
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent,
+                rgba(59, 130, 246, 0.5),
+                transparent 30%
+            );
+            animation: rotate-glow 4s linear infinite;
+            z-index: -2;
+        }
+
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 23px;
+            z-index: -1;
+        }
+
+        @keyframes rotate-glow {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .input-field {
@@ -176,12 +213,13 @@
 
 <body>
 
-    <div class="glass-card w-full max-w-md rounded-3xl p-8 relative mx-4 mt-24">
-
+    <div class="relative w-full max-w-md mx-4 mt-24">
         <!-- Image Character -->
         <div id="character-container" class="state-idle">
             <img id="character-img" src="{{ asset('karakter.png') }}" alt="Login Character">
         </div>
+
+        <div class="glass-card w-full rounded-3xl p-8 relative">
 
         <div class="text-center mb-8 relative z-20 mt-10">
             <div class="mb-4">
@@ -245,6 +283,7 @@
             </button>
         </form>
     </div>
+</div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
