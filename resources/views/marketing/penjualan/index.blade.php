@@ -107,27 +107,25 @@
             @endrole
 
             <div class="row g-2 mb-1">
-                <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-group mb-1">
                         <select name="kode_salesman_search" id="kode_salesman_search" class="form-select select2Kodesalesmansearch">
                             <option value="">Salesman</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search" icon="ti ti-barcode" />
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}" name="kode_pelanggan_search" icon="ti ti-barcode" />
                 </div>
-                <div class="col-lg-3 col-md-12 col-sm-12">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" name="nama_pelanggan_search" icon="ti ti-users" />
                 </div>
-            </div>
-            <div class="row g-2 mb-2">
                 <div class="col-auto">
-                    <div class="form-group mb-1 text-end">
-                        <button class="btn btn-primary btn-sm"><i class="ti ti-search me-1"></i>Cari</button>
+                    <div class="form-group mb-1">
+                        <button class="btn btn-primary"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
                 </div>
             </div>
