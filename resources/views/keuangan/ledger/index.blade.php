@@ -23,6 +23,22 @@
     .badge {
         padding: 0.25rem 0.4rem !important;
     }
+
+    .col-keterangan {
+        width: 25% !important;
+        white-space: normal !important;
+        min-width: 200px !important;
+    }
+
+    .col-kode-akun {
+        width: 20% !important;
+        white-space: normal !important;
+        min-width: 150px !important;
+    }
+
+    .table {
+        font-size: 14px !important;
+    }
 </style>
 
 <div class="row">
@@ -79,14 +95,14 @@
                     @endcan
                 </div>
             </div>
-            <div class="table-responsive text-nowrap">
+            <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-dark">
                         <tr>
                             <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
                             <th class="text-white text-center" style="background-color: #002e65 !important;">PELANGGAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KETERANGAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KODE AKUN</th>
+                            <th class="text-white text-center col-keterangan" style="background-color: #002e65 !important;">KETERANGAN</th>
+                            <th class="text-white text-center col-kode-akun" style="background-color: #002e65 !important;">KODE AKUN</th>
                             <th class="text-white text-center" style="background-color: #002e65 !important;">PRT</th>
                             <th class="text-white text-center" style="background-color: #002e65 !important;">DEBET</th>
                             <th class="text-white text-center" style="background-color: #002e65 !important;">KREDIT</th>
@@ -95,7 +111,7 @@
                         </tr>
                         <tr style="background-color: #f1f1f1;">
                             <th colspan="7" class="fw-bold">SALDO AWAL</th>
-                            <td class="text-end fw-bold {{ $saldo_awal == null ? 'bg-danger text-white' : 'text-primary' }}">
+                            <td class="text-end fw-bold {{ $saldo_awal == null ? 'bg-danger text-white' : 'text-white' }}">
                                 @if ($saldo_awal != null)
                                     {{ formatAngka($saldo_awal->jumlah - $mutasi->debet + $mutasi->kredit) }}
                                 @else
@@ -124,8 +140,8 @@
                             <tr class="{{ $color_cr }}">
                                 <td class="text-center">{{ date('d-m-y', strtotime($d->tanggal)) }}</td>
                                 <td>{{ textCamelCase($d->pelanggan) }}</td>
-                                <td>{{ textCamelCase($d->keterangan) }}</td>
-                                <td><span class="badge bg-label-secondary">{{ $d->kode_akun }}</span> {{ $d->nama_akun }}</td>
+                                <td class="col-keterangan">{{ textCamelCase($d->keterangan) }}</td>
+                                <td class="col-kode-akun"><span class="badge bg-label-primary">{{ $d->kode_akun }}</span> {{ $d->nama_akun }}</td>
                                 <td class="text-center">{{ $d->kode_peruntukan == 'MP' ? $d->kode_peruntukan : $d->keterangan_peruntukan }}</td>
                                 <td class="text-end text-danger">{{ $d->debet_kredit == 'D' ? formatAngka($d->jumlah) : '' }} </td>
                                 <td class="text-end text-success">{{ $d->debet_kredit == 'K' ? formatAngka($d->jumlah) : '' }} </td>
