@@ -129,6 +129,9 @@
             });
         }
 
+        $("#nik_search").click(function(e) {
+            $("#modalKaryawan").modal("show");
+        });
 
 
         function buttonDisable() {

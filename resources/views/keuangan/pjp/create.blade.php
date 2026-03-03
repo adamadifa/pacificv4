@@ -151,6 +151,10 @@
             getMulaicicilan();
         });
 
+        $("#nik_search").click(function(e) {
+            $("#modalKaryawan").modal("show");
+        });
+
         $('#tabelkaryawan tbody').on('click', '.pilihkaryawan', function(e) {
             e.preventDefault();
             let nik = $(this).attr('nik');

@@ -207,6 +207,10 @@
             });
         }
 
+        $("#nik_search").click(function(e) {
+            $("#modalKaryawan").modal("show");
+        });
+
         $(document).on('keyup keydown', '#jumlah', function(e) {
             let jmlkasbon = $(this).val();
             let jumlah = jmlkasbon != "" ? parseInt(jmlkasbon.replace(/\./g, '')) : 0;
