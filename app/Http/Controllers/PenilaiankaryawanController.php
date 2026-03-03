@@ -235,6 +235,12 @@ class PenilaiankaryawanController extends Controller
                 'status' => 0
             ]);
 
+            // Update posisi_ajuan di hrd_penilaian
+            $role_name = $cek_user_approve->getRoleNames()->first();
+            Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update([
+                'posisi_ajuan' => $role_name
+            ]);
+
             //Jika Departemen Marketing dan Cabang != Pusat
 
             DB::commit();
@@ -489,7 +495,8 @@ class PenilaiankaryawanController extends Controller
             if ($role == $end_role) {
                 Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)
                     ->update([
-                        'status' => 1
+                        'status' => 1,
+                        'posisi_ajuan' => $role // Tetap di role terakhir saat sudah disetujui (atau bisa kosongkan jika mau)
                     ]);
             } else {
 
@@ -499,6 +506,11 @@ class PenilaiankaryawanController extends Controller
                     'id_pengirim' => auth()->user()->id,
                     'id_penerima' => $userrole->id,
                     'status' => 0,
+                ]);
+
+                // Update posisi_ajuan ke role berikutnya
+                Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update([
+                    'posisi_ajuan' => $nextrole
                 ]);
             }
 
@@ -529,12 +541,12 @@ class PenilaiankaryawanController extends Controller
                     'status' => 0
                 ]);
 
-            if ($role == 'direktur') {
-                Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)
-                    ->update([
-                        'status' => 0
-                    ]);
-            }
+            Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)
+                ->update([
+                    'status' => 0,
+                    'posisi_ajuan' => $role
+                ]);
+
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));

@@ -118,13 +118,20 @@
                 @php
                     $roles_approve = cekRoleapprove($d->kode_dept, $d->kode_cabang, $d->kategori_jabatan, $d->kode_jabatan);
                     $end_role = end($roles_approve);
-                    if ($level_user != $end_role) {
+                    if ($role != $end_role) {
                         $index_role = array_search($role, $roles_approve);
                         $next_role = $roles_approve[$index_role + 1];
                     } else {
                         $lastindex = count($roles_approve) - 1;
                         $next_role = $roles_approve[$lastindex];
                     }
+
+                    // Action Visibility Flags
+                    $is_creator = $d->id_user == auth()->user()->id;
+                    $is_pending = $d->status === '0';
+                    $first_role = !empty($roles_approve) ? $roles_approve[0] : null;
+                    $is_at_first_step = $d->posisi_ajuan == $first_role;
+                    $is_admin = auth()->user()->hasRole(['super admin', 'asst. manager hrd', 'spv presensi']);
                 @endphp
                 <div class="col-12 mb-3">
                     <div class="card shadow-none border assessment-card h-100">
@@ -212,15 +219,7 @@
                         </div>
                         <div class="card-footer py-2 px-3 border-top d-flex justify-content-end gap-2" style="background: #fcfdfe;">
                             @can('penilaiankaryawan.edit')
-                                @if (
-                                    ($d->status === '0' && $d->id_penerima === $d->id_user) ||
-                                        ($d->status === '0' && $d->id_pengirim === $d->id_user && $d->posisi_ajuan === $next_role && $level_user != 'direktur') ||
-                                        ($level_user == 'asst. manager hrd' && $d->status === '0') ||
-                                        ($level_user == 'spv presensi' && $d->status === '0') ||
-                                        ($level_user == 'direktur' && $d->status === '0') ||
-                                        ($level_user == 'gm marketing' && $d->status === '0') ||
-                                        ($level_user == $d->posisi_ajuan && $d->status == '0') ||
-                                        in_array($level_user, ['spv presensi', 'super admin', 'asst. manager hrd']))
+                                @if (($is_creator && $is_pending && $is_at_first_step) || $is_admin)
                                     <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}" class="btn btn-icon btn-label-success btn-sm" title="Edit">
                                         <i class="ti ti-edit"></i>
                                     </a>
@@ -250,11 +249,11 @@
                             @endcan
 
                             @can('penilaiankaryawan.approve')
-                                @if ($level_user == $d->posisi_ajuan && $d->status === '0')
+                                @if ($role == $d->posisi_ajuan && $d->status === '0')
                                     <a href="#" class="btnApprove btn btn-icon btn-label-info btn-sm" kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}" title="Approve">
                                         <i class="ti ti-external-link"></i>
                                     </a>
-                                @elseif (($d->posisi_ajuan == $next_role && $d->status === '0') || ($level_user == $d->posisi_ajuan && $d->status === '1'))
+                                @elseif (($d->posisi_ajuan == $next_role && $d->status === '0') || ($role == $d->posisi_ajuan && $d->status === '1'))
                                     <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('penilaiankaryawan.cancel', Crypt::encrypt($d->kode_penilaian)) }}">
                                         @csrf
                                         @method('DELETE')
@@ -266,10 +265,7 @@
                             @endcan
 
                             @can('penilaiankaryawan.delete')
-                                @if (
-                                    ($d->status === '0' && $d->id_penerima === $d->id_user) ||
-                                        ($d->status === '0' && $d->id_pengirim === $d->id_user && $d->posisi_ajuan === $next_role && $level_user != 'direktur') ||
-                                        auth()->user()->hasRole('asst. manager hrd'))
+                                @if (($is_creator && $is_pending && $is_at_first_step) || $is_admin)
                                     <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('penilaiankaryawan.delete', Crypt::encrypt($d->kode_penilaian)) }}">
                                         @csrf
                                         @method('DELETE')

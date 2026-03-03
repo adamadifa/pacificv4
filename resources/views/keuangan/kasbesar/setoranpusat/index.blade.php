@@ -199,6 +199,17 @@
                             </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr style="background-color: #f8f9fa;">
+                            <th colspan="2" class="text-center sticky-column sticky-left-1" style="background-color: #f8f9fa !important;">TOTAL</th>
+                            <th class="text-end">{{ formatAngka($setoran_pusat->sum('setoran_kertas')) }}</th>
+                            <th class="text-end">{{ formatAngka($setoran_pusat->sum('setoran_logam')) }}</th>
+                            <th class="text-end">{{ formatAngka($setoran_pusat->sum('setoran_transfer')) }}</th>
+                            <th class="text-end">{{ formatAngka($setoran_pusat->sum('setoran_giro')) }}</th>
+                            <th class="text-end fw-bold text-primary">{{ formatAngka($setoran_pusat->sum('total')) }}</th>
+                            <th colspan="3"></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
