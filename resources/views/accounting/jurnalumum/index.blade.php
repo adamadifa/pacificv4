@@ -18,6 +18,23 @@
         </nav>
     </div>
 @endsection
+<style>
+    .col-keterangan {
+        width: 25% !important;
+        white-space: normal !important;
+        min-width: 200px !important;
+    }
+
+    .col-akun {
+        width: 20% !important;
+        white-space: normal !important;
+        min-width: 150px !important;
+    }
+
+    .table {
+        font-size: 14px !important;
+    }
+</style>
 
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
@@ -57,14 +74,14 @@
                 </div>
             </div>
             
-            <div class="table-responsive text-nowrap">
+            <div class="table-responsive">
                 <table class="table table-hover">
                     <thead style="background-color: #002e65;">
                         <tr>
                             <th class="text-white py-3">KODE JU</th>
                             <th class="text-white py-3">TANGGAL</th>
-                            <th class="text-white py-3">KETERANGAN</th>
-                            <th class="text-white py-3">AKUN</th>
+                             <th class="text-white py-3 col-keterangan">KETERANGAN</th>
+                             <th class="text-white py-3 col-akun">AKUN</th>
                             <th class="text-white py-3">PERUNTUKAN</th>
                             <th class="text-white py-3 text-end">DEBET</th>
                             <th class="text-white py-3 text-end">KREDIT</th>
@@ -82,8 +99,8 @@
                             <tr class="{{ $color_cr }}">
                                 <td class="py-2"><span class="fw-bold">{{ $d->kode_ju }}</span></td>
                                 <td class="py-2">{{ formatIndo($d->tanggal) }}</td>
-                                <td class="py-2">{{ $d->keterangan }}</td>
-                                <td class="py-2">{{ $d->kode_akun }} - {{ $d->nama_akun }}</td>
+                                <td class="py-2 col-keterangan">{{ $d->keterangan }}</td>
+                                <td class="py-2 col-akun"><span class="badge bg-label-primary">{{ $d->kode_akun }}</span> {{ $d->nama_akun }}</td>
                                 <td class="py-2">{{ $d->kode_peruntukan }} {{ !empty($d->kode_cabang) ? '(' . $d->kode_cabang . ')' : '' }}</td>
                                 <td class="py-2 text-end fw-semibold">{{ formatAngkaDesimal($debet) }}</td>
                                 <td class="py-2 text-end fw-semibold">{{ formatAngkaDesimal($kredit) }}</td>
