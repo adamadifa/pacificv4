@@ -19,6 +19,22 @@
     </div>
 @endsection
 
+<style>
+    .badge {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.7rem !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem 0.5rem !important;
+    }
+
+    .table {
+        font-size: 13px !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="alert alert-info alert-dismissible d-flex align-items-baseline shadow-sm" role="alert">
@@ -104,17 +120,13 @@
                                 <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
                                 <td>{{ textUpperCase($d->kode_cabang) }}</td>
                                 <td>{{ $d->keterangan }}</td>
-                                <td>
-                                    @if ($d->status == 1)
-                                        <span class="badge bg-success shadow-sm">
-                                            <i class="ti ti-check me-1"></i>{{ $d->no_mutasi }}
-                                        </span>
-                                    @else
-                                        <span class="badge bg-danger shadow-sm">
-                                            <i class="ti ti-clock me-1"></i>Belum Di Proses
-                                        </span>
-                                    @endif
-                                </td>
+                                 <td>
+                                     @if ($d->status == 1)
+                                         <span class="badge bg-success shadow-sm">{{ $d->no_mutasi }}</span>
+                                     @else
+                                         <i class="ti ti-refresh text-warning ti-spin"></i>
+                                     @endif
+                                 </td>
                                 <td>
                                     @php
                                         $nama_sales = explode(' ', $d->nama_salesman);

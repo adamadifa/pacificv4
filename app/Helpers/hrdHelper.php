@@ -11,8 +11,24 @@ use Illuminate\Support\Facades\DB;
 
 function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabatan = "")
 {
-    // Cek Role Name
-    $role = Auth::user()->roles->pluck('name')[0];
+    $config = \App\Models\PenilaiankaryawanApprovalConfig::where(function ($query) use ($kode_dept) {
+        $query->where('kode_dept', $kode_dept)->orWhereNull('kode_dept');
+    })
+        ->where(function ($query) use ($kode_cabang) {
+            $query->where('kode_cabang', $kode_cabang)->orWhereNull('kode_cabang');
+        })
+        ->where(function ($query) use ($kategori_jabatan) {
+            $query->where('kategori_jabatan', $kategori_jabatan)->orWhereNull('kategori_jabatan');
+        })
+        ->where(function ($query) use ($kode_jabatan) {
+            $query->where('kode_jabatan', $kode_jabatan)->orWhereNull('kode_jabatan');
+        })
+        ->orderByRaw('kode_jabatan DESC, kategori_jabatan DESC, kode_dept DESC, kode_cabang DESC')
+        ->first();
+
+    if ($config) {
+        return $config->roles;
+    }
 
     if ($kode_dept == 'AKT' && $kode_cabang != 'PST' && $kategori_jabatan == 'NM') {
         //Akunting Cabang Non Manajemen
@@ -60,8 +76,6 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
         $roles_approve =  ['regional operation manager', 'gm administrasi', 'asst. manager hrd', 'direktur'];
     }
 
-
-
     return $roles_approve;
 }
 
@@ -70,66 +84,55 @@ function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabat
 function listApprovepenilaian($kode_dept, $level = "")
 {
     $list_approve = [];
-    if ($kode_dept == "AKT") {
-        $list_approve =  ['operation manager', 'regional operation manager', 'manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
-    } else if ($kode_dept == "MKT") {
-        $list_approve =  ['sales marketing manager', 'regional sales manager', 'gm marketing', 'asst. manager hrd', 'direktur'];
-    } else if ($kode_dept == "GAF") {
-        $list_approve =  ['manager general affair', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($kode_dept == "MTC") {
-        $list_approve =  ['manager maintenance', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($kode_dept == "PMB") {
-        $list_approve =  ['manager pembelian', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($kode_dept == "PRD") {
-        $list_approve =  ['manager produksi', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($kode_dept == "GDG") {
-        $list_approve =  ['manager gudang', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($kode_dept == "PDQ") {
-        $list_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
+
+    // Get all roles from dynamic config for this department
+    $configs = \App\Models\PenilaiankaryawanApprovalConfig::where(function ($query) use ($kode_dept) {
+        if ($kode_dept) {
+            $query->where('kode_dept', $kode_dept)->orWhereNull('kode_dept');
+        }
+    })->get();
+
+    foreach ($configs as $config) {
+        $list_approve = array_merge($list_approve, $config->roles);
     }
 
-    if ($level == "manager keuangan") {
-        $list_approve =  ['manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "regional operation manager") {
-        $list_approve =  ['regional operation manager', 'gm administrasi', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "manager gudang") {
-        $list_approve =  ['manager gudang', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "manager maintenance") {
-        $list_approve =  ['manager maintenance', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "manager pembelian") {
-        $list_approve =  ['manager pembelian', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "manager produksi") {
-        $list_approve =  ['manager produksi', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "manager general affair") {
-        $list_approve =  ['manager general affair', 'gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "regional sales manager") {
-        $list_approve =  ['regional sales manager', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "gm administrasi") {
-        $list_approve =  ['gm administrasi', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "gm marketing") {
-        $list_approve =  ['gm marketing', 'asst. manager hrd', 'direktur'];
-    } else if ($level == "gm operasional") {
-        $list_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
-    } else if (in_array($level, ['super admin', 'asst. manager hrd'])) {
-        $list_approve =  [
-            'operation manager',
-            'sales marketing manager',
-            'regional sales manager',
-            'regional operation manager',
-            'manager keuangan',
-            'manager gudang',
-            'manager maintenance',
-            'manager pembelian',
-            'manager produksi',
-            'manager general affair',
-            'gm administrasi',
-            'gm marketing',
-            'gm operasional',
-            'asst. manager hrd',
-            'direktur'
-        ];
+    $list_approve = array_unique($list_approve);
+
+    if (empty($list_approve)) {
+        // Fallback to hardcoded list if no dynamic config matches
+        if ($kode_dept == "AKT") {
+            $list_approve =  ['operation manager', 'regional operation manager', 'manager keuangan', 'gm administrasi', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "MKT") {
+            $list_approve =  ['sales marketing manager', 'regional sales manager', 'gm marketing', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "GAF") {
+            $list_approve =  ['manager general affair', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "MTC") {
+            $list_approve =  ['manager maintenance', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "PMB") {
+            $list_approve =  ['manager pembelian', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "PRD") {
+            $list_approve =  ['manager produksi', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "GDG") {
+            $list_approve =  ['manager gudang', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "PDQ") {
+            $list_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
+        } else {
+            $list_approve =  ['operation manager', 'regional operation manager', 'gm administrasi', 'asst. manager hrd', 'direktur'];
+        }
     }
-    return $list_approve;
+
+    if (in_array($level, ['super admin', 'asst. manager hrd'])) {
+        $all_roles_config = \App\Models\PenilaiankaryawanApprovalConfig::get()->pluck('roles')->flatten()->unique()->toArray();
+        if (!empty($all_roles_config)) {
+            $list_approve = $all_roles_config;
+            // Ensure direktur is always there if expected
+            if (!in_array('direktur', $list_approve)) {
+                $list_approve[] = 'direktur';
+            }
+        }
+    }
+
+    return array_values($list_approve);
 }
 
 

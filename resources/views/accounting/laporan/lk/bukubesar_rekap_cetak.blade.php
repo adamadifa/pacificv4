@@ -52,7 +52,7 @@
                         @if ($kode_akun != $d->kode_akun && !$first_row)
                             <!-- Print Previous Row -->
                             <tr>
-                                <td>{{ $kode_akun }}</td>
+                                <td>'{{ $kode_akun }}</td>
                                 <td>{{ $nama_akun }}</td>
                                 @php
                                     $mutasi_d = $total_debet - $saldo_awal_debet;

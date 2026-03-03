@@ -111,6 +111,7 @@ use App\Http\Controllers\PencairanprogramController;
 use App\Http\Controllers\PencairanprogramenambulanController;
 use App\Http\Controllers\PencairanprogramikatanController;
 use App\Http\Controllers\PencairanProgramIkatan2026Controller;
+use App\Http\Controllers\PenilaiankaryawanApprovalConfigController;
 use App\Http\Controllers\PenilaiankaryawanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
@@ -1706,6 +1707,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('/kesepakatanbersama/{no_kb}/delete', 'destroy')->name('kesepakatanbersama.delete')->can('kb.delete');
         Route::get('/kesepakatanbersama/{kode_penilaian}/createkontrak', 'createkontrak')->name('kesepakatanbersama.createkontrak')->can('kontrakkerja.create');
         Route::post('/kesepakatanbersama/{kode_penilaian}/storekontrak', 'storekontrak')->name('kesepakatanbersama.storekontrak')->can('kontrakkerja.create');
+    });
+
+    Route::controller(PenilaiankaryawanApprovalConfigController::class)->group(function () {
+        Route::get('/penilaiankaryawan/config', 'index')->name('penilaiankaryawanconfig.index')->can('penilaiankaryawan.index');
+        Route::get('/penilaiankaryawan/config/create', 'create')->name('penilaiankaryawanconfig.create')->can('penilaiankaryawan.index');
+        Route::post('/penilaiankaryawan/config', 'store')->name('penilaiankaryawanconfig.store')->can('penilaiankaryawan.index');
+        Route::get('/penilaiankaryawan/config/{id}/edit', 'edit')->name('penilaiankaryawanconfig.edit')->can('penilaiankaryawan.index');
+        Route::put('/penilaiankaryawan/config/{id}', 'update')->name('penilaiankaryawanconfig.update')->can('penilaiankaryawan.index');
+        Route::delete('/penilaiankaryawan/config/{id}', 'destroy')->name('penilaiankaryawanconfig.destroy')->can('penilaiankaryawan.index');
     });
 
     Route::controller(PenilaiankaryawanController::class)->group(function () {

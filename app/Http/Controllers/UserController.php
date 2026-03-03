@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Departemen;
+use App\Models\Jabatan;
 use App\Models\Regional;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -40,7 +41,9 @@ class UserController extends Controller
         $regional = Regional::orderBy('kode_regional')->get();
         $departemen = Departemen::orderBy('kode_dept')->get();
         $deptchunks = $departemen->chunk(2);
-        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen', 'deptchunks'));
+        $jabatan = Jabatan::orderBy('nama_jabatan')->get();
+        $jabatanchunks = $jabatan->chunk(2);
+        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen', 'deptchunks', 'jabatan', 'jabatanchunks'));
     }
 
     public function edit($id)
@@ -55,8 +58,11 @@ class UserController extends Controller
         $departemen = Departemen::orderBy('kode_dept')->get();
         $deptchunks = $departemen->chunk(2);
         $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
+        $jabatan = Jabatan::orderBy('nama_jabatan')->get();
+        $jabatanchunks = $jabatan->chunk(2);
+        $jabatan_access = json_decode($user->jabatan_access, true) != null ? json_decode($user->jabatan_access, true) : [];
 
-        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'deptchunks', 'dept_access'));
+        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'deptchunks', 'dept_access', 'jabatan', 'jabatanchunks', 'jabatan_access'));
     }
 
     public function ubahpassword()
@@ -96,7 +102,8 @@ class UserController extends Controller
                 'kode_cabang' => $request->kode_cabang,
                 'kode_dept' => $request->kode_dept,
                 'kode_regional' => $request->kode_regional,
-                'dept_access' => json_encode($request->dept_access)
+                'dept_access' => json_encode($request->dept_access),
+                'jabatan_access' => json_encode($request->jabatan_access)
             ]);
 
             $user->assignRole($request->role);
@@ -137,6 +144,7 @@ class UserController extends Controller
                     'kode_regional' => $request->kode_regional,
                     'password' => bcrypt($request->password),
                     'dept_access' => json_encode($request->dept_access),
+                    'jabatan_access' => json_encode($request->jabatan_access),
                     'status' => $request->status,
                     'force_logout' => $force_logout
                 ]);
@@ -149,6 +157,7 @@ class UserController extends Controller
                     'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
                     'dept_access' => json_encode($request->dept_access),
+                    'jabatan_access' => json_encode($request->jabatan_access),
                     'status' => $request->status,
                     'force_logout' => $force_logout
 

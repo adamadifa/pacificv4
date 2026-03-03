@@ -101,9 +101,16 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
             <h5 class="mb-0 fw-bold"><i class="ti ti-star me-2"></i>List Penilaian Karyawan</h5>
-            @can('penilaiankaryawan.create')
-                <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i> Buat Penilaian Karyawan</a>
-            @endcan
+            <div class="d-flex gap-2">
+                @can('penilaiankaryawan.index')
+                    <a href="{{ route('penilaiankaryawanconfig.index') }}" class="btn btn-label-secondary">
+                        <i class="ti ti-settings me-1"></i> Config Approval
+                    </a>
+                @endcan
+                @can('penilaiankaryawan.create')
+                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i> Buat Penilaian Karyawan</a>
+                @endcan
+            </div>
         </div>
 
         <div class="row" id="penilaian-list">
