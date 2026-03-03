@@ -56,16 +56,15 @@ class Penilaiankaryawan extends Model
                 $access->where(function ($q) use ($user, $dept_access) {
                     if ($user->kode_cabang == 'PST') {
                         $q->where('hrd_penilaian.kode_cabang', 'PST')
-                            ->whereIn('hrd_penilaian.kode_dept', array_merge([$user->kode_dept], $dept_access));
+                            ->whereIn('hrd_penilaian.kode_dept', $dept_access);
                     } else {
-                        $q->where('hrd_penilaian.kode_cabang', $user->kode_cabang);
+                        $q->where('hrd_penilaian.kode_cabang', $user->kode_cabang)
+                            ->whereIn('hrd_penilaian.kode_dept', $dept_access);
                     }
                 });
 
-                // b. Explicit Jabatan Access (AND)
-                if (!empty($jabatan_access)) {
-                    $access->whereIn('hrd_penilaian.kode_jabatan', $jabatan_access);
-                }
+                // b. Explicit Jabatan Access (AND - Mandatory)
+                $access->whereIn('hrd_penilaian.kode_jabatan', $jabatan_access);
 
                 // c. Regional Access (AND)
                 if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {

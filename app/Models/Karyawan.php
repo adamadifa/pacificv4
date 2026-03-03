@@ -33,16 +33,15 @@ class Karyawan extends Model
                 $access->where(function ($q) use ($user, $dept_access) {
                     if ($user->kode_cabang == 'PST') {
                         $q->where('hrd_karyawan.kode_cabang', 'PST')
-                            ->whereIn('hrd_karyawan.kode_dept', array_merge([$user->kode_dept], $dept_access));
+                            ->whereIn('hrd_karyawan.kode_dept', $dept_access);
                     } else {
                         $q->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                        $q->whereIn('hrd_karyawan.kode_dept', $dept_access);
                     }
                 });
 
-                // 2. Job Position Access (AND)
-                if (!empty($jabatan_access)) {
-                    $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
-                }
+                // 2. Job Position Access (AND - Mandatory)
+                $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
 
                 // 3. Regional (AND)
                 if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
