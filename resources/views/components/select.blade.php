@@ -11,6 +11,8 @@
     'disabled' => false,
     'multiple' => false,
     'hideLabel' => false,
+    'allOption' => false,
+    'allOptionLabel' => '',
 ])
 
 
@@ -25,6 +27,12 @@
     <select name="{{ $name }}" id="{{ $id }}" class="form-select {{ $select2 }}" {{ $disabled ? 'disabled' : '' }} {{ $multiple ? 'multiple' : '' }}>
         @if (!$multiple)
             <option value="">{{ $label }}</option>
+        @endif
+        @if ($allOption)
+            <option value="all"
+                {{ is_array($selected) && in_array('all', $selected) ? 'selected' : '' }}>
+                {{ !empty($allOptionLabel) ? $allOptionLabel : 'Semua ' . $label }}
+            </option>
         @endif
         @foreach ($data as $d)
             @php

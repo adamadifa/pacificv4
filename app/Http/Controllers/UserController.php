@@ -72,6 +72,7 @@ class UserController extends Controller
         $regional = Regional::orderBy('kode_regional')->get();
         $departemen = Departemen::orderBy('kode_dept')->get();
         $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
+        $cabang_access = json_decode($user->cabang_access, true) != null ? json_decode($user->cabang_access, true) : [];
         $jabatan = Jabatan::orderBy('nama_jabatan')->get();
         $jabatan_access = json_decode($user->jabatan_access, true) != null ? json_decode($user->jabatan_access, true) : [];
         $karyawan = Karyawan::orderBy('nama_karyawan')->get();
@@ -79,7 +80,7 @@ class UserController extends Controller
         $group = Group::orderBy('nama_group')->get();
         $group_access = json_decode($user->group_access, true) != null ? json_decode($user->group_access, true) : [];
 
-        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'dept_access', 'jabatan', 'jabatan_access', 'karyawan', 'karyawan_access', 'group', 'group_access'));
+        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'dept_access', 'cabang_access', 'jabatan', 'jabatan_access', 'karyawan', 'karyawan_access', 'group', 'group_access'));
     }
 
     public function ubahpassword()
@@ -119,6 +120,7 @@ class UserController extends Controller
                 'kode_cabang' => $request->kode_cabang,
                 'kode_dept' => $request->kode_dept,
                 'kode_regional' => $request->kode_regional,
+                'cabang_access' => json_encode($request->cabang_access),
                 'dept_access' => json_encode($request->dept_access),
                 'jabatan_access' => json_encode($request->jabatan_access),
                 'karyawan_access' => json_encode($request->karyawan_access),
@@ -162,6 +164,7 @@ class UserController extends Controller
                     'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
                     'password' => bcrypt($request->password),
+                    'cabang_access' => json_encode($request->cabang_access),
                     'dept_access' => json_encode($request->dept_access),
                     'jabatan_access' => json_encode($request->jabatan_access),
                     'karyawan_access' => json_encode($request->karyawan_access),
@@ -177,6 +180,7 @@ class UserController extends Controller
                     'kode_cabang' => $request->kode_cabang,
                     'kode_dept' => $request->kode_dept,
                     'kode_regional' => $request->kode_regional,
+                    'cabang_access' => json_encode($request->cabang_access),
                     'dept_access' => json_encode($request->dept_access),
                     'jabatan_access' => json_encode($request->jabatan_access),
                     'karyawan_access' => json_encode($request->karyawan_access),

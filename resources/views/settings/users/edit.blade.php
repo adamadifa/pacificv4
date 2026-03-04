@@ -53,20 +53,16 @@
             <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="ti ti-lock-access me-2"></i>Akses Tambahan</h6>
             <div class="row">
                 <div class="col-12">
-                    <x-select name="dept_access[]" :data="$departemen" key="kode_dept" textShow="nama_dept" multiple="true" select2="select2DeptAccess" :selected="$dept_access" />
+                    <x-select name="cabang_access[]" :data="$cabang" key="kode_cabang" textShow="nama_cabang" multiple="true" select2="select2CabangAccess" :selected="$cabang_access" allOption="true" allOptionLabel="Semua Cabang" />
                 </div>
                 <div class="col-12">
-                    <x-select name="jabatan_access[]" :data="$jabatan" key="kode_jabatan" textShow="nama_jabatan" multiple="true" select2="select2JabatanAccess" :selected="$jabatan_access" />
+                    <x-select name="dept_access[]" :data="$departemen" key="kode_dept" textShow="nama_dept" multiple="true" select2="select2DeptAccess" :selected="$dept_access" allOption="true" allOptionLabel="Semua Departemen" />
                 </div>
                 <div class="col-12">
-                    <div class="form-group mb-3">
-                        <select name="karyawan_access[]" id="karyawan_access" class="form-select select2KaryawanAccess" multiple="multiple">
-                            <option value="all" {{ in_array('all', $karyawan_access) ? 'selected' : '' }}>Semua Karyawan</option>
-                            @foreach ($karyawan as $k)
-                                <option value="{{ $k->nik }}" {{ in_array($k->nik, $karyawan_access) ? 'selected' : '' }}>{{ $k->nik }} | {{ $k->nama_karyawan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-select name="jabatan_access[]" :data="$jabatan" key="kode_jabatan" textShow="nama_jabatan" multiple="true" select2="select2JabatanAccess" :selected="$jabatan_access" allOption="true" allOptionLabel="Semua Jabatan" />
+                </div>
+                <div class="col-12">
+                    <x-select name="karyawan_access[]" :data="$karyawan" key="nik" textShow="nama_karyawan" multiple="true" select2="select2KaryawanAccess" :selected="$karyawan_access" allOption="true" allOptionLabel="Semua Karyawan" showKey="true" />
                 </div>
                 <div class="col-12">
                     <x-select name="group_access[]" :data="$group" key="kode_group" textShow="nama_group" multiple="true" select2="select2GroupAccess" :selected="$group_access" />
@@ -108,9 +104,21 @@
 <script>
     $(document).ready(function() {
         const select2Role = $(".select2Role");
+        const select2CabangAccess = $(".select2CabangAccess");
         const select2DeptAccess = $(".select2DeptAccess");
         const select2JabatanAccess = $(".select2JabatanAccess");
         const select2GroupAccess = $(".select2GroupAccess");
+
+        if (select2CabangAccess.length > 0) {
+            select2CabangAccess.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Pilih Cabang',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
 
         if (select2Role.length > 0) {
             select2Role.each(function() {

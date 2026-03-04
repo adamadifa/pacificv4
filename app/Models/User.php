@@ -26,6 +26,7 @@ class User extends Authenticatable
         'kode_dept',
         'kode_cabang',
         'kode_regional',
+        'cabang_access',
         'dept_access',
         'jabatan_access',
         'karyawan_access',
