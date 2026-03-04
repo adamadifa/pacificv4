@@ -1,23 +1,23 @@
 <form action="{{ route('barangmasukgudanglogistik.store') }}" method="post" id="formcreatebarangmasukgudanglogistik">
    @csrf
-   <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" />
-   <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+   <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" hideLabel="true" />
+   <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
    <div class="divider text-start">
       <div class="divider-text">Detail Barang</div>
    </div>
    <div class="row">
       <div class="col-lg-6 col-md-12 col-sm-12">
          <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang"
-            upperCase="true" select2="select2Kodebarang" showKey="true" />
+            upperCase="true" select2="select2Kodebarang" showKey="true" hideLabel="true" />
       </div>
       <div class="col-lg-2 col-md-12 col-sm-12">
-         <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" />
+         <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" hideLabel="true" />
       </div>
       <div class="col-lg-4 col-md-12 col-sm-12">
-         <x-input-with-icon icon="ti ti-box" label="Harga" name="harga" align="right" numberFormat="true" />
+         <x-input-with-icon icon="ti ti-box" label="Harga" name="harga" align="right" numberFormat="true" hideLabel="true" />
       </div>
    </div>
-   <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+   <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
    <a href="#" class="btn btn-primary w-100" id="tambahproduk"><i class="ti ti-plus me-1"></i>Tambah Produk</a>
    <div class="row mt-2">
       <div class="col">

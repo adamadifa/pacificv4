@@ -26,7 +26,7 @@
         <div class="col-12">
             <div class="form-group mb-3">
                 <select name="kode_kategori" id="kode_kategori" class="form-select">
-                    <option value="">Semua Kategori</option>
+                    <option value="">Kategori</option>
                     @foreach ($kategori as $d)
                         <option value="{{ $d->kode_kategori }}">
                             {{ $d->nama_kategori }}</option>

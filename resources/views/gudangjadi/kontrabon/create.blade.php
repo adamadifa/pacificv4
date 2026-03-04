@@ -18,10 +18,10 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="Auto" name="no_kontrabon" icon="ti ti-barcode" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                            <x-input-with-icon label="No. Kontrabon" name="no_kontrabon" icon="ti ti-barcode" hideLabel="true" />
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                             <x-select label="Angkutan" name="kode_angkutan" :data="$angkutan" key="kode_angkutan" textShow="nama_angkutan"
-                                upperCase="true" select2="select2Kodeangkutan" />
+                                upperCase="true" select2="select2Kodeangkutan" hideLabel="true" />
 
                         </div>
                     </div>

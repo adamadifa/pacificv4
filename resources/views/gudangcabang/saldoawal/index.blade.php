@@ -34,7 +34,7 @@
                         @hasanyrole($roles_show_cabang)
                             <div class="col-lg-3 col-md-3 col-sm-12">
                                 <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                    upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
+                                    upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" hideLabel="true" />
                             </div>
                         @endhasanyrole
                         <div class="col-lg-2 col-md-2 col-sm-12">

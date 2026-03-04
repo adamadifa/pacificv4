@@ -2,8 +2,8 @@
     @csrf
     <input type="hidden" id="cektutuplaporan">
     <input type="hidden" id="cekdetailtemp">
-    <x-input-with-icon icon="ti ti-barcode" label="No. FSTHP" name="no_mutasi" readonly="true" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal FSTHP" name="tanggal_mutasi" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. FSTHP" name="no_mutasi" readonly="true" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal FSTHP" name="tanggal_mutasi" datepicker="flatpickr-date" hideLabel="true" />
     <div class="form-group mb-3">
         {{-- <label for="exampleFormControlInput1" style="font-weight: 600" class="form">Unit</label> --}}
         <select name="unit" id="unit" class="form-select">
@@ -13,7 +13,7 @@
         </select>
     </div>
     <x-select label="Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk"
-        upperCase="true" select2="select2Kodeproduk" />
+        upperCase="true" select2="select2Kodeproduk" hideLabel="true" />
     <div class="form-group mb-3">
         {{-- <label for="exampleFormControlInput1" style="font-weight: 600" class="form">Shift</label> --}}
         <select name="shift" id="shift" class="form-select">
@@ -23,7 +23,7 @@
             <option value="3">3</option>
         </select>
     </div>
-    <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" />
+    <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" hideLabel="true" />
 
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" id="btnSimpan" type="submit">

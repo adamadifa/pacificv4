@@ -5,16 +5,16 @@
       <div class="col">
         <x-select label="Pilih Cabang" name="kode_cabang_persediaan" :data="$cabang"
           key="kode_cabang" textShow="nama_cabang" upperCase="true"
-          select2="select2Kodecabangpersediaan" />
+          select2="select2Kodecabangpersediaan" hideLabel="true" />
       </div>
     </div>
   @endrole
   <div class="row">
     <div class="col-lg-6 col-md-12 col-sm-12">
-      <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+      <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
     </div>
     <div class="col-lg-6 col-md-12 col-sm-12">
-      <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+      <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
     </div>
   </div>
   <div class="row">

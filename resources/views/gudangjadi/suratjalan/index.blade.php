@@ -3,26 +3,26 @@
     <div class="row g-2 mb-3 align-items-end">
         <div class="col-lg-2 col-md-4 col-sm-6">
             <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                datepicker="flatpickr-date" />
+                datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-4 col-sm-6">
             <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                datepicker="flatpickr-date" />
+                datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-4 col-sm-12">
             <x-input-with-icon label="No. Dokumen" name="no_dok_search" icon="ti ti-barcode"
-                value="{{ Request('no_dok_search') }}" />
+                value="{{ Request('no_dok_search') }}" hideLabel="true" />
         </div>
         @hasanyrole($roles_show_cabang)
             <div class="col-lg-2 col-md-12 col-sm-12">
                 <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                    upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
+                    upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" hideLabel="true" />
             </div>
         @endrole
         <div class="col-lg-2 col-md-6 col-sm-12">
             <div class="form-group mb-3">
                 <select name="status_search" id="status_search" class="form-select">
-                    <option value="">Semua Status</option>
+                    <option value="">Status</option>
                     <option {{ Request('status_search') == '0' ? 'selected' : '' }} value="0">Belum Diterima Cabang
                     </option>
                     <option {{ Request('status_search') == '1' ? 'selected' : '' }} value="1">Sudah Diterima Cabang

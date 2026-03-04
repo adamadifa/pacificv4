@@ -26,7 +26,7 @@
             <div class="row g-2 align-items-end">
                 <div class="col-lg-10 col-md-10 col-sm-12">
                     <x-input-with-icon icon="ti ti-search" label="Cari Nama Tujuan" name="tujuan_search"
-                        value="{{ Request('tujuan_search') }}" />
+                        value="{{ Request('tujuan_search') }}" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12">
                     <div class="form-group mb-3">

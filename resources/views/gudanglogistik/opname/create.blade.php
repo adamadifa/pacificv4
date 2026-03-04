@@ -33,7 +33,7 @@
                            </select>
                         </div>
                         <x-select label="Kategori" name="kode_kategori" :data="$kategori" key="kode_kategori"
-                           textShow="nama_kategori" upperCase="true" />
+                           textShow="nama_kategori" upperCase="true" hideLabel="true" />
                         <div class="form-group mb-3">
                            <a href="#" class="btn btn-success w-100" id="getsaldo">
                               <i class="ti  ti-badges me-1"></i> Get Saldo

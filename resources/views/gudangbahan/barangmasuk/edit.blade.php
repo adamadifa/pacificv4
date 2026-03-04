@@ -1,8 +1,8 @@
 <form action="{{ route('barangmasukgudangbahan.update', Crypt::encrypt($barangmasuk->no_bukti)) }}" method="post" id="formcreateBarangmasukgudangbahan">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" value="{{ $barangmasuk->no_bukti }}" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $barangmasuk->tanggal }}" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" value="{{ $barangmasuk->no_bukti }}" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $barangmasuk->tanggal }}" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_asal_barang" id="kode_asal_barang" class="form-select">
             <option value="">Asal Barang</option>
@@ -18,19 +18,19 @@
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang" upperCase="true"
-                select2="select2Kodebarang" showKey="true" />
+                select2="select2Kodebarang" showKey="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Qty Unit" name="qty_unit" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Unit" name="qty_unit" align="right" numberFormat="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Qty Berat" name="qty_berat" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Berat" name="qty_berat" align="right" numberFormat="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Qty Lebih" name="qty_lebih" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Lebih" name="qty_lebih" align="right" numberFormat="true" hideLabel="true" />
         </div>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
     <a href="#" class="btn btn-primary w-100" id="tambahproduk"><i class="ti ti-plus me-1"></i>Tambah
         Produk</a>
     <div class="row mt-2">

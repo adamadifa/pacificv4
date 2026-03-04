@@ -3,14 +3,14 @@
    @method('PUT')
    <div class="row mb-2">
       <div class="col">
-         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $reject->tanggal }}" />
+         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $reject->tanggal }}" hideLabel="true" />
          @hasanyrole($roles_show_cabang)
             <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-               upperCase="true" select2="select2Kodecabang" selected="{{ $reject->kode_cabang }}" />
+               upperCase="true" select2="select2Kodecabang" selected="{{ $reject->kode_cabang }}" hideLabel="true" />
          @endrole
          <x-select label="Jenis Mutasi" name="jenis_mutasi" :data="$jenis_mutasi" key="kode_jenis_mutasi"
-            textShow="jenis_mutasi" upperCase="true" select2="select2Jenismutasi" selected="{{ $reject->jenis_mutasi }}" />
-         <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $reject->keterangan }}" />
+            textShow="jenis_mutasi" upperCase="true" select2="select2Jenismutasi" selected="{{ $reject->jenis_mutasi }}" hideLabel="true" />
+         <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $reject->keterangan }}" hideLabel="true" />
       </div>
    </div>
    <div class="row mb-2">

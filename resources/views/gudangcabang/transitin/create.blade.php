@@ -70,7 +70,7 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <x-input-with-icon icon="ti ti-calendar" name="tanggal" label="Tanggal Transit IN" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" name="tanggal" label="Tanggal Transit IN" datepicker="flatpickr-date" hideLabel="true" />
             <button class="btn btn-primary w-100" type="submit" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
         </div>
     </div>

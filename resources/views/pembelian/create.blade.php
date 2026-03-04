@@ -18,10 +18,10 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-datepmb" />
+                            <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" hideLabel="true" />
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-datepmb" hideLabel="true" />
                             <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
-                                upperCase="true" select2="select2Kodesupplier" />
+                                upperCase="true" select2="select2Kodesupplier" hideLabel="true" />
                             <div class="form-group mb-3">
                                 <select name="kode_asal_pengajuan" id="kode_asal_pengajuan" class="form-select">
                                     <option value="">Asal Ajuan</option>
@@ -39,7 +39,7 @@
                                     <option value="K">Kredit</option>
                                 </select>
                             </div>
-                            <x-input-with-icon label="Jatuh Tempo" name="jatuh_tempo" icon="ti ti-calendar" datepicker="flatpickr-datepmb" />
+                            <x-input-with-icon label="Jatuh Tempo" name="jatuh_tempo" icon="ti ti-calendar" datepicker="flatpickr-datepmb" hideLabel="true" />
                             <div class="form-group mb-3">
                                 <select name="no_po" id="no_po" class="form-select select2PO">
                                     <option value="">No PO</option>
@@ -97,18 +97,18 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Nama Barang" name="nama_barang" icon="ti ti-barcode" readonly="true" />
+                                    <x-input-with-icon label="Nama Barang" name="nama_barang" icon="ti ti-barcode" readonly="true" hideLabel="true" />
                                     <input type="hidden" id="kode_barang" name="kode_barang">
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" align="right" numberFormat="true" />
+                                    <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" align="right" numberFormat="true" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right" numberFormat="true" />
+                                    <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right" numberFormat="true" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <x-input-with-icon label="Penyesuaian" name="penyesuaian" icon="ti ti-moneybag" align="right"
-                                        numberFormat="true" />
+                                        numberFormat="true" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-3 col-md-12 col-sm-12">
                                     <div class="form-group mb-3">
@@ -123,11 +123,11 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-8 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+                                    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-4 col-md-12 col-sm-12">
                                     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                        upperCase="true" select2="select2Kodecabang" />
+                                        upperCase="true" select2="select2Kodecabang" hideLabel="true" />
                                 </div>
                             </div>
                             <div class="row">

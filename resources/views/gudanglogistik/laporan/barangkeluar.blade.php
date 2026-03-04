@@ -4,7 +4,7 @@
         <div class="col">
             <div class="form-group mb-3">
                 <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
-                    <option value="">Semua Jenis Pengeluaran</option>
+                    <option value="">Jenis Pengeluaran</option>
                     @foreach ($list_jenis_pengeluaran as $d)
                         <option value="{{ $d['kode_jenis_pengeluaran'] }}">
                             {{ $d['jenis_pengeluaran'] }}</option>
@@ -16,14 +16,14 @@
     <div class="row">
         <div class="col-12">
             <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" select2="Select2Kodecabang" textShow="nama_cabang"
-                upperCase="true" />
+                upperCase="true" hideLabel="true" />
         </div>
     </div>
     <div class="row">
         <div class="col-12">
             <div class="form-group mb-3">
                 <select name="kode_kategori" id="kode_kategori" class="form-select">
-                    <option value="">Semua Kategori</option>
+                    <option value="">Kategori</option>
                     @foreach ($kategori as $d)
                         <option value="{{ $d->kode_kategori }}">
                             {{ $d->nama_kategori }}</option>
@@ -36,7 +36,7 @@
         <div class="col">
             <div class="form-group mb-3">
                 <select name="kode_barang" id="kode_barang_keluar" class="form-select select2Kodebarangkeluar">
-                    <option value="">Semua Barang</option>
+                    <option value="">Barang</option>
                 </select>
             </div>
         </div>
@@ -44,10 +44,10 @@
 
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
 
@@ -95,7 +95,7 @@
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         dropdownParent: $this.parent(),
-                        placeholder: 'Semua Barang',
+                        placeholder: 'Barang',
                         allowClear: true,
                     });
                 });

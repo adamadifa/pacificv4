@@ -34,22 +34,21 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-lg-3 col-md-6 col-sm-12">
                             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari"
-                                datepicker="flatpickr-date" value="{{ Request('dari') }}" />
+                                datepicker="flatpickr-date" value="{{ Request('dari') }}" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12">
                             <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai"
-                                datepicker="flatpickr-date" value="{{ Request('sampai') }}" />
+                                datepicker="flatpickr-date" value="{{ Request('sampai') }}" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12">
                             <x-input-with-icon icon="ti ti-barcode" label="No. Bukti" name="no_bukti_search"
-                                value="{{ Request('no_bukti_search') }}" />
+                                value="{{ Request('no_bukti_search') }}" hideLabel="true" />
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-12">
                             <div class="form-group mb-3">
-                                <label class="form-label">Jenis Pengeluaran</label>
                                 <select name="kode_jenis_pengeluaran_search" id="kode_jenis_pengeluaran_search"
                                     class="form-select">
-                                    <option value="">Semua</option>
+                                    <option value="">Jenis Pengeluaran</option>
                                     <option value="RO"
                                         {{ Request('kode_jenis_pengeluaran_search') == 'RO' ? 'selected' : '' }}>
                                         Retur Out</option>

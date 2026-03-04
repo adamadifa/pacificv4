@@ -31,7 +31,6 @@
             <div class="row g-2 align-items-end mb-3">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="form-group mb-0">
-                        <label for="bulan" class="form-label">Bulan</label>
                         <select name="bulan" id="bulan" class="form-select">
                             <option value="">Bulan</option>
                             @foreach ($list_bulan as $d)
@@ -43,7 +42,6 @@
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-group mb-0">
-                        <label for="tahun" class="form-label">Tahun</label>
                         <select name="tahun" id="tahun" class="form-select">
                             <option value="">Tahun</option>
                             @for ($t = $start_year; $t <= date('Y'); $t++)

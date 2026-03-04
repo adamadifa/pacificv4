@@ -13,8 +13,8 @@
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="card-body">
-                    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_bukti" disabled="true" />
-                    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+                    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_bukti" disabled="true" hideLabel="true" />
+                    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
                     <div class="form-group mb-3">
                         <select name="kode_asal_barang" id="kode_asal_barang" class="form-select">
                             <option value="">Asal Barang</option>
@@ -37,10 +37,10 @@
                             </div>
                         </div>
                         <div class="col-lg-5 col-md-12 col-sm-12">
-                            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+                            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12">
-                            <x-input-with-icon icon="ti ti-file" numberFormat="true" label="Jumlah" name="jumlah" align="right" />
+                            <x-input-with-icon icon="ti ti-file" numberFormat="true" label="Jumlah" name="jumlah" align="right" hideLabel="true" />
                         </div>
                         <div class="col-lg-1 col-md-12 col-sm-12">
                             <div class="form-group">

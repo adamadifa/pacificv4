@@ -13,8 +13,8 @@
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="card-body">
-                    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_bukti" disabled="true" />
-                    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+                    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_bukti" disabled="true" hideLabel="true" />
+                    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
                     <div class="form-group mb-3">
                         <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
                             <option value="">Jenis Pengeluaran</option>
@@ -25,7 +25,7 @@
                     </div>
                     <div id="supplier">
                         <x-select label="Pilih Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
-                            select2="select2Kodesupplier" />
+                            select2="select2Kodesupplier" hideLabel="true" />
                     </div>
 
                 </div>
@@ -37,16 +37,16 @@
                     <div class="row">
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             <x-select label="Pilih Barang" name="kode_barang_produksi" :data="$barangproduksi" key="kode_barang_produksi"
-                                textShow="nama_barang" select2="select2Kodebarangproduksi" showKey="true" />
+                                textShow="nama_barang" select2="select2Kodebarangproduksi" showKey="true" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
-                            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+                            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12">
-                            <x-input-with-icon icon="ti ti-file" numberFormat="true" label="Jumlah" name="jumlah" align="right" />
+                            <x-input-with-icon icon="ti ti-file" numberFormat="true" label="Jumlah" name="jumlah" align="right" hideLabel="true" />
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12">
-                            <x-input-with-icon icon="ti ti-scale" numberFormat="true" label="Berat" name="jumlah_berat" align="right" />
+                            <x-input-with-icon icon="ti ti-scale" numberFormat="true" label="Berat" name="jumlah_berat" align="right" hideLabel="true" />
                         </div>
                         <div class="col-lg-1 col-md-12 col-sm-12">
                             <div class="form-group">

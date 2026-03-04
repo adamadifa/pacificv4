@@ -32,7 +32,7 @@
                 <div class="col-lg-10 col-md-10 col-sm-12">
                     <x-input-with-icon label="Tanggal Mutasi"
                         value="{{ Request('tanggal_mutasi_search') }}" name="tanggal_mutasi_search"
-                        icon="ti ti-calendar" datepicker="flatpickr-date" />
+                        icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12">
                     <div class="form-group mb-3">

@@ -44,7 +44,7 @@
         <form action="{{ route('supplier.index') }}">
             <div class="row g-2 align-items-end">
                 <div class="col-lg-10 col-md-10 col-sm-12">
-                    <x-input-with-icon label="Cari Nama Supplier" value="{{ Request('nama_supplier') }}" name="nama_supplier" icon="ti ti-search" />
+                    <x-input-with-icon label="Cari Nama Supplier" value="{{ Request('nama_supplier') }}" name="nama_supplier" icon="ti ti-search" hideLabel="true"/>
                 </div>
 
                 <div class="col-lg-2 col-md-2 col-sm-12">
@@ -119,11 +119,11 @@
                                     </div>
                                 </div>
 
-                                <div class="d-flex gap-1 ms-auto">
+                                <div class="btn-group shadow-sm">
                                     @can('supplier.edit')
-                                        <a href="#" class="editSupplier btn btn-xs btn-icon btn-label-primary" data-bs-toggle="tooltip"
+                                        <a href="#" class="editSupplier btn btn-icon btn-outline-primary" data-bs-toggle="tooltip"
                                             title="Edit" kode_supplier="{{ Crypt::encrypt($d->kode_supplier) }}">
-                                            <i class="ti ti-pencil" style="font-size: 1rem;"></i>
+                                            <i class="ti ti-pencil"></i>
                                         </a>
                                     @endcan
 
@@ -132,9 +132,9 @@
                                             action="{{ route('supplier.delete', Crypt::encrypt($d->kode_supplier)) }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="delete-confirm btn btn-xs btn-icon btn-label-danger"
-                                                data-bs-toggle="tooltip" title="Hapus">
-                                                <i class="ti ti-trash" style="font-size: 1rem;"></i>
+                                            <button type="submit" class="delete-confirm btn btn-icon btn-outline-danger"
+                                                data-bs-toggle="tooltip" title="Hapus" style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;">
+                                                <i class="ti ti-trash"></i>
                                             </button>
                                         </form>
                                     @endcan

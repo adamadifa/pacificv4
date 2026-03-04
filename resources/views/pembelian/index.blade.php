@@ -71,13 +71,13 @@
         <form action="{{ route('pembelian.index') }}" id="formSearch">
             <div class="row g-2 mb-1">
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <x-input-with-icon label="No. Bukti Pembelian" value="{{ Request('no_bukti_search') }}" name="no_bukti_search" icon="ti ti-barcode" />
+                    <x-input-with-icon label="No. Bukti Pembelian" value="{{ Request('no_bukti_search') }}" name="no_bukti_search" icon="ti ti-barcode" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6">
-                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6">
-                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
             </div>
 
@@ -96,7 +96,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <x-select label="Semua Supplier" name="kode_supplier_search" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
-                            selected="{{ Request('kode_supplier_search') }}" select2="select2Kodesupplier" />
+                            selected="{{ Request('kode_supplier_search') }}" select2="select2Kodesupplier" hideLabel="true" />
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <select name="ppn_search" id="ppn_search" class="form-select">
@@ -117,7 +117,7 @@
                 <div class="row g-2 mb-1">
                     <div class="col-lg-12 col-md-12 col-sm-12">
                         <x-select label="Semua Supplier" name="kode_supplier_search" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
-                            selected="{{ Request('kode_supplier_search') }}" select2="select2Kodesupplier" />
+                            selected="{{ Request('kode_supplier_search') }}" select2="select2Kodesupplier" hideLabel="true" />
                     </div>
                 </div>
             @endcan

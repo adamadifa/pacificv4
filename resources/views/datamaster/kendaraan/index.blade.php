@@ -24,12 +24,12 @@
         <form action="{{ route('kendaraan.index') }}">
             <div class="row g-2 mb-3 align-items-end">
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Cari No. Polisi" value="{{ Request('no_polisi') }}" name="no_polisi" icon="ti ti-barcode" />
+                    <x-input-with-icon label="Cari No. Polisi" value="{{ Request('no_polisi') }}" name="no_polisi" icon="ti ti-barcode" hideLabel="true" />
                 </div>
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                            selected="{{ Request('kode_cabang') }}" select2="select2Kodecabang" />
+                            selected="{{ Request('kode_cabang') }}" select2="select2Kodecabang" hideLabel="true" />
                     </div>
                 @endhasanyrole
                 <div class="col-lg-2 col-md-2 col-sm-12">

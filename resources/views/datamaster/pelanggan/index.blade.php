@@ -239,23 +239,23 @@
                                                         <span class="badge badge-dot bg-danger"></span><span class="small ms-1 text-danger">Non</span>
                                                     @endif
                                                 </div>
-                                                <div class="d-flex gap-1 ms-auto">
+                                                <div class="btn-group shadow-sm">
                                                     @can('pelanggan.edit')
-                                                        <a href="#" class="btn btn-xs btn-icon btn-label-success editPelanggan" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" title="Edit">
-                                                            <i class="ti ti-pencil" style="font-size: 0.9rem;"></i>
+                                                        <a href="#" class="btn btn-icon btn-outline-success editPelanggan" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" title="Edit">
+                                                            <i class="ti ti-pencil"></i>
                                                         </a>
                                                     @endcan
                                                     @can('pelanggan.show')
-                                                        <a href="{{ route('pelanggan.show', Crypt::encrypt($d->kode_pelanggan)) }}" class="btn btn-xs btn-icon btn-label-info" title="Detail">
-                                                            <i class="ti ti-file-description" style="font-size: 0.9rem;"></i>
+                                                        <a href="{{ route('pelanggan.show', Crypt::encrypt($d->kode_pelanggan)) }}" class="btn btn-icon btn-outline-info" title="Detail">
+                                                            <i class="ti ti-file-description"></i>
                                                         </a>
                                                     @endcan
                                                     @can('pelanggan.delete')
                                                         <form method="POST" name="deleteform" class="deleteform m-0" action="{{ route('pelanggan.delete', Crypt::encrypt($d->kode_pelanggan)) }}">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-xs btn-icon btn-label-danger delete-confirm" title="Delete">
-                                                                <i class="ti ti-trash" style="font-size: 0.9rem;"></i>
+                                                            <button type="submit" class="btn btn-icon btn-outline-danger delete-confirm" title="Delete" style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;">
+                                                                <i class="ti ti-trash"></i>
                                                             </button>
                                                         </form>
                                                     @endcan

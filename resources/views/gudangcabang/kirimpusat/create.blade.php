@@ -2,12 +2,12 @@
    @csrf
    <div class="row mb-2">
       <div class="col">
-         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
          @hasanyrole($roles_show_cabang)
             <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-               upperCase="true" select2="select2Kodecabang" />
+               upperCase="true" select2="select2Kodecabang" hideLabel="true" />
          @endrole
-         <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+         <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
       </div>
    </div>
    <div class="row mb-2">

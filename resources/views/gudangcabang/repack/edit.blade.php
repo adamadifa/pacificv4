@@ -3,12 +3,12 @@
    @method('PUT')
    <div class="row mb-2">
       <div class="col">
-         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $repack->tanggal }}" />
+         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $repack->tanggal }}" hideLabel="true" />
          @hasanyrole($roles_show_cabang)
             <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-               upperCase="true" select2="select2Kodecabang" selected="{{ $repack->kode_cabang }}" />
+               upperCase="true" select2="select2Kodecabang" selected="{{ $repack->kode_cabang }}" hideLabel="true" />
          @endrole
-         <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $repack->keterangan }}" />
+         <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $repack->keterangan }}" hideLabel="true" />
       </div>
    </div>
    <div class="row mb-2">

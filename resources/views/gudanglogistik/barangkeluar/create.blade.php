@@ -1,7 +1,7 @@
 <form action="{{ route('barangkeluargudanglogistik.store') }}" method="post" id="formBarangkeluargudanglogistik">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select select2Jenispengeluaran">
             <option value="">Jenis Pengeluaran</option>
@@ -15,7 +15,7 @@
     <div class="row" id="cabang-section">
         <div class="col">
             <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
-                upperCase="true" />
+                upperCase="true" hideLabel="true" />
         </div>
     </div>
     <div class="divider text-start">
@@ -33,14 +33,14 @@
                 select2="select2Kodebarang" showKey="true" /> --}}
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" hideLabel="true" />
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
             <x-select label="Cabang" name="kode_cabang_detail" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                select2="select2Kodecabangdetail" upperCase="true" />
+                select2="select2Kodecabangdetail" upperCase="true" hideLabel="true" />
         </div>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
     <a href="#" class="btn btn-primary w-100" id="tambahproduk"><i class="ti ti-plus me-1"></i>Tambah Produk</a>
     <div class="row mt-2">
         <div class="col">

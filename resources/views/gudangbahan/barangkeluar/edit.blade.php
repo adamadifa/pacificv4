@@ -2,8 +2,8 @@
     id="formeditBarangkeluargudangbahan">
     @method('PUT')
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" value="{{ $barangkeluar->no_bukti }}" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $barangkeluar->tanggal }}" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. Bukti Pemasukan" name="no_bukti" value="{{ $barangkeluar->no_bukti }}" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $barangkeluar->tanggal }}" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_jenis_pengeluaran" id="kode_jenis_pengeluaran" class="form-select">
             <option value="">Jenis Pengeluaran</option>
@@ -17,7 +17,7 @@
     <div class="row" id="cabang-section">
         <div class="col">
             <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
-                upperCase="true" selected="{{ $barangkeluar->kode_cabang }}" />
+                upperCase="true" selected="{{ $barangkeluar->kode_cabang }}" hideLabel="true" />
         </div>
     </div>
 
@@ -36,7 +36,7 @@
     <div class="row" id="keterangan-section">
         <div class="col">
             <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan_barang_keluar"
-                value="{{ $barangkeluar->keterangan }}" />
+                value="{{ $barangkeluar->keterangan }}" hideLabel="true" />
         </div>
     </div>
 
@@ -47,19 +47,19 @@
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang" upperCase="true"
-                select2="select2Kodebarang" showKey="true" />
+                select2="select2Kodebarang" showKey="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Qty Unit" name="qty_unit" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Unit" name="qty_unit" align="right" numberFormat="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Qty Berat" name="qty_berat" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Berat" name="qty_berat" align="right" numberFormat="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Qty Lebih" name="qty_lebih" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Qty Lebih" name="qty_lebih" align="right" numberFormat="true" hideLabel="true" />
         </div>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
     <a href="#" class="btn btn-primary w-100" id="tambahproduk"><i class="ti ti-plus me-1"></i>Tambah Produk</a>
     <div class="row mt-2">
         <div class="col">

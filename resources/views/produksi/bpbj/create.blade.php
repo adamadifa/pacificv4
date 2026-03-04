@@ -2,13 +2,13 @@
     @csrf
     <input type="hidden" id="cektutuplaporan">
     <input type="hidden" id="cekdetailtemp">
-    <x-input-with-icon icon="ti ti-barcode" label="No. BPBJ" name="no_mutasi" readonly="true" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. BPBJ" name="no_mutasi" readonly="true" hideLabel="true" />
 
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal BPBJ" name="tanggal_mutasi" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal BPBJ" name="tanggal_mutasi" datepicker="flatpickr-date" hideLabel="true" />
 
     <hr>
     <x-select label="Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk" upperCase="true"
-        select2="select2Kodeproduk" />
+        select2="select2Kodeproduk" hideLabel="true" />
     <div class="row">
         <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="form-group mb-3">
@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
             <div class="form-group mb-3">

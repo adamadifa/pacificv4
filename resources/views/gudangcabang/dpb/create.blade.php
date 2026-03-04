@@ -4,16 +4,16 @@
         <div class="col-lg-8 col-md-12 col-sm-12">
             <div class="row">
                 <div class="col-lg-4">
-                    <x-input-with-icon icon="ti ti-barcode" label="No. DPB" name="no_dpb_format" />
+                    <x-input-with-icon icon="ti ti-barcode" label="No. DPB" name="no_dpb_format" hideLabel="true" />
                 </div>
                 <div class="col-lg-8">
-                    <x-input icon="ti ti-barcode" label="No. DPB" name="no_dpb" />
+                    <x-input icon="ti ti-barcode" label="No. DPB" name="no_dpb" hideLabel="true" />
                 </div>
             </div>
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengambilan" name="tanggal_ambil" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengambilan" name="tanggal_ambil" datepicker="flatpickr-date" hideLabel="true" />
             @hasanyrole($roles_show_cabang)
                 <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                    select2="select2Kodecabang" />
+                    select2="select2Kodecabang" hideLabel="true" />
             @endrole
             <div class="form-group mb-3">
                 <select name="kode_salesman" id="kode_salesman" class="form-select select2Kodesalesman">
@@ -25,7 +25,7 @@
                     <option value="">Pilih Kendaraan</option>
                 </select>
             </div>
-            <x-input-with-icon icon="ti ti-map-pin" label="Tujuan" name="tujuan" />
+            <x-input-with-icon icon="ti ti-map-pin" label="Tujuan" name="tujuan" hideLabel="true" />
         </div>
         <div class="col-lg-4 col-sm-12 col-md-12">
             <div class="form-group mb-3">

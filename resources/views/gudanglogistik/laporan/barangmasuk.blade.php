@@ -4,7 +4,7 @@
       <div class="col-12">
          <div class="form-group mb-3">
             <select name="kode_kategori" id="kode_kategori" class="form-select">
-               <option value="">Semua Kategori</option>
+               <option value="">Kategori</option>
                @foreach ($kategori as $d)
                   <option value="{{ $d->kode_kategori }}">
                      {{ $d->nama_kategori }}</option>
@@ -17,7 +17,7 @@
       <div class="col">
          <div class="form-group mb-3">
             <select name="kode_barang" id="kode_barang_masuk" class="form-select select2Kodebarangmasuk">
-               <option value="">Semua Barang</option>
+               <option value="">Barang</option>
             </select>
          </div>
       </div>
@@ -25,10 +25,10 @@
 
    <div class="row">
       <div class="col-lg-6 col-md-12 col-sm-12">
-         <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+         <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
-         <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+         <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
       </div>
    </div>
 
@@ -76,7 +76,7 @@
                var $this = $(this);
                $this.wrap('<div class="position-relative"></div>').select2({
                   dropdownParent: $this.parent(),
-                  placeholder: 'Semua Barang',
+                  placeholder: 'Barang',
                   allowClear: true,
                });
             });

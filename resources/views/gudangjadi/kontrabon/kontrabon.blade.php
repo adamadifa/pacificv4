@@ -4,15 +4,15 @@
             <div class="row g-2 mb-3 align-items-end">
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-4 col-md-8 col-sm-12">
                     <x-select label="Semua Angkutan" name="kode_angkutan_search" :data="$angkutan" key="kode_angkutan" textShow="nama_angkutan"
-                        upperCase="true" selected="{{ Request('kode_angkutan_search') }}" select2="select2Kodeangkutansearch" />
+                        upperCase="true" selected="{{ Request('kode_angkutan_search') }}" select2="select2Kodeangkutansearch" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-group mb-3">

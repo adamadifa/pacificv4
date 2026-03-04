@@ -3,16 +3,16 @@
     <div class="row">
         <div class="col">
             <x-select label="Semua Barang" name="kode_barang_produksi" :data="$barangproduksi" key="kode_barang_produksi"
-                textShow="nama_barang" select2="select2Kodebarangmasuk" showKey="true" upperCase="true" />
+                textShow="nama_barang" select2="select2Kodebarangmasuk" showKey="true" upperCase="true" hideLabel="true" />
 
         </div>
     </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

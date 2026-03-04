@@ -1,13 +1,13 @@
 <form method="POST" action="{{ route('laporangudangjadi.cetakangkutan') }}" id="frmAngkutan" target="_blank">
     @csrf
     <x-select label="Angkutan" name="kode_angkutan" :data="$angkutan" key="kode_angkutan" textShow="nama_angkutan"
-        select2="select2Kodeangkutan" upperCase="true" />
+        select2="select2Kodeangkutan" upperCase="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

@@ -1,7 +1,7 @@
 <form action="{{ route('bpb.store') }}" method="post" id="formcreatebpb">
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" value="{{ Date('Y-m-d') }}"
-        datepicker="flatpickr-date" />
+        datepicker="flatpickr-date" hideLabel="true" />
     {{-- <select class="form-select select2KodeDept" name="tujuan" id="tujuan">
         <option value="">Pilih Tujuan</option>
         <option value="GDL" {{ Request('tujuan') == 'GDL' ? 'selected' : '' }}>Gudang Logistik</option>
@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-lg-10 col-md-12 col-sm-12">
             <select class="form-select select2Kodebarang" name="kode_barang" id="kode_barang">
-                <option value="">Pilih Barang</option>
+                <option value="">Barang</option>
                 @foreach ($barang as $b)
                     <option value="{{ $b->kode_barang }}">
                         {{ $b->kode_barang }}
@@ -26,10 +26,10 @@
 
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" hideLabel="true" />
         </div>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
     <a href="#" class="btn btn-primary w-100" id="tambahproduk"><i class="ti ti-plus me-1"></i>Tambah Produk</a>
     <div class="row mt-2">
         <div class="col">

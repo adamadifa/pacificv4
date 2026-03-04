@@ -2,9 +2,9 @@
     @csrf
     <div class="row mb-2">
         <div class="col">
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
             <x-select label="Jenis Mutasi" name="jenis_mutasi" :data="$jenis_mutasi" key="kode_jenis_mutasi" textShow="jenis_mutasi" upperCase="true"
-                select2="select2Jenismutasi" />
+                select2="select2Jenismutasi" hideLabel="true" />
         </div>
     </div>
     <div class="row mb-2">

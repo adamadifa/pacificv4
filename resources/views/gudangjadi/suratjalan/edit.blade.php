@@ -41,14 +41,14 @@
             <input type="hidden" id="cektutuplaporan">
             {{-- <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_mutasi" readonly="true" /> --}}
             <x-input-with-icon icon="ti ti-barcode" label="No. Dokumen" name="no_dok"
-                value="{{ $surat_jalan->no_dok }}" />
+                value="{{ $surat_jalan->no_dok }}" hideLabel="true" />
             <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date"
-                value="{{ $surat_jalan->tanggal }}" />
+                value="{{ $surat_jalan->tanggal }}" hideLabel="true" />
             <div class="row">
                 <div class="col-lg-6 col-sm-12 col-md-12">
                     <div class="form-group mb-3">
                         <select name="kode_tujuan" id="kode_tujuan" class="form-select Select2Kodetujuan">
-                            <option value="">Pilih Tujuan</option>
+                            <option value="">Tujuan</option>
                             @foreach ($tujuan_angkutan as $d)
                                 <option value="{{ $d->kode_tujuan }}" data-tarif="{{ formatAngka($d->tarif) }}"
                                     {{ $surat_jalan->kode_tujuan == $d->kode_tujuan ? 'selected' : '' }}>
@@ -60,27 +60,27 @@
                 <div class="col-lg-6 col-sm-12 col-md-12">
                     <x-select label="Angkutan" name="kode_angkutan" :data="$angkutan" key="kode_angkutan"
                         textShow="nama_angkutan" select2="select2Kodeangkutan" upperCase="true"
-                        selected="{{ $surat_jalan->kode_angkutan }}" />
+                        selected="{{ $surat_jalan->kode_angkutan }}" hideLabel="true" />
                 </div>
             </div>
             <x-input-with-icon icon="ti ti-barcode" label="No. Polisi" name="no_polisi"
-                value="{{ $surat_jalan->no_polisi }}" />
+                value="{{ $surat_jalan->no_polisi }}" hideLabel="true" />
             <div class="row">
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <x-input-with-icon icon="ti ti-file" label="Tarif" name="tarif" money="true" align="right"
-                        value="{{ formatAngka($surat_jalan->tarif) }}" />
+                        value="{{ formatAngka($surat_jalan->tarif) }}" hideLabel="true" />
                 </div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <x-input-with-icon icon="ti ti-file" label="Tepung" name="tepung" money="true" align="right"
-                        value="{{ formatAngka($surat_jalan->tepung) }}" />
+                        value="{{ formatAngka($surat_jalan->tepung) }}" hideLabel="true" />
                 </div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <x-input-with-icon icon="ti ti-file" label="BS" name="bs" money="true" align="right"
-                        value="{{ formatAngka($surat_jalan->bs) }}" />
+                        value="{{ formatAngka($surat_jalan->bs) }}" hideLabel="true" />
                 </div>
             </div>
             <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan"
-                value="{{ $surat_jalan->keterangan }}" />
+                value="{{ $surat_jalan->keterangan }}" hideLabel="true" />
         </div>
     </div>
     <div class="divider text-start">
@@ -89,10 +89,10 @@
     <div class="row">
         <div class="col-lg-7 col-md-12 col-sm-12">
             <x-select label="Pilih Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk"
-                upperCase="true" select2="select2Kodeproduk" />
+                upperCase="true" select2="select2Kodeproduk" hideLabel="true" />
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
             <a href="#" class="btn btn-primary" id="tambahproduk"><i class="ti ti-plus"></i></a>

@@ -1,17 +1,17 @@
 <form action="{{ route('repackgudangjadi.store') }}" method="post" id="formcreateRepack">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="no_mutasi" readonly="true" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. Mutasi" name="no_mutasi" readonly="true" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="divider text-start">
         <div class="divider-text">Detail Produk</div>
     </div>
     <div class="row">
         <div class="col-lg-7 col-md-12 col-sm-12">
             <x-select label="Pilih Produk" name="kode_produk" :data="$produk" key="kode_produk" textShow="nama_produk"
-                upperCase="true" select2="select2Kodeproduk" />
+                upperCase="true" select2="select2Kodeproduk" hideLabel="true" />
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
             <a href="#" class="btn btn-primary" id="tambahproduk"><i class="ti ti-plus"></i></a>

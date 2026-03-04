@@ -4,10 +4,10 @@
       <div class="col">
          <input type="hidden" name="no_mutasi" id="no_mutasi" value="{{ Crypt::encrypt($mutasi->no_mutasi) }}">
          <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date"
-            value="{{ $mutasi->tanggal }}" />
+            value="{{ $mutasi->tanggal }}" hideLabel="true" />
          <x-select label="Jenis Mutasi" name="jenis_mutasi" :data="$jenis_mutasi" key="kode_jenis_mutasi"
             textShow="jenis_mutasi" upperCase="true" select2="select2Jenismutasi"
-            selected="{{ $mutasi->jenis_mutasi }}" />
+            selected="{{ $mutasi->jenis_mutasi }}" hideLabel="true" />
       </div>
    </div>
    <div class="row mb-2">

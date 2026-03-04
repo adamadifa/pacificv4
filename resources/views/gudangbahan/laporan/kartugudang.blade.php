@@ -29,7 +29,7 @@
    <div class="row">
       <div class="col">
          <x-select label="Semua Barang" name="kode_barang_kartugudang" :data="$barang" key="kode_barang"
-            textShow="nama_barang" select2="select2Kodebarangkartugudang" upperCase="true" />
+            textShow="nama_barang" select2="select2Kodebarangkartugudang" upperCase="true" hideLabel="true" />
       </div>
    </div>
    <div class="row">

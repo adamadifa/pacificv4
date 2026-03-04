@@ -2,13 +2,13 @@
    @csrf
    <div class="row mb-2">
       <div class="col">
-         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+         <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
          @hasanyrole($roles_show_cabang)
             <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-               upperCase="true" select2="select2Kodecabang" />
+               upperCase="true" select2="select2Kodecabang" hideLabel="true" />
          @endrole
          <x-select label="Jenis Mutasi" name="jenis_mutasi" :data="$jenis_mutasi" key="kode_jenis_mutasi"
-            textShow="jenis_mutasi" upperCase="true" select2="select2Jenismutasi" />
+            textShow="jenis_mutasi" upperCase="true" select2="select2Jenismutasi" hideLabel="true" />
          <div class="form-group mb-3">
             <select name="in_out" id="in_out" class="form-select">
                <option value="">IN / OUT</option>
@@ -16,7 +16,7 @@
                <option value="O">OUT</option>
             </select>
          </div>
-         <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+         <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
       </div>
    </div>
    <div class="row mb-2">

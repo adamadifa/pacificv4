@@ -19,7 +19,7 @@
                            <div class="col-lg-12 col-md-12 col-sm-12">
                               <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang"
                                  key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                                 select2="select2Kodecabang" />
+                                 select2="select2Kodecabang" hideLabel="true" />
                            </div>
                         </div>
                      @endrole

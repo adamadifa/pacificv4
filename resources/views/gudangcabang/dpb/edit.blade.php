@@ -3,10 +3,10 @@
     @method('PUT')
     <div class="row">
         <div class="col-lg-4 col-md-12 col-sm-12">
-            <x-input icon="ti ti-barcode" label="No. DPB" name="no_dpb" value="{{ $dpb->no_dpb }}" />
+            <x-input icon="ti ti-barcode" label="No. DPB" name="no_dpb" value="{{ $dpb->no_dpb }}" hideLabel="true" />
             @hasanyrole($roles_show_cabang)
                 <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                    select2="select2Kodecabang" selected="{{ $dpb->kode_cabang }}" />
+                    select2="select2Kodecabang" selected="{{ $dpb->kode_cabang }}" hideLabel="true" />
             @endrole
             <div class="form-group mb-3">
                 <select name="kode_salesman" id="kode_salesman" class="form-select select2Kodesalesman">
@@ -18,7 +18,7 @@
                     <option value="">Pilih Kendaraan</option>
                 </select>
             </div>
-            <x-input-with-icon icon="ti ti-map-pin" label="Tujuan" name="tujuan" value="{{ $dpb->tujuan }}" />
+            <x-input-with-icon icon="ti ti-map-pin" label="Tujuan" name="tujuan" value="{{ $dpb->tujuan }}" hideLabel="true" />
             <button type="button" class="btn btn-primary text-nowrap mb-2 w-100" data-bs-toggle="popover" data-bs-placement="top"
                 data-bs-content="Barang Kembali = Sisa Order, Retur / Reject Pasar &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

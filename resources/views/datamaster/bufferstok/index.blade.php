@@ -27,7 +27,7 @@
             {{-- Filter Section (No Card) --}}
             @hasanyrole($roles_show_cabang)
                 <x-select label="Cabang" name="kode_cabang" id="kode_cabang" :data="$cabang" key="kode_cabang"
-                    textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
+                    textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
             @endhasanyrole
         </div>
     </div>

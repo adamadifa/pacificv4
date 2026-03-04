@@ -5,22 +5,22 @@
          <div class="col">
             <x-select label="Pilih Cabang" name="kode_cabang_bs" :data="$cabang"
                key="kode_cabang" textShow="nama_cabang" upperCase="true"
-               select2="select2Kodecabangbs" />
+               select2="select2Kodecabangbs" hideLabel="true" />
          </div>
       </div>
    @endrole
    <div class="row">
       <div class="col">
          <x-select label="Pilih Produk" name="kode_produk_bs" :data="$produk" key="kode_produk" textShow="nama_produk"
-            select2="select2Kodeprodukbs" showKey="true" upperCase="true" />
+            select2="select2Kodeprodukbs" showKey="true" upperCase="true" hideLabel="true" />
       </div>
    </div>
    <div class="row">
       <div class="col-lg-6 col-md-12 col-sm-12">
-         <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+         <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
       </div>
       <div class="col-lg-6 col-md-12 col-sm-12">
-         <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+         <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
       </div>
    </div>
    <div class="row">
