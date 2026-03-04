@@ -53,7 +53,13 @@ class Karyawan extends Model
                     $access->whereIn('hrd_karyawan.nik', $karyawan_access);
                 }
 
-                // 4. Regional (AND)
+                // 4. Group Access (OR - Optional)
+                $group_access = json_decode($user->group_access, true) ?? [];
+                if (!empty($group_access)) {
+                    $access->whereIn('hrd_karyawan.kode_group', $group_access);
+                }
+
+                // 5. Regional (AND)
                 if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
                     $access->where('cabang.kode_regional', $user->kode_regional);
                 }

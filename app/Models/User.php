@@ -28,6 +28,8 @@ class User extends Authenticatable
         'kode_regional',
         'dept_access',
         'jabatan_access',
+        'karyawan_access',
+        'group_access',
         'status',
         'last_seen'
     ];

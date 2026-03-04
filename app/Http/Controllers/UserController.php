@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Departemen;
+use App\Models\Group;
 use App\Models\Jabatan;
 use App\Models\Regional;
 use App\Models\User;
@@ -56,7 +57,8 @@ class UserController extends Controller
         $departemen = Departemen::orderBy('kode_dept')->get();
         $jabatan = Jabatan::orderBy('nama_jabatan')->get();
         $karyawan = Karyawan::orderBy('nama_karyawan')->get();
-        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen', 'jabatan', 'karyawan'));
+        $group = Group::orderBy('nama_group')->get();
+        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen', 'jabatan', 'karyawan', 'group'));
     }
 
     public function edit($id)
@@ -74,8 +76,10 @@ class UserController extends Controller
         $jabatan_access = json_decode($user->jabatan_access, true) != null ? json_decode($user->jabatan_access, true) : [];
         $karyawan = Karyawan::orderBy('nama_karyawan')->get();
         $karyawan_access = json_decode($user->karyawan_access, true) != null ? json_decode($user->karyawan_access, true) : [];
+        $group = Group::orderBy('nama_group')->get();
+        $group_access = json_decode($user->group_access, true) != null ? json_decode($user->group_access, true) : [];
 
-        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'dept_access', 'jabatan', 'jabatan_access', 'karyawan', 'karyawan_access'));
+        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'dept_access', 'jabatan', 'jabatan_access', 'karyawan', 'karyawan_access', 'group', 'group_access'));
     }
 
     public function ubahpassword()
@@ -117,7 +121,8 @@ class UserController extends Controller
                 'kode_regional' => $request->kode_regional,
                 'dept_access' => json_encode($request->dept_access),
                 'jabatan_access' => json_encode($request->jabatan_access),
-                'karyawan_access' => json_encode($request->karyawan_access)
+                'karyawan_access' => json_encode($request->karyawan_access),
+                'group_access' => json_encode($request->group_access)
             ]);
 
             $user->assignRole($request->role);
@@ -160,6 +165,7 @@ class UserController extends Controller
                     'dept_access' => json_encode($request->dept_access),
                     'jabatan_access' => json_encode($request->jabatan_access),
                     'karyawan_access' => json_encode($request->karyawan_access),
+                    'group_access' => json_encode($request->group_access),
                     'status' => $request->status,
                     'force_logout' => $force_logout
                 ]);
@@ -174,9 +180,9 @@ class UserController extends Controller
                     'dept_access' => json_encode($request->dept_access),
                     'jabatan_access' => json_encode($request->jabatan_access),
                     'karyawan_access' => json_encode($request->karyawan_access),
+                    'group_access' => json_encode($request->group_access),
                     'status' => $request->status,
                     'force_logout' => $force_logout
-
                 ]);
             }
 

@@ -59,6 +59,9 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-12">
+                    <x-select name="group_access[]" :data="$group" key="kode_group" textShow="nama_group" multiple="true" select2="select2GroupAccess" />
+                </div>
             </div>
         </div>
     </div>
@@ -126,6 +129,18 @@
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
                     placeholder: 'Pilih Karyawan',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
+        const select2GroupAccess = $(".select2GroupAccess");
+        if (select2GroupAccess.length > 0) {
+            select2GroupAccess.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Pilih Grup',
                     allowClear: true,
                     dropdownParent: $this.parent()
                 });

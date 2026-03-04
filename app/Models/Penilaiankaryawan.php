@@ -34,6 +34,7 @@ class Penilaiankaryawan extends Model
             'hrd_departemen.nama_dept',
             'cabang.nama_cabang',
             'cabang.kode_regional',
+            'hrd_group.nama_group',
             'hrd_kontrak_penilaian.no_kontrak as no_kontrak_baru',
             'hrd_kesepakatanbersama.no_kb',
             'roles.name as posisi_ajuan_name'
@@ -43,6 +44,7 @@ class Penilaiankaryawan extends Model
         $query->join('hrd_jabatan', 'hrd_penilaian.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('cabang', 'hrd_penilaian.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('hrd_departemen', 'hrd_penilaian.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
         $query->leftJoin('hrd_kontrak_penilaian', 'hrd_penilaian.kode_penilaian', '=', 'hrd_kontrak_penilaian.kode_penilaian');
         $query->leftJoin('hrd_kesepakatanbersama', 'hrd_penilaian.kode_penilaian', '=', 'hrd_kesepakatanbersama.kode_penilaian');
         $query->leftJoin('roles', 'hrd_penilaian.posisi_ajuan', '=', 'roles.id');
@@ -78,7 +80,13 @@ class Penilaiankaryawan extends Model
                     $access->whereIn('hrd_penilaian.nik', $karyawan_access);
                 }
 
-                // d. Regional Access (AND)
+                // d. Group Access (OR - Optional)
+                $group_access = json_decode($user->group_access, true) ?? [];
+                if (!empty($group_access)) {
+                    $access->whereIn('hrd_karyawan.kode_group', $group_access);
+                }
+
+                // e. Regional Access (AND)
                 if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
                     $access->where('cabang.kode_regional', $user->kode_regional);
                 }

@@ -192,10 +192,16 @@
                                             <i class="ti ti-briefcase text-muted me-2"></i>
                                             <span class="small fw-semibold">{{ !empty($d->alias_jabatan) ? $d->alias_jabatan : $d->nama_jabatan }}</span>
                                         </div>
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center mb-1">
                                             <i class="ti ti-building text-muted me-2"></i>
                                             <span class="small text-muted">{{ $d->kode_dept }} | {{ $d->kode_cabang }}</span>
                                         </div>
+                                        @if (!empty($d->nama_group))
+                                            <div class="d-flex align-items-center">
+                                                <i class="ti ti-users text-muted me-2"></i>
+                                                <span class="small text-muted">{{ $d->nama_group }}</span>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-12">
