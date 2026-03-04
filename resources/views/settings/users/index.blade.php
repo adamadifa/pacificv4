@@ -30,15 +30,23 @@
         {{-- Filter Section --}}
         <form action="{{ route('users.index') }}">
             <div class="row g-2 mb-3 align-items-end">
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <x-input-with-icon label="Cari User" value="{{ Request('name') }}" name="name" icon="ti ti-search" />
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
                         selected="{{ Request('kode_cabang') }}" />
                 </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
+                        selected="{{ Request('kode_dept') }}" />
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <x-select label="Role" name="role_id" :data="$roles" key="id" textShow="name"
+                        upperCase="true" selected="{{ Request('role_id') }}" />
+                </div>
                 <div class="col-lg-2 col-md-2 col-sm-12">
-                    <div class="form-group mb-1">
+                    <div class="form-group mb-3">
                         <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
                 </div>

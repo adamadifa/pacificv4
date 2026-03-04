@@ -29,10 +29,23 @@ class UserController extends Controller
         if (!empty($request->kode_cabang)) {
             $query->where('users.kode_cabang', $request->kode_cabang);
         }
+
+        if (!empty($request->kode_dept)) {
+            $query->where('users.kode_dept', $request->kode_dept);
+        }
+
+        if (!empty($request->role_id)) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('roles.id', $request->role_id);
+            });
+        }
+
         $users = $query->paginate(10);
         $users->appends(request()->all());
         $cabang = Cabang::orderBy('nama_cabang')->get();
-        return view('settings.users.index', compact('users', 'cabang'));
+        $departemen = Departemen::orderBy('nama_dept')->get();
+        $roles = Role::orderBy('name')->get();
+        return view('settings.users.index', compact('users', 'cabang', 'departemen', 'roles'));
     }
 
     public function create()
