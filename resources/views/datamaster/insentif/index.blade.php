@@ -26,19 +26,19 @@
             <div class="row g-2 align-items-end">
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}"
-                        name="nama_karyawan" icon="ti ti-search" />
+                        name="nama_karyawan" icon="ti ti-search" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                        textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
+                        textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept"
-                        textShow="nama_dept" selected="{{ Request('kode_dept') }}" />
+                        textShow="nama_dept" selected="{{ Request('kode_dept') }}" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-12">
                     <x-select label="Group" name="kode_group" :data="$group" key="kode_group"
-                        textShow="nama_group" selected="{{ Request('kode_group') }}" />
+                        textShow="nama_group" selected="{{ Request('kode_group') }}" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>

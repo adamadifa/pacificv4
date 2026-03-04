@@ -115,11 +115,11 @@
                     <div class="row">
                         <div class="col-lg-6 col-sm-12 col-md-12">
                             <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                datepicker="flatpickr-date" />
+                                datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         <div class="col-lg-6 col-sm-12 col-md-12">
                             <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                datepicker="flatpickr-date" />
+                                datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-2 col-sm-12 col-md-12">
                         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                            selected="{{ Request('kode_cabang') }}" />
+                            selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                     </div>
                 @endhasanyrole
                 <div class="col-lg-2 col-sm-12 col-md-12">
@@ -146,11 +146,11 @@
                 </div>
                 <div class="col-lg-2 col-sm-12 col-md-12">
                     <x-input-with-icon label="Kode" value="{{ Request('kode_pelanggan') }}" name="kode_pelanggan"
-                        icon="ti ti-barcode" />
+                        icon="ti ti-barcode" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-sm-12 col-md-12">
                     <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan') }}" name="nama_pelanggan"
-                        icon="ti ti-user" />
+                        icon="ti ti-user" hideLabel="true" />
                 </div>
 
                 <div class="col-lg-1 col-sm-12 col-md-12">
