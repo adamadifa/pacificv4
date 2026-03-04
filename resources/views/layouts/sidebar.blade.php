@@ -139,8 +139,12 @@
          padding-right: 1.5rem !important;
      }
 
+     #layout-menu .menu-toggle > .menu-link {
+         padding-right: 4rem !important;
+     }
+
      #layout-menu .menu-toggle::after {
-         right: 2rem !important;
+         right: 1.5rem !important;
      }
 
      #layout-menu .menu-item.active>.menu-link {

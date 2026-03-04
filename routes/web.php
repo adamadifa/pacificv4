@@ -1710,12 +1710,12 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(PenilaiankaryawanApprovalConfigController::class)->group(function () {
-        Route::get('/penilaiankaryawan/config', 'index')->name('penilaiankaryawanconfig.index')->can('penilaiankaryawan.index');
-        Route::get('/penilaiankaryawan/config/create', 'create')->name('penilaiankaryawanconfig.create')->can('penilaiankaryawan.index');
-        Route::post('/penilaiankaryawan/config', 'store')->name('penilaiankaryawanconfig.store')->can('penilaiankaryawan.index');
-        Route::get('/penilaiankaryawan/config/{id}/edit', 'edit')->name('penilaiankaryawanconfig.edit')->can('penilaiankaryawan.index');
-        Route::put('/penilaiankaryawan/config/{id}', 'update')->name('penilaiankaryawanconfig.update')->can('penilaiankaryawan.index');
-        Route::delete('/penilaiankaryawan/config/{id}', 'destroy')->name('penilaiankaryawanconfig.destroy')->can('penilaiankaryawan.index');
+        Route::get('/penilaiankaryawan/config', 'index')->name('penilaiankaryawanconfig.index')->can('penilaiankaryawan.config.index');
+        Route::get('/penilaiankaryawan/config/create', 'create')->name('penilaiankaryawanconfig.create')->can('penilaiankaryawan.config.create');
+        Route::post('/penilaiankaryawan/config', 'store')->name('penilaiankaryawanconfig.store')->can('penilaiankaryawan.config.create');
+        Route::get('/penilaiankaryawan/config/{id}/edit', 'edit')->name('penilaiankaryawanconfig.edit')->can('penilaiankaryawan.config.edit');
+        Route::put('/penilaiankaryawan/config/{id}', 'update')->name('penilaiankaryawanconfig.update')->can('penilaiankaryawan.config.edit');
+        Route::delete('/penilaiankaryawan/config/{id}', 'destroy')->name('penilaiankaryawanconfig.destroy')->can('penilaiankaryawan.config.delete');
     });
 
     Route::controller(PenilaiankaryawanController::class)->group(function () {

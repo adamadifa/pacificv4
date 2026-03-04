@@ -8,6 +8,13 @@ use App\Models\Harilibur;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+
+function getRoleID($role_name)
+{
+    $role = Role::findByName($role_name);
+    return $role ? $role->id : null;
+}
 
 function cekRoleapprove($kode_dept, $kode_cabang, $kategori_jabatan, $kode_jabatan = "")
 {

@@ -57,20 +57,24 @@
             @endif
         </a>
         <ul class="menu-sub">
-            @if (auth()->user()->hasAnyPermission(['penilaiankaryawan.index']))
-                <li class="menu-item {{ request()->is(['penilaiankaryawan', 'penilaiankaryawan/create']) ? 'active' : '' }}">
-                    <a href="{{ route('penilaiankaryawan.index') }}" class="menu-link">
-                        <div>Penilaian Karyawan</div>
-                        @if (!empty($notifikasi_penilaiankaryawan))
-                            <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_penilaiankaryawan }}</div>
-                        @endif
-                    </a>
-                </li>
-                <li class="menu-item {{ request()->is(['penilaiankaryawan/config', 'penilaiankaryawan/config/*']) ? 'active' : '' }}">
-                    <a href="{{ route('penilaiankaryawanconfig.index') }}" class="menu-link">
-                        <div>Config Approval Penilaian</div>
-                    </a>
-                </li>
+            @if (auth()->user()->hasAnyPermission(['penilaiankaryawan.index', 'penilaiankaryawan.config.index']))
+                @if (auth()->user()->hasAnyPermission(['penilaiankaryawan.index']))
+                    <li class="menu-item {{ request()->is(['penilaiankaryawan', 'penilaiankaryawan/create']) ? 'active' : '' }}">
+                        <a href="{{ route('penilaiankaryawan.index') }}" class="menu-link">
+                            <div>Penilaian Karyawan</div>
+                            @if (!empty($notifikasi_penilaiankaryawan))
+                                <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_penilaiankaryawan }}</div>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+                @if (auth()->user()->hasAnyPermission(['penilaiankaryawan.config.index']))
+                    <li class="menu-item {{ request()->is(['penilaiankaryawan/config', 'penilaiankaryawan/config/*']) ? 'active' : '' }}">
+                        <a href="{{ route('penilaiankaryawanconfig.index') }}" class="menu-link">
+                            <div>Config Approval Penilaian</div>
+                        </a>
+                    </li>
+                @endif
             @endif
             @if (auth()->user()->hasAnyPermission(['kontrakkerja.index']))
                 <li class="menu-item {{ request()->is(['kontrakkerja']) ? 'active' : '' }}">

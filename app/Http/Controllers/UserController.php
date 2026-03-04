@@ -7,6 +7,7 @@ use App\Models\Departemen;
 use App\Models\Jabatan;
 use App\Models\Regional;
 use App\Models\User;
+use App\Models\Karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
@@ -40,10 +41,9 @@ class UserController extends Controller
         $cabang = Cabang::orderBy('nama_cabang')->get();
         $regional = Regional::orderBy('kode_regional')->get();
         $departemen = Departemen::orderBy('kode_dept')->get();
-        $deptchunks = $departemen->chunk(2);
         $jabatan = Jabatan::orderBy('nama_jabatan')->get();
-        $jabatanchunks = $jabatan->chunk(2);
-        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen', 'deptchunks', 'jabatan', 'jabatanchunks'));
+        $karyawan = Karyawan::orderBy('nama_karyawan')->get();
+        return view('settings.users.create', compact('roles', 'cabang', 'regional', 'departemen', 'jabatan', 'karyawan'));
     }
 
     public function edit($id)
@@ -56,13 +56,13 @@ class UserController extends Controller
         $cabang = Cabang::orderBy('nama_cabang')->get();
         $regional = Regional::orderBy('kode_regional')->get();
         $departemen = Departemen::orderBy('kode_dept')->get();
-        $deptchunks = $departemen->chunk(2);
         $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
         $jabatan = Jabatan::orderBy('nama_jabatan')->get();
-        $jabatanchunks = $jabatan->chunk(2);
         $jabatan_access = json_decode($user->jabatan_access, true) != null ? json_decode($user->jabatan_access, true) : [];
+        $karyawan = Karyawan::orderBy('nama_karyawan')->get();
+        $karyawan_access = json_decode($user->karyawan_access, true) != null ? json_decode($user->karyawan_access, true) : [];
 
-        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'deptchunks', 'dept_access', 'jabatan', 'jabatanchunks', 'jabatan_access'));
+        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'dept_access', 'jabatan', 'jabatan_access', 'karyawan', 'karyawan_access'));
     }
 
     public function ubahpassword()
@@ -103,7 +103,8 @@ class UserController extends Controller
                 'kode_dept' => $request->kode_dept,
                 'kode_regional' => $request->kode_regional,
                 'dept_access' => json_encode($request->dept_access),
-                'jabatan_access' => json_encode($request->jabatan_access)
+                'jabatan_access' => json_encode($request->jabatan_access),
+                'karyawan_access' => json_encode($request->karyawan_access)
             ]);
 
             $user->assignRole($request->role);
@@ -145,6 +146,7 @@ class UserController extends Controller
                     'password' => bcrypt($request->password),
                     'dept_access' => json_encode($request->dept_access),
                     'jabatan_access' => json_encode($request->jabatan_access),
+                    'karyawan_access' => json_encode($request->karyawan_access),
                     'status' => $request->status,
                     'force_logout' => $force_logout
                 ]);
@@ -158,6 +160,7 @@ class UserController extends Controller
                     'kode_regional' => $request->kode_regional,
                     'dept_access' => json_encode($request->dept_access),
                     'jabatan_access' => json_encode($request->jabatan_access),
+                    'karyawan_access' => json_encode($request->karyawan_access),
                     'status' => $request->status,
                     'force_logout' => $force_logout
 

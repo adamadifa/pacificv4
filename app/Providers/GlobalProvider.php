@@ -19,6 +19,7 @@ use App\Models\Disposisiizinterlambat;
 use App\Models\Disposisilembur;
 use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Disposisitargetkomisi;
+use App\Models\Penilaiankaryawan;
 use App\Models\Izinabsen;
 use App\Models\Izincuti;
 use App\Models\Izindinas;
@@ -101,9 +102,16 @@ class GlobalProvider extends ServiceProvider
                 $roles_can_approve_presensi = config('presensi.approval');
                 $level_hrd = config('presensi.approval.level_hrd');
 
-                $notifikasi_limitkredit = Disposisiajuanlimitkredit::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
-                $notifikasi_ajuanfaktur = Disposisiajuanfaktur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
-                $notifikasi_target = Disposisitargetkomisi::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $user_role_ids = auth()->user()->roles->pluck('id')->toArray();
+                $users_with_same_roles = function ($query) use ($user_role_ids) {
+                    $query->select('model_id')
+                        ->from('model_has_roles')
+                        ->whereIn('role_id', $user_role_ids);
+                };
+
+                $notifikasi_limitkredit = Disposisiajuanlimitkredit::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
+                $notifikasi_ajuanfaktur = Disposisiajuanfaktur::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
+                $notifikasi_target = Disposisitargetkomisi::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
                 $notifikasi_pengajuan_marketing = $notifikasi_limitkredit + $notifikasi_ajuanfaktur;
                 $notifikasi_komisi = $notifikasi_target;
                 $notifikasi_marketing = $notifikasi_pengajuan_marketing + $notifikasi_komisi;
@@ -111,7 +119,8 @@ class GlobalProvider extends ServiceProvider
 
 
 
-                $notifikasi_penilaiankaryawan = Disposisipenilaiankaryawan::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $pk = new Penilaiankaryawan();
+                $notifikasi_penilaiankaryawan = $pk->getPenilaiankaryawan(request: new \Illuminate\Http\Request(['status' => 'pending']))->count();
 
                 $cek_approval_presensi = $roles_can_approve_presensi[$level_user] ?? [];
                 //Jika Bukan Direktur
@@ -142,7 +151,7 @@ class GlobalProvider extends ServiceProvider
 
                 $notifikasi_pengajuan_izin = $notifikasi_izinabsen + $notifikasi_izincuti + $notifikasi_izinterlambat + $notifikasi_izinsakit + $notifikasi_izinpulang + $notifikasi_izindinas + $notifikasi_izinkoreksi + $notifikasi_izinkeluar;
 
-                $notifikasi_lembur = Disposisilembur::where('id_penerima', auth()->user()->id)->where('status', 0)->count();
+                $notifikasi_lembur = Disposisilembur::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
 
                 //Notifikasi SPV Presensi
                 if ($level_user == 'spv presensi') {

@@ -57,6 +57,20 @@
 
 <div class="row">
     <div class="col-lg-12 col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0 fw-bold"><i class="ti ti-star me-2"></i>List Penilaian Karyawan</h5>
+            <div class="d-flex gap-2">
+                @can('penilaiankaryawan.config.index')
+                    <a href="{{ route('penilaiankaryawanconfig.index') }}" class="btn btn-label-secondary">
+                        <i class="ti ti-settings me-1"></i> Config Approval
+                    </a>
+                @endcan
+                @can('penilaiankaryawan.create')
+                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i> Buat Penilaian Karyawan</a>
+                @endcan
+            </div>
+        </div>
+
         {{-- Filter Section --}}
         <form action="{{ route('penilaiankaryawan.index') }}">
             <div class="row g-2 mb-2">
@@ -99,38 +113,34 @@
             </div>
         </form>
 
-        <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
-            <h5 class="mb-0 fw-bold"><i class="ti ti-star me-2"></i>List Penilaian Karyawan</h5>
-            <div class="d-flex gap-2">
-                @can('penilaiankaryawan.index')
-                    <a href="{{ route('penilaiankaryawanconfig.index') }}" class="btn btn-label-secondary">
-                        <i class="ti ti-settings me-1"></i> Config Approval
-                    </a>
-                @endcan
-                @can('penilaiankaryawan.create')
-                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i> Buat Penilaian Karyawan</a>
-                @endcan
-            </div>
-        </div>
-
         <div class="row" id="penilaian-list">
-            @foreach ($penilaiankaryawan as $d)
+            @forelse ($penilaiankaryawan as $d)
                 @php
                     $roles_approve = cekRoleapprove($d->kode_dept, $d->kode_cabang, $d->kategori_jabatan, $d->kode_jabatan);
                     $end_role = end($roles_approve);
-                    if ($role != $end_role) {
-                        $index_role = array_search($role, $roles_approve);
-                        $next_role = $roles_approve[$index_role + 1];
-                    } else {
-                        $lastindex = count($roles_approve) - 1;
-                        $next_role = $roles_approve[$lastindex];
+                    
+                    // Find if any of user's roles can approve
+                    $user_can_approve = in_array($d->posisi_ajuan, $user_role_ids);
+                    
+                    // Determine next role for cancel logic
+                    // We check if the current posisi_ajuan is the one that follows any of the user's roles
+                    $is_next_of_user = false;
+                    foreach ($role_names as $r) {
+                        $idx = array_search($r, $roles_approve);
+                        if ($idx !== false && isset($roles_approve[$idx + 1])) {
+                             if (getRoleID($roles_approve[$idx + 1]) == $d->posisi_ajuan) {
+                                  $is_next_of_user = true;
+                                  break;
+                             }
+                        }
                     }
 
                     // Action Visibility Flags
                     $is_creator = $d->id_user == auth()->user()->id;
                     $is_pending = $d->status === '0';
                     $first_role = !empty($roles_approve) ? $roles_approve[0] : null;
-                    $is_at_first_step = $d->posisi_ajuan == $first_role;
+                    $first_role_id = $first_role ? getRoleID($first_role) : null;
+                    $is_at_first_step = empty($d->posisi_ajuan) || $d->posisi_ajuan == $first_role_id;
                     $is_admin = auth()->user()->hasRole(['super admin', 'asst. manager hrd', 'spv presensi']);
                 @endphp
                 <div class="col-12 mb-3">
@@ -147,7 +157,7 @@
                                     <span class="badge bg-label-warning"><i class="ti ti-hourglass-low me-1"></i>Pending</span>
                                 @endif
                                 <span class="badge bg-primary ms-1">
-                                    {{ singkatString($d->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan) }}
+                                    {{ singkatString($d->posisi_ajuan_name) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan_name) }}
                                 </span>
                             </div>
                         </div>
@@ -219,7 +229,7 @@
                         </div>
                         <div class="card-footer py-2 px-3 border-top d-flex justify-content-end gap-2" style="background: #fcfdfe;">
                             @can('penilaiankaryawan.edit')
-                                @if (($is_creator && $is_pending && $is_at_first_step) || $is_admin)
+                                @if (($is_creator && $is_pending && ($is_at_first_step || $user_can_approve)) || $is_admin)
                                     <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}" class="btn btn-icon btn-label-success btn-sm" title="Edit">
                                         <i class="ti ti-edit"></i>
                                     </a>
@@ -249,11 +259,11 @@
                             @endcan
 
                             @can('penilaiankaryawan.approve')
-                                @if ($role == $d->posisi_ajuan && $d->status === '0')
+                                @if ($user_can_approve && $d->status === '0')
                                     <a href="#" class="btnApprove btn btn-icon btn-label-info btn-sm" kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}" title="Approve">
                                         <i class="ti ti-external-link"></i>
                                     </a>
-                                @elseif (($d->posisi_ajuan == $next_role && $d->status === '0') || ($role == $d->posisi_ajuan && $d->status === '1'))
+                                @elseif (($is_next_of_user && $d->status === '0') || ($user_can_approve && $d->status === '1'))
                                     <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('penilaiankaryawan.cancel', Crypt::encrypt($d->kode_penilaian)) }}">
                                         @csrf
                                         @method('DELETE')
@@ -265,7 +275,7 @@
                             @endcan
 
                             @can('penilaiankaryawan.delete')
-                                @if (($is_creator && $is_pending && $is_at_first_step) || $is_admin)
+                                @if (($is_creator && $is_pending && ($is_at_first_step || $user_can_approve)) || $is_admin)
                                     <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('penilaiankaryawan.delete', Crypt::encrypt($d->kode_penilaian)) }}">
                                         @csrf
                                         @method('DELETE')
@@ -278,7 +288,15 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="col-12 mt-4">
+                    <div class="text-center p-5 bg-white rounded-3 shadow-none border">
+                        <i class="ti ti-star-off fs-1 text-muted mb-3 d-block"></i>
+                        <h5 class="fw-bold">Data Tidak Ditemukan</h5>
+                        <p class="text-muted mb-0 small">Maaf, data penilaian karyawan tidak tersedia atau tidak ditemukan sesuai filter.</p>
+                    </div>
+                </div>
+            @endforelse
         </div>
         <div class="row">
             <div class="col-12 mt-2">
@@ -290,7 +308,7 @@
         </div>
     </div>
 </div>
-<x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
+<x-modal-form id="modal" show="loadmodal" title="" />
 @endsection
 
 @push('myscript')
@@ -312,7 +330,6 @@
             $("#modal").modal("show");
             $(".modal-title").text("Buat Penilaian Karyawan");
             $("#loadmodal").load(`/penilaiankaryawan/create`);
-            $("#modal").find(".modal-dialog").removeClass('modal-lg');
         });
 
         $(".btnApprove").click(function(e) {

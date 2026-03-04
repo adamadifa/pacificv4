@@ -141,7 +141,7 @@
             <button class="btn btn-primary w-100" id="btnSimpan">
                 <i class="ti ti-thumb-up me-1"></i> Setuju,
                 @if ($level_user != $end_role)
-                    Teruskan ke {{ textCamelCase($nextrole) }} ({{ $userrole->name }})
+                    Teruskan ke {{ textCamelCase($nextrole) }}
                 @endif
 
             </button>

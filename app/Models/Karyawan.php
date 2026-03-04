@@ -30,20 +30,30 @@ class Karyawan extends Model
                 $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
 
                 // 1. Branch/Dept Rule (Mandatory)
-                $access->where(function ($q) use ($user, $dept_access) {
-                    if ($user->kode_cabang == 'PST') {
-                        $q->where('hrd_karyawan.kode_cabang', 'PST')
-                            ->whereIn('hrd_karyawan.kode_dept', $dept_access);
-                    } else {
-                        $q->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
-                        $q->whereIn('hrd_karyawan.kode_dept', $dept_access);
-                    }
-                });
+                if (empty($user->kode_regional) || $user->kode_regional == 'R00') {
+                    $access->where(function ($q) use ($user, $dept_access) {
+                        if ($user->kode_cabang == 'PST') {
+                            $q->where('hrd_karyawan.kode_cabang', 'PST')
+                                ->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                        } else {
+                            $q->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                            $q->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                        }
+                    });
+                } else {
+                    $access->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                }
 
                 // 2. Job Position Access (AND - Mandatory)
                 $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
 
-                // 3. Regional (AND)
+                // 3. Employee Access (NIK)
+                $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
+                if (!in_array('all', $karyawan_access)) {
+                    $access->whereIn('hrd_karyawan.nik', $karyawan_access);
+                }
+
+                // 4. Regional (AND)
                 if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
                     $access->where('cabang.kode_regional', $user->kode_regional);
                 }

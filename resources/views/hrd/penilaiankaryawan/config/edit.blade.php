@@ -5,18 +5,21 @@
 @section('navigasi')
     <div class="d-flex justify-content-between align-items-center mb-0">
         <div>
-            <h4 class="mb-0">Edit Konfigurasi Approval</h4>
-            <small class="text-muted">Ubah alur persetujuan penilaian karyawan.</small>
+            <h4 class="mb-1 text-primary fw-bold" style="letter-spacing: -0.5px">Edit Konfigurasi Approval</h4>
+            <p class="text-muted mb-0">Ubah alur persetujuan penilaian karyawan.</p>
         </div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0" style="font-size: 13px">
                 <li class="breadcrumb-item">
-                    <a href="#"><i class="ti ti-folder me-1"></i>HRD</a>
+                    <a href="#" class="text-muted"><i class="ti ti-folder me-1"></i>HRD</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('penilaiankaryawan.index') }}">Penilaian Karyawan</a>
+                    <a href="{{ route('penilaiankaryawan.index') }}" class="text-muted">Penilaian Karyawan</a>
                 </li>
-                <li class="breadcrumb-item active">Edit</li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('penilaiankaryawanconfig.index') }}" class="text-muted">Config Approval</a>
+                </li>
+                <li class="breadcrumb-item active fw-medium text-primary">Edit</li>
             </ol>
         </nav>
     </div>
@@ -25,77 +28,87 @@
 <style>
     .config-card {
         border: none;
-        border-radius: 15px;
+        border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         transition: all 0.3s ease;
+        background: #fff;
+    }
+
+    .config-card .card-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.25rem 1.5rem;
     }
 
     .step-number {
-        width: 30px;
-        height: 30px;
-        background: #002e65;
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
         color: white;
-        border-radius: 50%;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: bold;
+        font-weight: 700;
         font-size: 12px;
         margin-right: 15px;
         flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(75, 108, 183, 0.2);
     }
 
     .role-item {
         background: #fff;
         border: 1px solid #eef0f2;
-        border-radius: 12px !important;
-        padding: 0.5rem 0.8rem !important;
-        margin-bottom: 4px;
-        transition: all 0.2s ease;
+        border-radius: 14px !important;
+        padding: 0 !important;
+        margin-bottom: 8px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
     }
 
     .role-item:hover {
-        border-color: #002e65;
-        box-shadow: 0 4px 12px rgba(0, 46, 101, 0.08);
-        transform: translateX(5px);
+        border-color: #4b6cb7;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+        transform: translateX(4px);
     }
 
     .drag-handle {
         color: #adb5bd;
         cursor: move;
         font-size: 1.2rem;
+        padding: 1rem;
     }
 
     .ui-state-highlight {
-        height: 70px;
-        background: rgba(0, 46, 101, 0.02);
-        border: 2px dashed #002e65;
-        border-radius: 12px;
-        margin-bottom: 12px;
+        height: 80px;
+        background: rgba(75, 108, 183, 0.03);
+        border: 2px dashed #4b6cb7;
+        border-radius: 14px;
+        margin-bottom: 8px;
         list-style: none;
     }
 
     .empty-state {
         border: 2px dashed #dee2e6;
-        border-radius: 15px;
-        padding: 3rem;
+        border-radius: 16px;
+        padding: 4rem 2rem;
         text-align: center;
-        color: #adb5bd;
+        background: rgba(255, 255, 255, 0.5);
     }
 
     .btn-add-role {
-        border-radius: 10px;
-        padding: 0.6rem 1.2rem;
+        border-radius: 12px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s;
     }
 
     .flow-connector {
         width: 2px;
-        height: 6px;
+        height: 10px;
         background: #dee2e6;
-        margin-left: 14px;
-        margin-top: -4px;
-        margin-bottom: 0px;
+        margin-left: 54px;
+        margin-top: -8px;
+        margin-bottom: -4px;
     }
 
     .list-group-item:last-child .flow-connector {
@@ -103,11 +116,28 @@
     }
 
     .floating-save {
-        background: #fff;
-        padding: 1rem 2rem;
-        border-top: 1px solid #eee;
-        margin-top: 2rem;
-        border-radius: 0 0 15px 15px;
+        padding: 1.5rem 2rem;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        background: #fafafa;
+        border-radius: 0 0 16px 16px;
+    }
+
+    .gradient-btn {
+        background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+        border: none;
+        box-shadow: 0 4px 15px rgba(75, 108, 183, 0.3);
+        padding: 10px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+        color: white;
+    }
+
+    .gradient-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(75, 108, 183, 0.4);
+        background: linear-gradient(135deg, #5c7fcc 0%, #213661 100%);
+        color: white;
     }
 </style>
 
@@ -214,8 +244,8 @@
                 </div>
 
                 <div class="floating-save d-flex justify-content-end gap-2">
-                    <a href="{{ route('penilaiankaryawanconfig.index') }}" class="btn btn-label-secondary px-4">Batal</a>
-                    <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                    <a href="{{ route('penilaiankaryawanconfig.index') }}" class="btn btn-label-secondary px-4 border-0">Batal</a>
+                    <button type="submit" class="btn gradient-btn shadow-sm">
                         <i class="ti ti-device-floppy me-2"></i>Update Konfigurasi
                     </button>
                 </div>

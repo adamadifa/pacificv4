@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detailpenilaiankaryawan;
-use App\Models\Disposisipenilaiankaryawan;
+
 use App\Models\Itempenilaian;
 use App\Models\Jasamasakerja;
 use App\Models\Karyawan;
@@ -21,8 +21,12 @@ class PenilaiankaryawanController extends Controller
     public function index(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
-        $role = $user->getRoleNames()->first();
-        $data['role'] = $role;
+        $role_names = $user->getRoleNames()->toArray();
+        $user_role_ids = array_map('getRoleID', $role_names);
+        $data['role_names'] = $role_names;
+        $data['user_role_ids'] = $user_role_ids;
+        $data['role'] = $role_names[0] ?? null; // Keep for backward compatibility if needed
+        $data['role_id'] = $user_role_ids[0] ?? null; // Keep for backward compatibility if needed
         $pk = new Penilaiankaryawan();
         $penilaiankaryawan = $pk->getPenilaiankaryawan(request: $request)->paginate(15);
         $penilaiankaryawan->appends(request()->all());
@@ -161,85 +165,37 @@ class PenilaiankaryawanController extends Controller
             }
 
 
-            //Store Disposisi
-            // Cek Departemen dan Cabang
-
-
-
             $roles_approve = cekRoleapprove($karyawan->kode_dept, $karyawan->kode_cabang, $karyawan->kategori, $karyawan->kode_jabatan);
 
-            if (in_array($role, $roles_approve)) {
-                $index_role = array_search($role, $roles_approve);
-            } else {
-                $index_role = 0;
-            }
-            // Jika Tidak Ada di dalam array
+            if (!empty($roles_approve)) {
+                $user_roles = $user->getRoleNames()->toArray();
+                $found_index = -1;
 
-            if ($karyawan->kategori != 'MJ' && $karyawan->kode_cabang != 'PUSAT') {
-                if ($roles_approve[$index_role] == 'regional sales manager') {
-                    $cek_user_approve = User::role($roles_approve[$index_role])
-                        ->where('kode_regional', $karyawan->kode_regional)
-                        ->where('status', 1)
-                        ->first();
-                } else {
-                    $cek_user_approve = User::role($roles_approve[$index_role])->where('kode_cabang', $karyawan->kode_cabang)
-                        ->where('status', 1)
-                        ->first();
+                // Cari role tertinggi user yang ada di dalam antrian approval
+                foreach ($roles_approve as $index => $r_approve) {
+                    if (in_array($r_approve, $user_roles)) {
+                        $found_index = $index;
+                    }
                 }
 
-                echo 1;
-            } else {
-                $cek_user_approve = User::role($roles_approve[$index_role])
-                    ->where('status', 1)
-                    ->first();
-                echo 2;
-            }
-
-            // die;
-
-
-            if ($cek_user_approve == null) {
-                for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
-                    if ($roles_approve[$i] == 'regional sales manager') {
-                        $cek_user_approve = User::role($roles_approve[$i])
-                            ->where('kode_regional', $karyawan->kode_regional)
-                            ->where('status', 1)
-                            ->first();
+                $is_approved = 0;
+                if ($found_index != -1) {
+                    $next_index = $found_index + 1;
+                    if ($next_index >= count($roles_approve)) {
+                        $is_approved = 1;
+                        $posisi_ajuan = getRoleID($roles_approve[$found_index]);
                     } else {
-                        $cek_user_approve = User::role($roles_approve[$i])
-                            ->where('status', 1)
-                            ->first();
+                        $posisi_ajuan = getRoleID($roles_approve[$next_index]);
                     }
-
-                    if ($cek_user_approve != null) {
-                        break;
-                    }
+                } else {
+                    $posisi_ajuan = getRoleID($roles_approve[0]);
                 }
+
+                Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update([
+                    'posisi_ajuan' => $posisi_ajuan,
+                    'status' => $is_approved
+                ]);
             }
-
-
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisipenilaiankaryawan::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPPK" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
-
-
-            Disposisipenilaiankaryawan::create([
-                'kode_disposisi' => $kode_disposisi,
-                'kode_penilaian' => $kode_penilaian,
-                'id_pengirim' => auth()->user()->id,
-                'id_penerima' => $cek_user_approve->id,
-                'status' => 0
-            ]);
-
-            // Update posisi_ajuan di hrd_penilaian
-            $role_name = $cek_user_approve->getRoleNames()->first();
-            Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update([
-                'posisi_ajuan' => $role_name
-            ]);
 
             //Jika Departemen Marketing dan Cabang != Pusat
 
@@ -471,23 +427,9 @@ class PenilaiankaryawanController extends Controller
 
         DB::beginTransaction();
         try {
-            // Upadate Disposisi Pengirim
 
-            // dd($kode_penilaian);
-            Disposisipenilaiankaryawan::where('kode_penilaian', $kode_penilaian)
-                ->where('id_penerima', auth()->user()->id)
-                ->update([
-                    'status' => 1
-                ]);
 
-            //Insert Dispsosi ke Penerima
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisipenilaiankaryawan::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPPK" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
 
 
 
@@ -496,24 +438,14 @@ class PenilaiankaryawanController extends Controller
                 Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)
                     ->update([
                         'status' => 1,
-                        'posisi_ajuan' => $role // Tetap di role terakhir saat sudah disetujui (atau bisa kosongkan jika mau)
+                        'posisi_ajuan' => getRoleID($role) // Tetap di role terakhir saat sudah disetujui
                     ]);
             } else {
-
-                $disposisi = Disposisipenilaiankaryawan::create([
-                    'kode_disposisi' => $kode_disposisi,
-                    'kode_penilaian' => $kode_penilaian,
-                    'id_pengirim' => auth()->user()->id,
-                    'id_penerima' => $userrole->id,
-                    'status' => 0,
-                ]);
-
                 // Update posisi_ajuan ke role berikutnya
                 Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update([
-                    'posisi_ajuan' => $nextrole
+                    'posisi_ajuan' => getRoleID($nextrole)
                 ]);
             }
-
 
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));
@@ -530,21 +462,12 @@ class PenilaiankaryawanController extends Controller
         $role = $user->getRoleNames()->first();
         $kode_penilaian = Crypt::decrypt($kode_penilaian);
         try {
-            Disposisipenilaiankaryawan::where('kode_penilaian', $kode_penilaian)
-                ->where('id_pengirim', auth()->user()->id)
-                ->where('id_penerima', '!=', auth()->user()->id)
-                ->delete();
 
-            Disposisipenilaiankaryawan::where('kode_penilaian', $kode_penilaian)
-                ->where('id_penerima', auth()->user()->id)
-                ->update([
-                    'status' => 0
-                ]);
 
             Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)
                 ->update([
                     'status' => 0,
-                    'posisi_ajuan' => $role
+                    'posisi_ajuan' => getRoleID($role)
                 ]);
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));

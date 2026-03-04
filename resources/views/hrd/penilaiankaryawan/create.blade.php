@@ -1,7 +1,7 @@
 <form action="{{ route('penilaiankaryawan.createpenilaian') }}" method="POST" id="formPenilaian">
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" hideLabel="true" />
     <x-input-with-icon icon="ti ti-barcode" label="No. Kontrak" name="no_kontrak" readonly="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">

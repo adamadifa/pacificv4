@@ -87,7 +87,7 @@
         <button class="btn btn-primary flex-grow-1" value="0" name="btnSimpan" type="submit" id="btnSimpan">
             <i class="ti ti-thumb-up me-1"></i> Setuju,
             @if ($level_user != $end_role)
-                Teruskan ke {{ textCamelCase($nextrole) }} ({{ $userrole->name }})
+                Teruskan ke {{ textCamelCase($nextrole) }}
             @endif
         </button>
     </div>
