@@ -19,30 +19,29 @@
     <div class="col-12">
         <form action="{{ route('karyawan.index') }}">
             @hasanyrole($roles_show_cabang)
-                <div class="row">
-                    <div class="col-lg-12 col-sm-12 col-md-12">
+                <div class="row g-2 mb-2">
+                    <div class="col-12">
                         <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
                             textShow="nama_cabang" selected="{{ Request('kode_cabang_search') }}" upperCase="true"
-                            select2="select2Kodecabangsearch" />
+                            select2="select2Kodecabangsearch" hideLabel="true" />
                     </div>
                 </div>
             @endhasanyrole
-            <div class="row">
+            <div class="row g-2 mb-2">
                 <div class="col-lg-6 col-sm-12 col-md-12">
                     <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}"
-                        name="nama_karyawan" icon="ti ti-search" />
+                        name="nama_karyawan" icon="ti ti-search" hideLabel="true" />
                 </div>
 
                 <div class="col-lg-4 col-sm-12 col-md-12">
                     <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept"
                         textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true"
-                        select2="select2Kodedeptsearch" />
+                        select2="select2Kodedeptsearch" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-sm-12 col-md-12">
                     <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
-                        selected="{{ Request('kode_group') }}" upperCase="true" />
+                        selected="{{ Request('kode_group') }}" upperCase="true" hideLabel="true" />
                 </div>
-
             </div>
             <div class="row">
                 <div class="col">

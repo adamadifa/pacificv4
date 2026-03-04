@@ -25,12 +25,10 @@
             <div class="row g-2 mb-1 align-items-end">
                 <div class="col">
                     <x-input-with-icon label="Cari Regional" value="{{ Request('nama_regional') }}" name="nama_regional"
-                        icon="ti ti-search" />
+                        icon="ti ti-search" hideLabel="true" />
                 </div>
                 <div class="col-auto">
-                    <div class="form-group mb-1">
-                        <button class="btn btn-primary btn-sm"><i class="ti ti-search me-1"></i>Cari</button>
-                    </div>
+                    <button class="btn btn-primary btn-sm"><i class="ti ti-search me-1"></i>Cari</button>
                 </div>
             </div>
         </form>

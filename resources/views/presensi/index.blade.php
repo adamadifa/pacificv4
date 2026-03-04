@@ -31,26 +31,24 @@
         <form action="{{ route('presensi.index') }}" class="mb-3">
             <div class="row g-2">
                 <div class="col-lg-2 col-md-4">
-                    <x-input-with-icon label="Tanggal" value="{{ Request('tanggal') }}" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Tanggal" value="{{ Request('tanggal') }}" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 @hasanyrole($roles_access_all_karyawan)
                     <div class="col-lg-2 col-md-4">
-                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" />
+                        <x-select label="Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" hideLabel="true" />
                     </div>
                 @endhasanyrole
                 <div class="col-lg-2 col-md-4">
-                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true" select2="select2Kodedeptsearch" />
+                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" selected="{{ Request('kode_dept') }}" upperCase="true" select2="select2Kodedeptsearch" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-4">
-                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group" selected="{{ Request('kode_group') }}" upperCase="true" />
+                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group" selected="{{ Request('kode_group') }}" upperCase="true" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <x-input-with-icon label="Cari Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan" icon="ti ti-user" />
+                    <x-input-with-icon label="Cari Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan" icon="ti ti-user" hideLabel="true" />
                 </div>
                 <div class="col-lg-1 col-md-6">
-                    <div class="form-group mb-3">
-                        <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
-                    </div>
+                    <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
                 </div>
             </div>
         </form>

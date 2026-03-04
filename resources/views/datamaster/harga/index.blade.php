@@ -90,22 +90,20 @@
             <div class="row g-2 mb-1 align-items-end">
                 <div class="col-lg-4 col-md-4 col-sm-12">
                     <x-input-with-icon label="Cari Nama Produk" value="{{ Request('nama_produk') }}" name="nama_produk"
-                        icon="ti ti-search" />
+                        icon="ti ti-search" hideLabel="true" />
                 </div>
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                            selected="{{ Request('kode_cabang') }}" />
+                            selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                     </div>
                 @endhasanyrole
                 <div class="col">
                     <x-select label="Kategori" name="kode_kategori_salesman" :data="$kategorisalesman" key="kode_kategori_salesman"
-                        textShow="nama_kategori_salesman" selected="{{ Request('kode_kategori_salesman') }}" />
+                        textShow="nama_kategori_salesman" selected="{{ Request('kode_kategori_salesman') }}" hideLabel="true" />
                 </div>
                 <div class="col-auto">
-                    <div class="form-group mb-1">
-                        <button class="btn btn-primary"><i class="ti ti-search me-1"></i>Cari</button>
-                    </div>
+                    <button class="btn btn-primary"><i class="ti ti-search me-1"></i>Cari</button>
                 </div>
             </div>
         </form>

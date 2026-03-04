@@ -120,6 +120,9 @@ class Penilaiankaryawan extends Model
                     }
                 }
             }
+            if (!empty($request->posisi_ajuan)) {
+                $query->where('roles.name', $request->posisi_ajuan);
+            }
         }
 
         $query->orderBy('hrd_penilaian.tanggal', 'desc');

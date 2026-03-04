@@ -12,18 +12,16 @@
          <div class="row g-2 mb-3">
             <div class="col-lg-6 col-md-6 col-sm-12">
                <x-input-with-icon label="Cari Wilayah / Rute" value="{{ Request('nama_wilayah') }}"
-                  name="nama_wilayah" icon="ti ti-search" />
+                  name="nama_wilayah" icon="ti ti-search" hideLabel="true" />
             </div>
             @hasanyrole($roles_show_cabang)
                <div class="col-lg-4 col-md-4 col-sm-12">
                   <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                     textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
+                     textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                </div>
             @endhasanyrole
             <div class="col-lg-2 col-md-2 col-sm-12">
-               <div class="form-group mb-3">
-                  <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
-               </div>
+               <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
             </div>
          </div>
       </form>

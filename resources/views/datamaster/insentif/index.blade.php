@@ -24,26 +24,24 @@
         {{-- Filter Section (No Card) --}}
         <form action="{{ route('insentif.index') }}">
             <div class="row g-2 align-items-end">
-                <div class="col-lg-3 col-md-3 col-sm-12">
-                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}" name="nama_karyawan"
-                        icon="ti ti-search" />
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Cari Nama Karyawan" value="{{ Request('nama_karyawan') }}"
+                        name="nama_karyawan" icon="ti ti-search" />
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-12">
-                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                        selected="{{ Request('kode_cabang') }}" />
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
+                        textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-12">
-                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                        selected="{{ Request('kode_dept') }}" upperCase="true" />
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept"
+                        textShow="nama_dept" selected="{{ Request('kode_dept') }}" />
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-12">
-                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
-                        selected="{{ Request('kode_group') }}" upperCase="true" />
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <x-select label="Group" name="kode_group" :data="$group" key="kode_group"
+                        textShow="nama_group" selected="{{ Request('kode_group') }}" />
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-12">
-                    <div class="form-group mb-3">
-                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
-                    </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
                 </div>
             </div>
         </form>

@@ -13,12 +13,10 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-lg-10 col-md-10 col-sm-12">
                             <x-input-with-icon label="Cari Nama Cabang" value="{{ Request('nama_cabang') }}" name="nama_cabang"
-                                icon="ti ti-search" />
+                                icon="ti ti-search" hideLabel="true" />
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-12">
-                            <div class="form-group mb-3">
-                                <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
-                            </div>
+                            <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
                         </div>
                     </div>
                 </form>

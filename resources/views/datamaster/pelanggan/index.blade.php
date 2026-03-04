@@ -1,9 +1,33 @@
 @extends('layouts.app')
 @section('titlepage', 'Pelanggan')
 
+@section('style')
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+@endsection
+
 @section('content')
 @section('navigasi')
-    <span>Pelanggan</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Pelanggan</h4>
+            <small class="text-muted">Manajemen database pelanggan dan limit piutang.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-folder me-1"></i>Data Master</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-users me-1"></i>Pelanggan</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
 <div class="row">
     <div class="col-xl-4 mb-4 col-lg-5 col-12">
@@ -61,107 +85,92 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between">
-                    @can('pelanggan.create')
-                        <a href="#" class="btn btn-primary" id="btncreatePelanggan"><i class="fa fa-plus me-2"></i>
-                            Tambah
-                            Pelanggan</a>
-                    @endcan
-                    @can('pelanggan.show')
-                        <form action="/pelanggan/export" method="GET" id="formCetak" target="_blank">
-                            <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
-                            <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
-                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang') }}" />
-                            <input type="hidden" name="kode_salesman" id="kode_salesman_cetak" value="{{ Request('kode_salesman') }}" />
-                            <input type="hidden" name="status" id="status_cetak" value="{{ Request('status') }}" />
-                            <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
-                            <button class="btn btn-success" name="exportButton"><i class="ti ti-download me-1"></i>Export
-                                Excel</button>
-                            <a href="#" class="btn btn-danger" id="btnNonaktif"><i class="ti ti-user-x me-1"></i>Nonaktifkan Pelanggan</a>
-                        </form>
-                    @endcan
-
-
-                </div>
-                {{-- @can('pelanggan.create')
-                    <a href="#" class="btn btn-primary" id="btncreatePelanggan"><i class="fa fa-plus me-2"></i> Tambah
-                        Pelanggan</a>
-                @endcan --}}
+<div class="row mb-3 mt-2">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        @can('pelanggan.create')
+            <a href="#" class="btn btn-primary" id="btncreatePelanggan"><i class="ti ti-plus me-1"></i> Tambah Pelanggan</a>
+        @endcan
+        @can('pelanggan.show')
+            <div class="d-flex gap-2">
+                <form action="/pelanggan/export" method="GET" id="formCetak" target="_blank" class="d-flex gap-2">
+                    <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
+                    <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
+                    <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang') }}" />
+                    <input type="hidden" name="kode_salesman" id="kode_salesman_cetak" value="{{ Request('kode_salesman') }}" />
+                    <input type="hidden" name="status" id="status_cetak" value="{{ Request('status') }}" />
+                    <button class="btn btn-label-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
+                    <button class="btn btn-label-success" name="exportButton"><i class="ti ti-download me-1"></i>Excel</button>
+                </form>
+                <a href="#" class="btn btn-label-danger" id="btnNonaktif"><i class="ti ti-user-x me-1"></i>Nonaktifkan</a>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="{{ route('pelanggan.index') }}">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-sm-12 col-md-12">
-                                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                                datepicker="flatpickr-date" />
-                                        </div>
-                                        <div class="col-lg-6 col-sm-12 col-md-12">
-                                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                                datepicker="flatpickr-date" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col">
-                                    <select name="status" id="status" class="form-select">
-                                        <option value="">Status</option>
-                                        <option value="aktif" {{ Request('status') == 'aktif' ? 'selected' : '' }}>
-                                            Aktif</option>
-                                        <option value="nonaktif" {{ Request('status') == 'nonaktif' ? 'selected' : '' }}>Non Aktif</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                @hasanyrole($roles_show_cabang)
-                                    <div class="col-lg-2 col-sm-12 col-md-12">
-                                        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                            selected="{{ Request('kode_cabang') }}" />
-                                    </div>
-                                @endhasanyrole
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <div class="form-group mb-3">
-                                        <select name="kode_salesman" id="kode_salesman" class="form-select">
-                                            <option value="">Salesman</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan') }}" name="kode_pelanggan"
-                                        icon="ti ti-barcode" />
-                                </div>
-                                <div class="col-lg-3 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Cari Nama Pelanggan" value="{{ Request('nama_pelanggan') }}" name="nama_pelanggan"
-                                        icon="ti ti-user" />
-                                </div>
+        @endcan
+    </div>
+</div>
 
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i>Cari</button>
-                                </div>
-                            </div>
-
-                        </form>
+<div class="row mb-3">
+    <div class="col-12">
+        <form action="{{ route('pelanggan.index') }}">
+            <div class="row mb-1">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12 col-md-12">
+                            <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-md-12">
+                            <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                                datepicker="flatpickr-date" />
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div class="row g-2">
+                <div class="col-lg-2 col-sm-12 col-md-12">
+                    <select name="status" id="status" class="form-select">
+                        <option value="">Status</option>
+                        <option value="aktif" {{ Request('status') == 'aktif' ? 'selected' : '' }}>
+                            Aktif</option>
+                        <option value="nonaktif" {{ Request('status') == 'nonaktif' ? 'selected' : '' }}>Non Aktif</option>
+                    </select>
+                </div>
+                @hasanyrole($roles_show_cabang)
+                    <div class="col-lg-2 col-sm-12 col-md-12">
+                        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                            selected="{{ Request('kode_cabang') }}" />
+                    </div>
+                @endhasanyrole
+                <div class="col-lg-2 col-sm-12 col-md-12">
+                    <select name="kode_salesman" id="kode_salesman" class="form-select">
+                        <option value="">Salesman</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-sm-12 col-md-12">
+                    <x-input-with-icon label="Kode" value="{{ Request('kode_pelanggan') }}" name="kode_pelanggan"
+                        icon="ti ti-barcode" />
+                </div>
+                <div class="col-lg-3 col-sm-12 col-md-12">
+                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan') }}" name="nama_pelanggan"
+                        icon="ti ti-user" />
+                </div>
+
+                <div class="col-lg-1 col-sm-12 col-md-12">
+                    <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
                 <div class="row" id="pelanggan-list">
                     @foreach ($pelanggan as $d)
-                        <div class="col-12 mb-3">
+                        <div class="col-12 mb-2">
                             <div class="card shadow-none border {{ $d->status_aktif_pelanggan == '0' ? 'bg-label-danger border-danger' : '' }}">
                                 <div class="card-body p-2">
                                     <div class="row align-items-center">
                                         <!-- Bagian 1: Identitas (Left) -->
-                                        <div class="col-md-5 border-end">
+                                        <div class="col-md-3 border-end">
                                             <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 me-3">
-                                                    <div class="avatar avatar-lg">
+                                                <div class="flex-shrink-0 me-2">
+                                                    <div class="avatar avatar-md">
                                                         @if (!empty($d->foto))
                                                             @if (Storage::disk('public')->exists('/pelanggan/' . $d->foto))
                                                                 <img src="{{ getfotoPelanggan($d->foto) }}" alt="Avatar" class="rounded-circle">
@@ -174,64 +183,79 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <div class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">
+                                                    <div class="mb-0 fw-bold text-dark line-clamp-2" style="font-size: 0.85rem; line-height: 1.2;">
                                                         {!! textCamelCase($d->nama_pelanggan) !!}
-                                                        <span class="text-muted" style="font-size: 0.75rem;">({{ $d->kode_pelanggan }})</span>
                                                     </div>
-                                                    <div class="d-flex flex-wrap gap-1">
-                                                        <span class="badge border text-primary bg-label-primary" style="font-size: 0.65rem;">{{ textCamelCase($d->nama_wilayah) }}</span>
-                                                        <span class="badge border text-info bg-label-info" style="font-size: 0.65rem;">{{ textCamelCase($d->nama_salesman) }}</span>
-                                                        <span class="badge border text-warning bg-label-warning" style="font-size: 0.65rem;">{{ $d->kode_cabang }}</span>
-                                                        @if (!empty($d->klasifikasi))
-                                                            <span class="badge border text-dark bg-label-secondary" style="font-size: 0.65rem;">{{ $d->klasifikasi }}</span>
-                                                        @endif
+                                                    <span class="text-primary small fw-semibold" style="font-size: 0.75rem;">
+                                                        {{ $d->kode_pelanggan }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Bagian 2: Wilayah & Sales (Center) -->
+                                        <div class="col-md-4 border-end">
+                                            <div class="row g-0">
+                                                <div class="col-6 pe-2">
+                                                    <div class="text-muted mb-0" style="font-size: 0.7rem;">Wilayah</div>
+                                                    <div class="text-dark fw-semibold line-clamp-2" style="font-size: 0.8rem;">
+                                                        {{ textCamelCase($d->nama_wilayah) }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 pe-2">
+                                                    <div class="text-muted mb-0" style="font-size: 0.7rem;">Salesman</div>
+                                                    <div class="text-dark fw-semibold line-clamp-2" style="font-size: 0.8rem;">
+                                                        {{ textCamelCase($d->nama_salesman) }}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Bagian 2: Info (Center) -->
-                                        <div class="col-md-3 border-end text-center d-flex flex-column align-items-center justify-content-center">
-                                            <div class="text-muted" style="font-size: 0.75rem;">Reg: {{ date('d-m-Y', strtotime($d->tanggal_register)) }}</div>
-                                            <div class="fw-bold text-dark" style="font-size: 0.85rem;">
-                                                Lmt:
-                                                @if (empty($d->limit_pelanggan))
-                                                    <span class="text-danger">None</span>
-                                                @else
-                                                    {{ formatRupiah($d->limit_pelanggan) }}
-                                                @endif
+                                        <!-- Bagian 3: Info Register & Limit (Center) -->
+                                        <div class="col-md-3 border-end">
+                                            <div class="row g-0">
+                                                <div class="col-6 text-center pe-2">
+                                                    <div class="text-muted mb-0" style="font-size: 0.7rem;">Register</div>
+                                                    <div class="text-dark fw-semibold" style="font-size: 0.8rem;">
+                                                        {{ date('d/m/y', strtotime($d->tanggal_register)) }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 text-center pe-2">
+                                                    <div class="text-muted mb-0" style="font-size: 0.7rem;">Limit</div>
+                                                    <div class="text-dark fw-bold" style="font-size: 0.8rem;">
+                                                        {{ empty($d->limit_pelanggan) ? '-' : formatRupiah($d->limit_pelanggan) }}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!-- Bagian 3: Status -->
-                                        <div class="col-md-2 border-end text-center d-flex flex-column align-items-center justify-content-center">
-                                            @if ($d->status_aktif_pelanggan == 1)
-                                                <span class="badge bg-success px-3">Aktif</span>
-                                            @else
-                                                <span class="badge bg-danger px-3">Non-Aktif</span>
-                                            @endif
-                                        </div>
-
-                                        <!-- Bagian 4: Actions (Right) -->
+                                        <!-- Bagian 4: Status & Actions (Right) -->
                                         <div class="col-md-2">
-                                            <div class="d-flex justify-content-end align-items-center h-100">
-                                                <div class="btn-group">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="text-center">
+                                                    @if ($d->status_aktif_pelanggan == 1)
+                                                        <span class="badge badge-dot bg-success"></span><span class="small ms-1">Aktif</span>
+                                                    @else
+                                                        <span class="badge badge-dot bg-danger"></span><span class="small ms-1 text-danger">Non</span>
+                                                    @endif
+                                                </div>
+                                                <div class="d-flex gap-1 ms-auto">
                                                     @can('pelanggan.edit')
-                                                        <a href="#" class="btn btn-icon btn-outline-success editPelanggan" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" title="Edit">
-                                                            <i class="ti ti-edit text-success"></i>
+                                                        <a href="#" class="btn btn-xs btn-icon btn-label-success editPelanggan" kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}" title="Edit">
+                                                            <i class="ti ti-pencil" style="font-size: 0.9rem;"></i>
                                                         </a>
                                                     @endcan
                                                     @can('pelanggan.show')
-                                                        <a href="{{ route('pelanggan.show', Crypt::encrypt($d->kode_pelanggan)) }}" class="btn btn-icon btn-outline-info" style="margin-left: -1px; border-radius: 0 !important;" title="Detail">
-                                                            <i class="ti ti-file-description text-info"></i>
+                                                        <a href="{{ route('pelanggan.show', Crypt::encrypt($d->kode_pelanggan)) }}" class="btn btn-xs btn-icon btn-label-info" title="Detail">
+                                                            <i class="ti ti-file-description" style="font-size: 0.9rem;"></i>
                                                         </a>
                                                     @endcan
                                                     @can('pelanggan.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform m-0" style="margin-left: -1px;" action="{{ route('pelanggan.delete', Crypt::encrypt($d->kode_pelanggan)) }}">
+                                                        <form method="POST" name="deleteform" class="deleteform m-0" action="{{ route('pelanggan.delete', Crypt::encrypt($d->kode_pelanggan)) }}">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-icon btn-outline-danger delete-confirm" style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;" title="Delete">
-                                                                <i class="ti ti-trash text-danger"></i>
+                                                            <button type="submit" class="btn btn-xs btn-icon btn-label-danger delete-confirm" title="Delete">
+                                                                <i class="ti ti-trash" style="font-size: 0.9rem;"></i>
                                                             </button>
                                                         </form>
                                                     @endcan
@@ -244,17 +268,13 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col-12">
                         <div style="float: right;">
                             {{ $pelanggan->links() }}
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 <x-modal-form id="mdlcreatePelanggan" size="modal-lg" show="loadcreatePelanggan" title="Tambah Pelanggan" />
 <x-modal-form id="mdleditPelanggan" size="modal-lg" show="loadeditPelanggan" title="Edit Pelanggan" />
 <x-modal-form id="mdlNonaktifPelanggan" size="modal-xl" show="loadNonaktifPelanggan" title="Nonaktifkan Pelanggan" />

@@ -17,36 +17,31 @@
 
 
 
-<div class="form-group mb-3">
-    @php
-        $id = str_replace('[]', '', $name);
-    @endphp
-    @if ($label && !$hideLabel)
-        <label for="{{ $id }}" class="form-label">{{ $label }}</label>
+@php
+    $id = str_replace('[]', '', $name);
+@endphp
+<select name="{{ $name }}" id="{{ $id }}" class="form-select {{ $select2 }}" {{ $disabled ? 'disabled' : '' }} {{ $multiple ? 'multiple' : '' }}>
+    @if (!$multiple)
+        <option value="">{{ $label }}</option>
     @endif
-    <select name="{{ $name }}" id="{{ $id }}" class="form-select {{ $select2 }}" {{ $disabled ? 'disabled' : '' }} {{ $multiple ? 'multiple' : '' }}>
-        @if (!$multiple)
-            <option value="">{{ $label }}</option>
-        @endif
-        @if ($allOption)
-            <option value="all"
-                {{ is_array($selected) && in_array('all', $selected) ? 'selected' : '' }}>
-                {{ !empty($allOptionLabel) ? $allOptionLabel : 'Semua ' . $label }}
-            </option>
-        @endif
-        @foreach ($data as $d)
-            @php
-                $isSelected = false;
-                if ($multiple && is_array($selected)) {
-                    $isSelected = in_array($d->$key, $selected);
-                } else {
-                    $isSelected = $d->$key == $selected;
-                }
-            @endphp
-            <option {{ $isSelected ? 'selected' : '' }} value="{{ $d->$key }}">
-                {{ $showKey ? $d->$key . ' | ' : '' }}
-                {{ $upperCase ? strtoupper(strtolower($d->$textShow)) : ucwords(strtolower($d->$textShow)) }}
-            </option>
-        @endforeach
-    </select>
-</div>
+    @if ($allOption)
+        <option value="all"
+            {{ is_array($selected) && in_array('all', $selected) ? 'selected' : '' }}>
+            {{ !empty($allOptionLabel) ? $allOptionLabel : 'Semua ' . $label }}
+        </option>
+    @endif
+    @foreach ($data as $d)
+        @php
+            $isSelected = false;
+            if ($multiple && is_array($selected)) {
+                $isSelected = in_array($d->$key, $selected);
+            } else {
+                $isSelected = $d->$key == $selected;
+            }
+        @endphp
+        <option {{ $isSelected ? 'selected' : '' }} value="{{ $d->$key }}">
+            {{ $showKey ? $d->$key . ' | ' : '' }}
+            {{ $upperCase ? strtoupper(strtolower($d->$textShow)) : ucwords(strtolower($d->$textShow)) }}
+        </option>
+    @endforeach
+</select>
