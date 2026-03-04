@@ -7,31 +7,35 @@
 @endsection
 <div class="row">
     <div class="col-12">
-        {{-- Filter Card --}}
-        <div class="card shadow-sm border mb-3">
-            <div class="card-body py-3">
-                <form action="{{ route('salesman.index') }}">
-                    <div class="row g-2 align-items-end">
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <x-input-with-icon label="Cari Nama Salesman" value="{{ Request('nama_salesman') }}"
-                                name="nama_salesman" icon="ti ti-search" />
-                        </div>
-                        @hasanyrole($roles_show_cabang)
-                            <div class="col-lg-4 col-md-4 col-sm-12">
-                                <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
-                                    textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" />
-                            </div>
-                        @endhasanyrole
-                        <div class="col-lg-2 col-md-2 col-sm-12">
-                            <div class="form-group mb-3">
-                                <button class="btn btn-primary w-100"><i
-                                        class="ti ti-search me-1"></i>Cari</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+        <div class="row mb-2">
+            <div class="col-12">
+                @can('salesman.create')
+                    <a href="#" class="btn btn-primary" id="btncreateSalesman"><i class="fa fa-plus me-2"></i> Tambah
+                        Salesman</a>
+                @endcan
             </div>
         </div>
+        {{-- Filter Section (No Card) --}}
+        <form action="{{ route('salesman.index') }}">
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <x-input-with-icon label="Cari Nama Salesman" value="{{ Request('nama_salesman') }}"
+                        name="nama_salesman" icon="ti ti-search" hideLabel="true" />
+                </div>
+                @hasanyrole($roles_show_cabang)
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
+                            textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
+                    </div>
+                @endhasanyrole
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary w-100"><i
+                                class="ti ti-search me-1"></i>Cari</button>
+                    </div>
+                </div>
+            </div>
+        </form>
 
         {{-- Data List --}}
         <div class="row">

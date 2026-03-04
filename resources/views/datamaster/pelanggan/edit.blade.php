@@ -31,15 +31,17 @@
             <x-select label="Cabang PKP" name="kode_cabang_pkp" :data="$cabang_pkp" key="kode_cabang" textShow="nama_pt"
                 selected="{{ $pelanggan->kode_cabang_pkp }}" />
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Salesman</label>
                 <select name="kode_salesman" id="kode_salesman" class="select2Kodesalesman form-select">
                 </select>
             </div>
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Wilayah</label>
                 <select name="kode_wilayah" id="kode_wilayah" class="select2Kodewilayah form-select">
                 </select>
             </div>
             <div class="form-group mb-3">
-                <label>Hari</label><br>
+                <label class="fw-bold">Hari</label><br>
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="harisenin"> Senin </label>
                     <input class="form-check-input harisenin" name="hari[]" value="Senin" type="checkbox" id="harisenin"
@@ -81,6 +83,7 @@
                     value="{{ formatRupiah($pelanggan->limit_pelanggan) }}" />
             @endhasanyrole
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">LJT</label>
                 <select name="ljt" id="ljt" class="form-select">
                     <option value="">LJT</option>
                     <option value="14" {{ $pelanggan->ljt == 14 ? 'selected' : '' }}>14</option>
@@ -92,6 +95,7 @@
             <x-input-with-icon icon="ti ti-user" label="Pemilik Rekening" name="pemilik_rekening" value="{{ $pelanggan->pemilik_rekening }}" />
             <x-input-with-icon icon="ti ti-building" label="Nama Bank" name="bank" value="{{ $pelanggan->bank }}" />
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Metode Pembayaran Program</label>
                 <select name="metode_bayar" id="metode_bayar" class="form-select">
                     <option value="">Metode Pembayaran Program</option>
                     <option value="TN">Tunai</option>
@@ -100,6 +104,7 @@
                 </select>
             </div>
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Status</label>
                 <select name="status_aktif_pelanggan" id="status_aktif_pelanggan" class="form-select">
                     <option value="">Status</option>
                     <option value="1" {{ $pelanggan->status_aktif_pelanggan === '1' ? 'selected' : '' }}>Aktif
@@ -125,6 +130,7 @@
                 Bisa Diisi Saat Melakukan Ajuan Limit Kredit !
             </div>
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Kepemilikan</label>
                 <select name="kepemilikan" id="kepemilikan" class="form-select">
                     <option value="">Kepemilikan</option>
                     <option value="SW" {{ $pelanggan->kepemilikan == 'SW' ? 'selected' : '' }}>Sewa
@@ -134,6 +140,7 @@
                 </select>
             </div>
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Lama Usaha</label>
                 <select name="lama_berjualan" id="lama_berjualan" class="form-select">
                     <option value="">Lama Usaha</option>
                     <option value="LU01" {{ $pelanggan->lama_berjualan == 'LU01' ? 'selected' : '' }}>
@@ -145,6 +152,7 @@
                 </select>
             </div>
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Status Outlet</label>
                 <select name="status_outlet" id="status_outlet" class="form-select">
                     <option value="">Status Outlet</option>
                     <option value="NO" {{ $pelanggan->status_outlet == 'NO' ? 'selected' : '' }}>New Outlet
@@ -154,6 +162,7 @@
                 </select>
             </div>
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Type Outlet</label>
                 <select name="type_outlet" id="type_outlet" class="form-select">
                     <option value="">Type Outlet</option>
                     <option value="GR" {{ $pelanggan->type_outlet == 'GR' ? 'selected' : '' }}>Grosir</option>
@@ -165,6 +174,7 @@
                     upperCase="true" selected="{{ $pelanggan->kode_klasifikasi }}" />
             </div>
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Cara Pembayaran</label>
                 <select name="cara_pembayaran" id="cara_pembayaran" class="form-select">
                     <option value="">Cara Pembayaran</option>
                     <option value="BT" {{ $pelanggan->cara_pembayaran == 'BT' ? 'selected' : '' }}>Bank Transfer
@@ -176,6 +186,7 @@
             </div>
 
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Lama Langganan</label>
                 <select name="lama_langganan" id="lama_langganan" class="form-select">
                     <option value="">Lama Langganan</option>
                     <option value="LL01" {{ $pelanggan->lama_langganan == 'LL01' ? 'selected' : '' }}>
@@ -185,6 +196,7 @@
                 </select>
             </div>
             <div class="form-group mb-3">
+                <label class="form-label fw-bold">Jaminan</label>
                 <select name="jaminan" id="jaminan" class="form-select">
                     <option value="">Jaminan</option>
                     <option value="1" {{ $pelanggan->jaminan === '1' ? 'selected' : '' }}>Ada</option>
@@ -195,8 +207,7 @@
                 value="{{ $pelanggan->latitude }},{{ $pelanggan->longitude }}" />
             <x-input-with-icon icon="ti ti-moneybag" label="Omset Toko" name="omset_toko" align="right" money="true"
                 value="{{ formatRupiah($pelanggan->omset_toko) }}" />
-            <label for="foto" class="form-label">Foto Toko</label>
-            <x-input-file name="foto" label="Foto" />
+            <x-input-file name="foto" label="Foto Toko" />
             @if (!empty($pelanggan->foto))
                 @if (Storage::disk('public')->exists('/pelanggan/' . $pelanggan->foto))
                     <img src="{{ getfotoPelanggan($pelanggan->foto) }}" alt="user image"
@@ -210,7 +221,6 @@
                     class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" width="150">
             @endif
 
-            <label for="foto" class="form-label">Foto Owner</label>
             <x-input-file name="foto_owner" label="Foto Owner" />
             @if (!empty($pelanggan->foto_owner))
                 @if (Storage::disk('public')->exists('/pelanggan/owner/' . $pelanggan->foto_owner))

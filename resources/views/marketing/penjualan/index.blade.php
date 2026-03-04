@@ -89,11 +89,11 @@
             <div class="row g-2 mb-1">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
             </div>
             @hasanyrole($roles_show_cabang)
@@ -101,7 +101,7 @@
                     <div class="col-lg-12 col-md-12 col-sm-12">
                         <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
                             textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                            select2="select2Kodecabangsearch" />
+                            select2="select2Kodecabangsearch" hideLabel="true" />
                     </div>
                 </div>
             @endrole
@@ -115,13 +115,13 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
-                    <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search" icon="ti ti-barcode" />
+                    <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search" icon="ti ti-barcode" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
-                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}" name="kode_pelanggan_search" icon="ti ti-barcode" />
+                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}" name="kode_pelanggan_search" icon="ti ti-barcode" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" name="nama_pelanggan_search" icon="ti ti-users" />
+                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" name="nama_pelanggan_search" icon="ti ti-users" hideLabel="true" />
                 </div>
                 <div class="col-auto">
                     <div class="form-group mb-1">

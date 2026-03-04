@@ -23,12 +23,12 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-                            <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user" readonly="true" />
+                            <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode" hideLabel="true" />
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+                            <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user" readonly="true" hideLabel="true" />
                             <input type="hidden" id="kode_pelanggan" name="kode_pelanggan">
                             <input type="hidden" id="kode_cabang_pelanggan" name="kode_cabang_pelanggan">
-                            <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user" readonly="true" />
+                            <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user" readonly="true" hideLabel="true" />
                             <input type="hidden" name="kode_salesman" id="kode_salesman">
                             <div class="form-group mb-3">
                                 <textarea name="keterangan" class="form-control" id="" cols="30" rows="5" id="keterangan" placeholder="Keterangan"></textarea>
@@ -107,7 +107,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-4 col-md-12 col-sm12">
-                                    <x-input-with-icon label="Produk" name="nama_produk" icon="ti ti-barcode" height="80px" readonly="true" />
+                                    <x-input-with-icon label="Produk" name="nama_produk" icon="ti ti-barcode" height="80px" readonly="true" hideLabel="true" />
                                     <input type="hidden" id="kode_harga" name="kode_harga">
                                     <input type="hidden" id="kode_produk" name="kode_produk">
                                     <input type="hidden" id="isi_pcs_dus" name="isi_pcs_dus">
@@ -117,13 +117,13 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
                                             <x-input-with-icon label="Harga / Dus" name="harga_dus" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                                money="true" hideLabel="true" />
                                             <input type="hidden" id="harga_dus_produk">
                                         </div>
                                     </div>
@@ -131,13 +131,13 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
                                             <x-input-with-icon label="Harga / Pack" name="harga_pack" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                                money="true" hideLabel="true" />
                                             <input type="hidden" id="harga_pack_produk">
                                         </div>
                                     </div>
@@ -145,13 +145,13 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Pack" name="jml_pcs" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Pack" name="jml_pcs" icon="ti ti-box" align="right" money="true" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
                                             <x-input-with-icon label="Harga / Pcs" name="harga_pcs" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                                money="true" hideLabel="true" />
                                             <input type="hidden" id="harga_pcs_produk">
                                         </div>
                                     </div>
@@ -289,7 +289,7 @@
                                                 </select>
                                             </div>
                                             <x-input-with-icon label="Grand Total" name="grandtotal" id="grandtotal" icon="ti ti-shopping-cart"
-                                                align="right" disabled="true" />
+                                                align="right" disabled="true" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row" id="jenis_bayar_tunai">
@@ -306,12 +306,12 @@
                                     <div class="row" id="titipan">
                                         <div class="col">
                                             <x-input-with-icon icon="ti ti-moneybag" name="titipan" money="true" align="right"
-                                                label="Titipan" />
+                                                label="Titipan" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row" id="voucher_tunai">
                                         <div class="col">
-                                            <x-input-with-icon icon="ti ti-tag" name="voucher" money="true" align="right" label="Voucher" />
+                                            <x-input-with-icon icon="ti ti-tag" name="voucher" money="true" align="right" label="Voucher" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row">

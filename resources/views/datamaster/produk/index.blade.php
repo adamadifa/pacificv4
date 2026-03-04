@@ -97,7 +97,7 @@
             <div class="row g-2 mb-3 align-items-end">
                 <div class="col-lg-10 col-md-10 col-sm-12">
                     <x-input-with-icon label="Cari Nama Produk" value="{{ Request('nama_produk') }}" name="nama_produk"
-                        icon="ti ti-search" />
+                        icon="ti ti-search" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12">
                     <div class="form-group mb-3">
