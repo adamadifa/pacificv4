@@ -25,7 +25,7 @@ class LemburController extends Controller
         $data['lembur'] = $lembur;
         $dept_lembur = config('hrd.dept_lembur');
         $data['departemen'] = Departemen::whereIn('kode_dept', $dept_lembur)->orderBy('kode_dept')->get();
-        $data['listApprovepenilaian'] = listApprovepenilaian(auth()->user()->kode_dept, $user->getRoleNames()->first());
+        $data['listApprovelembur'] = listApprovelembur(auth()->user()->kode_dept, auth()->user()->kode_cabang, $user->getRoleNames()->first());
         return view('hrd.lembur.index', $data);
     }
 
@@ -72,6 +72,17 @@ class LemburController extends Controller
             $selesai = $request->sampai . " " . $request->jam_selesai;
             $mulai = date('Y-m-d H:i:s', strtotime($mulai));
             $selesai = date('Y-m-d H:i:s', strtotime($selesai));
+            $roles_approve = cekRoleapprovelembur($kode_dept, $kode_cabang);
+
+            if (in_array($role, $roles_approve)) {
+                $index_role = array_search($role, $roles_approve) + 1;
+            } else {
+                $index_role = 0;
+            }
+
+            // Get the first applicable approver role
+            $posisi_ajuan = $roles_approve[$index_role] ?? null;
+
             Lembur::create([
                 'kode_lembur' => $kode_lembur,
                 'kode_cabang' => $kode_cabang,
@@ -82,50 +93,12 @@ class LemburController extends Controller
                 'kategori' => $request->kategori,
                 'istirahat' => $request->istirahat,
                 'status' => 0,
+                'posisi_ajuan' => $posisi_ajuan,
                 'keterangan' => $request->keterangan,
             ]);
 
-            $roles_approve = cekRoleapprovelembur($kode_dept);
-
-            if (in_array($role, $roles_approve)) {
-                $index_role = array_search($role, $roles_approve);
-            } else {
-                $index_role = 0;
-            }
-            // Jika Tidak Ada di dalam array
-
-            $cek_user_approve = User::role($roles_approve[$index_role])->where('status', 1)->first();
 
 
-
-            if ($cek_user_approve == null) {
-                for ($i = $index_role + 1; $i < count($roles_approve); $i++) {
-                    $cek_user_approve = User::role($roles_approve[$i])
-                        ->where('status', 1)
-                        ->first();
-                    if ($cek_user_approve != null) {
-                        break;
-                    }
-                }
-            }
-
-
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisilembur::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPLB" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
-
-
-            Disposisilembur::create([
-                'kode_disposisi' => $kode_disposisi,
-                'kode_lembur' => $kode_lembur,
-                'id_pengirim' => auth()->user()->id,
-                'id_penerima' => $cek_user_approve->id,
-                'status' => 0
-            ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
@@ -137,8 +110,16 @@ class LemburController extends Controller
     public function edit($kode_lembur)
     {
         $kode_lembur = Crypt::decrypt($kode_lembur);
-        $data['lembur'] = Lembur::where('kode_lembur', $kode_lembur)->first();
+        $user = User::findorFail(auth()->user()->id);
+        $role = $user->getRoleNames()->first();
+        $lembur = Lembur::where('kode_lembur', $kode_lembur)->first();
+        $data['lembur'] = $lembur;
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
+        $data['level_user'] = $role;
+        $data['roles_approve'] = [];
+        if (in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
+            $data['roles_approve'] = cekRoleapprovelembur($lembur->kode_dept, $lembur->kode_cabang);
+        }
         return view('hrd.lembur.edit', $data);
     }
 
@@ -174,7 +155,7 @@ class LemburController extends Controller
             $selesai = $request->sampai . " " . $request->jam_selesai;
             $mulai = date('Y-m-d H:i:s', strtotime($mulai));
             $selesai = date('Y-m-d H:i:s', strtotime($selesai));
-            Lembur::where('kode_lembur', $kode_lembur)->update([
+            $updateData = [
                 'kode_cabang' => $kode_cabang,
                 'kode_dept' => $kode_dept,
                 'tanggal' => $request->tanggal,
@@ -184,7 +165,13 @@ class LemburController extends Controller
                 'istirahat' => $request->istirahat,
                 'status' => 0,
                 'keterangan' => $request->keterangan,
-            ]);
+            ];
+
+            if (in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi']) && $request->has('posisi_ajuan')) {
+                $updateData['posisi_ajuan'] = $request->posisi_ajuan;
+            }
+
+            Lembur::where('kode_lembur', $kode_lembur)->update($updateData);
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
@@ -414,7 +401,7 @@ class LemburController extends Controller
             ->where('hrd_lembur_detail.kode_lembur', $kode_lembur)->get();
 
 
-        $roles_approve = cekRoleapprovelembur($lembur->kode_dept);
+        $roles_approve = cekRoleapprovelembur($lembur->kode_dept, $lembur->kode_cabang);
         $end_role = end($roles_approve);
         if ($role != $end_role) {
             $cek_index = array_search($role, $roles_approve) + 1;
@@ -444,6 +431,7 @@ class LemburController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
+        $data['level_user'] = $role;
         return view('hrd.lembur.approve', $data);
     }
 
@@ -455,7 +443,7 @@ class LemburController extends Controller
         $lb = new Lembur();
         $lembur = $lb->getLembur($kode_lembur)->first();
         $role = $user->getRoleNames()->first();
-        $roles_approve = cekRoleapprovelembur($lembur->kode_dept);
+        $roles_approve = cekRoleapprovelembur($lembur->kode_dept, $lembur->kode_cabang);
         $end_role = end($roles_approve);
 
         // Cek button mana yang ditekan
@@ -481,42 +469,18 @@ class LemburController extends Controller
 
         DB::beginTransaction();
         try {
-            // Upadate Disposisi Pengirim
-
-            // dd($kode_penilaian);
-            Disposisilembur::where('kode_lembur', $kode_lembur)
-                ->where('id_penerima', auth()->user()->id)
-                ->update([
-                    'status' => 1
-                ]);
-
-            //Insert Dispsosi ke Penerima
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisilembur::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPLB" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
-
-
-
-
             if ($role == $end_role || $request->has('btnApprove')) {
-                Lembur::where('kode_lembur', $kode_lembur)
-                    ->update([
-                        'status' => 1
-                    ]);
-            } else {
-
-                Disposisilembur::create([
-                    'kode_disposisi' => $kode_disposisi,
-                    'kode_lembur' => $kode_lembur,
-                    'id_pengirim' => auth()->user()->id,
-                    'id_penerima' => $userrole->id,
-                    'status' => 0,
+            Lembur::where('kode_lembur', $kode_lembur)
+                ->update([
+                    'status' => 1,
+                    'posisi_ajuan' => null
                 ]);
-            }
+        } else {
+            Lembur::where('kode_lembur', $kode_lembur)
+                ->update([
+                    'posisi_ajuan' => $nextrole
+                ]);
+        }
 
 
             DB::commit();
@@ -534,24 +498,18 @@ class LemburController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
         $kode_lembur = Crypt::decrypt($kode_lembur);
+        $lb = new Lembur();
+        $lembur = $lb->getLembur($kode_lembur)->first();
         try {
-            Disposisilembur::where('kode_lembur', $kode_lembur)
-                ->where('id_pengirim', auth()->user()->id)
-                ->where('id_penerima', '!=', auth()->user()->id)
-                ->delete();
+            $roles_approve = cekRoleapprovelembur($lembur->kode_dept, $lembur->kode_cabang);
+            $cek_index = array_search($role, $roles_approve);
+            $prev_role = $cek_index > 0 ? $roles_approve[$cek_index - 1] : $roles_approve[0];
 
-            Disposisilembur::where('kode_lembur', $kode_lembur)
-                ->where('id_penerima', auth()->user()->id)
+            Lembur::where('kode_lembur', $kode_lembur)
                 ->update([
-                    'status' => 0
+                    'status' => 0,
+                    'posisi_ajuan' => $prev_role
                 ]);
-
-            if ($role == 'direktur') {
-                Lembur::where('kode_lembur', $kode_lembur)
-                    ->update([
-                        'status' => 0
-                    ]);
-            }
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));

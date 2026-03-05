@@ -164,9 +164,17 @@
                                 @else
                                     <span class="badge bg-label-warning"><i class="ti ti-hourglass-low me-1"></i>Pending</span>
                                 @endif
-                                <span class="badge bg-primary ms-1">
-                                    {{ singkatString($d->posisi_ajuan_name) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan_name) }}
-                                </span>
+                                @if ($d->posisi_ajuan == null)
+                                    @if ($d->status == '1')
+                                        <span class="badge bg-primary ms-1">DIREKTUR</span>
+                                    @else
+                                        <span class="badge bg-danger ms-1">Belum di Konfigurasi</span>
+                                    @endif
+                                @else
+                                    <span class="badge bg-primary ms-1">
+                                        {{ singkatString($d->posisi_ajuan_name) == 'AMH' ? 'HRD' : singkatString($d->posisi_ajuan_name) }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
                         <div class="card-body py-3 px-3">

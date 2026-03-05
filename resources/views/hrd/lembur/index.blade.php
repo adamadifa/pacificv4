@@ -18,8 +18,22 @@
         </nav>
     </div>
 @endsection
+
 <div class="row">
     <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0 fw-bold"><i class="ti ti-clipboard-list me-2"></i>Data Lembur</h5>
+            <div class="d-flex gap-2">
+                @can('lembur.config.index')
+                    <a href="{{ route('lemburconfig.index') }}" class="btn btn-label-secondary">
+                        <i class="ti ti-settings me-1"></i> Config Approval
+                    </a>
+                @endcan
+                @can('lembur.create')
+                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i> Tambah Lembur</a>
+                @endcan
+            </div>
+        </div>
         {{-- Filter Section (No Card) --}}
         <form action="{{ route('lembur.index') }}" method="GET">
             <div class="row g-2 mb-1 align-items-end">
@@ -46,12 +60,12 @@
                 </div>
             </div>
             <div class="row g-2 mb-1 align-items-end">
-                @if (!empty($listApprovepenilaian))
+                @if (!empty($listApprovelembur))
                     <div class="col">
                         <div class="form-group mb-1">
                             <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
                                 <option value="">Posisi Ajuan</option>
-                                @foreach ($listApprovepenilaian as $d)
+                                @foreach ($listApprovelembur as $d)
                                     <option value="{{ $d }}" {{ Request('posisi_ajuan') == $d ? 'selected' : '' }}>
                                         {{ textUpperCase($d) }}</option>
                                 @endforeach
@@ -86,15 +100,9 @@
             </div>
         </form>
 
-        {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
             <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-clipboard-list me-2"></i>Data Lembur</h6>
-                    @can('lembur.create')
-                        <a href="#" id="btnCreate" class="btn btn-primary btn-sm"><i class="ti ti-plus me-1"></i> Tambah</a>
-                    @endcan
-                </div>
+                <h6 class="m-0 fw-bold text-white"><i class="ti ti-clipboard-list me-2"></i>Data Lembur</h6>
             </div>
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-striped">
@@ -114,7 +122,7 @@
                     <tbody class="table-border-bottom-0">
                         @foreach ($lembur as $l)
                             @php
-                                $roles_approve = cekRoleapprovelembur($l->kode_dept);
+                                $roles_approve = cekRoleapprovelembur($l->kode_dept, $l->kode_cabang);
                                 $end_role = end($roles_approve);
                                 if ($level_user != $end_role) {
                                     $index_role = array_search($level_user, $roles_approve);
@@ -148,6 +156,10 @@
                                         <span
                                             class="badge bg-primary">{{ singkatString($l->posisi_ajuan) == 'AMH' ? 'HRD' : singkatString($l->posisi_ajuan) }}
                                         </span>
+                                    @elseif ($l->status == '1')
+                                        <span class="badge bg-success">DIREKTUR</span>
+                                    @else
+                                        <span class="badge bg-danger">Belum di Konfigurasi</span>
                                     @endif
                                 </td>
                                 <td class="text-center">

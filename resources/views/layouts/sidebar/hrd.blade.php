@@ -68,13 +68,13 @@
                         </a>
                     </li>
                 @endif
-                @if (auth()->user()->hasAnyPermission(['penilaiankaryawan.config.index']))
+{{-- @if (auth()->user()->hasAnyPermission(['penilaiankaryawan.config.index']))
                     <li class="menu-item {{ request()->is(['penilaiankaryawan/config', 'penilaiankaryawan/config/*']) ? 'active' : '' }}">
                         <a href="{{ route('penilaiankaryawanconfig.index') }}" class="menu-link">
                             <div>Config Approval Penilaian</div>
                         </a>
                     </li>
-                @endif
+                @endif --}}
             @endif
             @if (auth()->user()->hasAnyPermission(['kontrakkerja.index']))
                 <li class="menu-item {{ request()->is(['kontrakkerja']) ? 'active' : '' }}">

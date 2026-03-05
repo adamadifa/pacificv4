@@ -16,7 +16,7 @@ use App\Models\Disposisiizinkoreksi;
 use App\Models\Disposisiizinpulang;
 use App\Models\Disposisiizinsakit;
 use App\Models\Disposisiizinterlambat;
-use App\Models\Disposisilembur;
+use App\Models\Lembur;
 use App\Models\Disposisipenilaiankaryawan;
 use App\Models\Disposisitargetkomisi;
 use App\Models\Penilaiankaryawan;
@@ -151,7 +151,8 @@ class GlobalProvider extends ServiceProvider
 
                 $notifikasi_pengajuan_izin = $notifikasi_izinabsen + $notifikasi_izincuti + $notifikasi_izinterlambat + $notifikasi_izinsakit + $notifikasi_izinpulang + $notifikasi_izindinas + $notifikasi_izinkoreksi + $notifikasi_izinkeluar;
 
-                $notifikasi_lembur = Disposisilembur::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
+                $lembur = new Lembur();
+                $notifikasi_lembur = $lembur->getLembur(request: new \Illuminate\Http\Request(['status' => 'pending']))->count();
 
                 //Notifikasi SPV Presensi
                 if ($level_user == 'spv presensi') {

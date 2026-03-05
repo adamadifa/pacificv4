@@ -233,8 +233,21 @@ function listApprovepresensi($kode_dept = "", $kode_cabang = "", $level = "")
 
 
 
-function cekRoleapprovelembur($kode_dept)
+function cekRoleapprovelembur($kode_dept, $kode_cabang = "")
 {
+    $config = \App\Models\LemburApprovalConfig::where(function ($query) use ($kode_dept) {
+        $query->where('kode_dept', $kode_dept)->orWhereNull('kode_dept');
+    })
+        ->where(function ($query) use ($kode_cabang) {
+            $query->where('kode_cabang', $kode_cabang)->orWhereNull('kode_cabang');
+        })
+        ->orderByRaw('kode_dept DESC, kode_cabang DESC')
+        ->first();
+
+    if ($config) {
+        return $config->roles;
+    }
+
     if ($kode_dept == "GAF") {
         $roles_approve =  ['manager general affair', 'gm operasional', 'asst. manager hrd', 'direktur'];
     } else if ($kode_dept == "MTC") {
@@ -256,6 +269,65 @@ function cekRoleapprovelembur($kode_dept)
     }
 
     return $roles_approve;
+}
+
+function listApprovelembur($kode_dept = "", $kode_cabang = "", $level = "")
+{
+    $list_approve = [];
+
+    // Get all roles from dynamic config
+    $configs = \App\Models\LemburApprovalConfig::where(function ($query) use ($kode_dept) {
+        if ($kode_dept) {
+            $query->where('kode_dept', $kode_dept)->orWhereNull('kode_dept');
+        }
+    })
+        ->where(function ($query) use ($kode_cabang) {
+            if ($kode_cabang) {
+                $query->where('kode_cabang', $kode_cabang)->orWhereNull('kode_cabang');
+            }
+        })
+        ->get();
+
+    foreach ($configs as $config) {
+        $list_approve = array_merge($list_approve, $config->roles);
+    }
+
+    $list_approve = array_unique($list_approve);
+
+    if (empty($list_approve)) {
+        // Fallback to hardcoded roles if no dynamic config
+        if ($kode_dept == "GAF") {
+            $list_approve =  ['manager general affair', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "MTC") {
+            $list_approve =  ['manager maintenance', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "PRD") {
+            $list_approve =  ['manager produksi', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "PDQ") {
+            $list_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "GDG") {
+            $list_approve =  ['manager gudang', 'gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "HRD") {
+            $list_approve =  ['gm operasional', 'asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "AKT") {
+            $list_approve =  ['asst. manager hrd', 'direktur'];
+        } else if ($kode_dept == "MKT") {
+            $list_approve =  ['sales marketing manager', 'asst. manager hrd', 'direktur'];
+        } else {
+            $list_approve = ['asst. manager hrd', 'direktur'];
+        }
+    }
+
+    if (in_array($level, ['super admin', 'asst. manager hrd'])) {
+        $all_roles_config = \App\Models\LemburApprovalConfig::get()->pluck('roles')->flatten()->unique()->toArray();
+        if (!empty($all_roles_config)) {
+            $list_approve = array_unique(array_merge($list_approve, $all_roles_config));
+            if (!in_array('direktur', $list_approve)) {
+                $list_approve[] = 'direktur';
+            }
+        }
+    }
+
+    return array_values($list_approve);
 }
 
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class Lembur extends Model
 {
@@ -16,235 +17,88 @@ class Lembur extends Model
 
     function getLembur($kode_lembur = null, Request $request = null)
     {
-        $user = User::findorfail(auth()->user()->id);
-        $role = $user->getRoleNames()->first();
+        $user = User::findOrFail(auth()->user()->id);
         $query = Lembur::query();
+
+        // 1. SELECT & JOINS
         $query->select(
             'hrd_lembur.*',
-            'nama_cabang',
-            'nama_dept',
-            'disposisi.id_pengirim',
-            'disposisi.id_penerima',
-            'roles.name as posisi_ajuan',
+            'cabang.nama_cabang',
+            'hrd_departemen.nama_dept',
         );
+
         $query->join('cabang', 'hrd_lembur.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->leftJoin('hrd_departemen', 'hrd_lembur.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->join('hrd_departemen', 'hrd_lembur.kode_dept', '=', 'hrd_departemen.kode_dept');
 
-        $query->leftJoin('hrd_lembur_disposisi as disposisi', function ($join) {
-            $join->on('hrd_lembur.kode_lembur', '=', 'disposisi.kode_lembur')
-                ->whereRaw('disposisi.kode_disposisi IN (SELECT MAX(kode_disposisi) FROM hrd_lembur_disposisi GROUP BY kode_lembur)');
-        });
+        // 2. DATA ACCESS RESTRICTIONS
+        if (!$user->hasRole(['super admin', 'asst. manager hrd', 'spv presensi'])) {
+            $query->where(function ($access) use ($user) {
+                $dept_access = json_decode($user->dept_access, true) ?? [];
+                $cabang_access = json_decode($user->cabang_access, true) ?? [];
 
-
-
-        $query->leftJoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-        $query->leftJoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-        $query->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
-
-
-
-
-        if (!in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi', 'direktur'])) {
-            if ($user->hasRole('gm operasional')) {
-                $query->whereIn('hrd_lembur.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
-            } else {
-                if ($user->kode_cabang == 'PST') {
-                    $query->where('hrd_lembur.kode_dept', auth()->user()->kode_dept);
-                    $query->where('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
-                } else {
-                    $query->where('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
-                }
-            }
-
-            if (!empty($kode_lembur)) {
-                $query->where('hrd_lembur.kode_lembur', $kode_lembur);
-            }
-            if (!empty($request)) {
-                if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_lembur.tanggal', [$request->dari, $request->sampai]);
-                }
-
-                if (!empty($request->kategori)) {
-                    $query->where('hrd_lembur.kategori', $request->kategori);
-                }
-
-                if (!empty($request->kode_dept)) {
-                    $query->where('hrd_lembur.kode_dept', $request->kode_dept);
-                }
-
-                if (!empty($request->status)) {
-                    if ($request->status == 'pending') {
-                        $query->where('hrd_lembur.status', '0');
-                    } else if ($request->status == "disetujui") {
-                        $query->where('hrd_lembur.status', '1');
+                // Branch Access
+                if (!in_array('all', $cabang_access)) {
+                    if (!empty($cabang_access)) {
+                        $access->whereIn('hrd_lembur.kode_cabang', $cabang_access);
+                    } else {
+                        // Default logic if cabang_access is empty
+                        if (empty($user->kode_regional) || $user->kode_regional == 'R00') {
+                            $access->where('hrd_lembur.kode_cabang', $user->kode_cabang);
+                        }
                     }
                 }
 
-                if (!empty($request->posisi_ajuan)) {
-                    $query->where('roles.name', $request->posisi_ajuan);
+                // Department Access
+                if (!in_array('all', $dept_access)) {
+                    $access->whereIn('hrd_lembur.kode_dept', $dept_access);
                 }
-            }
 
-            $query->where('hrd_lembur.status', '1');
-
-            if ($user->hasRole('gm operasional')) {
-                $query->orwhereIn('hrd_lembur.kode_dept', ['PDQ', 'PMB', 'GDG', 'MTC', 'PRD', 'GAF', 'HRD']);
-            } else {
-                if ($user->kode_cabang == 'PST') {
-                    $query->orwhere('hrd_lembur.kode_dept', auth()->user()->kode_dept);
-                    $query->where('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
-                } else {
-                    $query->orwhere('hrd_lembur.kode_cabang', auth()->user()->kode_cabang);
+                // Regional Access
+                if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
+                    $access->where('cabang.kode_regional', $user->kode_regional);
                 }
-            }
-
-            $query->WhereIn('hrd_lembur.kode_lembur', function ($query) use ($user) {
-                $query->select('disposisi.kode_lembur');
-                $query->from('hrd_lembur_disposisi as disposisi');
-                $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-                $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-                $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
-
-                $query->join('users as pengirim', 'disposisi.id_pengirim', '=', 'pengirim.id');
-                $query->join('model_has_roles as model_has_roles_pengirim', 'pengirim.id', '=', 'model_has_roles_pengirim.model_id');
-                $query->join('roles as roles_pengirim', 'model_has_roles_pengirim.role_id', '=', 'roles_pengirim.id');
-
-                $query->where('roles.name', $user->getRoleNames()->first());
-                $query->orWhere('roles_pengirim.name', $user->getRoleNames()->first());
             });
-
-            if (!empty($kode_lembur)) {
-                $query->where('hrd_lembur.kode_lembur', $kode_lembur);
-            }
-            if (!empty($request)) {
-                if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_lembur.tanggal', [$request->dari, $request->sampai]);
-                }
-
-                if (!empty($request->kategori)) {
-                    $query->where('hrd_lembur.kategori', $request->kategori);
-                }
-
-                if (!empty($request->kode_dept)) {
-                    $query->where('hrd_lembur.kode_dept', $request->kode_dept);
-                }
-
-                if (!empty($request->status)) {
-                    if ($request->status == 'pending') {
-                        $query->where('hrd_lembur.status', '0');
-                    } else if ($request->status == "disetujui") {
-                        $query->where('hrd_lembur.status', '1');
-                    }
-                }
-
-                if (!empty($request->posisi_ajuan)) {
-                    $query->where('roles.name', $request->posisi_ajuan);
-                }
-            }
-        } else if ($user->hasRole('direktur')) {
-
-            if (!empty($kode_lembur)) {
-                $query->where('hrd_lembur.kode_lembur', $kode_lembur);
-            }
-            if (!empty($request)) {
-                if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_lembur.tanggal', [$request->dari, $request->sampai]);
-                }
-
-                if (!empty($request->kategori)) {
-                    $query->where('hrd_lembur.kategori', $request->kategori);
-                }
-
-                if (!empty($request->kode_dept)) {
-                    $query->where('hrd_lembur.kode_dept', $request->kode_dept);
-                }
-                if (!empty($request->status)) {
-                    if ($request->status == 'pending') {
-                        $query->where('hrd_lembur.status', '0');
-                    } else if ($request->status == "disetujui") {
-                        $query->where('hrd_lembur.status', '1');
-                    }
-                }
-
-                if (!empty($request->posisi_ajuan)) {
-                    $query->where('roles.name', $request->posisi_ajuan);
-                }
-            }
-
-            $query->where('hrd_lembur.status', '1');
-
-            $query->orWhereIn('hrd_lembur.kode_lembur', function ($query) use ($user) {
-                $query->select('disposisi.kode_lembur');
-                $query->from('hrd_lembur_disposisi as disposisi');
-                $query->join('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-                $query->join('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-                $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
-
-                $query->join('users as pengirim', 'disposisi.id_pengirim', '=', 'pengirim.id');
-                $query->join('model_has_roles as model_has_roles_pengirim', 'pengirim.id', '=', 'model_has_roles_pengirim.model_id');
-                $query->join('roles as roles_pengirim', 'model_has_roles_pengirim.role_id', '=', 'roles_pengirim.id');
-
-                $query->where('roles.name', $user->getRoleNames()->first());
-                $query->orWhere('roles_pengirim.name', $user->getRoleNames()->first());
-            });
-            if (!empty($kode_lembur)) {
-                $query->where('hrd_lembur.kode_lembur', $kode_lembur);
-            }
-            if (!empty($request)) {
-                if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_lembur.tanggal', [$request->dari, $request->sampai]);
-                }
-
-                if (!empty($request->kategori)) {
-                    $query->where('hrd_lembur.kategori', $request->kategori);
-                }
-
-                if (!empty($request->kode_dept)) {
-                    $query->where('hrd_lembur.kode_dept', $request->kode_dept);
-                }
-
-                if (!empty($request->status)) {
-                    if ($request->status == 'pending') {
-                        $query->where('hrd_lembur.status', '0');
-                    } else if ($request->status == "disetujui") {
-                        $query->where('hrd_lembur.status', '1');
-                    }
-                }
-
-                if (!empty($request->posisi_ajuan)) {
-                    $query->where('roles.name', $request->posisi_ajuan);
-                }
-            }
-        } else {
-            if (!empty($kode_lembur)) {
-                $query->where('hrd_lembur.kode_lembur', $kode_lembur);
-            }
-            if (!empty($request)) {
-                if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_lembur.tanggal', [$request->dari, $request->sampai]);
-                }
-
-                if (!empty($request->kategori)) {
-                    $query->where('hrd_lembur.kategori', $request->kategori);
-                }
-
-                if (!empty($request->kode_dept)) {
-                    $query->where('hrd_lembur.kode_dept', $request->kode_dept);
-                }
-                if (!empty($request->status)) {
-                    if ($request->status == 'pending') {
-                        $query->where('hrd_lembur.status', '0');
-                    } else if ($request->status == "disetujui") {
-                        $query->where('hrd_lembur.status', '1');
-                    }
-                }
-
-                if (!empty($request->posisi_ajuan)) {
-                    $query->where('roles.name', $request->posisi_ajuan);
-                }
-            }
         }
 
+        // 3. REQUEST FILTERS
+        if ($kode_lembur) {
+            $query->where('hrd_lembur.kode_lembur', $kode_lembur);
+        }
+
+        if ($request) {
+            if (!empty($request->dari) && !empty($request->sampai)) {
+                $query->whereBetween('hrd_lembur.tanggal', [$request->dari, $request->sampai]);
+            }
+
+            if (!empty($request->kategori)) {
+                $query->where('hrd_lembur.kategori', $request->kategori);
+            }
+
+            if (!empty($request->kode_dept)) {
+                $query->where('hrd_lembur.kode_dept', $request->kode_dept);
+            }
+
+            if (!empty($request->kode_cabang)) {
+                $query->where('hrd_lembur.kode_cabang', $request->kode_cabang);
+            }
+
+            if (!empty($request->status)) {
+                if ($request->status == 'pending') {
+                    $query->where('hrd_lembur.status', '0');
+                    // For non-admin, restrict to their approval position
+                    if (!$user->hasRole(['super admin', 'asst. manager hrd', 'spv presensi'])) {
+                        $roles = $user->getRoleNames()->toArray();
+                        $query->whereIn('hrd_lembur.posisi_ajuan', $roles);
+                    }
+                } else if ($request->status == "disetujui") {
+                    $query->where('hrd_lembur.status', '1');
+                }
+            }
+
+            if (!empty($request->posisi_ajuan)) {
+                $query->where('hrd_lembur.posisi_ajuan', $request->posisi_ajuan);
+            }
+        }
 
         $query->orderBy('hrd_lembur.tanggal', 'desc');
         return $query;

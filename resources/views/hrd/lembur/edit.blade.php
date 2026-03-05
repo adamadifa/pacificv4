@@ -30,6 +30,17 @@
     @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
         <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
             select2="select2KodeDept" :selected="$lembur->kode_dept" hideLabel="true" />
+
+        <div class="form-group mb-3">
+            <select name="posisi_ajuan" id="posisi_ajuan_edit" class="form-select">
+                <option value="">Posisi Ajuan</option>
+                @foreach ($roles_approve as $role)
+                    <option value="{{ $role }}" @if ($lembur->posisi_ajuan == $role) selected @endif>
+                        {{ textCamelCase($role) }}</option>
+                @endforeach
+                <option value="" @if ($lembur->posisi_ajuan == null && $lembur->status == '1') selected @endif>DIREKTUR (SELESAI)</option>
+            </select>
+        </div>
     @endif
 
     <div class="form-group mb-3">

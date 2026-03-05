@@ -86,6 +86,7 @@ use App\Http\Controllers\LaporanpembelianController;
 use App\Http\Controllers\LaporanpenjualanController;
 use App\Http\Controllers\LaporanproduksiController;
 use App\Http\Controllers\LedgerController;
+use App\Http\Controllers\LemburApprovalConfigController;
 use App\Http\Controllers\LemburController;
 use App\Http\Controllers\LogamtokertasController;
 use App\Http\Controllers\MonitoringprogramController;
@@ -1707,6 +1708,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('/kesepakatanbersama/{no_kb}/delete', 'destroy')->name('kesepakatanbersama.delete')->can('kb.delete');
         Route::get('/kesepakatanbersama/{kode_penilaian}/createkontrak', 'createkontrak')->name('kesepakatanbersama.createkontrak')->can('kontrakkerja.create');
         Route::post('/kesepakatanbersama/{kode_penilaian}/storekontrak', 'storekontrak')->name('kesepakatanbersama.storekontrak')->can('kontrakkerja.create');
+    });
+
+    Route::controller(LemburApprovalConfigController::class)->group(function () {
+        Route::get('/lembur/config', 'index')->name('lemburconfig.index')->can('lembur.config.index');
+        Route::get('/lembur/config/create', 'create')->name('lemburconfig.create')->can('lembur.config.create');
+        Route::post('/lembur/config', 'store')->name('lemburconfig.store')->can('lembur.config.create');
+        Route::get('/lembur/config/{id}/edit', 'edit')->name('lemburconfig.edit')->can('lembur.config.edit');
+        Route::put('/lembur/config/{id}', 'update')->name('lemburconfig.update')->can('lembur.config.edit');
+        Route::delete('/lembur/config/{id}', 'destroy')->name('lemburconfig.destroy')->can('lembur.config.delete');
     });
 
     Route::controller(PenilaiankaryawanApprovalConfigController::class)->group(function () {
