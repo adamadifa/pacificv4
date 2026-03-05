@@ -20,7 +20,7 @@
 @endsection
 
 <div class="row">
-    <div class="col-lg-7 col-md-12 col-sm-12">
+    <div class="col-lg-10 col-md-12 col-sm-12">
         {{-- Modern Navigation Header --}}
         <div class="mb-3">
             @include('layouts.navigation_mutasigudanglogistik')
@@ -73,7 +73,7 @@
                     <thead>
                         <tr>
                             <th class="text-white" style="background-color: #002e65 !important;">NO. BUKTI</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">SUPPLIER</th>
+                            <th class="text-white" style="background-color: #002e65 !important; width:30%">SUPPLIER</th>
                             <th class="text-white text-center" style="background-color: #002e65 !important;">TGL PEMBELIAN</th>
                             <th class="text-white text-center" style="background-color: #002e65 !important;">TGL DITERIMA</th>
                             <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
@@ -83,7 +83,9 @@
                         @foreach ($barangmasuk as $d)
                             <tr>
                                 <td><span class="fw-bold text-primary">{{ $d->no_bukti }}</span></td>
-                                <td>{{ $d->nama_supplier }}</td>
+                                <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $d->nama_supplier }}
+                                </td>
                                 <td class="text-center">
                                     {{ !empty($d->tanggal_pembelian) ? DateToIndo($d->tanggal_pembelian) : '-' }}
                                 </td>

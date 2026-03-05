@@ -11,22 +11,19 @@
         select2="select2Kodeproduk" hideLabel="true" />
     <div class="row">
         <div class="col-lg-4 col-md-12 col-sm-12">
-            <div class="form-group mb-3">
-
-                <select name="shift" id="shift" class="form-select">
-                    <option value="">Shift</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-            </div>
+            <x-select label="Shift" name="shift" id="shift" :data="[
+                (object) ['kode' => '1', 'nama' => '1'],
+                (object) ['kode' => '2', 'nama' => '2'],
+                (object) ['kode' => '3', 'nama' => '3'],
+            ]" key="kode" textShow="nama"
+                hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" money="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
             <div class="form-group mb-3">
-                <button class="btn btn-primary mt-4" id="tambahproduk"><i class="ti ti-plus"></i></button>
+                <button class="btn btn-primary" id="tambahproduk"><i class="ti ti-plus"></i></button>
             </div>
         </div>
     </div>
