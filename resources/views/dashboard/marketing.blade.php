@@ -30,7 +30,7 @@
                                         @hasanyrole($roles_show_cabang)
                                             <x-select label="Cabang" name="kode_cabang_rekappenjualan" :data="$cabang"
                                                 key="kode_cabang" textShow="nama_cabang"
-                                                select2="select2Kodecabangrekappenjualan" upperCase="true" />
+                                                select2="select2Kodecabangrekappenjualan" upperCase="true" hideLabel="true"/>
                                         @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
@@ -66,10 +66,10 @@
                                     <form action="#" id="formAup">
                                         @hasanyrole($roles_show_cabang)
                                             <x-select label="Cabang" name="kode_cabang_aup" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                                select2="select2KodecabangAup" upperCase="true" />
+                                                select2="select2KodecabangAup" upperCase="true" hideLabel="true"/>
                                         @endhasanyrole
                                         <x-input-with-icon label="Lihat per Tanggal" name="tanggal" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true"/>
                                         <div class="form-group mb-3">
                                             <select name="exclude" id="exclude" class="form-select">
                                                 <option value="1">Exclude Pusat</option>
@@ -95,7 +95,7 @@
                                         @hasanyrole($roles_show_cabang)
                                             <x-select label="Cabang" name="kode_cabang_rekapdppp" :data="$cabang"
                                                 key="kode_cabang" textShow="nama_cabang"
-                                                select2="select2Kodecabangrekapdppp" upperCase="true" />
+                                                select2="select2Kodecabangrekapdppp" upperCase="true" hideLabel="true"/>
                                         @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
@@ -132,7 +132,7 @@
                                         @hasanyrole($roles_show_cabang)
                                             <x-select label="Cabang" name="kode_cabang_rekapkendaraan" :data="$cabang"
                                                 key="kode_cabang" textShow="nama_cabang"
-                                                select2="select2Kodecabangrekapkendaraan" upperCase="true" />
+                                                select2="select2Kodecabangrekapkendaraan" upperCase="true" hideLabel="true"/>
                                         @endhasanyrole
                                         <div class="form-group mb-3">
                                             <select name="bulan" id="bulan" class="form-select">
