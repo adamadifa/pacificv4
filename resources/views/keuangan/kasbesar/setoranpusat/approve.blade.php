@@ -33,7 +33,7 @@
 
     <div class="row">
         <div class="col">
-            <x-input-with-icon label="Tanggal Penerimaan" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Tanggal Penerimaan" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
             <div class="form-group mb-3">
                 <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
                     <option value="">Bank</option>

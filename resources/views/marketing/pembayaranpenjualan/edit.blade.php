@@ -2,11 +2,11 @@
     @csrf
     @method('PUT')
     {{-- {{ $historibayar->no_bukti }} --}}
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" value="{{ $historibayar->tanggal }}" />
-    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" value="{{ formatAngka($historibayar->jumlah) }}" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pembayaran" name="tanggal" datepicker="flatpickr-date" value="{{ $historibayar->tanggal }}" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" value="{{ formatAngka($historibayar->jumlah) }}" hideLabel="true" />
     @if ($level_user !== 'salesman')
         <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true"
-            select2="select2Kodesalesman" selected="{{ $historibayar->kode_salesman }}" />
+            select2="select2Kodesalesman" selected="{{ $historibayar->kode_salesman }}" hideLabel="true" />
     @else
         <input type="hidden" name="kode_salesman" value="{{ Auth::user()->kode_salesman }}" />
     @endif
@@ -23,7 +23,7 @@
     <div class="row" id="voucher">
         <div class="col">
             <x-select label="Pilih Voucher" name="jenis_voucher" :data="$jenis_voucher" key="id" textShow="nama_voucher" upperCase="true"
-                select2="select2Kodevoucher" selected="{{ $historibayar->jenis_voucher }}" />
+                select2="select2Kodevoucher" selected="{{ $historibayar->jenis_voucher }}" hideLabel="true" />
         </div>
     </div>
     <div class="row">
@@ -38,12 +38,12 @@
     <div class="row" id="giroditolak">
         <div class="col">
             <x-select label="Pilih Giro" name="kode_giro" :data="$giroditolak" key="kode_giro" textShow="no_giro" upperCase="true"
-                select2="select2Kodegiro" selected="{{ $historibayar->kode_giro }}" />
+                select2="select2Kodegiro" selected="{{ $historibayar->kode_giro }}" hideLabel="true" />
         </div>
     </div>
     <div class="row">
         <div class="col-12">
-            <x-textarea-label label="Keterangan" name="keterangan" value="{{ $historibayar->keterangan ?? '' }}" />
+            <x-textarea-label label="Keterangan" name="keterangan" value="{{ $historibayar->keterangan ?? '' }}" hideLabel="true" />
         </div>
     </div>
     <div class="row">

@@ -1,15 +1,15 @@
 <form action="{{ route('setoranpusat.update', Crypt::encrypt($setoranpusat->kode_setoran)) }}" id="formSetoranpusat" method="POST">
     @csrf
     @method('PUT')
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $setoranpusat->tanggal }}" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $setoranpusat->tanggal }}" hideLabel="true" />
     @hasanyrole($roles_show_cabang)
-        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true" select2="select2Kodecabang" selected="{{ $setoranpusat->kode_cabang }}" />
+        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true" select2="select2Kodecabang" selected="{{ $setoranpusat->kode_cabang }}" hideLabel="true" />
     @endhasanyrole
-    <x-input-with-icon label="Setoran Kertas" name="setoran_kertas" icon="ti ti-moneybag" align="right" money="true" value="{{ formatAngka($setoranpusat->setoran_kertas) }}" />
-    <x-input-with-icon label="Setoran Logam" name="setoran_logam" icon="ti ti-moneybag" align="right" money="true" value="{{ formatAngka($setoranpusat->setoran_logam) }}" />
+    <x-input-with-icon label="Setoran Kertas" name="setoran_kertas" icon="ti ti-moneybag" align="right" money="true" value="{{ formatAngka($setoranpusat->setoran_kertas) }}" hideLabel="true" />
+    <x-input-with-icon label="Setoran Logam" name="setoran_logam" icon="ti ti-moneybag" align="right" money="true" value="{{ formatAngka($setoranpusat->setoran_logam) }}" hideLabel="true" />
     <x-input-with-icon label="Total Setoran" name="total_setoran" icon="ti ti-moneybag" align="right" readonly="true"
-        value="{{ formatAngka($setoranpusat->setoran_kertas + $setoranpusat->setoran_logam) }}" />
-    <x-textarea label="Keterangan" name="keterangan" value="{{ $setoranpusat->keterangan }}" />
+        value="{{ formatAngka($setoranpusat->setoran_kertas + $setoranpusat->setoran_logam) }}" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" value="{{ $setoranpusat->keterangan }}" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

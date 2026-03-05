@@ -25,15 +25,15 @@
             <div class="row g-2 mb-1 align-items-end">
                 <div class="col-lg-3 col-md-3 col-sm-12">
                     <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date"
-                        :value="Request('dari')" />
+                        :value="Request('dari')" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-12">
                     <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date"
-                        :value="Request('sampai')" />
+                        :value="Request('sampai')" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-12">
                     <x-select label="Kategori" name="kategori" :data="$kategorilibur" key="kode_kategori" textShow="nama_kategori"
-                        :selected="Request('kategori')" />
+                        :selected="Request('kategori')" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-12">
                     <div class="form-group mb-1">
@@ -49,11 +49,11 @@
                 <div class="row g-2 mb-1 align-items-end">
                     <div class="col">
                         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                            upperCase="true" select2="select2Kodecabang" :selected="Request('kode_cabang')" />
+                            upperCase="true" select2="select2Kodecabang" :selected="Request('kode_cabang')" hideLabel="true" />
                     </div>
                     <div class="col">
                         <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                            upperCase="true" select2="select2KodeDept" :selected="Request('kode_dept')" />
+                            upperCase="true" select2="select2KodeDept" :selected="Request('kode_dept')" hideLabel="true" />
                     </div>
                     <div class="col-auto">
                         <div class="form-group mb-1">

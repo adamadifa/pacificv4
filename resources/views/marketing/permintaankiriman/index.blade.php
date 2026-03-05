@@ -58,16 +58,16 @@
             <div class="row g-2 mb-2">
                 <div class="col-lg-2 col-md-3 col-sm-6">
                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-6">
                     <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-12">
                     <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
                         textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                        select2="select2Kodecabangsearch" />
+                        select2="select2Kodecabangsearch" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-12">
                     <div class="form-group mb-1">

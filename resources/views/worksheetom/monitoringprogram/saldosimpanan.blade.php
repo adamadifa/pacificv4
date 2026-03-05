@@ -16,18 +16,11 @@
                         <div class="col-12">
                             <form action="{{ URL::current() }}">
                                 @hasanyrole($roles_show_cabang)
-                                    <div class="form-group mb-3">
-                                        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-                                            <option value="">Semua Cabang</option>
-                                            @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
-                                                    {{ textUpperCase($d->nama_cabang) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                        upperCase="true" select2="select2Kodecabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                                 @endrole
                                 <x-input-with-icon icon="ti ti-user" label="Nama Pelanggan" name="nama_pelanggan"
-                                    value="{{ Request('nama_pelanggan') }}" />
+                                    value="{{ Request('nama_pelanggan') }}" hideLabel="true" />
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">

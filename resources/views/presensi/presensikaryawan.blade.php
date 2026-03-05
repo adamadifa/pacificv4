@@ -25,20 +25,14 @@
         <form action="{{ route('presensi.presensikaryawan') }}" class="mb-3">
             <div class="row g-2">
                 <div class="col-lg-3 col-md-4">
-                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-4">
-                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-5 col-md-10">
-                    <div class="form-group mb-3">
-                        <select name="nik" id="nik" class="form-select select2Nik">
-                            <option value="">Pilih Karyawan</option>
-                            @foreach ($listkaryawan as $d)
-                                <option {{ Request('nik') == $d->nik ? 'selected' : '' }} value="{{ $d->nik }}">{{ $d->nik }} - {{ $d->nama_karyawan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-select label="Pilih Karyawan" name="nik" :data="$listkaryawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
+                        selected="{{ Request('nik') }}" hideLabel="true" />
                 </div>
                 <div class="col-lg-1 col-md-2">
                     <div class="form-group mb-3">

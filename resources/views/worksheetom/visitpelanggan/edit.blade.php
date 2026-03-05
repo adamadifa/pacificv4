@@ -29,11 +29,11 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $visit->tanggal }}" />
-            <x-textarea label="Hasil Konfirmasi" name="hasil_konfirmasi" value="{{ $visit->hasil_konfirmasi }}" />
-            <x-textarea label="Note" name="note" value="{{ $visit->note }}" />
-            <x-textarea label="Saran / Keluhan" name="saran" value="{{ $visit->saran }}" />
-            <x-textarea label="Action OM" name="act_om" value="{{ $visit->act_om }}" />
+            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $visit->tanggal }}" hideLabel="true" />
+            <x-textarea label="Hasil Konfirmasi" name="hasil_konfirmasi" value="{{ $visit->hasil_konfirmasi }}" hideLabel="true" />
+            <x-textarea label="Note" name="note" value="{{ $visit->note }}" hideLabel="true" />
+            <x-textarea label="Saran / Keluhan" name="saran" value="{{ $visit->saran }}" hideLabel="true" />
+            <x-textarea label="Action OM" name="act_om" value="{{ $visit->act_om }}" hideLabel="true" />
             <div class="form-group mb-3">
                 <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Simpan</button>
             </div>

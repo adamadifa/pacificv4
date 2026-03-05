@@ -18,11 +18,11 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="No. Retur" name="no_retur" icon="ti ti-barcode" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-                            <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user" readonly="true" />
+                            <x-input-with-icon label="No. Retur" name="no_retur" icon="ti ti-barcode" hideLabel="true" />
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+                            <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user" readonly="true" hideLabel="true" />
                             <input type="hidden" id="kode_pelanggan" name="kode_pelanggan">
-                            <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user" readonly="true" />
+                            <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user" readonly="true" hideLabel="true" />
                             <input type="hidden" name="kode_salesman" id="kode_salesman">
                             <div class="form-group mb-3">
                                 <select name="jenis_retur" id="jenis_retur" class="form-select">
@@ -99,7 +99,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 col-sm12">
-                                    <x-input-with-icon label="Produk" name="nama_produk" icon="ti ti-barcode" height="80px" readonly="true" />
+                                    <x-input-with-icon label="Produk" name="nama_produk" icon="ti ti-barcode" height="80px" readonly="true" hideLabel="true" />
                                     <input type="hidden" id="kode_harga" name="kode_harga">
                                     <input type="hidden" id="isi_pcs_dus" name="isi_pcs_dus">
                                     <input type="hidden" id="isi_pcs_pack" name="isi_pcs_pack">
@@ -108,13 +108,13 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
                                             <x-input-with-icon label="Harga / Dus" name="harga_dus" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                                money="true" hideLabel="true" />
                                             <input type="hidden" id="harga_dus_produk">
                                         </div>
                                     </div>
@@ -122,13 +122,13 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
                                             <x-input-with-icon label="Harga / Pack" name="harga_pack" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                                money="true" hideLabel="true" />
                                             <input type="hidden" id="harga_pack_produk">
                                         </div>
                                     </div>
@@ -136,13 +136,13 @@
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <x-input-with-icon label="Pack" name="jml_pcs" icon="ti ti-box" align="right" money="true" />
+                                            <x-input-with-icon label="Pack" name="jml_pcs" icon="ti ti-box" align="right" money="true" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
                                             <x-input-with-icon label="Harga / Pcs" name="harga_pcs" icon="ti ti-moneybag" align="right"
-                                                money="true" />
+                                                money="true" hideLabel="true" />
                                             <input type="hidden" id="harga_pcs_produk">
                                         </div>
                                     </div>

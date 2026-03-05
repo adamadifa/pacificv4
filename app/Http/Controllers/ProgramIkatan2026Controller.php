@@ -116,6 +116,11 @@ class ProgramIkatan2026Controller extends Controller
         $data['start_year'] = config('global.start_year');
         $data['programikatan'] = Programikatan::where('status', 1)->orderBy('kode_program')->get();
         $data['roles_access_all_cabang'] = config('global.roles_access_all_cabang');
+        $list_tahun = [];
+        for ($t = config('global.start_year'); $t <= date('Y'); $t++) {
+            $list_tahun[] = $t;
+        }
+        $data['list_tahun'] = $list_tahun;
         return view('worksheetom.programikatan2026.create', $data);
     }
 

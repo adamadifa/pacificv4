@@ -2,9 +2,9 @@
     @csrf
     <div class="row">
         <div class="col">
-            <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" />
-            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-            <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true" />
+            <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" hideLabel="true" />
+            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+            <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true" hideLabel="true" />
         </div>
     </div>
     <div class="divider text-start">
@@ -13,13 +13,13 @@
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
             <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang" upperCase="true"
-                select2="select2Kodebarang" showKey="true" />
+                select2="select2Kodebarang" showKey="true" hideLabel="true" />
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" hideLabel="true" />
         </div>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group.mb-3">
         <a href="#" class="btn btn-primary w-100" id="tambahbarang"><i class="ti ti-plus me-1"></i>Tambah Barang</a>
     </div>

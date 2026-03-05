@@ -1,13 +1,13 @@
 <form action="{{ route('izincuti.store') }}" method="POST" id="formIzin" enctype="multipart/form-data">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin_cuti" disabled="true" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin_cuti" disabled="true" hideLabel="true" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-3">
@@ -27,8 +27,8 @@
             @endforeach
         </select>
     </div>
-    <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" />
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <x-input-file name="doc_cuti" label="doc_cuti" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan">

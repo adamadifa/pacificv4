@@ -16,11 +16,11 @@
         </div>
     @endhasanyrole
     <x-input-with-icon label="No. Bukti" name="no_bukti" value="{{ $kaskecil->no_bukti }}" icon="ti ti-barcode"
-        non_aktif="{{ !empty($kaskecil->kode_klaim) ? 'true' : 'false' }}" />
-    <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $kaskecil->tanggal }}" icon="ti ti-calendar" />
-    <x-input-with-icon label="Keterangan" name="keterangan" value="{{ $kaskecil->keterangan }}" icon="ti ti-file-description" />
+        non_aktif="{{ !empty($kaskecil->kode_klaim) ? 'true' : 'false' }}" hideLabel="true" />
+    <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $kaskecil->tanggal }}" icon="ti ti-calendar" hideLabel="true" />
+    <x-input-with-icon label="Keterangan" name="keterangan" value="{{ $kaskecil->keterangan }}" icon="ti ti-file-description" hideLabel="true" />
     <x-input-with-icon label="Jumlah" name="jumlah" value="{{ formatAngka($kaskecil->jumlah) }}" icon="ti ti-moneybag" align="right" money="true"
-        non_aktif="{{ !empty($kaskecil->kode_klaim) ? 'true' : 'false' }}" />
+        non_aktif="{{ !empty($kaskecil->kode_klaim) ? 'true' : 'false' }}" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_akun" id="kode_akun" class="form-select select2Kodeakunedit">
             <option value="">Pilih Akun</option>

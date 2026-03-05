@@ -1,16 +1,16 @@
 <form action="{{ route('ajuantransfer.update', Crypt::encrypt($ajuantransfer->no_pengajuan)) }}" method="POST" id="formAjuantransferdana">
     @csrf
     @method('PUT')
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $ajuantransfer->tanggal }}" />
-    <x-input-with-icon label="Nama" name="nama" icon="ti ti-user" value="{{ $ajuantransfer->nama }}" />
-    <x-input-with-icon label="Nama Bank" name="nama_bank" icon="ti ti-building" value="{{ $ajuantransfer->nama_bank }}" />
-    <x-input-with-icon label="No Rekening" name="no_rekening" icon="ti ti-credit-card" value="{{ $ajuantransfer->no_rekening }}" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $ajuantransfer->tanggal }}" hideLabel="true" />
+    <x-input-with-icon label="Nama" name="nama" icon="ti ti-user" value="{{ $ajuantransfer->nama }}" hideLabel="true" />
+    <x-input-with-icon label="Nama Bank" name="nama_bank" icon="ti ti-building" value="{{ $ajuantransfer->nama_bank }}" hideLabel="true" />
+    <x-input-with-icon label="No Rekening" name="no_rekening" icon="ti ti-credit-card" value="{{ $ajuantransfer->no_rekening }}" hideLabel="true" />
     <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true"
-        value="{{ formatAngka($ajuantransfer->jumlah) }}" />
-    <x-textarea label="Keterangan" name="keterangan" value="{{ $ajuantransfer->keterangan }}" />
+        value="{{ formatAngka($ajuantransfer->jumlah) }}" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" value="{{ $ajuantransfer->keterangan }}" hideLabel="true" />
     @hasanyrole($roles_show_cabang)
         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-            select2="select2KodeCabang" selected="{{ $ajuantransfer->kode_cabang }}" />
+            select2="select2KodeCabang" selected="{{ $ajuantransfer->kode_cabang }}" hideLabel="true" />
     @endhasanyrole
     <div class="form-group mb-3">
         <button type="submit" class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i> Submit</button>

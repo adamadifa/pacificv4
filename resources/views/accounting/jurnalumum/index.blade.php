@@ -43,17 +43,17 @@
             <div class="row g-2 mb-1">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                        datepicker="flatpickr-date" />
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
             </div>
             <div class="row g-2 mb-3 align-items-end">
                 <div class="col-lg-10 col-md-9 col-sm-12">
                     <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                        upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" />
+                        upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" hideLabel="true" />
                 </div>
                 <div class="col-auto">
                     <div class="form-group mb-3">

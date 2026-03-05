@@ -22,18 +22,18 @@
                             <div class="row">
                                 <div class="col">
                                     <x-input-with-icon label="No. PO" value="{{ Request('no_bukti_search') }}"
-                                        name="no_bukti_search" icon="ti ti-barcode" />
+                                        name="no_bukti_search" icon="ti ti-barcode" hideLabel="true" />
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-lg-6 col-sm-12 col-md-12">
                                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
-                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-6 col-sm-12 col-md-12">
                                     <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
-                                        icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                        icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                                 </div>
                             </div>
 

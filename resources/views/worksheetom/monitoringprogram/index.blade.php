@@ -25,47 +25,36 @@
                         <div class="col-12">
                             <form action="{{ route('monitoringprogram.index') }}">
                                 @hasanyrole($roles_show_cabang)
-                                    <div class="form-group mb-3">
-                                        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-                                            <option value="">Semua Cabang</option>
-                                            @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
-                                                    {{ textUpperCase($d->nama_cabang) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                        upperCase="true" select2="select2Kodecabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                                 @else
                                     <input type="hidden" name="kode_cabang" value="{{ Auth::user()->kode_cabang }}" id="kode_cabang_search">
                                 @endrole
                                 <x-select label="Pilih Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
-                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
+                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" hideLabel="true" />
                                 <div class="row">
                                     <div class="col-lg-8 col-md-12 col-sm-12">
-                                        <div class="form-group">
-                                            <select name="bulan" id="bulan" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                        value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
+                                        @php
+                                            $bulan_data = collect($list_bulan)->map(function ($item) {
+                                                return (object) $item;
+                                            });
+                                        @endphp
+                                        <x-select label="Bulan" name="bulan" :data="$bulan_data" key="kode_bulan" textShow="nama_bulan"
+                                            selected="{{ Request('bulan') }}" hideLabel="true" />
                                     </div>
                                     <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <div class="form-group">
-                                            <select name="tahun" id="tahun" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                    <option {{ Request('tahun') == $t ? 'selected' : '' }} value="{{ $t }}">
-                                                        {{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
+                                        @php
+                                            $tahun_data = [];
+                                            for ($t = $start_year; $t <= date('Y'); $t++) {
+                                                $tahun_data[] = (object) ['tahun' => $t];
+                                            }
+                                        @endphp
+                                        <x-select label="Tahun" name="tahun" :data="$tahun_data" key="tahun" textShow="tahun"
+                                            selected="{{ Request('tahun') }}" hideLabel="true" />
                                     </div>
                                 </div>
                                 <x-input-with-icon icon="ti ti-user" label="Nama Pelanggan" name="nama_pelanggan"
-                                    value="{{ Request('nama_pelanggan') }}" />
+                                    value="{{ Request('nama_pelanggan') }}" hideLabel="true" />
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="form-group mb-3">

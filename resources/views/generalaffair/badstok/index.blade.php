@@ -25,25 +25,24 @@
         <form action="{{ route('badstokga.index') }}">
             <div class="row g-2 mb-1">
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
             </div>
             <div class="row g-2 mb-2 align-items-end">
                 <div class="col-lg-9 col-md-9 col-sm-12">
-                    <div class="form-group mb-2">
-                        <select name="kode_asal_bs_search" id="kode_asal_bs_search" class="form-select select2Kodeasalbssearch">
-                            <option value="">Asal Bad Stok</option>
-                            <option value="GDG" {{ Request('kode_asal_bs_search') == 'GDG' ? 'selected' : '' }}>GUDANG</option>
-                            @foreach ($asalbadstok as $d)
-                                <option {{ Request('kode_asal_bs_search') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
-                                    {{ textUpperCase($d->nama_cabang) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    @php
+                        $asal_bad_stok_data = $asalbadstok->map(function ($cabang) {
+                            return (object) [
+                                'kode_cabang' => $cabang->kode_cabang,
+                                'nama_cabang' => textUpperCase($cabang->nama_cabang),
+                            ];
+                        })->prepend((object) ['kode_cabang' => 'GDG', 'nama_cabang' => 'GUDANG']);
+                    @endphp
+                    <x-select label="Asal Bad Stok" name="kode_asal_bs_search" :data="$asal_bad_stok_data" key="kode_cabang" textShow="nama_cabang"
+                        selected="{{ Request('kode_asal_bs_search') }}" select2="select2Kodeasalbssearch" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-12">
                     <div class="form-group mb-2">

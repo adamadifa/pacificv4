@@ -18,25 +18,22 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="No. Invoice" name="no_invoice" icon="ti ti-receipt" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-                            <div class="form-group mb-3">
-                                <select name="kode_kendaraan" id="kode_kendaraan" class="form-select select2Kendaraan">
-                                    <option value="">Pilih Kendaraan</option>
-                                    @foreach ($kendaraan as $d)
-                                        <option value="{{ $d->kode_kendaraan }}">
-                                            {{ $d->no_polisi . '  ' . $d->merek . ' ' . $d->tipe_kendaraan . '  ' . ' ' . $d->tipe }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <x-input-with-icon label="No. Invoice" name="no_invoice" icon="ti ti-receipt" hideLabel="true" />
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+                            @php
+                                $kendaraan_data = $kendaraan->map(function ($d) {
+                                    return (object) [
+                                        'kode_kendaraan' => $d->kode_kendaraan,
+                                        'nama_kendaraan' => $d->no_polisi . '  ' . $d->merek . ' ' . $d->tipe_kendaraan . '  ' . ' ' . $d->tipe,
+                                    ];
+                                });
+                            @endphp
+                            <x-select label="Pilih Kendaraan" name="kode_kendaraan" :data="$kendaraan_data" key="kode_kendaraan" textShow="nama_kendaraan"
+                                select2="select2Kendaraan" hideLabel="true" />
                             <div class="row">
                                 <div class="col-lg-10 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <select name="kode_bengkel" id="kode_bengkel" class="form-select select2Kodebengkel">
-                                            <option value="">Pilih Bengkel</option>
-                                        </select>
-                                    </div>
+                                    <x-select label="Pilih Bengkel" name="kode_bengkel" :data="[]" key="kode_bengkel" textShow="nama_bengkel"
+                                        select2="select2Kodebengkel" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="form-group mb-3">
@@ -46,7 +43,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <x-textarea label="Keterangan" name="keterangan" />
+                                    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
                                 </div>
                             </div>
                         </div>
@@ -71,11 +68,8 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-4 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <select name="kode_item" id="kode_item" class="form-select select2KodeItem">
-                                            <option value="">Pilih Item</option>
-                                        </select>
-                                    </div>
+                                    <x-select label="Pilih Item" name="kode_item" :data="[]" key="kode_item" textShow="nama_item"
+                                        select2="select2KodeItem" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-1 col-md-12 col-sm-12">
                                     <div class="form-group mb-3">
@@ -83,10 +77,10 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Qty" name="jumlah" align="right" money="true" icon="ti ti-box" />
+                                    <x-input-with-icon label="Qty" name="jumlah" align="right" money="true" icon="ti ti-box" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Harga" name="harga" align="right" money="true" icon="ti ti-moneybag" />
+                                    <x-input-with-icon label="Harga" name="harga" align="right" money="true" icon="ti ti-moneybag" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <div class="form-group mb-3">

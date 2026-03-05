@@ -16,10 +16,10 @@
             <i class="ti ti-file-description me-2"></i>
         </div>
     </div>
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$ledger->tanggal" />
-    <x-input-with-icon label="Pelanggan" name="pelanggan" icon="ti ti-user" :value="$ledger->pelanggan" />
-    <x-textarea label="Keterangan" name="keterangan" :value="$ledger->keterangan"></x-textarea>
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" :value="formatAngka($ledger->jumlah)" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$ledger->tanggal" hideLabel="true" />
+    <x-input-with-icon label="Pelanggan" name="pelanggan" icon="ti ti-user" :value="$ledger->pelanggan" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" :value="$ledger->keterangan" hideLabel="true"></x-textarea>
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" :value="formatAngka($ledger->jumlah)" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_akun" id="kode_akun" class="form-select select2Kodeakun">
             <option value="">Pilih Kode Akun</option>

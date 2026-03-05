@@ -22,23 +22,22 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
-                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                         <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
-                                            icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                            icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                 </div>
                                 <div class="form-group mb-3">
-                                    <select name="status" id="status" class="form-select">
-                                        <option value="">Semua Status</option>
-                                        <option value="pending" {{ Request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="approved_om" {{ Request('status') == 'approved_om' ? 'selected' : '' }}>Disetujui OM</option>
-                                        <option value="approved_rsm" {{ Request('status') == 'approved_rsm' ? 'selected' : '' }}>Disetujui RSM</option>
-                                        <option value="approved_gm" {{ Request('status') == 'approved_gm' ? 'selected' : '' }}>Disetujui GM</option>
-                                        <option value="approved_direktur" {{ Request('status') == 'approved_direktur' ? 'selected' : '' }}>Disetujui Direktur</option>
-                                        <option value="rejected" {{ Request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
-                                    </select>
+                                    <x-select label="Semua Status" name="status" :data="[
+                                        (object)['kode' => 'pending', 'nama' => 'Pending'],
+                                        (object)['kode' => 'approved_om', 'nama' => 'Disetujui OM'],
+                                        (object)['kode' => 'approved_rsm', 'nama' => 'Disetujui RSM'],
+                                        (object)['kode' => 'approved_gm', 'nama' => 'Disetujui GM'],
+                                        (object)['kode' => 'approved_direktur', 'nama' => 'Disetujui Direktur'],
+                                        (object)['kode' => 'rejected', 'nama' => 'Ditolak']
+                                    ]" key="kode" textShow="nama" selected="{{ Request('status') }}" hideLabel="true" />
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">

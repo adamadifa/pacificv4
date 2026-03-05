@@ -33,28 +33,28 @@
                     <div class="row g-2">
                         <div class="col-lg-3 col-md-6 col-sm-12">
                             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari"
-                                datepicker="flatpickr-date" value="{{ Request('dari') }}" />
+                                datepicker="flatpickr-date" value="{{ Request('dari') }}" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12">
                             <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai"
-                                datepicker="flatpickr-date" value="{{ Request('sampai') }}" />
+                                datepicker="flatpickr-date" value="{{ Request('sampai') }}" hideLabel="true" />
                         </div>
                         @hasanyrole($roles_show_cabang)
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
                                     textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                                    select2="select2Kodecabangsearch" />
+                                    select2="select2Kodecabangsearch" hideLabel="true" />
                             </div>
                         @endrole
                     </div>
                     <div class="row g-2 align-items-end">
                         <div class="col-lg-2 col-md-12 col-sm-12">
                             <x-input-with-icon label="No. Giro" icon="ti ti-barcode" name="no_giro"
-                                value="{{ Request('no_giro') }}" />
+                                value="{{ Request('no_giro') }}" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" icon="ti ti-user"
-                                name="nama_pelanggan_search" />
+                                name="nama_pelanggan_search" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <div class="form-group mb-3">

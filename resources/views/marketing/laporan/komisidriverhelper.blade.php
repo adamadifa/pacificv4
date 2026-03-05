@@ -2,12 +2,9 @@
     @csrf
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
-            <select name="kode_cabang" id="kode_cabang_komisidriverhelper" class="form-select select2Kodecabangkomisidriverhelper">
-                <option value="">Pilih Cabang</option>
-                @foreach ($cabang as $d)
-                    <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
-                @endforeach
-            </select>
+            <x-select label="Pilih Cabang" name="kode_cabang" id="kode_cabang_komisidriverhelper" :data="$cabang"
+                key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabangkomisidriverhelper"
+                upperCase="true" hideLabel="true" />
         </div>
     @endrole
 
@@ -15,10 +12,10 @@
 
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

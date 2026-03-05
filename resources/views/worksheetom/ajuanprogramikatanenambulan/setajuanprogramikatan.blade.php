@@ -236,6 +236,10 @@
                 <div class="sk-wave-rect"></div>
                 <div class="sk-wave-rect"></div>
                 </div>`);
+            // Note: Ensuring the loaded content from /ajuanprogramenambulan/.../tambahpelanggan also respects the UI rules
+            @php
+                // No direct form components in this static setup page, but keeping note for consistency
+            @endphp
             $("#loadmodal").load("/ajuanprogramenambulan/" + no_pengajuan + "/tambahpelanggan");
         });
 

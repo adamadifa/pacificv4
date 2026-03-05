@@ -36,26 +36,26 @@
                     <div class="row g-2 mb-1">
                         <div class="col-lg-3 col-sm-12 col-md-12">
                             <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                datepicker="flatpickr-date" />
+                                datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-sm-12 col-md-12">
                             <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                datepicker="flatpickr-date" />
+                                datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         <div class="col-lg-6 col-md-12 col-sm-12">
                             <x-input-with-icon label="Nama Karyawan" name="nama_karyawan" value="{{ Request('nama_karyawan') }}"
-                                icon="ti ti-user" />
+                                icon="ti ti-user" hideLabel="true" />
                         </div>
                     </div>
                     <div class="row g-2 align-items-end">
                         @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
                             <div class="col-lg-3 col-sm-12 col-md-12">
                                 <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                    select2="select2Kodecabang" upperCase="true" selected="{{ Request('kode_cabang') }}" />
+                                    select2="select2Kodecabang" upperCase="true" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                             </div>
                             <div class="col-lg-3 col-sm-12 col-md-12">
                                 <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                                    select2="select2KodeDept" upperCase="true" selected="{{ Request('kode_dept') }}" />
+                                    select2="select2KodeDept" upperCase="true" selected="{{ Request('kode_dept') }}" hideLabel="true" />
                             </div>
                         @endif
                         <div class="col">

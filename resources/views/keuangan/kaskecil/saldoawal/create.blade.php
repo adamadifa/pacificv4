@@ -27,7 +27,7 @@
     </div>
     <div class="row mb-3">
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" readonly="true" />
+            <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" readonly="true" hideLabel="true" />
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
             <a href="#" id="getsaldo" class="btn btn-success">Get Saldo</a>

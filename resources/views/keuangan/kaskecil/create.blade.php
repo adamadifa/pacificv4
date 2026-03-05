@@ -11,12 +11,12 @@
             </select>
         </div>
     @endhasanyrole
-    <x-input-with-icon label="No Bukti" name="no_bukti" icon="ti ti-barcode" />
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="No Bukti" name="no_bukti" icon="ti ti-barcode" hideLabel="true" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
     <hr>
     <div class="row">
         <div class="col-lg-4 col-sm-12 col-md-12">
-            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
         </div>
         <div class="col-lg-3 col-sm-12 col-md-12">
             <div class="form-group mb-4">
@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="col-lg-3 col-sm-12 col-md-12">
-            <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
+            <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-sm-12 col-md-12">
             <div class="form-group mb-3">

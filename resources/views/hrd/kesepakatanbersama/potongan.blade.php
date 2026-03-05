@@ -2,10 +2,10 @@
     @csrf
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah" name="jumlah" money="true" align="right" />
+            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah" name="jumlah" money="true" align="right" hideLabel="true" />
         </div>
     </div>
     <div class="row">

@@ -1,21 +1,21 @@
 <form action="{{ route('lembur.store') }}" method="POST" id="formLembur">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_lembur" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_lembur" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="row">
         <div class="col-lg-8 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-4 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-clock" label="Jam Mulai" name="jam_mulai" />
+            <x-input-with-icon icon="ti ti-clock" label="Jam Mulai" name="jam_mulai" hideLabel="true" />
         </div>
     </div>
     <div class="row">
         <div class="col-lg-8 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-4 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-clock" label="Jam Selesai" name="jam_selesai" />
+            <x-input-with-icon icon="ti ti-clock" label="Jam Selesai" name="jam_selesai" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-3">
@@ -27,9 +27,9 @@
     </div>
     @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-            select2="select2KodeCabang" />
+            select2="select2KodeCabang" hideLabel="true" />
         <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
-            select2="select2KodeDept" />
+            select2="select2KodeDept" hideLabel="true" />
     @endif
 
     <div class="form-group mb-3">
@@ -39,7 +39,7 @@
             <option value="2">Tidak Istirahat</option>
         </select>
     </div>
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group">
         <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

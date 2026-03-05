@@ -25,13 +25,13 @@
         <form action="{{ route('jasamasakerja.index') }}" class="mb-2">
             <div class="row g-2">
                 <div class="col-lg-3 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-5 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Nama Karyawan" value="{{ Request('nama_karyawan_search') }}" name="nama_karyawan_search" icon="ti ti-user" />
+                    <x-input-with-icon label="Nama Karyawan" value="{{ Request('nama_karyawan_search') }}" name="nama_karyawan_search" icon="ti ti-user" hideLabel="true" />
                 </div>
                 <div class="col-lg-1 col-md-6 col-sm-12">
                     <div class="form-group mb-3">

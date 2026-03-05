@@ -1,15 +1,15 @@
 <form action="{{ route('laporanpembelian.cetakrekapbahankemasan') }}" method="POST" id="formLapRekapBahanKemasan" target="_blank">
     @csrf
     <x-select label="Pilih Barang" name="kode_barang" :data="$barangbahankemasan" key="kode_barang" textShow="nama_barang" upperCase="true" showKey="true"
-        select2="select2Kodebarangbahankemasan" />
+        select2="select2Kodebarangbahankemasan" hideLabel="true" />
     <x-select label="Supplier" name="kode_supplier_rekapbahankemasan" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
-        select2="select2Kodesupplierrekapbahankemasan" />
+        select2="select2Kodesupplierrekapbahankemasan" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

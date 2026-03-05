@@ -1,7 +1,7 @@
 <form action="{{ route('jurnalumum.update', Crypt::encrypt($jurnalumum->kode_ju)) }}" id="formJurnalumum" method="POST">
     @csrf
     @method('PUT')
-    <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" icon="ti ti-calendar" :value="$jurnalumum->tanggal" />
+    <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" icon="ti ti-calendar" :value="$jurnalumum->tanggal" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_akun" id="kode_akun" class="form-select select2Kodeakun">
             <option value="">Akun</option>
@@ -11,8 +11,8 @@
             @endforeach
         </select>
     </div>
-    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" :value="$jurnalumum->keterangan" />
-    <x-input-with-icon label="Jumlah" name="jumlah" align="right" icon="ti ti-moneybag" :value="formatAngka($jurnalumum->jumlah)" numberFormat="true" />
+    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" :value="$jurnalumum->keterangan" hideLabel="true" />
+    <x-input-with-icon label="Jumlah" name="jumlah" align="right" icon="ti ti-moneybag" :value="formatAngka($jurnalumum->jumlah)" numberFormat="true" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="debet_kredit" id="debet_kredit" class="form-select">
             <option value="">Debet / Kredit</option>

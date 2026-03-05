@@ -20,29 +20,23 @@
                         <div class="col-12">
                             <form action="{{ route('pencairanprogramikatan.index') }}">
                                 @hasanyrole($roles_show_cabang)
-                                    <div class="form-group mb-3">
-                                        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-                                            <option value="">Semua Cabang</option>
-                                            @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
-                                                    {{ textUpperCase($d->nama_cabang) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
+                                        textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang') }}"
+                                        select2="select2Kodecabang" hideLabel="true" />
                                 @endrole
                                 {{-- <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
                                     icon="ti ti-barcode" /> --}}
                                 <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
-                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
+                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" hideLabel="true" />
 
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                 </div>
                                 <div class="row">

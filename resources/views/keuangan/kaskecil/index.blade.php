@@ -39,23 +39,23 @@
                     <div class="row g-2">
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari"
-                                datepicker="flatpickr-date" value="{{ Request('dari') }}" />
+                                datepicker="flatpickr-date" value="{{ Request('dari') }}" hideLabel="true" />
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai"
-                                datepicker="flatpickr-date" value="{{ Request('sampai') }}" />
+                                datepicker="flatpickr-date" value="{{ Request('sampai') }}" hideLabel="true" />
                         </div>
                     </div>
                     <div class="row g-2 align-items-end">
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <x-input-with-icon icon="ti ti-barcode" label="No. Bukti" name="no_bukti_search"
-                                value="{{ Request('no_bukti_search') }}" />
+                                value="{{ Request('no_bukti_search') }}" hideLabel="true" />
                         </div>
                         @hasanyrole($roles_show_cabang)
                             <div class="col-lg-7 col-md-6 col-sm-12">
                                 <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
                                     textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                                    select2="select2Kodecabangsearch" />
+                                    select2="select2Kodecabangsearch" hideLabel="true" />
                             </div>
                         @endrole
                         <div class="col-lg-1 col-md-2 col-sm-12">

@@ -1,13 +1,13 @@
 <form action="{{ route('jadwalshift.store') }}" method="POST" id="formJadwalShift">
     @csrf
 
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="kode_jadwalshift" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="kode_jadwalshift" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-0">

@@ -120,30 +120,22 @@
         <div class="col">
             <div class="row">
                 <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group mb-3">
-                        <select name="kode_harga" id="kode_harga" class="form-select">
-                            <option value="">Produk</option>
-                            @foreach ($detail as $d)
-                                <option jumlah="{{ $d->jumlah }}" isi_pcs_dus="{{ $d->isi_pcs_dus }}" isi_pcs_pack ="{{ $d->isi_pcs_pack }}"
-                                    value="{{ $d->kode_harga }}">
-                                    {{ $d->nama_produk }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-select label="Produk" name="kode_harga" :data="$detail" key="kode_harga" textShow="nama_produk"
+                        hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-12 col-sm-12">
-                    <x-input-with-icon name="jml_dus" icon="ti ti-box" label="Dus" align="right" />
+                    <x-input-with-icon name="jml_dus" icon="ti ti-box" label="Dus" align="right" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-12 col-sm-12">
-                    <x-input-with-icon name="jml_pack" icon="ti ti-box" label="Pack" align="right" />
+                    <x-input-with-icon name="jml_pack" icon="ti ti-box" label="Pack" align="right" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-12 col-sm-12">
-                    <x-input-with-icon name="jml_pcs" icon="ti ti-box" label="Pcs" align="right" />
+                    <x-input-with-icon name="jml_pcs" icon="ti ti-box" label="Pcs" align="right" hideLabel="true" />
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <x-input-with-icon label="No. DPB" name="no_dpb" icon="ti ti-barcode" />
+                    <x-input-with-icon label="No. DPB" name="no_dpb" icon="ti ti-barcode" hideLabel="true" />
                     <input type="hidden" id="no_dpb_val" name="no_dpb_val">
                 </div>
             </div>

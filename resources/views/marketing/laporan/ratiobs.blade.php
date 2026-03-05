@@ -13,37 +13,33 @@
                     @csrf
                     @hasanyrole($roles_show_cabang)
                         <div class="form-group mb-3">
-                            <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-                                <option value="">Semua Cabang</option>
-                                @foreach ($cabang as $d)
-                                    <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
-                                @endforeach
-                            </select>
+                            <x-select label="Semua Cabang" name="kode_cabang" id="kode_cabang" :data="$cabang"
+                                key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang" upperCase="true"
+                                hideLabel="true" />
                         </div>
                     @endrole
 
                     <div class="row">
                         <div class="col">
-                            <div class="form-group mb-3">
-                                <select name="bulan" id="bulan" class="form-select">
-                                    <option value="">Bulan</option>
-                                    @foreach ($list_bulan as $d)
-                                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            @php
+                                $bulan_data = collect($list_bulan)->map(function ($item) {
+                                    return (object) $item;
+                                });
+                            @endphp
+                            <x-select label="Bulan" name="bulan" id="bulan" :data="$bulan_data" key="kode_bulan"
+                                textShow="nama_bulan" hideLabel="true" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <div class="form-group mb-3">
-                                <select name="tahun" id="tahun" class="form-select">
-                                    <option value="">Tahun</option>
-                                    @for ($t = $start_year; $t <= date('Y'); $t++)
-                                        <option value="{{ $t }}">{{ $t }}</option>
-                                    @endfor
-                                </select>
-                            </div>
+                            @php
+                                $tahun_data = [];
+                                for ($t = $start_year; $t <= date('Y'); $t++) {
+                                    $tahun_data[] = (object) ['tahun' => $t];
+                                }
+                            @endphp
+                            <x-select label="Tahun" name="tahun" id="tahun" :data="$tahun_data" key="tahun"
+                                textShow="tahun" hideLabel="true" />
                         </div>
                     </div>
 

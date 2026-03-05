@@ -16,12 +16,12 @@
         <a class="btn btn-primary waves-effect" id="kode_pelanggan_search"><i class="ti ti-search text-white"></i></a>
     </div>
     <x-input-with-icon label="Qty Rata - rata 3 Bulan Terakhir" name="qty_avg" icon="ti ti-file-description"
-        placeholder="Qty Rata - rata 3 Bulan Terakhir" align="right" readonly />
+        placeholder="Qty Rata - rata 3 Bulan Terakhir" align="right" readonly hideLabel="true" />
     <div class="row">
         <div class="col" id="gethistoripelangganprogram"></div>
     </div>
     <x-input-with-icon label="Total Target" name="target" icon="ti ti-file-description" placeholder="Target / Bulan"
-        align="right" />
+        align="right" hideLabel="true" />
     <table class="table table-bordered mb-2" id="targetperbulantable">
         <thead>
             <tr>
@@ -71,43 +71,38 @@
 
     <hr class="my-4">
     <div class="form-group">
-        <select name="top" id="top" class="form-select">
-            <option value="">TOP</option>
-            <option value="14">14 Hari</option>
-            <option value="30">30 Hari</option>
-        </select>
+        <x-select label="TOP" name="top" :data="[
+            (object)['top' => '14', 'nama_top' => '14 Hari'],
+            (object)['top' => '30', 'nama_top' => '30 Hari']
+        ]" key="top" textShow="nama_top" hideLabel="true" />
     </div>
     <div class="form-group">
-        <select name="periode_pencairan" id="periode_pencairan" class="form-select">
-            <option value="">Periode Pencairan</option>
-            <option value="1">1 Bulan</option>
-            <option value="3">3 Bulan</option>
-            <option value="6">6 Bulan</option>
-            <option value="12">12 Bulan</option>
-        </select>
+        <x-select label="Periode Pencairan" name="periode_pencairan" :data="[
+            (object)['kode' => '1', 'nama' => '1 Bulan'],
+            (object)['kode' => '3', 'nama' => '3 Bulan'],
+            (object)['kode' => '6', 'nama' => '6 Bulan'],
+            (object)['kode' => '12', 'nama' => '12 Bulan']
+        ]" key="kode" textShow="nama" hideLabel="true" />
     </div>
     <div class="form-group">
-        <select name="tipe_reward" id="tipe_reward" class="form-select">
-            <option value="">Type Reward</option>
-            <option value="1">Quantity</option>
-            <option value="2">Flat</option>
-        </select>
+        <x-select label="Type Reward" name="tipe_reward" :data="[
+            (object)['kode' => '1', 'nama' => 'Quantity'],
+            (object)['kode' => '2', 'nama' => 'Flat']
+        ]" key="kode" textShow="nama" hideLabel="true" />
     </div>
     <x-input-with-icon label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM"
-        align="right" />
+        align="right" hideLabel="true" />
     <x-input-with-icon label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM"
-        align="right" />
+        align="right" hideLabel="true" />
     <x-input-with-icon label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM"
-        align="right" />
+        align="right" hideLabel="true" />
     <x-input-with-icon label="Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
-        readonly />
+        readonly hideLabel="true" />
     <div class="form-group mb-3">
-        <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
-            <option value="">Metode Pembayaran</option>
-            <option value="TN">Tunai</option>
-            <option value="TF">Transfer</option>
-            {{-- <option value="VC">Voucher</option> --}}
-        </select>
+        <x-select label="Metode Pembayaran" name="metode_pembayaran" :data="[
+            (object)['kode' => 'TN', 'nama' => 'Tunai'],
+            (object)['kode' => 'TF', 'nama' => 'Transfer']
+        ]" key="kode" textShow="nama" hideLabel="true" />
     </div>
     <x-input-file name="file_doc" label="Dokumen Kesepakatan" />
     <div class="form-group mb-3">

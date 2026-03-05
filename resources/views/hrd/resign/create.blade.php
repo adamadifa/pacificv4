@@ -1,10 +1,10 @@
 <form action="{{ route('resign.store') }}" method="POST" id="formResign">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_resign" disabled="true" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" />
-    <x-select label="Kategori JMK" name="kode_kategori" :data="$kategori_jmk" key="kode_kategori" textShow="nama_kategori" />
-    <x-input-with-icon icon="ti ti-file-text" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_resign" disabled="true" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" hideLabel="true" />
+    <x-select label="Kategori JMK" name="kode_kategori" :data="$kategori_jmk" key="kode_kategori" textShow="nama_kategori" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-file-text" label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-check mt-2">
         <input class="form-check-input" type="checkbox" name="pjp" id="pjp" value="1">
         <label class="form-check-label" for="pjp">

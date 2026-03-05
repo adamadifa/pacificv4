@@ -1,14 +1,14 @@
 <form action="{{ route('penilaiankaryawan.createpenilaian') }}" method="POST" id="formPenilaian">
     @csrf
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" hideLabel="true" />
-    <x-input-with-icon icon="ti ti-barcode" label="No. Kontrak" name="no_kontrak" readonly="true" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. Kontrak" name="no_kontrak" readonly="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" disabled="true" />
+            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" disabled="true" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" disabled="true" />
+            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" disabled="true" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-3">

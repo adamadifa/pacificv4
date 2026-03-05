@@ -1,13 +1,13 @@
 <form action="{{ route('jadwalshift.update', Crypt::encrypt($jadwalshift->kode_jadwalshift)) }}" method="POST" id="formJadwalShift">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="{{ $jadwalshift->kode_jadwalshift }}" disabled="true" name="kode_jadwalshift" />
+    <x-input-with-icon icon="ti ti-barcode" label="{{ $jadwalshift->kode_jadwalshift }}" disabled="true" name="kode_jadwalshift" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$jadwalshift->dari" />
+            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$jadwalshift->dari" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$jadwalshift->sampai" />
+            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" :value="$jadwalshift->sampai" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-0">

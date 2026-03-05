@@ -1,9 +1,9 @@
 <form action="{{ route('barangmasukmtc.store') }}" method="POST" id="formBarangMasuk">
     @csrf
-    <x-input-with-icon icon="ti ti-file-text" label="No Bukti" name="no_bukti" required />
+    <x-input-with-icon icon="ti ti-file-text" label="No Bukti" name="no_bukti" hideLabel="true" />
 
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" value="{{ date('Y-m-d') }}"
-        datepicker="flatpickr-date" required />
+        datepicker="flatpickr-date" hideLabel="true" />
 
     <div class="divider text-start">
         <div class="divider-text">Detail Barang</div>
@@ -11,22 +11,11 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <select class="form-select select2Barang" id="kode_barang">
-                <option value="">Pilih Barang</option>
-                @php
-
-                @endphp
-                @foreach ($barang as $b)
-                    <option value="{{ $b->kode_barang }}">
-                        {{ $b->kode_barang }} | {{ strtoupper($b->nama_barang) }}
-                        ({{ strtoupper($b->satuan) }})
-                    </option>
-                @endforeach
-            </select>
+            <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang" select2="select2Barang" showKey="true" hideLabel="true" />
         </div>
 
         <div class="col-lg-3">
-            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" numberFormat="true" align="right" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" numberFormat="true" align="right" hideLabel="true" />
         </div>
 
         <div class="col-lg-1">
@@ -36,7 +25,7 @@
         </div>
     </div>
 
-    <x-input-with-icon icon="ti ti-notes" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-notes" label="Keterangan" name="keterangan" hideLabel="true" />
 
     <div class="table-responsive mt-3">
         <table class="table table-bordered" id="tableDetail">

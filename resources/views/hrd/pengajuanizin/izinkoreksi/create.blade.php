@@ -1,10 +1,10 @@
 <form action="{{ route('izinkoreksi.store') }}" method="POST" id="formIzin">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin" disabled="true" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin" disabled="true" hideLabel="true" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" hideLabel="true" />
     <div class="row">
         <div class="col">
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-3">
@@ -24,14 +24,14 @@
     </div>
     <div class="row">
         <div class="col">
-            <x-input-with-icon icon="ti ti-clock" label="Jam Masuk" name="jam_masuk" />
+            <x-input-with-icon icon="ti ti-clock" label="Jam Masuk" name="jam_masuk" hideLabel="true" />
         </div>
         <div class="col">
-            <x-input-with-icon icon="ti ti-clock" label="Jam Pulang" name="jam_pulang" />
+            <x-input-with-icon icon="ti ti-clock" label="Jam Pulang" name="jam_pulang" hideLabel="true" />
         </div>
     </div>
 
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

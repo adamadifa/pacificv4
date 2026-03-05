@@ -23,7 +23,7 @@
                                         <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
                                             key="kode_cabang" textShow="nama_cabang" upperCase="true"
                                             selected="{{ Request('kode_cabang_search') }}"
-                                            select2="select2Kodecabangsearch" />
+                                            select2="select2Kodecabangsearch" hideLabel="true" />
                                     </div>
                                 </div>
                             @endrole

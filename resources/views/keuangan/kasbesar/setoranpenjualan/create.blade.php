@@ -8,10 +8,10 @@
     <input type="hidden" name="giro_to_cash" id="giro_to_cash">
     <input type="hidden" name="giro_to_transfer" id="giro_to_transfer">
 
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal LHP" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal LHP" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     @hasanyrole($roles_show_cabang)
         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-            select2="select2Kodecabang" />
+            select2="select2Kodecabang" hideLabel="true" />
     @endhasanyrole
     <div class="form-group mb-3">
         <select name="kode_salesman" id="kode_salesman" class="select2Kodesalesman form-select">
@@ -41,9 +41,9 @@
             <i class="ti ti-file-description me-2"></i> SETORAN
         </div>
     </div>
-    <x-input-with-icon label="Setoran Kertas" name="setoran_kertas" money="true" align="right" icon="ti ti-moneybag" />
-    <x-input-with-icon label="Setoran Logam" name="setoran_logam" money="true" align="right" icon="ti ti-moneybag" />
-    <x-input-with-icon label="Setoran Lainnya" name="setoran_lainnya" money="true" align="right" icon="ti ti-moneybag" />
+    <x-input-with-icon label="Setoran Kertas" name="setoran_kertas" money="true" align="right" icon="ti ti-moneybag" hideLabel="true" />
+    <x-input-with-icon label="Setoran Logam" name="setoran_logam" money="true" align="right" icon="ti ti-moneybag" hideLabel="true" />
+    <x-input-with-icon label="Setoran Lainnya" name="setoran_lainnya" money="true" align="right" icon="ti ti-moneybag" hideLabel="true" />
     <table class="table mb-3">
         <tr>
             <th>Setoran Giro</th>
@@ -71,7 +71,7 @@
         </tr>
 
     </table>
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

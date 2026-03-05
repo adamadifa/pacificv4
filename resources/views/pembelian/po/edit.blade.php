@@ -20,12 +20,12 @@
                     <div class="card">
                         <div class="card-body">
                             <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode"
-                                value="{{ $po->no_bukti }}" />
+                                value="{{ $po->no_bukti }}" hideLabel="true" />
                             <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar"
-                                datepicker="flatpickr-datepmb" value="{{ $po->tanggal }}" />
+                                datepicker="flatpickr-datepmb" value="{{ $po->tanggal }}" hideLabel="true" />
                             <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier"
                                 textShow="nama_supplier" upperCase="true" select2="select2Kodesupplier"
-                                selected="{{ $po->kode_supplier }}" />
+                                selected="{{ $po->kode_supplier }}" hideLabel="true" />
                             <div class="form-group mb-3">
                                 <small class="text-light fw-medium d-block mb-2 mt-2">Kategori Perusahaan</small>
                                 <div class="form-check form-check-inline ">
@@ -65,20 +65,20 @@
                             <div class="row">
                                 <div class="col-lg-3 col-md-12 col-sm-12">
                                     <x-input-with-icon label="Nama Barang" name="nama_barang" icon="ti ti-barcode"
-                                        readonly="true" />
+                                        readonly="true" hideLabel="true" />
                                     <input type="hidden" id="kode_barang" name="kode_barang">
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" align="right"
-                                        numberFormat="true" />
+                                        numberFormat="true" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag"
-                                        align="right" numberFormat="true" />
+                                        align="right" numberFormat="true" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-5 col-md-12 col-sm-12">
                                     <x-input-with-icon label="Keterangan" name="keterangan"
-                                        icon="ti ti-file-description" />
+                                        icon="ti ti-file-description" hideLabel="true" />
                                 </div>
                             </div>
                             <div class="row">

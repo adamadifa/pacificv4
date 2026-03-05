@@ -21,29 +21,25 @@
                             <form action="{{ url()->current() }}">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="bulan_search" id="bulan_search" class="form-select">
-                                                <option value="">Bulan</option>
-                                                @foreach ($list_bulan as $d)
-                                                    <option {{ Request('bulan_search') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                        value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                        @php
+                                            $bulan_data = collect($list_bulan)->map(function ($item) {
+                                                return (object) $item;
+                                            });
+                                        @endphp
+                                        <x-select label="Bulan" name="bulan_search" :data="$bulan_data" key="kode_bulan"
+                                            textShow="nama_bulan" selected="{{ Request('bulan_search') }}" hideLabel="true" />
                                     </div>
                                     <div class="col-lg-4 col-sm-12 col-md-12">
-                                        <div class="form-group mb-3">
-                                            <select name="tahun_search" id="tahun_search" class="form-select">
-                                                <option value="">Tahun</option>
-                                                @for ($t = $start_year; $t <= date('Y') + 1; $t++)
-                                                    <option
-                                                        @if (!empty(Request('tahun_search'))) {{ Request('tahun_search') == $t ? 'selected' : '' }}
-                                                    @else
-                                                    {{ date('Y') == $t ? 'selected' : '' }} @endif
-                                                        value="{{ $t }}">{{ $t }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
+                                        @php
+                                            $tahun_data = [];
+                                            for ($t = $start_year; $t <= date('Y') + 1; $t++) {
+                                                $tahun_data[] = (object) ['tahun' => $t];
+                                            }
+                                        @endphp
+                                        <x-select label="Tahun" name="tahun_search" :data="$tahun_data" key="tahun"
+                                            textShow="tahun"
+                                            selected="{{ !empty(Request('tahun_search')) ? Request('tahun_search') : date('Y') }}"
+                                            hideLabel="true" />
                                     </div>
                                     <div class="col-lg-2 col-sm-12 col-md-12">
                                         <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i></button>

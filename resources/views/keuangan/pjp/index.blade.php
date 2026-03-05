@@ -39,21 +39,21 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-lg-3 col-md-6 col-sm-12">
                             <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                datepicker="flatpickr-date" />
+                                datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12">
                             <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                datepicker="flatpickr-date" />
+                                datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         @hasanyrole($roles_show_cabang_pjp)
                             <div class="col-lg-3 col-md-6 col-sm-12">
                                 <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                    selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" />
+                                    selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" hideLabel="true" />
                             </div>
                         @endhasanyrole
                         <div class="{{ auth()->user()->hasAnyRole($roles_show_cabang_pjp) ? 'col-lg-2' : 'col-lg-5' }} col-md-12 col-sm-12">
                             <x-input-with-icon label="Nama Karyawan" value="{{ Request('nama_karyawan_search') }}"
-                                name="nama_karyawan_search" icon="ti ti-user" />
+                                name="nama_karyawan_search" icon="ti ti-user" hideLabel="true" />
                         </div>
                         <div class="col-lg-1 col-md-12 col-sm-12 text-end">
                             <div class="form-group mb-3">

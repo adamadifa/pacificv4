@@ -43,6 +43,9 @@
                                 type="checkbox" id="itemvalidasi{{ $d->kode_item }}"
                                 {{ in_array($d->kode_item, $kode_item_cek) ? 'checked' : '' }} />
                             <label class="form-check-label" for="itemvalidasi{{ $d->kode_item }}"> {{ $d->item }} </label>
+                            @php
+                                // Note: hideLabel does not apply to checkboxes naturally but keeping consistency
+                            @endphp
                         </div>
                     </div>
                 </div>

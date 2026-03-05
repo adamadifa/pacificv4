@@ -23,33 +23,31 @@
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
                                             <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                                upperCase="true" selected="{{ Request('kode_cabang') }}" select2="select2Kodecabang" />
+                                                upperCase="true" selected="{{ Request('kode_cabang') }}" select2="select2Kodecabang" hideLabel="true" />
                                         </div>
                                     </div>
                                 @endrole
                                 <div class="form-group">
-                                    <select name="kode_program" id="kode_program" class="form-select">
-                                        <option value="">Semua Program</option>
-                                        <option value="PR001" {{ Request('kode_program') == 'PR001' ? 'selected' : '' }}>BB & DP</option>
-                                        <option value="PR002" {{ Request('kode_program') == 'PR002' ? 'selected' : '' }}>AIDA</option>
-                                    </select>
+                                    <x-select label="Semua Program" name="kode_program" :data="[
+                                        (object)['kode' => 'PR001', 'nama' => 'BB & DP'],
+                                        (object)['kode' => 'PR002', 'nama' => 'AIDA']
+                                    ]" key="kode" textShow="nama" selected="{{ Request('kode_program') }}" hideLabel="true" />
                                 </div>
                                 <div class="form-group mb-3">
-                                    <select name="status" id="status" class="form-select">
-                                        <option value="">Semua Status</option>
-                                        <option value="pending" {{ Request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="approved" {{ Request('status') == 'approved' ? 'selected' : '' }}>Disetujui</option>
-                                        <option value="rejected" {{ Request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
-                                    </select>
+                                    <x-select label="Semua Status" name="status" :data="[
+                                        (object)['kode' => 'pending', 'nama' => 'Pending'],
+                                        (object)['kode' => 'approved', 'nama' => 'Disetujui'],
+                                        (object)['kode' => 'rejected', 'nama' => 'Ditolak']
+                                    ]" key="kode" textShow="nama" selected="{{ Request('status') }}" hideLabel="true" />
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                 </div>
                                 <div class="row">

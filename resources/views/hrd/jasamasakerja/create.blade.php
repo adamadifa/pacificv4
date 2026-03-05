@@ -1,9 +1,9 @@
 <form action="{{ route('jasamasakerja.store') }}" method="POST" id="formJasamasakerja">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_jmk" disabled="true" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" />
-    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah" name="jumlah" money="true" align="right" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_jmk" disabled="true" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah" name="jumlah" money="true" align="right" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

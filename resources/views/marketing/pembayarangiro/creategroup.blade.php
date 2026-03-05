@@ -1,7 +1,7 @@
 <form action="{{ route('pembayarangiro.storegroup') }}" method="POST" id="formCreategrouptransfer">
     @csrf
-    <x-input-with-icon label="Auto" icon="ti ti-barcode" disabled="true" name="kode_giro" />
-    <x-input-with-icon label="Tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" name="tanggal" />
+    <x-input-with-icon label="Auto" icon="ti ti-barcode" disabled="true" name="kode_giro" hideLabel="true" />
+    <x-input-with-icon label="Tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" name="tanggal" hideLabel="true" />
     <div class="input-group mb-3">
         <input type="text" class="form-control" name="kode_pelanggan" id="kode_pelanggan" readonly placeholder="Kode Pelanggan"
             aria-label="Kode Pelanggan" aria-describedby="kode_pelanggan_search">
@@ -32,15 +32,15 @@
     </div>
     <div class="row">
         <div class="col">
-            <x-input-with-icon icon="ti ti-barcode" label="No. Giro" name="no_giro" />
+            <x-input-with-icon icon="ti ti-barcode" label="No. Giro" name="no_giro" hideLabel="true" />
             <div class="form-group mb-3">
                 <select name="kode_salesman" id="kode_salesman" class="form-select select2Kodesalesman">
                     <option value="">Salesman Penagih</option>
                 </select>
             </div>
-            <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" />
-            <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo" datepicker="flatpickr-date" />
-            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+            <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo" datepicker="flatpickr-date" hideLabel="true" />
+            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
         </div>
     </div>
     <div class="divider text-start">
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="col-lg-4 col-sm-12 col-md-12">
-            <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
+            <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-sm-12 col-md-12">
             <div class="form-group mb-3">

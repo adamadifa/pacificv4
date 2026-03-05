@@ -1,7 +1,7 @@
 <form action="{{ route('pjp.store') }}" id="formPJP" method="POST">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_pjp" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_pjp" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="divider">
         <div class="divider-text">Data Karyawan</div>
     </div>
@@ -443,10 +443,10 @@
                         </div>`);
                     } else {
                         $("#loadpjp").html(`
-                        <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" />
-                        <x-input-with-icon label="Jumlah Cicilan" name="angsuran" icon="ti ti-box" align="right" />
-                        <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" readonly="true" />
-                        <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" readonly="true" />
+                        <x-input-with-icon label="Jumlah Pinjaman" icon="ti ti-moneybag" name="jumlah_pinjaman" align="right" money="true" hideLabel="true" />
+                        <x-input-with-icon label="Jumlah Cicilan" name="angsuran" icon="ti ti-box" align="right" hideLabel="true" />
+                        <x-input-with-icon label="Jumlah Angsuran / Bulan" name="jumlah_angsuran" icon="ti ti-moneybag" align="right" readonly="true" hideLabel="true" />
+                        <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" readonly="true" hideLabel="true" />
                         <div class="form-group mb-3">
                             <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
                         </div>

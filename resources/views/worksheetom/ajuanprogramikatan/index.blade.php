@@ -20,36 +20,30 @@
                         <div class="col-12">
                             <form action="{{ route('ajuanprogramikatan.index') }}">
                                 @hasanyrole($roles_show_cabang)
-                                    <div class="form-group mb-3">
-                                        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
-                                            <option value="">Semua Cabang</option>
-                                            @foreach ($cabang as $d)
-                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
-                                                    {{ textUpperCase($d->nama_cabang) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
+                                        upperCase="true" select2="select2Kodecabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                                 @endrole
                                 {{-- <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
                                     icon="ti ti-barcode" /> --}}
                                 <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
-                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
-                                <div class="form-group mb-3">
-                                    <select name="status" id="status" class="form-select">
-                                        <option value="">Semua Status</option>
-                                        <option value="pending" {{ Request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="approved" {{ Request('status') == 'approved' ? 'selected' : '' }}>Disetujui</option>
-                                        <option value="rejected" {{ Request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
-                                    </select>
-                                </div>
+                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" hideLabel="true" />
+                                @php
+                                    $status_data = [
+                                        (object) ['kode' => 'pending', 'nama' => 'Pending'],
+                                        (object) ['kode' => 'approved', 'nama' => 'Disetujui'],
+                                        (object) ['kode' => 'rejected', 'nama' => 'Ditolak'],
+                                    ];
+                                @endphp
+                                <x-select label="Semua Status" name="status" :data="$status_data" key="kode" textShow="nama"
+                                    selected="{{ Request('status') }}" hideLabel="true" />
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                 </div>
                                 <div class="row">

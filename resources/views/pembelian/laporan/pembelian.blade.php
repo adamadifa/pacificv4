@@ -1,7 +1,7 @@
 <form action="{{ route('laporanpembelian.cetakpembelian') }}" method="POST" id="formLapPembelian" target="_blank">
     @csrf
     <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
-        select2="select2Kodesupplier" />
+        select2="select2Kodesupplier" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_asal_pengajuan" id="kode_asal_pengajuan" class="form-select">
             <option value="">Semua Asal Ajuan</option>
@@ -21,10 +21,10 @@
     </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

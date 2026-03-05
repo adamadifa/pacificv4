@@ -8,7 +8,7 @@
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-12 col-md-12 col-sm-12">
                         <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                            select2="select2Kodecabang" showKey="true" upperCase="true" :selected="$settingkomisidriverhelper->kode_cabang" />
+                            select2="select2Kodecabang" showKey="true" upperCase="true" :selected="$settingkomisidriverhelper->kode_cabang" hideLabel="true" />
                     </div>
 
                     <div class="col-lg-12 col-sm-12 col-md-12">
@@ -58,10 +58,10 @@
                     </div>
                 @endhasanyrole
             </div>
-            <x-input-with-icon icon="ti ti-moneybag" label="Komisi Salesman" name="komisi_salesman" align="right" money="true" :value="formatAngka($settingkomisidriverhelper->komisi_salesman)" />
-            <x-input-with-icon icon="ti ti-file-description" label="Qty Flat" name="qty_flat" align="right" :value="formatAngka($settingkomisidriverhelper->qty_flat)" />
-            <x-input-with-icon icon="ti ti-file-description" label="UMK" name="umk" align="right" :value="formatAngka($settingkomisidriverhelper->umk)" />
-            <x-input-with-icon icon="ti ti-percentage" label="Persentase" name="persentase" align="right" :value="formatAngka($settingkomisidriverhelper->persentase)" />
+            <x-input-with-icon icon="ti ti-moneybag" label="Komisi Salesman" name="komisi_salesman" align="right" money="true" :value="formatAngka($settingkomisidriverhelper->komisi_salesman)" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-file-description" label="Qty Flat" name="qty_flat" align="right" :value="formatAngka($settingkomisidriverhelper->qty_flat)" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-file-description" label="UMK" name="umk" align="right" :value="formatAngka($settingkomisidriverhelper->umk)" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-percentage" label="Persentase" name="persentase" align="right" :value="formatAngka($settingkomisidriverhelper->persentase)" hideLabel="true" />
         </div>
     </div>
 

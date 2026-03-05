@@ -23,12 +23,12 @@
     <div class="row">
         <div class="col-6">
             <div class="form-group mb-3">
-                <x-input-with-icon icon="ti ti-calendar" datepicker="flatpickr-date" name="dari_tanggal" />
+                <x-input-with-icon icon="ti ti-calendar" datepicker="flatpickr-date" name="dari_tanggal" hideLabel="true" />
             </div>
         </div>
         <div class="col-6">
             <div class="form-group mb-3">
-                <x-input-with-icon icon="ti ti-calendar" datepicker="flatpickr-date" name="sampai_tanggal" />
+                <x-input-with-icon icon="ti ti-calendar" datepicker="flatpickr-date" name="sampai_tanggal" hideLabel="true" />
             </div>
         </div>
     </div>

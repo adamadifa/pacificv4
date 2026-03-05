@@ -4,8 +4,8 @@
     <input type="hidden" name="cek_foto_owner" id="cek_foto_owner">
     <div class="row">
         <div class="col-lg-5 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_pengajuan" />
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_pengajuan" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
             <div class="divider">
                 <div class="divider-text">Data Pelanggan</div>
             </div>
@@ -15,12 +15,12 @@
                 <a class="btn btn-primary waves-effect" id="kode_pelanggan_search"><i class="ti ti-search text-white"></i></a>
             </div>
 
-            <x-input-with-icon icon="ti ti-credit-card" label="NIK" name="nik" />
-            <x-input-with-icon icon="ti ti-user" label="Nama Pelanggan" name="nama_pelanggan" />
-            <x-textarea label="Alamat Pelanggan" name="alamat_pelanggan" />
-            <x-input-with-icon icon="ti ti-phone" label="No. HP" name="no_hp_pelanggan" />
-            <x-input-with-icon icon="ti ti-building" label="Cabang" name="nama_cabang" disabled="true" />
-            <x-input-with-icon icon="ti ti-user" label="Salesman" name="nama_salesman" disabled="true" />
+            <x-input-with-icon icon="ti ti-credit-card" label="NIK" name="nik" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-user" label="Nama Pelanggan" name="nama_pelanggan" hideLabel="true" />
+            <x-textarea label="Alamat Pelanggan" name="alamat_pelanggan" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-phone" label="No. HP" name="no_hp_pelanggan" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-building" label="Cabang" name="nama_cabang" disabled="true" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-user" label="Salesman" name="nama_salesman" disabled="true" hideLabel="true" />
 
 
 
@@ -37,8 +37,8 @@
                     <option value="Minggu">Minggu</option>
                 </select>
             </div>
-            <x-input-with-icon icon="ti ti-map-pin" label="Titik Koordinat" name="lokasi" />
-            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Ajuan Limit" name="jumlah" align="right" money="true" />
+            <x-input-with-icon icon="ti ti-map-pin" label="Titik Koordinat" name="lokasi" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Ajuan Limit" name="jumlah" align="right" money="true" hideLabel="true" />
 
             <div class="form-group mb-3">
                 <select name="ljt" id="ljt" class="form-select">
@@ -137,10 +137,10 @@
                     <option value="HT03"> > 14 Hari</option>
                 </select>
             </div>
-            <x-input-with-icon label="Terakhir Top UP" name="topup_terakhir" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Terakhir Top UP" name="topup_terakhir" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
             <input type="hidden" id="lama_topup" name="lama_topup">
             <span id="usia_topup" class="mb-3"></span>
-            <x-input-with-icon icon="ti ti-moneybag" label="Omset Toko" name="omset_toko" align="right" money="true" />
+            <x-input-with-icon icon="ti ti-moneybag" label="Omset Toko" name="omset_toko" align="right" money="true" hideLabel="true" />
             <div class="divider">
                 <div class="divider-text">Faktur Belum Lunas</div>
             </div>
@@ -176,7 +176,7 @@
                 </div>
             </div>
 
-            <x-textarea label="Uraian Analisa" name="uraian_analisa" />
+            <x-textarea label="Uraian Analisa" name="uraian_analisa" hideLabel="true" />
             <div class="form-group mb-3">
                 <label>Referensi</label><br>
                 <div class="form-check form-check-inline">
@@ -202,7 +202,7 @@
             </div>
             <div class="row" id="ket_ref">
                 <div class="col">
-                    <x-input-with-icon icon="ti ti-user" label="Keterangan Referensi" name="ket_referensi" />
+                    <x-input-with-icon icon="ti ti-user" label="Keterangan Referensi" name="ket_referensi" hideLabel="true" />
                 </div>
             </div>
 

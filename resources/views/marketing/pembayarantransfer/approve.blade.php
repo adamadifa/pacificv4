@@ -83,7 +83,7 @@
                 </select>
             </div>
             <div class="form-group mb-3" id="tgl">
-                <x-input-with-icon label="Tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" name="tanggal" />
+                <x-input-with-icon label="Tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" name="tanggal" hideLabel="true" />
             </div>
             <div class="form-group mb-3" id="bank">
                 <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">

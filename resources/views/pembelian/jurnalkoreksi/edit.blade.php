@@ -3,7 +3,7 @@
     @csrf
     @method('PUT')
     <x-input-with-icon label="Tanggal" icon="ti ti-calendar" name="tanggal" datepicker="flatpickr-date"
-        value="{{ $jurnalkoreksi->tanggal }}" />
+        value="{{ $jurnalkoreksi->tanggal }}" hideLabel="true" />
     <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
         select2="select2Kodesupplier" selected="{{ $pembelian->kode_supplier }}" />
     <div class="form-group mb-3">
@@ -19,11 +19,11 @@
         </select>
     </div>
     <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description"
-        value="{{ $jurnalkoreksi->keterangan }}" />
+        value="{{ $jurnalkoreksi->keterangan }}" hideLabel="true" />
     <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" numberFormat="true"
-        value="{{ formatAngkaDesimal($jurnalkoreksi->jumlah) }}" />
+        value="{{ formatAngkaDesimal($jurnalkoreksi->jumlah) }}" hideLabel="true" />
     <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right" numberFormat="true"
-        value="{{ formatAngkaDesimal($jurnalkoreksi->harga) }}" />
+        value="{{ formatAngkaDesimal($jurnalkoreksi->harga) }}" hideLabel="true" />
     <x-input-with-icon label="Total" name="total" icon="ti ti-moneybag" align="right" numberFormat="true"
         disabled="true" value="{{ formatAngkaDesimal($jurnalkoreksi->jumlah * $jurnalkoreksi->harga) }}" />
     <div class="form-group mb-3">

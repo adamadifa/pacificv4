@@ -1,7 +1,7 @@
 <form action="{{ route('coa.store') }}" method="POST" id="formCoa">
     @csrf
-    <x-input-with-icon label="Kode Akun" name="kode_akun" icon="ti ti-barcode" />
-    <x-input-with-icon label="Nama Akun" name="nama_akun" icon="ti ti-file-description" />
+    <x-input-with-icon label="Kode Akun" name="kode_akun" icon="ti ti-barcode" hideLabel="true" />
+    <x-input-with-icon label="Nama Akun" name="nama_akun" icon="ti ti-file-description" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="sub_akun" id="sub_akun" class="form-select select2Kodeakun">
             <option value="">Parent Account</option>

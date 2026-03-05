@@ -1,19 +1,21 @@
 <form action="{{ route('laporanga.cetakservicekendaraan') }}" method="POST" id="formLapServicekendaraan" target="_blank">
     @csrf
-    <div class="form-group mb-3">
-        <select name="kode_kendaraan" id="kode_kendaraan" class="form-select select2Kendaraan">
-            <option value="">Semua Kendaraan</option>
-            @foreach ($kendaraan as $d)
-                <option value="{{ $d->kode_kendaraan }}">{{ $d->no_polisi }} {{ $d->merek }} {{ $d->tipe }} {{ $d->tipe_kendaraan }}</option>
-            @endforeach
-        </select>
-    </div>
+    @php
+        $kendaraan_data = $kendaraan->map(function ($d) {
+            return (object) [
+                'kode_kendaraan' => $d->kode_kendaraan,
+                'nama_kendaraan' => $d->no_polisi . ' ' . $d->merek . ' ' . $d->tipe . ' ' . $d->tipe_kendaraan,
+            ];
+        });
+    @endphp
+    <x-select label="Semua Kendaraan" name="kode_kendaraan" :data="$kendaraan_data" key="kode_kendaraan" textShow="nama_kendaraan"
+        select2="select2Kendaraan" hideLabel="true" allOption="true" allOptionLabel="Semua Kendaraan" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

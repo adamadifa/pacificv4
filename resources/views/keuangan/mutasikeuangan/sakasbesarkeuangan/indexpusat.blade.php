@@ -33,11 +33,11 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-lg-4 col-md-6">
                             <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
-                                icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
-                                icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         <div class="col-lg-2">
                             <div class="form-group mb-3">

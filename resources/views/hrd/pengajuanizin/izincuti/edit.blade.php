@@ -1,15 +1,15 @@
 <form action="{{ route('izincuti.update', Crypt::encrypt($izincuti->kode_izin_cuti)) }}" method="POST" id="formIzin" enctype="multipart/form-data">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin_cuti" disabled="true" value="{{ $izincuti->kode_izin_cuti }}" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin_cuti" disabled="true" value="{{ $izincuti->kode_izin_cuti }}" hideLabel="true" />
     <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
-        selected="{{ $izincuti->nik }}" disabled="true" />
+        selected="{{ $izincuti->nik }}" disabled="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" value="{{ $izincuti->dari }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" value="{{ $izincuti->dari }}" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" value="{{ $izincuti->sampai }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" value="{{ $izincuti->sampai }}" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-3">
@@ -30,8 +30,8 @@
             @endforeach
         </select>
     </div>
-    <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" />
-    <x-textarea label="Keterangan" name="keterangan" value="{{ $izincuti->keterangan }}" />
+    <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" value="{{ $izincuti->keterangan }}" hideLabel="true" />
     <x-input-file name="doc_cuti" label="doc_cuti" />
     <div class="row mb-3 mt-2">
         <div class="col">

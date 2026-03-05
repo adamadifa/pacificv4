@@ -2,17 +2,17 @@
     @csrf
     @hasanyrole($roles_show_cabang_pjp)
         <x-select label="Pilih Cabang" name="kode_cabang_pinjaman" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-            select2="select2Kodecabangpinjaman" />
+            select2="select2Kodecabangpinjaman" hideLabel="true" />
         <x-select label="Semua Departemen" name="kode_dept_pinjaman" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
-            select2="select2Kodedeptpinjaman" />
+            select2="select2Kodedeptpinjaman" hideLabel="true" />
     @endrole
 
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

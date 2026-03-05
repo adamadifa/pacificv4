@@ -89,6 +89,11 @@ class PencairanProgramIkatan2026Controller extends Controller
         $data['cabang'] = $cabang;
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         $data['roles_show_cabang'] = config('global.roles_show_cabang');
+        $list_tahun = [];
+        for ($t = config('global.start_year'); $t <= date('Y'); $t++) {
+            $list_tahun[] = $t;
+        }
+        $data['list_tahun'] = $list_tahun;
         return view('worksheetom.pencairanprogramikatan2026.create', $data);
     }
 

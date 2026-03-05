@@ -1,39 +1,29 @@
+@php
+    $bulan_pilihan = collect($list_bulan)->map(function ($item) {
+        return (object) $item;
+    });
+
+    $tahun_pilihan = [];
+    for ($t = $start_year; $t <= date('Y'); $t++) {
+        $tahun_pilihan[] = (object) ['tahun' => $t];
+    }
+@endphp
+
 <form action="{{ route('laporanmtc.cetakbahanbakar') }}" method="POST" id="formLapBahanBakar" target="_blank">
     @csrf
     <div class="row">
         <div class="col-12">
-            <div class="form-group mb-3">
-                <select name="kode_barang" id="kode_barang" class="form-select">
-                    <option value="">Pilih Barang</option>
-                    @foreach ($barang as $d)
-                        <option value="{{ $d->kode_barang }}">{{ $d->kode_barang }} - {{ $d->nama_barang }}</option>
-                    @endforeach
-                </select>
-            </div>
+            <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang" showKey="true" hideLabel="true" />
         </div>
     </div>
     <div class="row mt-2">
         <div class="col-12">
-            <div class="form-group mb-3">
-                <select name="bulan" id="bulan" class="form-select">
-                    <option value="">Bulan</option>
-                    @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                    @endforeach
-                </select>
-            </div>
+            <x-select label="Bulan" name="bulan" :data="$bulan_pilihan" key="kode_bulan" textShow="nama_bulan" hideLabel="true" />
         </div>
     </div>
     <div class="row mt-2">
         <div class="col-12">
-            <div class="form-group mb-3">
-                <select name="tahun" id="tahun" class="form-select">
-                    <option value="">Tahun</option>
-                    @for ($t = $start_year; $t <= date('Y'); $t++)
-                        <option value="{{ $t }}">{{ $t }}</option>
-                    @endfor
-                </select>
-            </div>
+            <x-select label="Tahun" name="tahun" id="tahun" :data="$tahun_pilihan" key="tahun" textShow="tahun" hideLabel="true" />
         </div>
     </div>
 

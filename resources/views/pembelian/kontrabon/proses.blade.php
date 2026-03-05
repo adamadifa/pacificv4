@@ -57,7 +57,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" icon="ti ti-calendar" />
+            <x-input-with-icon label="Tanggal" name="tanggal" datepicker="flatpickr-date" icon="ti ti-calendar" hideLabel="true" />
             <div class="form-group mb-3">
                 <select name="kode_bank" id="kode_bank" class="form-select select2Kodebank">
                     <option value="">Bank</option>
@@ -75,9 +75,9 @@
                 </select>
             </div>
             <div class="row" id="kaskecil">
-                <x-input-with-icon label="No. BKK" name="no_bkk" icon="ti ti-file-barcode" />
+                <x-input-with-icon label="No. BKK" name="no_bkk" icon="ti ti-file-barcode" hideLabel="true" />
             </div>
-            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
             <div class="row form-group mb-3">
                 <div class="col-12">
                     <div class="form-check mt-3 mb-2">

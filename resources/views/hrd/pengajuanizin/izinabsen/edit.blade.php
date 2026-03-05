@@ -1,19 +1,19 @@
 <form action="{{ route('izinabsen.update', Crypt::encrypt($izinabsen->kode_izin)) }}" method="POST" id="formIzin">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin" disabled="true" :value="$izinabsen->kode_izin" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin" disabled="true" :value="$izinabsen->kode_izin" hideLabel="true" />
     <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
-        :selected="$izinabsen->nik" disabled="true" />
+        :selected="$izinabsen->nik" disabled="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" :value="$izinabsen->dari" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" :value="$izinabsen->dari" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" :value="$izinabsen->sampai" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" :value="$izinabsen->sampai" hideLabel="true" />
         </div>
     </div>
-    <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" />
-    <x-textarea label="Keterangan" name="keterangan" :value="$izinabsen->keterangan" />
+    <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" :value="$izinabsen->keterangan" hideLabel="true" />
     <div class="form-group">
         <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

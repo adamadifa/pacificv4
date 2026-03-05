@@ -25,11 +25,11 @@
             <div class="row g-2 mb-1 align-items-end">
                 <div class="col-lg-3 col-md-12 col-sm-12">
                     <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date"
-                        :value="Request('dari')" />
+                        :value="Request('dari')" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-12 col-sm-12">
                     <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date"
-                        :value="Request('sampai')" />
+                        :value="Request('sampai')" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-12 col-sm-12">
                     <div class="form-group mb-1">
@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-lg-3 col-md-12 col-sm-12">
                     <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept"
-                        upperCase="true" selected="{{ Request('kode_dept') }}" />
+                        upperCase="true" selected="{{ Request('kode_dept') }}" hideLabel="true" />
                 </div>
             </div>
             <div class="row g-2 mb-1 align-items-end">

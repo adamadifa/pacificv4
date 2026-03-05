@@ -2,8 +2,8 @@
     @csrf
     {{-- {{ $kontrak->kode_jabatan }} --}}
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kontrak" value="{{ $kontrak->no_kontrak }}" disabled="true" />
-    <x-input-with-icon icon="ti ti-user" label="Karyawan" disabled="true" name="nik" value="{{ $kontrak->nik }}" disabled="true" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kontrak" value="{{ $kontrak->no_kontrak }}" disabled="true" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-user" label="Karyawan" disabled="true" name="nik" value="{{ $kontrak->nik }}" disabled="true" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_perusahaan" id="kode_perusahaan" class="form-select">
             <option value="">Perusahaan</option>
@@ -12,17 +12,17 @@
         </select>
     </div>
     <x-select label="Kantor" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-        select2="select2Kodecabang" selected="{{ $kontrak->kode_cabang }}" />
+        select2="select2Kodecabang" selected="{{ $kontrak->kode_cabang }}" hideLabel="true" />
     <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" select2="select2KodeDept" upperCase="true"
-        :selected="$kontrak->kode_dept" />
+        :selected="$kontrak->kode_dept" hideLabel="true" />
     <x-select label="Jabatan" name="kode_jabatan" :data="$jabatan" key="kode_jabatan" textShow="nama_jabatan" select2="select2KodeJabatan"
-        upperCase="true" :selected="$kontrak->kode_jabatan" />
+        upperCase="true" :selected="$kontrak->kode_jabatan" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Tanggal Mulai" name="dari" datepicker="flatpickr-date" icon="ti ti-calendar" :value="$kontrak->dari" />
+            <x-input-with-icon label="Tanggal Mulai" name="dari" datepicker="flatpickr-date" icon="ti ti-calendar" :value="$kontrak->dari" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Tanggal Selesai" name="sampai" datepicker="flatpickr-date" icon="ti ti-calendar" :value="$kontrak->sampai" />
+            <x-input-with-icon label="Tanggal Selesai" name="sampai" datepicker="flatpickr-date" icon="ti ti-calendar" :value="$kontrak->sampai" hideLabel="true" />
         </div>
     </div>
     <div class="divider">

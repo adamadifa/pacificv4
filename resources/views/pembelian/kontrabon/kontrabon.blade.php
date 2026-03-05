@@ -64,17 +64,17 @@
         <form action="{{ request()->url() }}" id="formSearch" method="GET">
             <div class="row g-2 mb-1">
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
             </div>
 
             <div class="row g-2 mb-1">
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <x-select label="Semua Supplier" name="kode_supplier_search" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
-                        upperCase="true" selected="{{ Request('kode_supplier_search') }}" select2="select2Kodesupplier" />
+                        upperCase="true" selected="{{ Request('kode_supplier_search') }}" select2="select2Kodesupplier" hideLabel="true" />
                 </div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <select name="status_search" id="status_search" class="form-select text-uppercase">

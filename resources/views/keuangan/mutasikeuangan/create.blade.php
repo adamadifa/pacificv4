@@ -19,10 +19,10 @@
             <i class="ti ti-file-description me-1"></i> Informasi Mutasi
         </div>
     </div>
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-    <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" />
-    <x-textarea label="Keterangan" name="keterangan" />
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+    <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" hideLabel="true" />
 
     <div class="form-group mb-3">
         <select name="debet_kredit" id="debet_kredit" class="form-select">

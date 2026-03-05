@@ -1,8 +1,8 @@
 <form action="{{ route('coa.update', Crypt::encrypt($coa->kode_akun)) }}" method="POST" id="formCoa">
     @csrf
     @method('PUT')
-    <x-input-with-icon label="Kode Akun" name="kode_akun" icon="ti ti-barcode" :value="$coa->kode_akun ?? ''" />
-    <x-input-with-icon label="Nama Akun" name="nama_akun" icon="ti ti-file-description" :value="$coa->nama_akun ?? ''" />
+    <x-input-with-icon label="Kode Akun" name="kode_akun" icon="ti ti-barcode" :value="$coa->kode_akun ?? ''" hideLabel="true" />
+    <x-input-with-icon label="Nama Akun" name="nama_akun" icon="ti ti-file-description" :value="$coa->nama_akun ?? ''" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="sub_akun" id="sub_akun" class="form-select select2Kodeakun">
             <option value="">Parent Account</option>

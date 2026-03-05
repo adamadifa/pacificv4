@@ -175,7 +175,7 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <x-textarea label="Catatan" name="catatan" />
+            <x-textarea label="Catatan" name="catatan" hideLabel="true" />
             <div class="form-group mb-3">
 
                 @if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager')

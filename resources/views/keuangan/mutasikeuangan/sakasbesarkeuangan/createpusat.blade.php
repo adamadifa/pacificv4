@@ -1,10 +1,10 @@
 <form action="{{ route('sakasbesarkeuangan.store') }}" method="POST" id="formLedger">
     @csrf
    <input type="hidden" name="kode_cabang" value="PST">
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
 
-    <x-textarea label="Keterangan" name="keterangan" />
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" hideLabel="true" />
     <div class="form-group">
         <select name="debet_kredit" id="debet_kredit" class="form-select">
             <option value="">Pilih Debet / Kredit</option>

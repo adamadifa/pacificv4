@@ -10,10 +10,10 @@
     <div class="row mb-3">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group" select2="select2Group"
-                upperCase="true" />
+                upperCase="true" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Nama Karyawan" name="nama_karyawan" icon="ti ti-user" />
+            <x-input-with-icon label="Nama Karyawan" name="nama_karyawan" icon="ti ti-user" hideLabel="true" />
         </div>
     </div>
 

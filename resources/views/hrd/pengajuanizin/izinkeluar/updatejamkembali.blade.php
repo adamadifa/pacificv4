@@ -54,7 +54,7 @@
         </div>
     </div>
     <x-input-with-icon label="Jam Kembali" name="jam_kembali" icon="ti ti-clock" datepicker="flatpickr-date"
-        value="{{ !empty($izinkeluar->jam_kembali) ? $izinkeluar->jam_kembali : '' }}" />
+        value="{{ !empty($izinkeluar->jam_kembali) ? $izinkeluar->jam_kembali : '' }}" hideLabel="true" />
 
     <div class="row mt-3">
         <div class="col">

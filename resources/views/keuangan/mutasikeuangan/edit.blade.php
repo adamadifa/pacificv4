@@ -19,12 +19,12 @@
         </div>
     </div>
     <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date"
-        :value="$mutasikeuangan->tanggal" />
-    <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" :value="$mutasikeuangan->no_bukti" />
+        :value="$mutasikeuangan->tanggal" hideLabel="true" />
+    <x-input-with-icon label="No. Bukti" name="no_bukti" icon="ti ti-barcode" :value="$mutasikeuangan->no_bukti" hideLabel="true" />
 
-    <x-textarea label="Keterangan" name="keterangan" :value="$mutasikeuangan->keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" :value="$mutasikeuangan->keterangan" hideLabel="true" />
     <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true"
-        :value="formatAngka($mutasikeuangan->jumlah)" />
+        :value="formatAngka($mutasikeuangan->jumlah)" hideLabel="true" />
 
     <div class="form-group mb-3">
         <select name="debet_kredit" id="debet_kredit" class="form-select">

@@ -34,7 +34,7 @@
             </table>
         </div>
     </div>
-    <x-input-with-icon label="Link Bukti" name="bukti" icon="ti ti-link" />
+    <x-input-with-icon label="Link Bukti" name="bukti" icon="ti ti-link" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

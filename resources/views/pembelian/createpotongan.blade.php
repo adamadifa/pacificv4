@@ -1,8 +1,8 @@
 <form action="#" id="formPotongan">
-    <x-input-with-icon label="Keterangan" name="keterangan_potongan" icon="ti ti-file-description" />
-    <x-input-with-icon label="Qty" name="jumlah_potongan" icon="ti ti-box" numberFormat="true" />
-    <x-input-with-icon label="Harga" name="harga_potongan" icon="ti ti-moneybag" align="right" numberFormat="true" />
-    <x-input-with-icon label="Total" name="total_potongan" icon="ti ti-moneybag" align="right" numberFormat="true" disabled="true" />
+    <x-input-with-icon label="Keterangan" name="keterangan_potongan" icon="ti ti-file-description" hideLabel="true" />
+    <x-input-with-icon label="Qty" name="jumlah_potongan" icon="ti ti-box" numberFormat="true" hideLabel="true" />
+    <x-input-with-icon label="Harga" name="harga_potongan" icon="ti ti-moneybag" align="right" numberFormat="true" hideLabel="true" />
+    <x-input-with-icon label="Total" name="total_potongan" icon="ti ti-moneybag" align="right" numberFormat="true" disabled="true" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_akun_potongan" id="kode_akun_potongan" class="form-select select2Kodeakunpotongan">
             <option value="">Akun</option>

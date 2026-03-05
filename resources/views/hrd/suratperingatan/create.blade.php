@@ -1,13 +1,13 @@
 <form action="{{ route('suratperingatan.store') }}" method="POST" id="formSuratPeringatan">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_sp" />
-    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_sp" hideLabel="true" />
+    <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-3">
@@ -19,7 +19,7 @@
             <option value="SP3">SP3</option>
         </select>
     </div>
-    <x-input-with-icon icon="ti ti-description" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-description" label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

@@ -2,18 +2,18 @@
     @csrf
     @method('PUT')
     <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin" disabled="true" value="{{ $izinkeluar->kode_izin_keluar }}"
-        value="{{ $izinkeluar->kode_izin_keluar }}" />
+        hideLabel="true" />
     <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
-        disabled="true" selected="{{ $izinkeluar->nik }}" />
+        disabled="true" selected="{{ $izinkeluar->nik }}" hideLabel="true" />
     <div class="row">
         <div class="col">
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $izinkeluar->tanggal }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $izinkeluar->tanggal }}" hideLabel="true" />
         </div>
     </div>
     <div class="row">
         <div class="col">
             <x-input-with-icon icon="ti ti-clock" label="Jam Keluar" name="jam_keluar"
-                value="{{ date('H:i', strtotime($izinkeluar->jam_keluar)) }}') }}" />
+                value="{{ date('H:i', strtotime($izinkeluar->jam_keluar)) }}" hideLabel="true" />
         </div>
     </div>
     <div class="row">
@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    <x-textarea label="Keterangan" name="keterangan" value="{{ $izinkeluar->keterangan }}" />
+    <x-textarea label="Keterangan" name="keterangan" value="{{ $izinkeluar->keterangan }}" hideLabel="true" />
     <div class="form-group">
         <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

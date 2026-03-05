@@ -17,30 +17,30 @@
     </div>
     <div class="row">
         <div class="col-lg-4 col-md-12.col-sm-12">
-            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_dus'] }}" />
+            <x-input-with-icon label="Dus" name="jml_dus" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_dus'] }}" hideLabel="true" />
         </div>
         <div class="col-lg-8 col-md-12 col-sm-12">
             <x-input-with-icon label="Harga / Dus" name="harga_dus" icon="ti ti-box" align="right" money="true"
-                value="{{ $dataproduk['harga_dus'] }}" />
+                value="{{ $dataproduk['harga_dus'] }}" hideLabel="true" />
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-4 col-md-12.col-sm-12">
-            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_pack'] }}" />
+            <x-input-with-icon label="Pack" name="jml_pack" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_pack'] }}" hideLabel="true" />
         </div>
         <div class="col-lg-8 col-md-12 col-sm-12">
             <x-input-with-icon label="Harga / Pack" name="harga_pack" icon="ti ti-box" align="right" money="true"
-                value="{{ $dataproduk['harga_pack'] }}" />
+                value="{{ $dataproduk['harga_pack'] }}" hideLabel="true" />
         </div>
     </div>
     <div class="row mb-2">
         <div class="col-lg-4 col-md-12.col-sm-12">
-            <x-input-with-icon label="Pcs" name="jml_pcs" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_pcs'] }}" />
+            <x-input-with-icon label="Pcs" name="jml_pcs" icon="ti ti-box" align="right" money="true" value="{{ $dataproduk['jml_pcs'] }}" hideLabel="true" />
         </div>
         <div class="col-lg-8 col-md-12 col-sm-12">
             <x-input-with-icon label="Harga / Pcs" name="harga_pcs" icon="ti ti-box" align="right" money="true"
-                value="{{ $dataproduk['harga_pcs'] }}" />
+                value="{{ $dataproduk['harga_pcs'] }}" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-3">

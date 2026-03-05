@@ -16,10 +16,10 @@
             <i class="ti ti-file-description me-2"></i>
         </div>
     </div>
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
 
-    <x-textarea label="Keterangan" name="keterangan" />
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" align="right" money="true" hideLabel="true" />
 
     <div class="form-group" id="saveButton">
         <button class="btn btn-primary w-100" type="submit" id="btnSimpan">

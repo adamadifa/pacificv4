@@ -29,7 +29,7 @@
     </div>
     <div class="row mt-3">
         <div class="col">
-            <x-textarea label="Alasan Faktur Dibatalkan" name="keterangan" value="{{ $penjualan->keterangan }}" />
+            <x-textarea label="Alasan Faktur Dibatalkan" name="keterangan" value="{{ $penjualan->keterangan }}" hideLabel="true" />
             <button class="btn btn-danger w-100"><i class="ti ti-send me-1"></i>Ubah Ke Faktur Batal</button>
         </div>
     </div>

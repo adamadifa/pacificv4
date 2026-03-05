@@ -1,7 +1,7 @@
 <form action="{{ route('piutangkaryawan.store') }}" id="formKasbon" method="POST">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kasbon" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kasbon" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="divider">
         <div class="divider-text">Data Karyawan</div>
     </div>
@@ -48,7 +48,7 @@
     <div class="row">
         <div class="col">
 
-            <x-input-with-icon label="Jumlah Piutang" icon="ti ti-moneybag" name="jumlah" align="right" money="true" />
+            <x-input-with-icon label="Jumlah Piutang" icon="ti ti-moneybag" name="jumlah" align="right" money="true" hideLabel="true" />
             <div class="form-group mb-3">
                 <select name="kategori" id="kategori" class="form-select">
                     <option value="">Kategori</option>

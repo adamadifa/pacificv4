@@ -1,46 +1,35 @@
 <form action="{{ route('pencairanprogram.store') }}" method="POST" id="formPencairan">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" readonly value="{{ date('Y-m-d') }}" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" readonly value="{{ date('Y-m-d') }}" hideLabel="true" />
     @hasanyrole($roles_show_cabang)
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                    select2="select2Kodecabangsearch" />
+                    select2="select2Kodecabangsearch" hideLabel="true" />
             </div>
         </div>
     @endrole
     <div class="row">
         <div class="col">
             <div class="form-group mb-3">
-                <select name="bulan" id="bulan" class="form-select">
-                    <option value="">Bulan</option>
-                    @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                    @endforeach
-                </select>
+                <x-select label="Bulan" name="bulan" :data="$list_bulan" key="kode_bulan" textShow="nama_bulan" hideLabel="true" />
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col">
             <div class="form-group mb-3">
-                <select name="tahun" id="tahun" class="form-select">
-                    <option value="">Tahun</option>
-                    @for ($t = $start_year; $t <= date('Y'); $t++)
-                        <option value="{{ $t }}">{{ $t }}</option>
-                    @endfor
-                </select>
+                <x-select label="Tahun" name="tahun" :data="$list_tahun" key="tahun" textShow="tahun" hideLabel="true" />
             </div>
         </div>
     </div>
     <div class="form-group mb-3">
-        <select name="kode_program" id="kode_program" class="form-select">
-            <option value="PR001">BB & DP</option>
-            <option value="PR002">AIDA</option>
-
-        </select>
+        <x-select label="Pilih Program" name="kode_program" :data="[
+            (object)['kode' => 'PR001', 'nama' => 'BB & DP'],
+            (object)['kode' => 'PR002', 'nama' => 'AIDA']
+        ]" key="kode" textShow="nama" hideLabel="true" />
     </div>
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group mb3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

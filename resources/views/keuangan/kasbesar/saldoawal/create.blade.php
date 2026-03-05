@@ -3,7 +3,7 @@
     <input type="hidden" name="cekgetsaldo" id="cekgetsaldo" value="0">
     @hasanyrole($roles_show_cabang)
         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
-            upperCase="true" />
+            upperCase="true" hideLabel="true" />
     @endhasanyrole
     <div class="form-group mb-3">
         <select name="bulan" id="bulan" class="form-select">
@@ -24,10 +24,10 @@
     <div class="form-group mb-3">
         <a class="btn btn-success w-100" href="#" id="getSaldo"><i class="ti ti-moneybag me-1"></i>Get Saldo</a>
     </div>
-    <x-input-with-icon label="Uang Kertas" name="uang_kertas" align="right" money="true" icon="ti ti-moneybag" readonly />
-    <x-input-with-icon label="Uang Logam" name="uang_logam" align="right" money="true" icon="ti ti-moneybag" readonly />
-    <x-input-with-icon label="Transfer" name="transfer" align="right" money="true" icon="ti ti-moneybag" readonly />
-    <x-input-with-icon label="Giro" name="giro" align="right" money="true" icon="ti ti-moneybag" readonly />
+    <x-input-with-icon label="Uang Kertas" name="uang_kertas" align="right" money="true" icon="ti ti-moneybag" readonly hideLabel="true" />
+    <x-input-with-icon label="Uang Logam" name="uang_logam" align="right" money="true" icon="ti ti-moneybag" readonly hideLabel="true" />
+    <x-input-with-icon label="Transfer" name="transfer" align="right" money="true" icon="ti ti-moneybag" readonly hideLabel="true" />
+    <x-input-with-icon label="Giro" name="giro" align="right" money="true" icon="ti ti-moneybag" readonly hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

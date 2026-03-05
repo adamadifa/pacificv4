@@ -1,7 +1,7 @@
 <form action="{{ route('kasbon.store') }}" id="formKasbon" method="POST">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kasbon" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kasbon" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="divider">
         <div class="divider-text">Data Karyawan</div>
     </div>
@@ -189,8 +189,8 @@
                         }
 
                         $("#loadkasbon").html(`
-                        <x-input-with-icon label="Jumlah Kasbon" icon="ti ti-moneybag" name="jumlah" align="right" money="true" />
-                        <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" readonly="true" />
+                        <x-input-with-icon label="Jumlah Kasbon" icon="ti ti-moneybag" name="jumlah" align="right" money="true" hideLabel="true" />
+                        <x-input-with-icon label="Mulai Cicilan" name="mulai_cicilan" icon="ti ti-calendar" readonly="true" hideLabel="true" />
                         <div class="form-group mb-3">
                             <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
                         </div>

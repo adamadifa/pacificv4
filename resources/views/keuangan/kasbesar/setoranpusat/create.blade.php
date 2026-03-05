@@ -1,13 +1,13 @@
 <form action="{{ route('setoranpusat.store') }}" id="formSetoranpusat" method="POST">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
     @hasanyrole($roles_show_cabang)
-        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true" select2="select2Kodecabang" />
+        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true" select2="select2Kodecabang" hideLabel="true" />
     @endhasanyrole
-    <x-input-with-icon label="Setoran Kertas" name="setoran_kertas" icon="ti ti-moneybag" align="right" money="true" />
-    <x-input-with-icon label="Setoran Logam" name="setoran_logam" icon="ti ti-moneybag" align="right" money="true" />
-    <x-input-with-icon label="Total Setoran" name="total_setoran" icon="ti ti-moneybag" align="right" readonly="true" />
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-input-with-icon label="Setoran Kertas" name="setoran_kertas" icon="ti ti-moneybag" align="right" money="true" hideLabel="true" />
+    <x-input-with-icon label="Setoran Logam" name="setoran_logam" icon="ti ti-moneybag" align="right" money="true" hideLabel="true" />
+    <x-input-with-icon label="Total Setoran" name="total_setoran" icon="ti ti-moneybag" align="right" readonly="true" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

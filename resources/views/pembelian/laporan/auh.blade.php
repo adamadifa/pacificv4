@@ -1,6 +1,6 @@
 <form action="{{ route('laporanpembelian.cetakauh') }}" method="POST" id="formLapAUH" target="_blank">
     @csrf
-    <x-input-with-icon icon="ti ti-calendar" label="Lihat Per Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-calendar" label="Lihat Per Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="row">
         <div class="col-lg-10 col-md-12 col-sm-12">
             <button type="submit" name="submitButton" class="btn btn-primary w-100" id="submitButton">

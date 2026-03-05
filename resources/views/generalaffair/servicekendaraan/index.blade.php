@@ -25,22 +25,22 @@
         <form action="{{ route('servicekendaraan.index') }}">
             <div class="row g-2 mb-2 align-items-end">
                 <div class="col-lg-3 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-4 col-md-10 col-sm-12">
-                    <div class="form-group mb-2">
-                        <select name="kode_kendaraan_search" id="kode_kendaraan_search" class="form-select select2Kodekendaraansearch">
-                            <option value="">Pilih Kendaraan</option>
-                            @foreach ($kendaraan as $d)
-                                <option {{ Request('kode_kendaraan_search') == $d->kode_kendaraan ? 'selected' : '' }} value="{{ $d->kode_kendaraan }}">
-                                    {{ $d->no_polisi }} {{ $d->merek }} {{ $d->tipe_kendaraan }} {{ $d->tipe }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    @php
+                        $kendaraan_data = $kendaraan->map(function ($d) {
+                            return (object) [
+                                'kode_kendaraan' => $d->kode_kendaraan,
+                                'nama_kendaraan' => $d->no_polisi . ' ' . $d->merek . ' ' . $d->tipe_kendaraan . ' ' . $d->tipe,
+                            ];
+                        });
+                    @endphp
+                    <x-select label="Pilih Kendaraan" name="kode_kendaraan_search" :data="$kendaraan_data" key="kode_kendaraan" textShow="nama_kendaraan"
+                        selected="{{ Request('kode_kendaraan_search') }}" select2="select2Kodekendaraansearch" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12">
                     <div class="form-group mb-2">

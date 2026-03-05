@@ -1,21 +1,21 @@
 <form action="{{ route('harilibur.update', Crypt::encrypt($harilibur->kode_libur)) }}" method="POST" id="formHariLibur">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $harilibur->tanggal }}" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $harilibur->tanggal }}" hideLabel="true" />
     @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
-            upperCase="true" :selected="$harilibur->kode_cabang" />
+            upperCase="true" :selected="$harilibur->kode_cabang" hideLabel="true" />
         <div class="row" id="departemen">
             <diiv class="col">
                 <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" select2="select2KodeDept"
-                    upperCase="true" :selected="$harilibur->kode_dept" />
+                    upperCase="true" :selected="$harilibur->kode_dept" hideLabel="true" />
             </diiv>
         </div>
     @endif
 
     <x-select label="Kategori Libur" name="kategori" :data="$kategorilibur" key="kode_kategori" upperCase="true" textShow="nama_kategori"
-        :selected="$harilibur->kategori" />
-    <x-input-with-icon label="Tanggal Yang diganti" name="tanggal_diganti" datepicker="flatpickr-date" icon="ti ti-calendar" :value="$harilibur->tanggal_diganti" />
+        :selected="$harilibur->kategori" hideLabel="true" />
+    <x-input-with-icon label="Tanggal Yang diganti" name="tanggal_diganti" datepicker="flatpickr-date" icon="ti ti-calendar" :value="$harilibur->tanggal_diganti" hideLabel="true" />
     <div class="row mt-2">
         <div class="col">
             <div class="alert alert-info">
@@ -35,7 +35,7 @@
             </div>
         </div>
     </div>
-    <x-textarea label="Keterangan" name="keterangan" :value="$harilibur->keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" :value="$harilibur->keterangan" hideLabel="true" />
     <div class="form-group">
         <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

@@ -46,17 +46,17 @@
     </div>
     <div class="row">
         <div class="col-lg-3 col-md-12 col-sm-12">
-            <x-input-with-icon label="Nama Barang" name="nama_barang_split" icon="ti ti-barcode" readonly="true" />
+            <x-input-with-icon label="Nama Barang" name="nama_barang_split" icon="ti ti-barcode" readonly="true" hideLabel="true" />
             <input type="hidden" id="kode_barang" name="kode_barang">
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" align="right" numberFormat="true" />
+            <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" align="right" numberFormat="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right" numberFormat="true" />
+            <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right" numberFormat="true" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon label="Penyesuaian" name="penyesuaian" icon="ti ti-moneybag" align="right" numberFormat="true" />
+            <x-input-with-icon label="Penyesuaian" name="penyesuaian" icon="ti ti-moneybag" align="right" numberFormat="true" hideLabel="true" />
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12">
             <div class="form-group mb-3">
@@ -71,11 +71,11 @@
     </div>
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
             <x-select label="Cabang" name="kode_cabang_split" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                select2="select2Kodecabangsplit" />
+                select2="select2Kodecabangsplit" hideLabel="true" />
         </div>
     </div>
     <div class="row">

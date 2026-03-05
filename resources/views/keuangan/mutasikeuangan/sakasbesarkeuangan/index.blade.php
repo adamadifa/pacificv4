@@ -33,11 +33,11 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-lg-3 col-md-6">
                             <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari"
-                                icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-6">
                             <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai"
-                                icon="ti ti-calendar" datepicker="flatpickr-date" />
+                                icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         @if (!request()->is('sakasbesarkeuanganpusat'))
                             @hasanyrole($roles_show_cabang)
@@ -45,7 +45,7 @@
                                     <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang"
                                         key="kode_cabang" textShow="nama_cabang" upperCase="true"
                                         selected="{{ Request('kode_cabang') }}"
-                                        select2="select2Kodecabangsearch" />
+                                        select2="select2Kodecabangsearch" hideLabel="true" />
                                 </div>
                             @endrole
                         @endif

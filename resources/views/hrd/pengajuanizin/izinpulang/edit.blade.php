@@ -1,24 +1,23 @@
 <form action="{{ route('izinpulang.update', Crypt::encrypt($izinpulang->kode_izin_pulang)) }}" method="POST" id="formIzin">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin" disabled="true" value="{{ $izinkeluar->kode_izin_keluar }}"
-        value="{{ $izinpulang->kode_izin_pulang }}" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin" disabled="true" value="{{ $izinpulang->kode_izin_pulang }}" hideLabel="true" />
     <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
-        disabled="true" selected="{{ $izinpulang->nik }}" />
+        disabled="true" selected="{{ $izinpulang->nik }}" hideLabel="true" />
 
     <div class="row">
         <div class="col">
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $izinpulang->tanggal }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" value="{{ $izinpulang->tanggal }}" hideLabel="true" />
         </div>
     </div>
     <div class="row">
         <div class="col">
             <x-input-with-icon icon="ti ti-clock" label="Jam Pulang" name="jam_pulang"
-                value="{{ date('H:i', strtotime($izinpulang->jam_pulang)) }}" />
+                value="{{ date('H:i', strtotime($izinpulang->jam_pulang)) }}" hideLabel="true" />
         </div>
     </div>
 
-    <x-textarea label="Keterangan" name="keterangan" value="{{ $izinpulang->keterangan }}" />
+    <x-textarea label="Keterangan" name="keterangan" value="{{ $izinpulang->keterangan }}" hideLabel="true" />
     <div class="form-group">
         <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

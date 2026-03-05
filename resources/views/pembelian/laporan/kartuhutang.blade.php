@@ -1,7 +1,7 @@
 <form action="{{ route('laporanpembelian.cetakkartuhutang') }}" method="POST" id="formLapKartuHutang" target="_blank">
     @csrf
     <x-select label="Supplier" name="kode_supplier_kartuhutang" :data="$supplier" key="kode_supplier"
-        textShow="nama_supplier" upperCase="true" select2="select2Kodesupplierkartuhutang" />
+        textShow="nama_supplier" upperCase="true" select2="select2Kodesupplierkartuhutang" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="jenis_hutang" id="jenis_hutang" class="form-select">
             <option value="">Jenis Hutang</option>
@@ -25,10 +25,10 @@
     </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

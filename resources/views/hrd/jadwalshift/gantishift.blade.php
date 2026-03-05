@@ -1,7 +1,7 @@
 <form action="#" method="POST" id="formGantiShift">
     <div class="row">
         <div class="col">
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
             <div class="form-group mb-3">
                 <select name="nik" id="nik" class="form-select select2Nik">
                     <option value="">Karyawan</option>

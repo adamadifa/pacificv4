@@ -2,7 +2,7 @@
     @csrf
     @hasanyrole($roles_show_cabang)
         <x-select label="Pilih Cabang" name="kode_cabang_rekapbg" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-            select2="select2KodecabangRekapbg" />
+            select2="select2KodecabangRekapbg" hideLabel="true" />
     @endrole
     <div class="row">
         <div class="col">

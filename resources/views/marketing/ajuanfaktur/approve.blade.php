@@ -51,9 +51,9 @@
             @endphp
          @endif
          @if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' || auth()->user()->roles->pluck('name')[0] == 'operation manager')
-            <x-textarea label="Catatan" name="catatan" value="{{ $catatan }}" />
+            <x-textarea label="Catatan" name="catatan" value="{{ $catatan }}" hideLabel="true" />
          @elseif(auth()->user()->roles->pluck('name')[0] != 'direktur')
-            <x-textarea label="Catatan" name="catatan" value="{{ $catatan }}" />
+            <x-textarea label="Catatan" name="catatan" value="{{ $catatan }}" hideLabel="true" />
          @endif
       </div>
    </div>

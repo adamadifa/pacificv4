@@ -1,17 +1,17 @@
 <form id="formBayar" method="POST" action="{{ route('pembayarangiro.store', Crypt::encrypt($no_faktur)) }}">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="No. Giro" name="no_giro" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Giro" name="tanggal" datepicker="flatpickr-date" />
-    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" />
+    <x-input-with-icon icon="ti ti-barcode" label="No. Giro" name="no_giro" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Giro" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Bayar" name="jumlah" align="right" hideLabel="true" />
     @if ($level_user == 'salesman')
         <input type="hidden" name="kode_salesman" value="{{ auth()->user()->kode_salesman }}">
     @else
         <x-select label="Salesman Penagih" name="kode_salesman" :data="$salesman" key="kode_salesman" textShow="nama_salesman" upperCase="true"
-            select2="select2Kodesalesman" />
+            select2="select2Kodesalesman" hideLabel="true" />
     @endif
-    <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" />
-    <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo" datepicker="flatpickr-date" />
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo" datepicker="flatpickr-date" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="row">
         <div class="col">
             <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>

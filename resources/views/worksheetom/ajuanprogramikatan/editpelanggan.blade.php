@@ -20,7 +20,7 @@
         placeholder="Qty Rata - rata 3 Bulan Terakhir" align="right" readonly value="{{ formatAngka($detail->qty_avg) }}" disabled /> --}}
 
     <x-input-with-icon-label label="Total Target" name="target" icon="ti ti-file-description" placeholder="Total Target" align="right"
-        value="{{ formatAngka($detail->qty_target) }}" />
+        value="{{ formatAngka($detail->qty_target) }}" hideLabel="true" />
 
     <table class="table table-bordered mb-2" id="targetperbulantable">
         <thead>
@@ -68,46 +68,43 @@
         </tfoot>
     </table>
     <div class="form-group">
-        <select name="tipe_reward" id="tipe_reward" class="form-select">
-            <option value="">Pilih Tipe Reward</option>
-            <option value="1" @selected($detail->tipe_reward == '1')>Quantity</option>
-            <option value="2" @selected($detail->tipe_reward == '2')>Flat</option>
-        </select>
+        <x-select label="Pilih Tipe Reward" name="tipe_reward" :data="[
+            (object)['kode' => '1', 'nama' => 'Quantity'],
+            (object)['kode' => '2', 'nama' => 'Flat']
+        ]" key="kode" textShow="nama" selected="{{ $detail->tipe_reward }}" hideLabel="true" />
     </div>
     <div class="row">
         <div class="col">
             <x-input-with-icon-label label="Budget SMM" name="budget_smm" icon="ti ti-file-description" placeholder="Budget SMM" align="right"
-                value="{{ formatAngka($detail->budget_smm) }}" />
+                value="{{ formatAngka($detail->budget_smm) }}" hideLabel="true" />
         </div>
         <div class="col">
             <x-input-with-icon-label label="Budget RSM" name="budget_rsm" icon="ti ti-file-description" placeholder="Budget RSM" align="right"
-                value="{{ formatAngka($detail->budget_rsm) }}" />
+                value="{{ formatAngka($detail->budget_rsm) }}" hideLabel="true" />
         </div>
         <div class="col">
             <x-input-with-icon-label label="Budget GM" name="budget_gm" icon="ti ti-file-description" placeholder="Budget GM" align="right"
-                value="{{ formatAngka($detail->budget_gm) }}" />
+                value="{{ formatAngka($detail->budget_gm) }}" hideLabel="true" />
         </div>
     </div>
 
 
 
     <x-input-with-icon-label label="Total Reward" name="reward" icon="ti ti-file-description" placeholder="Reward" align="right"
-        value="{{ formatAngka($detail->reward) }}" />
+        value="{{ formatAngka($detail->reward) }}" hideLabel="true" />
     <div class="form-group mb-3">
-        <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
-            <option value="">Pilih Metode Pembayaran</option>
-            <option value="TN" @selected($detail->metode_pembayaran == 'TN')>Tunai</option>
-            <option value="TF" @selected($detail->metode_pembayaran == 'TF')>Transfer</option>
-        </select>
+        <x-select label="Pilih Metode Pembayaran" name="metode_pembayaran" :data="[
+            (object)['kode' => 'TN', 'nama' => 'Tunai'],
+            (object)['kode' => 'TF', 'nama' => 'Transfer']
+        ]" key="kode" textShow="nama" selected="{{ $detail->metode_pembayaran }}" hideLabel="true" />
     </div>
     <div class="form-group">
-        <select name="periode_pencairan" id="periode_pencairan" class="form-select">
-            <option value="">Pilih Periode Pencairan</option>
-            <option value="1" @selected($detail->periode_pencairan == '1')>1 Bulan</option>
-            <option value="3" @selected($detail->periode_pencairan == '3')>3 Bulan</option>
-            <option value="6" @selected($detail->periode_pencairan == '6')>6 Bulan</option>
-            <option value="12" @selected($detail->periode_pencairan == '12')>12 Bulan</option>
-        </select>
+        <x-select label="Pilih Periode Pencairan" name="periode_pencairan" :data="[
+            (object)['kode' => '1', 'nama' => '1 Bulan'],
+            (object)['kode' => '3', 'nama' => '3 Bulan'],
+            (object)['kode' => '6', 'nama' => '6 Bulan'],
+            (object)['kode' => '12', 'nama' => '12 Bulan']
+        ]" key="kode" textShow="nama" selected="{{ $detail->periode_pencairan }}" hideLabel="true" />
     </div>
     <x-input-file name="file_doc" label="Dokumen Kesepakatan" />
     <div class="form-group mb-3">

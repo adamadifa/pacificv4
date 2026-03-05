@@ -1,19 +1,19 @@
 <form action="{{ route('izinsakit.update', Crypt::encrypt($izinsakit->kode_izin_sakit)) }}" method="POST" id="formIzin" enctype="multipart/form-data">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin_sakit" disabled="true" value="{{ $izinsakit->kode_izin_sakit }}" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" name="kode_izin_sakit" disabled="true" value="{{ $izinsakit->kode_izin_sakit }}" hideLabel="true" />
     <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
-        selected="{{ $izinsakit->nik }}" disabled="true" />
+        selected="{{ $izinsakit->nik }}" disabled="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" value="{{ $izinsakit->dari }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" value="{{ $izinsakit->dari }}" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" value="{{ $izinsakit->sampai }}" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" value="{{ $izinsakit->sampai }}" hideLabel="true" />
         </div>
     </div>
-    <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" />
-    <x-textarea label="Keterangan" name="keterangan" value="{{ $izinsakit->keterangan }}" />
+    <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" value="{{ $izinsakit->keterangan }}" hideLabel="true" />
     <x-input-file name="sid" label="sid" />
     <div class="row mb-3 mt-2">
         <div class="col">

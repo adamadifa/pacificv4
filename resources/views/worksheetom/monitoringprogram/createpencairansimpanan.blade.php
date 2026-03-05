@@ -30,13 +30,12 @@
     </div>
     <div class="row mt-2">
         <div class="col">
-            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Pencairan" align="right" name="jumlah" money="true" />
-            <div class="form-group">
-                <select name="metode_pembayaran" id="metode_pembayaran" class="form-select">
-                    <option value="">Metode Pembayaran</option>
-                    <option value="TN">Tunai</option>
-                    <option value="TF">Transfer</option>
-                </select>
+            <x-input-with-icon icon="ti ti-moneybag" label="Jumlah Pencairan" align="right" name="jumlah" money="true" hideLabel="true" />
+            <div class="form-group mb-3">
+                <x-select label="Metode Pembayaran" name="metode_pembayaran" :data="[
+                    (object)['kode' => 'TN', 'nama' => 'Tunai'],
+                    (object)['kode' => 'TF', 'nama' => 'Transfer']
+                ]" key="kode" textShow="nama" hideLabel="true" />
             </div>
             <div class="form-group">
                 <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>

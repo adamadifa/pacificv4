@@ -1,7 +1,7 @@
 <form action="{{ route('jurnalkoreksi.store') }}" id="formJurnalkoreksi" method="POST">
     @csrf
-    <x-input-with-icon label="Tanggal" icon="ti ti-calendar" name="tanggal" datepicker="flatpickr-date" />
-    <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
+    <x-input-with-icon label="Tanggal" icon="ti ti-calendar" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
+    <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true" hideLabel="true"
         select2="select2Kodesupplier" />
     <div class="form-group mb-3">
         <select name="no_bukti" id="no_bukti" class="form-select select2Nobukti">
@@ -13,10 +13,10 @@
             <option value="">Pilih Barang</option>
         </select>
     </div>
-    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
-    <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" numberFormat="true" />
-    <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right" numberFormat="true" />
-    <x-input-with-icon label="Total" name="total" icon="ti ti-moneybag" align="right" numberFormat="true" disabled="true" />
+    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
+    <x-input-with-icon label="Qty" name="jumlah" icon="ti ti-box" numberFormat="true" hideLabel="true" />
+    <x-input-with-icon label="Harga" name="harga" icon="ti ti-moneybag" align="right" numberFormat="true" hideLabel="true" />
+    <x-input-with-icon label="Total" name="total" icon="ti ti-moneybag" align="right" numberFormat="true" disabled="true" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_akun_debet" id="kode_akun_debet" class="form-select select2Kodeakundebet">
             <option value="">Akun Debet</option>

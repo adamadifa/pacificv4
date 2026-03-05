@@ -2,10 +2,10 @@
     @csrf
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     @hasanyrole($roles_show_cabang)
@@ -33,12 +33,12 @@
     <hr>
     <div class="row">
         <div class="col">
-            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-text" />
+            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-text" hideLabel="true" />
         </div>
     </div>
     <div class="row">

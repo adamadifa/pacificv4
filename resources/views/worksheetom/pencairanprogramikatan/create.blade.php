@@ -1,6 +1,6 @@
 <form action="{{ route('pencairanprogramikatan.store') }}" method="POST" id="formPencairanProgramikatan">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ date('Y-m-d') }}" readonly />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ date('Y-m-d') }}" readonly hideLabel="true" />
     {{-- <div class="input-group mb-2">
         <input type="text" class="form-control" name="no_pengajuan" id="no_pengajuan" readonly placeholder="Cari Ajuan Program"
             aria-label="Cari Ajuan Program" aria-describedby="no_pengajuan">
@@ -37,47 +37,31 @@
             </div>
         </div>
     </div> --}}
-    <div class="form-group mb-3">
-        <select name="kode_program" id="kode_program" class="form-select">
-            <option value="">Pilih Program</option>
-            @foreach ($programikatan as $d)
-                <option value="{{ $d->kode_program }}">{{ $d->nama_program }}</option>
-            @endforeach
-        </select>
+    <div class="form-group">
+        <x-select label="Pilih Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program" hideLabel="true" />
     </div>
     @hasanyrole($roles_show_cabang)
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                    select2="select2Kodecabangsearch" />
+                    select2="select2Kodecabangsearch" hideLabel="true" />
             </div>
         </div>
     @endrole
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
             <div class="form-group">
-                <select name="bulan" id="bulan" class="form-select">
-                    <option value="">Bulan</option>
-                    @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                    @endforeach
-                </select>
+                <x-select label="Bulan" name="bulan" :data="$list_bulan" key="kode_bulan" textShow="nama_bulan" hideLabel="true" />
             </div>
-
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="form-group">
-                <select name="tahun" id="tahun" class="form-select">
-                    <option value="">Tahun</option>
-                    @for ($t = $start_year; $t <= date('Y'); $t++)
-                        <option value="{{ $t }}">{{ $t }}</option>
-                    @endfor
-                </select>
+                <x-select label="Tahun" name="tahun" :data="$list_tahun" key="tahun" textShow="tahun" hideLabel="true" />
             </div>
         </div>
     </div>
 
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group mb3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

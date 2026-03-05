@@ -2,78 +2,62 @@
     @csrf
     {{-- <x-input-with-icon label="No. Dokumen" name="no_dokumen" icon="ti ti-barcode" /> --}}
     <input type="hidden" name="no_dokumen" id="no_dokumen" value="-">
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" value="{{ date('Y-m-d') }}" readonly />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" value="{{ date('Y-m-d') }}" readonly hideLabel="true" />
     @hasanyrole($roles_access_all_cabang)
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                    select2="select2Kodecabangsearch" />
+                    select2="select2Kodecabangsearch" hideLabel="true" />
             </div>
         </div>
     @endrole
 
     <div class="form-group mb-3">
-        <select name="kode_program" id="kode_program" class="form-select">
-            <option value="">Pilih Program</option>
-            @foreach ($programikatan as $d)
-                <option value="{{ $d->kode_program }}">{{ $d->nama_program }}</option>
-            @endforeach
-        </select>
+        <x-select label="Pilih Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program" hideLabel="true" />
     </div>
     <div class="form-group mb-3">
-        <select name="pilih_semester" id="pilih_semester" class="form-select">
-            <option value="">Pilih Semester</option>
-            <option value="1">Semester 1</option>
-            <option value="2">Semester 2</option>
-        </select>
+        <x-select label="Pilih Semester" name="pilih_semester" :data="[
+            (object)['kode' => '1', 'nama' => 'Semester 1'],
+            (object)['kode' => '2', 'nama' => 'Semester 2']
+        ]" key="kode" textShow="nama" hideLabel="true" />
     </div>
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
             <div class="form-group">
-                <select name="bulan_dari" id="bulan_dari" class="form-select">
-                    <option value="">Bulan</option>
-                    @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                    @endforeach
-                </select>
+                @php
+                    $bulan_data = collect($list_bulan)->map(function ($item) {
+                        return (object) $item;
+                    });
+                @endphp
+                <x-select label="Bulan Dari" name="bulan_dari" :data="$bulan_data" key="kode_bulan" textShow="nama_bulan" hideLabel="true" />
             </div>
 
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="form-group">
-                <select name="tahun_dari" id="tahun_dari" class="form-select">
-                    <option value="">Tahun</option>
-                    @for ($t = $start_year; $t <= date('Y'); $t++)
-                        <option value="{{ $t }}">{{ $t }}</option>
-                    @endfor
-                </select>
+                @php
+                    $tahun_data = collect($list_tahun)->map(function ($item) {
+                        return (object) ['tahun' => $item];
+                    });
+                @endphp
+                <x-select label="Tahun Dari" name="tahun_dari" :data="$tahun_data" key="tahun" textShow="tahun" hideLabel="true" />
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12">
             <div class="form-group">
-                <select name="bulan_sampai" id="bulan_sampai" class="form-select" style="pointer-events: none; background-color: #e9ecef" tabindex="-1" aria-disabled="true">
-                    <option value="">Bulan</option>
-                    @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                    @endforeach
-                </select>
+                <x-select label="Bulan Sampai" name="bulan_sampai" :data="$bulan_data" key="kode_bulan" textShow="nama_bulan" hideLabel="true" />
             </div>
 
         </div>
         <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="form-group">
-                <select name="tahun_sampai" id="tahun_sampai" class="form-select">
-                    <option value="">Tahun</option>
-                    @for ($t = $start_year; $t <= date('Y'); $t++)
-                        <option value="{{ $t }}">{{ $t }}</option>
-                    @endfor
-                </select>
+                <x-select label="Tahun Sampai" name="tahun_sampai" :data="$tahun_data" key="tahun" textShow="tahun" hideLabel="true" />
             </div>
         </div>
     </div>
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
 
     <div class="form-group mb3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>

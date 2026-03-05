@@ -1,19 +1,19 @@
 <form action="{{ route('harilibur.store') }}" method="POST" id="formHariLibur">
     @csrf
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     @if (in_array($level_user, ['super admin', 'asst. manager hrd', 'spv presensi']))
         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
-            upperCase="true" />
+            upperCase="true" hideLabel="true" />
         <div class="row" id="departemen">
             <diiv class="col">
                 <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" select2="select2KodeDept"
-                    upperCase="true" />
+                    upperCase="true" hideLabel="true" />
             </diiv>
         </div>
     @endif
 
-    <x-select label="Kategori Libur" name="kategori" :data="$kategorilibur" key="kode_kategori" upperCase="true" textShow="nama_kategori" />
-    <x-input-with-icon label="Tanggal Yang diganti" name="tanggal_diganti" datepicker="flatpickr-date" icon="ti ti-calendar" />
+    <x-select label="Kategori Libur" name="kategori" :data="$kategorilibur" key="kode_kategori" upperCase="true" textShow="nama_kategori" hideLabel="true" />
+    <x-input-with-icon label="Tanggal Yang diganti" name="tanggal_diganti" datepicker="flatpickr-date" icon="ti ti-calendar" hideLabel="true" />
     <div class="row mt-2">
         <div class="col">
             <div class="alert alert-info">
@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="form-group">
         <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

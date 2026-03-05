@@ -1,6 +1,6 @@
 <form action="{{ route('kontrakkerja.store') }}" method="POST" id="formKontrak">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kontrak" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_kontrak" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="nik" id="nik" class="form-select select2Nik">
             <option value="">Pilih Karyawan</option>
@@ -17,16 +17,16 @@
         </select>
     </div>
     <x-select label="Kantor" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-        select2="select2Kodecabang" />
-    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" select2="select2KodeDept" upperCase="true" />
+        select2="select2Kodecabang" hideLabel="true" />
+    <x-select label="Departemen" name="kode_dept" :data="$departemen" key="kode_dept" textShow="nama_dept" select2="select2KodeDept" upperCase="true" hideLabel="true" />
     <x-select label="Jabatan" name="kode_jabatan" :data="$jabatan" key="kode_jabatan" textShow="nama_jabatan" select2="select2KodeJabatan"
-        upperCase="true" />
+        upperCase="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Tanggal Mulai" name="dari" datepicker="flatpickr-date" icon="ti ti-calendar" />
+            <x-input-with-icon label="Tanggal Mulai" name="dari" datepicker="flatpickr-date" icon="ti ti-calendar" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Tanggal Selesai" name="sampai" datepicker="flatpickr-date" icon="ti ti-calendar" />
+            <x-input-with-icon label="Tanggal Selesai" name="sampai" datepicker="flatpickr-date" icon="ti ti-calendar" hideLabel="true" />
         </div>
     </div>
     <div class="divider">

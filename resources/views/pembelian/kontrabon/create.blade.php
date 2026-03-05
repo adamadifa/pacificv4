@@ -18,10 +18,10 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="Auto" name="no_kontrabon" icon="ti ti-barcode" disabled="true" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                            <x-input-with-icon label="Auto" name="no_kontrabon" icon="ti ti-barcode" disabled="true" hideLabel="true" />
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                             <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
-                                upperCase="true" select2="select2Kodesupplier" />
+                                upperCase="true" select2="select2Kodesupplier" hideLabel="true" />
                             <div class="form-group mb-3">
                                 <select name="kategori" id="kategori" class="form-select">
                                     <option value="">Jenis Pengajuan</option>
@@ -29,7 +29,7 @@
                                     <option value="IM">Interal Memo</option>
                                 </select>
                             </div>
-                            <x-input-with-icon label="No. Dokumen" name="no_dokumen" icon="ti ti-barcode" />
+                            <x-input-with-icon label="No. Dokumen" name="no_dokumen" icon="ti ti-barcode" hideLabel="true" />
                             <div class="form-group mb-3">
                                 <select name="jenis_bayar" id="jenis_bayar" class="form-select">
                                     <option value="">Jenis Bayar</option>
@@ -59,18 +59,18 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="No. Bukti Pembelian" name="no_bukti" icon="ti ti-barcode" readonly="true" />
+                                    <x-input-with-icon label="No. Bukti Pembelian" name="no_bukti" icon="ti ti-barcode" readonly="true" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
                                     <x-input-with-icon label="Total Pembelian" name="total_pembelian" icon="ti ti-box" align="right"
-                                        readonly="true" />
+                                        readonly="true" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Jumlah Bayar" name="jumlah" icon="ti ti-moneybag" align="right" numberFormat="true" />
+                                    <x-input-with-icon label="Jumlah Bayar" name="jumlah" icon="ti ti-moneybag" align="right" numberFormat="true" hideLabel="true" />
                                 </div>
                                 <div class="col-lg-5 col-md-12 col-sm-12">
                                     <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" align="right"
-                                        numberFormat="true" />
+                                        numberFormat="true" hideLabel="true" />
                                 </div>
                             </div>
 

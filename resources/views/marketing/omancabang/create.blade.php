@@ -16,49 +16,36 @@
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-6 col-md-12 col-sm-12">
                         <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                            select2="select2Kodecabang" showKey="true" upperCase="true" />
+                            select2="select2Kodecabang" showKey="true" upperCase="true" hideLabel="true" />
                     </div>
 
                     <div class="col-lg-3 col-sm-12 col-md-12">
-                        <div class="form-group mb-3">
-                            <select name="bulan" id="bulan" class="form-select">
-                                <option value="">Bulan</option>
-                                @foreach ($list_bulan as $d)
-                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @php
+                            $bulan_data = collect($list_bulan)->map(function ($item) {
+                                return (object) $item;
+                            });
+                        @endphp
+                        <x-select label="Bulan" name="bulan" id="bulan" :data="$bulan_data" key="kode_bulan"
+                            textShow="nama_bulan" hideLabel="true" />
                     </div>
                     <div class="col-lg-3 col-sm-12 col-md-12">
-                        <div class="form-group mb-3">
-                            <select name="tahun" id="tahun" class="form-select">
-                                <option value="">Tahun</option>
-                                @for ($t = $start_year; $t <= date('Y') + 1; $t++)
-                                    <option value="{{ $t }}">{{ $t }}</option>
-                                @endfor
-                            </select>
-                        </div>
+                        @php
+                            $tahun_data = [];
+                            for ($t = $start_year; $t <= date('Y') + 1; $t++) {
+                                $tahun_data[] = (object) ['tahun' => $t];
+                            }
+                        @endphp
+                        <x-select label="Tahun" name="tahun" id="tahun" :data="$tahun_data" key="tahun" textShow="tahun"
+                            hideLabel="true" />
                     </div>
                 @else
                     <div class="col-lg-6 col-sm-12 col-md-12">
-                        <div class="form-group mb-3">
-                            <select name="bulan" id="bulan" class="form-select">
-                                <option value="">Bulan</option>
-                                @foreach ($list_bulan as $d)
-                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <x-select label="Bulan" name="bulan" id="bulan" :data="$bulan_data" key="kode_bulan"
+                            textShow="nama_bulan" hideLabel="true" />
                     </div>
                     <div class="col-lg-6 col-sm-12 col-md-12">
-                        <div class="form-group mb-3">
-                            <select name="tahun" id="tahun" class="form-select">
-                                <option value="">Tahun</option>
-                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                    <option value="{{ $t }}">{{ $t }}</option>
-                                @endfor
-                            </select>
-                        </div>
+                        <x-select label="Tahun" name="tahun" id="tahun" :data="$tahun_data" key="tahun" textShow="tahun"
+                            hideLabel="true" />
                     </div>
                 @endhasanyrole
             </div>

@@ -154,10 +154,10 @@
     </div>
     <div class="row mt-3">
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon label="Tanggal Proses" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" align="right" />
+            <x-input-with-icon label="Tanggal Proses" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" align="right" hideLabel="true" />
         </div>
         <div class="col-lg-5 col-md-12 com-sm-12">
-            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" align="right" />
+            <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" align="right" hideLabel="true" />
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12">
             <div class="form-group mb-3">

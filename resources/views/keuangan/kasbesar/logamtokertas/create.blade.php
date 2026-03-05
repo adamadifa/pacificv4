@@ -1,11 +1,11 @@
 <form action="{{ route('logamtokertas.store') }}" method="POST" id="formLogamtokertas">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
     @hasanyrole($roles_show_cabang)
         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang"
-            upperCase="true" />
+            upperCase="true" hideLabel="true" />
     @endhasanyrole
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" money="true" align="right" />
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" money="true" align="right" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

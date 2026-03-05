@@ -1,15 +1,17 @@
 <form action="{{ route('costratio.store') }}" method="POST" id="formCostratio">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-    <div class="form-group mb-3">
-        <select name="keterangan" id="keterangan" class="form-select">
-            <option value="Sewa Gedung">Sewa Gudang</option>
-            <option value="Ratio BS">Ratio BS</option>
-        </select>
-    </div>
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneyag" align="right" money="true" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+    @php
+        $keterangan_data = [
+            (object) ['kode' => 'Sewa Gedung', 'nama' => 'Sewa Gudang'],
+            (object) ['kode' => 'Ratio BS', 'nama' => 'Ratio BS'],
+        ];
+    @endphp
+    <x-select label="Keterangan" name="keterangan" id="keterangan" :data="$keterangan_data" key="kode" textShow="nama"
+        hideLabel="true" />
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneyag" align="right" money="true" hideLabel="true" />
     <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-        select2="select2Kodecabang" />
+        select2="select2Kodecabang" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

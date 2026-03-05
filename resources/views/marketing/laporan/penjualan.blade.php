@@ -2,12 +2,9 @@
     @csrf
     @hasanyrole($roles_show_cabang)
         <div class="form-group mb-3">
-            <select name="kode_cabang" id="kode_cabang_penjualan" class="form-select select2Kodecabangpenjualan">
-                <option value="">Semua Cabang</option>
-                @foreach ($cabang as $d)
-                    <option value="{{ $d->kode_cabang }}">{{ textUpperCase($d->nama_cabang) }}</option>
-                @endforeach
-            </select>
+            <x-select label="Pilih Cabang" name="kode_cabang" id="kode_cabang_penjualan" :data="$cabang"
+                key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabangpenjualan" upperCase="true"
+                hideLabel="true" allOption="true" allOptionLabel="Semua Cabang" />
         </div>
     @endrole
     <div class="form-group mb-3">
@@ -24,36 +21,35 @@
         </select>
     </div>
     <div class="form-group mb-3">
-        <select name="jenis_transaksi" id="jenis_transaksi" class="form-select">
-            <option value="">Semua Jenis Transaksi</option>
-            <option value="T">TUNAI</option>
-            <option value="K">KREDIT</option>
-        </select>
+        <x-select label="Jenis Transaksi" name="jenis_transaksi" id="jenis_transaksi" :data="[
+            (object) ['kode' => 'T', 'nama' => 'TUNAI'],
+            (object) ['kode' => 'K', 'nama' => 'KREDIT'],
+        ]" key="kode" textShow="nama"
+            hideLabel="true" />
     </div>
     <div class="form-group mb-3" id="formatlaporanoption">
-        <select name="formatlaporan" id="formatlaporan" class="form-select">
-            <option value="">Format Laporan</option>
-            <option value="1">Standar</option>
-            <option value="2">Format Satu Baris</option>
-            <option value="3">Transaksi PO</option>
-            {{-- <option value="4">Transaksi PO</option> --}}
-            <option value="5">Perhitungan Komisi</option>
-        </select>
+        <x-select label="Format Laporan" name="formatlaporan" id="formatlaporan" :data="[
+            (object) ['kode' => '1', 'nama' => 'Standar'],
+            (object) ['kode' => '2', 'nama' => 'Format Satu Baris'],
+            (object) ['kode' => '3', 'nama' => 'Transaksi PO'],
+            (object) ['kode' => '5', 'nama' => 'Perhitungan Komisi'],
+        ]" key="kode" textShow="nama"
+            hideLabel="true" />
     </div>
 
     <div class="form-group mb-3">
-        <select name="status_penjualan" id="status_penjualan" class="form-select">
-            <option value="">Status Penjualan</option>
-            <option value="1">Batal</option>
-            <option value="2" selected>Tanpa Status Batal</option>
-        </select>
+        <x-select label="Status Penjualan" name="status_penjualan" id="status_penjualan" :data="[
+            (object) ['kode' => '1', 'nama' => 'Batal'],
+            (object) ['kode' => '2', 'nama' => 'Tanpa Status Batal'],
+        ]" key="kode" textShow="nama"
+            hideLabel="true" selected="2" />
     </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     <div class="row">

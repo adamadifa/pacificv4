@@ -1,11 +1,12 @@
 <form action="{{ route('logamtokertas.update', Crypt::encrypt($logamtokertas->kode_logamtokertas)) }}" method="POST" id="formLogamtokertas">
     @csrf
     @method('PUT')
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $logamtokertas->tanggal }}" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $logamtokertas->tanggal }}" hideLabel="true" />
     @hasanyrole($roles_show_cabang)
-        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang" upperCase="true" selected="{{ $logamtokertas->kode_cabang }}" />
+        <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabang" upperCase="true" selected="{{ $logamtokertas->kode_cabang }}" hideLabel="true" />
+
     @endhasanyrole
-    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" money="true" align="right" value="{{ formatAngka($logamtokertas->jumlah) }}" />
+    <x-input-with-icon label="Jumlah" name="jumlah" icon="ti ti-moneybag" money="true" align="right" value="{{ formatAngka($logamtokertas->jumlah) }}" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

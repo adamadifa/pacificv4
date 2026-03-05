@@ -8,7 +8,7 @@
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-6 col-md-12 col-sm-12">
                         <x-select label="Pilih Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                            select2="select2Kodecabang" showKey="true" upperCase="true" selected="{{ $ratiodriverhelper->kode_cabang }}" />
+                            select2="select2Kodecabang" showKey="true" upperCase="true" selected="{{ $ratiodriverhelper->kode_cabang }}" hideLabel="true" />
                     </div>
 
                     <div class="col-lg-3 col-sm-12 col-md-12">

@@ -1,19 +1,19 @@
 <form action="{{ route('mutasikendaraan.store') }}" method="POST" id="formMutasikendaraan">
     @csrf
-    <div class="form-group mb-3">
-        <select name="kode_kendaraan" id="kode_kendaraan" class="form-select select2Kendaraan">
-            <option value="">Pilih Kendaraan</option>
-            @foreach ($kendaraan as $d)
-                <option value="{{ $d->kode_kendaraan }}">
-                    {{ $d->no_polisi . '  ' . $d->merk . ' ' . $d->tipe }}
-                </option>
-            @endforeach
-        </select>
-    </div>
+    @php
+        $kendaraan_data = $kendaraan->map(function ($d) {
+            return (object) [
+                'kode_kendaraan' => $d->kode_kendaraan,
+                'keterangan' => $d->no_polisi . '  ' . $d->merk . ' ' . $d->tipe,
+            ];
+        });
+    @endphp
+    <x-select label="Pilih Kendaraan" name="kode_kendaraan" :data="$kendaraan_data" key="kode_kendaraan" textShow="keterangan"
+        select2="select2Kendaraan" hideLabel="true" />
     <x-select label="Cabang Tujuan" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-        select2="select2Kodecabang" />
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+        select2="select2Kodecabang" hideLabel="true" />
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

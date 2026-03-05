@@ -113,11 +113,11 @@
                     @if (
                         (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' && $ajuanlimit->jumlah > 5000000) ||
                             (auth()->user()->roles->pluck('name')[0] == 'operation manager' && $ajuanlimit->jumlah > 5000000))
-                        <x-textarea label="Uraian Analisa" name="uraian_analisa" value="{{ $uraian_analisa }}" />
+                        <x-textarea label="Uraian Analisa" name="uraian_analisa" value="{{ $uraian_analisa }}" hideLabel="true" />
                     @elseif (auth()->user()->roles->pluck('name')[0] == 'regional sales manager' && $ajuanlimit->jumlah > 10000000)
-                        <x-textarea label="Uraian Analisa" name="uraian_analisa" value="{{ $uraian_analisa }}" />
+                        <x-textarea label="Uraian Analisa" name="uraian_analisa" value="{{ $uraian_analisa }}" hideLabel="true" />
                     @elseif (auth()->user()->roles->pluck('name')[0] == 'gm marketing' && $ajuanlimit->jumlah > 15000000)
-                        <x-textarea label="Uraian Analisa" name="uraian_analisa" value="{{ $uraian_analisa }}" />
+                        <x-textarea label="Uraian Analisa" name="uraian_analisa" value="{{ $uraian_analisa }}" hideLabel="true" />
                     @endif
                     <div class="row mt-3">
                         <div class="col-lg-6 col-md-12 col-sm-12">

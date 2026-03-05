@@ -1,6 +1,6 @@
 <form action="{{ route('kesepakatanbersama.store', Crypt::encrypt($kode_penilaian)) }}" method="POST" id="formKesepakatanBersama">
     @csrf
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

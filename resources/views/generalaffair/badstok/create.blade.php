@@ -1,15 +1,16 @@
 <form action="{{ route('badstokga.store') }}" method="POST" id="formBadStok">
     @csrf
-    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" />
-    <div class="form-group mb-3">
-        <select name="kode_asal_bs" id="kode_asal_bs" class="form-select select2Kodeasalbs">
-            <option value="">Asal Bad Stok</option>
-            <option value="GDG">GUDANG</option>
-            @foreach ($asalbadstok as $d)
-                <option value="{{ $d->kode_cabang }}"> {{ textUpperCase($d->nama_cabang) }}</option>
-            @endforeach
-        </select>
-    </div>
+    <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+    @php
+        $asal_bad_stok_data = $asalbadstok->map(function ($cabang) {
+            return (object) [
+                'kode_cabang' => $cabang->kode_cabang,
+                'nama_cabang' => textUpperCase($cabang->nama_cabang),
+            ];
+        })->prepend((object) ['kode_cabang' => 'GDG', 'nama_cabang' => 'GUDANG']);
+    @endphp
+    <x-select label="Asal Bad Stok" name="kode_asal_bs" :data="$asal_bad_stok_data" key="kode_cabang" textShow="nama_cabang" select2="select2Kodeasalbs"
+        hideLabel="true" />
     <div class="row">
         <div class="col">
             <table class="table table-bordered">

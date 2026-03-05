@@ -1,7 +1,7 @@
 <form action="{{ route('ajuanfaktur.store') }}" aria-autocomplete="false" id="formAjuanfaktur" method="POST" enctype="multipart/form-data">
     @csrf
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_pengajuan" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_pengajuan" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-calendar" label="Tanggal Pengajuan" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
     <div class="divider">
         <div class="divider-text">Data Pelanggan</div>
     </div>
@@ -32,8 +32,8 @@
             <td id="limit_pelanggan" class="text-end"></td>
         </tr>
     </table>
-    <x-input-with-icon icon="ti ti-file-copy" label="Jumlah Faktur" name="jumlah_faktur" align="right" money="true" />
-    <x-textarea label="Keterangan" name="keterangan" />
+    <x-input-with-icon icon="ti ti-file-copy" label="Jumlah Faktur" name="jumlah_faktur" align="right" money="true" hideLabel="true" />
+    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-2">

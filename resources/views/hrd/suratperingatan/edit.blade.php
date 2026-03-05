@@ -1,15 +1,15 @@
 <form action="{{ route('suratperingatan.update', Crypt::encrypt($sp->no_sp)) }}" method="POST" id="formSuratPeringatan">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_sp" />
+    <x-input-with-icon icon="ti ti-barcode" label="Auto" disabled="true" name="no_sp" value="{{ $sp->no_sp }}" hideLabel="true" />
     <x-select label="Karyawan" name="nik" :data="$karyawan" key="nik" textShow="nama_karyawan" select2="select2Nik" showKey="true"
-        selected="{{ $sp->nik }}" />
+        selected="{{ $sp->nik }}" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $sp->dari }}" />
+            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $sp->dari }}" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $sp->sampai }}" />
+            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $sp->sampai }}" hideLabel="true" />
         </div>
     </div>
     <div class="form-group mb-3">
@@ -21,7 +21,7 @@
             <option value="SP3" {{ $sp->jenis_sp == 'SP3' ? 'selected' : '' }}>SP3</option>
         </select>
     </div>
-    <x-input-with-icon icon="ti ti-description" label="Keterangan" name="keterangan" value="{{ $sp->keterangan }}" />
+    <x-input-with-icon icon="ti ti-description" label="Keterangan" name="keterangan" value="{{ $sp->keterangan }}" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>
     </div>

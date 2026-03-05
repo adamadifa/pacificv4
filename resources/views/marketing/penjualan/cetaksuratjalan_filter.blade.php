@@ -2,15 +2,15 @@
     @csrf
     <div class="row">
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Dari" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-6 col-sm-12 col-md-12">
-            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+            <x-input-with-icon label="Sampai" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
     @hasanyrole($roles_show_cabang)
         <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-            select2="select2Kodecabang" />
+            select2="select2Kodecabang" hideLabel="true" />
     @endrole
     <div class="form-group mb-3">
         <select name="kode_salesman" id="kode_salesman" class="form-select select2Kodesalesman">

@@ -80,13 +80,13 @@
         <form action="{{ route('jurnalkoreksi.index') }}" id="formSearch">
             <div class="row g-2 mb-1">
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <x-input-with-icon label="No. Bukti Pembelian" value="{{ Request('no_bukti_search') }}" name="no_bukti_search" icon="ti ti-barcode" />
+                    <x-input-with-icon label="No. Bukti Pembelian" value="{{ Request('no_bukti_search') }}" name="no_bukti_search" icon="ti ti-barcode" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6">
-                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6">
-                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" />
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
             </div>
 

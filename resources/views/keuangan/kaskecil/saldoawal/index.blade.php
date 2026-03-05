@@ -39,7 +39,7 @@
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
                                 textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                                select2="select2Kodecabangsearch" />
+                                select2="select2Kodecabangsearch" hideLabel="true" />
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group mb-3">

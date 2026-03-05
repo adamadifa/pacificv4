@@ -2,7 +2,7 @@
     @csrf
     <div class="row mb-3">
         <div class="col">
-            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" />
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
             <div class="row">
                 <div class="col-lg-6 col-sm-12 col-md-12">
                     <div class="form-group mb-3">
@@ -15,10 +15,10 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-sm-12 col-md-12">
-                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true" icon="ti ti-moneybag" />
+                    <x-input-with-icon label="Jumlah" name="jumlah" align="right" numberFormat="true" icon="ti ti-moneybag" hideLabel="true" />
                 </div>
             </div>
-            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
             <div class="form-group mb-3">
                 <select name="debet_kredit" id="debet_kredit" class="form-select">
                     <option value="">Debet / Kredit</option>

@@ -3,16 +3,16 @@
         $total = toNumber($databarang['jumlah']) * toNumber($databarang['harga']);
     @endphp
     <x-input-with-icon label="Kode Barang" name="kode_barang" icon="ti ti-barcode" disabled="true"
-        value="{{ $databarang['kode_barang'] }}" />
+        value="{{ $databarang['kode_barang'] }}" hideLabel="true" />
     <x-input-with-icon label="Nama Barang" name="nama_barang" icon="ti ti-box" disabled="true"
-        value="{{ textCamelCase($barang->nama_barang) }}" />
+        value="{{ textCamelCase($barang->nama_barang) }}" hideLabel="true" />
     <x-input-with-icon label="Qty" id="jumlah" name="jumlah" icon="ti ti-box" value="{{ $databarang['jumlah'] }}"
-        align="right" numberFormat="true" />
+        align="right" numberFormat="true" hideLabel="true" />
     <x-input-with-icon label="Harga" id="harga" name="harga" icon="ti ti-moneybag"
-        value="{{ $databarang['harga'] }}" align="right" numberFormat="true" />
+        value="{{ $databarang['harga'] }}" align="right" numberFormat="true" hideLabel="true" />
     <x-input-with-icon label="Total" id="total" name="total" icon="ti ti-moneybag" align="right"
-        numberFormat="true" />
-    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" />
+        numberFormat="true" hideLabel="true" />
+    <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnUpdatebarang"><i class="ti ti-send me-1"></i>Submit</button>
     </div>
