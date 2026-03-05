@@ -74,17 +74,25 @@
         {{-- Filter Section --}}
         <form action="{{ route('penilaiankaryawan.index') }}">
             <div class="row g-2 mb-2">
-                <div class="col-lg-2 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-6 col-sm-12">
                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-6 col-sm-12">
                     <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}" select2="select2Kodecabangsearch" hideLabel="true" />
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <x-select label="Semua Departemen" name="kode_dept_search" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true" selected="{{ Request('kode_dept_search') }}" select2="select2Kodedeptsearch" hideLabel="true" />
+                </div>
+            </div>
+            <div class="row g-2 mb-2">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <x-input-with-icon label="Nama Karyawan" value="{{ Request('nama_karyawan_search') }}" name="nama_karyawan_search" icon="ti ti-user" hideLabel="true" />
                 </div>
                 @if (!empty($listApprovepenilaian))
-                    <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="form-group mb-2">
                             <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
                                 <option value="">Posisi Ajuan</option>
@@ -96,7 +104,7 @@
                         </div>
                     </div>
                 @endif
-                <div class="col-lg-2 col-md-4 col-sm-12">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <div class="form-group mb-2">
                         <select name="status" id="status" class="form-select">
                             <option value="">Status</option>
@@ -105,9 +113,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-1 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-12 col-sm-12">
                     <div class="form-group mb-2">
-                        <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
+                        <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
                 </div>
             </div>
@@ -320,6 +328,30 @@
 @push('myscript')
 <script>
     $(function() {
+        const select2Kodecabangsearch = $('.select2Kodecabangsearch');
+        if (select2Kodecabangsearch.length) {
+            select2Kodecabangsearch.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Semua Cabang',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
+        const select2Kodedeptsearch = $('.select2Kodedeptsearch');
+        if (select2Kodedeptsearch.length) {
+            select2Kodedeptsearch.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Semua Departemen',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
         const loading = () => {
             $("#loadmodal").html(`<div class="sk-wave sk-primary" style="margin:auto">
                 <div class="sk-wave-rect"></div>

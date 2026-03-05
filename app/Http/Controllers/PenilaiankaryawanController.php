@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
+use App\Models\Departemen;
 use App\Models\Detailpenilaiankaryawan;
 
 use App\Models\Itempenilaian;
@@ -33,6 +35,11 @@ class PenilaiankaryawanController extends Controller
         $data['penilaiankaryawan'] = $penilaiankaryawan;
         // dd(auth()->user()->kode_dept);
         $data['listApprovepenilaian'] = listApprovepenilaian(auth()->user()->kode_dept, $user->getRoleNames()->first());
+
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['departemen'] = Departemen::orderBy('kode_dept')->get();
+
         return view('hrd.penilaiankaryawan.index', $data);
 
         //Mobile

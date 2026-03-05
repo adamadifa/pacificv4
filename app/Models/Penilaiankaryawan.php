@@ -123,6 +123,12 @@ class Penilaiankaryawan extends Model
             if (!empty($request->posisi_ajuan)) {
                 $query->where('roles.name', $request->posisi_ajuan);
             }
+            if (!empty($request->kode_cabang_search)) {
+                $query->where('hrd_penilaian.kode_cabang', $request->kode_cabang_search);
+            }
+            if (!empty($request->kode_dept_search)) {
+                $query->where('hrd_penilaian.kode_dept', $request->kode_dept_search);
+            }
         }
 
         $query->orderBy('hrd_penilaian.tanggal', 'desc');
