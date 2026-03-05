@@ -120,8 +120,15 @@
         <div class="col">
             <div class="row">
                 <div class="col-lg-6 col-md-12 col-sm-12">
-                    <x-select label="Produk" name="kode_harga" :data="$detail" key="kode_harga" textShow="nama_produk"
-                        hideLabel="true" />
+                    <select name="kode_harga" id="kode_harga" class="form-select">
+                        <option value="">Pilih Produk</option>
+                        @foreach ($detail as $d)
+                            <option value="{{ $d->kode_harga }}" isi_pcs_dus="{{ $d->isi_pcs_dus }}"
+                                isi_pcs_pack="{{ $d->isi_pcs_pack }}" jumlah="{{ $d->jumlah }}">
+                                {{ $d->nama_produk }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-lg-2 col-md-12 col-sm-12">
                     <x-input-with-icon name="jml_dus" icon="ti ti-box" label="Dus" align="right" hideLabel="true" />
