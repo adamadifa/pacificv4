@@ -20,7 +20,7 @@
          <tr>
             <th>IN / OUT</th>
             <td>
-               @if ($mutasi->jenis_mutasi == 'PY')
+               <!-- @if ($mutasi->jenis_mutasi == 'PY')
                   @if ($mutasi->in_out_good == 'I')
                      <span class="badge bg-success">IN</span>
                   @else
@@ -32,7 +32,15 @@
                   @else
                      <span class="badge bg-danger">OUT</span>
                   @endif
-               @endif
+               @endif -->
+                @php
+                                        $in_out = $d->jenis_mutasi == 'PY' ? $d->in_out_good : $d->in_out_bad;
+                                    @endphp
+                                    @if ($in_out == 'I')
+                                        <span class="badge bg-label-success">IN</span>
+                                    @else
+                                        <span class="badge bg-label-danger">OUT</span>
+                                    @endif
             </td>
          </tr>
          <tr>
