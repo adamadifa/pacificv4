@@ -34,7 +34,7 @@
                   @endif
                @endif -->
                 @php
-                                        $in_out = $d->jenis_mutasi == 'PY' ? $d->in_out_good : $d->in_out_bad;
+                                        $in_out = $mutasi->jenis_mutasi == 'PY' ? $mutasi->in_out_good : $mutasi->in_out_bad;
                                     @endphp
                                     @if ($in_out == 'I')
                                         <span class="badge bg-label-success">IN</span>
