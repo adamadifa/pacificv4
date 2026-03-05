@@ -273,7 +273,7 @@
                             @endcan
 
                             @can('penilaiankaryawan.approve')
-                                @if ($user_can_approve && $d->status === '0')
+                                @if (($user_can_approve || $is_admin) && $d->status === '0')
                                     <a href="#" class="btnApprove btn btn-icon btn-label-info btn-sm" kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}" title="Approve">
                                         <i class="ti ti-external-link"></i>
                                     </a>

@@ -362,10 +362,25 @@ class PenilaiankaryawanController extends Controller
         $role = $user->getRoleNames()->first();
         $roles_approve = cekRoleapprove($penilaiankaryawan->kode_dept, $penilaiankaryawan->kode_cabang, $penilaiankaryawan->kategori_jabatan, $penilaiankaryawan->kode_jabatan);
         $end_role = end($roles_approve);
-        if ($role != $end_role) {
-            $cek_index = array_search($role, $roles_approve) + 1;
+
+        if (in_array($role, $roles_approve)) {
+            if ($role != $end_role) {
+                $cek_index = array_search($role, $roles_approve) + 1;
+            } else {
+                $cek_index = count($roles_approve) - 1;
+            }
         } else {
-            $cek_index = count($roles_approve) - 1;
+            // If super admin or other role not in approval sequence, determine next role from current position
+            $current_posisi_index = array_search($penilaiankaryawan->posisi_ajuan_name, $roles_approve);
+            if ($current_posisi_index !== false) {
+                if ($penilaiankaryawan->posisi_ajuan_name != $end_role) {
+                    $cek_index = $current_posisi_index + 1;
+                } else {
+                    $cek_index = count($roles_approve) - 1;
+                }
+            } else {
+                $cek_index = 0;
+            }
         }
 
         $nextrole = $roles_approve[$cek_index];
@@ -422,12 +437,25 @@ class PenilaiankaryawanController extends Controller
         $roles_approve = cekRoleapprove($penilaiankaryawan->kode_dept, $penilaiankaryawan->kode_cabang, $penilaiankaryawan->kategori_jabatan, $penilaiankaryawan->kode_jabatan);
         $end_role = end($roles_approve);
 
-        if ($role != $end_role) {
+        if (in_array($role, $roles_approve)) {
             $cek_index = array_search($role, $roles_approve);
-            $nextrole = $roles_approve[$cek_index + 1];
-            $userrole = User::role($nextrole)
-                ->where('status', 1)
-                ->first();
+            if ($role != $end_role) {
+                $nextrole = $roles_approve[$cek_index + 1];
+            }
+        } else {
+            // Bypass logic for super admin
+            $current_posisi_index = array_search($penilaiankaryawan->posisi_ajuan_name, $roles_approve);
+            if ($current_posisi_index !== false) {
+                if ($penilaiankaryawan->posisi_ajuan_name != $end_role) {
+                    $nextrole = $roles_approve[$current_posisi_index + 1];
+                    $role = $penilaiankaryawan->posisi_ajuan_name; // Set current role as the step being advanced
+                } else {
+                    $role = $end_role;
+                }
+            } else {
+                $nextrole = $roles_approve[0];
+                $role = ""; // Force it to NOT match end_role if sequence hasn't started
+            }
         }
 
         //dd($userrole);
