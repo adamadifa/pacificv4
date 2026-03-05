@@ -115,8 +115,10 @@ class Penilaiankaryawan extends Model
                 if (isset($status_map[$request->status])) {
                     $query->where('hrd_penilaian.status', $status_map[$request->status]);
                     if ($request->status == 'pending') {
-                        $user_role_ids = $user->roles->pluck('id')->toArray();
-                        $query->whereIn('hrd_penilaian.posisi_ajuan', $user_role_ids);
+                        if (!$user->hasRole(['super admin', 'asst. manager hrd', 'spv presensi'])) {
+                            $user_role_ids = $user->roles->pluck('id')->toArray();
+                            $query->whereIn('hrd_penilaian.posisi_ajuan', $user_role_ids);
+                        }
                     }
                 }
             }
