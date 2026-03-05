@@ -2,7 +2,8 @@
     <ul class="nav nav-pills nav-pills-custom mb-0" role="tablist">
         @can('ajuanlimit.index')
             <li class="nav-item" role="presentation">
-                <a href="{{ route('ajuanlimit.index') }}" class="nav-link {{ request()->is(['ajuanlimit', 'ajuanlimit/*']) ? 'active' : '' }}">
+                <a href="{{ route('ajuanlimit.index', ['status' => '0', 'posisi_ajuan' => auth()->user()->hasRole('super admin') ? '' : auth()->user()->getRoleNames()->first()]) }}"
+                    class="nav-link {{ request()->is(['ajuanlimit', 'ajuanlimit/*']) ? 'active' : '' }}">
                     <i class="ti ti-file-description me-1"></i> Ajuan Limit Kredit
                     @if (!empty($notifikasi_limitkredit))
                         <span class="badge bg-danger rounded-pill ms-2 text-white">{{ $notifikasi_limitkredit }}</span>

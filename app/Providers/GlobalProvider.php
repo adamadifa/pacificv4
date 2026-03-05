@@ -109,7 +109,12 @@ class GlobalProvider extends ServiceProvider
                         ->whereIn('role_id', $user_role_ids);
                 };
 
-                $notifikasi_limitkredit = Disposisiajuanlimitkredit::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
+                $ajl = new \App\Models\Ajuanlimitkredit();
+                $posisi_ajuan = auth()->user()->hasRole('super admin') ? '' : ($level_user == 'operation manager' ? 'sales marketing manager' : $level_user);
+                $notifikasi_limitkredit = $ajl->getAjuanlimitkredit(request: new \Illuminate\Http\Request([
+                    'status' => '0',
+                    'posisi_ajuan' => $posisi_ajuan
+                ]))->count();
                 $notifikasi_ajuanfaktur = Disposisiajuanfaktur::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
                 $notifikasi_target = Disposisitargetkomisi::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
                 $notifikasi_pengajuan_marketing = $notifikasi_limitkredit + $notifikasi_ajuanfaktur;

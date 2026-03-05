@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ajuanlimitkredit;
+use App\Models\AjuanlimitkreditConfig;
 use App\Models\Cabang;
 use App\Models\Disposisiajuanlimitkredit;
 use App\Models\Pelanggan;
@@ -22,136 +23,83 @@ class AjuanlimitkreditController extends Controller
         $start_date = config('global.start_date');
         $end_date = config('global.end_date');
 
-
         if (!empty($request->dari) && !empty($request->sampai)) {
             if (lockreport($request->dari) == "error") {
                 return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
             }
         }
-        //$roles_maker_ajuanlimitkredit = config('global.roles_maker_ajuanlimitkredit');
-        $user = User::findorfail(auth()->user()->id);
-        if ($user->hasRole($roles_approve_ajuanlimitkredit)) {
-            $query = Disposisiajuanlimitkredit::select(
-                'marketing_ajuan_limitkredit.*',
-                'nama_pelanggan',
-                'nama_salesman',
-                'nama_cabang',
-                'roles.name as role',
-                'marketing_ajuan_limitkredit.status',
-                'marketing_ajuan_limitkredit_disposisi.status as status_disposisi',
-                'status_ajuan',
-                'disposisi.id_pengirim'
-            );
-            $query->join('marketing_ajuan_limitkredit', 'marketing_ajuan_limitkredit_disposisi.no_pengajuan', '=', 'marketing_ajuan_limitkredit.no_pengajuan');
-            $query->join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
-            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
-            $query->leftJoin(
-                DB::raw("(
-                SELECT marketing_ajuan_limitkredit_disposisi.no_pengajuan,id_pengirim,id_penerima,uraian_analisa,status as status_ajuan
-                FROM marketing_ajuan_limitkredit_disposisi
-				WHERE marketing_ajuan_limitkredit_disposisi.kode_disposisi IN
-                    (SELECT MAX(kode_disposisi) as kode_disposisi
-                    FROM marketing_ajuan_limitkredit_disposisi
-                    GROUP BY no_pengajuan)
-                ) disposisi"),
-                function ($join) {
-                    $join->on('marketing_ajuan_limitkredit.no_pengajuan', '=', 'disposisi.no_pengajuan');
-                }
-            );
 
-            $query->leftjoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-            $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-            $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
-            $query->where('marketing_ajuan_limitkredit_disposisi.id_penerima', auth()->user()->id);
-            $query->orderBy('marketing_ajuan_limitkredit.created_at', 'desc');
-        } else {
-            $query = Ajuanlimitkredit::query();
-            $query->select(
-                'marketing_ajuan_limitkredit.*',
-                'nama_pelanggan',
-                'nama_salesman',
-                'nama_cabang',
-                'disposisi.id_pengirim',
-                'roles.name as role',
-                'status_ajuan'
-            );
-            $query->join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-            $query->join('salesman', 'marketing_ajuan_limitkredit.kode_salesman', '=', 'salesman.kode_salesman');
-            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
-            $query->leftJoin(
-                DB::raw("(
-                SELECT marketing_ajuan_limitkredit_disposisi.no_pengajuan,id_pengirim,id_penerima,uraian_analisa,status as status_ajuan
-                FROM marketing_ajuan_limitkredit_disposisi
-				WHERE marketing_ajuan_limitkredit_disposisi.kode_disposisi IN
-                    (SELECT MAX(kode_disposisi) as kode_disposisi
-                    FROM marketing_ajuan_limitkredit_disposisi
-                    GROUP BY no_pengajuan)
-                ) disposisi"),
-                function ($join) {
-                    $join->on('marketing_ajuan_limitkredit.no_pengajuan', '=', 'disposisi.no_pengajuan');
-                }
-            );
-            $query->leftjoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-            $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-            $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
-            $query->orderBy('marketing_ajuan_limitkredit.created_at', 'desc');
-        }
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-            } else {
-                $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
-            }
-        }
+        $ajl = new Ajuanlimitkredit();
+        $query = $ajl->getAjuanlimitkredit(request: $request);
 
-        if (!empty($request->kode_cabang_search)) {
-            $query->where('salesman.kode_cabang', $request->kode_cabang_search);
-        }
-
-        if (!empty($request->posisi_ajuan)) {
-            $query->where('roles.name', $request->posisi_ajuan);
-        }
-
-        if ($request->status === '0') {
-            $query->where('marketing_ajuan_limitkredit.status', $request->status);
-        } else {
-            if (!empty($request->status)) {
-                $query->where('marketing_ajuan_limitkredit.status', $request->status);
-            }
-        }
-
-        if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('marketing_ajuan_limitkredit.tanggal', [$request->dari, $request->sampai]);
-        } else {
-            $query->whereBetween('marketing_ajuan_limitkredit.tanggal', [$start_date, $end_date]);
-        }
-
-
-        // dd($query->get());
-        $ajuanlimit = $query->cursorPaginate(15);
+        $ajuanlimit = $query->paginate(15);
         $ajuanlimit->appends(request()->all());
+
+        $all_configs = AjuanlimitkreditConfig::orderBy('min_limit', 'asc')->get();
+        $roles_filter = [];
+        foreach ($all_configs as $c) {
+            $roles_filter = array_merge($roles_filter, $c->roles);
+        }
+        $roles_filter = array_unique($roles_filter);
+
+        if (empty($roles_filter)) {
+            $roles_filter = config('global.roles_aprove_ajuanlimitkredit');
+        }
+
         $data['ajuanlimit'] = $ajuanlimit;
-        $data['roles_approve_ajuanlimitkredit'] = $roles_approve_ajuanlimitkredit;
+        $data['all_configs'] = $all_configs;
+        $data['roles_approve_ajuanlimitkredit'] = $roles_filter;
+        $role = auth()->user()->getRoleNames()->first();
+        if ($role == 'operation manager') {
+            $role = 'sales marketing manager';
+        }
+        $data['level_user'] = $role;
 
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
 
-
         return view('marketing.ajuanlimit.index', $data);
     }
+
 
     public function create()
     {
         return view('marketing.ajuanlimit.create');
     }
 
-    // public function edit($no_pengajuan)
-    // {
-    //     $no_pengajuan = Crypt::decrypt($no_pengajuan);
-    //     return view('marketing.ajuanlimit.create');
-    // }
+    public function edit($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $ajuanlimit = Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->first();
+        $data['ajuanlimit'] = $ajuanlimit;
+
+        $user = User::findorFail(auth()->user()->id);
+        $role = $user->getRoleNames()->first();
+        $data['level_user'] = $role;
+        $data['roles_approve'] = [];
+        if ($role == 'super admin') {
+            $config = \App\Models\AjuanlimitkreditConfig::where('min_limit', '<=', $ajuanlimit->jumlah)
+                ->where('max_limit', '>=', $ajuanlimit->jumlah)
+                ->first();
+            $data['roles_approve'] = $config ? $config->roles : ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'];
+        }
+
+        return view('marketing.ajuanlimit.edit', $data);
+    }
+
+    public function update($no_pengajuan, Request $request)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        try {
+            Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update([
+                'posisi_ajuan' => $request->posisi_ajuan
+            ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 
     public function store(Request $request)
     {
@@ -203,6 +151,15 @@ class AjuanlimitkreditController extends Controller
                 'omset_toko' => toNumber($request->omset_toko)
             ]);
 
+            $regional = Cabang::where('kode_cabang', $pelanggan->kode_cabang)->first();
+            $jumlah_ajuan = toNumber($request->jumlah);
+            $config = AjuanlimitkreditConfig::where('min_limit', '<=', $jumlah_ajuan)
+                ->where('max_limit', '>=', $jumlah_ajuan)
+                ->first();
+
+            $roles = $config ? $config->roles : ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'];
+
+
             //Insert Pengajuan
             Ajuanlimitkredit::create([
                 'no_pengajuan' => $no_pengajuan,
@@ -229,12 +186,16 @@ class AjuanlimitkreditController extends Controller
                 'kode_salesman' => $pelanggan->kode_salesman,
                 'id_user' => auth()->user()->id,
                 'referensi' => !empty($request->referensi) ? implode(",", $request->referensi) : '',
-                'ket_referensi' => $request->ket_referensi
+                'ket_referensi' => $request->ket_referensi,
+                'posisi_ajuan' => $roles[0] ?? null
             ]);
 
 
-            //Disposisi
-
+            //Disposisi (Optional: keep for history or remove if fully replaced. User said "abaikan", but usually history is good. However, if following "lembur" exactly, it might be removed.)
+            // For now, let's keep the history logic if needed but primarily use posisi_ajuan in index.
+            // Actually, if I follow "lembur" exactly, I should remove the disposisi creation here if it's no longer the source of truth.
+            
+            /* 
             $tanggal_hariini = date('Y-m-d');
             $lastdisposisi = Disposisiajuanlimitkredit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
                 ->orderBy('kode_disposisi', 'desc')
@@ -243,42 +204,15 @@ class AjuanlimitkreditController extends Controller
             $format = "DPLK" . date('Ymd');
             $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
 
-
-            $regional = Cabang::where('kode_cabang', $pelanggan->kode_cabang)->first();
-            $smm = User::role('sales marketing manager')->where('kode_cabang', $pelanggan->kode_cabang)
-                ->where('status', 1)
-                ->first();
-
-            if ($smm != null) {
-                $id_penerima = $smm->id;
-            } else {
-                $rsm = User::role('regional sales manager')->where('kode_regional', $regional->kode_regional)
-                    ->where('status', 1)
-                    ->first();
-                if ($rsm != null) {
-                    $id_penerima = $rsm->id;
-                } else {
-                    $gm = User::role('gm marketing')
-                        ->where('status', 1)
-                        ->first();
-                    if ($gm != null) {
-                        $id_penerima = $gm->id;
-                    } else {
-                        $id_penerima = 22;
-                        //return Redirect::back()->with(messageError('User GM Marketing Tidak Ditemukan'));
-                    }
-                }
-            }
-
-
             Disposisiajuanlimitkredit::create([
                 'kode_disposisi' => $kode_disposisi,
                 'no_pengajuan' => $no_pengajuan,
                 'id_pengirim' => auth()->user()->id,
-                'id_penerima' => $id_penerima,
+                'id_penerima' => 22, // Fallback
                 'uraian_analisa' => $request->uraian_analisa,
                 'status' => 0
             ]);
+            */
 
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
@@ -319,6 +253,30 @@ class AjuanlimitkreditController extends Controller
         $data['cara_pembayaran'] = config('pelanggan.cara_pembayaran');
         $data['lama_langganan'] = config('pelanggan.lama_langganan');
 
+        // Added Range-Based Logic
+        $jumlah = $ajuanlimit->jumlah;
+        $config = AjuanlimitkreditConfig::where('min_limit', '<=', $jumlah)
+            ->where('max_limit', '>=', $jumlah)
+            ->first();
+        $roles = $config ? $config->roles : ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'];
+        $current_role = auth()->user()->roles->pluck('name')[0];
+        if ($current_role == 'operation manager') $current_role = 'sales marketing manager';
+        $current_index = array_search($current_role, $roles);
+
+        $next_role = null;
+        if ($current_index !== false && isset($roles[$current_index + 1])) {
+            $next_role = $roles[$current_index + 1];
+        }
+
+        $data['config'] = $config;
+        $data['roles'] = $roles;
+        $data['next_role'] = $next_role;
+        $data['is_final_approver'] = ($current_index !== false && $current_index === count($roles) - 1) || $current_role == 'direktur';
+
+        $data['lastdisposisi'] = Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
         $data['disposisi'] = Disposisiajuanlimitkredit::select('marketing_ajuan_limitkredit_disposisi.*', 'users.name as username', 'roles.name as role')
             ->join('users', 'marketing_ajuan_limitkredit_disposisi.id_pengirim', '=', 'users.id')
             ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
@@ -326,8 +284,6 @@ class AjuanlimitkreditController extends Controller
             ->where('no_pengajuan', $no_pengajuan)
             ->orderBy('marketing_ajuan_limitkredit_disposisi.created_at')
             ->get();
-
-        $data['lastdisposisi'] = Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->orderBy('created_at', 'desc')->first();
         return view('marketing.ajuanlimit.approve', $data);
     }
 
@@ -336,7 +292,7 @@ class AjuanlimitkreditController extends Controller
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $ajl = new Ajuanlimitkredit();
-        $ajuanlimit = $ajl->getAjuanlimitkredit($no_pengajuan);
+        $ajuanlimit = $ajl->getAjuanlimitkredit($no_pengajuan)->first();
         $data['ajuanlimit'] = $ajuanlimit;
         $data['kepemilikan'] = config('pelanggan.kepemilikan');
         $data['lama_berjualan'] = config('pelanggan.lama_berjualan');
@@ -360,7 +316,7 @@ class AjuanlimitkreditController extends Controller
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $ajl = new Ajuanlimitkredit();
-        $ajuanlimit = $ajl->getAjuanlimitkredit($no_pengajuan);
+        $ajuanlimit = $ajl->getAjuanlimitkredit($no_pengajuan)->first();
         $data['ajuanlimit'] = $ajuanlimit;
         $data['kepemilikan'] = config('pelanggan.kepemilikan');
         $data['lama_berjualan'] = config('pelanggan.lama_berjualan');
@@ -401,16 +357,11 @@ class AjuanlimitkreditController extends Controller
         try {
 
 
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisiajuanlimitkredit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPLK" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+            $user = auth()->user();
+            $user_roles = $user->roles->pluck('name')->toArray();
 
             if (isset($_POST['decline'])) {
-                if (auth()->user()->roles->pluck('name')[0] == 'operation manager') {
+                if (in_array('operation manager', $user_roles)) {
                     Disposisiajuanlimitkredit::leftjoin('users as penerima', 'marketing_ajuan_limitkredit_disposisi.id_penerima', '=', 'penerima.id')
                         ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
                         ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
@@ -419,9 +370,13 @@ class AjuanlimitkreditController extends Controller
                         ->update([
                             'marketing_ajuan_limitkredit_disposisi.status' => 2
                         ]);
+                } else if (in_array('super admin', $user_roles)) {
+                    Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+                        ->where('status', 0)
+                        ->update(['status' => 2]);
                 } else {
                     Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', auth()->user()->id)->update([
+                        ->where('id_penerima', $user->id)->update([
                             'status' => 2
                         ]);
                 }
@@ -431,7 +386,7 @@ class AjuanlimitkreditController extends Controller
                 return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Ditolak'));
             } else {
 
-                if (auth()->user()->roles->pluck('name')[0] == 'operation manager') {
+                if (in_array('operation manager', $user_roles)) {
                     Disposisiajuanlimitkredit::leftjoin('users as penerima', 'marketing_ajuan_limitkredit_disposisi.id_penerima', '=', 'penerima.id')
                         ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
                         ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
@@ -440,102 +395,80 @@ class AjuanlimitkreditController extends Controller
                         ->update([
                             'marketing_ajuan_limitkredit_disposisi.status' => 1
                         ]);
+                    $current_role = 'sales marketing manager';
+                } else if (in_array('super admin', $user_roles)) {
+                    $current_role = !empty($ajuanlimit->posisi_ajuan) ? $ajuanlimit->posisi_ajuan : 'sales marketing manager';
+                    Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+                        ->where('status', 0)
+                        ->update(['status' => 1]);
                 } else {
                     Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', auth()->user()->id)->update([
+                        ->where('id_penerima', $user->id)->update([
                             'status' => 1
                         ]);
+                    $current_role = $user_roles[0];
                 }
 
+                $jumlah = $ajuanlimit->jumlah;
+                $config = AjuanlimitkreditConfig::where('min_limit', '<=', $jumlah)
+                    ->where('max_limit', '>=', $jumlah)
+                    ->first();
 
+                $roles = $config ? $config->roles : ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'];
+                $current_index = array_search($current_role, $roles);
 
+                // Final Approval if it's the last role in the sequence
+                $is_approved = ($current_index !== false && $current_index === count($roles) - 1);
 
-                if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' || auth()->user()->roles->pluck('name')[0] == "operation manager") {
-                    if ($ajuanlimit->jumlah <= 5000000) {
-                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
-                        //Update Limit Pelanggan
-                        $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $ajuanlimit->jumlah);
-                        DB::commit();
-                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
-                    } else {
-                        $rsm = User::role('regional sales manager')
-                            ->where('kode_regional', $ajuanlimit->kode_regional)
-                            ->where('status', 1)
-                            ->first();
-                        if ($rsm != NULL) {
-                            $id_penerima = $rsm->id;
-                        } else {
-                            $gm = User::role('gm marketing')
-                                ->where('status', 1)
-                                ->first();
-                            $id_penerima = $gm->id;
-                        }
-                        Disposisiajuanlimitkredit::create([
-                            'kode_disposisi' => $kode_disposisi,
-                            'no_pengajuan' => $no_pengajuan,
-                            'id_pengirim' => auth()->user()->id,
-                            'id_penerima' => $id_penerima,
-                            'uraian_analisa' => $request->uraian_analisa,
-                            'status' => 0
-                        ]);
+                // Special case for Direktur (always final approval even if not in sequence)
+                if (in_array('direktur', $user_roles)) {
+                    $is_approved = true;
+                }
 
-
-                        DB::commit();
-                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
-                    }
-                } else if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager') {
-                    if ($ajuanlimit->jumlah <= 10000000) {
-                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
-                        //Update Limit Pelanggan
-                        $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $ajuanlimit->jumlah);
-                        DB::commit();
-                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
-                    } else {
-                        $gm = User::role('gm marketing')
-                            ->where('status', 1)
-                            ->first();
-                        $id_penerima = $gm->id;
-                        Disposisiajuanlimitkredit::create([
-                            'kode_disposisi' => $kode_disposisi,
-                            'no_pengajuan' => $no_pengajuan,
-                            'id_pengirim' => auth()->user()->id,
-                            'id_penerima' => $id_penerima,
-                            'uraian_analisa' => $request->uraian_analisa,
-                            'status' => 0
-                        ]);
-                        DB::commit();
-                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
-                    }
-                } else if (auth()->user()->roles->pluck('name')[0] == 'gm marketing') {
-                    if ($ajuanlimit->jumlah <= 15000000) {
-                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
-                        //Update Limit Pelanggan
-                        $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $ajuanlimit->jumlah);
-                        DB::commit();
-                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
-                    } else {
-                        $dirut = User::role('direktur')
-                            ->where('status', 1)
-                            ->first();
-                        $id_penerima = $dirut->id;
-                        Disposisiajuanlimitkredit::create([
-                            'kode_disposisi' => $kode_disposisi,
-                            'no_pengajuan' => $no_pengajuan,
-                            'id_pengirim' => auth()->user()->id,
-                            'id_penerima' => $id_penerima,
-                            'uraian_analisa' => $request->uraian_analisa,
-                            'status' => 0
-                        ]);
-                        DB::commit();
-                        return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
-                    }
-                } else if (auth()->user()->roles->pluck('name')[0] == 'direktur') {
-                    Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
+                if ($is_approved) {
+                    Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update([
+                        'status' => 1,
+                        'posisi_ajuan' => $current_role
+                    ]);
                     $jumlah = !empty($ajuanlimit->jumlah_rekomendasi) ? $ajuanlimit->jumlah_rekomendasi : $ajuanlimit->jumlah;
-                    //Update Limit Pelanggan
                     $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $jumlah);
                     DB::commit();
                     return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
+                } else {
+                    $next_role = null;
+                    if ($current_index !== false && isset($roles[$current_index + 1])) {
+                        $next_role = $roles[$current_index + 1];
+                    } else if (!empty($ajuanlimit->posisi_ajuan)) {
+                        // If current role not in sequence but a position exists, keep current position or move to first
+                        $next_role = $ajuanlimit->posisi_ajuan;
+                    } else {
+                        // Default to first role if everything else fails
+                        $next_role = $roles[0];
+                    }
+
+                    Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update([
+                        'posisi_ajuan' => $next_role
+                    ]);
+
+                    $tanggal_hariini = date('Y-m-d');
+                    $lastdisposisi = Disposisiajuanlimitkredit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                        ->orderBy('kode_disposisi', 'desc')
+                        ->first();
+                    $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+                    $format = "DPLK" . date('Ymd');
+                    $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+                    Disposisiajuanlimitkredit::create([
+                        'kode_disposisi' => $kode_disposisi,
+                        'no_pengajuan' => $no_pengajuan,
+                        'id_pengirim' => auth()->user()->id,
+                        'id_penerima' => 0,
+                        'uraian_analisa' => $request->uraian_analisa,
+                        'status' => 0
+                    ]);
+
+                    DB::commit();
+                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
                 }
             }
         } catch (\Exception $e) {
@@ -550,102 +483,39 @@ class AjuanlimitkreditController extends Controller
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $ajuanlimit = Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->first();
 
-
         DB::beginTransaction();
         try {
+            $user = User::findorfail(auth()->user()->id);
+            $role = $user->getRoleNames()->first();
+
+            $jumlah = $ajuanlimit->jumlah;
+            $config = AjuanlimitkreditConfig::where('min_limit', '<=', $jumlah)
+                ->where('max_limit', '>=', $jumlah)
+                ->first();
+
+            $roles = $config ? $config->roles : ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'];
+
             if ($ajuanlimit->status == '2') {
-                if (auth()->user()->roles->pluck('name')[0] == 'operation manager') {
-                    Disposisiajuanlimitkredit::leftjoin('users as penerima', 'marketing_ajuan_limitkredit_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'sales marketing manager')
-                        ->update([
-                            'marketing_ajuan_limitkredit_disposisi.status' => 0
-                        ]);
-                } else {
-                    Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', auth()->user()->id)->update([
-                            'status' => 0
-                        ]);
-                }
-
-
-                Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
+                // If rejected, reset to pending at the first role
+                Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update([
+                    'status' => '0',
+                    'posisi_ajuan' => $roles[0]
+                ]);
+            } else if ($ajuanlimit->status == '1') {
+                // If approved, reset to pending at the last role
+                Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update([
+                    'status' => '0',
+                    'posisi_ajuan' => end($roles)
+                ]);
+                $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $ajuanlimit->limit_sebelumnya);
             } else {
-                if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' || auth()->user()->roles->pluck('name')[0] == 'operation manager') {
-                    if ($ajuanlimit->jumlah <= 5000000) {
-                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
-                        //Update Limit Pelanggan
-                        $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $ajuanlimit->limit_sebelumnya);
-                    }
-                } else if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager') {
-                    if ($ajuanlimit->jumlah <= 10000000) {
-                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
-                        //Update Limit Pelanggan
-                        $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $ajuanlimit->limit_sebelumnya);
-                    }
-                } else if (auth()->user()->roles->pluck('name')[0] == 'gm marketing') {
-                    if ($ajuanlimit->jumlah <= 15000000) {
-                        Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
-                        //Update Limit Pelanggan
-                        $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $ajuanlimit->limit_sebelumnya);
-                    }
-                } else if (auth()->user()->roles->pluck('name')[0] == 'direktur') {
-                    Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
-
-                    //Update Limit Pelanggan
-                    $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $ajuanlimit->limit_sebelumnya);
-                }
-                if (auth()->user()->roles->pluck('name')[0] != 'operation manager') {
-
-                    if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager') {
-                        Disposisiajuanlimitkredit::leftjoin('users as penerima', 'marketing_ajuan_limitkredit_disposisi.id_penerima', '=', 'penerima.id')
-                            ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                            ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                            ->where('no_pengajuan', $no_pengajuan)
-                            ->where('roles.name', 'regional sales manager')
-                            ->delete();
-                    } else {
-                        Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                            ->where('id_pengirim', auth()->user()->id)
-                            ->whereRaw('id_pengirim != id_penerima')
-                            ->delete();
-                    }
-
-                    Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', auth()->user()->id)
-                        ->update(['status' => 0]);
-                } else {
-                    $disposisi_om = Disposisiajuanlimitkredit::where('id_pengirim', auth()->user()->id)->where('no_pengajuan', $no_pengajuan);
-                    $cek_pengirim_om = $disposisi_om->count();
-                    if ($cek_pengirim_om > 1) {
-                        $last_pengirim_om = $disposisi_om->orderBy('created_at', 'desc')->first();
-                        Disposisiajuanlimitkredit::where('kode_disposisi', $last_pengirim_om->kode_disposisi)->delete();
-                        Disposisiajuanlimitkredit::leftjoin('users as pengirim', 'marketing_ajuan_limitkredit_disposisi.id_pengirim', '=', 'pengirim.id')
-                            ->leftjoin('model_has_roles', 'pengirim.id', '=', 'model_has_roles.model_id')
-                            ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                            ->where('no_pengajuan', $no_pengajuan)
-                            ->where('roles.name', 'sales marketing manager')
-                            ->delete();
-                    }
-
-
-                    Disposisiajuanlimitkredit::leftjoin('users as penerima', 'marketing_ajuan_limitkredit_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'sales marketing manager')
-                        ->update([
-                            'marketing_ajuan_limitkredit_disposisi.status' => 0
-                        ]);
-
-                    Disposisiajuanlimitkredit::leftjoin('users as penerima', 'marketing_ajuan_limitkredit_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'regional sales manager')
-                        ->delete();
+                // If pending, go back to previous role
+                $current_index = array_search($ajuanlimit->posisi_ajuan, $roles);
+                if ($current_index !== false && $current_index > 0) {
+                    $prev_role = $roles[$current_index - 1];
+                    Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update([
+                        'posisi_ajuan' => $prev_role
+                    ]);
                 }
             }
 

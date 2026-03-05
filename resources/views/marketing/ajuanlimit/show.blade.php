@@ -1,232 +1,160 @@
-<div class="row">
-    <table class="table">
-        <tr>
-            <th class="text-center">Foto Toko</th>
-            <th class="text-center">Foto Owner</th>
-        </tr>
-        <tr>
-            <td class="text-center">
-                @if (!empty($ajuanlimit->foto))
-                    @if (Storage::disk('public')->exists('/pelanggan/' . $ajuanlimit->foto))
-                        <img src="{{ getfotoPelanggan($ajuanlimit->foto) }}" alt="user image" class="d-block h-auto mx-auto rounded user-profile-img"
-                            width="150">
-                    @else
-                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
-                            class="d-block h-auto mx-auto rounded user-profile-img" width="150">
-                    @endif
+<style>
+    .detail-list dl {
+        display: grid;
+        grid-template-columns: 40% 60%;
+        margin-bottom: 0.5rem;
+    }
+
+    .detail-list dt {
+        font-weight: 500;
+        color: #5d596c;
+    }
+
+    .detail-list dd {
+        margin-bottom: 0;
+        color: #6f6b7d;
+    }
+
+    .timeline-disposisi {
+        border-left: 2px solid #e6e6e8;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .timeline-item {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .timeline-item::before {
+        content: "";
+        width: 12px;
+        height: 12px;
+        background: #007bff;
+        border-radius: 50%;
+        position: absolute;
+        left: -21px;
+        top: 4px;
+    }
+</style>
+
+<div class="row g-4">
+    <!-- Photo Section -->
+    <div class="col-12">
+        <div class="d-flex justify-content-around bg-light p-3 rounded shadow-sm">
+            <div class="text-center">
+                <small class="text-muted d-block mb-2">Foto Toko</small>
+                @if (!empty($ajuanlimit->foto) && Storage::disk('public')->exists('/pelanggan/' . $ajuanlimit->foto))
+                    <img src="{{ getfotoPelanggan($ajuanlimit->foto) }}" class="rounded shadow-sm" style="width: 120px; height: 120px; object-fit: cover;">
                 @else
-                    <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
-                        class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                    <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" class="rounded shadow-sm" style="width: 120px;">
                 @endif
-            </td>
-            <td class="text-center">
-                @if (!empty($ajuanlimit->foto_owner))
-                    @if (Storage::disk('public')->exists('/pelanggan/owner/' . $ajuanlimit->foto_owner))
-                        <img src="{{ getfotoPelangganowner($ajuanlimit->foto_owner) }}" alt="user image"
-                            class="d-block h-auto mx-auto rounded user-profile-img" width="150">
-                    @else
-                        <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
-                            class="d-block h-auto mx-auto rounded user-profile-img" width="150">
-                    @endif
+            </div>
+            <div class="text-center">
+                <small class="text-muted d-block mb-2">Foto Owner</small>
+                @if (!empty($ajuanlimit->foto_owner) && Storage::disk('public')->exists('/pelanggan/owner/' . $ajuanlimit->foto_owner))
+                    <img src="{{ getfotoPelangganowner($ajuanlimit->foto_owner) }}" class="rounded shadow-sm" style="width: 120px; height: 120px; object-fit: cover;">
                 @else
-                    <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" alt="user image"
-                        class="d-block h-auto mx-auto rounded user-profile-img" width="150">
+                    <img src="{{ asset('assets/img/avatars/No_Image_Available.jpg') }}" class="rounded shadow-sm" style="width: 120px;">
                 @endif
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="row">
-    <div class="col-lg-6 col-md-12 col-sm-12">
-        <div class="row">
-            <div class="col">
-                <table class="table">
-                    <tr>
-                        <th style="width:35%">No. Pengajuan</th>
-                        <td>{{ $ajuanlimit->no_pengajuan }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tanggal</th>
-                        <td>{{ DateToIndo($ajuanlimit->tanggal) }}</td>
-                    </tr>
-                    <tr>
-                        <th>Kode Pelanggan</th>
-                        <td>{{ $ajuanlimit->kode_pelanggan }}</td>
-                    </tr>
-                    <tr>
-                        <th>NIK</th>
-                        <td>{{ $ajuanlimit->nik }}</td>
-                    </tr>
-                    <tr>
-                        <th>Nama Pelanggan</th>
-                        <td>{{ $ajuanlimit->nama_pelanggan }}</td>
-                    </tr>
-                    <tr>
-                        <th>Alamat</th>
-                        <td>{{ ucwords(strtolower($ajuanlimit->alamat_pelanggan)) }}</td>
-                    </tr>
-                    <tr>
-                        <th>No. HP</th>
-                        <td>{{ $ajuanlimit->no_hp_pelanggan }}</td>
-                    </tr>
-                    <tr>
-                        <th>Cabang</th>
-                        <td>{{ textUpperCase($ajuanlimit->nama_cabang) }}</td>
-                    </tr>
-                    <tr>
-                        <th>Salesman</th>
-                        <td>{{ textUpperCase($ajuanlimit->nama_salesman) }}</td>
-                    </tr>
-                    <tr>
-                        <th>Routing</th>
-                        <td>{{ $ajuanlimit->hari }}</td>
-                    </tr>
-                    <tr>
-                        <th>Lokasi</th>
-                        <td>{{ $ajuanlimit->latitude }},{{ $ajuanlimit->longitude }}</td>
-                    </tr>
-                    <tr>
-                        <th>Jumlah Ajuan</th>
-                        <td style="font-weight: bold">{{ formatAngka($ajuanlimit->jumlah) }}</td>
-                    </tr>
-                    <tr>
-                        <th>LJT Ajuan</th>
-                        <td style="font-weight: bold">{{ $ajuanlimit->ljt }} Hari</td>
-                    </tr>
-                </table>
             </div>
         </div>
     </div>
-    <div class="col-lg-1 col-md-12 col-sm-12">
-        <div class="divider divider-vertical">
-            <div class="divider-text">
-                <i class="ti ti-crown"></i>
-            </div>
-        </div>
+
+    <!-- Left Column: Primary Data -->
+    <div class="col-md-6 border-end detail-list">
+        <h6 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="ti ti-info-circle me-1"></i>Data Pengajuan</h6>
+        <dl>
+            <dt>No. Pengajuan</dt>
+            <dd class="fw-bold">{{ $ajuanlimit->no_pengajuan }}</dd>
+            <dt>Tanggal</dt>
+            <dd>{{ DateToIndo($ajuanlimit->tanggal) }}</dd>
+            <dt>Kode Pelanggan</dt>
+            <dd>{{ $ajuanlimit->kode_pelanggan }}</dd>
+            <dt>NIK</dt>
+            <dd>{{ $ajuanlimit->nik }}</dd>
+            <dt>Nama Pelanggan</dt>
+            <dd>{{ $ajuanlimit->nama_pelanggan }}</dd>
+            <dt>Alamat</dt>
+            <dd>{{ ucwords(strtolower($ajuanlimit->alamat_pelanggan)) }}</dd>
+            <dt>No. HP</dt>
+            <dd>{{ $ajuanlimit->no_hp_pelanggan }}</dd>
+            <dt>Cabang</dt>
+            <dd>{{ textUpperCase($ajuanlimit->nama_cabang) }}</dd>
+            <dt>Salesman</dt>
+            <dd>{{ textUpperCase($ajuanlimit->nama_salesman) }}</dd>
+            <dt>Routing</dt>
+            <dd>{{ $ajuanlimit->hari }}</dd>
+            <dt>Lokasi</dt>
+            <dd><a href="https://www.google.com/maps?q={{ $ajuanlimit->latitude }},{{ $ajuanlimit->longitude }}" target="_blank" class="text-info"><i class="ti ti-map-pin me-1"></i>View Map</a></dd>
+            <dt>Jumlah Ajuan</dt>
+            <dd class="fw-bold text-success">{{ formatAngka($ajuanlimit->jumlah) }}</dd>
+            <dt>LJT Ajuan</dt>
+            <dd>{{ $ajuanlimit->ljt }} Hari</dd>
+        </dl>
     </div>
-    <div class="col-lg-5 col-md-12 col-sm-12">
-        <div class="row mb-3">
-            <div class="col">
-                <table class="table mb-2">
-                    <tr>
-                        <th>Kepemilikan</th>
-                        <td>{{ !empty($ajuanlimit->kepemilikan) ? $kepemilikan[$ajuanlimit->kepemilikan] : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Lama Berjualan</th>
-                        <td>{{ !empty($ajuanlimit->lama_berjualan) ? $lama_berjualan[$ajuanlimit->lama_berjualan] : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Status Outlet</th>
-                        <td>{{ !empty($ajuanlimit->status_outlet) ? $status_outlet[$ajuanlimit->status_outlet] : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Type Outlet</th>
-                        <td>{{ !empty($ajuanlimit->type_outlet) ? $type_outlet[$ajuanlimit->type_outlet] : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Cara Pembayaran</th>
-                        <td>{{ !empty($ajuanlimit->cara_pembayaran) ? $cara_pembayaran[$ajuanlimit->cara_pembayaran] : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Lama Langganan</th>
-                        <td>{{ !empty($ajuanlimit->lama_langganan) ? $lama_langganan[$ajuanlimit->lama_langganan] : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Jaminan</th>
-                        <td>{{ $ajuanlimit->jaminan == '1' ? 'Ada' : 'Tidak Ada' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Top UP Terakhir</th>
-                        <td>{{ !empty($ajuanlimit->topup_terakhir) ? DateToIndo($ajuanlimit->topup_terakhir) : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Omset Toko</th>
-                        <td>{{ formatAngka($ajuanlimit->omset_toko) }}</td>
-                    </tr>
-                    <tr>
-                        <th>Faktur Belum Lunas</th>
-                        <td>{{ $ajuanlimit->jml_faktur }}</td>
-                    </tr>
-                    <tr>
-                        <th>Skor</th>
-                        <td>{{ formatAngkaDesimal($ajuanlimit->skor) }}</td>
-                    </tr>
-                    <tr>
-                        <th>Rekomendasi</th>
-                        <td>
-                            @php
-                                if ($ajuanlimit->skor <= 2) {
-                                    $rekomendasi = 'Tidak Layak';
-                                } elseif ($ajuanlimit->skor > 2 && $ajuanlimit->skor <= 4) {
-                                    $rekomendasi = 'Tidak Disarankan';
-                                } elseif ($ajuanlimit->skor > 4 && $ajuanlimit->skor <= 6) {
-                                    $rekomendasi = 'Beresiko';
-                                } elseif ($ajuanlimit->skor > 6 && $ajuanlimit->skor <= 8.5) {
-                                    $rekomendasi = 'Layak Dengan Pertimbangan';
-                                } elseif ($ajuanlimit->skor > 8.5 && $ajuanlimit->skor <= 10) {
-                                    $rekomendasi = 'Layak';
-                                }
 
-                                if ($ajuanlimit->skor <= 4) {
-                                    $bg = 'danger';
-                                } elseif ($ajuanlimit->skor <= 6) {
-                                    $bg = 'warning';
-                                } else {
-                                    $bg = 'success';
-                                }
-                            @endphp
-                            <span class="badge bg-{{ $bg }}">
-                                {{ $rekomendasi }}
-                            </span>
+    <!-- Right Column: Secondary Data & History -->
+    <div class="col-md-6 detail-list">
+        <h6 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="ti ti-checklist me-1"></i>Data Pendukung</h6>
+        <dl>
+            <dt>Kepemilikan</dt>
+            <dd>{{ !empty($ajuanlimit->kepemilikan) ? $kepemilikan[$ajuanlimit->kepemilikan] : '-' }}</dd>
+            <dt>Lama Berjualan</dt>
+            <dd>{{ !empty($ajuanlimit->lama_berjualan) ? $lama_berjualan[$ajuanlimit->lama_berjualan] : '-' }}</dd>
+            <dt>Status Outlet</dt>
+            <dd>{{ !empty($ajuanlimit->status_outlet) ? $status_outlet[$ajuanlimit->status_outlet] : '-' }}</dd>
+            <dt>Type Outlet</dt>
+            <dd>{{ !empty($ajuanlimit->type_outlet) ? $type_outlet[$ajuanlimit->type_outlet] : '-' }}</dd>
+            <dt>Cara Bayar</dt>
+            <dd>{{ !empty($ajuanlimit->cara_pembayaran) ? $cara_pembayaran[$ajuanlimit->cara_pembayaran] : '-' }}</dd>
+            <dt>Lama Langganan</dt>
+            <dd>{{ !empty($ajuanlimit->lama_langganan) ? $lama_langganan[$ajuanlimit->lama_langganan] : '-' }}</dd>
+            <dt>Jaminan</dt>
+            <dd>{{ $ajuanlimit->jaminan == '1' ? 'Ada' : 'Tidak Ada' }}</dd>
+            <dt>Top Up Terakhir</dt>
+            <dd>{{ !empty($ajuanlimit->topup_terakhir) ? DateToIndo($ajuanlimit->topup_terakhir) : '-' }}</dd>
+            <dt>Omset Toko</dt>
+            <dd>{{ formatAngka($ajuanlimit->omset_toko) }}</dd>
+            <dt>Faktur Belum Lunas</dt>
+            <dd>{{ $ajuanlimit->jml_faktur }}</dd>
+            <dt>Skor Analisa</dt>
+            <dd><span class="badge bg-label-info">{{ formatAngkaDesimal($ajuanlimit->skor) }}</span></dd>
+            <dt>Rekomendasi</dt>
+            <dd>
+                @php
+                    if ($ajuanlimit->skor <= 2) { $rekomendasi = 'Tidak Layak'; $bg = 'danger'; }
+                    elseif ($ajuanlimit->skor <= 4) { $rekomendasi = 'Tidak Disarankan'; $bg = 'danger'; }
+                    elseif ($ajuanlimit->skor <= 6) { $rekomendasi = 'Beresiko'; $bg = 'warning'; }
+                    elseif ($ajuanlimit->skor <= 8.5) { $rekomendasi = 'Layak Dengan Pertimbangan'; $bg = 'success'; }
+                    else { $rekomendasi = 'Layak'; $bg = 'success'; }
+                @endphp
+                <span class="badge bg-{{ $bg }}">{{ $rekomendasi }}</span>
+            </dd>
+        </dl>
 
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Referensi</th>
-                        <td>
-                            @php
-                                $referensi = explode(',', $ajuanlimit->referensi);
-                            @endphp
-                            @if (empty($referensi))
-                                <b>Tidak Ada Referensi</b>
-                            @else
-                                <ul class="list-unstyled">
-                                    @foreach ($referensi as $item)
-                                        <li><i class="ti ti-check me-1"></i>{{ textUpperCase($item) }}
-                                            {{ $item == 'external' ? $ajuanlimit->ket_referensi : '' }}</li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col">
+        <div class="mt-4">
+            <h6 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="ti ti-history me-1"></i>Riwayat Persetujuan</h6>
+            <div class="timeline-disposisi">
                 @foreach ($disposisi as $index => $d)
                     @php
                         $next_role = @$disposisi[$index + 1]->role;
+                        if ($d->role == $next_role) continue;
                     @endphp
-                    @if ($d->role == $next_role)
-                        @php
-                            continue;
-                        @endphp
-                    @endif
-                    <h6 style="line-height: 0" class="text-info">{{ $d->username }}
-                        ({{ textCamelCase($d->role) }})
-                    </h6>
-                    <small class="text-muted">{{ $d->created_at }}</small>
-                    <p>{{ $d->uraian_analisa }}</p>
+                    <div class="timeline-item">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-bold text-dark">{{ $d->username }}</span>
+                            <small class="text-muted">{{ date('d/m/y H:i', strtotime($d->created_at)) }}</small>
+                        </div>
+                        <span class="badge bg-label-primary mb-2">{{ textCamelCase($d->role) }}</span>
+                        @if (!empty($d->uraian_analisa))
+                            <p class="mb-0 small text-muted font-italic bg-light p-2 rounded">"{{ $d->uraian_analisa }}"</p>
+                        @endif
+                    </div>
                 @endforeach
+                @if($disposisi->isEmpty())
+                    <em class="text-muted small">Belum ada riwayat persetujuan.</em>
+                @endif
             </div>
         </div>
     </div>

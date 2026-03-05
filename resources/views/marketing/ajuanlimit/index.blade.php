@@ -82,6 +82,9 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-credit-card me-2"></i>Data Ajuan Limit</h6>
                     <div class="d-flex gap-2">
+                        @can('ajuanlimit.config')
+                            <a href="{{ route('ajuanlimitconfig.index') }}" class="btn btn-outline-primary btn-sm shadow-sm"><i class="ti ti-settings me-1"></i> Konfigurasi</a>
+                        @endcan
                         @can('ajuanlimit.create')
                             <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate"><i class="ti ti-plus me-1"></i> Ajukan Limit</a>
                         @endcan
@@ -118,15 +121,10 @@
                                 <tbody class="table-border-bottom-0">
                                     @foreach ($ajuanlimit as $d)
                                         @php
-                                            if ($level_user == 'sales marketing manager') {
-                                                $nextlevel = 'regional sales manager';
-                                            } elseif ($level_user == 'regional sales manager') {
-                                                $nextlevel = 'gm marketing';
-                                            } elseif ($level_user == 'gm marketing') {
-                                                $nextlevel = 'direktur';
-                                            } else {
-                                                $nextlevel = '';
-                                            }
+                                            $current_index = array_search($level_user, $roles_approve_ajuanlimitkredit);
+                                            $nextlevel = ($current_index !== false && isset($roles_approve_ajuanlimitkredit[$current_index + 1])) 
+                                                ? $roles_approve_ajuanlimitkredit[$current_index + 1] 
+                                                : '';
                                         @endphp
                                         <tr>
                                             <td class="freeze-cell-first"><span class="fw-bold">{{ $d->no_pengajuan }}</span></td>
@@ -195,11 +193,35 @@
                                             </td>
                                             <td class="text-center">
                                                 @php
-                                                    if ($d->role == 'sales marketing manager') { $color = 'bg-warning'; $text_role = 'SMM'; }
-                                                    elseif ($d->role == 'regional sales manager') { $color = 'bg-info'; $text_role = 'RSM'; }
-                                                    elseif ($d->role == 'gm marketing') { $color = 'bg-primary'; $text_role = 'GM'; }
-                                                    elseif ($d->role == 'direktur') { $color = 'bg-success'; $text_role = 'DIR'; }
-                                                    else { $text_role = '-'; $color = 'bg-secondary'; }
+                                                    $jumlah_limit = (int) $d->jumlah;
+                                                    $current_config = $all_configs->filter(function($c) use ($jumlah_limit) {
+                                                        return $jumlah_limit >= $c->min_limit && $jumlah_limit <= $c->max_limit;
+                                                    })->first();
+                                                    $roles_row = $current_config ? $current_config->roles : [];
+                                                    $last_role_row = !empty($roles_row) ? end($roles_row) : null;
+
+                                                    $posisi_ajuan = $d->posisi_ajuan;
+                                                    if (empty($posisi_ajuan) && $d->status == '1') {
+                                                        $posisi_ajuan = $last_role_row;
+                                                    }
+
+                                                    $posisi_ajuan_lower = strtolower($posisi_ajuan);
+                                                    if ($posisi_ajuan_lower == 'sales marketing manager') {
+                                                        $color = 'bg-warning';
+                                                        $text_role = 'SMM';
+                                                    } elseif ($posisi_ajuan_lower == 'regional sales manager') {
+                                                        $color = 'bg-info';
+                                                        $text_role = 'RSM';
+                                                    } elseif ($posisi_ajuan_lower == 'gm marketing') {
+                                                        $color = 'bg-primary';
+                                                        $text_role = 'GM';
+                                                    } elseif ($posisi_ajuan_lower == 'direktur') {
+                                                        $color = 'bg-success';
+                                                        $text_role = 'DIR';
+                                                    } else {
+                                                        $text_role = $d->status == '1' ? '-' : 'Belum di Konfigurasi';
+                                                        $color = $d->status == '1' ? 'bg-secondary' : 'bg-danger';
+                                                    }
                                                 @endphp
                                                 <span class="badge {{ $color }} shadow-sm">
                                                     {{ $text_role }}
@@ -217,36 +239,33 @@
                                             <td class="freeze-cell-last">
                                                 <div class="d-flex justify-content-center gap-2">
                                                     @can('ajuanlimit.approve')
-                                                        @if ($d->status_disposisi != null)
-                                                            @if ($d->status_disposisi == '0')
-                                                                <a href="#" class="btnApprove text-info" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" data-bs-toggle="tooltip" title="Approve">
-                                                                    <i class="ti ti-send fs-5"></i>
-                                                                </a>
-                                                            @else
-                                                                @if ($level_user == 'direktur' || ($d->status_ajuan == '0' && $d->role == $nextlevel) || $d->role == $level_user)
-                                                                    <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="cancel-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Cancel">
-                                                                            <i class="ti ti-square-rounded-x fs-5"></i>
-                                                                        </button>
-                                                                    </form>
-                                                                @endif
-                                                            @endif
-                                                        @else
-                                                            @if ($d->role == 'sales marketing manager' && $level_user == 'operation manager' && $d->status_ajuan == '0')
-                                                                <a href="#" class="btnApprove text-info" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" data-bs-toggle="tooltip" title="Approve">
-                                                                    <i class="ti ti-send fs-5"></i>
-                                                                </a>
-                                                            @elseif(($d->status_ajuan == '0' && $d->role == 'regional sales manager') || $d->role == 'sales marketing manager')
-                                                                <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="cancel-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Cancel">
-                                                                        <i class="ti ti-square-rounded-x fs-5"></i>
-                                                                    </button>
-                                                                </form>
-                                                            @endif
+                                                        @if ($d->status == '0' && ($d->posisi_ajuan == $level_user || auth()->user()->hasRole('super admin')))
+                                                            <a href="#" class="btnApprove text-info" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" data-bs-toggle="tooltip" title="Approve">
+                                                                <i class="ti ti-send fs-5"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        @php
+                                                            $current_index_row = array_search($level_user, $roles_row);
+                                                            $next_role_row = ($current_index_row !== false && isset($roles_row[$current_index_row + 1])) ? $roles_row[$current_index_row + 1] : '';
+                                                            
+                                                            $is_super_admin = auth()->user()->hasRole('super admin');
+                                                            $is_last_role = !empty($roles_row) && $level_user == end($roles_row);
+
+                                                            $can_cancel = ($d->status == '0' && !empty($next_role_row) && $d->posisi_ajuan == $next_role_row) 
+                                                                || ($d->status == '1' && $is_last_role) 
+                                                                || ($d->status == '2' && $d->posisi_ajuan == $level_user)
+                                                                || ($is_super_admin && ($d->status != '0' || (array_search($d->posisi_ajuan, $roles_row) > 0)));
+                                                        @endphp
+
+                                                        @if ($can_cancel)
+                                                            <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('ajuanlimit.cancel', Crypt::encrypt($d->no_pengajuan)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="cancel-confirm bg-transparent border-0 text-danger p-0" data-bs-toggle="tooltip" title="Cancel">
+                                                                    <i class="ti ti-square-rounded-x fs-5"></i>
+                                                                </button>
+                                                            </form>
                                                         @endif
                                                     @endcan
 
@@ -260,7 +279,7 @@
                                                     @endcan
 
                                                     @can('ajuanlimit.delete')
-                                                        @if (($d->id_pengirim == auth()->user()->id && $d->status == '0') || ($level_user == 'operation manager' && $d->status_ajuan == '0'))
+                                                        @if ($d->id_user == auth()->user()->id && $d->status == '0')
                                                             <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('ajuanlimit.delete', Crypt::encrypt($d->no_pengajuan)) }}">
                                                                 @csrf
                                                                 @method('DELETE')
@@ -270,6 +289,12 @@
                                                             </form>
                                                         @endif
                                                     @endcan
+
+                                                    @if ($level_user == 'super admin')
+                                                        <a href="#" class="btnEdit text-warning" no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" data-bs-toggle="tooltip" title="Edit Posisi">
+                                                            <i class="ti ti-edit fs-5"></i>
+                                                        </a>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>

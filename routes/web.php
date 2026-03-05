@@ -148,6 +148,7 @@ use App\Http\Controllers\SaldoawalkasbesarController;
 use App\Http\Controllers\SaldoawalkaskecilController;
 use App\Http\Controllers\SaldoawalledgerController;
 use App\Http\Controllers\SaldoawalmutasikeuanganController;
+use App\Http\Controllers\AjuanLimitConfigController;
 use App\Http\Controllers\SaldoawalmutasiproduksiController;
 use App\Http\Controllers\SaldokasbesarkeuanganController;
 use App\Http\Controllers\SalesmanController;
@@ -1169,6 +1170,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/ajuanlimit/{no_pengajuan}/delete', 'destroy')->name('ajuanlimit.delete')->can('ajuanlimit.delete');
         Route::get('/ajuanlimit/{no_pengajuan}/show', 'show')->name('ajuanlimit.show')->can('ajuanlimit.show');
         Route::get('/ajuanlimit/{no_pengajuan}/edit', 'edit')->name('ajuanlimit.edit')->can('ajuanlimit.edit');
+        Route::put('/ajuanlimit/{no_pengajuan}/update', 'update')->name('ajuanlimit.update')->can('ajuanlimit.edit');
         Route::get('/ajuanlimit/{no_pengajuan}/cetak', 'cetak')->name('ajuanlimit.cetak')->can('ajuanlimit.show');
 
         Route::get('/ajuanlimit/{no_pengajuan}/approve', 'approve')->name('ajuanlimit.approve')->can('ajuanlimit.approve');
@@ -1178,6 +1180,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/ajuanlimit/{no_pengajuan}/adjuststore', 'adjuststore')->name('ajuanlimit.adjuststore')->can('ajuanlimit.adjust');
         //AJAX REQUEST
         Route::post('/ajuanlimit/gettopupterakhir', 'gettopupTerakhir')->name('ajuanlimit.gettopupterakhir');
+    });
+
+    Route::controller(AjuanLimitConfigController::class)->group(function () {
+        Route::get('/ajuanlimitconfig', 'index')->name('ajuanlimitconfig.index')->can('ajuanlimit.config');
+        Route::get('/ajuanlimitconfig/create', 'create')->name('ajuanlimitconfig.create')->can('ajuanlimit.config');
+        Route::post('/ajuanlimitconfig', 'store')->name('ajuanlimitconfig.store')->can('ajuanlimit.config');
+        Route::get('/ajuanlimitconfig/{id}/edit', 'edit')->name('ajuanlimitconfig.edit')->can('ajuanlimit.config');
+        Route::put('/ajuanlimitconfig/{id}', 'update')->name('ajuanlimitconfig.update')->can('ajuanlimit.config');
+        Route::delete('/ajuanlimitconfig/{id}', 'destroy')->name('ajuanlimitconfig.destroy')->can('ajuanlimit.config');
     });
 
 

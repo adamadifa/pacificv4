@@ -142,7 +142,8 @@
             @endcan
             @if (auth()->user()->hasAnyPermission(['ajuanlimit.index', 'ajuanfaktur.index', 'ajuanrouting.index']))
                 <li class="menu-item {{ request()->is(['ajuanlimit', 'ajuanlimit/*', 'ajuanfaktur']) ? 'active' : '' }}">
-                    <a href="{{ route('ajuanlimit.index') }}" class="menu-link">
+                    <a href="{{ route('ajuanlimit.index', ['status' => '0', 'posisi_ajuan' => auth()->user()->hasRole('super admin') ? '' : auth()->user()->getRoleNames()->first()]) }}"
+                        class="menu-link">
                         <div>Pengajuan</div>
                         @if (!empty($notifikasi_pengajuan_marketing))
                             <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_pengajuan_marketing }}</div>
