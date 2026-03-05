@@ -133,6 +133,7 @@ class Penilaiankaryawan extends Model
             }
         }
 
+        $query->orderBy('hrd_penilaian.status', 'asc');
         $query->orderBy('hrd_penilaian.tanggal', 'desc');
 
         return $query;
