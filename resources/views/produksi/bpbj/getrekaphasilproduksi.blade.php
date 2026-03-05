@@ -1,36 +1,47 @@
 @foreach ($rekap as $d)
-    <tr>
-        <td>{{ $d->kode_produk }}</td>
+    <tr class="border-bottom-soft">
+        <td class="ps-4 fw-bold text-dark table-sticky-first">
+            <div class="d-flex align-items-center">
+                <i class="ti ti-box me-2 text-info opacity-75"></i>
+                {{ $d->kode_produk }}
+            </div>
+        </td>
         @for ($i = 1; $i <= 12; $i++)
-            @if ($i != 1)
-                @if ($d->{$nama_bulan_singkat[$i]} > $d->{$nama_bulan_singkat[$i - 1]})
-                    @php
-                        $icon = '';
+            @php
+                $currentVal = $d->{$nama_bulan_singkat[$i]};
+                $prevVal = $i > 1 ? $d->{$nama_bulan_singkat[$i - 1]} : null;
+                $color = 'dark';
+                $trendIcon = '';
+
+                if ($prevVal !== null) {
+                    if ($currentVal > $prevVal) {
                         $color = 'success';
-                    @endphp
-                @elseif ($d->{$nama_bulan_singkat[$i]} < $d->{$nama_bulan_singkat[$i - 1]})
-                    @php
-                        $icon = '';
+                        $trendIcon = '<i class="ti ti-trending-up fs-tiny me-1"></i>';
+                    } elseif ($currentVal < $prevVal) {
                         $color = 'danger';
-                    @endphp
-                @else
-                    @php
-                        $icon = '';
-                        $color = 'primary';
-                    @endphp
-                @endif
-            @else
-                @php
-                    $icon = '';
-                    $color = '';
-                @endphp
-            @endif
-            <td class="text-end text-{{ $color }}">
-                @if (!empty($icon))
-                    <i class="ti ti-{{ $icon }}"></i>
-                @endif
-                {{ formatAngka($d->{$nama_bulan_singkat[$i]}) }}
+                        $trendIcon = '<i class="ti ti-trending-down fs-tiny me-1"></i>';
+                    }
+                }
+            @endphp
+            <td class="text-end pe-3 py-2">
+                <div class="d-flex flex-column align-items-end">
+                    <span class="fw-bold text-{{ $color }}">{{ formatAngka($currentVal) }}</span>
+                    @if ($trendIcon)
+                        <span class="text-{{ $color }} d-flex align-items-center" style="font-size: 0.65rem;">
+                            {!! $trendIcon !!}
+                        </span>
+                    @endif
+                </div>
             </td>
         @endfor
     </tr>
 @endforeach
+
+<style>
+    .border-bottom-soft {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+    .fs-tiny {
+        font-size: 0.7rem;
+    }
+</style>
