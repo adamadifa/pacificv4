@@ -1,5 +1,6 @@
 @props([
     'name',
+    'id' => '',
     'label' => '',
     'data',
     'key',
@@ -18,7 +19,8 @@
 
 
 @php
-    $id = str_replace('[]', '', $name);
+    $derivedId = str_replace('[]', '', $name);
+    $id = !empty($id) ? $id : $derivedId;
 @endphp
 <div class="form-group mb-3">
     @if (!$hideLabel)
