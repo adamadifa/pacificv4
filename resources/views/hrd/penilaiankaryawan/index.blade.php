@@ -243,7 +243,7 @@
                         </div>
                         <div class="card-footer py-2 px-3 border-top d-flex justify-content-end gap-2" style="background: #fcfdfe;">
                             @can('penilaiankaryawan.edit')
-                                @if (($is_creator && $is_pending && ($is_at_first_step || $user_can_approve)) || $is_admin)
+                                @if (($is_creator && $is_pending && $is_at_first_step) || ($user_can_approve && $is_pending) || $is_admin)
                                     <a href="{{ route('penilaiankaryawan.edit', Crypt::encrypt($d->kode_penilaian)) }}" class="btn btn-icon btn-label-success btn-sm" title="Edit">
                                         <i class="ti ti-edit"></i>
                                     </a>
