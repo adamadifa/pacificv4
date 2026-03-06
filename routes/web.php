@@ -1763,6 +1763,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/penilaiankaryawan/{kode_penilaian}/approve', 'approve')->name('penilaiankaryawan.approve')->can('penilaiankaryawan.approve');
         Route::post('/penilaiankaryawan/{kode_penilaian}/storeapprove', 'storeapprove')->name('penilaiankaryawan.storeapprove')->can('penilaiankaryawan.approve');
         Route::delete('/penilaiankaryawan/{kode_penilaian}/cancel', 'cancel')->name('penilaiankaryawan.cancel')->can('penilaiankaryawan.approve');
+
+        Route::get('/penilaiankaryawan/{kode_penilaian}/editposisi', 'editposisi')->name('penilaiankaryawan.editposisi')->can('penilaiankaryawan.approve');
+        Route::put('/penilaiankaryawan/{kode_penilaian}/updateposisi', 'updateposisi')->name('penilaiankaryawan.updateposisi')->can('penilaiankaryawan.approve');
     });
 
     Route::controller(JadwalshiftController::class)->group(function () {

@@ -256,6 +256,11 @@
                                         <i class="ti ti-edit"></i>
                                     </a>
                                 @endif
+                                @if (auth()->user()->hasRole('super admin'))
+                                    <a href="#" class="btn btn-sm btn-icon btn-label-warning btnEditPosisi" kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}" title="Edit Posisi">
+                                        <i class="ti ti-external-link"></i>
+                                    </a>
+                                @endif
                             @endcan
 
                             @can('penilaiankaryawan.show')
@@ -385,7 +390,17 @@
             $("#modal").modal("show");
             $(".modal-title").text("Approve Penilaian Karyawan");
             $("#loadmodal").load(`/penilaiankaryawan/${kode_penilaian}/approve`);
-            $("#modal").find(".modal-dialog").addClass('modal-lg');
+            $("#modal").find(".modal-dialog").addClass('modal-xl');
+        });
+
+        $(".btnEditPosisi").click(function(e) {
+            e.preventDefault();
+            var kode_penilaian = $(this).attr("kode_penilaian");
+            loading();
+            $("#modal").modal("show");
+            $(".modal-title").text("Edit Posisi Ajuan");
+            $("#loadmodal").load(`/penilaiankaryawan/${kode_penilaian}/editposisi`);
+            $("#modal").find(".modal-dialog").removeClass('modal-lg');
         });
 
         $(".btnCreatekontrak").click(function(e) {

@@ -565,12 +565,14 @@ class AjuanlimitkreditController extends Controller
     public function destroy($no_pengajuan)
     {
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
-        $targetkomisi = Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->first();
-        $tanggal = $targetkomisi->tahun . "-" . $targetkomisi->bulan . "-01";
+        DB::beginTransaction();
         try {
+            Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->delete();
             Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->delete();
+            DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
         } catch (\Exception $e) {
+            DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
     }

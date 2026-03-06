@@ -279,7 +279,7 @@
                                                     @endcan
 
                                                     @can('ajuanlimit.delete')
-                                                        @if ($d->id_user == auth()->user()->id && $d->status == '0')
+                                                        @if (($d->id_user == auth()->user()->id && $d->status == '0') || auth()->user()->hasRole('super admin'))
                                                             <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('ajuanlimit.delete', Crypt::encrypt($d->no_pengajuan)) }}">
                                                                 @csrf
                                                                 @method('DELETE')

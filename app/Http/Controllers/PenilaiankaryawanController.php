@@ -511,4 +511,42 @@ class PenilaiankaryawanController extends Controller
             //throw $th;
         }
     }
+    public function editposisi($kode_penilaian)
+    {
+        $kode_penilaian = Crypt::decrypt($kode_penilaian);
+        $pk = new Penilaiankaryawan();
+        $penilaian = $pk->getPenilaiankaryawan($kode_penilaian)->first();
+
+        // Get allowed roles from config (returns names in sequence)
+        $roles_approve_names = cekRoleapprove($penilaian->kode_dept, $penilaian->kode_cabang, $penilaian->kategori_jabatan, $penilaian->kode_jabatan);
+        
+        // Fetch role objects and map to preserve order
+        $role_objects = DB::table('roles')
+            ->whereIn('name', $roles_approve_names)
+            ->get();
+        
+        $roles = [];
+        foreach ($roles_approve_names as $rname) {
+            $role_match = $role_objects->where('name', $rname)->first();
+            if ($role_match) {
+                $roles[] = $role_match;
+            }
+        }
+
+        return view('hrd.penilaiankaryawan.editposisi', compact('penilaian', 'roles'));
+    }
+
+    public function updateposisi($kode_penilaian, Request $request)
+    {
+        $kode_penilaian = Crypt::decrypt($kode_penilaian);
+        try {
+            Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update([
+                'posisi_ajuan' => $request->posisi_ajuan,
+                'status' => $request->status
+            ]);
+            return Redirect::back()->with(messageSuccess('Posisi Ajuan Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
