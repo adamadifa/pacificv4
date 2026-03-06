@@ -115,7 +115,11 @@ class GlobalProvider extends ServiceProvider
                     'status' => '0',
                     'posisi_ajuan' => $posisi_ajuan
                 ]))->count();
-                $notifikasi_ajuanfaktur = Disposisiajuanfaktur::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
+                $pf = new \App\Models\Pengajuanfaktur();
+                $notifikasi_ajuanfaktur = $pf->getPengajuanfaktur(request: new \Illuminate\Http\Request([
+                    'status' => '0',
+                    'posisi_ajuan' => $posisi_ajuan
+                ]))->count();
                 $notifikasi_target = Disposisitargetkomisi::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
                 $notifikasi_pengajuan_marketing = $notifikasi_limitkredit + $notifikasi_ajuanfaktur;
                 $notifikasi_komisi = $notifikasi_target;

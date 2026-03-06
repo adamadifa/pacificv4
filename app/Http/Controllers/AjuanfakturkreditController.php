@@ -17,123 +17,19 @@ class AjuanfakturkreditController extends Controller
 {
     public function index(Request $request)
     {
+        $user = User::findOrFail(auth()->user()->id);
+        $user_role = $user->roles->pluck('name')[0];
 
-        $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        $roles_approve_ajuanfakturkredit = config('global.roles_aprove_ajuanfakturkredit');
-        $start_date = config('global.start_date');
-        $end_date = config('global.end_date');
-
-        $user = User::findorfail(auth()->user()->id);
-        if ($user->hasRole($roles_approve_ajuanfakturkredit)) {
-            $query = Disposisiajuanfaktur::select(
-                'marketing_ajuan_faktur.*',
-                'nama_pelanggan',
-                'nama_salesman',
-                'nama_cabang',
-                'pelanggan.limit_pelanggan',
-                'roles.name as role',
-                'marketing_ajuan_faktur.status',
-                'marketing_ajuan_faktur_disposisi.status as status_disposisi',
-                'status_ajuan',
-                'disposisi.id_pengirim',
-            );
-            $query->join('marketing_ajuan_faktur', 'marketing_ajuan_faktur_disposisi.no_pengajuan', '=', 'marketing_ajuan_faktur.no_pengajuan');
-            $query->join('pelanggan', 'marketing_ajuan_faktur.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-            $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
-            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
-            $query->leftJoin(
-                DB::raw("(
-                SELECT marketing_ajuan_faktur_disposisi.no_pengajuan,id_pengirim,id_penerima,catatan,status as status_ajuan
-                FROM marketing_ajuan_faktur_disposisi
-				WHERE marketing_ajuan_faktur_disposisi.kode_disposisi IN
-                    (SELECT MAX(kode_disposisi) as kode_disposisi
-                    FROM marketing_ajuan_faktur_disposisi
-                    GROUP BY no_pengajuan)
-                ) disposisi"),
-                function ($join) {
-                    $join->on('marketing_ajuan_faktur.no_pengajuan', '=', 'disposisi.no_pengajuan');
-                }
-            );
-
-            $query->leftjoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-            $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-            $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
-            $query->where('marketing_ajuan_faktur_disposisi.id_penerima', auth()->user()->id);
-            $query->orderBy('marketing_ajuan_faktur.created_at', 'desc');
-        } else {
-            $query = Pengajuanfaktur::query();
-            $query->select(
-                'marketing_ajuan_faktur.*',
-                'nama_pelanggan',
-                'nama_salesman',
-                'nama_cabang',
-                'pelanggan.limit_pelanggan',
-                'disposisi.id_pengirim',
-                'roles.name as role',
-                'status_ajuan'
-            );
-            $query->join('pelanggan', 'marketing_ajuan_faktur.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-            $query->join('salesman', 'marketing_ajuan_faktur.kode_salesman', '=', 'salesman.kode_salesman');
-            $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
-            $query->leftJoin(
-                DB::raw("(
-                SELECT marketing_ajuan_faktur_disposisi.no_pengajuan,id_pengirim,id_penerima,catatan,status as status_ajuan
-                FROM marketing_ajuan_faktur_disposisi
-				WHERE marketing_ajuan_faktur_disposisi.kode_disposisi IN
-                    (SELECT MAX(kode_disposisi) as kode_disposisi
-                    FROM marketing_ajuan_faktur_disposisi
-                    GROUP BY no_pengajuan)
-                ) disposisi"),
-                function ($join) {
-                    $join->on('marketing_ajuan_faktur.no_pengajuan', '=', 'disposisi.no_pengajuan');
-                }
-            );
-            $query->leftjoin('users as penerima', 'disposisi.id_penerima', '=', 'penerima.id');
-            $query->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id');
-            $query->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
-            $query->orderBy('marketing_ajuan_faktur.created_at', 'desc');
-        }
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-            } else {
-                $query->where('salesman.kode_cabang', auth()->user()->kode_cabang);
-            }
-        }
-
-        if (!empty($request->kode_cabang_search)) {
-            $query->where('salesman.kode_cabang', $request->kode_cabang_search);
-        }
-
-        if (!empty($request->posisi_ajuan)) {
-            $query->where('roles.name', $request->posisi_ajuan);
-        }
-
-        if ($request->status === '0') {
-            $query->where('marketing_ajuan_faktur.status', $request->status);
-        } else {
-            if (!empty($request->status)) {
-                $query->where('marketing_ajuan_faktur.status', $request->status);
-            }
-        }
-
-        if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('marketing_ajuan_faktur.tanggal', [$request->dari, $request->sampai]);
-        } else {
-            $query->whereBetween('marketing_ajuan_faktur.tanggal', [$start_date, $end_date]);
-        }
-
-
-        if (!empty($request->nama_pelanggan)) {
-            $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
-        }
-        // dd($query->get());
+        $pf = new Pengajuanfaktur();
+        $query = $pf->getPengajuanfaktur(request: $request);
         $ajuanfaktur = $query->paginate(15);
         $ajuanfaktur->appends(request()->all());
         $data['ajuanfaktur'] = $ajuanfaktur;
-
-
+        $config = \App\Models\AjuanfakturkreditConfig::first();
+        $roles_approve_ajuanfakturkredit = $config ? (is_string($config->roles) ? json_decode($config->roles) : $config->roles) : [];
         $data['roles_approve_ajuanfakturkredit'] = $roles_approve_ajuanfakturkredit;
+
+        $data['level_user'] = $user_role;
 
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
@@ -191,45 +87,33 @@ class AjuanfakturkreditController extends Controller
                     'status' => 0,
                     'keterangan' => $request->keterangan
                 ]);
-                //Disposisi
-
-                $tanggal_hariini = date('Y-m-d');
-                $lastdisposisi = Disposisiajuanfaktur::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                    ->orderBy('kode_disposisi', 'desc')
-                    ->first();
-                $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-                $format = "DPFK" . date('Ymd');
-                $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
-
-
+                // Tentukan Posisi Ajuan awal
                 $regional = Cabang::where('kode_cabang', $pelanggan->kode_cabang)->first();
-                $smm = User::role('sales marketing manager')->where('kode_cabang', $pelanggan->kode_cabang)
-                    ->where('status', 1)
-                    ->first();
+                $kode_regional = $regional ? $regional->kode_regional : '';
 
-                if ($smm != null) {
-                    $id_penerima = $smm->id;
-                } else {
-                    $rsm = User::role('regional sales manager')->where('kode_regional', $regional->kode_regional)
-                        ->where('status', 1)
-                        ->first();
-                    $id_penerima = $rsm->id;
-                    if ($rsm == NULL) {
-                        $gm = User::role('gm marketing')
-                            ->where('status', 1)
-                            ->first();
-                        $id_penerima = $gm->id;
+                $config = \App\Models\AjuanfakturkreditConfig::first();
+                if (!$config) {
+                    return Redirect::back()->with(messageError('Konfigurasi Approval Belum Diatur'));
+                }
+                $roles = is_string($config->roles) ? json_decode($config->roles) : $config->roles;
+                
+                $id_penerima = null;
+                $posisi_ajuan = null;
+
+                foreach ($roles as $role) {
+                    $id_penerima = $this->getPenerimaByRole($role, $pelanggan->kode_cabang, $kode_regional);
+                    if ($id_penerima != null) {
+                        $posisi_ajuan = $role;
+                        break;
                     }
                 }
 
+                if ($posisi_ajuan == null) {
+                    return Redirect::back()->with(messageError('Tidak ada user penerima approval awal yang ditemukan'));
+                }
 
-                Disposisiajuanfaktur::create([
-                    'kode_disposisi' => $kode_disposisi,
-                    'no_pengajuan' => $no_pengajuan,
-                    'id_pengirim' => auth()->user()->id,
-                    'id_penerima' => $id_penerima,
-                    'catatan' => $request->keterangan,
-                    'status' => 0
+                Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update([
+                    'posisi_ajuan' => $posisi_ajuan
                 ]);
             }
 
@@ -262,16 +146,6 @@ class AjuanfakturkreditController extends Controller
             ->where('no_pengajuan', $no_pengajuan)->first();
         $data['ajuanfaktur'] = $ajuanfaktur;
 
-
-        $data['disposisi'] = Disposisiajuanfaktur::select('marketing_ajuan_faktur_disposisi.*', 'users.name as username', 'roles.name as role')
-            ->join('users', 'marketing_ajuan_faktur_disposisi.id_pengirim', '=', 'users.id')
-            ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-            ->where('no_pengajuan', $no_pengajuan)
-            ->orderBy('marketing_ajuan_faktur_disposisi.created_at')
-            ->get();
-
-        $data['lastdisposisi'] = Disposisiajuanfaktur::where('no_pengajuan', $no_pengajuan)->orderBy('created_at', 'desc')->first();
         return view('marketing.ajuanfaktur.approve', $data);
     }
 
@@ -286,111 +160,49 @@ class AjuanfakturkreditController extends Controller
 
         DB::beginTransaction();
         try {
-
-
-            $tanggal_hariini = date('Y-m-d');
-            $lastdisposisi = Disposisiajuanfaktur::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
-                ->orderBy('kode_disposisi', 'desc')
-                ->first();
-            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
-            $format = "DPFK" . date('Ymd');
-            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
-
             if (isset($_POST['decline'])) {
-                if (auth()->user()->roles->pluck('name')[0] == 'operation manager') {
-                    Disposisiajuanfaktur::leftjoin('users as penerima', 'marketing_ajuan_faktur_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'sales marketing manager')
-                        ->update([
-                            'marketing_ajuan_faktur_disposisi.status' => 2
-                        ]);
-                } else {
-                    Disposisiajuanfaktur::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', auth()->user()->id)->update([
-                            'status' => 2
-                        ]);
-                }
-
                 Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update(['status' => 2]);
                 DB::commit();
                 return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Ditolak'));
             } else {
-
-                if (auth()->user()->roles->pluck('name')[0] == 'operation manager') {
-                    Disposisiajuanfaktur::leftjoin('users as penerima', 'marketing_ajuan_faktur_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'sales marketing manager')
-                        ->update([
-                            'marketing_ajuan_faktur_disposisi.status' => 1
-                        ]);
-                } else {
-                    Disposisiajuanfaktur::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', auth()->user()->id)->update([
-                            'status' => 1
-                        ]);
+                $config = \App\Models\AjuanfakturkreditConfig::first();
+                if (!$config) {
+                    return Redirect::back()->with(messageError('Konfigurasi Approval Belum Diatur'));
                 }
+                $roles = is_string($config->roles) ? json_decode($config->roles) : $config->roles;
+                
+                $current_role = auth()->user()->roles->pluck('name')[0];
+                if ($current_role == "operation manager") {
+                    $current_role = "sales marketing manager";
+                }
+                $current_index = array_search($current_role, $roles);
+                $is_last_role = ($current_index !== false && $current_index == count($roles) - 1);
 
-                if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' || auth()->user()->roles->pluck('name')[0] == "operation manager") {
-                    $rsm = User::role('regional sales manager')
-                        ->where('kode_regional', $ajuanfaktur->kode_regional)
-                        ->where('status', 1)
-                        ->first();
-                    if ($rsm != NULL) {
-                        $id_penerima = $rsm->id;
-                    } else {
-                        $gm = User::role('gm marketing')
-                            ->where('status', 1)
-                            ->first();
-                        $id_penerima = $gm->id;
-                    }
-                    Disposisiajuanfaktur::create([
-                        'kode_disposisi' => $kode_disposisi,
-                        'no_pengajuan' => $no_pengajuan,
-                        'id_pengirim' => auth()->user()->id,
-                        'id_penerima' => $id_penerima,
-                        'catatan' => $request->catatan,
-                        'status' => 0
+                if ($is_last_role) {
+                    Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update([
+                        'status' => 1,
+                        // Ensure it stays at current position to mark completion boundary accurately
+                        'posisi_ajuan' => $current_role
                     ]);
-                    DB::commit();
-                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
-                } else if (auth()->user()->roles->pluck('name')[0] == 'regional sales manager') {
-                    $gm = User::role('gm marketing')
-                        ->where('status', 1)
-                        ->first();
-                    $id_penerima = $gm->id;
-                    Disposisiajuanfaktur::create([
-                        'kode_disposisi' => $kode_disposisi,
-                        'no_pengajuan' => $no_pengajuan,
-                        'id_pengirim' => auth()->user()->id,
-                        'id_penerima' => $id_penerima,
-                        'catatan' => $request->catatan,
-                        'status' => 0
-                    ]);
-                    DB::commit();
-                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
-                } else if (auth()->user()->roles->pluck('name')[0] == 'gm marketing') {
-                    $dirut = User::role('direktur')
-                        ->where('status', 1)
-                        ->first();
-                    $id_penerima = $dirut->id;
-                    Disposisiajuanfaktur::create([
-                        'kode_disposisi' => $kode_disposisi,
-                        'no_pengajuan' => $no_pengajuan,
-                        'id_pengirim' => auth()->user()->id,
-                        'id_penerima' => $id_penerima,
-                        'catatan' => $request->catatan,
-                        'status' => 0
-                    ]);
-                    DB::commit();
-                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
-                } else if (auth()->user()->roles->pluck('name')[0] == 'direktur') {
-                    Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update(['status' => 1]);
                     DB::commit();
                     return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
+                } else {
+                    $next_role = null;
+                    if ($current_index !== false && $current_index + 1 < count($roles)) {
+                        $next_role = $roles[$current_index + 1];
+                    }
+
+                    if ($next_role == null) {
+                        DB::rollBack();
+                        return Redirect::back()->with(messageError('Konfigurasi Approval berikutnya tidak valid'));
+                    }
+
+                    Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update([
+                        'posisi_ajuan' => $next_role
+                    ]);
+
+                    DB::commit();
+                    return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
                 }
             }
         } catch (\Exception $e) {
@@ -405,80 +217,37 @@ class AjuanfakturkreditController extends Controller
         $no_pengajuan = Crypt::decrypt($no_pengajuan);
         $ajuanlimit = Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->first();
 
-
         DB::beginTransaction();
         try {
+            $config = \App\Models\AjuanfakturkreditConfig::first();
+            if (!$config) {
+                return Redirect::back()->with(messageError('Konfigurasi Approval Belum Diatur'));
+            }
+            $roles = is_string($config->roles) ? json_decode($config->roles) : $config->roles;
+            
+            $current_role = auth()->user()->roles->pluck('name')[0];
+            if ($current_role == "operation manager") {
+                $current_role = "sales marketing manager";
+            }
+            $current_index = array_search($current_role, $roles);
+
+
             if ($ajuanlimit->status == '2') {
-                if (auth()->user()->roles->pluck('name')[0] == 'operation manager') {
-                    Disposisiajuanfaktur::leftjoin('users as penerima', 'marketing_ajuan_faktur_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'sales marketing manager')
-                        ->update([
-                            'marketing_ajuan_faktur_disposisi.status' => 0
-                        ]);
-                } else {
-                    Disposisiajuanfaktur::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', auth()->user()->id)->update([
-                            'status' => 0
-                        ]);
-                }
-
-
-                Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
+                // Jika ditolak, kembalikan ke status 0 (menunggu persetujuan saat ini)
+                Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update(['status' => 0, 'posisi_ajuan' => $current_role]);
             } else {
-                if (auth()->user()->roles->pluck('name')[0] == 'direktur') {
-                    Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update(['status' => 0]);
-                }
-                if (auth()->user()->roles->pluck('name')[0] != 'operation manager') {
-                    if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager') {
-                        Disposisiajuanfaktur::leftjoin('users as penerima', 'marketing_ajuan_faktur_disposisi.id_penerima', '=', 'penerima.id')
-                            ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                            ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                            ->where('no_pengajuan', $no_pengajuan)
-                            ->where('roles.name', 'regional sales manager')
-                            ->delete();
-                    } else {
-                        Disposisiajuanfaktur::where('no_pengajuan', $no_pengajuan)
-                            ->where('id_pengirim', auth()->user()->id)
-                            ->whereRaw('id_pengirim != id_penerima')
-                            ->delete();
-                    }
+                
+                $is_last_role = ($current_index !== false && $current_index == count($roles) - 1);
 
-                    Disposisiajuanfaktur::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', auth()->user()->id)
-                        ->update(['status' => 0]);
+                if ($is_last_role && $ajuanlimit->status == '1') {
+                    // Jika role terakhir membatalkan persetujuan akhir
+                    Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update(['status' => 0, 'posisi_ajuan' => $current_role]);
                 } else {
-                    $disposisi_om = Disposisiajuanfaktur::where('id_pengirim', auth()->user()->id)->where('no_pengajuan', $no_pengajuan);
-                    $cek_pengirim_om = $disposisi_om->count();
-                    if ($cek_pengirim_om > 1) {
-                        $last_pengirim_om = $disposisi_om->orderBy('created_at', 'desc')->first();
-                        Disposisiajuanfaktur::where('kode_disposisi', $last_pengirim_om->kode_disposisi)->delete();
-                        Disposisiajuanfaktur::leftjoin('users as pengirim', 'marketing_ajuan_faktur_disposisi.id_pengirim', '=', 'pengirim.id')
-                            ->leftjoin('model_has_roles', 'pengirim.id', '=', 'model_has_roles.model_id')
-                            ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                            ->where('no_pengajuan', $no_pengajuan)
-                            ->where('roles.name', 'sales marketing manager')
-                            ->delete();
-                    }
-
-
-                    Disposisiajuanfaktur::leftjoin('users as penerima', 'marketing_ajuan_faktur_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'sales marketing manager')
-                        ->update([
-                            'marketing_ajuan_faktur_disposisi.status' => 0
-                        ]);
-
-                    Disposisiajuanfaktur::leftjoin('users as penerima', 'marketing_ajuan_faktur_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'regional sales manager')
-                        ->delete();
+                     // Jika role bukan terakhir membatalkan penerusan ke role selanjutnya
+                    Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update([
+                        'posisi_ajuan' => $current_role,
+                        'status' => 0
+                    ]);
                 }
             }
 
@@ -488,5 +257,56 @@ class AjuanfakturkreditController extends Controller
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+    public function edit($no_pengajuan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $ajuanfaktur = Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->first();
+        $data['ajuanfaktur'] = $ajuanfaktur;
+
+        $config = \App\Models\AjuanfakturkreditConfig::first();
+        $roles_approve = $config ? (is_string($config->roles) ? json_decode($config->roles) : $config->roles) : [];
+        $data['roles_approve'] = $roles_approve;
+
+        return view('marketing.ajuanfaktur.edit', $data);
+    }
+
+    public function update($no_pengajuan, Request $request)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        DB::beginTransaction();
+        try {
+            $posisi_ajuan = empty($request->posisi_ajuan) ? null : $request->posisi_ajuan;
+            Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)->update([
+                'posisi_ajuan' => $posisi_ajuan
+            ]);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Posisi Ajuan Berhasil Diubah'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    private function getPenerimaByRole($role_name, $kode_cabang, $kode_regional)
+    {
+        if ($role_name == 'sales marketing manager') {
+            $user = User::role('sales marketing manager')
+                ->where('kode_cabang', $kode_cabang)
+                ->where('status', 1)
+                ->first();
+        } else if ($role_name == 'regional sales manager') {
+            $user = User::role('regional sales manager')
+                ->where('kode_regional', $kode_regional)
+                ->where('status', 1)
+                ->first();
+        } else {
+            $user = User::role($role_name)
+                ->where('status', 1)
+                ->first();
+        }
+
+        return $user ? $user->id : null;
     }
 }

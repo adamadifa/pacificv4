@@ -39,56 +39,12 @@
          </td>
       </tr>
    </table>
-   <div class="row mt-3">
-      <div class="col">
-         @if ($lastdisposisi->id_pengirim == auth()->user()->id)
-            @php
-               $catatan = $lastdisposisi->catatan;
-            @endphp
-         @else
-            @php
-               $catatan = '';
-            @endphp
-         @endif
-         @if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' || auth()->user()->roles->pluck('name')[0] == 'operation manager')
-            <x-textarea label="Catatan" name="catatan" value="{{ $catatan }}" hideLabel="true" />
-         @elseif(auth()->user()->roles->pluck('name')[0] != 'direktur')
-            <x-textarea label="Catatan" name="catatan" value="{{ $catatan }}" hideLabel="true" />
-         @endif
-      </div>
-   </div>
-   <div class="row mt-3">
-      <div class="col">
-         @foreach ($disposisi as $index => $d)
-            @php
-               $next_role = @$disposisi[$index + 1]->role;
-            @endphp
-            @if ($d->role == $next_role)
-               @php
-                  continue;
-               @endphp
-            @endif
-            <h6 style="line-height: 0" class="text-info">{{ $d->username }}
-               ({{ textCamelCase($d->role) }})
-            </h6>
-            <small class="text-muted">{{ $d->created_at }}</small>
-            <p>{{ $d->catatan }}</p>
-         @endforeach
-      </div>
-   </div>
+
    <div class="row mt-3">
       <div class="col-lg-8 col-md-12 col-sm-12">
          <div class="form-group mb-3">
             <button class="btn btn-primary w-100"><i class="ti ti-thumb-up me-1"></i>
-               @if (auth()->user()->roles->pluck('name')[0] == 'sales marketing manager' || auth()->user()->roles->pluck('name')[0] == 'operation manager')
-                  Setuju & Teruskan ke RSM
-               @elseif (auth()->user()->roles->pluck('name')[0] == 'regional sales manager')
-                  Setuju & Teruskan ke GM
-               @elseif (auth()->user()->roles->pluck('name')[0] == 'gm marketing')
-                  Setuju & Teruskan ke Direktur
-               @else
-                  Setuju
-               @endif
+               Setuju
             </button>
          </div>
       </div>

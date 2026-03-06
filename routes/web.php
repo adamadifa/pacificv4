@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivitylogController;
 use App\Http\Controllers\AjuanfakturkreditController;
+use App\Http\Controllers\AjuanfakturkreditConfigController;
 use App\Http\Controllers\BackupDatabaseController;
 use App\Http\Controllers\AjuanlimitkreditController;
 use App\Http\Controllers\AjuanprogramikatanController;
@@ -1190,6 +1191,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/ajuanlimitconfig/{id}', 'update')->name('ajuanlimitconfig.update')->can('ajuanlimit.config');
         Route::delete('/ajuanlimitconfig/{id}', 'destroy')->name('ajuanlimitconfig.destroy')->can('ajuanlimit.config');
     });
+    Route::controller(AjuanfakturkreditConfigController::class)->group(function () {
+        Route::get('/ajuanfakturconfig', 'index')->name('ajuanfakturconfig.index')->can('ajuanfaktur.config');
+        Route::get('/ajuanfakturconfig/create', 'create')->name('ajuanfakturconfig.create')->can('ajuanfaktur.config');
+        Route::post('/ajuanfakturconfig', 'store')->name('ajuanfakturconfig.store')->can('ajuanfaktur.config');
+        Route::get('/ajuanfakturconfig/{id}/edit', 'edit')->name('ajuanfakturconfig.edit')->can('ajuanfaktur.config');
+        Route::put('/ajuanfakturconfig/{id}', 'update')->name('ajuanfakturconfig.update')->can('ajuanfaktur.config');
+        Route::delete('/ajuanfakturconfig/{id}', 'destroy')->name('ajuanfakturconfig.destroy')->can('ajuanfaktur.config');
+    });
+
 
 
     Route::controller(AjuanfakturkreditController::class)->group(function () {
@@ -1199,6 +1209,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/ajuanfaktur/{no_pengajuan}/delete', 'destroy')->name('ajuanfaktur.delete')->can('ajuanfaktur.delete');
         Route::get('/ajuanfaktur/{no_pengajuan}/show', 'show')->name('ajuanfaktur.show')->can('ajuanfaktur.show');
         Route::get('/ajuanfaktur/{no_pengajuan}/edit', 'edit')->name('ajuanfaktur.edit')->can('ajuanfaktur.edit');
+        Route::put('/ajuanfaktur/{no_pengajuan}/update', 'update')->name('ajuanfaktur.update')->can('ajuanfaktur.edit');
         Route::get('/ajuanfaktur/{no_pengajuan}/cetak', 'cetak')->name('ajuanfaktur.cetak')->can('ajuanfaktur.show');
 
         Route::get('/ajuanfaktur/{no_pengajuan}/approve', 'approve')->name('ajuanfaktur.approve')->can('ajuanfaktur.approve');
