@@ -1654,6 +1654,12 @@ class SfaControler extends Controller
                 'kode_klasifikasi' => $request->kode_klasifikasi,
                 'omset_toko' => toNumber($request->omset_toko)
             ]);
+            $jumlah_ajuan = toNumber($request->jumlah);
+            $config = \App\Models\AjuanlimitkreditConfig::where('min_limit', '<=', $jumlah_ajuan)
+                ->where('max_limit', '>=', $jumlah_ajuan)
+                ->first();
+
+            $roles = $config ? $config->roles : ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'];
 
             //Insert Pengajuan
             Ajuanlimitkredit::create([
@@ -1679,7 +1685,8 @@ class SfaControler extends Controller
                 'status' => 0,
                 'skor' => $request->skor,
                 'kode_salesman' => $pelanggan->kode_salesman,
-                'id_user' => auth()->user()->id
+                'id_user' => auth()->user()->id,
+                'posisi_ajuan' => !empty($roles[0]) ? $roles[0] : null
             ]);
 
 
@@ -1695,24 +1702,15 @@ class SfaControler extends Controller
 
 
             $regional = Cabang::where('kode_cabang', $pelanggan->kode_cabang)->first();
-            $smm = User::role('sales marketing manager')->where('kode_cabang', $pelanggan->kode_cabang)
+            $next_role = !empty($roles[0]) ? $roles[0] : 'sales marketing manager';
+            $penerima = User::role($next_role)->where('kode_cabang', $pelanggan->kode_cabang)
+                ->when($next_role == 'regional sales manager', function ($query) use ($regional) {
+                    return $query->where('kode_regional', $regional->kode_regional);
+                })
                 ->where('status', 1)
                 ->first();
 
-            if ($smm != null) {
-                $id_penerima = $smm->id;
-            } else {
-                $rsm = User::role('regional sales manager')->where('kode_regional', $regional->kode_regional)
-                    ->where('status', 1)
-                    ->first();
-                $id_penerima = $rsm->id;
-                if ($rsm == NULL) {
-                    $gm = User::role('gm marketing')
-                        ->where('status', 1)
-                        ->first();
-                    $id_penerima = $gm->id;
-                }
-            }
+            $id_penerima = $penerima ? $penerima->id : 0;
 
 
             Disposisiajuanlimitkredit::create([
