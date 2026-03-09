@@ -160,89 +160,6 @@ class GlobalProvider extends ServiceProvider
                     ? $lembur->getLembur(request: new \Illuminate\Http\Request(['status' => 'pending']))->count()
                     : 0;
 
-                //Notifikasi SPV Presensi
-                if ($level_user == 'spv presensi' && auth()->user()->hasPermissionTo('izinabsen.approve')) {
-                    $user_access = auth()->user();
-                    $dept_access = json_decode($user_access->dept_access, true) ?? [];
-                    $cabang_access = json_decode($user_access->cabang_access, true) ?? [];
-                    $jabatan_access = json_decode($user_access->jabatan_access, true) ?? [];
-                    $group_access = json_decode($user_access->group_access, true) ?? [];
-
-                    $applyAccessControl = function ($query) use ($dept_access, $cabang_access, $jabatan_access, $group_access, $user_access) {
-                        $query->where(function ($access) use ($dept_access, $cabang_access, $jabatan_access, $group_access, $user_access) {
-                            if (!in_array('all', $cabang_access) && !empty($cabang_access)) {
-                                $access->whereIn('hrd_karyawan.kode_cabang', $cabang_access);
-                            }
-                            if (!in_array('all', $dept_access) && !empty($dept_access)) {
-                                $access->whereIn('hrd_karyawan.kode_dept', $dept_access);
-                            }
-                            if (!in_array('all', $jabatan_access) && !empty($jabatan_access)) {
-                                $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
-                            }
-                            if (!empty($group_access)) {
-                                $access->whereIn('hrd_karyawan.kode_group', $group_access);
-                            }
-                            if (!empty($user_access->kode_regional) && $user_access->kode_regional != 'R00') {
-                                $access->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
-                                    ->where('cabang.kode_regional', $user_access->kode_regional);
-                            }
-                        });
-                    };
-
-                    $notifikasi_izinabsen_presensi = Disposisiizinabsen::where('hrd_izinabsen_disposisi.status', 0)
-                        ->join('hrd_izinabsen', 'hrd_izinabsen_disposisi.kode_izin', '=', 'hrd_izinabsen.kode_izin')
-                        ->join('hrd_karyawan', 'hrd_izinabsen.nik', '=', 'hrd_karyawan.nik')
-                        ->tap($applyAccessControl)->count();
-
-                    $notifikasi_izincuti_presensi = Disposisiizincuti::where('hrd_izincuti_disposisi.status', 0)
-                        ->join('hrd_izincuti', 'hrd_izincuti_disposisi.kode_izin', '=', 'hrd_izincuti.kode_izin')
-                        ->join('hrd_karyawan', 'hrd_izincuti.nik', '=', 'hrd_karyawan.nik')
-                        ->tap($applyAccessControl)->count();
-
-                    $notifikasi_izinterlambat_presensi = Disposisiizinterlambat::where('hrd_izinterlambat_disposisi.status', 0)
-                        ->join('hrd_izinterlambat', 'hrd_izinterlambat_disposisi.kode_izin', '=', 'hrd_izinterlambat.kode_izin')
-                        ->join('hrd_karyawan', 'hrd_izinterlambat.nik', '=', 'hrd_karyawan.nik')
-                        ->tap($applyAccessControl)->count();
-
-                    $notifikasi_izinsakit_presensi = Disposisiizinsakit::where('hrd_izinsakit_disposisi.status', 0)
-                        ->join('hrd_izinsakit', 'hrd_izinsakit_disposisi.kode_izin', '=', 'hrd_izinsakit.kode_izin')
-                        ->join('hrd_karyawan', 'hrd_izinsakit.nik', '=', 'hrd_karyawan.nik')
-                        ->tap($applyAccessControl)->count();
-
-                    $notifikasi_izinpulang_presensi = Disposisiizinpulang::where('hrd_izinpulang_disposisi.status', 0)
-                        ->join('hrd_izinpulang', 'hrd_izinpulang_disposisi.kode_izin', '=', 'hrd_izinpulang.kode_izin')
-                        ->join('hrd_karyawan', 'hrd_izinpulang.nik', '=', 'hrd_karyawan.nik')
-                        ->tap($applyAccessControl)->count();
-
-                    $notifikasi_izindinas_presensi = Disposisiizindinas::where('hrd_izindinas_disposisi.status', 0)
-                        ->join('hrd_izindinas', 'hrd_izindinas_disposisi.kode_izin', '=', 'hrd_izindinas.kode_izin')
-                        ->join('hrd_karyawan', 'hrd_izindinas.nik', '=', 'hrd_karyawan.nik')
-                        ->tap($applyAccessControl)->count();
-
-                    $notifikasi_izinkoreksi_presensi = Disposisiizinkoreksi::where('hrd_izinkoreksi_disposisi.status', 0)
-                        ->join('hrd_izinkoreksi', 'hrd_izinkoreksi_disposisi.kode_izin', '=', 'hrd_izinkoreksi.kode_izin')
-                        ->join('hrd_karyawan', 'hrd_izinkoreksi.nik', '=', 'hrd_karyawan.nik')
-                        ->tap($applyAccessControl)->count();
-
-                    $notifikasi_izinkeluar_presensi = Disposisiizinkeluar::where('hrd_izinkeluar_disposisi.status', 0)
-                        ->join('hrd_izinkeluar', 'hrd_izinkeluar_disposisi.kode_izin', '=', 'hrd_izinkeluar.kode_izin')
-                        ->join('hrd_karyawan', 'hrd_izinkeluar.nik', '=', 'hrd_karyawan.nik')
-                        ->tap($applyAccessControl)->count();
-
-                    $total_notifikasi_izin_spvpresensi = $notifikasi_izinabsen_presensi + $notifikasi_izincuti_presensi +
-                        $notifikasi_izinterlambat_presensi + $notifikasi_izinsakit_presensi + $notifikasi_izinpulang_presensi +
-                        $notifikasi_izindinas_presensi + $notifikasi_izinkoreksi_presensi + $notifikasi_izinkeluar_presensi;
-                } else {
-                    $notifikasi_izinabsen_presensi = 0;
-                    $notifikasi_izincuti_presensi = 0;
-                    $notifikasi_izinterlambat_presensi = 0;
-                    $notifikasi_izinsakit_presensi = 0;
-                    $notifikasi_izinpulang_presensi = 0;
-                    $notifikasi_izindinas_presensi = 0;
-                    $notifikasi_izinkoreksi_presensi = 0;
-                    $notifikasi_izinkeluar_presensi = 0;
-                    $total_notifikasi_izin_spvpresensi = 0;
-                }
                 // $notifikasi_log = Activity::where('status_log', 0)->whereIn('event', ['update', 'cancel', 'delete'])->count();
                 $notifikasi_update_data = Ticketupdatedata::where('status', 0)->count();
                 if ($level_user == "manager keuangan") {
@@ -896,15 +813,15 @@ class GlobalProvider extends ServiceProvider
                 'notifikasi_ticket' => $notifikasi_ticket,
                 'notifikasi_update_data' => $notifikasi_update_data,
 
-                'total_notifikasi_izin_spvpresensi' => $total_notifikasi_izin_spvpresensi,
-                'notifikasi_izinabsen_presensi' => $notifikasi_izinabsen_presensi,
-                'notifikasi_izinpulang_presensi' => $notifikasi_izinpulang_presensi,
-                'notifikasi_izinterlambat_presensi' => $notifikasi_izinterlambat_presensi,
-                'notifikasi_izinkeluar_presensi' => $notifikasi_izinkeluar_presensi,
-                'notifikasi_izincuti_presensi' => $notifikasi_izincuti_presensi,
-                'notifikasi_izinsakit_presensi' => $notifikasi_izinsakit_presensi,
-                'notifikasi_izinkoreksi_presensi' => $notifikasi_izinkoreksi_presensi,
-                'notifikasi_izindinas_presensi' => $notifikasi_izindinas_presensi,
+                'total_notifikasi_izin_spvpresensi' => $notifikasi_pengajuan_izin,
+                'notifikasi_izinabsen_presensi' => $notifikasi_izinabsen,
+                'notifikasi_izinpulang_presensi' => $notifikasi_izinpulang,
+                'notifikasi_izinterlambat_presensi' => $notifikasi_izinterlambat,
+                'notifikasi_izinkeluar_presensi' => $notifikasi_izinkeluar,
+                'notifikasi_izincuti_presensi' => $notifikasi_izincuti,
+                'notifikasi_izinsakit_presensi' => $notifikasi_izinsakit,
+                'notifikasi_izinkoreksi_presensi' => $notifikasi_izinkoreksi,
+                'notifikasi_izindinas_presensi' => $notifikasi_izindinas,
 
                 'notifIM' => $notifIM,
 

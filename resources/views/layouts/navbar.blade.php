@@ -52,6 +52,7 @@
                     'regional sales manager',
                     'regional operation manager',
                     'manager keuangan',
+                    'spv presensi',
                 ]))
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
