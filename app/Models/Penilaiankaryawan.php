@@ -50,7 +50,7 @@ class Penilaiankaryawan extends Model
         $query->leftJoin('roles', 'hrd_penilaian.posisi_ajuan', '=', 'roles.id');
 
         // 2. DATA ACCESS RESTRICTIONS
-        if (!$user->hasRole(['super admin', 'asst. manager hrd', 'spv presensi'])) {
+        if (!$user->hasRole(['super admin'])) {
 
             $query->where(function ($access) use ($user) {
                 $dept_access = json_decode($user->dept_access, true) ?? [];

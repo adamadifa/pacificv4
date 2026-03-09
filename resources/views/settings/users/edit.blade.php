@@ -67,6 +67,28 @@
                 <div class="col-12">
                     <x-select name="group_access[]" :data="$group" key="kode_group" textShow="nama_group" multiple="true" select2="select2GroupAccess" :selected="$group_access" />
                 </div>
+                <div class="col-md-6 mt-2">
+                    <div class="card-access-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_pic_presensi" id="is_pic_presensi" value="1" {{ $is_pic_presensi ? 'checked' : '' }}>
+                            <label class="form-check-label fw-bold" for="is_pic_presensi">
+                                <i class="ti ti-user-check me-1"></i> PIC Presensi
+                            </label>
+                            <div class="text-muted small ms-4">Assign attendance and leave management permissions automatically.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <div class="card-access-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_approval_presensi" id="is_approval_presensi" value="1" {{ $is_approval_presensi ? 'checked' : '' }}>
+                            <label class="form-check-label fw-bold" for="is_approval_presensi">
+                                <i class="ti ti-check-all me-1"></i> Approval Presensi
+                            </label>
+                            <div class="text-muted small ms-4">Assign approval permissions for all leave and attendance requests.</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

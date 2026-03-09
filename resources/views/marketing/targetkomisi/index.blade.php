@@ -3,104 +3,124 @@
 
 @section('content')
 @section('navigasi')
-    <span>Target Komisi</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Target Komisi</h4>
+            <small class="text-muted">Kelola target komisi salesman per cabang.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-target-arrow me-1"></i>Marketing</a>
+                </li>
+                <li class="breadcrumb-item active">Target Komisi</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
-<div class="col-lg-10">
-    <div class="nav-align-top nav-tabs-shadow mb-4">
-        @include('layouts.navigation_targetkomisi')
-        <div class="tab-content">
-            <div class="tab-pane fade active show" id="navs-justified-home" role="tabpanel">
-                @can('targetkomisi.create')
-                    <a href="#" class="btn btn-primary btnCreate"><i class="fa fa-plus me-2"></i> Buat Target</a>
-                @endcan
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <form action="{{ route('targetkomisi.index') }}">
 
-                            @hasanyrole($roles_show_cabang)
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang"
-                                            key="kode_cabang" textShow="nama_cabang" upperCase="true"
-                                            selected="{{ Request('kode_cabang_search') }}"
-                                            select2="select2Kodecabangsearch" hideLabel="true" />
-                                    </div>
-                                </div>
-                            @endrole
+<div class="row">
+    <div class="col-lg-10 col-md-12 col-sm-12">
+        {{-- Modern Navigation Header --}}
+        <div class="mb-3">
+            @include('layouts.navigation_targetkomisi')
+        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-12 col-md-12">
-                                    <div class="form-grou mb-3">
-                                        <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
-                                            <option value="">Poisi Ajuan</option>
-                                            @foreach ($roles_approve_targetkomisi as $role)
-                                                <option value="{{ $role }}"
-                                                    {{ Request('posisi_ajuan') == $role ? 'selected' : '' }}>
-                                                    {{ textUpperCase($role) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-12 col-md-12">
-                                    <div class="form-group mb-3">
-                                        <select name="bulan" id="bulan" class="form-select">
-                                            <option value="">Bulan</option>
-                                            @foreach ($list_bulan as $d)
-                                                <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
-                                                    value="{{ $d['kode_bulan'] }}">
-                                                    {{ $d['nama_bulan'] }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <div class="form-group mb-3">
-                                        <select name="tahun" id="tahun" class="form-select">
-                                            <option value="">Tahun</option>
-                                            @for ($t = $start_year; $t <= date('Y'); $t++)
-                                                <option
-                                                    @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
-                                                @else {{ date('Y') == $t ? 'selected' : '' }} @endif
-                                                    value="{{ $t }}">{{ $t }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 co-sm-12 col-md-12">
-                                    <div class="form-group mb-3">
-                                        <select name="status" id="status" class="form-select">
-                                            <option value="">Status</option>
-                                            <option value="0" {{ Request('status') === '0' ? 'selected' : '' }}>
-                                                Pending</option>
-                                            <option value="1" {{ Request('status') === '1' ? 'selected' : '' }}>
-                                                Disetujui</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-12 col-md-12">
-                                    <button class="btn btn-primary"><i class="ti ti-icons ti-search me-1"></i></button>
+        {{-- Filter Section --}}
+        <form action="{{ route('targetkomisi.index') }}">
+            <div class="card shadow-none border-0 bg-transparent mb-3">
+                <div class="card-body p-0">
+                    <div class="row">
+                        @hasanyrole($roles_show_cabang)
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                                        textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                                        select2="select2Kodecabangsearch" hideLabel="true" />
                                 </div>
                             </div>
-                        </form>
+                        @endrole
+                        <div class="col-lg-3 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <select name="posisi_ajuan" id="posisi_ajuan" class="form-select">
+                                    <option value="">Posisi Ajuan</option>
+                                    @foreach ($roles_approve_targetkomisi as $role)
+                                        <option value="{{ $role }}"
+                                            {{ Request('posisi_ajuan') == $role ? 'selected' : '' }}>
+                                            {{ textUpperCase($role) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <select name="bulan" id="bulan" class="form-select">
+                                    <option value="">Bulan</option>
+                                    @foreach ($list_bulan as $d)
+                                        <option {{ Request('bulan') == $d['kode_bulan'] ? 'selected' : '' }}
+                                            value="{{ $d['kode_bulan'] }}">
+                                            {{ $d['nama_bulan'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <select name="tahun" id="tahun" class="form-select">
+                                    <option value="">Tahun</option>
+                                    @for ($t = $start_year; $t <= date('Y'); $t++)
+                                        <option @if (!empty(Request('tahun'))) {{ Request('tahun') == $t ? 'selected' : '' }}
+                                                @else {{ date('Y') == $t ? 'selected' : '' }} @endif
+                                            value="{{ $t }}">{{ $t }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 co-sm-12 col-md-12">
+                            <div class="form-group">
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">Status</option>
+                                    <option value="0" {{ Request('status') === '0' ? 'selected' : '' }}>Pending</option>
+                                    <option value="1" {{ Request('status') === '1' ? 'selected' : '' }}>Disetujui</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <button class="btn btn-primary w-100"><i class="ti ti-search"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table table-striped table-hover table-bordered">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Kode</th>
-                                        <th>Bulan</th>
-                                        <th>Tahun</th>
-                                        <th>Cabang</th>
-                                        <th>Posisi Ajuan</th>
-                                        <th class="text-center">Status</th>
-                                        <th>Tanggal</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+            </div>
+        </form>
+
+        {{-- Data Card --}}
+        <div class="card shadow-sm border">
+            <div class="card-header border-bottom py-3"
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-target-arrow me-2"></i>Data Target Komisi</h6>
+                    @can('targetkomisi.create')
+                        <a href="#" class="btn btn-primary btnCreate btn-sm"><i class="ti ti-plus me-1"></i> Buat Target</a>
+                    @endcan
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-white" style="background-color: #002e65 !important;">Kode</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">Bulan</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">Tahun</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">Cabang</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">Posisi Ajuan</th>
+                            <th class="text-center text-white" style="background-color: #002e65 !important;">Status</th>
+                            <th class="text-white" style="background-color: #002e65 !important;">Tanggal</th>
+                            <th class="text-center text-white" style="background-color: #002e65 !important;">#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                                     @foreach ($targetkomisi as $d)
                                         @php
                                             if ($level_user == 'regional sales manager') {
@@ -115,122 +135,94 @@
                                             <td>{{ $d->tahun }}</td>
                                             <td>{{ textUpperCase($d->nama_cabang) }}</td>
                                             <td>
-                                                @if ($d->role == 'regional sales manager')
-                                                    @php
-                                                        $color = 'bg-info';
-                                                    @endphp
-                                                @elseif($d->role == 'gm marketing')
-                                                    @php
-                                                        $color = 'bg-primary';
-                                                    @endphp
-                                                @elseif($d->role == 'direktur')
-                                                    @php
-                                                        $color = 'bg-success';
-                                                    @endphp
-                                                @else
-                                                    @php
-                                                        $color = '';
-                                                    @endphp
-                                                @endif
-
-                                                <span
-                                                    class="badge {{ $color }}">{{ textCamelCase($d->role) }}</span>
+                                                @php
+                                                    $color = match ($d->role) {
+                                                        'regional sales manager' => 'bg-info',
+                                                        'gm marketing' => 'bg-primary',
+                                                        'direktur' => 'bg-success',
+                                                        default => 'bg-secondary',
+                                                    };
+                                                @endphp
+                                                <span class="badge {{ $color }}">{{ textCamelCase($d->role) }}</span>
                                             </td>
                                             <td class="text-center">
                                                 @if ($d->status == '0')
-                                                    <i class="ti ti-hourglass-empty text-warning"></i>
+                                                    <i class="ti ti-hourglass-empty text-warning fs-4"></i>
                                                 @else
-                                                    <i class="ti ti-checks text-success"></i>
+                                                    <i class="ti ti-checks text-success fs-4"></i>
                                                 @endif
                                             </td>
-                                            <td>{{ !empty($d->created_at) ? date('d-m-Y H:i:s', strtotime($d->created_at)) : '' }}
-                                            </td>
+                                            <td>{{ !empty($d->created_at) ? date('d-m-y H:i', strtotime($d->created_at)) : '' }}</td>
                                             <td>
-                                                <div class="d-flex">
+                                                <div class="d-flex justify-content-center gap-2">
                                                     @can('targetkomisi.approve')
-                                                        <div>
-                                                            @if ($d->status_disposisi == '0' || $level_user == 'regional sales manager')
-                                                                <a href="#" class="me-2 btnApprove"
-                                                                    kode_target="{{ Crypt::encrypt($d->kode_target) }}">
-                                                                    <i class="ti ti-send text-info"></i>
-                                                                </a>
-                                                            @else
-                                                                @if ($level_user == 'direktur')
-                                                                    @if ($d->status_disposisi == '1')
-                                                                        <form method="POST" name="deleteform"
-                                                                            class="deleteform"
-                                                                            action="{{ route('targetkomisi.cancel', Crypt::encrypt($d->kode_target)) }}">
-                                                                            @csrf
-                                                                            @method('DELETE')
-                                                                            <a href="#" class="cancel-confirm me-1">
-                                                                                <i
-                                                                                    class="ti ti-square-rounded-x text-danger"></i>
-                                                                            </a>
-                                                                        </form>
-                                                                    @endif
-                                                                @else
-                                                                    @if ($d->status_ajuan == '0' && $d->role == $nextlevel)
-                                                                        <form method="POST" name="deleteform"
-                                                                            class="deleteform"
-                                                                            action="{{ route('targetkomisi.cancel', Crypt::encrypt($d->kode_target)) }}">
-                                                                            @csrf
-                                                                            @method('DELETE')
-                                                                            <a href="#" class="cancel-confirm me-1">
-                                                                                <i
-                                                                                    class="ti ti-square-rounded-x text-danger"></i>
-                                                                            </a>
-                                                                        </form>
-                                                                    @endif
-                                                                @endif
+                                                        @if ($d->status_disposisi == '0' || $level_user == 'regional sales manager')
+                                                            <a href="#" class="btnApprove text-info"
+                                                                kode_target="{{ Crypt::encrypt($d->kode_target) }}"
+                                                                data-bs-toggle="tooltip" title="Approve">
+                                                                <i class="ti ti-send fs-4"></i>
+                                                            </a>
+                                                        @else
+                                                            @if ($level_user == 'direktur' && $d->status_disposisi == '1')
+                                                                <form method="POST"
+                                                                    action="{{ route('targetkomisi.cancel', Crypt::encrypt($d->kode_target)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="cancel-confirm text-danger"
+                                                                        data-bs-toggle="tooltip" title="Cancel">
+                                                                        <i class="ti ti-square-rounded-x fs-4"></i>
+                                                                    </a>
+                                                                </form>
+                                                            @elseif ($d->status_ajuan == '0' && $d->role == $nextlevel)
+                                                                <form method="POST"
+                                                                    action="{{ route('targetkomisi.cancel', Crypt::encrypt($d->kode_target)) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <a href="#" class="cancel-confirm text-danger"
+                                                                        data-bs-toggle="tooltip" title="Cancel">
+                                                                        <i class="ti ti-square-rounded-x fs-4"></i>
+                                                                    </a>
+                                                                </form>
                                                             @endif
-                                                        </div>
+                                                        @endif
                                                     @endcan
+
                                                     @can('targetkomisi.edit')
                                                         @if (
                                                             ($d->id_pengirim == auth()->user()->id && !in_array($level_user, $roles_approve_targetkomisi)) ||
                                                                 $level_user == 'super admin' ||
-                                                                $level_user == 'regional sales manager')
-                                                            <div>
-                                                                <a href="#" class="me-2 btnEdit"
-                                                                    kode_target="{{ Crypt::encrypt($d->kode_target) }}">
-                                                                    <i class="ti ti-edit text-success"></i>
-                                                                </a>
-                                                            </div>
-                                                        @elseif (
-                                                            (in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0') ||
+                                                                $level_user == 'regional sales manager' ||
+                                                                (in_array($level_user, $roles_approve_targetkomisi) && $d->status_disposisi == '0') ||
                                                                 (in_array($level_user, $roles_approve_targetkomisi) &&
                                                                     $d->id_pengirim == auth()->user()->id &&
                                                                     $d->status_ajuan == '0'))
-                                                            <div>
-                                                                <a href="#" class="me-2 btnEdit"
-                                                                    kode_target="{{ Crypt::encrypt($d->kode_target) }}">
-                                                                    <i class="ti ti-edit text-success"></i>
-                                                                </a>
-                                                            </div>
+                                                            <a href="#" class="btnEdit text-success"
+                                                                kode_target="{{ Crypt::encrypt($d->kode_target) }}"
+                                                                data-bs-toggle="tooltip" title="Edit">
+                                                                <i class="ti ti-edit fs-4"></i>
+                                                            </a>
                                                         @endif
                                                     @endcan
-                                                    {{-- {{ $d->status_disposisi }}
-                                                    {{ $d->status_disposisi == '0' ? 'true' : 'false' }} --}}
+
                                                     @can('targetkomisi.show')
-                                                        <div>
-                                                            <a href="#" class="me-2 btnShow"
-                                                                kode_target="{{ Crypt::encrypt($d->kode_target) }}">
-                                                                <i class="ti ti-file-description text-info"></i>
-                                                            </a>
-                                                        </div>
+                                                        <a href="#" class="btnShow text-info"
+                                                            kode_target="{{ Crypt::encrypt($d->kode_target) }}"
+                                                            data-bs-toggle="tooltip" title="Detail">
+                                                            <i class="ti ti-file-description fs-4"></i>
+                                                        </a>
                                                     @endcan
+
                                                     @can('targetkomisi.delete')
                                                         @if ($d->id_pengirim == auth()->user()->id)
-                                                            <div>
-                                                                <form method="POST" name="deleteform" class="deleteform"
-                                                                    action="{{ route('targetkomisi.delete', Crypt::encrypt($d->kode_target)) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
-                                                                </form>
-                                                            </div>
+                                                            <form method="POST"
+                                                                action="{{ route('targetkomisi.delete', Crypt::encrypt($d->kode_target)) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="#" class="delete-confirm text-danger"
+                                                                    data-bs-toggle="tooltip" title="Hapus">
+                                                                    <i class="ti ti-trash fs-4"></i>
+                                                                </a>
+                                                            </form>
                                                         @endif
                                                     @endcan
                                                 </div>
@@ -239,11 +231,10 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
-                        <div style="float: right;">
-                            {{ $targetkomisi->links() }}
-                        </div>
-                    </div>
+            </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $targetkomisi->links() }}
                 </div>
             </div>
         </div>

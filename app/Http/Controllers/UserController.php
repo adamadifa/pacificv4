@@ -79,8 +79,10 @@ class UserController extends Controller
         $karyawan_access = json_decode($user->karyawan_access, true) != null ? json_decode($user->karyawan_access, true) : [];
         $group = Group::orderBy('nama_group')->get();
         $group_access = json_decode($user->group_access, true) != null ? json_decode($user->group_access, true) : [];
+        $is_pic_presensi = $user->is_pic_presensi;
+        $is_approval_presensi = $user->is_approval_presensi;
 
-        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'dept_access', 'cabang_access', 'jabatan', 'jabatan_access', 'karyawan', 'karyawan_access', 'group', 'group_access'));
+        return view('settings.users.edit', compact('user', 'roles', 'cabang', 'regional', 'departemen', 'dept_access', 'cabang_access', 'jabatan', 'jabatan_access', 'karyawan', 'karyawan_access', 'group', 'group_access', 'is_pic_presensi', 'is_approval_presensi'));
     }
 
     public function ubahpassword()
@@ -124,10 +126,35 @@ class UserController extends Controller
                 'dept_access' => json_encode($request->dept_access),
                 'jabatan_access' => json_encode($request->jabatan_access),
                 'karyawan_access' => json_encode($request->karyawan_access),
-                'group_access' => json_encode($request->group_access)
+                'group_access' => json_encode($request->group_access),
+                'is_pic_presensi' => $request->has('is_pic_presensi') ? 1 : 0,
+                'is_approval_presensi' => $request->has('is_approval_presensi') ? 1 : 0
             ]);
 
             $user->assignRole($request->role);
+
+            if ($request->has('is_pic_presensi')) {
+                $pic_permissions = [
+                    'izinabsen.index', 'izinabsen.create', 'izinabsen.edit', 'izinabsen.store', 'izinabsen.update', 'izinabsen.show', 'izinabsen.delete',
+                    'izincuti.index', 'izincuti.create', 'izincuti.edit', 'izincuti.store', 'izincuti.update', 'izincuti.show', 'izincuti.delete',
+                    'izinkeluar.index', 'izinkeluar.create', 'izinkeluar.edit', 'izinkeluar.store', 'izinkeluar.update', 'izinkeluar.show', 'izinkeluar.delete',
+                    'izinterlambat.index', 'izinterlambat.create', 'izinterlambat.edit', 'izinterlambat.store', 'izinterlambat.update', 'izinterlambat.show', 'izinterlambat.delete',
+                    'izinpulang.index', 'izinpulang.create', 'izinpulang.edit', 'izinpulang.store', 'izinpulang.update', 'izinpulang.show', 'izinpulang.delete',
+                    'izindinas.index', 'izindinas.create', 'izindinas.edit', 'izindinas.store', 'izindinas.update', 'izindinas.show', 'izindinas.delete',
+                    'izinkoreksi.index', 'izinkoreksi.create', 'izinkoreksi.edit', 'izinkoreksi.store', 'izinkoreksi.update', 'izinkoreksi.show', 'izinkoreksi.delete',
+                    'izinsakit.index', 'izinsakit.create', 'izinsakit.edit', 'izinsakit.store', 'izinsakit.update', 'izinsakit.show', 'izinsakit.delete',
+                    'presensi.index', 'presensi.koreksi'
+                ];
+                $user->givePermissionTo($pic_permissions);
+            }
+
+            if ($request->has('is_approval_presensi')) {
+                $approval_permissions = [
+                    'izinabsen.approve', 'izincuti.approve', 'izinkeluar.approve', 'izinterlambat.approve', 'izinpulang.approve', 'izindinas.approve', 'izinkoreksi.approve', 'izinsakit.approve', 'lembur.approve', 'penilaiankaryawan.approve'
+                ];
+                $user->givePermissionTo($approval_permissions);
+            }
+
             return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
         } catch (\Exception $e) {
 
@@ -169,6 +196,8 @@ class UserController extends Controller
                     'jabatan_access' => json_encode($request->jabatan_access),
                     'karyawan_access' => json_encode($request->karyawan_access),
                     'group_access' => json_encode($request->group_access),
+                    'is_pic_presensi' => $request->has('is_pic_presensi') ? 1 : 0,
+                    'is_approval_presensi' => $request->has('is_approval_presensi') ? 1 : 0,
                     'status' => $request->status,
                     'force_logout' => $force_logout
                 ]);
@@ -185,6 +214,8 @@ class UserController extends Controller
                     'jabatan_access' => json_encode($request->jabatan_access),
                     'karyawan_access' => json_encode($request->karyawan_access),
                     'group_access' => json_encode($request->group_access),
+                    'is_pic_presensi' => $request->has('is_pic_presensi') ? 1 : 0,
+                    'is_approval_presensi' => $request->has('is_approval_presensi') ? 1 : 0,
                     'status' => $request->status,
                     'force_logout' => $force_logout
                 ]);
@@ -193,6 +224,34 @@ class UserController extends Controller
             if (isset($request->role)) {
                 $user->syncRoles([]);
                 $user->assignRole($request->role);
+            }
+
+            $pic_permissions = [
+                'izinabsen.index', 'izinabsen.create', 'izinabsen.edit', 'izinabsen.store', 'izinabsen.update', 'izinabsen.show', 'izinabsen.delete',
+                'izincuti.index', 'izincuti.create', 'izincuti.edit', 'izincuti.store', 'izincuti.update', 'izincuti.show', 'izincuti.delete',
+                'izinkeluar.index', 'izinkeluar.create', 'izinkeluar.edit', 'izinkeluar.store', 'izinkeluar.update', 'izinkeluar.show', 'izinkeluar.delete',
+                'izinterlambat.index', 'izinterlambat.create', 'izinterlambat.edit', 'izinterlambat.store', 'izinterlambat.update', 'izinterlambat.show', 'izinterlambat.delete',
+                'izinpulang.index', 'izinpulang.create', 'izinpulang.edit', 'izinpulang.store', 'izinpulang.update', 'izinpulang.show', 'izinpulang.delete',
+                'izindinas.index', 'izindinas.create', 'izindinas.edit', 'izindinas.store', 'izindinas.update', 'izindinas.show', 'izindinas.delete',
+                'izinkoreksi.index', 'izinkoreksi.create', 'izinkoreksi.edit', 'izinkoreksi.store', 'izinkoreksi.update', 'izinkoreksi.show', 'izinkoreksi.delete',
+                'izinsakit.index', 'izinsakit.create', 'izinsakit.edit', 'izinsakit.store', 'izinsakit.update', 'izinsakit.show', 'izinsakit.delete',
+                'presensi.index', 'presensi.koreksi'
+            ];
+
+            $approval_permissions = [
+                'izinabsen.approve', 'izincuti.approve', 'izinkeluar.approve', 'izinterlambat.approve', 'izinpulang.approve', 'izindinas.approve', 'izinkoreksi.approve', 'izinsakit.approve', 'lembur.approve', 'penilaiankaryawan.approve'
+            ];
+
+            if ($request->has('is_pic_presensi')) {
+                $user->givePermissionTo($pic_permissions);
+            } else {
+                $user->revokePermissionTo($pic_permissions);
+            }
+
+            if ($request->has('is_approval_presensi')) {
+                $user->givePermissionTo($approval_permissions);
+            } else {
+                $user->revokePermissionTo($approval_permissions);
             }
 
             return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);

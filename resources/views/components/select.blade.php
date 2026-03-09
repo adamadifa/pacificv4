@@ -38,16 +38,18 @@
         @endif
         @foreach ($data as $d)
             @php
+                $val = is_object($d) ? $d->$key : $d[$key];
+                $text = is_object($d) ? $d->$textShow : $d[$textShow];
                 $isSelected = false;
                 if ($multiple && is_array($selected)) {
-                    $isSelected = in_array($d->$key, $selected);
+                    $isSelected = in_array($val, $selected);
                 } else {
-                    $isSelected = $d->$key == $selected;
+                    $isSelected = $val == $selected;
                 }
             @endphp
-            <option {{ $isSelected ? 'selected' : '' }} value="{{ $d->$key }}">
-                {{ $showKey ? $d->$key . ' | ' : '' }}
-                {{ $upperCase ? strtoupper(strtolower($d->$textShow)) : ucwords(strtolower($d->$textShow)) }}
+            <option {{ $isSelected ? 'selected' : '' }} value="{{ $val }}">
+                {{ $showKey ? $val . ' | ' : '' }}
+                {{ $upperCase ? strtoupper(strtolower($text)) : ucwords(strtolower($text)) }}
             </option>
         @endforeach
     </select>

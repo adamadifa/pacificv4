@@ -1,10 +1,10 @@
 <form action="{{ route('users.store') }}" id="formcreateUser" method="POST">
     @csrf
-    <div class="row g-3">
+    <div class="row g-2">
         {{-- Basic Information Section --}}
         <div class="col-12">
-            <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="ti ti-user me-2"></i>Informasi Akun</h6>
-            <div class="row g-2">
+            <h6 class="fw-bold mb-1 border-bottom pb-1"><i class="ti ti-user me-2"></i>Informasi Akun</h6>
+            <div class="row g-1">
                 <div class="col-md-6">
                     <x-input-with-icon icon="ti ti-user" label="Nama Lengkap" name="name" />
                 </div>
@@ -21,9 +21,9 @@
         </div>
 
         {{-- Organization Section --}}
-        <div class="col-12 mt-4">
-            <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="ti ti-building me-2"></i>Organisasi & Role</h6>
-            <div class="row g-2">
+        <div class="col-12 mt-2">
+            <h6 class="fw-bold mb-1 border-bottom pb-1"><i class="ti ti-building me-2"></i>Organisasi & Role</h6>
+            <div class="row g-1">
                 <div class="col-md-6">
                     <x-select label="Role Utama" name="role" :data="$roles" key="name" textShow="name" hideLabel="true" />
                 </div>
@@ -40,9 +40,9 @@
         </div>
 
         {{-- Access Section --}}
-        <div class="col-12 mt-4">
-            <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="ti ti-lock-access me-2"></i>Akses Tambahan</h6>
-            <div class="row">
+        <div class="col-12 mt-2">
+            <h6 class="fw-bold mb-1 border-bottom pb-1"><i class="ti ti-lock-access me-2"></i>Akses Tambahan</h6>
+            <div class="row g-1">
                 <div class="col-12">
                     <x-select name="cabang_access[]" :data="$cabang" key="kode_cabang" textShow="nama_cabang" multiple="true" select2="select2CabangAccess" allOption="true" allOptionLabel="Semua Cabang" />
                 </div>
@@ -58,11 +58,33 @@
                 <div class="col-12">
                     <x-select name="group_access[]" :data="$group" key="kode_group" textShow="nama_group" multiple="true" select2="select2GroupAccess" />
                 </div>
+                <div class="col-md-6 mt-2">
+                    <div class="card-access-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_pic_presensi" id="is_pic_presensi" value="1">
+                            <label class="form-check-label fw-bold" for="is_pic_presensi">
+                                <i class="ti ti-user-check me-1"></i> PIC Presensi
+                            </label>
+                            <div class="text-muted small ms-4">Assign attendance and leave management permissions automatically.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <div class="card-access-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_approval_presensi" id="is_approval_presensi" value="1">
+                            <label class="form-check-label fw-bold" for="is_approval_presensi">
+                                <i class="ti ti-check-all me-1"></i> Approval Presensi
+                            </label>
+                            <div class="text-muted small ms-4">Assign approval permissions for all leave and attendance requests.</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="mt-4 pt-2">
+    <div class="mt-2">
         <button class="btn btn-primary w-100 py-2 shadow-sm" type="submit">
             <i class="ti ti-send me-2 fs-5"></i>
             Simpan Data User

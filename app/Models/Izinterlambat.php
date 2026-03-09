@@ -16,24 +16,10 @@ class Izinterlambat extends Model
 
     function getIzinterlambat($kode_izin_terlambat = null, Request $request = null, $cekPending = false)
     {
-        //Catatan Update Permission
-        //Role RSM,GM,Manager,Direktur hanya lihat dan approve
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
-        //dd($user->can('izinabsen.create'));
-        $role_access_full = ['super admin', 'asst. manager hrd', 'spv presensi', 'direktur'];
-        $level_hrd = config('presensi.approval.level_hrd',);
-        $role_approve_presensi = config('presensi.approval');
-        $dept_access = $role_approve_presensi[$role]['dept'] ?? [];
-        $jabatan_access = $role_approve_presensi[$role]['jabatan'] ?? [];
-        $jabatan_filter = $role_approve_presensi[$role]['jabatan_filter'] ?? false;
-        // dd($level_hrd);
-        // dd(in_array($role, $level_hrd));
-        $cabang_access = $role_approve_presensi[$role]['cabang'] ?? 1;
-        $dept_access_2 = $role_approve_presensi[$role]['dept2'] ?? [];
-        $jabatan_access_2 = $role_approve_presensi[$role]['jabatan2'] ?? [];
-
-
+        $role_access_full = ['super admin', 'direktur'];
+        $level_hrd = config('presensi.approval.level_hrd');
 
         $query = Izinterlambat::query();
         $query->select(
@@ -52,150 +38,99 @@ class Izinterlambat extends Model
         $query->join('hrd_departemen', 'hrd_izinterlambat.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->join('cabang', 'hrd_izinterlambat.kode_cabang', '=', 'cabang.kode_cabang');
 
+        // Data Access Restrictions
+        if (!in_array($role, $role_access_full)) {
+            $query->where(function ($access) use ($user) {
+                $dept_access = json_decode($user->dept_access, true) ?? [];
+                $cabang_access = json_decode($user->cabang_access, true) ?? [];
+                $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
+                $group_access = json_decode($user->group_access, true) ?? [];
 
-        //dd(!in_array($role, $role_access_full));
-        //Jika Admin Presensi
-        //dd($cekPending);
+                // Group Access
+                if (!empty($group_access)) {
+                    $access->whereIn('hrd_karyawan.kode_group', $group_access);
+                }
+
+                // Branch Access
+                if (!in_array('all', $cabang_access)) {
+                    if (!empty($cabang_access)) {
+                        $access->whereIn('hrd_izinterlambat.kode_cabang', $cabang_access);
+                    } else {
+                        if (empty($user->kode_regional) || $user->kode_regional == 'R00') {
+                            $access->where('hrd_izinterlambat.kode_cabang', $user->kode_cabang);
+                        }
+                    }
+                }
+
+                // Department Access
+                if (!in_array('all', $dept_access)) {
+                    $access->whereIn('hrd_izinterlambat.kode_dept', $dept_access);
+                }
+
+                // Jabatan Access
+                if (!in_array('all', $jabatan_access)) {
+                    $access->whereIn('hrd_izinterlambat.kode_jabatan', $jabatan_access);
+                }
+
+                // Regional Access
+                if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
+                    $access->where('cabang.kode_regional', $user->kode_regional);
+                }
+            });
+        }
+
+        // Feature Specific Logic
         if (!empty($kode_izin_terlambat)) {
             $query->where('hrd_izinterlambat.kode_izin_terlambat', $kode_izin_terlambat);
         }
-        if (!$cekPending) {
-            if (!in_array($role, $role_access_full)) {
-                if ($user->can('izinabsen.create')) {
-                    if ($user->kode_cabang == 'PST') {
-                        $query->where('hrd_izinterlambat.kode_dept', $user->kode_dept);
-                    } else {
-                        $query->where('hrd_izinterlambat.kode_cabang', auth()->user()->kode_cabang);
-                    }
-                } else {
 
-                    if (!empty($request)) {
-                        if (!empty($request->dari) && !empty($request->sampai)) {
-                            $query->whereBetween('hrd_izinterlambat.tanggal', [$request->dari, $request->sampai]);
-                        }
-                        if (!empty($request->kode_cabang)) {
-                            $query->where('hrd_izinterlambat.kode_cabang', $request->kode_cabang);
-                        }
-                        if (!empty($request->kode_dept)) {
-                            $query->where('hrd_izinterlambat.kode_dept', $request->kode_dept);
-                        }
-                        if (!empty($request->nama_karyawan)) {
-                            $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
-                        }
-                        if (!empty($request->status)) {
-                            if (!empty($request->status)) {
-                                if ($request->status == 'pending') {
-                                    $query->where('hrd_izinterlambat.status', '0');
-                                } else if ($request->status == 'disetujui') {
-                                    $query->where('hrd_izinterlambat.status', '1');
-                                }
-                            }
-                        }
-                    }
-
-                    $query->whereIn('hrd_izinterlambat.kode_dept', $dept_access);
-                    if ($jabatan_filter && $jabatan_access != null) {
-                        $query->whereIn('hrd_izinterlambat.kode_jabatan', $jabatan_access);
-                    }
-                    if ($cabang_access == 1) {
-                        $query->where('hrd_izinterlambat.kode_cabang', auth()->user()->kode_cabang);
-                    } else if ($cabang_access == 2) {
-                        $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-                    }
-
-
-
-                    $query->orWhereIn('hrd_izinterlambat.kode_dept', $dept_access_2);
-                    if ($jabatan_filter && $jabatan_access_2 != null) {
-                        $query->whereIn('hrd_izinterlambat.kode_jabatan', $jabatan_access_2);
-                    }
-                    if ($cabang_access == 1) {
-                        $query->where('hrd_izinterlambat.kode_cabang', auth()->user()->kode_cabang);
-                    } else if ($cabang_access == 2) {
-                        $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-                    }
-                }
-            }
-
-            if ($role == 'direktur') {
-                $query->where('hrd_izinterlambat.forward_to_direktur', '1');
-            }
-
-
-            if (!empty($request)) {
-                if (!empty($request->dari) && !empty($request->sampai)) {
-                    $query->whereBetween('hrd_izinterlambat.tanggal', [$request->dari, $request->sampai]);
-                }
-                if (!empty($request->kode_cabang)) {
-                    $query->where('hrd_izinterlambat.kode_cabang', $request->kode_cabang);
-                }
-                if (!empty($request->kode_dept)) {
-                    $query->where('hrd_izinterlambat.kode_dept', $request->kode_dept);
-                }
-                if (!empty($request->nama_karyawan)) {
-                    $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
-                }
-
-                if ($role == 'direktur') {
-                    if (!empty($request->status)) {
-                        if ($request->status == 'pending') {
-                            $query->where('hrd_izinterlambat.forward_to_direktur', '1');
-                            $query->where('hrd_izinterlambat.direktur', '0');
-                        } else if ($request->status == 'disetujui') {
-                            $query->where('hrd_izinterlambat.forward_to_direktur', '1');
-                            $query->where('hrd_izinterlambat.direktur', '1');
-                        }
-                    }
-                } else {
-                    if (!empty($request->status)) {
-                        if ($request->status == 'pending') {
-                            $query->where('hrd_izinterlambat.status', '0');
-                        } else if ($request->status == 'disetujui') {
-                            $query->where('hrd_izinterlambat.status', '1');
-                        }
-                    }
-                }
-            }
-
-            
-        } else {
-            if (!in_array($role, $level_hrd) && $role !== 'direktur') {
-                $query->where('hrd_izinterlambat.head', '0');
-                $query->whereIn('hrd_izinterlambat.kode_dept', $dept_access);
-                if ($jabatan_access != null) {
-                    $query->whereIn('hrd_izinterlambat.kode_jabatan', $jabatan_access);
-                }
-                if ($cabang_access == 1) {
-                    $query->where('hrd_izinterlambat.kode_cabang', auth()->user()->kode_cabang);
-                } else if ($cabang_access == 2) {
-                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-                }
-                $query->orWhere('hrd_izinterlambat.head', '0');
-                $query->whereIn('hrd_izinterlambat.kode_dept', $dept_access_2);
-                if ($jabatan_access_2 != null) {
-                    $query->whereIn('hrd_izinterlambat.kode_jabatan', $jabatan_access_2);
-                }
-                if ($cabang_access == 1) {
-                    $query->where('hrd_izinterlambat.kode_cabang', auth()->user()->kode_cabang);
-                } else if ($cabang_access == 2) {
-                    $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-                }
-            }
-
-
+        if ($cekPending) {
             if (in_array($role, $level_hrd)) {
                 $query->where('hrd_izinterlambat.head', '1');
                 $query->where('hrd_izinterlambat.hrd', 0);
-            }
-
-            if ($role == 'direktur') {
+            } else if ($role == 'direktur') {
                 $query->where('forward_to_direktur', '1');
                 $query->where('direktur', 0);
+            } else {
+                $query->where('hrd_izinterlambat.head', '0');
+            }
+        } else {
+            if ($role == 'direktur') {
+                $query->where('hrd_izinterlambat.forward_to_direktur', '1');
             }
         }
 
+        // Request Filters
+        if ($request) {
+            if (!empty($request->dari) && !empty($request->sampai)) {
+                $query->whereBetween('hrd_izinterlambat.tanggal', [$request->dari, $request->sampai]);
+            }
+            if (!empty($request->kode_cabang)) {
+                $query->where('hrd_izinterlambat.kode_cabang', $request->kode_cabang);
+            }
+            if (!empty($request->kode_dept)) {
+                $query->where('hrd_izinterlambat.kode_dept', $request->kode_dept);
+            }
+            if (!empty($request->nama_karyawan)) {
+                $query->where('hrd_karyawan.nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+            }
+            if (!empty($request->status)) {
+                if ($role == 'direktur') {
+                    if ($request->status == 'pending') {
+                        $query->where('hrd_izinterlambat.direktur', '0');
+                    } else if ($request->status == 'disetujui') {
+                        $query->where('hrd_izinterlambat.direktur', '1');
+                    }
+                } else {
+                    if ($request->status == 'pending') {
+                        $query->where('hrd_izinterlambat.status', '0');
+                    } else if ($request->status == 'disetujui') {
+                        $query->where('hrd_izinterlambat.status', '1');
+                    }
+                }
+            }
+        }
 
-        // dd($query->get());
         $query->orderBy('hrd_izinterlambat.status');
         $query->orderBy('hrd_izinterlambat.tanggal', 'desc');
         $query->orderBy('hrd_izinterlambat.created_at', 'desc');

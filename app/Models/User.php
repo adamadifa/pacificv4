@@ -31,6 +31,8 @@ class User extends Authenticatable
         'jabatan_access',
         'karyawan_access',
         'group_access',
+        'is_pic_presensi',
+        'is_approval_presensi',
         'status',
         'last_seen'
     ];

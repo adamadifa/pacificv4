@@ -129,7 +129,9 @@ class GlobalProvider extends ServiceProvider
 
 
                 $pk = new Penilaiankaryawan();
-                $notifikasi_penilaiankaryawan = $pk->getPenilaiankaryawan(request: new \Illuminate\Http\Request(['status' => 'pending']))->count();
+                $notifikasi_penilaiankaryawan = auth()->user()->hasPermissionTo('penilaiankaryawan.approve')
+                    ? $pk->getPenilaiankaryawan(request: new \Illuminate\Http\Request(['status' => 'pending']))->count()
+                    : 0;
 
                 $cek_approval_presensi = $roles_can_approve_presensi[$level_user] ?? [];
                 //Jika Bukan Direktur
@@ -141,78 +143,91 @@ class GlobalProvider extends ServiceProvider
                 $izincuti = new Izincuti();
                 $izindinas = new Izindinas();
                 $izinkoreksi = new Izinkoreksi();
-                $notifikasi_izinabsen = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinabsen->getIzinabsen(cekPending: true)->count() : 0;
-                $notifikasi_izinkeluar = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinkeluar->getIzinkeluar(cekPending: true)->count() : 0;
-                $notifikasi_izinpulang = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinpulang->getIzinpulang(cekPending: true)->count() : 0;
-                $notifikasi_izinterlambat = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinterlambat->getIzinterlambat(cekPending: true)->count() : 0;
-                $notifikasi_izinsakit = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinsakit->getIzinsakit(cekPending: true)->count() : 0;
-                $notifikasi_izincuti = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izincuti->getIzincuti(cekPending: true)->count() : 0;
-                $notifikasi_izindinas = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izindinas->getIzindinas(cekPending: true)->count() : 0;
-                $notifikasi_izinkoreksi = $cek_approval_presensi || in_array($level_user, $level_hrd) || $level_user == 'direktur' ? $izinkoreksi->getIzinkoreksi(cekPending: true)->count() : 0;
 
-
-
-
-
-
-
-
+                $notifikasi_izinabsen = auth()->user()->hasPermissionTo('izinabsen.approve') ? $izinabsen->getIzinabsen(cekPending: true)->count() : 0;
+                $notifikasi_izinkeluar = auth()->user()->hasPermissionTo('izinkeluar.approve') ? $izinkeluar->getIzinkeluar(cekPending: true)->count() : 0;
+                $notifikasi_izinpulang = auth()->user()->hasPermissionTo('izinpulang.approve') ? $izinpulang->getIzinpulang(cekPending: true)->count() : 0;
+                $notifikasi_izinterlambat = auth()->user()->hasPermissionTo('izinterlambat.approve') ? $izinterlambat->getIzinterlambat(cekPending: true)->count() : 0;
+                $notifikasi_izinsakit = auth()->user()->hasPermissionTo('izinsakit.approve') ? $izinsakit->getIzinsakit(cekPending: true)->count() : 0;
+                $notifikasi_izincuti = auth()->user()->hasPermissionTo('izincuti.approve') ? $izincuti->getIzincuti(cekPending: true)->count() : 0;
+                $notifikasi_izindinas = auth()->user()->hasPermissionTo('izindinas.approve') ? $izindinas->getIzindinas(cekPending: true)->count() : 0;
+                $notifikasi_izinkoreksi = auth()->user()->hasPermissionTo('izinkoreksi.approve') ? $izinkoreksi->getIzinkoreksi(cekPending: true)->count() : 0;
 
                 $notifikasi_pengajuan_izin = $notifikasi_izinabsen + $notifikasi_izincuti + $notifikasi_izinterlambat + $notifikasi_izinsakit + $notifikasi_izinpulang + $notifikasi_izindinas + $notifikasi_izinkoreksi + $notifikasi_izinkeluar;
 
                 $lembur = new Lembur();
-                $notifikasi_lembur = $lembur->getLembur(request: new \Illuminate\Http\Request(['status' => 'pending']))->count();
+                $notifikasi_lembur = auth()->user()->hasPermissionTo('lembur.approve')
+                    ? $lembur->getLembur(request: new \Illuminate\Http\Request(['status' => 'pending']))->count()
+                    : 0;
 
                 //Notifikasi SPV Presensi
-                if ($level_user == 'spv presensi') {
+                if ($level_user == 'spv presensi' && auth()->user()->hasPermissionTo('izinabsen.approve')) {
+                    $user_access = auth()->user();
+                    $dept_access = json_decode($user_access->dept_access, true) ?? [];
+                    $cabang_access = json_decode($user_access->cabang_access, true) ?? [];
+                    $jabatan_access = json_decode($user_access->jabatan_access, true) ?? [];
+                    $group_access = json_decode($user_access->group_access, true) ?? [];
+
+                    $applyAccessControl = function ($query) use ($dept_access, $cabang_access, $jabatan_access, $group_access, $user_access) {
+                        $query->where(function ($access) use ($dept_access, $cabang_access, $jabatan_access, $group_access, $user_access) {
+                            if (!in_array('all', $cabang_access) && !empty($cabang_access)) {
+                                $access->whereIn('hrd_karyawan.kode_cabang', $cabang_access);
+                            }
+                            if (!in_array('all', $dept_access) && !empty($dept_access)) {
+                                $access->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                            }
+                            if (!in_array('all', $jabatan_access) && !empty($jabatan_access)) {
+                                $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
+                            }
+                            if (!empty($group_access)) {
+                                $access->whereIn('hrd_karyawan.kode_group', $group_access);
+                            }
+                            if (!empty($user_access->kode_regional) && $user_access->kode_regional != 'R00') {
+                                $access->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
+                                    ->where('cabang.kode_regional', $user_access->kode_regional);
+                            }
+                        });
+                    };
+
                     $notifikasi_izinabsen_presensi = Disposisiizinabsen::where('hrd_izinabsen_disposisi.status', 0)
-                        ->leftJoin('users', 'hrd_izinabsen_disposisi.id_penerima', '=', 'users.id')
-                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('roles.name', 'asst. manager hrd')
-                        ->count();
+                        ->join('hrd_izinabsen', 'hrd_izinabsen_disposisi.kode_izin', '=', 'hrd_izinabsen.kode_izin')
+                        ->join('hrd_karyawan', 'hrd_izinabsen.nik', '=', 'hrd_karyawan.nik')
+                        ->tap($applyAccessControl)->count();
+
                     $notifikasi_izincuti_presensi = Disposisiizincuti::where('hrd_izincuti_disposisi.status', 0)
-                        ->leftJoin('users', 'hrd_izincuti_disposisi.id_penerima', '=', 'users.id')
-                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('roles.name', 'asst. manager hrd')
-                        ->count();
+                        ->join('hrd_izincuti', 'hrd_izincuti_disposisi.kode_izin', '=', 'hrd_izincuti.kode_izin')
+                        ->join('hrd_karyawan', 'hrd_izincuti.nik', '=', 'hrd_karyawan.nik')
+                        ->tap($applyAccessControl)->count();
+
                     $notifikasi_izinterlambat_presensi = Disposisiizinterlambat::where('hrd_izinterlambat_disposisi.status', 0)
-                        ->leftJoin('users', 'hrd_izinterlambat_disposisi.id_penerima', '=', 'users.id')
-                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('roles.name', 'asst. manager hrd')
-                        ->count();
+                        ->join('hrd_izinterlambat', 'hrd_izinterlambat_disposisi.kode_izin', '=', 'hrd_izinterlambat.kode_izin')
+                        ->join('hrd_karyawan', 'hrd_izinterlambat.nik', '=', 'hrd_karyawan.nik')
+                        ->tap($applyAccessControl)->count();
+
                     $notifikasi_izinsakit_presensi = Disposisiizinsakit::where('hrd_izinsakit_disposisi.status', 0)
-                        ->leftJoin('users', 'hrd_izinsakit_disposisi.id_penerima', '=', 'users.id')
-                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('roles.name', 'asst. manager hrd')
-                        ->count();
+                        ->join('hrd_izinsakit', 'hrd_izinsakit_disposisi.kode_izin', '=', 'hrd_izinsakit.kode_izin')
+                        ->join('hrd_karyawan', 'hrd_izinsakit.nik', '=', 'hrd_karyawan.nik')
+                        ->tap($applyAccessControl)->count();
+
                     $notifikasi_izinpulang_presensi = Disposisiizinpulang::where('hrd_izinpulang_disposisi.status', 0)
-                        ->leftJoin('users', 'hrd_izinpulang_disposisi.id_penerima', '=', 'users.id')
-                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('roles.name', 'asst. manager hrd')
-                        ->count();
+                        ->join('hrd_izinpulang', 'hrd_izinpulang_disposisi.kode_izin', '=', 'hrd_izinpulang.kode_izin')
+                        ->join('hrd_karyawan', 'hrd_izinpulang.nik', '=', 'hrd_karyawan.nik')
+                        ->tap($applyAccessControl)->count();
+
                     $notifikasi_izindinas_presensi = Disposisiizindinas::where('hrd_izindinas_disposisi.status', 0)
-                        ->leftJoin('users', 'hrd_izindinas_disposisi.id_penerima', '=', 'users.id')
-                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('roles.name', 'asst. manager hrd')
-                        ->count();
+                        ->join('hrd_izindinas', 'hrd_izindinas_disposisi.kode_izin', '=', 'hrd_izindinas.kode_izin')
+                        ->join('hrd_karyawan', 'hrd_izindinas.nik', '=', 'hrd_karyawan.nik')
+                        ->tap($applyAccessControl)->count();
+
                     $notifikasi_izinkoreksi_presensi = Disposisiizinkoreksi::where('hrd_izinkoreksi_disposisi.status', 0)
-                        ->leftJoin('users', 'hrd_izinkoreksi_disposisi.id_penerima', '=', 'users.id')
-                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('roles.name', 'asst. manager hrd')
-                        ->count();
+                        ->join('hrd_izinkoreksi', 'hrd_izinkoreksi_disposisi.kode_izin', '=', 'hrd_izinkoreksi.kode_izin')
+                        ->join('hrd_karyawan', 'hrd_izinkoreksi.nik', '=', 'hrd_karyawan.nik')
+                        ->tap($applyAccessControl)->count();
+
                     $notifikasi_izinkeluar_presensi = Disposisiizinkeluar::where('hrd_izinkeluar_disposisi.status', 0)
-                        ->leftJoin('users', 'hrd_izinkeluar_disposisi.id_penerima', '=', 'users.id')
-                        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                        ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('roles.name', 'asst. manager hrd')
-                        ->count();
+                        ->join('hrd_izinkeluar', 'hrd_izinkeluar_disposisi.kode_izin', '=', 'hrd_izinkeluar.kode_izin')
+                        ->join('hrd_karyawan', 'hrd_izinkeluar.nik', '=', 'hrd_karyawan.nik')
+                        ->tap($applyAccessControl)->count();
 
                     $total_notifikasi_izin_spvpresensi = $notifikasi_izinabsen_presensi + $notifikasi_izincuti_presensi +
                         $notifikasi_izinterlambat_presensi + $notifikasi_izinsakit_presensi + $notifikasi_izinpulang_presensi +
