@@ -26,49 +26,55 @@ class Karyawan extends Model
         if (!$user->hasRole(['super admin', 'asst. manager hrd', 'spv presensi'])) {
 
             $query->where(function ($access) use ($user) {
-                $dept_access = json_decode($user->dept_access, true) ?? [];
-                $cabang_access = json_decode($user->cabang_access, true) ?? [];
-                // $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
+                $access->where(function ($q) use ($user) {
+                    $dept_access = json_decode($user->dept_access, true) ?? [];
+                    $cabang_access = json_decode($user->cabang_access, true) ?? [];
+                    // $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
 
-                // 1. Branch Access (Mandatory)
-                if (!in_array('all', $cabang_access)) {
-                    if (!empty($cabang_access)) {
-                        $access->whereIn('hrd_karyawan.kode_cabang', $cabang_access);
-                    } else {
-                        // Default logic if cabang_access is empty and not regional
-                        if (empty($user->kode_regional) || $user->kode_regional == 'R00') {
-                            if ($user->kode_cabang != 'PST') {
-                                $access->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                    // 1. Branch Access (Mandatory)
+                    if (!in_array('all', $cabang_access)) {
+                        if (!empty($cabang_access)) {
+                            $q->whereIn('hrd_karyawan.kode_cabang', $cabang_access);
+                        } else {
+                            // Default logic if cabang_access is empty and not regional
+                            if (empty($user->kode_regional) || $user->kode_regional == 'R00') {
+                                if ($user->kode_cabang != 'PST') {
+                                    $q->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                                }
                             }
                         }
                     }
-                }
 
-                // 2. Department Access (Mandatory)
-                if (!in_array('all', $dept_access)) {
-                    $access->whereIn('hrd_karyawan.kode_dept', $dept_access);
-                }
+                    // 2. Department Access (Mandatory)
+                    if (!in_array('all', $dept_access)) {
+                        $q->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
 
-                // 3. Job Position Access (AND - Mandatory)
-//                if (!in_array('all', $jabatan_access)) {
-//                    $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
-//                }
+                    // 3. Job Position Access (AND - Mandatory)
+                    //                if (!in_array('all', $jabatan_access)) {
+                    //                    $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
+                    //                }
 
-                // 4. Employee Access (NIK)
-                $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
-                if (!in_array('all', $karyawan_access)) {
-                    $access->whereIn('hrd_karyawan.nik', $karyawan_access);
-                }
+                    // 4. Employee Access (NIK)
+                    $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
+                    if (!in_array('all', $karyawan_access)) {
+                        $q->whereIn('hrd_karyawan.nik', $karyawan_access);
+                    }
 
-                // 5. Group Access (OR - Optional)
-                $group_access = json_decode($user->group_access, true) ?? [];
-                if (!empty($group_access)) {
-                    $access->whereIn('hrd_karyawan.kode_group', $group_access);
-                }
+                    // 5. Group Access (OR - Optional)
+                    $group_access = json_decode($user->group_access, true) ?? [];
+                    if (!empty($group_access)) {
+                        $q->whereIn('hrd_karyawan.kode_group', $group_access);
+                    }
 
-                // 6. Regional (AND)
-                if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
-                    $access->where('cabang.kode_regional', $user->kode_regional);
+                    // 6. Regional (AND)
+                    if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
+                        $q->where('cabang.kode_regional', $user->kode_regional);
+                    }
+                });
+
+                if ($user->id == 82) {
+                    $access->orWhere('hrd_karyawan.kode_jabatan', 'J31');
                 }
             });
 
