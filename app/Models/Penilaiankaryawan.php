@@ -101,6 +101,10 @@ class Penilaiankaryawan extends Model
                 if ($user->id == 82) {
                     $access->orWhereIn('hrd_penilaian.kode_jabatan', ['J31', 'J32']);
                 }
+
+                if ($user->id == 97) {
+                    $access->orWhere('hrd_penilaian.kode_jabatan', 'J29');
+                }
             });
         }
 

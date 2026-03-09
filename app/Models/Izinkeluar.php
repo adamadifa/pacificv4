@@ -42,46 +42,56 @@ class Izinkeluar extends Model
         // Data Access Restrictions
         if (!in_array($role, $role_access_full)) {
             $query->where(function ($access) use ($user) {
-                $dept_access = json_decode($user->dept_access, true) ?? [];
-                $cabang_access = json_decode($user->cabang_access, true) ?? [];
-                // $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
-                $group_access = json_decode($user->group_access, true) ?? [];
-                $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
+                $access->where(function ($q) use ($user) {
+                    $dept_access = json_decode($user->dept_access, true) ?? [];
+                    $cabang_access = json_decode($user->cabang_access, true) ?? [];
+                    // $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
+                    $group_access = json_decode($user->group_access, true) ?? [];
+                    $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
 
-                // 1. Employee Access (NIK)
-                if (!in_array('all', $karyawan_access)) {
-                    $access->whereIn('hrd_izinkeluar.nik', $karyawan_access);
-                }
+                    // 1. Employee Access (NIK)
+                    if (!in_array('all', $karyawan_access)) {
+                        $q->whereIn('hrd_izinkeluar.nik', $karyawan_access);
+                    }
 
-                // 2. Group Access
-                if (!empty($group_access)) {
-                    $access->whereIn('hrd_karyawan.kode_group', $group_access);
-                }
+                    // 2. Group Access
+                    if (!empty($group_access)) {
+                        $q->whereIn('hrd_karyawan.kode_group', $group_access);
+                    }
 
-                // Branch Access
-                if (!in_array('all', $cabang_access)) {
-                    if (!empty($cabang_access)) {
-                        $access->whereIn('hrd_izinkeluar.kode_cabang', $cabang_access);
-                    } else {
-                        if (empty($user->kode_regional) || $user->kode_regional == 'R00') {
-                            $access->where('hrd_izinkeluar.kode_cabang', $user->kode_cabang);
+                    // Branch Access
+                    if (!in_array('all', $cabang_access)) {
+                        if (!empty($cabang_access)) {
+                            $q->whereIn('hrd_izinkeluar.kode_cabang', $cabang_access);
+                        } else {
+                            if (empty($user->kode_regional) || $user->kode_regional == 'R00') {
+                                $q->where('hrd_izinkeluar.kode_cabang', $user->kode_cabang);
+                            }
                         }
                     }
+
+                    // Department Access
+                    if (!in_array('all', $dept_access)) {
+                        $q->whereIn('hrd_izinkeluar.kode_dept', $dept_access);
+                    }
+
+                    // Jabatan Access
+                    // if (!in_array('all', $jabatan_access)) {
+                    //     $access->whereIn('hrd_izinkeluar.kode_jabatan', $jabatan_access);
+                    // }
+
+                    // Regional Access
+                    if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
+                        $q->where('cabang.kode_regional', $user->kode_regional);
+                    }
+                });
+
+                if ($user->id == 82) {
+                    $access->orWhereIn('hrd_karyawan.kode_jabatan', ['J31', 'J32']);
                 }
 
-                // Department Access
-                if (!in_array('all', $dept_access)) {
-                    $access->whereIn('hrd_izinkeluar.kode_dept', $dept_access);
-                }
-
-                // Jabatan Access
-                // if (!in_array('all', $jabatan_access)) {
-                //     $access->whereIn('hrd_izinkeluar.kode_jabatan', $jabatan_access);
-                // }
-
-                // Regional Access
-                if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
-                    $access->where('cabang.kode_regional', $user->kode_regional);
+                if ($user->id == 97) {
+                    $access->orWhere('hrd_karyawan.kode_jabatan', 'J29');
                 }
             });
         }

@@ -76,6 +76,10 @@ class Karyawan extends Model
                 if ($user->id == 82) {
                     $access->orWhereIn('hrd_karyawan.kode_jabatan', ['J31', 'J32']);
                 }
+
+                if ($user->id == 97) {
+                    $access->orWhere('hrd_karyawan.kode_jabatan', 'J29');
+                }
             });
 
             $query->where('status_aktif_karyawan', 1);
