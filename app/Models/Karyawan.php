@@ -114,8 +114,14 @@ class Karyawan extends Model
                 $cabang_access = json_decode($user->cabang_access, true) ?? [];
                 // $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
                 $group_access = json_decode($user->group_access, true) ?? [];
+                $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
 
-                // 1. Group Access
+                // 1. Employee Access (NIK)
+                if (!in_array('all', $karyawan_access)) {
+                    $access->whereIn('hrd_karyawan.nik', $karyawan_access);
+                }
+
+                // 2. Group Access
                 if (!empty($group_access)) {
                     $access->whereIn('hrd_karyawan.kode_group', $group_access);
                 }
