@@ -83,7 +83,9 @@ class KaryawanController extends Controller
                 if (auth()->user()->kode_cabang != 'PST') {
                     $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
                 } else {
-                    $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    if (!in_array('all', $dept_access)) {
+                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
                 }
             }
         }
@@ -354,7 +356,9 @@ class KaryawanController extends Controller
                     }
                 }
             }
-            $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+            if (!in_array('all', $dept_access)) {
+                $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+            }
             $query->where('status_aktif_karyawan', 1);
             $karyawan = $query;
             return DataTables::of($karyawan)
@@ -415,7 +419,9 @@ class KaryawanController extends Controller
             //         }
             //     }
             // }
-            $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+            if (!in_array('all', $dept_access)) {
+                $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+            }
             $query->where('status_aktif_karyawan', 1);
             $karyawan = $query;
             return DataTables::of($karyawan)
