@@ -28,7 +28,7 @@ class Karyawan extends Model
             $query->where(function ($access) use ($user) {
                 $dept_access = json_decode($user->dept_access, true) ?? [];
                 $cabang_access = json_decode($user->cabang_access, true) ?? [];
-                $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
+                // $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
 
                 // 1. Branch Access (Mandatory)
                 if (!in_array('all', $cabang_access)) {
@@ -50,9 +50,9 @@ class Karyawan extends Model
                 }
 
                 // 3. Job Position Access (AND - Mandatory)
-                if (!in_array('all', $jabatan_access)) {
-                    $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
-                }
+//                if (!in_array('all', $jabatan_access)) {
+//                    $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
+//                }
 
                 // 4. Employee Access (NIK)
                 $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
@@ -133,9 +133,9 @@ class Karyawan extends Model
                 }
 
                 // 3. Job Position Access (AND - Mandatory)
-                if (!in_array('all', $jabatan_access)) {
-                    $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
-                }
+//                if (!in_array('all', $jabatan_access)) {
+//                    $access->whereIn('hrd_karyawan.kode_jabatan', $jabatan_access);
+//                }
 
                 // 4. Employee Access (NIK)
                 $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
