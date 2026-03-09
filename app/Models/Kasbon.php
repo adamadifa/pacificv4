@@ -116,7 +116,9 @@ class Kasbon extends Model
         //     $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
         // }
 
-        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        if (!in_array('all', $dept_access)) {
+            $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        }
         if (auth()->user()->id == '86') {
             $query->whereIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
         } else if (auth()->user()->id == '87') {
