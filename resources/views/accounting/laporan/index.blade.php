@@ -73,7 +73,7 @@
                     return false;
                 } 
                 
-                if (formatlaporan == '4' || formatlaporan == '5') {
+                if (formatlaporan == '4' || formatlaporan == '5' || formatlaporan == '6') {
                     if (tahun == "") {
                          Swal.fire({ title: "Oops!", text: 'Tahun Harus Diisi !', icon: "warning", showConfirmButton: true });
                         return false;
@@ -129,7 +129,7 @@
                     formLedger.find("#kode_akun_sampai").val("").trigger('change');
                     $("#row_periode").show();
                     $("#row_tahun").hide();
-                } else if (formatlaporan == '4' || formatlaporan == '5') {
+                } else if (formatlaporan == '4' || formatlaporan == '5' || formatlaporan == '6') {
                     $("#jenislaporan_container").hide();
                     $("#coa").hide();
                     $("#formatcetak_container").hide();

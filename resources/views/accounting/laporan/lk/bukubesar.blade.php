@@ -9,6 +9,7 @@
                 <option value="3">Laba Rugi</option>
                 <option value="4">Neraca Perbandingan</option>
                 <option value="5">Laba Rugi Perbandingan</option>
+                <option value="6">Analisa Rasio Keuangan</option>
             @endif
         </select>
     </div>

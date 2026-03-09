@@ -1089,6 +1089,102 @@ class LaporanaccountingController extends Controller
         return view('accounting.laporan.lk.labarugi_perbandingan', $data);
     }
 
+    public function cetakanalisarasio(Request $request)
+    {
+        $tahun = $request->tahun;
+        
+        // Fetch all monthly data for the year (NC and LB)
+        $monthly_data = DB::table('laporan_keuangan_detail')
+            ->join('laporan_keuangan', 'laporan_keuangan_detail.kode_lk', '=', 'laporan_keuangan.kode_lk')
+            ->select(
+                'laporan_keuangan.bulan',
+                'laporan_keuangan_detail.kode_akun',
+                'laporan_keuangan_detail.jumlah'
+            )
+            ->where('laporan_keuangan.tahun', $tahun)
+            ->whereIn('laporan_keuangan.kategori', ['NC', 'LB'])
+            ->get();
+
+        $ratios = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $data = $monthly_data->where('bulan', $i);
+            
+            $current_assets = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '1-1');
+            })->sum('jumlah');
+
+            $cash_bank = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '1-11');
+            })->sum('jumlah');
+
+            $current_liabilities = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '2-1');
+            })->sum('jumlah');
+
+            $total_assets = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '1-');
+            })->sum('jumlah');
+
+            $total_liabilities = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '2-');
+            })->sum('jumlah');
+
+            $total_equity = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '3-');
+            })->sum('jumlah');
+
+            $sales = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '4-');
+            })->sum('jumlah');
+
+            $cogs = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '5-');
+            })->sum('jumlah');
+
+            $expenses = $data->filter(function($item) {
+                return preg_match('/^[6789]-/', $item->kode_akun);
+            })->sum('jumlah');
+
+            $gross_profit = $sales - $cogs;
+            $net_profit = $sales - $cogs - $expenses;
+
+            $ratios[$i] = [
+                'current_ratio' => $current_liabilities != 0 ? ($current_assets / $current_liabilities) * 100 : 0,
+                'cash_ratio' => $current_liabilities != 0 ? ($cash_bank / $current_liabilities) * 100 : 0,
+                'gross_profit_margin' => $sales != 0 ? ($gross_profit / $sales) * 100 : 0,
+                'net_profit_margin' => $sales != 0 ? ($net_profit / $sales) * 100 : 0,
+                'roa' => $total_assets != 0 ? ($net_profit / $total_assets) * 100 : 0,
+                'roe' => $total_equity != 0 ? ($net_profit / $total_equity) * 100 : 0,
+                'der' => $total_equity != 0 ? ($total_liabilities / $total_equity) * 100 : 0,
+                'dar' => $total_assets != 0 ? ($total_liabilities / $total_assets) * 100 : 0,
+
+                // Component values
+                'current_assets' => $current_assets,
+                'current_liabilities' => $current_liabilities,
+                'cash_bank' => $cash_bank,
+                'total_assets' => $total_assets,
+                'total_liabilities' => $total_liabilities,
+                'total_equity' => $total_equity,
+                'sales' => $sales,
+                'cogs' => $cogs,
+                'gross_profit' => $gross_profit,
+                'net_profit' => $net_profit,
+            ];
+        }
+
+        $data = [
+            'tahun' => $tahun,
+            'ratios' => $ratios
+        ];
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Analisa Rasio Keuangan $tahun.xls");
+        }
+
+        return view('accounting.laporan.lk.analisarasio_cetak', $data);
+    }
+
     public function cetakbukubesar(Request $request)
     {
 
@@ -1098,6 +1194,8 @@ class LaporanaccountingController extends Controller
             return $this->cetakneracaperbandingan($request);
         } else if($request->formatlaporan==5){
             return $this->cetaklabarugiperbandingan($request);
+        } else if($request->formatlaporan==6){
+            return $this->cetakanalisarasio($request);
         }
         if (in_array($request->formatlaporan, ['2', '3', '4', '5']) && !Auth::user()->hasRole(['super admin', 'direktur', 'gm administrasi'])) {
             abort(403, 'Anda tidak memiliki akses untuk mencetak laporan ini.');
