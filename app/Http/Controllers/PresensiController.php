@@ -24,8 +24,8 @@ class PresensiController extends Controller
     public function index(Request $request)
     {
         $user = User::findOrFail(auth()->user()->id);
-        $dept_access = json_decode($user->dept_access, true) ?? [];
-        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
+        $role = $user->getRoleNames()->first();
+        $role_access_full = ['super admin', 'direktur'];
 
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
@@ -108,30 +108,17 @@ class PresensiController extends Controller
 
         // dd($subqueryPresensi->get());
         // Tampilkan Departemen dan Group
-        if (!$user->hasRole($roles_access_all_karyawan)) {
-            if (auth()->user()->kode_cabang != 'PST') {
-                $departemen = Karyawan::select('hrd_karyawan.kode_dept', 'nama_dept')
-                    ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
-                    ->where('kode_cabang', auth()->user()->kode_cabang)
-                    ->groupBy('hrd_karyawan.kode_dept')
-                    ->orderBy('hrd_karyawan.kode_dept')->get();
-                $group = Karyawan::select('hrd_karyawan.kode_group', 'nama_group')
-                    ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
-                    ->where('kode_cabang', auth()->user()->kode_cabang)
-                    ->groupBy('hrd_karyawan.kode_group')
-                    ->orderBy('hrd_karyawan.kode_group')->get();
-            } else {
-                $departemen = Karyawan::select('hrd_karyawan.kode_dept', 'nama_dept')
-                    ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
-                    ->whereIn('hrd_karyawan.kode_dept', $dept_access)
-                    ->groupBy('hrd_karyawan.kode_dept')
-                    ->orderBy('hrd_karyawan.kode_dept')->get();
-                $group = Karyawan::select('hrd_karyawan.kode_group', 'nama_group')
-                    ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
-                    ->whereIn('hrd_karyawan.kode_dept', $dept_access)
-                    ->groupBy('hrd_karyawan.kode_group')
-                    ->orderBy('hrd_karyawan.kode_group')->get();
-            }
+        if (!in_array($role, $role_access_full)) {
+            $departemen = Karyawan::select('hrd_karyawan.kode_dept', 'nama_dept')
+                ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
+                ->where('kode_cabang', auth()->user()->kode_cabang)
+                ->groupBy('hrd_karyawan.kode_dept')
+                ->orderBy('hrd_karyawan.kode_dept')->get();
+            $group = Karyawan::select('hrd_karyawan.kode_group', 'nama_group')
+                ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
+                ->where('kode_cabang', auth()->user()->kode_cabang)
+                ->groupBy('hrd_karyawan.kode_group')
+                ->orderBy('hrd_karyawan.kode_group')->get();
         } else {
             $departemen = Departemen::orderBy('kode_dept')->get();
             $group = Group::orderBy('kode_group')->get();
@@ -193,22 +180,46 @@ class PresensiController extends Controller
 
 
 
-        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
-            } else {
-                if (auth()->user()->kode_cabang != 'PST') {
-                    $query->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
-                } else {
-                    if ($user->hasRole(['staff keuangan'])) {
-                        $query->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
-                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
-                        $query->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+        if (!in_array($role, $role_access_full)) {
+            $query->where(function ($access) use ($user) {
+                $dept_access = json_decode($user->dept_access, true) ?? [];
+                $cabang_access = json_decode($user->cabang_access, true) ?? [];
+                $group_access = json_decode($user->group_access, true) ?? [];
+                $karyawan_access = json_decode($user->karyawan_access, true) ?? [];
+
+                // 1. Employee Access (NIK)
+                if (!in_array('all', $karyawan_access)) {
+                    $access->whereIn('hrd_karyawan.nik', $karyawan_access);
+                }
+
+                // 2. Group Access
+                if (!empty($group_access)) {
+                    $access->whereIn('hrd_karyawan.kode_group', $group_access);
+                }
+
+                // 3. Branch Access
+                if (!in_array('all', $cabang_access)) {
+                    if (!empty($cabang_access)) {
+                        $access->whereIn('hrd_karyawan.kode_cabang', $cabang_access);
                     } else {
-                        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                        if (empty($user->kode_regional) || $user->kode_regional == 'R00') {
+                            if ($user->kode_cabang != 'PST') {
+                                $access->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+                            }
+                        }
                     }
                 }
-            }
+
+                // 4. Department Access
+                if (!in_array('all', $dept_access)) {
+                    $access->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                }
+
+                // 5. Regional Access
+                if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
+                    $access->where('cabang.kode_regional', $user->kode_regional);
+                }
+            });
         }
 
 
