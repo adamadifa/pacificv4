@@ -50,7 +50,7 @@ class Izinkoreksi extends Model
             $query->where(function ($access) use ($user) {
                 $dept_access = json_decode($user->dept_access, true) ?? [];
                 $cabang_access = json_decode($user->cabang_access, true) ?? [];
-                $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
+                // $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
                 $group_access = json_decode($user->group_access, true) ?? [];
 
                 // Group Access
@@ -75,9 +75,9 @@ class Izinkoreksi extends Model
                 }
 
                 // Jabatan Access
-                if (!in_array('all', $jabatan_access)) {
-                    $access->whereIn('hrd_izinkoreksi.kode_jabatan', $jabatan_access);
-                }
+                // if (!in_array('all', $jabatan_access)) {
+                //     $access->whereIn('hrd_izinkoreksi.kode_jabatan', $jabatan_access);
+                // }
 
                 // Regional Access
                 if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
