@@ -110,7 +110,7 @@ class Karyawan extends Model
             $query->where(function ($access) use ($user) {
                 $dept_access = json_decode($user->dept_access, true) ?? [];
                 $cabang_access = json_decode($user->cabang_access, true) ?? [];
-                $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
+                // $jabatan_access = json_decode($user->jabatan_access, true) ?? [];
                 $group_access = json_decode($user->group_access, true) ?? [];
 
                 // 1. Branch Access (Mandatory)
