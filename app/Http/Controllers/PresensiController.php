@@ -26,6 +26,7 @@ class PresensiController extends Controller
         $user = User::findOrFail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
         $role_access_full = ['super admin', 'direktur'];
+        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
 
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
