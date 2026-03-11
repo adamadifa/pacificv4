@@ -6537,6 +6537,101 @@ class LaporanmarketingController extends Controller
     }
 
 
+    // public function cetakratiobs(Request $request)
+    // {
+
+    //     $roles_access_all_cabang = config('global.roles_access_all_cabang');
+    //     $user = User::findorfail(auth()->user()->id);
+
+    //     if (!$user->hasRole($roles_access_all_cabang)) {
+    //         if ($user->hasRole('regional sales manager')) {
+    //             $kode_cabang = $request->kode_cabang;
+    //         } else {
+    //             $kode_cabang = $user->kode_cabang;
+    //         }
+    //     } else {
+    //         $kode_cabang = $request->kode_cabang;
+    //     }
+
+    //     $dari = $request->tahun . '-' . $request->bulan . '-01';
+    //     $sampai = date('Y-m-t', strtotime($dari));
+    //     $qproduk = Detailretur::query();
+    //     $qproduk->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus');
+    //     $qproduk->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+    //     $qproduk->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+    //     $qproduk->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+    //     $qproduk->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+    //     $qproduk->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+    //     $qproduk->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
+    //     $qproduk->orderBy('produk_harga.kode_produk');
+    //     $qproduk->groupby('produk_harga.kode_produk');
+    //     $produk = $qproduk->get();
+
+
+    //     $selectReject = [];
+    //     $fieldReject = [];
+    //     $selectTotalretur = [];
+    //     $fieldTotalretur = [];
+    //     foreach ($produk as $p) {
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RT',jumlah/isi_pcs_dus,0)) as `retur_" . $p->kode_produk . "`");
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RM',jumlah/isi_pcs_dus,0)) as `reject_mobil_" . $p->kode_produk . "`");
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RG',jumlah/isi_pcs_dus,0)) as `reject_gudang_" . $p->kode_produk . "`");
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RP',jumlah/isi_pcs_dus,0)) as `reject_pasar_" . $p->kode_produk . "`");
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RK',jumlah/isi_pcs_dus,0)) as `repack_" . $p->kode_produk . "`");
+    //         $fieldReject[] = "retur_" . $p->kode_produk;
+    //         $fieldReject[] = "reject_mobil_" . $p->kode_produk;
+    //         $fieldReject[] = "reject_gudang_" . $p->kode_produk;
+    //         $fieldReject[] = "reject_pasar_" . $p->kode_produk;
+    //         $fieldReject[] = "repack_" . $p->kode_produk;
+    //         $selectTotalretur[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',subtotal,0)) as `total_retur_" . $p->kode_produk . "`");
+    //         $fieldTotalretur[] = "total_retur_" . $p->kode_produk;
+    //     }
+
+    //     $qreject = Detailmutasigudangcabang::query();
+    //     $qreject->select('gudang_cabang_mutasi.kode_cabang', ...$selectReject);
+    //     $qreject->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi');
+    //     $qreject->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk');
+    //     $qreject->whereBetween('gudang_cabang_mutasi.tanggal', [$dari, $sampai]);
+    //     $qreject->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
+    //     $qreject->groupBy('gudang_cabang_mutasi.kode_cabang');
+
+
+    //     $qretur = Detailretur::query();
+    //     $qretur->select('salesman.kode_cabang', ...$selectTotalretur);
+    //     $qretur->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+    //     $qretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+    //     $qretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+    //     $qretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+    //     $qretur->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
+    //     $qretur->groupBy('salesman.kode_cabang');
+
+    //     $query = Cabang::query();
+    //     $query->select('cabang.kode_cabang', 'nama_cabang', ...$fieldReject, ...$fieldTotalretur);
+    //     $query->leftjoinSub($qreject, 'reject', function ($join) {
+    //         $join->on('cabang.kode_cabang', '=', 'reject.kode_cabang');
+    //     });
+    //     $query->leftjoinSub($qretur, 'retur', function ($join) {
+    //         $join->on('cabang.kode_cabang', '=', 'retur.kode_cabang');
+    //     });
+    //     $query->orderBy('cabang.kode_cabang');
+    //     if (!empty($kode_cabang)) {
+    //         $query->where('cabang.kode_cabang', $kode_cabang);
+    //     }
+    //     $ratiobs = $query->get();
+
+
+    //     $data['ratiobs'] = $ratiobs;
+    //     $data['bulan'] = $request->bulan;
+    //     $data['tahun'] = $request->tahun;
+    //     $data['produk'] = $produk;
+    //     if (isset($_POST['exportButton'])) {
+    //         header("Content-type: application/vnd-ms-excel");
+    //         // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+    //         header("Content-Disposition: attachment; filename=Ratiobs.xls");
+    //     }
+    //     return view('marketing.laporan.ratiobs_cetak', $data);
+    // }
+
     public function cetakratiobs(Request $request)
     {
 
@@ -6555,6 +6650,10 @@ class LaporanmarketingController extends Controller
 
         $dari = $request->tahun . '-' . $request->bulan . '-01';
         $sampai = date('Y-m-t', strtotime($dari));
+
+        $dari_sebelumnya = date('Y-m-01', strtotime('-1 month', strtotime($dari)));
+        $sampai_sebelumnya = date('Y-m-t', strtotime($dari_sebelumnya));
+
         $qproduk = Detailretur::query();
         $qproduk->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus');
         $qproduk->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
@@ -6564,7 +6663,11 @@ class LaporanmarketingController extends Controller
         $qproduk->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $qproduk->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
         $qproduk->orderBy('produk_harga.kode_produk');
-        $qproduk->groupby('produk_harga.kode_produk');
+        $qproduk->groupBy(
+            'produk_harga.kode_produk',
+            'produk.nama_produk',
+            'produk.isi_pcs_dus'
+        );
         $produk = $qproduk->get();
 
 
@@ -6572,6 +6675,7 @@ class LaporanmarketingController extends Controller
         $fieldReject = [];
         $selectTotalretur = [];
         $fieldTotalretur = [];
+        $fieldTotalreturPrev = [];
         foreach ($produk as $p) {
             $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RT',jumlah/isi_pcs_dus,0)) as `retur_" . $p->kode_produk . "`");
             $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RM',jumlah/isi_pcs_dus,0)) as `reject_mobil_" . $p->kode_produk . "`");
@@ -6584,7 +6688,8 @@ class LaporanmarketingController extends Controller
             $fieldReject[] = "reject_pasar_" . $p->kode_produk;
             $fieldReject[] = "repack_" . $p->kode_produk;
             $selectTotalretur[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',subtotal,0)) as `total_retur_" . $p->kode_produk . "`");
-            $fieldTotalretur[] = "total_retur_" . $p->kode_produk;
+            $fieldTotalretur[] = "retur.total_retur_" . $p->kode_produk;
+            $fieldTotalreturPrev[] = "total_retur_prev_$p->kode_produk";
         }
 
         $qreject = Detailmutasigudangcabang::query();
@@ -6594,6 +6699,16 @@ class LaporanmarketingController extends Controller
         $qreject->whereBetween('gudang_cabang_mutasi.tanggal', [$dari, $sampai]);
         $qreject->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
         $qreject->groupBy('gudang_cabang_mutasi.kode_cabang');
+
+
+        $qretur_prev = Detailretur::query();
+        $qretur_prev->select('salesman.kode_cabang', ...$selectTotalretur);
+        $qretur_prev->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qretur_prev->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+        $qretur_prev->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qretur_prev->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qretur_prev->whereBetween('marketing_retur.tanggal', [$dari_sebelumnya, $sampai_sebelumnya]);
+        $qretur_prev->groupBy('salesman.kode_cabang');
 
 
         $qretur = Detailretur::query();
@@ -6613,10 +6728,14 @@ class LaporanmarketingController extends Controller
         $query->leftjoinSub($qretur, 'retur', function ($join) {
             $join->on('cabang.kode_cabang', '=', 'retur.kode_cabang');
         });
+        $query->leftJoinSub($qretur_prev, 'retur_prev', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'retur_prev.kode_cabang');
+        });
         $query->orderBy('cabang.kode_cabang');
         if (!empty($kode_cabang)) {
             $query->where('cabang.kode_cabang', $kode_cabang);
         }
+
         $ratiobs = $query->get();
 
 

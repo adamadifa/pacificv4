@@ -120,8 +120,13 @@
 
                                     $harga =
                                         $d->{"retur_$p->kode_produk"} > 0
-                                            ? $d->{"total_retur_$p->kode_produk"} / ROUND($d->{"retur_$p->kode_produk"}, 2)
-                                            : 0;
+                                            ? $d->{"total_retur_$p->kode_produk"} /
+                                                ROUND($d->{"retur_$p->kode_produk"}, 2)
+                                            : ($d->{"retur_prev_$p->kode_produk"} > 0
+                                                ? $d->{"total_retur_prev_$p->kode_produk"} /
+                                                    ROUND($d->{"retur_prev_$p->kode_produk"}, 2)
+                                                : 0);
+
                                     $total = ROUND($jml_reject, 2) * $harga;
                                     $grand_total += $total;
                                 @endphp
