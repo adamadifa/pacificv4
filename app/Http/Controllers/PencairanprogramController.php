@@ -142,6 +142,13 @@ class PencairanprogramController extends Controller
         $data['cabang'] = $cabang;
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
+
+        $list_tahun = [];
+        for ($t = config('global.start_year'); $t <= date('Y'); $t++) {
+            $list_tahun[] = ['tahun' => $t];
+        }
+        $data['list_tahun'] = $list_tahun;
+
         return view('worksheetom.pencairanprogram.create', $data);
     }
 
