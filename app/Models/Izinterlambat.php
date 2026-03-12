@@ -68,9 +68,9 @@ class Izinterlambat extends Model
                 }
 
                 // Jabatan Access
-                if (!in_array('all', $jabatan_access)) {
-                    $access->whereIn('hrd_izinterlambat.kode_jabatan', $jabatan_access);
-                }
+                // if (!in_array('all', $jabatan_access)) {
+                //     $access->whereIn('hrd_izinterlambat.kode_jabatan', $jabatan_access);
+                // }
 
                 // Regional Access
                 if (!empty($user->kode_regional) && $user->kode_regional != 'R00') {
