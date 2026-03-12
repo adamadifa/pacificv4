@@ -1861,7 +1861,7 @@ class LaporankeuanganController extends Controller
     public function cetakkaskecil(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
-        if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'manager audit', 'rom'])) {
+        if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'manager audit', 'rom','spv audit','staff keuangan'])) {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
 
