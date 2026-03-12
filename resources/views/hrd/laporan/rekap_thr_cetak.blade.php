@@ -451,7 +451,7 @@
                     $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
                     $jumlah_insentif = $insentif + $insentif_manager;
                     $startdate = date('Y-m', strtotime($end_date)) . '-01';
-                    $enddate = date('Y-m-t', strtotime($end_date));
+                    $enddate = $enddate = date('Y-m', strtotime($end_date)) . '-21';
                     $masakerja = hitungMasakerja($d['tanggal_masuk'], $enddate);
                     $tahunkerja = $masakerja['tahun'];
                     $bulankerja = $masakerja['bulan'];
