@@ -376,7 +376,7 @@ class AjuanlimitkreditController extends Controller
                     'no_pengajuan' => $no_pengajuan,
                     'id_pengirim' => auth()->user()->id,
                     'id_penerima' => 0,
-                    'uraian_analisa' => $request->uraian_analisa,
+                    'uraian_analisa' => $request->uraian_analisa ?? '',
                     'status' => 2
                 ]);
 
@@ -429,7 +429,7 @@ class AjuanlimitkreditController extends Controller
                         'no_pengajuan' => $no_pengajuan,
                         'id_pengirim' => auth()->user()->id,
                         'id_penerima' => 0,
-                        'uraian_analisa' => $request->uraian_analisa,
+                        'uraian_analisa' => $request->uraian_analisa ?? '',
                         'status' => 1
                     ]);
 
@@ -462,7 +462,7 @@ class AjuanlimitkreditController extends Controller
                         'no_pengajuan' => $no_pengajuan,
                         'id_pengirim' => auth()->user()->id,
                         'id_penerima' => 0,
-                        'uraian_analisa' => $request->uraian_analisa,
+                        'uraian_analisa' => $request->uraian_analisa ?? '',
                         'status' => 1
                     ]);
 
