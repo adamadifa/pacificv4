@@ -361,51 +361,34 @@ class AjuanlimitkreditController extends Controller
             $user_roles = $user->roles->pluck('name')->toArray();
 
             if (isset($_POST['decline'])) {
-                if (in_array('operation manager', $user_roles)) {
-                    Disposisiajuanlimitkredit::leftjoin('users as penerima', 'marketing_ajuan_limitkredit_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'sales marketing manager')
-                        ->update([
-                            'marketing_ajuan_limitkredit_disposisi.status' => 2
-                        ]);
-                } else if (in_array('super admin', $user_roles)) {
-                    Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                        ->where('status', 0)
-                        ->update(['status' => 2]);
-                } else {
-                    Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', $user->id)->update([
-                            'status' => 2
-                        ]);
-                }
-
                 Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->update(['status' => 2]);
+
+                $tanggal_hariini = date('Y-m-d');
+                $lastdisposisi = Disposisiajuanlimitkredit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                    ->orderBy('kode_disposisi', 'desc')
+                    ->first();
+                $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+                $format = "DPLK" . date('Ymd');
+                $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+                Disposisiajuanlimitkredit::create([
+                    'kode_disposisi' => $kode_disposisi,
+                    'no_pengajuan' => $no_pengajuan,
+                    'id_pengirim' => auth()->user()->id,
+                    'id_penerima' => 0,
+                    'uraian_analisa' => $request->uraian_analisa,
+                    'status' => 2
+                ]);
+
                 DB::commit();
                 return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Ditolak'));
             } else {
 
                 if (in_array('operation manager', $user_roles)) {
-                    Disposisiajuanlimitkredit::leftjoin('users as penerima', 'marketing_ajuan_limitkredit_disposisi.id_penerima', '=', 'penerima.id')
-                        ->leftjoin('model_has_roles', 'penerima.id', '=', 'model_has_roles.model_id')
-                        ->leftjoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                        ->where('no_pengajuan', $no_pengajuan)
-                        ->where('roles.name', 'sales marketing manager')
-                        ->update([
-                            'marketing_ajuan_limitkredit_disposisi.status' => 1
-                        ]);
                     $current_role = 'sales marketing manager';
                 } else if (in_array('super admin', $user_roles)) {
                     $current_role = !empty($ajuanlimit->posisi_ajuan) ? $ajuanlimit->posisi_ajuan : 'sales marketing manager';
-                    Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                        ->where('status', 0)
-                        ->update(['status' => 1]);
                 } else {
-                    Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
-                        ->where('id_penerima', $user->id)->update([
-                            'status' => 1
-                        ]);
                     $current_role = $user_roles[0];
                 }
 
@@ -432,6 +415,24 @@ class AjuanlimitkreditController extends Controller
                     ]);
                     $jumlah = !empty($ajuanlimit->jumlah_rekomendasi) ? $ajuanlimit->jumlah_rekomendasi : $ajuanlimit->jumlah;
                     $this->updateLimitpelanggan($ajuanlimit->kode_pelanggan, $jumlah);
+                    
+                    $tanggal_hariini = date('Y-m-d');
+                    $lastdisposisi = Disposisiajuanlimitkredit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                        ->orderBy('kode_disposisi', 'desc')
+                        ->first();
+                    $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+                    $format = "DPLK" . date('Ymd');
+                    $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+                    Disposisiajuanlimitkredit::create([
+                        'kode_disposisi' => $kode_disposisi,
+                        'no_pengajuan' => $no_pengajuan,
+                        'id_pengirim' => auth()->user()->id,
+                        'id_penerima' => 0,
+                        'uraian_analisa' => $request->uraian_analisa,
+                        'status' => 1
+                    ]);
+
                     DB::commit();
                     return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
                 } else {
@@ -439,10 +440,8 @@ class AjuanlimitkreditController extends Controller
                     if ($current_index !== false && isset($roles[$current_index + 1])) {
                         $next_role = $roles[$current_index + 1];
                     } else if (!empty($ajuanlimit->posisi_ajuan)) {
-                        // If current role not in sequence but a position exists, keep current position or move to first
                         $next_role = $ajuanlimit->posisi_ajuan;
                     } else {
-                        // Default to first role if everything else fails
                         $next_role = $roles[0];
                     }
 
@@ -464,7 +463,7 @@ class AjuanlimitkreditController extends Controller
                         'id_pengirim' => auth()->user()->id,
                         'id_penerima' => 0,
                         'uraian_analisa' => $request->uraian_analisa,
-                        'status' => 0
+                        'status' => 1
                     ]);
 
                     DB::commit();

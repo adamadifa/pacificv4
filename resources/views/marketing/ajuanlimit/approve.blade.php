@@ -138,7 +138,7 @@
             <div class="card bg-label-secondary border-0 p-3 shadow-none">
                 @if (!$is_final_approver)
                     <div class="mb-3">
-                        <x-textarea label="Uraian Analisa / Catatan" name="uraian_analisa" value="{{ $lastdisposisi->id_pengirim == auth()->user()->id ? $lastdisposisi->uraian_analisa : '' }}" />
+                        <x-textarea label="Uraian Analisa / Catatan" name="uraian_analisa" value="{{ optional($lastdisposisi)->id_pengirim == auth()->user()->id ? $lastdisposisi->uraian_analisa : '' }}" />
                     </div>
                 @endif
                 <div class="row g-2">
@@ -218,6 +218,7 @@
                     @endif
                 </div>
             </div>
+
         </div>
     </div>
 </form>
