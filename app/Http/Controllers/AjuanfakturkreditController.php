@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Cache;
 
 class AjuanfakturkreditController extends Controller
 {
@@ -118,6 +119,8 @@ class AjuanfakturkreditController extends Controller
             }
 
             DB::commit();
+            // [OPTIMASI] Reset cache notifikasi marketing karena ada ajuan faktur baru
+            Cache::increment('notif_marketing_version');
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             DB::rollBack();
@@ -185,6 +188,8 @@ class AjuanfakturkreditController extends Controller
                         'posisi_ajuan' => $current_role
                     ]);
                     DB::commit();
+                    // [OPTIMASI] Reset cache notifikasi marketing karena ajuan faktur disetujui
+                    Cache::increment('notif_marketing_version');
                     return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
                 } else {
                     $next_role = null;
@@ -202,6 +207,8 @@ class AjuanfakturkreditController extends Controller
                     ]);
 
                     DB::commit();
+                    // [OPTIMASI] Reset cache notifikasi marketing karena ajuan faktur diteruskan
+                    Cache::increment('notif_marketing_version');
                     return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
                 }
             }
@@ -252,6 +259,8 @@ class AjuanfakturkreditController extends Controller
             }
 
             DB::commit();
+            // [OPTIMASI] Reset cache notifikasi marketing karena ajuan faktur dibatalkan
+            Cache::increment('notif_marketing_version');
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
         } catch (\Exception $e) {
             DB::rollBack();
@@ -282,6 +291,8 @@ class AjuanfakturkreditController extends Controller
                 'posisi_ajuan' => $posisi_ajuan
             ]);
             DB::commit();
+            // [OPTIMASI] Reset cache notifikasi marketing karena posisi ajuan berubah
+            Cache::increment('notif_marketing_version');
             return Redirect::back()->with(messageSuccess('Posisi Ajuan Berhasil Diubah'));
         } catch (\Exception $e) {
             DB::rollBack();

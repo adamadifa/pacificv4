@@ -41,6 +41,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class GlobalProvider extends ServiceProvider
 {
@@ -58,6 +59,10 @@ class GlobalProvider extends ServiceProvider
     public function boot(Guard $auth): void
     {
         view()->composer('*', function ($view) use ($auth) {
+            // [OPTIMASI] Pastikan logic ini hanya berjalan 1x per request
+            static $composed = false;
+            if ($composed) return;
+            $composed = true;
             $roles_show_cabang = [
                 'super admin',
                 'gm marketing',
@@ -111,19 +116,44 @@ class GlobalProvider extends ServiceProvider
 
                 $ajl = new \App\Models\Ajuanlimitkredit();
                 $posisi_ajuan = auth()->user()->hasRole('super admin') ? '' : ($level_user == 'operation manager' ? 'sales marketing manager' : $level_user);
-                $notifikasi_limitkredit = $ajl->getAjuanlimitkredit(request: new \Illuminate\Http\Request([
-                    'status' => '0',
-                    'posisi_ajuan' => $posisi_ajuan
-                ]))->count();
+
+                // --- OPTIMASI CACHE MARKETING ---
+                // Mengambil versi cache terbaru untuk kategori marketing
+                $version_marketing = Cache::get('notif_marketing_version', 1);
+                $user_id = auth()->id();
+
+                // Cache untuk Notifikasi Limit Kredit
+                $cacheKeyLimit = "notif_limitkredit_{$user_id}_v{$version_marketing}";
+                if (Cache::has($cacheKeyLimit)) {
+                    \Log::info("DEBUG: Notif Limit Kredit diambil dari [CACHE] - User ID: " . $user_id);
+                }
+                $notifikasi_limitkredit = Cache::remember($cacheKeyLimit, now()->addHours(24), function () use ($ajl, $posisi_ajuan) {
+                    \Log::info("DEBUG: Notif Limit Kredit diambil dari [DATABASE] - User ID: " . auth()->id());
+                    return $ajl->getAjuanlimitkredit(request: new \Illuminate\Http\Request([
+                        'status' => '0',
+                        'posisi_ajuan' => $posisi_ajuan
+                    ]))->count();
+                });
+
                 $pf = new \App\Models\Pengajuanfaktur();
-                $notifikasi_ajuanfaktur = $pf->getPengajuanfaktur(request: new \Illuminate\Http\Request([
-                    'status' => '0',
-                    'posisi_ajuan' => $posisi_ajuan
-                ]))->count();
+                // Cache untuk Notifikasi Ajuan Faktur
+                $cacheKeyFaktur = "notif_ajuanfaktur_{$user_id}_v{$version_marketing}";
+                if (Cache::has($cacheKeyFaktur)) {
+                    \Log::info("DEBUG: Notif Ajuan Faktur diambil dari [CACHE] - User ID: " . $user_id);
+                }
+                $notifikasi_ajuanfaktur = Cache::remember($cacheKeyFaktur, now()->addHours(24), function () use ($pf, $posisi_ajuan) {
+                    \Log::info("DEBUG: Notif Ajuan Faktur diambil dari [DATABASE] - User ID: " . auth()->id());
+                    return $pf->getPengajuanfaktur(request: new \Illuminate\Http\Request([
+                        'status' => '0',
+                        'posisi_ajuan' => $posisi_ajuan
+                    ]))->count();
+                });
+
                 $notifikasi_target = Disposisitargetkomisi::whereIn('id_penerima', $users_with_same_roles)->where('status', 0)->count();
                 $notifikasi_pengajuan_marketing = $notifikasi_limitkredit + $notifikasi_ajuanfaktur;
                 $notifikasi_komisi = $notifikasi_target;
                 $notifikasi_marketing = $notifikasi_pengajuan_marketing + $notifikasi_komisi;
+                // --- END OPTIMASI CACHE MARKETING ---
 
 
 
@@ -730,6 +760,7 @@ class GlobalProvider extends ServiceProvider
             $users = User::select("*")
                 ->whereNotNull('last_seen')
                 ->orderBy('last_seen', 'DESC')
+                ->limit(10)
                 ->get();
             $shareddata = [
                 'roles_show_cabang' => $roles_show_cabang,

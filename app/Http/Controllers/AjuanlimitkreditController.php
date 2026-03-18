@@ -13,6 +13,7 @@ use DateTime;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Cache;
 
 class AjuanlimitkreditController extends Controller
 {
@@ -189,6 +190,9 @@ class AjuanlimitkreditController extends Controller
                 'ket_referensi' => $request->ket_referensi,
                 'posisi_ajuan' => $roles[0] ?? null
             ]);
+
+            // [OPTIMASI] Reset cache notifikasi marketing karena ada ajuan baru
+            Cache::increment('notif_marketing_version');
 
 
             //Disposisi (Optional: keep for history or remove if fully replaced. User said "abaikan", but usually history is good. However, if following "lembur" exactly, it might be removed.)
@@ -434,6 +438,8 @@ class AjuanlimitkreditController extends Controller
                     ]);
 
                     DB::commit();
+                    // [OPTIMASI] Reset cache notifikasi marketing karena status ajuan berubah
+                    Cache::increment('notif_marketing_version');
                     return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Disetujui'));
                 } else {
                     $next_role = null;
@@ -467,6 +473,8 @@ class AjuanlimitkreditController extends Controller
                     ]);
 
                     DB::commit();
+                    // [OPTIMASI] Reset cache notifikasi marketing karena posisi ajuan berubah
+                    Cache::increment('notif_marketing_version');
                     return Redirect::back()->with(messageSuccess('Data Ajuan Berhasil Diteruskan'));
                 }
             }
@@ -519,6 +527,8 @@ class AjuanlimitkreditController extends Controller
             }
 
             DB::commit();
+            // [OPTIMASI] Reset cache notifikasi marketing karena ajuan dibatalkan
+            Cache::increment('notif_marketing_version');
             return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
         } catch (\Exception $e) {
             DB::rollBack();
@@ -569,6 +579,8 @@ class AjuanlimitkreditController extends Controller
             Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->delete();
             Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->delete();
             DB::commit();
+            // [OPTIMASI] Reset cache notifikasi marketing karena data dihapus
+            Cache::increment('notif_marketing_version');
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
         } catch (\Exception $e) {
             DB::rollBack();

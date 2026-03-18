@@ -1,7 +1,14 @@
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
-    </IfModule>
+   
+ <IfModule mod_expires.c>
+     ExpiresActive On
+     # Cache vendor assets for 1 month
+     <FilesMatch "\.(js|css)$">
+         ExpiresDefault "access plus 1 month"
+     </FilesMatch>
+ </IfModule>
 
     RewriteEngine On
 

@@ -1,26 +1,27 @@
  <!-- Core CSS -->
- <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-semi-dark.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}?v=1.0.1" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-semi-dark.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
  <!-- Vendors CSS -->
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/jquery-timepicker/jquery-timepicker.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/pickr/pickr-themes.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.min.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-select/bootstrap-select.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/spinkit/spinkit.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables/jquery.dataTables.css') }}?v=1.0.1" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/jquery-timepicker/jquery-timepicker.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/pickr/pickr-themes.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}" />
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-select/bootstrap-select.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/libs/spinkit/spinkit.css') }}" />
+ <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
  <!--Leaflet-->
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/leaflet/leaflet.css') }}?v=1.0.1" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/leaflet-routing-machine/leaflet-routing-machine.css') }}?v=1.0.1" />
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin="" />
+ <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
  <!-- Page CSS -->
 
  <style>
@@ -70,7 +71,7 @@
  Item Name: Vuexy  - Vuejs, HTML & Laravel Admin Dashboard Template
  Author: PIXINVENT
  Author URL: http://www.themeforest.net/user/pixinvent
- ==========================================================================================*/
+==========================================================================================*/
      .customizer {
          width: 400px;
          right: -400px;
