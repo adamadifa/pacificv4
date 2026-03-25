@@ -939,11 +939,17 @@ class SfaControler extends Controller
 
             $printer->feed(2);
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("Tidak Di Perkenankan Transfer \n");
-            $printer->text("Ke Rekening Salesman \n");
-            $printer->text("Apapun Jenis Transaksinya \n");
-            $printer->text("Wajib Ditandatangani \n");
-            $printer->text("kedua belah pihak,\n");
+            // $printer->text("Tidak Di Perkenankan Transfer \n");
+            // $printer->text("Ke Rekening Salesman \n");
+            // $printer->text("Apapun Jenis Transaksinya \n");
+            // $printer->text("Wajib Ditandatangani \n");
+            // $printer->text("kedua belah pihak,\n");
+            $printer->text("Apabila pembayaran dilakukan \n");
+            $printer->text("ke rekening pribadi salesman \n");
+            $printer->text("atau dibayarkan tanpa \n");
+            $printer->text("faktur asli maka pelanggan \n");
+            $printer->text("bersedia dinyatakan \n");
+            $printer->text("belum membayar \n");
             $printer->text("Terimakasih\n");
             $printer->text("www.pedasalami.com\n");
             $printer->text("Print Ke: " . $faktur->print . "\n");
@@ -1102,11 +1108,17 @@ class SfaControler extends Controller
 
             $printer->feed(2);
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("Tidak Di Perkenankan Transfer \n");
-            $printer->text("Ke Rekening Salesman \n");
-            $printer->text("Apapun Jenis Transaksinya \n");
-            $printer->text("Wajib Ditandatangani \n");
-            $printer->text("kedua belah pihak,\n");
+            // $printer->text("Tidak Di Perkenankan Transfer \n");
+            // $printer->text("Ke Rekening Salesman \n");
+            // $printer->text("Apapun Jenis Transaksinya \n");
+            // $printer->text("Wajib Ditandatangani \n");
+            // $printer->text("kedua belah pihak,\n");
+            $printer->text("Apabila pembayaran dilakukan \n");
+            $printer->text("ke rekening pribadi salesman \n");
+            $printer->text("atau dibayarkan tanpa \n");
+            $printer->text("faktur asli maka pelanggan \n");
+            $printer->text("bersedia dinyatakan \n");
+            $printer->text("belum membayar \n");
             $printer->text("Terimakasih\n");
             $printer->text("www.pedasalami.com\n");
             $printer->text("Print Ke: " . $faktur->print . "\n");
@@ -1254,11 +1266,17 @@ class SfaControler extends Controller
 
                 $printer->feed(2);
                 $printer->setJustification(Printer::JUSTIFY_CENTER);
-                $printer->text("Tidak Di Perkenankan Transfer \n");
-                $printer->text("Ke Rekening Salesman \n");
-                $printer->text("Apapun Jenis Transaksinya \n");
-                $printer->text("Wajib Ditandatangani \n");
-                $printer->text("kedua belah pihak,\n");
+                // $printer->text("Tidak Di Perkenankan Transfer \n");
+                // $printer->text("Ke Rekening Salesman \n");
+                // $printer->text("Apapun Jenis Transaksinya \n");
+                // $printer->text("Wajib Ditandatangani \n");
+                // $printer->text("kedua belah pihak,\n");
+                $printer->text("Apabila pembayaran dilakukan \n");
+                $printer->text("ke rekening pribadi salesman \n");
+                $printer->text("atau dibayarkan tanpa \n");
+                $printer->text("faktur asli maka pelanggan \n");
+                $printer->text("bersedia dinyatakan \n");
+                $printer->text("belum membayar \n");
                 $printer->text("Terimakasih\n");
                 $printer->text("www.pedasalami.com\n");
                 $printer->text("Print Ke: " . $faktur->print . "\n");
