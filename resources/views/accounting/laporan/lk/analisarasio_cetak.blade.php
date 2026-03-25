@@ -28,23 +28,17 @@
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            display: block;
             margin-bottom: 30px;
             border-bottom: 3px solid var(--primary-color);
             padding-bottom: 10px;
         }
 
-        .header-left img {
-            height: 50px;
+        .header-content {
+            text-align: left;
         }
 
-        .header-right {
-            text-align: right;
-        }
-
-        .header-right h1 {
+        .header-content h1 {
             margin: 0;
             font-size: 24px;
             color: var(--primary-dark);
@@ -52,7 +46,7 @@
             letter-spacing: 1px;
         }
 
-        .header-right p {
+        .header-content p {
             margin: 5px 0 0;
             font-size: 14px;
             color: #666;
@@ -213,11 +207,7 @@
 
 <body>
     <div class="header">
-        <div class="header-left">
-            {{-- <img src="{{ asset('assets/img/logo.png') }}" alt="Logo"> --}}
-            <div style="font-weight: 800; font-size: 24px; color: var(--primary-color)">PACIFIC</div>
-        </div>
-        <div class="header-right">
+        <div class="header-content">
             <h1>Analisa Rasio Keuangan</h1>
             <p>PERIODE TAHUN {{ $tahun }}</p>
         </div>
