@@ -374,6 +374,7 @@ class LaporanmarketingController extends Controller
             'potongan',
             'ppn',
             'jenis_transaksi',
+            'jenis_bayar',
             'status',
             'status_batal',
             'marketing_penjualan.status_pajak',
@@ -441,6 +442,7 @@ class LaporanmarketingController extends Controller
             'potongan',
             'ppn',
             'jenis_transaksi',
+            'jenis_bayar',
             'status',
             'marketing_penjualan.status_pajak'
         );

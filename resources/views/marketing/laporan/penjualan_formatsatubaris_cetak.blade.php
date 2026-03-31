@@ -80,6 +80,7 @@
                         <th rowspan="2">PPN</th>
                         <th rowspan="2">Netto</th>
                         <th rowspan="2">T/K</th>
+                        <th rowspan="2">Jenis Bayar</th>
                         <th rowspan="2">TOTAL BAYAR</th>
                         <th rowspan="2">Last Payment</th>
                         <th rowspan="2">KET</th>
@@ -194,6 +195,9 @@
                                     KREDIT
                                 @endif
                             </td>
+                            <td>
+                                {{ config('penjualan.jenis_bayar.' . $d->jenis_bayar) ?? $d->jenis_bayar }}
+                            </td>
                             <td class="right">{{ formatAngka($d->total_bayar) }}</td>
                             <td class="right">{{ formatIndo($d->lastpayment) }}</td>
                             <td style="background-color: {{ $color }}; color:white" class="center">
@@ -226,6 +230,11 @@
                         <th class="right">{{ formatAngka($grandtotal_penyesuaian) }}</th>
                         <th class="right">{{ formatAngka($grandtotal_ppn) }}</th>
                         <th class="right">{{ formatAngka($grandtotal_netto) }}</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </tfoot>
             </table>
