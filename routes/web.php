@@ -1956,6 +1956,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/presensi/getjamkerja', 'getjamkerja')->name('presensi.getjamkerja')->can('presensi.index');
         Route::post('/presensi/{id}/updatepresensi', 'updatepresensi')->name('presensi.updatepresensi')->can('presensi.index');
         Route::get('/presensi/{id}/{status}/show', 'show')->name('presensi.show')->can('presensi.index');
+        Route::delete('/presensi/{id}/delete', 'destroy')->name('presensi.delete')->can('presensi.index');
     });
 
     Route::controller(SlipgajiController::class)->group(function () {

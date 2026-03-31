@@ -983,7 +983,8 @@ class LaporanmarketingController extends Controller
             'marketing_penjualan.kode_pelanggan',
             'pelanggan.nama_pelanggan',
             'marketing_penjualan_historibayar.jumlah as jmlbayar',
-            'nama_voucher'
+            'nama_voucher',
+            'marketing_penjualan_historibayar.keterangan'
 
         );
         $qvoucher->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');

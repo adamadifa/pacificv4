@@ -20,8 +20,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('/slipgaji', App\Http\Controllers\Api\SlipgajiController::class);
 Route::get('/slipgaji/{bulangaji}/{tahungaji}/{nik}', [App\Http\Controllers\Api\SlipgajiController::class, 'show']);
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// API Employee Auth
+Route::post('/login-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::get('/me-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'me']);
+    Route::post('/logout-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'logout']);
+    Route::get('/attendance-history', [\App\Http\Controllers\Api\AttendanceController::class, 'getHistory']);
+    Route::get('/attendance-summary', [\App\Http\Controllers\Api\AttendanceController::class, 'getSummary']);
+    Route::get('/attendance-today', [\App\Http\Controllers\Api\AttendanceController::class, 'getAttendanceToday']);
+    Route::post('/attendance-store', [\App\Http\Controllers\Api\AttendanceController::class, 'store']);
 });
 
 // API Sync Jurnal Umum

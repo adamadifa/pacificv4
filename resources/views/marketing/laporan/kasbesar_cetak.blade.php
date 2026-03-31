@@ -235,7 +235,7 @@
                             <td>{{ $d->no_faktur }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ textUpperCase($d->nama_pelanggan) }}</td>
-                            <td>{{ $d->nama_voucher }}</td>
+                            <td>{{ $d->nama_voucher }} {{$d->keterangan}}</td>
                             <td class="right">{{ formatAngka($d->jmlbayar) }}</td>
                         </tr>
                     @endforeach

@@ -906,4 +906,20 @@ class PresensiController extends Controller
 
         return view('presensi.show', $data);
     }
+
+    public function destroy($id)
+    {
+        $id = Crypt::decrypt($id);
+        $user = User::findOrFail(auth()->user()->id);
+        if (!$user->hasRole(['super admin', 'spv presensi'])) {
+            return Redirect::back()->with(messageError('Anda tidak memiliki akses untuk menghapus data ini.'));
+        }
+
+        try {
+            Presensi::where('id', $id)->delete();
+            return Redirect::back()->with(messageSuccess('Data Presensi Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }

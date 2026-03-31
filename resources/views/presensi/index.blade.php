@@ -107,7 +107,7 @@
                                 </div>
 
                                 {{-- Section 2: Attendance Status & Schedule --}}
-                                <div class="p-3 border-end-md flex-grow-1">
+                                <div class="p-3 border-end-md flex-grow-1" style="min-width: 250px;">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div class="small fw-bold text-muted text-uppercase tracking-wider">Status & Jadwal</div>
                                         <div class="ms-2">
@@ -187,7 +187,7 @@
                                 </div>
 
                                 {{-- Section 5: Actions --}}
-                                <div class="p-3 bg-light d-flex flex-row flex-md-column justify-content-center align-items-center gap-2" style="min-width: 100px;">
+                                <div class="p-3 bg-light d-flex flex-row justify-content-center align-items-center gap-2" style="width: 140px;">
                                     @if ($d->status_kehadiran == 'h')
                                         <button class="btn btn-sm btn-label-success btn-icon btnKoreksi" nik="{{ $d->nik }}" tanggal="{{ $tanggal }}" title="Koreksi Presensi">
                                             <i class="ti ti-edit fs-5"></i>
@@ -196,9 +196,15 @@
                                     <button class="btn btn-sm btn-label-primary btn-icon btngetDatamesin" pin="{{ $d->pin }}" tanggal="{{ $tanggal }}" kode_jadwal="{{ $d->kode_jadwal }}" title="Get Data Mesin">
                                         <i class="ti ti-device-desktop fs-5"></i>
                                     </button>
-                                    <div class="mt-md-auto">
-                                        <small class="text-muted" style="font-size: 10px;">ID: {{ $d->pin }}</small>
-                                    </div>
+                                    @hasanyrole(['super admin', 'spv presensi'])
+                                        <form action="{{ route('presensi.delete', Crypt::encrypt($d->id)) }}" method="POST" class="deleteform">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-label-danger btn-icon delete-confirm" title="Hapus Presensi">
+                                                <i class="ti ti-trash fs-5"></i>
+                                            </button>
+                                        </form>
+                                    @endhasanyrole
                                 </div>
                             </div>
                         </div>
@@ -343,6 +349,24 @@
             $("#modal").modal("show");
             $(".modal-title").text("Data Presensi Masuk");
             $("#loadmodal").load(`/presensi/${id}/${status}/show`);
+        });
+
+        $(".delete-confirm").click(function(e) {
+            var form = $(this).closest("form");
+            e.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda Yakin?',
+                text: "Data Presensi Akan Dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
 </script>
