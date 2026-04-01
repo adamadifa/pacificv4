@@ -12,6 +12,16 @@
     <div class="row">
         <div class="co-12">
             @csrf
+            @php
+                $bulan_data = collect($list_bulan)->map(function ($item) {
+                    return (object) $item;
+                });
+
+                $tahun_data = [];
+                for ($t = $start_year; $t <= date('Y') + 1; $t++) {
+                    $tahun_data[] = (object) ['tahun' => $t];
+                }
+            @endphp
             <div class="row">
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-6 col-md-12 col-sm-12">
@@ -20,21 +30,10 @@
                     </div>
 
                     <div class="col-lg-3 col-sm-12 col-md-12">
-                        @php
-                            $bulan_data = collect($list_bulan)->map(function ($item) {
-                                return (object) $item;
-                            });
-                        @endphp
                         <x-select label="Bulan" name="bulan" id="bulan" :data="$bulan_data" key="kode_bulan"
                             textShow="nama_bulan" hideLabel="true" />
                     </div>
                     <div class="col-lg-3 col-sm-12 col-md-12">
-                        @php
-                            $tahun_data = [];
-                            for ($t = $start_year; $t <= date('Y') + 1; $t++) {
-                                $tahun_data[] = (object) ['tahun' => $t];
-                            }
-                        @endphp
                         <x-select label="Tahun" name="tahun" id="tahun" :data="$tahun_data" key="tahun" textShow="tahun"
                             hideLabel="true" />
                     </div>
