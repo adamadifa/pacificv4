@@ -179,6 +179,7 @@ use App\Http\Controllers\ProgrammarketingController;
 use App\Http\Controllers\ProgramIkatan2026Controller;
 use App\Http\Controllers\WorksheetomController;
 use App\Http\Controllers\BPBController;
+use App\Http\Controllers\BPBPembelianController;
 use App\Http\Controllers\InternalMemoController;
 use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
@@ -2527,6 +2528,22 @@ Route::middleware('auth')->group(function () {
         Route::post('/bpb/serahterimabpbstore', 'serahterimabpbstore')->name('bpb.serahterimabpbstore');
         Route::post('/bpb/serahterima/update', 'updateSerahTerima')->name('bpb.updateSerahTerima');
         Route::post('/bpb/serahterima/delete', 'deleteSerahTerima')->name('bpb.deleteSerahTerima');
+    });
+
+    Route::controller(BPBPembelianController::class)->group(function () {
+        Route::get('/bpbpembelian', 'index')->name('bpbpembelian.index');
+        Route::get('/bpbpembelian/create', 'create')->name('bpbpembelian.create');
+        Route::get('/bpbpembelian/{no_bukti}/edit', 'edit')->name('bpbpembelian.edit');
+        Route::put('/bpbpembelian/{no_bukti}/update', 'update')->name('bpbpembelian.update');
+        Route::post('/bpbpembelian', 'store')->name('bpbpembelian.store');
+        Route::delete('/bpbpembelian/{no_bukti}', 'destroy')->name('bpbpembelian.delete');
+        Route::get('/bpbpembelian/{no_bukti}/show', 'show')->name('bpbpembelian.show');
+        Route::post('/bpbpembelian/{no_bukti}/storeapprove', 'storeapprove')->name('bpbpembelian.storeapprove');
+        Route::post('/bpbpembelian/serahterimabpbstore', 'serahterimabpbstore')->name('bpbpembelian.serahterimabpbstore');
+        Route::post('/bpbpembelian/serahterima/update', 'updateSerahTerima')->name('bpbpembelian.updateSerahTerima');
+        Route::post('/bpbpembelian/serahterima/delete', 'deleteSerahTerima')->name('bpbpembelian.deleteSerahTerima');
+        Route::get('/bpbpembelian/cetak/{no_bukti}', 'cetak')->name('bpb.cetak');
+        Route::post('/bpbpembelian/{no_bppb}/store-bukti', 'storeBukti')->name('storeBukti');
     });
 
     
