@@ -292,6 +292,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/users/{id}/createuserpermission', 'createuserpermission')->name('users.createuserpermission');
         Route::post('/users/{id}/storeuserpermission', 'storeuserpermission')->name('users.storeuserpermission');
+
+        Route::get('/users/{id}/pjpaccess', 'editPjpAccess')->name('users.pjpaccess');
+        Route::post('/users/{id}/pjpaccess', 'updatePjpAccess')->name('users.pjpaccess.update');
     });
 
 

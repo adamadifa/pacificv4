@@ -117,6 +117,10 @@
                                            class="text-info" data-bs-toggle="tooltip" title="Permissions">
                                             <i class="ti ti-shield-lock"></i>
                                         </a>
+                                        <a href="#" class="pjpAccess text-primary" id="{{ Crypt::encrypt($d->id) }}"
+                                           data-bs-toggle="tooltip" title="Akses PJP">
+                                            <i class="ti ti-report-money"></i>
+                                        </a>
                                         <a href="#" class="editUser text-success" id="{{ Crypt::encrypt($d->id) }}"
                                            data-bs-toggle="tooltip" title="Edit">
                                             <i class="ti ti-pencil"></i>
@@ -146,6 +150,7 @@
 </div>
 <x-modal-form id="mdlcreateUser" size="" show="loadcreateUser" title="Tambah User" />
 <x-modal-form id="mdleditUser" size="" show="loadeditUser" title="Edit User" />
+<x-modal-form id="mdlpjpAccess" size="" show="loadpjpAccess" title="Pengaturan Akses PJP" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
@@ -161,6 +166,13 @@
             e.preventDefault();
             $('#mdleditUser').modal("show");
             $("#loadeditUser").load('/users/' + id + '/edit');
+        });
+
+        $(".pjpAccess").click(function(e) {
+            var id = $(this).attr("id");
+            e.preventDefault();
+            $('#mdlpjpAccess').modal("show");
+            $("#loadpjpAccess").load('/users/' + id + '/pjpaccess');
         });
     });
 </script>
