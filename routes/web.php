@@ -2545,7 +2545,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/bpbpembelian/serahterimabpbstore', 'serahterimabpbstore')->name('bpbpembelian.serahterimabpbstore');
         Route::post('/bpbpembelian/serahterima/update', 'updateSerahTerima')->name('bpbpembelian.updateSerahTerima');
         Route::post('/bpbpembelian/serahterima/delete', 'deleteSerahTerima')->name('bpbpembelian.deleteSerahTerima');
-        Route::get('/bpbpembelian/cetak/{no_bukti}', 'cetak')->name('bpb.cetak');
+        Route::get('/bpbpembelian/cetak/{no_bukti}', 'cetak')->name('bpbpembelian.cetak');
         Route::post('/bpbpembelian/{no_bppb}/store-bukti', 'storeBukti')->name('storeBukti');
     });
 
