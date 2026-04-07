@@ -202,6 +202,27 @@
                 box-shadow: none !important;
             }
         }
+
+        @if ($is_export)
+        .datatable3, .datatable3 th, .datatable3 td {
+            border: 1px solid #000 !important;
+        }
+        .datatable3 thead th {
+            background-color: #01579b !important;
+            color: #ffffff !important;
+        }
+        .sticky-col {
+            position: static !important;
+            background-color: #f9f9f9 !important;
+        }
+        .sticky-col-header {
+            background-color: #01579b !important;
+            color: #ffffff !important;
+        }
+        .fraction {
+            width: 100%;
+        }
+        @endif
     </style>
 </head>
 
@@ -239,17 +260,31 @@
                     <td class="fw-bold sticky-col col-2">LIKUIDITAS</td>
                     <td class="sticky-col col-3">1. Rasio Lancar (Current Ratio)</td>
                     <td class="text-center sticky-col col-4">
-                        <div class="fraction">
-                            <span class="numerator">Aktiva Lancar (Current Assets)</span>
-                            <span class="denominator">Hutang Lancar (Current Liabilities)</span>
-                        </div>
+                        @if ($is_export)
+                            <table width="100%">
+                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">Aktiva Lancar (Current Assets)</td></tr>
+                                <tr><td style="text-align: center;">Hutang Lancar (Current Liabilities)</td></tr>
+                            </table>
+                        @else
+                            <div class="fraction">
+                                <span class="numerator">Aktiva Lancar (Current Assets)</span>
+                                <span class="denominator">Hutang Lancar (Current Liabilities)</span>
+                            </div>
+                        @endif
                     </td>
                     @foreach ($ratios as $r)
                         <td class="text-right">
-                            <div class="fraction">
-                                <span class="numerator">{{ $r['current_assets'] != 0 ? formatAngka($r['current_assets']) : '-' }}</span>
-                                <span class="denominator">{{ $r['current_liabilities'] != 0 ? formatAngka($r['current_liabilities']) : '-' }}</span>
-                            </div>
+                            @if ($is_export)
+                                <table width="100%">
+                                    <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $r['current_assets'] != 0 ? formatAngka($r['current_assets']) : '-' }}</td></tr>
+                                    <tr><td style="text-align: center;">{{ $r['current_liabilities'] != 0 ? formatAngka($r['current_liabilities']) : '-' }}</td></tr>
+                                </table>
+                            @else
+                                <div class="fraction">
+                                    <span class="numerator">{{ $r['current_assets'] != 0 ? formatAngka($r['current_assets']) : '-' }}</span>
+                                    <span class="denominator">{{ $r['current_liabilities'] != 0 ? formatAngka($r['current_liabilities']) : '-' }}</span>
+                                </div>
+                            @endif
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['current_ratio'] / 100) }}</td>
                     @endforeach
@@ -261,17 +296,31 @@
                     <td rowspan="2" class="fw-bold sticky-col col-2">SOLVABILITAS</td>
                     <td class="sticky-col col-3">1. Debt to Asset Ratio</td>
                     <td class="text-center sticky-col col-4">
-                        <div class="fraction">
-                            <span class="numerator">Total Utang (Total Debt)</span>
-                            <span class="denominator">Total Aktiva (Total Assets)</span>
-                        </div>
+                        @if ($is_export)
+                            <table width="100%">
+                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">Total Utang (Total Debt)</td></tr>
+                                <tr><td style="text-align: center;">Total Aktiva (Total Assets)</td></tr>
+                            </table>
+                        @else
+                            <div class="fraction">
+                                <span class="numerator">Total Utang (Total Debt)</span>
+                                <span class="denominator">Total Aktiva (Total Assets)</span>
+                            </div>
+                        @endif
                     </td>
                     @foreach ($ratios as $r)
                         <td class="text-right">
-                            <div class="fraction">
-                                <span class="numerator">{{ $r['total_liabilities'] != 0 ? formatAngka($r['total_liabilities']) : '-' }}</span>
-                                <span class="denominator">{{ $r['total_assets'] != 0 ? formatAngka($r['total_assets']) : '-' }}</span>
-                            </div>
+                            @if ($is_export)
+                                <table width="100%">
+                                    <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $r['total_liabilities'] != 0 ? formatAngka($r['total_liabilities']) : '-' }}</td></tr>
+                                    <tr><td style="text-align: center;">{{ $r['total_assets'] != 0 ? formatAngka($r['total_assets']) : '-' }}</td></tr>
+                                </table>
+                            @else
+                                <div class="fraction">
+                                    <span class="numerator">{{ $r['total_liabilities'] != 0 ? formatAngka($r['total_liabilities']) : '-' }}</span>
+                                    <span class="denominator">{{ $r['total_assets'] != 0 ? formatAngka($r['total_assets']) : '-' }}</span>
+                                </div>
+                            @endif
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['dar']) }}%</td>
                     @endforeach
@@ -279,17 +328,31 @@
                 <tr>
                     <td class="sticky-col col-3">2. Debt to Equity Ratio</td>
                     <td class="text-center sticky-col col-4">
-                        <div class="fraction">
-                            <span class="numerator">Total Utang (Total Debt)</span>
-                            <span class="denominator">Total Ekuitas (Total Equity)</span>
-                        </div>
+                        @if ($is_export)
+                            <table width="100%">
+                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">Total Utang (Total Debt)</td></tr>
+                                <tr><td style="text-align: center;">Total Ekuitas (Total Equity)</td></tr>
+                            </table>
+                        @else
+                            <div class="fraction">
+                                <span class="numerator">Total Utang (Total Debt)</span>
+                                <span class="denominator">Total Ekuitas (Total Equity)</span>
+                            </div>
+                        @endif
                     </td>
                     @foreach ($ratios as $r)
                         <td class="text-right">
-                            <div class="fraction">
-                                <span class="numerator">{{ $r['total_liabilities'] != 0 ? formatAngka($r['total_liabilities']) : '-' }}</span>
-                                <span class="denominator">{{ $r['total_equity'] != 0 ? formatAngka($r['total_equity']) : '-' }}</span>
-                            </div>
+                            @if ($is_export)
+                                <table width="100%">
+                                    <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $r['total_liabilities'] != 0 ? formatAngka($r['total_liabilities']) : '-' }}</td></tr>
+                                    <tr><td style="text-align: center;">{{ $r['total_equity'] != 0 ? formatAngka($r['total_equity']) : '-' }}</td></tr>
+                                </table>
+                            @else
+                                <div class="fraction">
+                                    <span class="numerator">{{ $r['total_liabilities'] != 0 ? formatAngka($r['total_liabilities']) : '-' }}</span>
+                                    <span class="denominator">{{ $r['total_equity'] != 0 ? formatAngka($r['total_equity']) : '-' }}</span>
+                                </div>
+                            @endif
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['der']) }}%</td>
                     @endforeach
@@ -301,17 +364,31 @@
                     <td rowspan="2" class="fw-bold sticky-col col-2">RENTABILITAS</td>
                     <td class="sticky-col col-3">1. Gross Profit Margin</td>
                     <td class="text-center sticky-col col-4">
-                        <div class="fraction">
-                            <span class="numerator">Laba kotor</span>
-                            <span class="denominator">Penjualan Bersih</span>
-                        </div>
+                        @if ($is_export)
+                            <table width="100%">
+                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">Laba kotor</td></tr>
+                                <tr><td style="text-align: center;">Penjualan Bersih</td></tr>
+                            </table>
+                        @else
+                            <div class="fraction">
+                                <span class="numerator">Laba kotor</span>
+                                <span class="denominator">Penjualan Bersih</span>
+                            </div>
+                        @endif
                     </td>
                     @foreach ($ratios as $r)
                         <td class="text-right">
-                            <div class="fraction">
-                                <span class="numerator">{{ $r['gross_profit'] != 0 ? formatAngka($r['gross_profit']) : '-' }}</span>
-                                <span class="denominator">{{ $r['sales'] != 0 ? formatAngka($r['sales']) : '-' }}</span>
-                            </div>
+                            @if ($is_export)
+                                <table width="100%">
+                                    <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $r['gross_profit'] != 0 ? formatAngka($r['gross_profit']) : '-' }}</td></tr>
+                                    <tr><td style="text-align: center;">{{ $r['sales'] != 0 ? formatAngka($r['sales']) : '-' }}</td></tr>
+                                </table>
+                            @else
+                                <div class="fraction">
+                                    <span class="numerator">{{ $r['gross_profit'] != 0 ? formatAngka($r['gross_profit']) : '-' }}</span>
+                                    <span class="denominator">{{ $r['sales'] != 0 ? formatAngka($r['sales']) : '-' }}</span>
+                                </div>
+                            @endif
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['gross_profit_margin']) }}%</td>
                     @endforeach
@@ -319,17 +396,31 @@
                 <tr>
                     <td class="sticky-col col-3">2. Net Profit Margin</td>
                     <td class="text-center sticky-col col-4">
-                        <div class="fraction">
-                            <span class="numerator">Laba Bersih Setelah Pajak</span>
-                            <span class="denominator">Penjualan Bersih</span>
-                        </div>
+                        @if ($is_export)
+                            <table width="100%">
+                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">Laba Bersih Setelah Pajak</td></tr>
+                                <tr><td style="text-align: center;">Penjualan Bersih</td></tr>
+                            </table>
+                        @else
+                            <div class="fraction">
+                                <span class="numerator">Laba Bersih Setelah Pajak</span>
+                                <span class="denominator">Penjualan Bersih</span>
+                            </div>
+                        @endif
                     </td>
                     @foreach ($ratios as $r)
                         <td class="text-right">
-                            <div class="fraction">
-                                <span class="numerator">{{ $r['net_profit'] != 0 ? formatAngka($r['net_profit']) : '-' }}</span>
-                                <span class="denominator">{{ $r['sales'] != 0 ? formatAngka($r['sales']) : '-' }}</span>
-                            </div>
+                            @if ($is_export)
+                                <table width="100%">
+                                    <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $r['net_profit'] != 0 ? formatAngka($r['net_profit']) : '-' }}</td></tr>
+                                    <tr><td style="text-align: center;">{{ $r['sales'] != 0 ? formatAngka($r['sales']) : '-' }}</td></tr>
+                                </table>
+                            @else
+                                <div class="fraction">
+                                    <span class="numerator">{{ $r['net_profit'] != 0 ? formatAngka($r['net_profit']) : '-' }}</span>
+                                    <span class="denominator">{{ $r['sales'] != 0 ? formatAngka($r['sales']) : '-' }}</span>
+                                </div>
+                            @endif
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['net_profit_margin']) }}%</td>
                     @endforeach

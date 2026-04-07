@@ -1174,7 +1174,8 @@ class LaporanaccountingController extends Controller
 
         $data = [
             'tahun' => $tahun,
-            'ratios' => $ratios
+            'ratios' => $ratios,
+            'is_export' => isset($_POST['exportButton'])
         ];
 
         if (isset($_POST['exportButton'])) {
