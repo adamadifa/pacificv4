@@ -125,10 +125,10 @@ class GlobalProvider extends ServiceProvider
                 // Cache untuk Notifikasi Limit Kredit
                 $cacheKeyLimit = "notif_limitkredit_{$user_id}_v{$version_marketing}";
                 if (Cache::has($cacheKeyLimit)) {
-                    \Log::info("DEBUG: Notif Limit Kredit diambil dari [CACHE] - User ID: " . $user_id);
+                    //\Log::info("DEBUG: Notif Limit Kredit diambil dari [CACHE] - User ID: " . $user_id);
                 }
                 $notifikasi_limitkredit = Cache::remember($cacheKeyLimit, now()->addHours(24), function () use ($ajl, $posisi_ajuan) {
-                    \Log::info("DEBUG: Notif Limit Kredit diambil dari [DATABASE] - User ID: " . auth()->id());
+                    //\Log::info("DEBUG: Notif Limit Kredit diambil dari [DATABASE] - User ID: " . auth()->id());
                     return $ajl->getAjuanlimitkredit(request: new \Illuminate\Http\Request([
                         'status' => '0',
                         'posisi_ajuan' => $posisi_ajuan
@@ -139,10 +139,10 @@ class GlobalProvider extends ServiceProvider
                 // Cache untuk Notifikasi Ajuan Faktur
                 $cacheKeyFaktur = "notif_ajuanfaktur_{$user_id}_v{$version_marketing}";
                 if (Cache::has($cacheKeyFaktur)) {
-                    \Log::info("DEBUG: Notif Ajuan Faktur diambil dari [CACHE] - User ID: " . $user_id);
+                    //\Log::info("DEBUG: Notif Ajuan Faktur diambil dari [CACHE] - User ID: " . $user_id);
                 }
                 $notifikasi_ajuanfaktur = Cache::remember($cacheKeyFaktur, now()->addHours(24), function () use ($pf, $posisi_ajuan) {
-                    \Log::info("DEBUG: Notif Ajuan Faktur diambil dari [DATABASE] - User ID: " . auth()->id());
+                    //\Log::info("DEBUG: Notif Ajuan Faktur diambil dari [DATABASE] - User ID: " . auth()->id());
                     return $pf->getPengajuanfaktur(request: new \Illuminate\Http\Request([
                         'status' => '0',
                         'posisi_ajuan' => $posisi_ajuan
