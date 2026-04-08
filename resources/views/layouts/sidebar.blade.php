@@ -321,7 +321,7 @@
 
          @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index']) ||
                  auth()->user()->hasRole(['super admin', 'gm administrasi']))
-             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket']) ? 'open' : '' }} ">
+             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket', 'mesinfingerprint']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-tool"></i>
                      <div>Utilities</div>
@@ -364,6 +364,13 @@
                          </a>
                      </li> --}}
 
+                      @if (auth()->user()->hasRole(["super admin"]))
+                          <li class="menu-item {{ request()->is(["mesinfingerprint", "mesinfingerprint/*"]) ? "active" : "" }}">
+                              <a href="{{ route("mesinfingerprint.index") }}" class="menu-link">
+                                  <div>Mesin Fingerprint</div>
+                              </a>
+                          </li>
+                      @endif
                  </ul>
              </li>
          @endif

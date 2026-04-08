@@ -178,6 +178,7 @@ use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\ProgrammarketingController;
 use App\Http\Controllers\ProgramIkatan2026Controller;
 use App\Http\Controllers\WorksheetomController;
+use App\Http\Controllers\MesinfingerprintController;
 use App\Http\Controllers\BPBController;
 use App\Http\Controllers\BPBPembelianController;
 use App\Http\Controllers\InternalMemoController;
@@ -2204,6 +2205,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/tutuplaporan/store', 'store')->name('tutuplaporan.store')->can('tutuplaporan.store');
         Route::get('/tutuplaporan/{kode_tutup_laporan}/lockunlock', 'lockunlock')->name('tutuplaporan.lockunlock')->can('tutuplaporan.create');
         Route::post('/tutuplaporan/cektutuplaporan', 'cektutuplaporan');
+    });
+
+    Route::middleware('role:super admin')->group(function () {
+        Route::resource('mesinfingerprint', MesinfingerprintController::class);
     });
 
     Route::controller(AktifitassmmController::class)->group(function () {

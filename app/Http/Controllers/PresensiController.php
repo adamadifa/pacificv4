@@ -16,6 +16,8 @@ use App\Models\Izindinas;
 use App\Models\Jadwalkerja;
 use App\Models\Jamkerja;
 use App\Models\Presensi;
+use App\Models\LogMesinPresensi;
+use App\Models\MesinFingerprint;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
 
@@ -387,7 +389,16 @@ class PresensiController extends Controller
         });
 
 
-        return view('presensi.getdatamesin', compact('filtered_array', 'filtered_array_2'));
+        $log = LogMesinPresensi::select('hrd_log_mesin_presensi.*', 'hrd_mesin_fingerprint.nama_mesin')
+            ->leftJoin('hrd_mesin_fingerprint', 'hrd_log_mesin_presensi.id_mesin', '=', 'hrd_mesin_fingerprint.id')
+            ->where('pin', $pin)
+            ->whereDate('jam_absen', $tanggal)
+            ->get();
+
+        $mesin_adms = MesinFingerprint::where('status', 'Aktif')->get();
+
+
+        return view('presensi.getdatamesin', compact('filtered_array', 'filtered_array_2', 'log', 'mesin_adms'));
     }
 
 

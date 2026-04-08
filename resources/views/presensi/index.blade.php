@@ -250,7 +250,7 @@
     }
 </style>
 
-<x-modal-form id="modal" size="modal-lg" show="loadmodal" title="" />
+<x-modal-form id="modal" size="modal-xl" show="loadmodal" title="" />
 @endsection
 @push('myscript')
 <script>

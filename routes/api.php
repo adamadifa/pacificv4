@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AdmsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +54,7 @@ Route::prefix('sync')->group(function () {
     // API Sync Ledger
     Route::post('/ledger/batch', [App\Http\Controllers\Api\SyncLedgerController::class, 'batchStore']);
 });
+
+// ADMS Machine Interface
+Route::any('/adms/capture', [AdmsController::class, 'capture']);
+Route::any('/adms/receive', [AdmsController::class, 'receiveX100c']);
