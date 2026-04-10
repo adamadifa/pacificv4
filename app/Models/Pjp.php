@@ -80,6 +80,10 @@ class Pjp extends Model
 
         $query = self::applyPjpAccess($query, $user);
 
+        if (!empty($no_pinjaman)) {
+            $query->where('keuangan_pjp.no_pinjaman', $no_pinjaman);
+        }
+
         $query->orderBy('keuangan_pjp.tanggal', 'desc');
         $query->orderBy('keuangan_pjp.no_pinjaman', 'desc');
         return $query;
