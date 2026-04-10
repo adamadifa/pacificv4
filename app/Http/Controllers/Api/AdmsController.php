@@ -177,7 +177,7 @@ class AdmsController extends Controller
         
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
-        $tanggal_libur = $datalibur != null ? $datalibur->tanggal_libur : '';
+        $tanggal_libur = $datalibur != null ? $datalibur->tanggal : '';
 
         // Cek Lembur
         $ceklembur = DB::table('hrd_lembur_detail')
