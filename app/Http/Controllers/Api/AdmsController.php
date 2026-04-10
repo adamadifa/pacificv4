@@ -94,7 +94,7 @@ class AdmsController extends Controller
 
         $rawBody = $request->getContent();
         $mesin = MesinFingerprint::where('sn', $devId)->where('status', 'Aktif')->first();
-        
+
         if (!$mesin) {
             Log::warning('Unregistered X100C machine tried to send data', ['sn' => $devId, 'ip' => $request->ip()]);
             return response("OK\n", 200)->header('Content-Type', 'text/plain');
@@ -103,14 +103,15 @@ class AdmsController extends Controller
         $lines = explode("\n", $rawBody);
         foreach ($lines as $line) {
             $line = trim($line);
-            if (empty($line)) continue;
+            if (empty($line))
+                continue;
 
             $parts = explode("\t", $line);
             if (count($parts) >= 3) {
                 // Format: PIN \t Time \t Status
                 $pin = $parts[0];
                 $scan = $parts[1];
-                $status_scan = (int)$parts[2];
+                $status_scan = (int) $parts[2];
 
                 $this->processAttendance($pin, $scan, $status_scan, $mesin);
             }
@@ -141,7 +142,7 @@ class AdmsController extends Controller
             ->whereRaw('"' . $tgl_presensi . '" <= sampai')
             ->where('nik', $nik)
             ->first();
-        
+
         $kode_cabang = ($cekperjalanandinas != null) ? $cekperjalanandinas->kode_cabang : $karyawan->kode_cabang;
         $lastday = date('Y-m-d', strtotime('-1 day', strtotime($tgl_presensi)));
 
@@ -174,7 +175,7 @@ class AdmsController extends Controller
             ->where('nik', $nik)
             ->where('kode_cabang', $kode_cabang)
             ->where('tanggal_limajam', $tgl_presensi);
-        
+
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
         $tanggal_libur = $datalibur != null ? $datalibur->tanggal : '';
@@ -198,7 +199,7 @@ class AdmsController extends Controller
         // Logic group Saus
         $id_group = $karyawan->kode_group;
         $group_saus = [29, 26, 27];
-        if ($tgl_presensi == '2024-02-10' && in_array((int)$id_group, $group_saus)) {
+        if ($tgl_presensi == '2024-02-10' && in_array((int) $id_group, $group_saus)) {
             $hariini = "Senin";
         }
 
@@ -222,7 +223,7 @@ class AdmsController extends Controller
         $jam_sekarang = date("H:i:s", strtotime($scan));
 
         // Logic Presensi MASUK
-        if (in_array((int)$status_scan, [0, 2, 4, 6, 8])) {
+        if (in_array((int) $status_scan, [0, 2, 4, 6, 8])) {
             $jam_masuk_limit = $tgl_presensi . " " . "10:00";
             if (($kode_jadwal == "JD004" || $kode_jadwal == "JD003") && $scan <= $jam_masuk_limit) {
                 $this->recordLogMesin($pin, $scan, $status_scan, $mesin->id, 0, "Belum Waktunya Absen Masuk");
@@ -253,7 +254,7 @@ class AdmsController extends Controller
                 ]);
                 $this->recordLogMesin($pin, $scan, $status_scan, $mesin->id, 1, "Berhasil Presensi Masuk Baru");
             }
-        } 
+        }
         // Logic Presensi PULANG
         else {
             $ceklastpresensi = DB::table('hrd_presensi')

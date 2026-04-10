@@ -345,12 +345,12 @@ class UserController extends Controller
         $karyawan = Karyawan::orderBy('nama_karyawan')->get();
         $group = Group::orderBy('nama_group')->get();
 
-        $pjp_cabang_access = json_decode($user->pjp_cabang_access ?? $user->cabang_access, true) ?? [];
-        $pjp_dept_access = json_decode($user->pjp_dept_access ?? $user->dept_access, true) ?? [];
-        $pjp_jabatan_access = json_decode($user->pjp_jabatan_access ?? $user->jabatan_access, true) ?? [];
-        $pjp_karyawan_access = json_decode($user->pjp_karyawan_access ?? $user->karyawan_access, true) ?? [];
-        $pjp_group_access = json_decode($user->pjp_group_access ?? $user->group_access, true) ?? [];
-        $pjp_kategori_jabatan_access = json_decode($user->pjp_kategori_jabatan_access, true) ?? ['MJ', 'NM'];
+        $pjp_cabang_access = json_decode($user->pjp_cabang_access, true) ?? [];
+        $pjp_dept_access = json_decode($user->pjp_dept_access, true) ?? [];
+        $pjp_jabatan_access = json_decode($user->pjp_jabatan_access, true) ?? [];
+        $pjp_karyawan_access = json_decode($user->pjp_karyawan_access, true) ?? [];
+        $pjp_group_access = json_decode($user->pjp_group_access, true) ?? [];
+        $pjp_kategori_jabatan_access = json_decode($user->pjp_kategori_jabatan_access, true) ?? [];
 
         return view('settings.users.pjp_access', compact(
             'user',
@@ -373,12 +373,12 @@ class UserController extends Controller
         $id = Crypt::decrypt($id);
         try {
             User::where('id', $id)->update([
-                'pjp_cabang_access' => json_encode($request->pjp_cabang_access),
-                'pjp_dept_access' => json_encode($request->pjp_dept_access),
-                'pjp_jabatan_access' => json_encode($request->pjp_jabatan_access),
-                'pjp_karyawan_access' => json_encode($request->pjp_karyawan_access),
-                'pjp_group_access' => json_encode($request->pjp_group_access),
-                'pjp_kategori_jabatan_access' => json_encode($request->pjp_kategori_jabatan_access),
+                'pjp_cabang_access' => json_encode($request->pjp_cabang_access ?? []),
+                'pjp_dept_access' => json_encode($request->pjp_dept_access ?? []),
+                'pjp_jabatan_access' => json_encode($request->pjp_jabatan_access ?? []),
+                'pjp_karyawan_access' => json_encode($request->pjp_karyawan_access ?? []),
+                'pjp_group_access' => json_encode($request->pjp_group_access ?? []),
+                'pjp_kategori_jabatan_access' => json_encode($request->pjp_kategori_jabatan_access ?? []),
             ]);
             return Redirect::back()->with(['success' => 'Akses PJP Berhasil Disimpan']);
         } catch (\Exception $e) {

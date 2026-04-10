@@ -37,21 +37,25 @@
             <div class="card shadow-none border-0 bg-transparent mb-3">
                 <div class="card-body p-0">
                     <div class="row g-2 align-items-end">
-                        <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="col-lg-2 col-md-6 col-sm-12">
                             <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
                                 datepicker="flatpickr-date" hideLabel="true" />
                         </div>
-                        <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="col-lg-2 col-md-6 col-sm-12">
                             <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
                                 datepicker="flatpickr-date" hideLabel="true" />
                         </div>
                         @hasanyrole($roles_show_cabang_pjp)
-                            <div class="col-lg-3 col-md-6 col-sm-12">
+                            <div class="col-lg-2 col-md-6 col-sm-12">
                                 <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
                                     selected="{{ Request('kode_cabang_search') }}" upperCase="true" select2="select2Kodecabangsearch" hideLabel="true" />
                             </div>
                         @endhasanyrole
-                        <div class="{{ auth()->user()->hasAnyRole($roles_show_cabang_pjp) ? 'col-lg-2' : 'col-lg-5' }} col-md-12 col-sm-12">
+                        <div class="col-lg-2 col-md-6 col-sm-12">
+                            <x-select label="Semua Grup" name="kode_group_pjp" :data="$group" key="kode_group" textShow="nama_group"
+                                selected="{{ Request('kode_group_pjp') }}" upperCase="true" select2="select2Kodegrouppjp" hideLabel="true" />
+                        </div>
+                        <div class="{{ auth()->user()->hasAnyRole($roles_show_cabang_pjp) ? 'col-lg-3' : 'col-lg-5' }} col-md-12 col-sm-12">
                             <x-input-with-icon label="Nama Karyawan" value="{{ Request('nama_karyawan_search') }}"
                                 name="nama_karyawan_search" icon="ti ti-user" hideLabel="true" />
                         </div>
@@ -258,6 +262,18 @@
                 var $this = $(this);
                 $this.wrap('<div class="position-relative"></div>').select2({
                     placeholder: 'Semua Cabang',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
+        const select2Kodegrouppjp = $('.select2Kodegrouppjp');
+        if (select2Kodegrouppjp.length) {
+            select2Kodegrouppjp.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Semua Grup',
                     allowClear: true,
                     dropdownParent: $this.parent()
                 });

@@ -71,7 +71,7 @@ class LaporankeuanganController extends Controller
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
 
-        $staff_keuangan_cabang = ['52','88'];
+        $staff_keuangan_cabang = ['52', '88'];
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
         $data['bank'] = Bank::where('kode_bank', $request->kode_bank_ledger)->first();
@@ -117,7 +117,7 @@ class LaporankeuanganController extends Controller
                 });
             }
 
-            if(in_array($user->id,$staff_keuangan_cabang)){
+            if (in_array($user->id, $staff_keuangan_cabang)) {
                 $query->where('bank.kode_cabang', '!=', 'PST');
             }
             $ledger = $query->get();
@@ -153,7 +153,7 @@ class LaporankeuanganController extends Controller
             );
 
             $query->join('coa', 'keuangan_ledger.kode_akun', '=', 'coa.kode_akun');
-            $query->join('bank','keuangan_ledger.kode_bank','=','bank.kode_bank');
+            $query->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
             $query->orderBy('keuangan_ledger.kode_akun');
             $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
             if (!empty($request->kode_bank_ledger)) {
@@ -166,7 +166,7 @@ class LaporankeuanganController extends Controller
                 });
             }
 
-            if(in_array($user->id,$staff_keuangan_cabang)){
+            if (in_array($user->id, $staff_keuangan_cabang)) {
                 $query->where('bank.kode_cabang', '!=', 'PST');
             }
             $query->groupBy('keuangan_ledger.kode_akun', 'nama_akun');
@@ -1282,9 +1282,6 @@ class LaporankeuanganController extends Controller
         $tanggal_potongan = $tahunpotongan . '-' . $bulanpotongan . '-01';
 
         $user = User::findorfail(auth()->user()->id);
-        $roles_access_all_pjp = config('global.roles_access_all_pjp');
-        $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
 
         $query = Karyawan::query();
         $query->select(
@@ -1463,23 +1460,7 @@ class LaporankeuanganController extends Controller
             $query->where('hrd_karyawan.kode_dept', $request->kode_dept_rekapkartupiutang);
         }
 
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', $user->kode_regional);
-                $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            } else {
-                $query->where('hrd_jabatan.kategori', 'NM');
-                $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            }
-        } else {
-            if (!$user->hasRole($roles_access_all_pjp)) {
-                $query->where('hrd_jabatan.kategori', 'NM');
-            }
-        }
-
-        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        $query = Pjp::applyPjpAccess($query, $user);
         $query->orderBy('nama_karyawan');
         $piutangkaryawan = $query->get();
         $data['piutangkaryawan'] = $piutangkaryawan;
@@ -1509,9 +1490,6 @@ class LaporankeuanganController extends Controller
         $tanggal_potongan = $tahunpotongan . '-' . $bulanpotongan . '-01';
 
         $user = User::findorfail(auth()->user()->id);
-        $roles_access_all_pjp = config('global.roles_access_all_pjp');
-        $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
 
         $query = Pjp::query();
         $query->select(
@@ -1580,27 +1558,7 @@ class LaporankeuanganController extends Controller
             $query->where('hrd_karyawan.kode_dept', $request->kode_dept_kartupjp);
         }
 
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', $user->kode_regional);
-                $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            } else {
-                $query->where('hrd_jabatan.kategori', 'NM');
-                $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            }
-        } else {
-            if (!$user->hasRole($roles_access_all_pjp)) {
-                $query->where('hrd_jabatan.kategori', 'NM');
-            }
-        }
-
-        if ($user->hasRole('staff keuangan')) {
-            $query->where('hrd_jabatan.kategori', 'NM');
-        }
-
-        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        $query = Pjp::applyPjpAccess($query, $user);
         $query->groupByRaw('keuangan_pjp.nik,nama_karyawan');
         $query->orderBy('nama_karyawan');
         $data['pjp'] = $query->get();
@@ -1631,9 +1589,6 @@ class LaporankeuanganController extends Controller
         $tanggal_potongan = $tahunpotongan . '-' . $bulanpotongan . '-01';
 
         $user = User::findorfail(auth()->user()->id);
-        $roles_access_all_pjp = config('global.roles_access_all_pjp');
-        $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
 
         $query = Kasbon::query();
         $query->select(
@@ -1702,23 +1657,7 @@ class LaporankeuanganController extends Controller
             $query->where('hrd_karyawan.kode_dept', $request->kode_dept_kartukasbon);
         }
 
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', $user->kode_regional);
-                $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            } else {
-                $query->where('hrd_jabatan.kategori', 'NM');
-                $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            }
-        } else {
-            if (!$user->hasRole($roles_access_all_pjp)) {
-                $query->where('hrd_jabatan.kategori', 'NM');
-            }
-        }
-
-        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        $query = Pjp::applyPjpAccess($query, $user);
         $query->groupByRaw('keuangan_kasbon.nik,nama_karyawan');
         $query->orderBy('nama_karyawan');
 
@@ -1752,7 +1691,7 @@ class LaporankeuanganController extends Controller
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_pjp = config('global.roles_access_all_pjp');
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
+        $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
 
         $query = Piutangkaryawan::query();
         $query->selectRaw("keuangan_piutangkaryawan.nik, nama_karyawan,
@@ -1840,7 +1779,7 @@ class LaporankeuanganController extends Controller
             }
         }
 
-        $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
+        // $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
         $query->groupByRaw('keuangan_piutangkaryawan.nik,nama_karyawan');
         $query->orderBy('nama_karyawan');
 
@@ -1861,7 +1800,7 @@ class LaporankeuanganController extends Controller
     public function cetakkaskecil(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);
-        if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'manager audit', 'rom','spv audit','staff keuangan'])) {
+        if (lockreport($request->dari) == "error" && !$user->hasRole(['admin pajak', 'manager audit', 'rom', 'spv audit', 'staff keuangan'])) {
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
 
@@ -2010,17 +1949,17 @@ class LaporankeuanganController extends Controller
             $data['ledger'] = $query->get();
 
             if ($user->hasRole('staff keuangan 2')) {
-                $data['saldo_awal']  = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', 'BK070')->first();
+                $data['saldo_awal'] = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', 'BK070')->first();
             } else {
 
-                $data['saldo_awal']  = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $request->kode_bank_ledger)->first();
+                $data['saldo_awal'] = Saldoawalledger::where('bulan', $bulan)->where('tahun', $tahun)->where('kode_bank', $request->kode_bank_ledger)->first();
             }
 
             $start_date = $tahun . "-" . $bulan . "-01";
             if (!empty($request->dari && !empty($request->sampai))) {
 
                 if ($user->hasRole('staff keuangan 2')) {
-                    $data['mutasi']  = Mutasikeuangan::select(
+                    $data['mutasi'] = Mutasikeuangan::select(
                         DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
                         DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
                     )
@@ -2029,7 +1968,7 @@ class LaporankeuanganController extends Controller
                         ->where('kode_bank', 'BK070')
                         ->first();
                 } else {
-                    $data['mutasi']  = Mutasikeuangan::select(
+                    $data['mutasi'] = Mutasikeuangan::select(
                         DB::raw("SUM(IF(debet_kredit='K',jumlah,0))as kredit"),
                         DB::raw("SUM(IF(debet_kredit='D',jumlah,0))as debet"),
                     )
@@ -2234,7 +2173,7 @@ class LaporankeuanganController extends Controller
                 $query->where('bank.kode_cabang', $user->kode_cabang);
             }
         } else {
-             if (!empty($request->kode_cabang)) {
+            if (!empty($request->kode_cabang)) {
                 $query->where('bank.kode_cabang', $request->kode_cabang);
             }
         }
@@ -2272,7 +2211,7 @@ class LaporankeuanganController extends Controller
                 'kode_peruntukan' => $ledger->kode_peruntukan,
                 'keterangan_peruntukan' => $ledger->keterangan_peruntukan
             ];
-            
+
             $batchData[] = $data;
         }
 
@@ -2282,7 +2221,7 @@ class LaporankeuanganController extends Controller
         foreach ($chunks as $chunk) {
             try {
                 $response = Http::timeout(60)->post($baseUrl . '/ledger/batch', ['data' => $chunk]);
-                
+
                 if ($response->successful()) {
                     $result = $response->json();
                     if (isset($result['summary'])) {
@@ -2303,7 +2242,7 @@ class LaporankeuanganController extends Controller
                     $failCount += count($chunk);
                     $errorMsg = $response->body();
                     $jsonError = $response->json();
-                    if(isset($jsonError['message'])) {
+                    if (isset($jsonError['message'])) {
                         $errorMsg = $jsonError['message'];
                     }
                     $errors[] = "Batch Failed: " . $errorMsg;
@@ -2317,9 +2256,9 @@ class LaporankeuanganController extends Controller
         }
 
         $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
-        if(count($errors) > 0) {
-            $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10)); 
-            if(count($errors) > 10) {
+        if (count($errors) > 0) {
+            $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10));
+            if (count($errors) > 10) {
                 $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
             }
         }
@@ -2341,7 +2280,7 @@ class LaporankeuanganController extends Controller
         $query->select('keuangan_kaskecil.*', 'nama_akun', 'kode_klaim');
         $query->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
         $query->leftJoin('keuangan_kaskecil_klaim_detail', 'keuangan_kaskecil.id', '=', 'keuangan_kaskecil_klaim_detail.id');
-        
+
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager') || $user->hasRole('admin pusat')) {
                 $query->where('kode_cabang', $request->kode_cabang);
@@ -2358,98 +2297,98 @@ class LaporankeuanganController extends Controller
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $query->whereBetween('keuangan_kaskecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
-        
+
         // Filter HANYA yang status_pajak = 1
         $query->where('keuangan_kaskecil.status_pajak', 1);
 
         $kaskecilList = $query->get();
 
-    $baseUrl = env('SYNC_API_BASE_URL');
-    if (empty($baseUrl)) {
-        return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
-    }
+        $baseUrl = env('SYNC_API_BASE_URL');
+        if (empty($baseUrl)) {
+            return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
+        }
 
-    $successCount = 0;
-    $failCount = 0;
-    $errors = [];
-    $batchData = [];
+        $successCount = 0;
+        $failCount = 0;
+        $errors = [];
+        $batchData = [];
 
-    foreach ($kaskecilList as $kaskecil) {
-        $costRatio = [];
-        // Attempt to fetch cost ratio if relation exists (optional enhancement based on needs)
-        // if (method_exists($kaskecil, 'costratio')) {
-        //     $costRatio = $kaskecil->costratio->pluck('kode_cr')->toArray();
-        // }
+        foreach ($kaskecilList as $kaskecil) {
+            $costRatio = [];
+            // Attempt to fetch cost ratio if relation exists (optional enhancement based on needs)
+            // if (method_exists($kaskecil, 'costratio')) {
+            //     $costRatio = $kaskecil->costratio->pluck('kode_cr')->toArray();
+            // }
 
-        $data = [
-            'id' => $kaskecil->id,
-            'no_bukti' => $kaskecil->no_bukti,
-            'tanggal' => $kaskecil->tanggal,
-            'keterangan' => $kaskecil->keterangan,
-            'jumlah' => $kaskecil->jumlah,
-            'debet_kredit' => $kaskecil->debet_kredit,
-            'status_pajak' => $kaskecil->status_pajak,
-            'kode_akun' => $kaskecil->kode_akun,
-            'kode_cabang' => $kaskecil->kode_cabang,
-            'kode_peruntukan' => $kaskecil->kode_peruntukan,
-            'cost_ratio' => $costRatio 
-        ];
-        
-        $batchData[] = $data;
-    }
+            $data = [
+                'id' => $kaskecil->id,
+                'no_bukti' => $kaskecil->no_bukti,
+                'tanggal' => $kaskecil->tanggal,
+                'keterangan' => $kaskecil->keterangan,
+                'jumlah' => $kaskecil->jumlah,
+                'debet_kredit' => $kaskecil->debet_kredit,
+                'status_pajak' => $kaskecil->status_pajak,
+                'kode_akun' => $kaskecil->kode_akun,
+                'kode_cabang' => $kaskecil->kode_cabang,
+                'kode_peruntukan' => $kaskecil->kode_peruntukan,
+                'cost_ratio' => $costRatio
+            ];
 
-    // Process Batches
-    $chunks = array_chunk($batchData, 50);
+            $batchData[] = $data;
+        }
 
-    foreach ($chunks as $chunk) {
-        try {
-            $response = Http::timeout(60)->post($baseUrl . '/kaskecil/batch', ['data' => $chunk]);
-            
-            if ($response->successful()) {
-                $result = $response->json();
-                if (isset($result['summary'])) {
-                    $successCount += $result['summary']['success'];
-                    $failCount += $result['summary']['failed'];
-                } else {
-                    $successCount += count($chunk);
-                }
+        // Process Batches
+        $chunks = array_chunk($batchData, 50);
 
-                if (isset($result['results'])) {
-                    foreach ($result['results'] as $res) {
-                        if (isset($res['status']) && $res['status'] === 'failed') {
-                            $errors[] = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+        foreach ($chunks as $chunk) {
+            try {
+                $response = Http::timeout(60)->post($baseUrl . '/kaskecil/batch', ['data' => $chunk]);
+
+                if ($response->successful()) {
+                    $result = $response->json();
+                    if (isset($result['summary'])) {
+                        $successCount += $result['summary']['success'];
+                        $failCount += $result['summary']['failed'];
+                    } else {
+                        $successCount += count($chunk);
+                    }
+
+                    if (isset($result['results'])) {
+                        foreach ($result['results'] as $res) {
+                            if (isset($res['status']) && $res['status'] === 'failed') {
+                                $errors[] = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                            }
                         }
                     }
+                } else {
+                    $failCount += count($chunk);
+                    $errorMsg = $response->body();
+                    $jsonError = $response->json();
+                    if (isset($jsonError['message'])) {
+                        $errorMsg = $jsonError['message'];
+                    }
+                    $errors[] = "Batch Failed: " . $errorMsg;
+                    Log::error("Batch sync kas kecil failed: " . $errorMsg);
                 }
-            } else {
+            } catch (\Exception $e) {
                 $failCount += count($chunk);
-                $errorMsg = $response->body();
-                $jsonError = $response->json();
-                if(isset($jsonError['message'])) {
-                    $errorMsg = $jsonError['message'];
-                }
-                $errors[] = "Batch Failed: " . $errorMsg;
-                Log::error("Batch sync kas kecil failed: " . $errorMsg);
+                $errors[] = "Batch Exception: " . $e->getMessage();
+                Log::error("Batch sync kas kecil exception: " . $e->getMessage());
             }
-        } catch (\Exception $e) {
-            $failCount += count($chunk);
-            $errors[] = "Batch Exception: " . $e->getMessage();
-            Log::error("Batch sync kas kecil exception: " . $e->getMessage());
         }
-    }
 
-    $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
-    if(count($errors) > 0) {
-        $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10)); 
-        if(count($errors) > 10) {
-            $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
+        $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
+        if (count($errors) > 0) {
+            $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10));
+            if (count($errors) > 10) {
+                $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
+            }
         }
-    }
 
-    return response()->json([
-        'success' => true,
-        'message' => $message
-    ]);
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ]);
     }
 
     public function updatestatuspajakcostratio(Request $request)
@@ -2520,66 +2459,26 @@ class LaporankeuanganController extends Controller
                     // Kirim data ke API dengan timeout 30 detik
                     $response = Http::timeout(30)->post($baseUrl . '/kaskecil', $data);
 
-                // Cek response dari API
-                if (!$response->successful()) {
-                    $errorMessage = 'Gagal sync ke API';
+                    // Cek response dari API
+                    if (!$response->successful()) {
+                        $errorMessage = 'Gagal sync ke API';
 
-                    if ($response->status() == 422) {
-                        $errors = $response->json('errors');
-                        if ($errors) {
-                            $errorMessage .= ': ' . json_encode($errors);
+                        if ($response->status() == 422) {
+                            $errors = $response->json('errors');
+                            if ($errors) {
+                                $errorMessage .= ': ' . json_encode($errors);
+                            } else {
+                                $errorMessage .= ': ' . $response->json('message');
+                            }
                         } else {
-                            $errorMessage .= ': ' . $response->json('message');
-                        }
-                    } else {
-                        $errorMessage .= ' (Status: ' . $response->status() . ')';
-                        if ($response->json('message')) {
-                            $errorMessage .= ' - ' . $response->json('message');
-                        }
-                    }
-
-                    // Log error untuk debugging
-                    Log::error("Sync kas kecil dari costratio gagal: {$kaskecil->no_bukti}", [
-                        'kode_cr' => $request->kode_cr,
-                        'status' => $response->status(),
-                        'response' => $response->json()
-                    ]);
-
-                    return response()->json([
-                        'success' => false,
-                        'message' => $errorMessage
-                    ], 422);
-                }
-
-                // Log success
-                Log::info("Sync kas kecil dari costratio berhasil: {$kaskecil->no_bukti}", [
-                    'kode_cr' => $request->kode_cr
-                ]);
-            }
-            // Jika status_pajak = 0 (uncheck), hapus data dari API external
-            elseif ($request->status_pajak == 0 && $kaskecil->status_pajak == 1) {
-                // Kirim request DELETE ke API berdasarkan ID
-                $response = Http::timeout(30)->delete($baseUrl . '/kaskecil', [
-                    'id' => $kaskecil->id
-                ]);
-
-                // Cek response dari API
-                if (!$response->successful()) {
-                    $errorMessage = 'Gagal menghapus data dari API';
-
-                    if ($response->status() == 404) {
-                        // Data tidak ditemukan di API, tapi tetap update status_pajak = 0
-                        Log::warning("Data tidak ditemukan di API saat delete: {$kaskecil->no_bukti}", [
-                            'kode_cr' => $request->kode_cr
-                        ]);
-                    } else {
-                        $errorMessage .= ' (Status: ' . $response->status() . ')';
-                        if ($response->json('message')) {
-                            $errorMessage .= ' - ' . $response->json('message');
+                            $errorMessage .= ' (Status: ' . $response->status() . ')';
+                            if ($response->json('message')) {
+                                $errorMessage .= ' - ' . $response->json('message');
+                            }
                         }
 
-                        // Log error
-                        Log::error("Delete kas kecil dari costratio gagal: {$kaskecil->no_bukti}", [
+                        // Log error untuk debugging
+                        Log::error("Sync kas kecil dari costratio gagal: {$kaskecil->no_bukti}", [
                             'kode_cr' => $request->kode_cr,
                             'status' => $response->status(),
                             'response' => $response->json()
@@ -2590,13 +2489,53 @@ class LaporankeuanganController extends Controller
                             'message' => $errorMessage
                         ], 422);
                     }
-                }
 
-                // Log success
-                Log::info("Delete kas kecil dari costratio berhasil: {$kaskecil->no_bukti}", [
-                    'kode_cr' => $request->kode_cr
-                ]);
-            }
+                    // Log success
+                    Log::info("Sync kas kecil dari costratio berhasil: {$kaskecil->no_bukti}", [
+                        'kode_cr' => $request->kode_cr
+                    ]);
+                }
+                // Jika status_pajak = 0 (uncheck), hapus data dari API external
+                elseif ($request->status_pajak == 0 && $kaskecil->status_pajak == 1) {
+                    // Kirim request DELETE ke API berdasarkan ID
+                    $response = Http::timeout(30)->delete($baseUrl . '/kaskecil', [
+                        'id' => $kaskecil->id
+                    ]);
+
+                    // Cek response dari API
+                    if (!$response->successful()) {
+                        $errorMessage = 'Gagal menghapus data dari API';
+
+                        if ($response->status() == 404) {
+                            // Data tidak ditemukan di API, tapi tetap update status_pajak = 0
+                            Log::warning("Data tidak ditemukan di API saat delete: {$kaskecil->no_bukti}", [
+                                'kode_cr' => $request->kode_cr
+                            ]);
+                        } else {
+                            $errorMessage .= ' (Status: ' . $response->status() . ')';
+                            if ($response->json('message')) {
+                                $errorMessage .= ' - ' . $response->json('message');
+                            }
+
+                            // Log error
+                            Log::error("Delete kas kecil dari costratio gagal: {$kaskecil->no_bukti}", [
+                                'kode_cr' => $request->kode_cr,
+                                'status' => $response->status(),
+                                'response' => $response->json()
+                            ]);
+
+                            return response()->json([
+                                'success' => false,
+                                'message' => $errorMessage
+                            ], 422);
+                        }
+                    }
+
+                    // Log success
+                    Log::info("Delete kas kecil dari costratio berhasil: {$kaskecil->no_bukti}", [
+                        'kode_cr' => $request->kode_cr
+                    ]);
+                }
 
                 // Jika sampai sini berarti sync/delete berhasil, update status_pajak
                 $kaskecil->status_pajak = $request->status_pajak;

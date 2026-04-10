@@ -22,7 +22,7 @@ class Pjp extends Model
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_pjp = config('global.roles_access_all_pjp');
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
+        $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
         $query = Pjp::query();
         $query->select(
             'keuangan_pjp.*',
@@ -74,66 +74,55 @@ class Pjp extends Model
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan_search . '%');
         }
 
-        // if ($request->status === "1" || $request->status === 0) {
-        //     $query->where('pjp.status', $request->status);
-        // }
-
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', $user->kode_regional);
-                $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            } else {
-                if ($user->hasRole('sales marketing manager')) {
-                    $query->where('hrd_karyawan.kode_jabatan', '!=', 'J07');
-                } else {
-                    $query->where('hrd_jabatan.kategori', 'NM');
-                }
-                $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
-            }
-        } else {
-            if (!$user->hasRole($roles_access_all_pjp)) {
-                if (!$user->hasRole('regional operation manager')) {
-                    $query->where('hrd_jabatan.kategori', 'NM');
-                } else {
-                    $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02', 'J04']);
-                }
-            } else {
-                if (!$user->hasRole(['super admin', 'manager keuangan', 'gm administrasi', 'staff keuangan'])) {
-                    $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
-                }
-            }
+        if (!empty($request->kode_group_pjp)) {
+            $query->where('hrd_karyawan.kode_group', $request->kode_group_pjp);
         }
 
-        if (!empty($no_pinjaman)) {
-            $query->where('keuangan_pjp.no_pinjaman', $no_pinjaman);
-        }
-        //Jika User Tidak Memiliki Akses ke Semua PJP
-        // if (!$user->hasRole($roles_access_all_pjp)) {
-        //     $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
-        // }
-
-        if (!in_array('all', $dept_access)) {
-            $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
-        }
-        if (auth()->user()->id == '86') {
-            $query->whereIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
-        } else if (auth()->user()->id == '87') {
-            $query->whereNotIn('hrd_karyawan.kode_group', ['G19', 'G22', 'G23']);
-        }
-
-
-        if ($user->hasRole('staff keuangan')) {
-            $query->where('hrd_jabatan.kategori', 'NM');
-        }
-        // if (!$user->hasRole($roles_access_all_pjp)) {
-        //     $query->where('hrd_jabatan.kategori', 'NM');
-        // }
-
+        $query = self::applyPjpAccess($query, $user);
 
         $query->orderBy('keuangan_pjp.tanggal', 'desc');
         $query->orderBy('keuangan_pjp.no_pinjaman', 'desc');
+        return $query;
+    }
+
+    public static function applyPjpAccess($query, $user)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        // PJP Access Filters
+        $pjp_cabang_access = json_decode($user->pjp_cabang_access, true) ?? [];
+        $pjp_dept_access = json_decode($user->pjp_dept_access, true) ?? [];
+        $pjp_jabatan_access = json_decode($user->pjp_jabatan_access, true) ?? [];
+        $pjp_karyawan_access = json_decode($user->pjp_karyawan_access, true) ?? [];
+        $pjp_group_access = json_decode($user->pjp_group_access, true) ?? [];
+        $pjp_kategori_jabatan_access = json_decode($user->pjp_kategori_jabatan_access, true) ?? [];
+
+        if (!in_array('all', $pjp_cabang_access)) {
+            $query->whereIn('hrd_karyawan.kode_cabang', $pjp_cabang_access);
+        }
+
+        if (!in_array('all', $pjp_dept_access)) {
+            $query->whereIn('hrd_karyawan.kode_dept', $pjp_dept_access);
+        }
+
+        if (!in_array('all', $pjp_jabatan_access)) {
+            $query->whereIn('hrd_karyawan.kode_jabatan', $pjp_jabatan_access);
+        }
+
+        if (!in_array('all', $pjp_karyawan_access)) {
+            $query->whereIn('hrd_karyawan.nik', $pjp_karyawan_access);
+        }
+
+        if (!empty($pjp_group_access) && !in_array('all', $pjp_group_access)) {
+            $query->whereIn('hrd_karyawan.kode_group', $pjp_group_access);
+        }
+
+        $query->whereIn('hrd_jabatan.kategori', $pjp_kategori_jabatan_access);
+
+        if (!$user->hasRole($roles_access_all_cabang) && empty($pjp_cabang_access)) {
+            $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+        }
+
         return $query;
     }
 }

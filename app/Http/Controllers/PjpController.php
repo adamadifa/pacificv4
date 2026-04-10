@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bank;
 use App\Models\Cabang;
+use App\Models\Group;
 use App\Models\Historibayarpjp;
 use App\Models\Ledger;
 use App\Models\Ledgerpjp;
@@ -28,6 +29,8 @@ class PjpController extends Controller
 
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
+        $data['group'] = Group::orderBy('nama_group')->get();
+        $data['roles_show_cabang_pjp'] = config('global.roles_show_cabang');
         return view('keuangan.pjp.index', $data);
     }
 
