@@ -328,7 +328,7 @@ class PresensiController extends Controller
         curl_close($ch);
 
         $res = json_decode($result);
-        $datamesin1 = $res->data;
+        $datamesin1 = isset($res->data) && is_array($res->data) ? $res->data : [];
 
         $filtered_array = array_filter($datamesin1, function ($obj) use ($specific_value) {
             return $obj->pin == $specific_value;
@@ -382,7 +382,7 @@ class PresensiController extends Controller
         curl_close($ch);
 
         $res = json_decode($result);
-        $datamesin2 = $res->data;
+        $datamesin2 = isset($res->data) && is_array($res->data) ? $res->data : [];
 
         $filtered_array_2 = array_filter($datamesin2, function ($obj) use ($specific_value) {
             return $obj->pin == $specific_value;
