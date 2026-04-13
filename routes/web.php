@@ -23,6 +23,7 @@ use App\Http\Controllers\BarangmasukmaintenanceController;
 use App\Http\Controllers\BarangmasukproduksiController;
 use App\Http\Controllers\BarangpembelianController;
 use App\Http\Controllers\BarangproduksiController;
+use App\Http\Controllers\BBMController;
 use App\Http\Controllers\BengkelController;
 use App\Http\Controllers\BpbjController;
 use App\Http\Controllers\BpjskesehatanController;
@@ -2318,7 +2319,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/programikatan2026/create', 'create')->name('programikatan2026.create');
         Route::post('/programikatan2026/store', 'store')->name('programikatan2026.store');
         Route::get('/programikatan2026/monitoring', 'monitoring')->name('programikatan2026.monitoring');
-        
+
         Route::get('/programikatan2026/{no_pengajuan}/setajuanprogramikatan', 'setajuanprogramikatan')->name('programikatan2026.setajuanprogramikatan');
         Route::delete('/programikatan2026/{no_pengajuan}/delete', 'destroy')->name('programikatan2026.delete');
         Route::get('/programikatan2026/{no_pengajuan}/approve', 'approve')->name('programikatan2026.approve');
@@ -2326,7 +2327,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/programikatan2026/{no_pengajuan}/cetak', 'cetak')->name('programikatan2026.cetak');
         Route::get('/programikatan2026/{no_pengajuan}/cetakkesepakatan', 'cetakkesepakatan')->name('programikatan2026.cetakkesepakatan');
         Route::get('/programikatan2026/{no_pengajuan}/getpelangganjson', 'getPelangganJson')->name('programikatan2026.getpelangganjson');
-        
+
         // Detail Pelanggan Routes
         Route::get('/programikatan2026/{no_pengajuan}/tambahpelanggan', 'tambahpelanggan')->name('programikatan2026.tambahpelanggan');
         Route::post('/programikatan2026/{no_pengajuan}/storepelanggan', 'storepelanggan')->name('programikatan2026.storepelanggan');
@@ -2554,9 +2555,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/bpbpembelian/{no_bppb}/store-bukti', 'storeBukti')->name('storeBukti');
     });
 
-    
-    
-     Route::controller(InternalMemoController::class)->group(function () {
+
+
+    Route::controller(InternalMemoController::class)->group(function () {
         Route::get('/internalmemo', 'index')->name('internalmemo.index');
         Route::get('/internalmemo/create', 'create')->name('internalmemo.create');
         Route::post('/internalmemo', 'store')->name('internalmemo.store');
@@ -2571,6 +2572,19 @@ Route::middleware('auth')->group(function () {
         Route::post('internalmemo/{id}/paham', 'paham')->name('internalmemo.paham');
         Route::get('internalmemo/{id}/diskusi', 'diskusi')->name('internalmemo.diskusi');
         Route::post('internalmemo/{id}/diskusi', 'kirimDiskusi')->name('internalmemo.diskusi.kirim');
+
+
+    });
+
+    Route::controller(BBMController::class)->group(function () {
+        Route::get('/bbm/create', 'create')->name('bbm.create');
+        Route::get('/bbm/{id}/edit', 'edit')->name('bbm.edit');
+        Route::put('/bbm/{id}/update', 'update')->name('bbm.update');
+        Route::post('/bbm', 'store')->name('bbm.store');
+        Route::delete('/bbm/{id}', 'destroy')->name('bbm.delete');
+        Route::get('/bbm/{id}/show', 'show')->name('bbm.show');
+        Route::post('/bbm/cetak', 'cetak')->name('bbm.cetak');
+        Route::get('/bbm/get-km-terakhir/{id}', 'getKmTerakhir')->name('getKmTerakhir');
     });
 });
 
