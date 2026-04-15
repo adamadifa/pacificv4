@@ -2482,6 +2482,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/worksheetom/evaluasisharing', [WorksheetomController::class, 'evaluasisharing'])->name('worksheetom.evaluasisharing')->can('worksheetom.evaluasisharing');
     Route::get('/worksheetom/bbm', [WorksheetomController::class, 'bbm'])->name('worksheetom.bbm')->can('worksheetom.bbm');
     Route::get('/worksheetom/ratiobs', [LaporanmarketingController::class, 'ratiobs'])->name('worksheetom.ratiobs')->can('worksheetom.ratiobs');
+    Route::get('/worksheetom/bbm', [BBMController::class, 'index'])->name('worksheetom.bbm')->can('worksheetom.bbm');
 
 
     Route::controller(SaldoawalbukubesarController::class)->group(function () {
