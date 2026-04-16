@@ -296,7 +296,7 @@ class BBMController extends Controller
             $q->where('kontrol_bbm.kode_driver_helper', $request->kode_driver_helper_search);
         });
         $query->when(Auth::user()->kode_cabang != 'PST', function ($q) {
-                $q->where('kontrol_bbm.kode_cabang', Auth::user()->kode_cabang);
+            $q->where('kontrol_bbm.kode_cabang', Auth::user()->kode_cabang);
         });
         $query->when($request->filled('kode_cabang_search'), function ($q) use ($request) {
             $q->where('kontrol_bbm.kode_cabang', $request->kode_cabang_search);
@@ -311,7 +311,10 @@ class BBMController extends Controller
 
         }
         $query->orderBy('kendaraan.no_polisi');
-        $query->orderBy('tanggal');
+        if ($jenis_laporan != 'rekap') {
+            $query->orderBy('tanggal');
+        }
+
         $data['bbm'] = $query->get();
         $data['kendaraan'] = DB::table('kendaraan')
             ->where('kode_kendaraan', $request->kode_kendaraan_search)
