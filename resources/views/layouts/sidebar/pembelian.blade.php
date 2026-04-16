@@ -1,4 +1,5 @@
-@if (auth()->user()->hasAnyPermission([
+@if (
+        auth()->user()->hasAnyPermission([
             'pembelian.index',
             'pembelian.jatuhtempo',
             'jurnalkoreksi.index',
@@ -13,7 +14,8 @@
             'pb.jurnalkoreksi',
             'pb.rekapakun',
             'pb.rekapkontrabon',
-        ]))
+        ])
+    )
     <li
         class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'po', 'po/*', 'jurnalkoreksi', 'kontrabonpembelian', 'kontrabonpembelian/*', 'laporanpembelian']) ? 'open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -42,6 +44,13 @@
                     </a>
                 </li>
             @endif
+            @if (auth()->user()->hasAnyPermission(['bpbpembelian.index']))
+                <li class="menu-item {{ request()->is(['bpbpembelian', 'bpbpembelian/*']) ? 'active' : '' }}">
+                    <a href="{{ route('po.index') }}" class="menu-link">
+                        <div>BPB</div>
+                    </a>
+                </li>
+            @endif
             @if (auth()->user()->hasAnyPermission(['jurnalkoreksi.index']))
                 <li class="menu-item {{ request()->is(['jurnalkoreksi']) ? 'active' : '' }}">
                     <a href="{{ route('jurnalkoreksi.index') }}" class="menu-link">
@@ -56,7 +65,8 @@
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->hasAnyPermission([
+            @if (
+                    auth()->user()->hasAnyPermission([
                         'pb.pembelian',
                         'pb.rekapsupplier',
                         'pb.rekappembelian',
@@ -66,7 +76,8 @@
                         'pb.jurnalkoreksi',
                         'pb.rekapakun',
                         'pb.rekapkontrabon',
-                    ]))
+                    ])
+                )
                 <li class="menu-item {{ request()->is(['laporanpembelian', 'laporanpembelian/*']) ? 'active' : '' }}">
                     <a href="{{ route('laporanpembelian.index') }}" class="menu-link">
                         <div>Laporan</div>

@@ -132,11 +132,13 @@
             $jml_premi_shift2_lembur = $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
             $jml_premi_shift3_lembur = $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
 
-            $total_premi_shift2_lembur += $jml_premi_shift2_lembur;
-            $total_premi_shift3_lembur += $jml_premi_shift3_lembur;
+            if ($tanggal_presensi < '2026-03-21') {
+                $total_premi_shift2_lembur += $jml_premi_shift2_lembur;
+                $total_premi_shift3_lembur += $jml_premi_shift3_lembur;
 
-            $upah_premi_shift2_total += $jml_premi_shift2_lembur * $premi_shift2_rate;
-            $upah_premi_shift3_total += $jml_premi_shift3_lembur * $premi_shift3_rate;
+                $upah_premi_shift2_total += $jml_premi_shift2_lembur * $premi_shift2_rate;
+                $upah_premi_shift3_total += $jml_premi_shift3_lembur * $premi_shift3_rate;
+            }
         @endphp
         @if (isset($d[$tanggal_presensi]))
             @php
