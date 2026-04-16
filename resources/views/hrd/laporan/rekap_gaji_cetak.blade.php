@@ -694,7 +694,7 @@
                                             : 0;
                                     $potongan_jam_izin = 0;
                                     $potongan_jam_pulangcepat =
-                                        $d[$tanggal_presensi]['izin_pulang_direktur'] == '1'
+                                        $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' || ($tanggal_presensi >= '2026-03-21' && $pulangcepat['desimal'] < 1)
                                             ? 0
                                             : $pulangcepat['desimal'];
                                     $potongan_jam_izinkeluar =
