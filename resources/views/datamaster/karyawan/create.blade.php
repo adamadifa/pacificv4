@@ -88,8 +88,14 @@
             <option value="T">Tetap</option>
         </select>
     </div>
+    <div class="row">
+        <div class="col-12">
+            <x-input-with-icon-label icon="ti ti-camera" label="Foto Karyawan" name="foto" type="file" />
+        </div>
+    </div>
     <div class="form-group">
         <button class="btn btn-primary w-100" type="submit">
+
             <ion-icon name="send-outline" class="me-1"></ion-icon>
             Submit
         </button>

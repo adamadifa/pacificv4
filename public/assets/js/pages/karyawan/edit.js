@@ -178,6 +178,16 @@
                         },
                     }
                 },
+                foto: {
+                    validators: {
+                        file: {
+                            extension: 'jpeg,jpg,png',
+                            type: 'image/jpeg,image/png',
+                            maxSize: 1048576,
+                            message: 'Foto Harus Berupa Gambar (jpeg, jpg, png) dan Maksimal 1 MB'
+                        }
+                    }
+                },
 
 
 

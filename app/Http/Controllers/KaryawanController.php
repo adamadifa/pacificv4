@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class KaryawanController extends Controller
@@ -151,8 +152,14 @@ class KaryawanController extends Controller
             'kode_jabatan' => 'required',
             'kode_klasifikasi' => 'required',
             'tanggal_masuk' => 'required',
-            'status_karyawan' => 'required'
+            'status_karyawan' => 'required',
+            'foto' => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024'
         ]);
+
+        $foto = null;
+        if ($request->hasFile('foto')) {
+            $foto = $request->nik . "." . $request->file('foto')->getClientOriginalExtension();
+        }
 
         try {
             Karyawan::create([
@@ -176,8 +183,14 @@ class KaryawanController extends Controller
                 'status_karyawan' => $request->status_karyawan,
                 'lock_location' => 1,
                 'status_aktif_karyawan' => 1,
-                'password' => Hash::make('12345')
+                'password' => Hash::make('12345'),
+                'foto' => $foto
             ]);
+
+            if ($request->hasFile('foto')) {
+                $destination_foto_path = "/public/karyawan";
+                $request->file('foto')->storeAs($destination_foto_path, $foto);
+            }
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
@@ -233,8 +246,15 @@ class KaryawanController extends Controller
             'tanggal_masuk' => 'required',
             'status_karyawan' => 'required',
             'status_aktif_karyawan' => 'required',
-            'kode_jadwal' => 'required'
+            'kode_jadwal' => 'required',
+            'foto' => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024'
         ]);
+
+        $karyawan = Karyawan::where('nik', $nik)->first();
+        $foto = $karyawan->foto;
+        if ($request->hasFile('foto')) {
+            $foto = $request->nik . "." . $request->file('foto')->getClientOriginalExtension();
+        }
 
         try {
             Karyawan::where('nik', $nik)->update([
@@ -260,8 +280,15 @@ class KaryawanController extends Controller
                 'tanggal_nonaktif' => $request->status_aktif_karyawan === "0" ? $request->tanggal_nonaktif : NULL,
                 'tanggal_off_gaji' => $request->status_aktif_karyawan === "0" ? $request->tanggal_off_gaji : NULL,
                 'kode_jadwal' => $request->kode_jadwal,
-                'pin' => $request->pin
+                'pin' => $request->pin,
+                'foto' => $foto
             ]);
+
+            if ($request->hasFile('foto')) {
+                $destination_foto_path = "/public/karyawan";
+                Storage::delete($destination_foto_path . "/" . $karyawan->foto);
+                $request->file('foto')->storeAs($destination_foto_path, $foto);
+            }
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
