@@ -10,6 +10,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
         "jenssegers/agent": "^2.6",
+        "laravel-notification-channels/webpush": "^9.0",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",

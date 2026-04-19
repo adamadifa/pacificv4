@@ -41,6 +41,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/attendance-summary', [\App\Http\Controllers\Api\AttendanceController::class, 'getSummary']);
     Route::get('/attendance-today', [\App\Http\Controllers\Api\AttendanceController::class, 'getAttendanceToday']);
     Route::post('/attendance-store', [\App\Http\Controllers\Api\AttendanceController::class, 'store']);
+
+    // Push Notification Subscriptions
+    Route::post('/push-subscribe', [\App\Http\Controllers\Api\PushSubscriptionController::class, 'subscribe']);
+    Route::post('/push-unsubscribe', [\App\Http\Controllers\Api\PushSubscriptionController::class, 'unsubscribe']);
 });
 
 // API Sync Jurnal Umum
