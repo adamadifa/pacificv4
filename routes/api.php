@@ -19,8 +19,6 @@ use App\Http\Controllers\Api\AdmsController;
 // Route::get('/slipgaji/{bulan}/{tahun}/{nik}', [App\Http\Controllers\Api\SlipgajiController::class, 'show']);
 // Route::get('/api/slipgaji', [App\Http\Controllers\Api\SlipgajiController::class, 'index']);
 
-Route::apiResource('/slipgaji', App\Http\Controllers\Api\SlipgajiController::class);
-Route::get('/slipgaji/{bulangaji}/{tahungaji}/{nik}', [App\Http\Controllers\Api\SlipgajiController::class, 'show']);
 // API Employee Auth
 Route::post('/login-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'login']);
 
@@ -30,6 +28,14 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('/me-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'me']);
+    Route::get('/slipgaji-months', [App\Http\Controllers\Api\SlipgajiController::class, 'getMonths']);
+    Route::get('/slipgaji/{bulangaji}/{tahungaji}/{nik}', [App\Http\Controllers\Api\SlipgajiController::class, 'show']);
+    Route::get('/pinjaman', [App\Http\Controllers\Api\PinjamanController::class, 'index']);
+    Route::get('/pinjaman/{type}/{id}', [App\Http\Controllers\Api\PinjamanController::class, 'show']);
+    Route::get('/pinjaman-simulation-rules', [App\Http\Controllers\Api\PinjamanController::class, 'getSimulationRules']);
+    Route::get('/izin', [App\Http\Controllers\Api\IzinController::class, 'index']);
+    Route::get('/izin/form-data', [App\Http\Controllers\Api\IzinController::class, 'getFormData']);
+    Route::post('/izin/store', [App\Http\Controllers\Api\IzinController::class, 'store']);
     Route::post('/logout-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'logout']);
     Route::get('/attendance-history', [\App\Http\Controllers\Api\AttendanceController::class, 'getHistory']);
     Route::get('/attendance-summary', [\App\Http\Controllers\Api\AttendanceController::class, 'getSummary']);

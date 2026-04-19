@@ -16,7 +16,7 @@ class AttendanceController extends Controller
         $user = $request->user();
         $nik = $user->nik;
 
-        $presensi = DB::table('hrd_presensi')
+        $query = DB::table('hrd_presensi')
             ->select(
                 'hrd_presensi.id',
                 'hrd_presensi.tanggal',
@@ -39,9 +39,16 @@ class AttendanceController extends Controller
             ->leftJoin('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti')
             ->leftJoin('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti')
             ->where('hrd_presensi.nik', $nik)
-            ->orderBy('hrd_presensi.tanggal', 'desc')
-            ->limit(30)
-            ->get();
+            ->orderBy('hrd_presensi.tanggal', 'desc');
+
+        if ($request->has('bulan') && $request->has('tahun')) {
+            $query->whereMonth('hrd_presensi.tanggal', $request->bulan)
+                  ->whereYear('hrd_presensi.tanggal', $request->tahun);
+        } else {
+            $query->limit(30);
+        }
+
+        $presensi = $query->get();
 
         $history = $presensi->map(function ($d) use ($user) {
             $tanggal_presensi = $d->tanggal;
