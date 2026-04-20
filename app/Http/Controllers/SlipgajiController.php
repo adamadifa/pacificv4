@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Slipgaji;
+use App\Models\Karyawan;
+use App\Notifications\SalarySlipNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Notification;
 
 class SlipgajiController extends Controller
 {
@@ -34,6 +37,13 @@ class SlipgajiController extends Controller
                 'tahun' => $request->tahun,
                 'status' => $request->status
             ]);
+
+            // Auto Notify if Published
+            if ($request->status == 1) {
+                $karyawans = Karyawan::where('status_aktif_karyawan', 1)->get();
+                Notification::send($karyawans, new SalarySlipNotification($request->bulan, $request->tahun));
+            }
+
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
@@ -58,6 +68,13 @@ class SlipgajiController extends Controller
                 'tahun' => $request->tahun,
                 'status' => $request->status
             ]);
+
+            // Auto Notify if Published
+            if ($request->status == 1) {
+                $karyawans = Karyawan::where('status_aktif_karyawan', 1)->get();
+                Notification::send($karyawans, new SalarySlipNotification($request->bulan, $request->tahun));
+            }
+
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
