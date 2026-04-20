@@ -1,22 +1,22 @@
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
-   
- <IfModule mod_expires.c>
-     ExpiresActive On
-     # Cache vendor assets for 1 month
-     <FilesMatch "\.(js|css)$">
-         ExpiresDefault "access plus 1 month"
-     </FilesMatch>
- </IfModule>
+    </IfModule>
 
     RewriteEngine On
+
+    # --- TAMBAHKAN INI UNTUK FIX CORS ---
+    # Jika request bertipe OPTIONS, langsung tujukan ke index.php 
+    # agar diproses oleh middleware CORS Laravel
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ index.php [L]
+    # ------------------------------------
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Force environment variables for Fingerspot headers (Support Underscores)
+    # Force environment variables for Fingerspot headers
     RewriteCond %{HTTP:dev_id} ^(.*)$
     RewriteRule .* - [E=HTTP_DEV_ID:%1]
     RewriteCond %{HTTP:request_code} ^(.*)$
@@ -24,7 +24,7 @@
     RewriteCond %{HTTP:trans_id} ^(.*)$
     RewriteRule .* - [E=HTTP_TRANS_ID:%1]
 
-    # Optional: Match hyphenated versions as well
+    # Optional: Match hyphenated versions
     SetEnvIf No-Case ^Request-Code$ (.+) HTTP_REQUEST_CODE=$1
     SetEnvIf No-Case ^Trans-Id$ (.+) HTTP_TRANS_ID=$1
     SetEnvIf No-Case ^Dev-Id$ (.+) HTTP_DEV_ID=$1
