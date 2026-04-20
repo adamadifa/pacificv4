@@ -39,10 +39,10 @@ class SlipgajiController extends Controller
             ]);
 
             // Auto Notify if Published
-            if ($request->status == 1) {
-                $karyawans = Karyawan::where('status_aktif_karyawan', 1)->get();
-                Notification::send($karyawans, new SalarySlipNotification($request->bulan, $request->tahun));
-            }
+            // if ($request->status == 1) {
+            //     $karyawans = Karyawan::where('status_aktif_karyawan', 1)->get();
+            //     Notification::send($karyawans, new SalarySlipNotification($request->bulan, $request->tahun));
+            // }
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
@@ -70,10 +70,10 @@ class SlipgajiController extends Controller
             ]);
 
             // Auto Notify if Published
-            if ($request->status == 1) {
-                $karyawans = Karyawan::where('status_aktif_karyawan', 1)->get();
-                Notification::send($karyawans, new SalarySlipNotification($request->bulan, $request->tahun));
-            }
+            // if ($request->status == 1) {
+            //     $karyawans = Karyawan::where('status_aktif_karyawan', 1)->get();
+            //     Notification::send($karyawans, new SalarySlipNotification($request->bulan, $request->tahun));
+            // }
 
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
