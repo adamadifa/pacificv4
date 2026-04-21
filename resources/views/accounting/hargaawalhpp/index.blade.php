@@ -94,8 +94,13 @@
                     </table>
                 </div>
             </div>
-            <div class="form-group mt-3">
-                <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>UPDATE DATA</button>
+            <div class="row mt-3">
+                <div class="col-lg-6 col-md-12">
+                    <button class="btn btn-primary w-100 mb-2" id="btnSimpan"><i class="ti ti-send me-1"></i>UPDATE DATA</button>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <button class="btn btn-success w-100" type="button" id="btnGenerateHarga"><i class="ti ti-refresh me-1"></i>GENERATE HARGA</button>
+                </div>
             </div>
         </form>
     </div>
@@ -184,7 +189,89 @@
                 return false;
             }
             buttonDisable();
-        })
+        });
+
+        $("#btnGenerateHarga").click(function(e) {
+            e.preventDefault();
+            const bulan = $('#bulan').val();
+            const tahun = $('#tahun').val();
+            const lokasi = $('#lokasi').val();
+
+            if (bulan == "" || tahun == "" || lokasi == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Bulan, Tahun, dan Lokasi Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true
+                });
+                return false;
+            }
+
+            Swal.fire({
+                title: "Konfirmasi",
+                text: "Apakah Anda Yakin Ingin Generate Harga dari Rekap BJ Bulan Sebelumnya?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Ya, Generate!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $("#btnGenerateHarga").prop('disabled', true);
+                    $("#btnGenerateHarga").html(`<div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                    </div>`);
+
+                    $.ajax({
+                        url: `/hargaawalhpp/generateharga`,
+                        type: 'POST',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            bulan: bulan,
+                            tahun: tahun,
+                            lokasi: lokasi
+                        },
+                        success: function(respond) {
+                            $("#btnGenerateHarga").prop('disabled', false);
+                            $("#btnGenerateHarga").html(`<i class="ti ti-refresh me-1"></i>GENERATE HARGA`);
+
+                            // Update input values
+                            $(".kode_produk").each(function() {
+                                const kode_produk = $(this).val();
+                                if (respond[kode_produk] !== undefined) {
+                                    const harga = respond[kode_produk];
+                                    // Cari input harga_awal di row yang sama
+                                    $(this).closest('tr').find('input[name="harga_awal[]"]').val(harga);
+                                }
+                            });
+
+                            // Re-init number separator
+                            easyNumberSeparator({
+                                selector: '.number-separator',
+                                separator: '.',
+                                decimalSeparator: ',',
+                            });
+
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: "Harga Berhasil Di-generate. Silakan Periksa dan Klik UPDATE DATA untuk Menyimpan.",
+                                icon: "success",
+                                showConfirmButton: true
+                            });
+                        },
+                        error: function() {
+                            $("#btnGenerateHarga").prop('disabled', false);
+                            $("#btnGenerateHarga").html(`<i class="ti ti-refresh me-1"></i>GENERATE HARGA`);
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Gagal Generate Harga. Pastikan Data Rekap BJ Bulan Sebelumnya Sudah Lengkap.",
+                                icon: "error",
+                                showConfirmButton: true
+                            });
+                        }
+                    });
+                }
+            });
+        });
     });
 </script>
 @endpush

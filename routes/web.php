@@ -1595,6 +1595,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/hargaawalhpp/{id}/delete', 'destroy')->name('hargaawalhpp.delete')->can('hargaawalhpp.delete');
 
         Route::post('/hargaawalhpp/gethargaawal', 'gethargaawal')->name('hargaawalhpp.gethargaawal')->can('hargaawalhpp.create');
+        Route::post('/hargaawalhpp/generateharga', 'generateharga')->name('hargaawalhpp.generateharga')->can('hargaawalhpp.create');
     });
 
 

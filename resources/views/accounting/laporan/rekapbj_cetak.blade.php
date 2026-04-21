@@ -74,8 +74,8 @@
                         @php
                             $harga_gudang =
                                 $d->saldoawal_produksi + $d->produksi_bpbj != 0
-                                    ? $d->saldoawal_produksi * $d->hargaawal_produksi +
-                                        ($d->produksi_bpbj * $d->harga_hpp) / ($d->saldoawal_produksi + $d->produksi_bpbj)
+                                    ? ($d->saldoawal_produksi * $d->hargaawal_produksi +
+                                        $d->produksi_bpbj * $d->harga_hpp) / ($d->saldoawal_produksi + $d->produksi_bpbj)
                                     : 0;
 
                             $harga_kirim_cabang =
@@ -114,7 +114,7 @@
                                     $qty_pusat_cabang = ROUND($d->{"pusat_$c->kode_cabang"} / $d->isi_pcs_dus, 2);
                                     $qty_transit_in_cabang = ROUND($d->{"transit_in_$c->kode_cabang"} / $d->isi_pcs_dus, 2);
                                     $qty_retur_cabang = ROUND($d->{"retur_$c->kode_cabang"} / $d->isi_pcs_dus, 2);
-                                    $qty_lainlain_in_cabang = ROUND($d->{"hutang_kirim_$c->kode_cabang"} / $d->isi_pcs_dus, 2);
+                                    $qty_lainlain_in_cabang = 0; // Diabaikan sesuai permintaan user agar harga tetap seperti sebelumnya
                                     $qty_repack_cabang = ROUND($d->{"repack_$c->kode_cabang"} / $d->isi_pcs_dus, 2);
 
                                     $total_qty_cabang =
