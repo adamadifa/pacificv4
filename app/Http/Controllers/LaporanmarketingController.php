@@ -7198,24 +7198,29 @@ class LaporanmarketingController extends Controller
             $query = Penjualan::query();
             $query->select('marketing_penjualan.no_faktur')
                 ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-                ->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai])
-                ->where('marketing_penjualan.status_pajak', 1) // Only those marked as Pajak
                 ->where('marketing_penjualan.status_batal', 0); // Only active invoices
 
-             if (!empty($kode_cabang)) {
-                $query->where('salesman.kode_cabang', $kode_cabang);
-            }
+            if (!empty($request->no_faktur)) {
+                $query->whereIn('marketing_penjualan.no_faktur', $request->no_faktur);
+            } else {
+                $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai])
+                    ->where('marketing_penjualan.status_pajak', 1); // Only those marked as Pajak
 
-            if (!empty($request->kode_salesman)) {
-                $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
-            }
+                if (!empty($kode_cabang)) {
+                    $query->where('salesman.kode_cabang', $kode_cabang);
+                }
 
-            if (!empty($request->kode_pelanggan)) {
-                $query->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
-            }
+                if (!empty($request->kode_salesman)) {
+                    $query->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+                }
 
-            if (!empty($request->jenis_transaksi)) {
-                $query->where('marketing_penjualan.jenis_transaksi', $request->jenis_transaksi);
+                if (!empty($request->kode_pelanggan)) {
+                    $query->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan);
+                }
+
+                if (!empty($request->jenis_transaksi)) {
+                    $query->where('marketing_penjualan.jenis_transaksi', $request->jenis_transaksi);
+                }
             }
             
             $fakturs = $query->get();
@@ -7227,17 +7232,21 @@ class LaporanmarketingController extends Controller
 
             // Pre-Delete: Hapus data lama di server sebelum batch sync
             $preDeletePayload = [];
-            if (!empty($kode_cabang)) {
-                $preDeletePayload['kode_cabang'] = $kode_cabang;
-            }
-            if (!empty($request->kode_salesman)) {
-                $preDeletePayload['kode_salesman'] = $request->kode_salesman;
-            }
-            if (!empty($request->dari)) {
-                $preDeletePayload['dari'] = $request->dari;
-            }
-            if (!empty($request->sampai)) {
-                $preDeletePayload['sampai'] = $request->sampai;
+            if (!empty($request->no_faktur)) {
+                $preDeletePayload['no_faktur'] = $request->no_faktur;
+            } else {
+                if (!empty($kode_cabang)) {
+                    $preDeletePayload['kode_cabang'] = $kode_cabang;
+                }
+                if (!empty($request->kode_salesman)) {
+                    $preDeletePayload['kode_salesman'] = $request->kode_salesman;
+                }
+                if (!empty($request->dari)) {
+                    $preDeletePayload['dari'] = $request->dari;
+                }
+                if (!empty($request->sampai)) {
+                    $preDeletePayload['sampai'] = $request->sampai;
+                }
             }
 
             if (!empty($preDeletePayload)) {
@@ -7323,7 +7332,7 @@ class LaporanmarketingController extends Controller
                     'keterangan' => $penjualan->keterangan ?? '',
                     'status_batal' => $penjualan->status_batal ?? '0',
                     'lock_print' => $penjualan->lock_print ?? '0',
-                    'salesman' => Salesman::where('kode_salesman', $penjualan->kode_salesman)->first(),
+                    'salesman' => Salesman::where('kode_salesman', $kode_salesman_to_send)->first(),
                     'pelanggan' => Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first(),
                     'detail' => [],
                     'historibayar' => []

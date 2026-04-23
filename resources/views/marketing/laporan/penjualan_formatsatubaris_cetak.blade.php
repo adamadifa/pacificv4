@@ -282,6 +282,16 @@
                 e.preventDefault();
                 if(!confirm('Apakah anda yakin ingin melakukan sinkronisasi ulang semua data status pajak sesuai filter yang aktif?')) return;
                 
+                var no_faktur = [];
+                $('.checkbox-pajak:checked').each(function() {
+                    no_faktur.push($(this).data('no-faktur'));
+                });
+
+                if (no_faktur.length == 0) {
+                    alert('Tidak ada data yang dicentang!');
+                    return;
+                }
+
                 var btn = $(this);
                 var originalText = btn.text();
                 btn.prop('disabled', true).text('Syncing...');
@@ -297,7 +307,8 @@
                         kode_salesman: '{{ $salesman->kode_salesman ?? "" }}',
                         kode_pelanggan: '{{ request("kode_pelanggan") }}',
                         jenis_transaksi: '{{ request("jenis_transaksi") }}',
-                        status_penjualan: '{{ request("status_penjualan") }}'
+                        status_penjualan: '{{ request("status_penjualan") }}',
+                        no_faktur: no_faktur
                     },
                     success: function(response) {
                         btn.prop('disabled', false).text(originalText);
