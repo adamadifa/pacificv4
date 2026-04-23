@@ -2090,6 +2090,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanmarketing/cetakratiobs', 'cetakratiobs')->name('laporanmarketing.cetakratiobs')->can('worksheetom.ratiobs');
         Route::post('/laporanmarketing/updatestatuspajak', 'updatestatuspajak')->name('laporanmarketing.updatestatuspajak');
         Route::post('/laporanmarketing/syncallpajak', 'syncAllPajak')->name('laporanmarketing.syncallpajak');
+        Route::post('/laporanmarketing/syncallkasbesar', 'syncallkasbesar')->name('laporanmarketing.syncallkasbesar');
         Route::post('/laporanmarketing/updatestatuspajakretur', 'updatestatuspajakretur')->name('laporanmarketing.updatestatuspajakretur');
     });
 

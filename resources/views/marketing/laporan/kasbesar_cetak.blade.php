@@ -47,10 +47,18 @@
         @endif
     </div>
     <div class="content">
+        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+            <div style="margin-bottom: 10px">
+                <button id="btnSyncAll" class="btn btn-primary">Sync All Selected</button>
+            </div>
+        @endif
         <div class="freeze-table">
             <table class="datatable3" style="width: 150%">
                 <thead>
                     <tr>
+                        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+                            <th rowspan="2">Sync</th>
+                        @endif
                         <th rowspan="2">Tgl</th>
                         <th rowspan="2">No Bukti</th>
                         <th rowspan="2">No Faktur</th>
@@ -147,8 +155,22 @@
                             if ($d->ljt > 15) {
                                 $total_ljt += $bayar;
                             }
+
+                            $row_color = '';
+                            if ($d->status_pajak == 1 && $d->status_pajak_hb == 0) {
+                                $row_color = 'background-color: #fcf68e';
+                            } elseif ($d->status_pajak_hb == 1) {
+                                $row_color = 'background-color: #a7f3d0';
+                            }
                         @endphp
-                        <tr>
+                        <tr style="{{ $row_color }}">
+                            @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+                                <td class="center">
+                                    @if ($d->status_pajak == 1)
+                                        <input type="checkbox" class="checkbox-sync" data-no-faktur="{{ $d->no_faktur }}" checked>
+                                    @endif
+                                </td>
+                            @endif
                             <td>{{ formatIndo($d->tglbayar) }}</td>
                             <td>{{ $d->no_bukti }}</td>
                             <td>{{ $d->no_faktur }}</td>
@@ -177,7 +199,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="11">TOTAL</th>
+                        <th colspan="{{ auth()->user()->hasRole(config('global.roles_show_status_pajak')) ? '12' : '11' }}">TOTAL</th>
                         <th class="right">{{ formatAngka($total_tunai) }}</th>
                         <th class="right">{{ formatAngka($total_titipan) }}</th>
                         <th class="right">{{ formatAngka($total_tagihan) }}</th>
@@ -214,6 +236,9 @@
             <table class="datatable3">
                 <thead>
                     <tr>
+                        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+                            <th>Sync</th>
+                        @endif
                         <th>Tanggal</th>
                         <th>No Faktur</th>
                         <th>Kode Pelanggan</th>
@@ -229,8 +254,21 @@
                     @foreach ($voucher as $d)
                         @php
                             $total_voucher += $d->jmlbayar;
+                            $row_color = '';
+                            if ($d->status_pajak == 1 && $d->status_pajak_hb == 0) {
+                                $row_color = 'background-color: #fcf68e';
+                            } elseif ($d->status_pajak_hb == 1) {
+                                $row_color = 'background-color: #a7f3d0';
+                            }
                         @endphp
-                        <tr>
+                        <tr style="{{ $row_color }}">
+                            @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+                                <td class="center">
+                                    @if ($d->status_pajak == 1)
+                                        <input type="checkbox" class="checkbox-sync" data-no-faktur="{{ $d->no_faktur }}" checked>
+                                    @endif
+                                </td>
+                            @endif
                             <td>{{ formatIndo($d->tglbayar) }}</td>
                             <td>{{ $d->no_faktur }}</td>
                             <td>{{ $d->kode_pelanggan }}</td>
@@ -240,7 +278,7 @@
                         </tr>
                     @endforeach
                     <tr>
-                        <th colspan="5">TOTAL</th>
+                        <th colspan="{{ auth()->user()->hasRole(config('global.roles_show_status_pajak')) ? '6' : '5' }}">TOTAL</th>
                         <th class="right">{{ formatAngka($total_voucher) }}</th>
                     </tr>
                 </tbody>
@@ -250,6 +288,62 @@
 </body>
 
 </html>
+@if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+    <script>
+        $(document).ready(function() {
+            $('#btnSyncAll').click(function(e) {
+                e.preventDefault();
+                if (!confirm('Apakah anda yakin ingin melakukan sinkronisasi ulang semua data status pajak sesuai filter yang aktif?')) return;
+
+                var no_faktur = [];
+                $('.checkbox-sync:checked').each(function() {
+                    var nf = $(this).data('no-faktur');
+                    if (no_faktur.indexOf(nf) === -1) {
+                        no_faktur.push(nf);
+                    }
+                });
+
+                if (no_faktur.length == 0) {
+                    alert('Tidak ada data yang dicentang!');
+                    return;
+                }
+
+                var btn = $(this);
+                var originalText = btn.text();
+                btn.prop('disabled', true).text('Syncing...');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('laporanmarketing.syncallkasbesar') }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        dari: '{{ $dari }}',
+                        sampai: '{{ $sampai }}',
+                        kode_cabang: '{{ $cabang->kode_cabang ?? '' }}',
+                        kode_salesman: '{{ $salesman->kode_salesman ?? '' }}',
+                        kode_pelanggan: '{{ request('kode_pelanggan') }}',
+                        jenis_bayar: '{{ request('jenis_bayar') }}',
+                        no_faktur: no_faktur
+                    },
+                    success: function(response) {
+                        btn.prop('disabled', false).text(originalText);
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        btn.prop('disabled', false).text(originalText);
+                        var msg = 'Gagal';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg += ': ' + xhr.responseJSON.message;
+                        }
+                        alert(msg);
+                    }
+                });
+            });
+        });
+    </script>
+@endif
+
 {{-- <script>
     $(".freeze-table").freezeTable({
         'scrollable': true,

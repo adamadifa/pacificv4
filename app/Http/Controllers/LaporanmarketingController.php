@@ -870,8 +870,10 @@ class LaporanmarketingController extends Controller
             'voucher',
             'jenis_voucher',
             'marketing_penjualan.status',
+            'marketing_penjualan.status_pajak',
             'marketing_penjualan.jenis_transaksi',
             'marketing_penjualan_historibayar.jenis_bayar',
+            'marketing_penjualan_historibayar.status_pajak_hb',
             'marketing_penjualan_giro.no_giro',
             'marketing_penjualan_giro.bank_pengirim as bank_pengirim_giro',
             'marketing_penjualan_giro_detail.jumlah as jumlah_giro',
@@ -986,7 +988,9 @@ class LaporanmarketingController extends Controller
             'pelanggan.nama_pelanggan',
             'marketing_penjualan_historibayar.jumlah as jmlbayar',
             'nama_voucher',
-            'marketing_penjualan_historibayar.keterangan'
+            'marketing_penjualan_historibayar.keterangan',
+            'marketing_penjualan.status_pajak',
+            'marketing_penjualan_historibayar.status_pajak_hb'
 
         );
         $qvoucher->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
@@ -7467,4 +7471,92 @@ class LaporanmarketingController extends Controller
             ], 500);
         }
     }
+
+    public function syncallkasbesar(Request $request)
+    {
+        $request->validate([
+            'no_faktur' => 'required|array',
+        ]);
+
+        try {
+            $baseUrl = env('SYNC_API_BASE_URL');
+            $fakturs = $request->no_faktur;
+
+            $batchData = [];
+            // Fetch all payments for these invoices
+            $historibayar = Historibayarpenjualan::whereIn('no_faktur', $fakturs)->get();
+
+            foreach ($historibayar as $bayar) {
+                $batchData[] = [
+                    'no_bukti' => $bayar->no_bukti,
+                    'no_faktur' => $bayar->no_faktur,
+                    'tanggal' => $bayar->tanggal,
+                    'kode_salesman' => $bayar->kode_salesman,
+                    'jenis_bayar' => $bayar->jenis_bayar,
+                    'jumlah' => $bayar->jumlah,
+                    'voucher' => $bayar->voucher,
+                    'jenis_voucher' => $bayar->jenis_voucher,
+                    'kode_lhp' => $bayar->kode_lhp,
+                    'kode_akun' => $bayar->kode_akun,
+                    'keterangan' => $bayar->keterangan,
+                    'id_user' => $bayar->id_user
+                ];
+            }
+
+            if (empty($batchData)) {
+                return response()->json(['success' => false, 'message' => 'Tidak ada data pembayaran untuk disync'], 400);
+            }
+
+            $chunks = array_chunk($batchData, 50);
+            $successCount = 0;
+            $failCount = 0;
+            $errors = [];
+
+            foreach ($chunks as $chunk) {
+                try {
+                    $response = Http::timeout(60)->post($baseUrl . '/kasbesar/batch', ['data' => $chunk]);
+                    if ($response->successful()) {
+                        $result = $response->json();
+                        if (isset($result['summary'])) {
+                            $successCount += $result['summary']['success'];
+                            $failCount += $result['summary']['failed'];
+                        }
+                        if (isset($result['results'])) {
+                            $successBuktis = [];
+                            foreach ($result['results'] as $res) {
+                                if ($res['status'] === 'success') {
+                                    $successBuktis[] = $res['no_bukti'];
+                                } else {
+                                    $errors[] = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Gagal');
+                                }
+                            }
+                            if (!empty($successBuktis)) {
+                                Historibayarpenjualan::whereIn('no_bukti', $successBuktis)->update(['status_pajak_hb' => 1]);
+                            }
+                        }
+                    } else {
+                        $failCount += count($chunk);
+                        $errors[] = "Batch Failed: " . ($response->json('message') ?? $response->body());
+                    }
+                } catch (\Exception $e) {
+                    $failCount += count($chunk);
+                    $errors[] = "Exception: " . $e->getMessage();
+                }
+            }
+
+            $message = "Sync Kas Besar selesai. Berhasil: $successCount, Gagal: $failCount";
+            if (count($errors) > 0) {
+                $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 5));
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }
+
