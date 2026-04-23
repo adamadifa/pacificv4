@@ -24,6 +24,7 @@ return [
         'http://127.0.0.1:3000',
         'http://192.168.1.3:3000',
         'http://192.168.1.4:3000',
+        'http://192.168.1.5:3000',
         'https://portalmp.tech',
         'http://portalmp.tech',
         'https://www.portalmp.tech',

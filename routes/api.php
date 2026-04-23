@@ -20,6 +20,14 @@ use App\Http\Controllers\Api\AdmsController;
 // Route::get('/api/slipgaji', [App\Http\Controllers\Api\SlipgajiController::class, 'index']);
 
 // API Employee Auth
+Route::get('/karyawan/{filename}', function ($filename) {
+    $path = public_path('storage/karyawan/' . $filename);
+    if (!file_exists($path)) {
+        return response()->json(['message' => 'Image not found.'], 404);
+    }
+    return response()->file($path);
+});
+
 Route::post('/login-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {

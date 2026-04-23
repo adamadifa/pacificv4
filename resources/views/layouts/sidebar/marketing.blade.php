@@ -140,6 +140,13 @@
                     </a>
                 </li>
             @endcan
+            @can('sapiutang.index')
+                <li class="menu-item {{ request()->is(['sapiutang', 'sapiutang/*']) ? 'active' : '' }}">
+                    <a href="{{ route('sapiutang.index') }}" class="menu-link">
+                        <div>Saldo Awal Piutang</div>
+                    </a>
+                </li>
+            @endcan
             @if (auth()->user()->hasAnyPermission(['ajuanlimit.index', 'ajuanfaktur.index', 'ajuanrouting.index']))
                 <li class="menu-item {{ request()->is(['ajuanlimit', 'ajuanlimit/*', 'ajuanfaktur']) ? 'active' : '' }}">
                     <a href="{{ route('ajuanlimit.index', ['status' => '0', 'posisi_ajuan' => auth()->user()->hasRole('super admin') ? '' : auth()->user()->getRoleNames()->first()]) }}"

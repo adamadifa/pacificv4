@@ -38,7 +38,7 @@ class AjuanLimitConfigSeeder extends Seeder
             ],
             [
                 'min_limit' => 15000001,
-                'max_limit' => 999999999,
+                'max_limit' => 10000000000,
                 'roles' => json_encode(['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur']),
                 'created_at' => now(),
                 'updated_at' => now(),
