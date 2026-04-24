@@ -2543,6 +2543,17 @@ class LaporanaccountingController extends Controller
         }
 
         try {
+            // 0. Pre-Sync Cleanup (Hapus data hasil sync lama di Portax untuk periode ini)
+            $cleanupParams = [
+                'dari' => $dari,
+                'sampai' => $sampai,
+                'kode_cabang' => $kode_cabang
+            ];
+
+            Http::timeout(60)->post($baseUrl . '/kaskecil/pre-sync-cleanup', $cleanupParams);
+            Http::timeout(60)->post($baseUrl . '/ledger/pre-sync-cleanup', $cleanupParams);
+            Http::timeout(60)->post($baseUrl . '/jurnalumum/pre-sync-cleanup', $cleanupParams);
+
             // 1. Sync Batch Kas Kecil
             if (!empty($mapKaskecil)) {
                 $ids = array_keys($mapKaskecil);
