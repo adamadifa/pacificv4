@@ -13,6 +13,7 @@ use App\Models\Giro;
 use App\Models\Karyawan;
 use App\Models\Kasbon;
 use App\Models\Kaskecil;
+use App\Models\Costratio;
 use App\Models\Kaskecilcostratio;
 use App\Models\Kuranglebihsetor;
 use App\Models\Ledger;
@@ -2422,6 +2423,10 @@ class LaporankeuanganController extends Controller
             // Pastikan base URL tidak ada trailing slash
             $baseUrl = rtrim($baseUrl, '/');
 
+            // Ambil kode_cabang dari costratio untuk referensi master data di Portax
+            $crRecord = Costratio::where('kode_cr', $request->kode_cr)->first();
+            $kodeCabang = $crRecord ? $crRecord->kode_cabang : null;
+
             // Handle berdasarkan sumber type
             if ($sumberType == 'kaskecil') {
                 // Cari data kaskecil dari id_kaskecil
@@ -2453,7 +2458,8 @@ class LaporankeuanganController extends Controller
                         'kode_akun' => $kaskecil->kode_akun,
                         'kode_cabang' => $kaskecil->kode_cabang,
                         'kode_peruntukan' => $kaskecil->kode_peruntukan,
-                        'cost_ratio' => [$request->kode_cr] 
+                        'cost_ratio' => [$request->kode_cr],
+                        'kode_cabang_sync' => $kodeCabang // Untuk auto-create di Portax
                     ];
 
                     // Kirim data ke API dengan timeout 30 detik
@@ -2474,6 +2480,9 @@ class LaporankeuanganController extends Controller
                             $errorMessage .= ' (Status: ' . $response->status() . ')';
                             if ($response->json('message')) {
                                 $errorMessage .= ' - ' . $response->json('message');
+                            }
+                            if ($response->json('error')) {
+                                $errorMessage .= ' | Detail: ' . $response->json('error');
                             }
                         }
 
@@ -2584,7 +2593,8 @@ class LaporankeuanganController extends Controller
                         'debet_kredit' => $ledger->debet_kredit,
                         'kode_peruntukan' => $ledger->kode_peruntukan ?? '',
                         'keterangan_peruntukan' => $ledger->keterangan_peruntukan ?? '',
-                        'cost_ratio' => [$request->kode_cr]
+                        'cost_ratio' => [$request->kode_cr],
+                        'kode_cabang' => $kodeCabang // Untuk auto-create di Portax
                     ];
 
                     // Kirim data ke API dengan timeout 30 detik
@@ -2732,7 +2742,8 @@ class LaporankeuanganController extends Controller
                         'kode_dept' => $jurnalumum->kode_dept,
                         'jumlah' => $jurnalumum->jumlah,
                         'status_pajak' => $request->status_pajak,
-                        'cost_ratio' => [$request->kode_cr]
+                        'cost_ratio' => [$request->kode_cr],
+                        'kode_cabang_sync' => $kodeCabang // Untuk auto-create di Portax
                     ];
 
                     // Kirim data ke API dengan timeout 30 detik
@@ -2750,11 +2761,20 @@ class LaporankeuanganController extends Controller
                                 $errorMessage .= ': ' . json_encode($errors);
                             } else {
                                 $errorMessage .= ': ' . ($responseData['message'] ?? 'Validasi gagal');
+                                if (isset($responseData['error'])) {
+                                    $errorMessage .= ' | Detail: ' . $responseData['error'];
+                                }
+                                if (isset($responseData['sql_error'])) {
+                                    $errorMessage .= ' | SQL: ' . $responseData['sql_error'];
+                                }
                             }
                         } else {
                             $errorMessage .= ' (Status: ' . $statusCode . ')';
                             if (isset($responseData['message'])) {
                                 $errorMessage .= ' - ' . $responseData['message'];
+                            }
+                            if (isset($responseData['error'])) {
+                                $errorMessage .= ' | Detail: ' . $responseData['error'];
                             }
                         }
 

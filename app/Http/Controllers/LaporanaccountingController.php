@@ -2139,11 +2139,20 @@ class LaporanaccountingController extends Controller
                             $errorMessage .= ': ' . json_encode($errors);
                         } else {
                             $errorMessage .= ': ' . $response->json('message');
+                            if ($response->json('error')) {
+                                $errorMessage .= ' | Detail: ' . $response->json('error');
+                            }
+                            if ($response->json('sql_error')) {
+                                $errorMessage .= ' | SQL: ' . $response->json('sql_error');
+                            }
                         }
                     } else {
                         $errorMessage .= ' (Status: ' . $response->status() . ')';
                         if ($response->json('message')) {
                             $errorMessage .= ' - ' . $response->json('message');
+                        }
+                        if ($response->json('error')) {
+                            $errorMessage .= ' | Detail: ' . $response->json('error');
                         }
                     }
 
@@ -2555,6 +2564,10 @@ class LaporanaccountingController extends Controller
             Http::timeout(60)->post($baseUrl . '/jurnalumum/pre-sync-cleanup', $cleanupParams);
 
             // 1. Sync Batch Kas Kecil
+            $responses = [];
+            $kaskecilSuccess = 0;
+            $kaskecilFailed = 0;
+            
             if (!empty($mapKaskecil)) {
                 $ids = array_keys($mapKaskecil);
                 $kaskecils = Kaskecil::whereIn('id', $ids)->get();
@@ -2576,11 +2589,26 @@ class LaporanaccountingController extends Controller
                     $kk->update(['status_pajak' => 1]);
                 }
                 foreach (array_chunk($batchKaskecil, 50) as $chunk) {
-                    Http::timeout(60)->post($baseUrl . '/kaskecil/batch', ['data' => $chunk]);
+                    $res = Http::timeout(60)->post($baseUrl . '/kaskecil/batch', [
+                        'data' => $chunk,
+                        'kode_cabang' => $kode_cabang
+                    ]);
+                    
+                    if ($res->successful()) {
+                        $result = $res->json();
+                        $kaskecilSuccess += $result['summary']['success'] ?? count($chunk);
+                        $kaskecilFailed += $result['summary']['failed'] ?? 0;
+                    } else {
+                        $kaskecilFailed += count($chunk);
+                        $responses['kaskecil'][] = $res->json();
+                    }
                 }
             }
 
             // 2. Sync Batch Ledger
+            $ledgerSuccess = 0;
+            $ledgerFailed = 0;
+            
             if (!empty($mapLedger)) {
                 $noBuktis = array_keys($mapLedger);
                 $ledgers = Ledger::whereIn('no_bukti', $noBuktis)->get();
@@ -2602,11 +2630,26 @@ class LaporanaccountingController extends Controller
                     $l->update(['status_pajak' => 1]);
                 }
                 foreach (array_chunk($batchLedger, 50) as $chunk) {
-                    Http::timeout(60)->post($baseUrl . '/ledger/batch', ['data' => $chunk]);
+                    $res = Http::timeout(60)->post($baseUrl . '/ledger/batch', [
+                        'data' => $chunk,
+                        'kode_cabang' => $kode_cabang
+                    ]);
+                    
+                    if ($res->successful()) {
+                        $result = $res->json();
+                        $ledgerSuccess += $result['summary']['success'] ?? count($chunk);
+                        $ledgerFailed += $result['summary']['failed'] ?? 0;
+                    } else {
+                        $ledgerFailed += count($chunk);
+                        $responses['ledger'][] = $res->json();
+                    }
                 }
             }
 
             // 3. Sync Batch Jurnal Umum
+            $juSuccess = 0;
+            $juFailed = 0;
+            
             if (!empty($mapJurnalumum)) {
                 $kodeJus = array_keys($mapJurnalumum);
                 $jurnalumums = Jurnalumum::whereIn('kode_ju', $kodeJus)->get();
@@ -2628,13 +2671,31 @@ class LaporanaccountingController extends Controller
                     $ju->update(['status_pajak' => 1]);
                 }
                 foreach (array_chunk($batchJU, 50) as $chunk) {
-                    Http::timeout(60)->post($baseUrl . '/jurnalumum/batch', ['data' => $chunk]);
+                    $res = Http::timeout(60)->post($baseUrl . '/jurnalumum/batch', [
+                        'data' => $chunk,
+                        'kode_cabang' => $kode_cabang
+                    ]);
+                    
+                    if ($res->successful()) {
+                        $result = $res->json();
+                        $juSuccess += $result['summary']['success'] ?? count($chunk);
+                        $juFailed += $result['summary']['failed'] ?? 0;
+                    } else {
+                        $juFailed += count($chunk);
+                        $responses['jurnalumum'][] = $res->json();
+                    }
                 }
             }
 
+            $message = "Sinkronisasi Selesai.\n\n";
+            $message .= "Kas Kecil: {$kaskecilSuccess} Sukses, {$kaskecilFailed} Gagal\n";
+            $message .= "Ledger: {$ledgerSuccess} Sukses, {$ledgerFailed} Gagal\n";
+            $message .= "Jurnal Umum: {$juSuccess} Sukses, {$juFailed} Gagal";
+
             return response()->json([
                 'success' => true,
-                'message' => 'Sinkronisasi Batch Transaksi Sumber Berhasil (Kas Kecil, Ledger, Jurnal Umum)'
+                'message' => $message,
+                'errors' => $responses
             ]);
         } catch (\Exception $e) {
             return response()->json([
