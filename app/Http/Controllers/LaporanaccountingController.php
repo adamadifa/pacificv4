@@ -2559,9 +2559,15 @@ class LaporanaccountingController extends Controller
                 'kode_cabang' => $kode_cabang
             ];
 
-            Http::timeout(60)->post($baseUrl . '/kaskecil/pre-sync-cleanup', $cleanupParams);
-            Http::timeout(60)->post($baseUrl . '/ledger/pre-sync-cleanup', $cleanupParams);
-            Http::timeout(60)->post($baseUrl . '/jurnalumum/pre-sync-cleanup', $cleanupParams);
+            // 0. Reset data di Portax sebelum sync baru
+            $resReset = Http::timeout(60)->post($baseUrl . '/costratio/reset-batch', $cleanupParams);
+            
+            if (!$resReset->successful()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mereset data di Portax: ' . ($resReset->json('message') ?? 'Internal Server Error')
+                ], 500);
+            }
 
             // 1. Sync Batch Kas Kecil
             $responses = [];
