@@ -2497,7 +2497,7 @@ class LaporanaccountingController extends Controller
 
         $query = Costratio::query();
         $query->select(
-            'accounting_costratio.*',
+            'accounting_costratio.kode_cr',
             'keuangan_kaskecil_costratio.id as id_kaskecil',
             'keuangan_ledger_costratio.no_bukti as no_bukti_ledger',
             'accounting_jurnalumum_costratio.kode_ju as kode_ju_jurnalumum'
@@ -2525,45 +2525,28 @@ class LaporanaccountingController extends Controller
             ], 500);
         }
 
-        $batchCostratio = [];
-        $kaskecilIds = [];
-        $ledgerNoBuktis = [];
-        $jurnalumumKodeJus = [];
+        // Kelompokkan kode_cr berdasarkan ID transaksi sumber
+        $mapKaskecil = [];
+        $mapLedger = [];
+        $mapJurnalumum = [];
 
         foreach ($costratioList as $cr) {
-            $batchCostratio[] = [
-                'kode_cr' => $cr->kode_cr,
-                'tanggal' => $cr->tanggal,
-                'kode_akun' => $cr->kode_akun,
-                'keterangan' => $cr->keterangan,
-                'kode_cabang' => $cr->kode_cabang,
-                'kode_sumber' => $cr->kode_sumber,
-                'jumlah' => $cr->jumlah,
-            ];
-
             if ($cr->id_kaskecil) {
-                $kaskecilIds[] = $cr->id_kaskecil;
+                $mapKaskecil[$cr->id_kaskecil][] = $cr->kode_cr;
             }
             if ($cr->no_bukti_ledger) {
-                $ledgerNoBuktis[] = $cr->no_bukti_ledger;
+                $mapLedger[$cr->no_bukti_ledger][] = $cr->kode_cr;
             }
             if ($cr->kode_ju_jurnalumum) {
-                $jurnalumumKodeJus[] = $cr->kode_ju_jurnalumum;
+                $mapJurnalumum[$cr->kode_ju_jurnalumum][] = $cr->kode_cr;
             }
         }
 
         try {
-            // 1. Sync Batch Cost Ratio
-            if (!empty($batchCostratio)) {
-                $chunks = array_chunk($batchCostratio, 50);
-                foreach ($chunks as $chunk) {
-                    Http::timeout(60)->post($baseUrl . '/costratio/batch', ['data' => $chunk]);
-                }
-            }
-
-            // 2. Sync Batch Kas Kecil
-            if (!empty($kaskecilIds)) {
-                $kaskecils = Kaskecil::whereIn('id', array_unique($kaskecilIds))->get();
+            // 1. Sync Batch Kas Kecil
+            if (!empty($mapKaskecil)) {
+                $ids = array_keys($mapKaskecil);
+                $kaskecils = Kaskecil::whereIn('id', $ids)->get();
                 $batchKaskecil = [];
                 foreach ($kaskecils as $kk) {
                     $batchKaskecil[] = [
@@ -2577,18 +2560,19 @@ class LaporanaccountingController extends Controller
                         'keterangan' => $kk->keterangan,
                         'status_pajak' => 1,
                         'kode_peruntukan' => $kk->kode_peruntukan,
+                        'cost_ratio' => $mapKaskecil[$kk->id] ?? []
                     ];
                     $kk->update(['status_pajak' => 1]);
                 }
-                $chunks = array_chunk($batchKaskecil, 50);
-                foreach ($chunks as $chunk) {
+                foreach (array_chunk($batchKaskecil, 50) as $chunk) {
                     Http::timeout(60)->post($baseUrl . '/kaskecil/batch', ['data' => $chunk]);
                 }
             }
 
-            // 3. Sync Batch Ledger
-            if (!empty($ledgerNoBuktis)) {
-                $ledgers = Ledger::whereIn('no_bukti', array_unique($ledgerNoBuktis))->get();
+            // 2. Sync Batch Ledger
+            if (!empty($mapLedger)) {
+                $noBuktis = array_keys($mapLedger);
+                $ledgers = Ledger::whereIn('no_bukti', $noBuktis)->get();
                 $batchLedger = [];
                 foreach ($ledgers as $l) {
                     $batchLedger[] = [
@@ -2602,18 +2586,19 @@ class LaporanaccountingController extends Controller
                         'debet_kredit' => $l->debet_kredit,
                         'kode_peruntukan' => $l->kode_peruntukan,
                         'keterangan_peruntukan' => $l->keterangan_peruntukan,
+                        'cost_ratio' => $mapLedger[$l->no_bukti] ?? []
                     ];
                     $l->update(['status_pajak' => 1]);
                 }
-                $chunks = array_chunk($batchLedger, 50);
-                foreach ($chunks as $chunk) {
+                foreach (array_chunk($batchLedger, 50) as $chunk) {
                     Http::timeout(60)->post($baseUrl . '/ledger/batch', ['data' => $chunk]);
                 }
             }
 
-            // 4. Sync Batch Jurnal Umum
-            if (!empty($jurnalumumKodeJus)) {
-                $jurnalumums = Jurnalumum::whereIn('kode_ju', array_unique($jurnalumumKodeJus))->get();
+            // 3. Sync Batch Jurnal Umum
+            if (!empty($mapJurnalumum)) {
+                $kodeJus = array_keys($mapJurnalumum);
+                $jurnalumums = Jurnalumum::whereIn('kode_ju', $kodeJus)->get();
                 $batchJU = [];
                 foreach ($jurnalumums as $ju) {
                     $batchJU[] = [
@@ -2627,18 +2612,18 @@ class LaporanaccountingController extends Controller
                         'kode_peruntukan' => $ju->kode_peruntukan,
                         'kode_cabang' => $ju->kode_cabang,
                         'id_user' => $ju->id_user ?? 1,
+                        'cost_ratio' => $mapJurnalumum[$ju->kode_ju] ?? []
                     ];
                     $ju->update(['status_pajak' => 1]);
                 }
-                $chunks = array_chunk($batchJU, 50);
-                foreach ($chunks as $chunk) {
+                foreach (array_chunk($batchJU, 50) as $chunk) {
                     Http::timeout(60)->post($baseUrl . '/jurnalumum/batch', ['data' => $chunk]);
                 }
             }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Sinkronisasi Batch Cost Ratio dan Transaksi Sumber Berhasil'
+                'message' => 'Sinkronisasi Batch Transaksi Sumber Berhasil (Kas Kecil, Ledger, Jurnal Umum)'
             ]);
         } catch (\Exception $e) {
             return response()->json([

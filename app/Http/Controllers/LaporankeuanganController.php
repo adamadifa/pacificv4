@@ -2453,7 +2453,7 @@ class LaporankeuanganController extends Controller
                         'kode_akun' => $kaskecil->kode_akun,
                         'kode_cabang' => $kaskecil->kode_cabang,
                         'kode_peruntukan' => $kaskecil->kode_peruntukan,
-                        'cost_ratio' => [] // Bisa di-extend jika ada relasi cost_ratio
+                        'cost_ratio' => [$request->kode_cr] 
                     ];
 
                     // Kirim data ke API dengan timeout 30 detik
@@ -2583,7 +2583,8 @@ class LaporankeuanganController extends Controller
                         'jumlah' => $ledger->jumlah,
                         'debet_kredit' => $ledger->debet_kredit,
                         'kode_peruntukan' => $ledger->kode_peruntukan ?? '',
-                        'keterangan_peruntukan' => $ledger->keterangan_peruntukan ?? ''
+                        'keterangan_peruntukan' => $ledger->keterangan_peruntukan ?? '',
+                        'cost_ratio' => [$request->kode_cr]
                     ];
 
                     // Kirim data ke API dengan timeout 30 detik
@@ -2731,7 +2732,7 @@ class LaporankeuanganController extends Controller
                         'kode_dept' => $jurnalumum->kode_dept,
                         'jumlah' => $jurnalumum->jumlah,
                         'status_pajak' => $request->status_pajak,
-                        'cost_ratio' => []
+                        'cost_ratio' => [$request->kode_cr]
                     ];
 
                     // Kirim data ke API dengan timeout 30 detik
