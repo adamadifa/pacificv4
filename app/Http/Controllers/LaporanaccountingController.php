@@ -2490,23 +2490,34 @@ class LaporanaccountingController extends Controller
 
     public function syncallcostratio(Request $request)
     {
-        $user = User::findOrFail(auth()->user()->id);
         $dari = $request->dari;
         $sampai = $request->sampai;
+        $kode_cabang = $request->kode_cabang;
+        $kode_cr_list = $request->kode_cr;
 
         $query = Costratio::query();
-        $query->whereBetween('tanggal', [$dari, $sampai]);
-        if (!empty($request->kode_cabang)) {
-            $query->where('kode_cabang', $request->kode_cabang);
+        $query->select(
+            'accounting_costratio.*',
+            'keuangan_kaskecil_costratio.id as id_kaskecil',
+            'keuangan_ledger_costratio.no_bukti as no_bukti_ledger',
+            'accounting_jurnalumum_costratio.kode_ju as kode_ju_jurnalumum'
+        );
+        $query->leftJoin('keuangan_kaskecil_costratio', 'accounting_costratio.kode_cr', '=', 'keuangan_kaskecil_costratio.kode_cr');
+        $query->leftJoin('keuangan_ledger_costratio', 'accounting_costratio.kode_cr', '=', 'keuangan_ledger_costratio.kode_cr');
+        $query->leftJoin('accounting_jurnalumum_costratio', 'accounting_costratio.kode_cr', '=', 'accounting_jurnalumum_costratio.kode_cr');
+
+        $query->whereBetween('accounting_costratio.tanggal', [$dari, $sampai]);
+        if (!empty($kode_cabang)) {
+            $query->where('accounting_costratio.kode_cabang', $kode_cabang);
         }
 
-        if (!empty($request->kode_cr)) {
-            $query->whereIn('kode_cr', $request->kode_cr);
+        if (!empty($kode_cr_list)) {
+            $query->whereIn('accounting_costratio.kode_cr', $kode_cr_list);
         }
 
         $costratioList = $query->get();
+        $baseUrl = rtrim(env('SYNC_API_BASE_URL'), '/');
 
-        $baseUrl = env('SYNC_API_BASE_URL');
         if (empty($baseUrl)) {
             return response()->json([
                 'success' => false,
@@ -2514,12 +2525,13 @@ class LaporanaccountingController extends Controller
             ], 500);
         }
 
-        $successCount = 0;
-        $failedCount = 0;
-        $batchData = [];
+        $batchCostratio = [];
+        $kaskecilIds = [];
+        $ledgerNoBuktis = [];
+        $jurnalumumKodeJus = [];
 
         foreach ($costratioList as $cr) {
-            $batchData[] = [
+            $batchCostratio[] = [
                 'kode_cr' => $cr->kode_cr,
                 'tanggal' => $cr->tanggal,
                 'kode_akun' => $cr->kode_akun,
@@ -2528,56 +2540,111 @@ class LaporanaccountingController extends Controller
                 'kode_sumber' => $cr->kode_sumber,
                 'jumlah' => $cr->jumlah,
             ];
-        }
 
-        if (empty($batchData)) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Tidak ada data cost ratio yang perlu disync untuk periode ini.'
-            ]);
-        }
-
-
-        // Process Batches (Chunk data to avoid payload too large)
-        $chunks = array_chunk($batchData, 50);
-        $errors = [];
-
-        foreach ($chunks as $chunk) {
-            try {
-                $response = Http::timeout(60)->post($baseUrl . '/costratio/batch', ['data' => $chunk]);
-
-                if ($response->successful()) {
-                    $result = $response->json();
-                    $successCount += $result['summary']['success'] ?? 0;
-                    $failedCount += $result['summary']['failed'] ?? 0;
-
-                    if (isset($result['results'])) {
-                        foreach ($result['results'] as $res) {
-                            if (isset($res['status']) && $res['status'] === 'failed') {
-                                $errors[] = "{$res['kode_cr']}: " . ($res['message'] ?? 'Unknown error');
-                            }
-                        }
-                    }
-                } else {
-                    $failedCount += count($chunk);
-                    $errorMsg = $response->json('message') ?? $response->body();
-                    $errors[] = "Batch Request Failed (Status {$response->status()}): {$errorMsg}";
-                }
-            } catch (\Exception $e) {
-                $failedCount += count($chunk);
-                $errors[] = "Exception: " . $e->getMessage();
+            if ($cr->id_kaskecil) {
+                $kaskecilIds[] = $cr->id_kaskecil;
+            }
+            if ($cr->no_bukti_ledger) {
+                $ledgerNoBuktis[] = $cr->no_bukti_ledger;
+            }
+            if ($cr->kode_ju_jurnalumum) {
+                $jurnalumumKodeJus[] = $cr->kode_ju_jurnalumum;
             }
         }
 
-        $message = "Sync Cost Ratio selesai. Sukses: {$successCount}, Gagal: {$failedCount}";
+        try {
+            // 1. Sync Batch Cost Ratio
+            if (!empty($batchCostratio)) {
+                $chunks = array_chunk($batchCostratio, 50);
+                foreach ($chunks as $chunk) {
+                    Http::timeout(60)->post($baseUrl . '/costratio/batch', ['data' => $chunk]);
+                }
+            }
 
-        if (!empty($errors)) {
-            $message .= "\n\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10));
+            // 2. Sync Batch Kas Kecil
+            if (!empty($kaskecilIds)) {
+                $kaskecils = Kaskecil::whereIn('id', array_unique($kaskecilIds))->get();
+                $batchKaskecil = [];
+                foreach ($kaskecils as $kk) {
+                    $batchKaskecil[] = [
+                        'id' => $kk->id,
+                        'no_bukti' => $kk->no_bukti,
+                        'tanggal' => $kk->tanggal,
+                        'jumlah' => $kk->jumlah,
+                        'debet_kredit' => $kk->debet_kredit,
+                        'kode_akun' => $kk->kode_akun,
+                        'kode_cabang' => $kk->kode_cabang,
+                        'keterangan' => $kk->keterangan,
+                        'status_pajak' => 1,
+                        'kode_peruntukan' => $kk->kode_peruntukan,
+                    ];
+                    $kk->update(['status_pajak' => 1]);
+                }
+                $chunks = array_chunk($batchKaskecil, 50);
+                foreach ($chunks as $chunk) {
+                    Http::timeout(60)->post($baseUrl . '/kaskecil/batch', ['data' => $chunk]);
+                }
+            }
+
+            // 3. Sync Batch Ledger
+            if (!empty($ledgerNoBuktis)) {
+                $ledgers = Ledger::whereIn('no_bukti', array_unique($ledgerNoBuktis))->get();
+                $batchLedger = [];
+                foreach ($ledgers as $l) {
+                    $batchLedger[] = [
+                        'no_bukti' => $l->no_bukti,
+                        'tanggal' => $l->tanggal,
+                        'pelanggan' => $l->pelanggan,
+                        'kode_bank' => $l->kode_bank,
+                        'kode_akun' => $l->kode_akun,
+                        'keterangan' => $l->keterangan,
+                        'jumlah' => $l->jumlah,
+                        'debet_kredit' => $l->debet_kredit,
+                        'kode_peruntukan' => $l->kode_peruntukan,
+                        'keterangan_peruntukan' => $l->keterangan_peruntukan,
+                    ];
+                    $l->update(['status_pajak' => 1]);
+                }
+                $chunks = array_chunk($batchLedger, 50);
+                foreach ($chunks as $chunk) {
+                    Http::timeout(60)->post($baseUrl . '/ledger/batch', ['data' => $chunk]);
+                }
+            }
+
+            // 4. Sync Batch Jurnal Umum
+            if (!empty($jurnalumumKodeJus)) {
+                $jurnalumums = Jurnalumum::whereIn('kode_ju', array_unique($jurnalumumKodeJus))->get();
+                $batchJU = [];
+                foreach ($jurnalumums as $ju) {
+                    $batchJU[] = [
+                        'kode_ju' => $ju->kode_ju,
+                        'tanggal' => $ju->tanggal,
+                        'keterangan' => $ju->keterangan,
+                        'jumlah' => $ju->jumlah,
+                        'debet_kredit' => $ju->debet_kredit,
+                        'kode_akun' => $ju->kode_akun,
+                        'kode_dept' => $ju->kode_dept,
+                        'kode_peruntukan' => $ju->kode_peruntukan,
+                        'kode_cabang' => $ju->kode_cabang,
+                        'id_user' => $ju->id_user ?? 1,
+                    ];
+                    $ju->update(['status_pajak' => 1]);
+                }
+                $chunks = array_chunk($batchJU, 50);
+                foreach ($chunks as $chunk) {
+                    Http::timeout(60)->post($baseUrl . '/jurnalumum/batch', ['data' => $chunk]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sinkronisasi Batch Cost Ratio dan Transaksi Sumber Berhasil'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sync Gagal: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => $message
-        ]);
     }
 }
