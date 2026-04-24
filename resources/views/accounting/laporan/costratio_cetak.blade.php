@@ -29,7 +29,6 @@
             COST RATIO <br>
         </h4>
         <h4>PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
-
     </div>
     <div class="content">
         <div class="freeze-table">
@@ -351,5 +350,5 @@
             </table>
         </div>
     </div>
-
 </body>
+</html>

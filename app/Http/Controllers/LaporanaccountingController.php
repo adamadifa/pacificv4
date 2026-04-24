@@ -2488,4 +2488,96 @@ class LaporanaccountingController extends Controller
         }
     }
 
+    public function syncallcostratio(Request $request)
+    {
+        $user = User::findOrFail(auth()->user()->id);
+        $dari = $request->dari;
+        $sampai = $request->sampai;
+
+        $query = Costratio::query();
+        $query->whereBetween('tanggal', [$dari, $sampai]);
+        if (!empty($request->kode_cabang)) {
+            $query->where('kode_cabang', $request->kode_cabang);
+        }
+
+        if (!empty($request->kode_cr)) {
+            $query->whereIn('kode_cr', $request->kode_cr);
+        }
+
+        $costratioList = $query->get();
+
+        $baseUrl = env('SYNC_API_BASE_URL');
+        if (empty($baseUrl)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'SYNC_API_BASE_URL belum dikonfigurasi di .env'
+            ], 500);
+        }
+
+        $successCount = 0;
+        $failedCount = 0;
+        $batchData = [];
+
+        foreach ($costratioList as $cr) {
+            $batchData[] = [
+                'kode_cr' => $cr->kode_cr,
+                'tanggal' => $cr->tanggal,
+                'kode_akun' => $cr->kode_akun,
+                'keterangan' => $cr->keterangan,
+                'kode_cabang' => $cr->kode_cabang,
+                'kode_sumber' => $cr->kode_sumber,
+                'jumlah' => $cr->jumlah,
+            ];
+        }
+
+        if (empty($batchData)) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tidak ada data cost ratio yang perlu disync untuk periode ini.'
+            ]);
+        }
+
+
+        // Process Batches (Chunk data to avoid payload too large)
+        $chunks = array_chunk($batchData, 50);
+        $errors = [];
+
+        foreach ($chunks as $chunk) {
+            try {
+                $response = Http::timeout(60)->post($baseUrl . '/costratio/batch', ['data' => $chunk]);
+
+                if ($response->successful()) {
+                    $result = $response->json();
+                    $successCount += $result['summary']['success'] ?? 0;
+                    $failedCount += $result['summary']['failed'] ?? 0;
+
+                    if (isset($result['results'])) {
+                        foreach ($result['results'] as $res) {
+                            if (isset($res['status']) && $res['status'] === 'failed') {
+                                $errors[] = "{$res['kode_cr']}: " . ($res['message'] ?? 'Unknown error');
+                            }
+                        }
+                    }
+                } else {
+                    $failedCount += count($chunk);
+                    $errorMsg = $response->json('message') ?? $response->body();
+                    $errors[] = "Batch Request Failed (Status {$response->status()}): {$errorMsg}";
+                }
+            } catch (\Exception $e) {
+                $failedCount += count($chunk);
+                $errors[] = "Exception: " . $e->getMessage();
+            }
+        }
+
+        $message = "Sync Cost Ratio selesai. Sukses: {$successCount}, Gagal: {$failedCount}";
+
+        if (!empty($errors)) {
+            $message .= "\n\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10));
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ]);
+    }
 }

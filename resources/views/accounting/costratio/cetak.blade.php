@@ -21,6 +21,9 @@
         <h4>COSTRATIO</h4>
         {{-- <h4>{{ $cabang != null ? textUpperCase($cabang->nama_pt) . '(' . textUpperCase($cabang->nama_cabang) . ')' : '' }}</h4> --}}
         <h4>PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
+        @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
+            <button id="btnSyncAll" class="btn btn-primary" style="margin-bottom: 5px;">Sync All Cost Ratio</button>
+        @endif
     </div>
     <div class="body">
         <table class="datatable3" border="1">
@@ -184,6 +187,49 @@
                     complete: function() {
                         // Enable checkbox kembali
                         checkbox.prop('disabled', false);
+                    }
+                });
+            });
+
+            $('#btnSyncAll').click(function(e) {
+                e.preventDefault();
+                if (!confirm('Apakah anda yakin ingin melakukan sinkronisasi ulang semua data Cost Ratio yang dipilih?')) return;
+
+                var kode_cr = [];
+                $('.checkbox-pajak-costratio:checked').each(function() {
+                    kode_cr.push($(this).data('kode-cr'));
+                });
+
+                if (kode_cr.length == 0) {
+                    alert('Tidak ada data yang dicentang!');
+                    return;
+                }
+
+                var btn = $(this);
+                var originalText = btn.text();
+                btn.prop('disabled', true).text('Syncing...');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("laporanaccounting.syncallcostratio") }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        dari: '{{ $dari }}',
+                        sampai: '{{ $sampai }}',
+                        kode_cabang: '{{ request("kode_cabang") }}',
+                        kode_cr: kode_cr
+                    },
+                    success: function(response) {
+                        btn.prop('disabled', false).text(originalText);
+                        alert(response.message);
+                    },
+                    error: function(xhr) {
+                        btn.prop('disabled', false).text(originalText);
+                        var msg = 'Gagal';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg += ': ' + xhr.responseJSON.message;
+                        }
+                        alert(msg);
                     }
                 });
             });
