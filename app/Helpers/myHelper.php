@@ -70,7 +70,13 @@ function getfotoAktifitias($file)
 
 function getfotoKaryawan($file)
 {
-    $url = url('/storage/karyawan/' . $file);
+    if (empty($file)) {
+        return asset('assets/img/avatars/No_Image_Available.jpg');
+    }
+    if (strpos($file, 'http') === 0) {
+        return $file;
+    }
+    $url = url('storage/karyawan/' . $file);
     return $url;
 }
 

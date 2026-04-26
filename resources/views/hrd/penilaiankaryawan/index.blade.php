@@ -182,14 +182,8 @@
                                 <div class="col-lg-4 col-md-6 mb-3 mb-lg-0 border-end-lg">
                                     <div class="d-flex align-items-center">
                                         <div class="avatar avatar-md me-3">
-                                            @if (!empty($d->foto))
-                                                @if (Storage::disk('public')->exists('/karyawan/' . $d->foto))
-                                                    <img src="{{ getfotoKaryawan($d->foto) }}" alt="Avatar" class="rounded-circle">
-                                                @else
-                                                    <span class="avatar-initial rounded-circle bg-label-info">
-                                                        <i class="ti ti-user fs-4"></i>
-                                                    </span>
-                                                @endif
+                                            @if (!empty($d->foto) && Storage::disk('public')->exists('/karyawan/' . ($d instanceof App\Models\Karyawan ? $d->getRawOriginal('foto') : $d->foto)))
+                                                <img src="{{ getfotoKaryawan($d->foto) }}" alt="Avatar" class="rounded-circle">
                                             @else
                                                 <span class="avatar-initial rounded-circle bg-label-info">
                                                     <i class="ti ti-user fs-4"></i>

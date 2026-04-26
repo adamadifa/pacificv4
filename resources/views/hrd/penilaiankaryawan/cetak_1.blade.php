@@ -99,7 +99,7 @@
                     </table>
                 </div>
                 <div>
-                    @if (Storage::disk('public')->exists('/karyawan/' . $penilaiankaryawan->foto))
+                    @if (!empty($penilaiankaryawan->foto) && Storage::disk('public')->exists('/karyawan/' . ($penilaiankaryawan instanceof App\Models\Karyawan ? $penilaiankaryawan->getRawOriginal('foto') : $penilaiankaryawan->foto)))
                         <img src="{{ getfotoKaryawan($penilaiankaryawan->foto) }}" class="card-img"
                             style="width: 120px; height:150px; object-fit:cover; border-radius:10px; position:absolute; right:70px; top:80px;">
                     @else

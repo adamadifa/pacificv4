@@ -75,7 +75,7 @@
     <div class="approval-header d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <div class="avatar avatar-xl me-3">
-                @if (Storage::disk('public')->exists('/karyawan/' . $penilaiankaryawan->foto))
+                @if (!empty($penilaiankaryawan->foto) && Storage::disk('public')->exists('/karyawan/' . ($penilaiankaryawan instanceof App\Models\Karyawan ? $penilaiankaryawan->getRawOriginal('foto') : $penilaiankaryawan->foto)))
                     <img src="{{ getfotoKaryawan($penilaiankaryawan->foto) }}" alt="Avatar" class="rounded-circle border border-2 border-white">
                 @else
                     <div class="avatar-initial rounded-circle bg-label-light border border-2 border-white">

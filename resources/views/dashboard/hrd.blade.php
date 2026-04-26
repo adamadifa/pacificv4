@@ -158,7 +158,7 @@
                                                             <div class="d-flex align-items-center">
                                                                 <div class="avatar me-3"
                                                                     style="width: 80px; height: 80px; position: relative;">
-                                                                    @if (!empty($d->foto) && Storage::disk('public')->exists('/karyawan/' . $d->foto))
+                                                                    @if (!empty($d->foto) && Storage::disk('public')->exists('/karyawan/' . $d->getRawOriginal('foto')))
                                                                         <img src="{{ getfotoKaryawan($d->foto) }}"
                                                                             alt=""
                                                                             class="rounded-circle border border-primary border-3"

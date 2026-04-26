@@ -78,7 +78,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="position-relative me-3">
                                     <div class="avatar avatar-xl online">
-                                        @if (!empty($d->foto) && Storage::disk('public')->exists('/karyawan/' . $d->foto))
+                                        @if (!empty($d->foto) && Storage::disk('public')->exists('/karyawan/' . $d->getRawOriginal('foto')))
                                             <img src="{{ getfotoKaryawan($d->foto) }}" alt="Avatar" class="rounded shadow-sm">
                                         @else
                                             <div class="avatar-initial rounded bg-label-secondary border">

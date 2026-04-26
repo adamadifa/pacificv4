@@ -14,7 +14,7 @@
             </div>
             <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
                 <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
-                    @if (Storage::disk('public')->exists('/karyawan/' . $karyawan->foto))
+                    @if (!empty($karyawan->foto) && Storage::disk('public')->exists('/karyawan/' . $karyawan->getRawOriginal('foto')))
                         <img src="{{ getfotoKaryawan($karyawan->foto) }}" alt="user image" class="d-block  ms-0 ms-sm-4 rounded user-profile-img"
                             height="150">
                     @else
